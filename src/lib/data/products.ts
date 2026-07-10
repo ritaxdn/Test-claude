@@ -26,6 +26,7 @@ type CategoryBlueprint = {
   indications: string[];
   keyFeatures: string[];
   tiers: TierSpec[];
+  storyChapters: { title: string; body: string }[];
 };
 
 const defaultTiers = (
@@ -81,6 +82,11 @@ const blueprints: CategoryBlueprint[] = [
       "Consommables à faible coût d'exploitation",
       "Formation clinique incluse à l'installation",
     ],
+    storyChapters: [
+      { title: "Le constat", body: "Vos patientes cherchent un résultat visage visible dès la première séance, sans discours technique interminable — c'est le premier filtre de confiance." },
+      { title: "Le geste clinique", body: "Trois têtes combinées travaillent le derme profond, le grain de peau et l'ovale du visage dans une même session, sans multiplier les rendez-vous." },
+      { title: "Le résultat en cabinet", body: "Un protocole en 4 à 6 séances se transforme naturellement en forfait, avec un discours de vente déjà prêt pour votre équipe." },
+    ],
     tiers: defaultTiers("3 technologies combinées", "3 pièces à main"),
   },
   {
@@ -95,6 +101,11 @@ const blueprints: CategoryBlueprint[] = [
       "Protocoles combinables avec cryolipolyse et EMS",
       "Confort patient optimisé, faible échauffement cutané",
       "Rentabilité calculée sur forfaits de 6 à 10 séances",
+    ],
+    storyChapters: [
+      { title: "Le constat", body: "Le corps est le parent pauvre des cabinets qui ne traitent que le visage — pourtant c'est là que se cachent les forfaits les plus longs et les plus rentables." },
+      { title: "Le geste clinique", body: "De larges applicateurs couvrent l'abdomen, les cuisses et les bras sans multiplier les passages, pour des séances plus courtes et plus confortables." },
+      { title: "Le résultat en cabinet", body: "Combiné à la cryolipolyse ou l'EMS, ce système devient le socle d'un parcours corps complet, vendu en un seul forfait." },
     ],
     tiers: defaultTiers("2 modes de traitement", "2 pièces à main"),
   },
@@ -111,6 +122,11 @@ const blueprints: CategoryBlueprint[] = [
       "Compatible peaux mates avec réglages dédiés",
       "Maintenance et pièces disponibles localement",
     ],
+    storyChapters: [
+      { title: "Le constat", body: "Un seul socle laser, plusieurs indications : c'est le calcul qui permet de rentabiliser un investissement laser sans multiplier les machines." },
+      { title: "Le geste clinique", body: "Les modules interchangeables s'adaptent aux lésions pigmentaires, aux rougeurs et au rajeunissement global, avec un système de refroidissement intégré." },
+      { title: "Le résultat en cabinet", body: "Une plateforme, plusieurs lignes de soin au catalogue — de quoi diversifier l'offre sans complexifier la formation des équipes." },
+    ],
     tiers: defaultTiers("Modulaire, 2 longueurs d'onde", "2 pièces à main"),
   },
   {
@@ -125,6 +141,11 @@ const blueprints: CategoryBlueprint[] = [
       "Système de refroidissement par contact intégré",
       "Réglages dédiés peaux mates et bronzées",
       "Sécurité oculaire renforcée patient et praticien",
+    ],
+    storyChapters: [
+      { title: "Le constat", body: "L'épilation laser est le volume qui remplit l'agenda — mais seulement si le débit patient et le confort suivent, séance après séance." },
+      { title: "Le geste clinique", body: "Une cadence de tir élevée et un refroidissement par contact permettent d'enchaîner les grandes surfaces sans rallonger la séance ni la douleur perçue." },
+      { title: "Le résultat en cabinet", body: "Des réglages validés pour les peaux mates ouvrent le service à toute votre patientèle, sans réglages hasardeux ni risque de brûlure." },
     ],
     tiers: defaultTiers("Diode/Alexandrite haute cadence", "1 pièce à main grande surface"),
   },
@@ -141,6 +162,11 @@ const blueprints: CategoryBlueprint[] = [
       "Protocole en une séance avec effet progressif",
       "Faible taux de consommables par rapport aux concurrents",
     ],
+    storyChapters: [
+      { title: "Le constat", body: "Le relâchement de l'ovale du visage est la demande n°1 des patientes de 35 à 55 ans qui refusent la chirurgie mais veulent un effet réel." },
+      { title: "Le geste clinique", body: "Quatre profondeurs de tir atteignent le SMAS et le derme profond en une seule séance, là où les technologies de surface ne font qu'effleurer le problème." },
+      { title: "Le résultat en cabinet", body: "L'effet progressif sur 8 à 12 semaines crée un rendez-vous de suivi naturel — et une nouvelle occasion de recommandation." },
+    ],
     tiers: defaultTiers("4 profondeurs de tir", "1 sonde multi-cartouches"),
   },
   {
@@ -155,6 +181,11 @@ const blueprints: CategoryBlueprint[] = [
       "Têtes interchangeables visage et corps",
       "Compatible protocoles combinés",
       "Retour sur investissement rapide sur soins signature",
+    ],
+    storyChapters: [
+      { title: "Le constat", body: "La fermeté cutanée est le soin d'entrée de gamme le plus simple à vendre — à condition d'offrir un contrôle de température fiable, séance après séance." },
+      { title: "Le geste clinique", body: "Le mode mono ou multipolaire cible le derme superficiel ou profond selon la zone, avec des têtes interchangeables visage et corps." },
+      { title: "Le résultat en cabinet", body: "Associée à un protocole HIFU ou microneedling, cette technologie devient la brique d'un parcours de fermeté complet, vendu en plusieurs étapes." },
     ],
     tiers: defaultTiers("Mono et multipolaire", "2 têtes interchangeables"),
   },
@@ -171,6 +202,11 @@ const blueprints: CategoryBlueprint[] = [
       "Applicateurs de tailles multiples inclus",
       "Protocoles de vente en forfaits corps entier",
     ],
+    storyChapters: [
+      { title: "Le constat", body: "Les amas graisseux localisés résistent au sport et au régime — c'est exactement le discours qui remplit un agenda de cryolipolyse." },
+      { title: "Le geste clinique", body: "Un refroidissement contrôlé entre -5°C et -11°C cible les adipocytes sans agresser la peau, avec des applicateurs adaptés à chaque zone du corps." },
+      { title: "Le résultat en cabinet", body: "Deux ou quatre applicateurs simultanés permettent de traiter plusieurs zones dans la même séance, doublant le panier moyen sans allonger le rendez-vous." },
+    ],
     tiers: defaultTiers("Refroidissement contrôlé -5°C à -11°C", "2 applicateurs simultanés"),
   },
   {
@@ -185,6 +221,11 @@ const blueprints: CategoryBlueprint[] = [
       "Intensité progressive et protocoles personnalisables",
       "Séances courtes à forte valeur perçue",
       "Combinable avec cryolipolyse pour un protocole complet",
+    ],
+    storyChapters: [
+      { title: "Le constat", body: "Vos patients veulent un ventre plat et des fessiers fermes sans les heures de salle de sport — le renforcement musculaire par EMS répond exactement à cette attente." },
+      { title: "Le geste clinique", body: "Des contractions supramaximales sollicitent les fibres musculaires bien au-delà de ce qu'un entraînement volontaire permet, en 20 à 30 minutes." },
+      { title: "Le résultat en cabinet", body: "Quatre applicateurs simultanés traitent plusieurs zones à la fois, un argument fort pour vendre des forfaits multi-séances à forte marge." },
     ],
     tiers: defaultTiers("Jusqu'à 100% intensité EMS", "4 applicateurs simultanés"),
   },
@@ -201,6 +242,11 @@ const blueprints: CategoryBlueprint[] = [
       "Base de données patient sécurisée",
       "Argument de vente différenciant en consultation",
     ],
+    storyChapters: [
+      { title: "Le constat", body: "Un patient qui voit ses propres taches et pores grossis à l'écran achète un protocole ; un patient qui vous croit sur parole hésite." },
+      { title: "Le geste clinique", body: "L'imagerie multi-spectrale UV, polarisée et standard objective l'état de peau en quelques secondes, avant toute recommandation de soin." },
+      { title: "Le résultat en cabinet", body: "Un rapport exportable devient la preuve visuelle de vos résultats au fil des séances — et votre meilleur argument de fidélisation." },
+    ],
     tiers: defaultTiers("Imagerie multi-spectrale", "1 module d'acquisition"),
   },
   {
@@ -215,6 +261,11 @@ const blueprints: CategoryBlueprint[] = [
       "Résultat visible immédiat, sans éviction sociale",
       "Soin signature à forte fréquence de réachat",
       "Consommables sérums disponibles en gamme complète",
+    ],
+    storyChapters: [
+      { title: "Le constat", body: "C'est le soin qui convertit un visiteur curieux en patient régulier : résultat immédiat, zéro éviction sociale, zéro appréhension." },
+      { title: "Le geste clinique", body: "Exfoliation, extraction et hydratation s'enchaînent dans le même dispositif, avec des sérums adaptés à chaque type de peau." },
+      { title: "Le résultat en cabinet", body: "Un soin signature à forte fréquence de réachat, qui sert aussi de porte d'entrée vers vos protocoles plus techniques et plus rentables." },
     ],
     tiers: defaultTiers("3 étapes en 1 dispositif", "1 pièce à main multi-embouts"),
   },
@@ -231,6 +282,11 @@ const blueprints: CategoryBlueprint[] = [
       "Compatible visage et corps",
       "Protocoles combinables avec PRP (selon réglementation locale)",
     ],
+    storyChapters: [
+      { title: "Le constat", body: "Cicatrices d'acné et vergetures sont des demandes fréquentes que peu de cabinets savent traiter efficacement en une seule technologie." },
+      { title: "Le geste clinique", body: "Une profondeur de pénétration ajustable de 0,5 à 3,5 mm, avec cartouches stériles à usage unique, sécurise chaque séance sur visage et corps." },
+      { title: "Le résultat en cabinet", body: "Un protocole en plusieurs séances espacées construit un suivi patient dans la durée, avec un vrai résultat visible sur la texture de peau." },
+    ],
     tiers: defaultTiers("Profondeur 0,5 à 3,5 mm", "1 pièce à main + cartouches"),
   },
   {
@@ -245,6 +301,11 @@ const blueprints: CategoryBlueprint[] = [
       "Mode ablatif et non ablatif selon protocole",
       "Formation médicale spécifique fournie",
       "Suivi post-traitement documenté",
+    ],
+    storyChapters: [
+      { title: "Le constat", body: "Le resurfaçage profond reste l'indication la plus exigeante — elle demande une technologie fiable et un encadrement médical rigoureux." },
+      { title: "Le geste clinique", body: "Les réglages fractionnés ajustent densité et profondeur selon l'indication, en mode ablatif ou non ablatif, avec un scanner de précision." },
+      { title: "Le résultat en cabinet", body: "Une formation médicale spécifique et un suivi post-traitement documenté sécurisent chaque protocole, du premier au dernier patient." },
     ],
     tiers: defaultTiers("Mode fractionné ajustable", "1 scanner + pièce à main"),
   },
@@ -261,6 +322,11 @@ const blueprints: CategoryBlueprint[] = [
       "Adapté cabinets libéraux et centres spécialisés",
       "Faible coût de maintenance",
     ],
+    storyChapters: [
+      { title: "Le constat", body: "Les cabinets de kinésithérapie cherchent un socle capable de couvrir douleur musculo-squelettique, récupération sportive et rééducation post-traumatique." },
+      { title: "Le geste clinique", body: "Électrostimulation, ondes de choc et thérapies complémentaires cohabitent sur un même socle, avec des protocoles validés pour la pratique clinique." },
+      { title: "Le résultat en cabinet", body: "Un investissement unique qui couvre plusieurs indications, avec un coût de maintenance maîtrisé sur la durée." },
+    ],
     tiers: defaultTiers("Multi-thérapies", "2 applicateurs"),
   },
   {
@@ -276,6 +342,11 @@ const blueprints: CategoryBlueprint[] = [
       "Compatible avec tous les protocoles esthétiques et médicaux",
       "Garantie étendue sur la structure",
     ],
+    storyChapters: [
+      { title: "Le constat", body: "Le niveau de finition de votre salle de soin parle avant même la première consultation — le mobilier fait partie du diagnostic de confiance." },
+      { title: "Le geste clinique", body: "Des réglages électriques multi-positions s'adaptent à chaque protocole, du soin visage à la table d'examen médical." },
+      { title: "Le résultat en cabinet", body: "Des revêtements premium faciles à désinfecter et une garantie étendue sécurisent l'investissement sur plusieurs années." },
+    ],
     tiers: defaultTiers("Réglage électrique multi-position", "Accoudoirs et têtière inclus"),
   },
   {
@@ -290,6 +361,11 @@ const blueprints: CategoryBlueprint[] = [
       "Livraison régulière programmable",
       "Support technique réactif",
       "Tarifs préférentiels pour les clients sous contrat",
+    ],
+    storyChapters: [
+      { title: "Le constat", body: "Une machine sans consommable d'origine perd en performance et en garantie — la fidélité au constructeur protège votre investissement." },
+      { title: "Le geste clinique", body: "Chaque consommable est certifié compatible avec sa machine d'origine, pour préserver la performance clinique validée par LGL Expert." },
+      { title: "Le résultat en cabinet", body: "Un réassort programmé évite toute rupture de stock en pleine saison, et un support technique réactif limite les arrêts d'activité." },
     ],
     tiers: [
       {
@@ -350,6 +426,7 @@ export const products: Product[] = blueprints.flatMap((blueprint) =>
     keyFeatures: blueprint.keyFeatures,
     technicalHighlights: tierSpec.highlights,
     idealFor: tierSpec.idealFor,
+    storyChapters: blueprint.storyChapters,
   }))
 );
 

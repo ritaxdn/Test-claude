@@ -45,6 +45,7 @@
 
   --font-display: var(--font-bodoni);
   --font-sans: var(--font-jost);
+  --font-mono: var(--font-mono);
 
   --radius-sm: var(--radius-sm);
   --radius-md: var(--radius-md);
@@ -110,6 +111,15 @@ a, button {
 @media (min-width: 768px) {
   .container-cl {
     padding-inline: 2rem;
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
   }
 }
 

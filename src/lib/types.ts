@@ -1,9 +1,22 @@
+export type VisualMotif =
+  | "wave"
+  | "beam"
+  | "thermal"
+  | "scan"
+  | "flow"
+  | "grid"
+  | "pulse"
+  | "mechanical";
+
 export type ProductCategory = {
   slug: string;
   name: string;
   shortDescription: string;
   description: string;
   icon: string;
+  motif: VisualMotif;
+  narrative: string;
+  stat: { value: string; label: string };
 };
 
 export type ProductTier = "Essentiel" | "Pro" | "Expert";
@@ -19,6 +32,7 @@ export type Product = {
   keyFeatures: string[];
   technicalHighlights: { label: string; value: string }[];
   idealFor: string[];
+  storyChapters: { title: string; body: string }[];
 };
 
 export type Certification = {

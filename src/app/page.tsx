@@ -1,7 +1,7 @@
 import { Hero } from "@/components/sections/Hero";
-import { ValueProps } from "@/components/sections/ValueProps";
-import { CategoryGrid } from "@/components/sections/CategoryGrid";
-import { FlagshipTech } from "@/components/sections/FlagshipTech";
+import { Manifesto } from "@/components/sections/Manifesto";
+import { CategoryIndex } from "@/components/sections/CategoryIndex";
+import { ProductTheater } from "@/components/sections/ProductTheater";
 import { ROISection } from "@/components/sections/ROISection";
 import { TrustBar } from "@/components/sections/TrustBar";
 import { Testimonials } from "@/components/sections/Testimonials";
@@ -16,9 +16,9 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd()) }}
       />
       <Hero />
-      <ValueProps />
-      <CategoryGrid />
-      <FlagshipTech />
+      <Manifesto />
+      <CategoryIndex />
+      <ProductTheater />
       <ROISection />
       <TrustBar />
       <Testimonials />
