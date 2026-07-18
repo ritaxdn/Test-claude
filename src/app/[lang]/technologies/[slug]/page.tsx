@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { ArrowLeft, Check } from "lucide-react";
 import { isLocale, locales } from "@/lib/i18n/config";
+import { localeAlternates } from "@/lib/alternates";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { categories, getTechnologyBySlug, technologies } from "@/content/technologies";
 import { Container } from "@/components/ui/Container";
@@ -30,6 +31,7 @@ export async function generateMetadata({
   return {
     title: tech.name,
     description: tech.tagline[lang],
+    alternates: localeAlternates(`/technologies/${slug}`),
   };
 }
 

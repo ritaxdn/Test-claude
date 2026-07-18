@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { isLocale } from "@/lib/i18n/config";
+import { localeAlternates } from "@/lib/alternates";
 import { supportPageContent } from "@/content/support-page";
 import { PageHero } from "@/components/sections/PageHero";
 import { ProcessSteps } from "@/components/sections/ProcessSteps";
@@ -19,6 +20,7 @@ export async function generateMetadata({
     description: isFr
       ? "Installation, maintenance préventive et assistance technique : découvrez l'accompagnement long terme de Cellulift."
       : "Installation, preventive maintenance and technical assistance: discover Cellulift's long-term support.",
+    alternates: localeAlternates("/support"),
   };
 }
 

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { isLocale } from "@/lib/i18n/config";
+import { localeAlternates } from "@/lib/alternates";
 import { contactPageContent } from "@/content/contact-page";
 import { PageHero } from "@/components/sections/PageHero";
 import { Container } from "@/components/ui/Container";
@@ -20,6 +21,7 @@ export async function generateMetadata({
     description: isFr
       ? "Contactez Cellulift pour demander une démonstration, parler à un expert ou rejoindre une masterclass."
       : "Contact Cellulift to request a demo, speak to an expert or join a masterclass.",
+    alternates: localeAlternates("/contact"),
   };
 }
 

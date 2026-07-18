@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { isLocale } from "@/lib/i18n/config";
+import { localeAlternates } from "@/lib/alternates";
 import { academyPageContent } from "@/content/academy-page";
 import { PageHero } from "@/components/sections/PageHero";
 import { Positioning } from "@/components/sections/Positioning";
@@ -20,6 +21,7 @@ export async function generateMetadata({
     description: isFr
       ? "Masterclasses, formations certifiantes et expertise médicale pour une pratique sûre des technologies médico-esthétiques."
       : "Masterclasses, certified training and medical expertise for a safe practice of medical aesthetic technologies.",
+    alternates: localeAlternates("/academy"),
   };
 }
 

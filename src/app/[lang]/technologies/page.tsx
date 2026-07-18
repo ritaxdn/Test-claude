@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { isLocale } from "@/lib/i18n/config";
+import { localeAlternates } from "@/lib/alternates";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { technologiesPageContent } from "@/content/technologies-page";
 import { homeContent } from "@/content/home";
@@ -21,6 +22,7 @@ export async function generateMetadata({
     description: isFr
       ? "Découvrez les technologies médico-esthétiques distribuées par Cellulift : remodelage corporel, rajeunissement facial, épilation laser et technologies capillaires."
       : "Discover the medical aesthetic technologies distributed by Cellulift: body contouring, facial rejuvenation, laser hair removal and hair restoration.",
+    alternates: localeAlternates("/technologies"),
   };
 }
 

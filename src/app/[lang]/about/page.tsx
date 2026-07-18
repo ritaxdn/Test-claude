@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { isLocale } from "@/lib/i18n/config";
+import { localeAlternates } from "@/lib/alternates";
 import { aboutContent } from "@/content/about";
 import { PageHero } from "@/components/sections/PageHero";
 import { Story } from "@/components/sections/Story";
@@ -21,6 +22,7 @@ export async function generateMetadata({
     description: isFr
       ? "Découvrez l'histoire, la mission et les valeurs de Cellulift, partenaire médico-esthétique de référence en Afrique."
       : "Discover Cellulift's story, mission and values as the reference medical aesthetics partner across Africa.",
+    alternates: localeAlternates("/about"),
   };
 }
 

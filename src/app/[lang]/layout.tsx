@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { cormorant, raleway, spaceMono } from "@/lib/fonts";
 import { locales, isLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
+import { SITE_URL } from "@/lib/site";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import "../globals.css";
@@ -20,6 +21,7 @@ export async function generateMetadata({
   const isFr = lang === "fr";
 
   return {
+    metadataBase: new URL(SITE_URL),
     title: {
       default: isFr
         ? "Cellulift — Partenaire médico-esthétique de référence"
@@ -29,6 +31,9 @@ export async function generateMetadata({
     description: isFr
       ? "Cellulift accompagne les professionnels de santé et de l'esthétique en Afrique avec des technologies médico-esthétiques avancées, une formation continue via Cellulift Academy et un support long terme."
       : "Cellulift partners with medical and aesthetic professionals across Africa through advanced technologies, continuous education via Cellulift Academy, and long-term support.",
+    alternates: {
+      languages: { fr: "/fr", en: "/en" },
+    },
   };
 }
 
