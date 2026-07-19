@@ -28,7 +28,7 @@ export default async function HomePage({
       <Hero
         locale={lang}
         eyebrow={content.hero.eyebrow}
-        title={content.hero.title}
+        titleLines={[...content.hero.titleLines]}
         subtitle={content.hero.subtitle}
         ctaPrimary={content.hero.ctaPrimary}
         ctaSecondary={content.hero.ctaSecondary}
@@ -62,7 +62,7 @@ export default async function HomePage({
         cta={content.academyHighlight.cta}
         href={`/${lang}/academy`}
         icon={GraduationCap}
-        tintClassName="bg-rainbow-2"
+        tintClassName="bg-plate-academy"
       />
 
       <SplitHighlight
@@ -73,7 +73,7 @@ export default async function HomePage({
         href={`/${lang}/support`}
         icon={LifeBuoy}
         reverse
-        tintClassName="bg-rainbow-4"
+        tintClassName="bg-plate-support"
       />
 
       <StatsBar locale={lang} eyebrow={content.stats.eyebrow} title={content.stats.title} />

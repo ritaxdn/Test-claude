@@ -25,47 +25,44 @@ export function TechnologyGrid({
 
   const categoryKeys = Object.keys(categories) as CategoryKey[];
 
+  const filterButton = (key: CategoryKey | "all", label: string) => (
+    <button
+      key={key}
+      type="button"
+      onClick={() => setActive(key)}
+      className={cn(
+        "font-label block border-l-2 py-2 pl-4 text-left transition-colors",
+        active === key
+          ? "border-ink text-ink"
+          : "border-transparent text-muted hover:border-light hover:text-ink-soft"
+      )}
+      style={{ fontSize: "12px", letterSpacing: "0.1em" }}
+    >
+      {label.toUpperCase()}
+    </button>
+  );
+
   return (
-    <div>
-      <div className="flex flex-wrap gap-3">
-        <button
-          type="button"
-          onClick={() => setActive("all")}
-          className={cn(
-            "font-label rounded-full border px-4 py-2 transition-colors",
-            active === "all"
-              ? "border-ink bg-ink text-warm-white"
-              : "border-light text-ink-soft hover:border-ink hover:text-ink"
-          )}
-          style={{ fontSize: "11px", letterSpacing: "0.08em" }}
-        >
-          {allLabel}
-        </button>
-        {categoryKeys.map((key) => (
-          <button
-            key={key}
-            type="button"
-            onClick={() => setActive(key)}
-            className={cn(
-              "font-label rounded-full border px-4 py-2 transition-colors",
-              active === key
-                ? "border-ink bg-ink text-warm-white"
-                : "border-light text-ink-soft hover:border-ink hover:text-ink"
-            )}
-            style={{ fontSize: "11px", letterSpacing: "0.08em" }}
-          >
-            {categories[key][locale]}
-          </button>
-        ))}
+    <div className="grid grid-cols-1 gap-10 md:grid-cols-12 md:gap-6">
+      <div className="flex flex-row flex-wrap gap-x-6 gap-y-2 md:col-span-2 md:flex-col md:gap-0 md:border-l md:border-hairline">
+        {filterButton("all", allLabel)}
+        {categoryKeys.map((key) => filterButton(key, categories[key][locale]))}
       </div>
 
-      <RevealGroup className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {filtered.map((tech) => (
-          <RevealItem key={tech.slug}>
-            <TechnologyCard technology={tech} locale={locale} readMoreLabel={readMoreLabel} />
-          </RevealItem>
-        ))}
-      </RevealGroup>
+      <div className="md:col-span-10">
+        <RevealGroup className="border-t border-hairline">
+          {filtered.map((tech, i) => (
+            <RevealItem key={tech.slug}>
+              <TechnologyCard
+                technology={tech}
+                locale={locale}
+                readMoreLabel={readMoreLabel}
+                index={i + 1}
+              />
+            </RevealItem>
+          ))}
+        </RevealGroup>
+      </div>
     </div>
   );
 }

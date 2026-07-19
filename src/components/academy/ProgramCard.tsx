@@ -1,26 +1,43 @@
 import { Clock, MapPin } from "lucide-react";
-import { Badge } from "@/components/ui/Badge";
 import type { AcademyProgram } from "@/content/academy";
 import type { Locale } from "@/lib/i18n/config";
 
 export function ProgramCard({
   program,
   locale,
+  index,
 }: {
   program: AcademyProgram;
   locale: Locale;
+  index: number;
 }) {
   return (
-    <div className="flex flex-col justify-between border border-hairline bg-warm-white p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_48px_-24px_rgba(26,24,20,0.18)]">
-      <div>
-        <Badge>{program.level[locale]}</Badge>
-        <h3 className="font-heading mt-4 text-2xl font-light text-ink">
-          {program.title[locale]}
-        </h3>
-        <p className="font-body mt-3 text-sm font-light leading-relaxed text-ink-soft">
+    <div className="group grid grid-cols-1 gap-6 border-b border-hairline py-10 transition-colors duration-500 md:grid-cols-12 md:gap-8">
+      <div className="flex items-start gap-5 md:col-span-4">
+        <span
+          className="font-label mt-1 shrink-0 text-muted"
+          style={{ fontSize: "12px", letterSpacing: "0.1em" }}
+        >
+          {String(index).padStart(2, "0")}
+        </span>
+        <div>
+          <span
+            className="font-label text-rainbow-2"
+            style={{ fontSize: "10px", letterSpacing: "0.12em" }}
+          >
+            {program.level[locale].toUpperCase()}
+          </span>
+          <h3 className="font-heading mt-2 text-2xl font-light text-ink md:text-3xl">
+            {program.title[locale]}
+          </h3>
+        </div>
+      </div>
+
+      <div className="md:col-span-5">
+        <p className="font-body text-sm font-light leading-relaxed text-ink-soft">
           {program.description[locale]}
         </p>
-        <ul className="mt-5 flex flex-col gap-2">
+        <ul className="mt-4 flex flex-col gap-1.5">
           {program.topics.map((topic, i) => (
             <li key={i} className="font-body text-sm font-light text-ink-soft">
               — {topic[locale]}
@@ -29,7 +46,10 @@ export function ProgramCard({
         </ul>
       </div>
 
-      <div className="mt-7 flex items-center gap-5 border-t border-hairline pt-5 font-label text-muted" style={{ fontSize: "10px", letterSpacing: "0.08em" }}>
+      <div
+        className="flex gap-5 font-label text-muted md:col-span-3 md:flex-col md:items-end md:text-right"
+        style={{ fontSize: "10px", letterSpacing: "0.08em" }}
+      >
         <span className="flex items-center gap-1.5">
           <Clock size={13} />
           {program.duration[locale]}

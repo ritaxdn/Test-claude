@@ -2,7 +2,7 @@ export const homeContent = {
   fr: {
     hero: {
       eyebrow: "Partenaire médico-esthétique · Afrique",
-      title: "L'esthétique médicale, élevée au rang de science.",
+      titleLines: ["L'esthétique médicale,", "élevée au rang", "de science."],
       subtitle:
         "Cellulift équipe, forme et accompagne les professionnels de santé et de l'esthétique à travers l'Afrique avec des technologies médico-esthétiques de pointe, une expertise scientifique et un partenariat durable.",
       ctaPrimary: "Demander une démo",
@@ -79,7 +79,7 @@ export const homeContent = {
   en: {
     hero: {
       eyebrow: "Medical Aesthetics Partner · Africa",
-      title: "Aesthetic medicine, elevated to science.",
+      titleLines: ["Aesthetic medicine,", "elevated to", "science."],
       subtitle:
         "Cellulift equips, trains and supports medical and aesthetic professionals across Africa with advanced medico-aesthetic technologies, scientific expertise and long-term partnership.",
       ctaPrimary: "Request a demo",

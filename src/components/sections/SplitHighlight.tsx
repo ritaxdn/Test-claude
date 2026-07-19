@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight, type LucideIcon } from "lucide-react";
-import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
+import { Magnetic } from "@/components/ui/Magnetic";
 import { cn } from "@/lib/utils";
 
 export function SplitHighlight({
@@ -12,7 +12,7 @@ export function SplitHighlight({
   href,
   icon: Icon,
   reverse = false,
-  tintClassName = "bg-rainbow-2",
+  tintClassName = "bg-plate-academy",
 }: {
   eyebrow: string;
   title: string;
@@ -24,28 +24,24 @@ export function SplitHighlight({
   tintClassName?: string;
 }) {
   return (
-    <section className="py-20 md:py-28">
-      <Container
-        className={cn(
-          "grid grid-cols-1 items-center gap-14 lg:grid-cols-2",
-          reverse && "lg:[&>*:first-child]:order-2"
-        )}
-      >
-        <Reveal
+    <section className="border-b border-hairline">
+      <div className="grid grid-cols-1 lg:grid-cols-12">
+        <div
           className={cn(
-            "relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-3xl border border-hairline bg-warm-white"
+            "relative flex min-h-[360px] items-center justify-center overflow-hidden md:min-h-[460px] lg:col-span-5",
+            reverse && "lg:order-2",
+            tintClassName
           )}
         >
-          <div
-            className={cn(
-              "absolute -top-20 -right-16 h-64 w-64 rounded-full blur-3xl opacity-25",
-              tintClassName
-            )}
+          <Icon
+            size={220}
+            strokeWidth={0.6}
+            className="text-warm-white/25"
+            aria-hidden="true"
           />
-          <Icon size={64} strokeWidth={1} className="relative text-ink" />
-        </Reveal>
+        </div>
 
-        <div>
+        <div className="flex flex-col justify-center gap-5 px-6 py-16 md:px-10 md:py-20 lg:col-span-7 lg:px-16 xl:px-24">
           <Reveal>
             <span
               className="font-label text-muted"
@@ -55,26 +51,26 @@ export function SplitHighlight({
             </span>
           </Reveal>
           <Reveal delay={0.08}>
-            <h2 className="font-heading mt-4 text-3xl font-light leading-tight text-ink md:text-4xl">
-              {title}
-            </h2>
+            <h2 className="text-display-3 text-ink">{title}</h2>
           </Reveal>
           <Reveal delay={0.16}>
-            <p className="font-body mt-5 max-w-md text-base font-light leading-relaxed text-ink-soft">
+            <p className="font-body max-w-md text-base font-light leading-relaxed text-ink-soft md:text-lg">
               {description}
             </p>
           </Reveal>
           <Reveal delay={0.24}>
-            <Link
-              href={href}
-              className="mt-7 inline-flex items-center gap-2 font-body text-sm text-ink transition-transform duration-300 hover:translate-x-1"
-            >
-              {cta}
-              <ArrowUpRight size={16} />
-            </Link>
+            <Magnetic className="inline-block">
+              <Link
+                href={href}
+                className="mt-2 inline-flex items-center gap-2 font-body text-sm text-ink transition-transform duration-300 hover:translate-x-1"
+              >
+                {cta}
+                <ArrowUpRight size={16} />
+              </Link>
+            </Magnetic>
           </Reveal>
         </div>
-      </Container>
+      </div>
     </section>
   );
 }

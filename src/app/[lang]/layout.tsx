@@ -56,6 +56,7 @@ export default async function LangLayout({
       className={`${cormorant.variable} ${raleway.variable} ${spaceMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-ivory text-ink">
+        <div className="grain-overlay" aria-hidden="true" />
         <Header locale={lang} dict={dict} />
         <main className="flex-1">{children}</main>
         <Footer locale={lang} dict={dict} />

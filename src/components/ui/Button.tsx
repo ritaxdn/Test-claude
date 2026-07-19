@@ -2,7 +2,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import type { ButtonHTMLAttributes } from "react";
 
-type Variant = "primary" | "ghost" | "text";
+type Variant = "primary" | "ghost" | "text" | "inverse";
 type Size = "sm" | "md" | "lg";
 
 const base =
@@ -14,6 +14,8 @@ const variants: Record<Variant, string> = {
   ghost:
     "border border-light text-ink hover:border-ink hover:bg-ink/[0.03] active:scale-[0.98]",
   text: "text-ink underline-offset-4 hover:underline px-0 py-0",
+  // For use on dark/ink-colored sections, where the primary variant's bg-ink fill would be invisible.
+  inverse: "bg-warm-white text-ink hover:bg-ivory-2 active:scale-[0.98]",
 };
 
 const sizes: Record<Size, string> = {
@@ -39,6 +41,7 @@ interface ButtonAsLink extends CommonProps {
   href: string;
   target?: string;
   rel?: string;
+  onClick?: () => void;
 }
 
 type ButtonProps = ButtonAsButton | ButtonAsLink;
@@ -54,9 +57,9 @@ export function Button(props: ButtonProps) {
   );
 
   if ("href" in props && props.href) {
-    const { href, target, rel } = props;
+    const { href, target, rel, onClick } = props;
     return (
-      <Link href={href} target={target} rel={rel} className={classes}>
+      <Link href={href} target={target} rel={rel} onClick={onClick} className={classes}>
         {children}
       </Link>
     );

@@ -24,7 +24,7 @@ export function FeaturedTechnologies({
   const featured = technologies.slice(0, 3);
 
   return (
-    <section className="bg-ivory-2 py-20 md:py-28">
+    <section className="py-28 md:py-40">
       <Container>
         <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
           <SectionHeading eyebrow={eyebrow} title={title} description={description} />
@@ -33,10 +33,15 @@ export function FeaturedTechnologies({
           </Button>
         </div>
 
-        <RevealGroup className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-3">
-          {featured.map((tech) => (
+        <RevealGroup className="mt-16 border-t border-hairline">
+          {featured.map((tech, i) => (
             <RevealItem key={tech.slug}>
-              <TechnologyCard technology={tech} locale={locale} readMoreLabel={readMoreLabel} />
+              <TechnologyCard
+                technology={tech}
+                locale={locale}
+                readMoreLabel={readMoreLabel}
+                index={i + 1}
+              />
             </RevealItem>
           ))}
         </RevealGroup>

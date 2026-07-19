@@ -27,6 +27,16 @@
     var(--rainbow-4) 75%,
     var(--rainbow-5) 100%
   );
+
+  /* Editorial "plate" fields — deep, moody, category-coded, standing in for photography */
+  --plate-body: #0f3b42;
+  --plate-face: #3a1626;
+  --plate-hair-removal: #3a2411;
+  --plate-hair-restoration: #211b3a;
+  --plate-academy: #211b3a;
+  --plate-support: #3a2411;
+
+  --ease-editorial: cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 @theme inline {
@@ -42,6 +52,12 @@
   --color-rainbow-3: var(--rainbow-3);
   --color-rainbow-4: var(--rainbow-4);
   --color-rainbow-5: var(--rainbow-5);
+  --color-plate-body: var(--plate-body);
+  --color-plate-face: var(--plate-face);
+  --color-plate-hair-removal: var(--plate-hair-removal);
+  --color-plate-hair-restoration: var(--plate-hair-restoration);
+  --color-plate-academy: var(--plate-academy);
+  --color-plate-support: var(--plate-support);
 
   --font-heading: var(--font-cormorant), "Times New Roman", serif;
   --font-body: var(--font-raleway), Arial, sans-serif;
@@ -103,6 +119,66 @@ h4,
 
 .border-hairline {
   border: 1px solid rgba(26, 24, 20, 0.08);
+}
+
+/* Editorial fluid display type — huge, cinematic, tight leading */
+.text-display-1 {
+  font-family: var(--font-heading);
+  font-weight: 300;
+  font-size: clamp(3.25rem, 1.2rem + 9vw, 10.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+}
+
+.text-display-2 {
+  font-family: var(--font-heading);
+  font-weight: 300;
+  font-size: clamp(2.5rem, 1rem + 6vw, 6.75rem);
+  line-height: 0.95;
+  letter-spacing: -0.015em;
+}
+
+.text-display-3 {
+  font-family: var(--font-heading);
+  font-weight: 300;
+  font-size: clamp(2rem, 1rem + 3.5vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+/* Outlined "poster" type — for oversized background wordmarks.
+   Stroke color is a dedicated variable (not currentColor) because the fill
+   itself must be transparent — sharing `color` for both would make the
+   stroke vanish along with the fill. */
+.text-outline {
+  --outline-color: rgba(26, 24, 20, 0.08);
+  color: transparent;
+  -webkit-text-stroke: 1px var(--outline-color);
+}
+
+/* Grain texture overlay — fixed, screen-wide, extremely subtle */
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-size: 180px 180px;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 32s linear infinite;
 }
 
 @keyframes fade-rise {

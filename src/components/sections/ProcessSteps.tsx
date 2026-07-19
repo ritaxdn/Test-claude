@@ -1,6 +1,7 @@
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { RevealGroup, RevealItem } from "@/components/ui/Reveal";
+import { cn } from "@/lib/utils";
 
 export function ProcessSteps({
   eyebrow,
@@ -12,13 +13,16 @@ export function ProcessSteps({
   steps: readonly { title: string; description: string }[];
 }) {
   return (
-    <section className="py-20 md:py-28">
+    <section className="py-28 md:py-40">
       <Container>
         <SectionHeading eyebrow={eyebrow} title={title} />
 
-        <RevealGroup className="mt-16 grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4">
+        <RevealGroup className="mt-20 grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4">
           {steps.map((step, i) => (
-            <RevealItem key={step.title} className="relative pl-0">
+            <RevealItem
+              key={step.title}
+              className={cn("relative", i % 2 === 1 && "lg:mt-12")}
+            >
               <div className="flex items-center gap-4">
                 <span className="font-heading text-3xl font-light text-gradient-rainbow">
                   {String(i + 1).padStart(2, "0")}

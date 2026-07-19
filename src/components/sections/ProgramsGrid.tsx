@@ -15,14 +15,14 @@ export function ProgramsGrid({
   title: string;
 }) {
   return (
-    <section className="bg-ivory-2 py-20 md:py-28">
+    <section className="py-28 md:py-40">
       <Container>
         <SectionHeading eyebrow={eyebrow} title={title} />
 
-        <RevealGroup className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-2">
-          {academyPrograms.map((program) => (
+        <RevealGroup className="mt-14 border-t border-hairline">
+          {academyPrograms.map((program, i) => (
             <RevealItem key={program.slug}>
-              <ProgramCard program={program} locale={locale} />
+              <ProgramCard program={program} locale={locale} index={i + 1} />
             </RevealItem>
           ))}
         </RevealGroup>

@@ -11,7 +11,7 @@ export function Story({
   paragraphs: readonly string[];
 }) {
   return (
-    <section className="py-20 md:py-28">
+    <section className="py-28 md:py-40">
       <Container className="grid grid-cols-1 gap-12 lg:grid-cols-[0.8fr_1.2fr]">
         <div>
           <Reveal>
@@ -23,9 +23,7 @@ export function Story({
             </span>
           </Reveal>
           <Reveal delay={0.08}>
-            <h2 className="font-heading mt-4 text-3xl font-light leading-tight text-ink md:text-4xl">
-              {title}
-            </h2>
+            <h2 className="text-display-3 mt-4 text-ink">{title}</h2>
           </Reveal>
         </div>
 
