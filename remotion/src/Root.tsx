@@ -15,6 +15,14 @@ export const RemotionRoot: React.FC = () => {
         width={1920}
         height={1080}
       />
+      <Composition
+        id="CelluliftLogo-Vertical"
+        component={CelluliftLogo}
+        durationInFrames={120}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
 
       {/* Full 6s promo (logo scene + pillars + CTA) */}
       <Composition
@@ -24,6 +32,14 @@ export const RemotionRoot: React.FC = () => {
         fps={30}
         width={1920}
         height={1080}
+      />
+      <Composition
+        id="CelluliftPromo-Vertical"
+        component={CelluliftPromo}
+        durationInFrames={180}
+        fps={30}
+        width={1080}
+        height={1920}
       />
     </>
   );

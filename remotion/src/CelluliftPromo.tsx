@@ -55,28 +55,32 @@ const Glow: React.FC = () => {
   );
 };
 
-/** Scene 1: the real logo reveals — fade + gentle scale, then a subtle breathe. */
+/** Scene 1: the real logo reveals — punchy fade + zoom, then a marked pulse. */
 const LogoScene: React.FC = () => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
+  const { fps, width, height } = useVideoConfig();
+  const isPortrait = height > width;
+  const logoWidth = isPortrait ? Math.round(width * 0.86) : 900;
+  const glowW = logoWidth * 1.33;
+  const glowH = logoWidth * 0.86;
 
-  const enter = spring({ frame, fps, config: { damping: 200, mass: 1, stiffness: 90 } });
-  const enterScale = interpolate(enter, [0, 1], [0.9, 1]);
-  const opacity = interpolate(frame, [0, 20], [0, 1], {
+  const enter = spring({ frame, fps, config: { damping: 18, mass: 0.8, stiffness: 120 } });
+  const enterScale = interpolate(enter, [0, 1], [0.82, 1]);
+  const opacity = interpolate(frame, [0, 14], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
-  const pulse = frame > 30 ? Math.sin((frame - 30) / 16) : 0;
-  const scale = enterScale * (1 + pulse * 0.012);
-  const glow = 0.12 + pulse * 0.05;
+  const pulse = frame > 26 ? Math.sin((frame - 26) / 13) : 0;
+  const scale = enterScale * (1 + pulse * 0.025);
+  const glow = 0.16 + pulse * 0.08;
 
   return (
     <AbsoluteFill style={{ justifyContent: "center", alignItems: "center" }}>
       <div
         style={{
           position: "absolute",
-          width: 1200,
-          height: 780,
+          width: glowW,
+          height: glowH,
           borderRadius: "50%",
           opacity,
           background: `radial-gradient(closest-side, rgba(123,97,255,${glow}), rgba(233,30,140,${glow * 0.6}) 45%, transparent 72%)`,
@@ -84,7 +88,7 @@ const LogoScene: React.FC = () => {
         }}
       />
       {/* THE LOGO — unchanged */}
-      <Img src={LOGO} style={{ width: 900, height: "auto", opacity, transform: `scale(${scale})` }} />
+      <Img src={LOGO} style={{ width: logoWidth, height: "auto", opacity, transform: `scale(${scale})` }} />
     </AbsoluteFill>
   );
 };
@@ -92,7 +96,8 @@ const LogoScene: React.FC = () => {
 /** Scene 2: three editorial cards, staggered fade + rise. */
 const PillarsScene: React.FC = () => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
+  const { fps, width, height } = useVideoConfig();
+  const isPortrait = height > width;
 
   const items = [
     { k: "PROTOCOLE", t: "Non-invasif" },
@@ -101,9 +106,19 @@ const PillarsScene: React.FC = () => {
   ];
   const headOp = interpolate(frame, [0, 18], [0, 1], { extrapolateRight: "clamp" });
 
+  // Landscape: three cards in a row. Portrait: stacked, narrower, smaller type.
+  const cardW = isPortrait ? width * 0.78 : 440;
+  const cardH = isPortrait ? 168 : 300;
+
   return (
     <AbsoluteFill
-      style={{ justifyContent: "center", alignItems: "center", flexDirection: "column", gap: 56 }}
+      style={{
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "column",
+        gap: isPortrait ? 40 : 56,
+        padding: isPortrait ? 60 : 0,
+      }}
     >
       <div
         style={{
@@ -111,15 +126,22 @@ const PillarsScene: React.FC = () => {
           fontFamily: FONT.serif,
           fontWeight: 300,
           fontStyle: "italic",
-          fontSize: 56,
+          fontSize: isPortrait ? 40 : 56,
           color: C.inkSoft,
+          textAlign: "center",
         }}
       >
         Une technologie, trois promesses
       </div>
-      <div style={{ display: "flex", flexDirection: "row", gap: 44 }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: isPortrait ? "column" : "row",
+          gap: isPortrait ? 20 : 44,
+        }}
+      >
         {items.map((it, i) => {
-          const enter = spring({ frame: frame - i * 9, fps, config: { damping: 200 } });
+          const enter = spring({ frame: frame - i * 9, fps, config: { damping: 18, mass: 0.8, stiffness: 120 } });
           const y = interpolate(enter, [0, 1], [20, 0]);
           const opacity = interpolate(enter, [0, 1], [0, 1]);
           return (
@@ -128,25 +150,46 @@ const PillarsScene: React.FC = () => {
               style={{
                 opacity,
                 transform: `translateY(${y}px)`,
-                width: 440,
-                height: 300,
+                width: cardW,
+                height: cardH,
                 borderRadius: 20,
                 background: C.warm,
                 border: `1px solid ${C.border}`,
                 boxShadow: "0 20px 40px -28px rgba(26,24,20,0.3)",
                 display: "flex",
-                flexDirection: "column",
+                flexDirection: isPortrait ? "row" : "column",
+                alignItems: isPortrait ? "center" : "stretch",
                 justifyContent: "space-between",
-                padding: 40,
+                padding: isPortrait ? "0 36px" : 40,
               }}
             >
-              <div style={{ fontFamily: FONT.mono, fontSize: 20, letterSpacing: "0.28em", color: C.muted }}>
-                {it.k}
-              </div>
-              <div style={{ height: 2, width: 60, background: GRAD, opacity: 0.7, borderRadius: 2 }} />
-              <div style={{ fontFamily: FONT.serif, fontWeight: 300, fontSize: 60, color: C.ink, lineHeight: 1 }}>
-                {it.t}
-              </div>
+              {isPortrait ? (
+                <>
+                  <div
+                    style={{
+                      fontFamily: FONT.serif,
+                      fontWeight: 300,
+                      fontSize: 42,
+                      color: C.ink,
+                    }}
+                  >
+                    {it.t}
+                  </div>
+                  <div style={{ fontFamily: FONT.mono, fontSize: 15, letterSpacing: "0.2em", color: C.muted }}>
+                    {it.k}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div style={{ fontFamily: FONT.mono, fontSize: 20, letterSpacing: "0.28em", color: C.muted }}>
+                    {it.k}
+                  </div>
+                  <div style={{ height: 2, width: 60, background: GRAD, opacity: 0.7, borderRadius: 2 }} />
+                  <div style={{ fontFamily: FONT.serif, fontWeight: 300, fontSize: 60, color: C.ink, lineHeight: 1 }}>
+                    {it.t}
+                  </div>
+                </>
+              )}
             </div>
           );
         })}
@@ -158,12 +201,14 @@ const PillarsScene: React.FC = () => {
 /** Scene 3: call to action — rainbow rule wipes, primary button rises. */
 const CtaScene: React.FC = () => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
+  const { fps, width, height } = useVideoConfig();
+  const isPortrait = height > width;
 
-  const headRise = spring({ frame: frame - 4, fps, config: { damping: 200 } });
+  const headRise = spring({ frame: frame - 4, fps, config: { damping: 18, mass: 0.8, stiffness: 120 } });
   const hY = interpolate(headRise, [0, 1], [20, 0]);
   const hOp = interpolate(headRise, [0, 1], [0, 1]);
-  const ruleW = interpolate(frame, [14, 44], [0, 340], {
+  const ruleTarget = isPortrait ? 220 : 340;
+  const ruleW = interpolate(frame, [14, 44], [0, ruleTarget], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
@@ -177,14 +222,14 @@ const CtaScene: React.FC = () => {
   });
 
   return (
-    <AbsoluteFill style={{ justifyContent: "center", alignItems: "center" }}>
+    <AbsoluteFill style={{ justifyContent: "center", alignItems: "center", padding: isPortrait ? 60 : 0 }}>
       <div
         style={{
           opacity: hOp,
           transform: `translateY(${hY}px)`,
           fontFamily: FONT.serif,
           fontWeight: 300,
-          fontSize: 110,
+          fontSize: isPortrait ? 72 : 110,
           color: C.ink,
           textAlign: "center",
           lineHeight: 1.05,
@@ -201,8 +246,9 @@ const CtaScene: React.FC = () => {
           transform: `translateY(${btnY}px)`,
           marginTop: 44,
           display: "flex",
+          flexDirection: isPortrait ? "column" : "row",
           alignItems: "center",
-          gap: 24,
+          gap: isPortrait ? 16 : 24,
         }}
       >
         <div
@@ -211,14 +257,14 @@ const CtaScene: React.FC = () => {
             color: C.bg,
             fontFamily: FONT.body,
             fontWeight: 400,
-            fontSize: 34,
-            padding: "22px 46px",
+            fontSize: isPortrait ? 26 : 34,
+            padding: isPortrait ? "18px 38px" : "22px 46px",
             borderRadius: 999,
           }}
         >
           Prendre rendez-vous
         </div>
-        <div style={{ fontFamily: FONT.mono, fontSize: 30, letterSpacing: "0.22em", color: C.muted }}>
+        <div style={{ fontFamily: FONT.mono, fontSize: isPortrait ? 22 : 30, letterSpacing: "0.22em", color: C.muted }}>
           cellulift.com
         </div>
       </div>
