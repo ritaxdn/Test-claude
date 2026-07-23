@@ -28,6 +28,25 @@ concept from the skill, on-brand:
 | `TransitionSeries` + `fade`/`slide` | the three scenes stitched together |
 | `<Composition>` registration | `src/Root.tsx` → `src/index.ts` |
 
+## Two compositions
+
+| id | file | length | what it is |
+| --- | --- | --- | --- |
+| `CelluliftLogo` | `src/CelluliftLogo.tsx` | 4s (120f) | Focused animated logo reveal |
+| `CelluliftPromo` | `src/CelluliftPromo.tsx` | 6s (180f) | Full promo (logo scene + pillars + CTA) |
+
+### The animated logo (`CelluliftLogo`)
+
+Built from the brand team's brief:
+
+1. **Colour "M" arc** — draws in via `stroke-dashoffset`, then a subtle
+   **pulsation** (`Math.sin(frame)` on scale + shimmer).
+2. **CELLULIFT** — appears **letter by letter**, one `spring()` per letter,
+   with a continuous rainbow gradient clipped across the wordmark.
+3. **ECG line** — traces under the wordmark (`stroke-dashoffset`).
+4. **Metamorphosis Technology** — fades and rises in (Space Mono).
+5. **Fine luminous particles** — seeded `random()`, drifting continuously.
+
 ## Run it
 
 This is a standalone Remotion project (separate from the Next.js site).
@@ -35,9 +54,9 @@ This is a standalone Remotion project (separate from the Next.js site).
 ```bash
 cd remotion
 npm install
-npm run studio      # interactive preview at http://localhost:3000
-npm run render      # renders out/cellulift-promo.mp4
-npm run still       # renders a single frame to out/frame.png
+npm run studio                                    # preview both comps at localhost:3000
+npx remotion render src/index.ts CelluliftLogo  out/cellulift-logo.mp4
+npx remotion render src/index.ts CelluliftPromo out/cellulift-promo.mp4
 ```
 
 ## Structure
@@ -47,6 +66,7 @@ remotion/
 ├── package.json
 ├── src/
 │   ├── index.ts            # registerRoot
-│   ├── Root.tsx            # <Composition> registration
-│   └── CelluliftPromo.tsx  # the video: 3 scenes + particles
+│   ├── Root.tsx            # both <Composition>s
+│   ├── CelluliftLogo.tsx   # animated logo reveal (4s)
+│   └── CelluliftPromo.tsx  # full promo: 3 scenes (6s)
 ```
