@@ -16,7 +16,7 @@ export const RemotionRoot: React.FC = () => {
       height={1080}
       defaultProps={{
         title: "Cellulift",
-        tagline: "La technologie au service de votre peau",
+        tagline: "Metamorphosis Technology",
       }}
     />
   );
