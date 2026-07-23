@@ -6,6 +6,8 @@ import { getDictionary } from "@/lib/i18n/dictionaries";
 import { SITE_URL } from "@/lib/site";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { FloatingCta } from "@/components/layout/FloatingCta";
+import { LoadingScreen } from "@/components/layout/LoadingScreen";
 import "../globals.css";
 
 export function generateStaticParams() {
@@ -56,9 +58,11 @@ export default async function LangLayout({
       className={`${cormorant.variable} ${raleway.variable} ${spaceMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-ivory text-ink">
+        <LoadingScreen />
         <Header locale={lang} dict={dict} />
         <main className="flex-1">{children}</main>
         <Footer locale={lang} dict={dict} />
+        <FloatingCta locale={lang} label={dict.nav.bookAppointment} />
       </body>
     </html>
   );

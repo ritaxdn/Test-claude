@@ -9,6 +9,11 @@ export interface Dictionary {
     support: string;
     contact: string;
     requestDemo: string;
+    machines: string;
+    metiers: string;
+    menu: string;
+    close: string;
+    bookAppointment: string;
   };
   footer: {
     tagline: string;
@@ -52,6 +57,11 @@ export const dictionaries: Record<Locale, Dictionary> = {
       support: "Support",
       contact: "Contact",
       requestDemo: "Demander une démo",
+      machines: "Machines",
+      metiers: "Métiers",
+      menu: "Menu",
+      close: "Fermer",
+      bookAppointment: "Prendre RDV",
     },
     footer: {
       tagline: "Metamorphosis Technology",
@@ -94,6 +104,11 @@ export const dictionaries: Record<Locale, Dictionary> = {
       support: "Support",
       contact: "Contact",
       requestDemo: "Request a demo",
+      machines: "Machines",
+      metiers: "Professions",
+      menu: "Menu",
+      close: "Close",
+      bookAppointment: "Book an appointment",
     },
     footer: {
       tagline: "Metamorphosis Technology",

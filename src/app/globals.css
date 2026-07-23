@@ -131,6 +131,48 @@ h4,
   animation: ecg-dash 1.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
 }
 
+.roi-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--light);
+  outline: none;
+}
+
+.roi-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 999px;
+  background: var(--ink);
+  border: 3px solid var(--warm-white);
+  box-shadow: 0 0 0 1px rgba(26, 24, 20, 0.15);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.roi-range::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+.roi-range::-moz-range-thumb {
+  height: 16px;
+  width: 16px;
+  border-radius: 999px;
+  background: var(--ink);
+  border: 3px solid var(--warm-white);
+  box-shadow: 0 0 0 1px rgba(26, 24, 20, 0.15);
+  cursor: pointer;
+}
+
+.roi-range::-moz-range-track {
+  height: 2px;
+  background: var(--light);
+  border-radius: 999px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
