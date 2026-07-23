@@ -37,15 +37,19 @@ concept from the skill, on-brand:
 
 ### The animated logo (`CelluliftLogo`)
 
-Built from the brand team's brief:
+Uses the **real Cellulift logo, unchanged**. The image is treated as a single,
+untouched asset — every animation happens *around* it:
 
-1. **Colour "M" arc** — draws in via `stroke-dashoffset`, then a subtle
-   **pulsation** (`Math.sin(frame)` on scale + shimmer).
-2. **CELLULIFT** — appears **letter by letter**, one `spring()` per letter,
-   with a continuous rainbow gradient clipped across the wordmark.
-3. **ECG line** — traces under the wordmark (`stroke-dashoffset`).
-4. **Metamorphosis Technology** — fades and rises in (Space Mono).
-5. **Fine luminous particles** — seeded `random()`, drifting continuously.
+1. **Entrance** — the logo fades in with a gentle scale-up (0.9 → 1) via `spring()`.
+2. **Pulsation** — a very subtle uniform breathe (`Math.sin(frame)`, ±1.2%),
+   so the mark feels alive without ever being distorted.
+3. **Glow** — a soft rainbow radial glow sits *behind* the logo and pulses with it.
+4. **Fine luminous particles** — seeded `random()`, drifting continuously.
+
+> **Add your logo first.** Drop the file at `remotion/public/cellulift-logo.png`
+> (transparent PNG or SVG preferred). It's loaded with `staticFile("cellulift-logo.png")`
+> and rendered via `<Img>` — the pixels are never redrawn. Nothing to recolor or
+> rebuild; the exact file appears as-is.
 
 ## Run it
 

@@ -1,8 +1,10 @@
 import React from "react";
 import {
   AbsoluteFill,
+  Img,
   interpolate,
   spring,
+  staticFile,
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
@@ -17,6 +19,9 @@ import { slide } from "@remotion/transitions/slide";
  * Cellulift brand — "Editorial Light" direction.
  * Fonts should be loaded via @remotion/google-fonts (Cormorant Garamond,
  * Raleway, Space Mono) in Root.tsx or here; the family names below match.
+ *
+ * The brand mark is the REAL Cellulift logo, unchanged, loaded from
+ * `remotion/public/cellulift-logo.png` and animated only as a whole.
  */
 const C = {
   bg: "#F5F2EC", // ivoire chaud
@@ -34,11 +39,7 @@ const FONT = {
 };
 // Rainbow accent — always a true gradient, never flattened.
 const GRAD = "linear-gradient(90deg, #00BCD4, #7B61FF, #E91E8C, #FF5722, #FFC107)";
-
-type PromoProps = {
-  title: string;
-  tagline: string;
-};
+const LOGO = staticFile("cellulift-logo.png");
 
 /** Soft rainbow radial glow, gently drifting — restrained ambient motion. */
 const Glow: React.FC = () => {
@@ -54,138 +55,36 @@ const Glow: React.FC = () => {
   );
 };
 
-/** Reusable rainbow-gradient SVG defs for arc + ECG strokes. */
-const RainbowDefs: React.FC<{ id: string }> = ({ id }) => (
-  <defs>
-    <linearGradient id={id} x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stopColor="#00BCD4" />
-      <stop offset="0.28" stopColor="#7B61FF" />
-      <stop offset="0.55" stopColor="#E91E8C" />
-      <stop offset="0.8" stopColor="#FF5722" />
-      <stop offset="1" stopColor="#FFC107" />
-    </linearGradient>
-  </defs>
-);
-
-/** Scene 1: logo reveal — arc swoosh draws, wordmark springs, ECG traces. */
-const LogoScene: React.FC<PromoProps> = ({ title, tagline }) => {
+/** Scene 1: the real logo reveals — fade + gentle scale, then a subtle breathe. */
+const LogoScene: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  const arcDraw = interpolate(frame, [0, 40], [0, 1], {
+  const enter = spring({ frame, fps, config: { damping: 200, mass: 1, stiffness: 90 } });
+  const enterScale = interpolate(enter, [0, 1], [0.9, 1]);
+  const opacity = interpolate(frame, [0, 20], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
-  const arcOp = interpolate(frame, [0, 12], [0, 1], { extrapolateRight: "clamp" });
-
-  const wordRise = spring({ frame: frame - 8, fps, config: { damping: 200 } });
-  const wordY = interpolate(wordRise, [0, 1], [20, 0]);
-  const wordOp = interpolate(wordRise, [0, 1], [0, 1]);
-
-  const ecgDraw = interpolate(frame, [22, 55], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-
-  const tagOp = interpolate(frame, [40, 58], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-  const tagY = interpolate(frame, [40, 58], [20, 0], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-
-  // three stacked rainbow arcs evoking the Cellulift logo swoosh
-  const bands = [
-    { r: 300, w: 46, off: 0, op: 0.85 },
-    { r: 250, w: 30, off: 0.15, op: 0.67 },
-    { r: 355, w: 26, off: 0.3, op: 0.49 },
-  ];
-
-  // ECG heartbeat path: flat, small blip, big spike, flat
-  const ecgPath =
-    "M0,40 L120,40 L150,40 L165,26 L180,40 L300,40 L330,40 L345,8 L360,72 L375,30 L390,40 L520,40 L660,40";
-  const ecgTotal = 900;
+  const pulse = frame > 30 ? Math.sin((frame - 30) / 16) : 0;
+  const scale = enterScale * (1 + pulse * 0.012);
+  const glow = 0.12 + pulse * 0.05;
 
   return (
     <AbsoluteFill style={{ justifyContent: "center", alignItems: "center" }}>
-      <div style={{ position: "absolute", top: 150, opacity: arcOp }}>
-        <svg viewBox="0 0 960 380" width={960} height={380}>
-          <RainbowDefs id="arcGrad" />
-          {bands.map((b, i) => {
-            const cx = 480;
-            const cy = 340;
-            const d = `M ${cx - b.r} ${cy} A ${b.r} ${b.r} 0 0 1 ${cx + b.r} ${cy}`;
-            const len = Math.PI * b.r;
-            const t = Math.max(0, Math.min(1, (arcDraw - b.off) / (1 - b.off)));
-            return (
-              <path
-                key={i}
-                d={d}
-                fill="none"
-                stroke="url(#arcGrad)"
-                strokeWidth={b.w}
-                strokeLinecap="round"
-                strokeDasharray={len}
-                strokeDashoffset={len * (1 - t)}
-                opacity={b.op}
-              />
-            );
-          })}
-        </svg>
-      </div>
-
       <div
         style={{
-          opacity: wordOp,
-          transform: `translateY(${wordY}px)`,
-          marginTop: 120,
-          fontFamily: FONT.serif,
-          fontWeight: 300,
-          fontSize: 150,
-          letterSpacing: "0.22em",
-          textTransform: "uppercase",
-          paddingLeft: "0.22em",
-          background: GRAD,
-          WebkitBackgroundClip: "text",
-          backgroundClip: "text",
-          color: "transparent",
+          position: "absolute",
+          width: 1200,
+          height: 780,
+          borderRadius: "50%",
+          opacity,
+          background: `radial-gradient(closest-side, rgba(123,97,255,${glow}), rgba(233,30,140,${glow * 0.6}) 45%, transparent 72%)`,
+          filter: "blur(20px)",
         }}
-      >
-        {title}
-      </div>
-
-      <div style={{ marginTop: 6 }}>
-        <svg viewBox="0 0 660 80" width={660} height={80}>
-          <RainbowDefs id="ecgGrad" />
-          <path
-            d={ecgPath}
-            fill="none"
-            stroke="url(#ecgGrad)"
-            strokeWidth={2.4}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeDasharray={ecgTotal}
-            strokeDashoffset={ecgTotal * (1 - ecgDraw)}
-          />
-        </svg>
-      </div>
-
-      <div
-        style={{
-          opacity: tagOp,
-          transform: `translateY(${tagY}px)`,
-          marginTop: 10,
-          fontFamily: FONT.mono,
-          fontSize: 26,
-          letterSpacing: "0.4em",
-          color: C.muted,
-          textTransform: "uppercase",
-        }}
-      >
-        {tagline}
-      </div>
+      />
+      {/* THE LOGO — unchanged */}
+      <Img src={LOGO} style={{ width: 900, height: "auto", opacity, transform: `scale(${scale})` }} />
     </AbsoluteFill>
   );
 };
@@ -327,13 +226,13 @@ const CtaScene: React.FC = () => {
   );
 };
 
-export const CelluliftPromo: React.FC<PromoProps> = ({ title, tagline }) => {
+export const CelluliftPromo: React.FC = () => {
   return (
     <AbsoluteFill style={{ backgroundColor: C.bg }}>
       <Glow />
       <TransitionSeries>
         <TransitionSeries.Sequence durationInFrames={70}>
-          <LogoScene title={title} tagline={tagline} />
+          <LogoScene />
         </TransitionSeries.Sequence>
         <TransitionSeries.Transition
           presentation={fade()}
