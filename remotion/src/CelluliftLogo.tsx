@@ -1,32 +1,16 @@
 import React from "react";
-import {
-  AbsoluteFill,
-  Img,
-  interpolate,
-  random,
-  spring,
-  staticFile,
-  useCurrentFrame,
-  useVideoConfig,
-} from "remotion";
+import { AbsoluteFill, interpolate, random, useCurrentFrame, useVideoConfig } from "remotion";
+import { AnimatedLogo } from "./AnimatedLogo";
 
 /**
  * Cellulift animated logo — "Editorial Light" brand.
- *
- * Uses the REAL Cellulift logo (remotion/public/cellulift-logo.png), unchanged.
- * The image is a single, untouched asset; every animation happens *around* it.
- * Orientation-aware: the same component drives both the 1920×1080 landscape
- * and the 1080×1920 vertical (reels/stories) compositions.
- *
- * Rhythm is punchy for social: a marked entrance zoom (0.82 → 1) and a
- * pronounced but uniform pulsation (±2.5%) — the logo is never distorted.
- *
- * All motion is a pure function of useCurrentFrame() — deterministic.
+ * The reveal choreography (arc draws in -> ECG traces -> letters pop in
+ * one by one -> tagline fades -> pulsation) lives in AnimatedLogo.tsx and
+ * is shared with CelluliftPromo's opening scene.
  */
 
-const C = { bg: "#F5F2EC" }; // ivoire chaud
+const C = { bg: "#F5F2EC" };
 const RAINBOW = ["#00BCD4", "#7B61FF", "#E91E8C", "#FF5722", "#FFC107"];
-const LOGO = staticFile("cellulift-logo.png");
 
 /** Fine luminous particles, seeded and drifting — deterministic. */
 const Particles: React.FC<{ count?: number }> = ({ count = 18 }) => {
@@ -67,49 +51,10 @@ const Particles: React.FC<{ count?: number }> = ({ count = 18 }) => {
 };
 
 export const CelluliftLogo: React.FC = () => {
-  const frame = useCurrentFrame();
-  const { fps, width, height } = useVideoConfig();
-
-  const isPortrait = height > width;
-  const logoWidth = isPortrait ? Math.round(width * 0.86) : 900;
-  const glowW = logoWidth * 1.33;
-  const glowH = logoWidth * 0.86;
-
-  // Punchy entrance: marked fade + zoom (0.82 -> 1), snappy settle.
-  const enter = spring({ frame, fps, config: { damping: 18, mass: 0.8, stiffness: 120 } });
-  const enterScale = interpolate(enter, [0, 1], [0.82, 1]);
-  const opacity = interpolate(frame, [0, 14], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-
-  // Pronounced pulsation once settled — still uniform, so no distortion.
-  const pulseStart = 26;
-  const pulse = frame > pulseStart ? Math.sin((frame - pulseStart) / 13) : 0;
-  const scale = enterScale * (1 + pulse * 0.025);
-  const glowStrength = 0.16 + pulse * 0.08;
-
   return (
     <AbsoluteFill style={{ backgroundColor: C.bg }}>
       <Particles />
-      <AbsoluteFill style={{ justifyContent: "center", alignItems: "center" }}>
-        <div
-          style={{
-            position: "absolute",
-            width: glowW,
-            height: glowH,
-            borderRadius: "50%",
-            opacity,
-            background: `radial-gradient(closest-side, rgba(123,97,255,${glowStrength}), rgba(233,30,140,${glowStrength * 0.6}) 45%, transparent 72%)`,
-            filter: "blur(20px)",
-          }}
-        />
-        {/* THE LOGO — unchanged, animated only as a whole */}
-        <Img
-          src={LOGO}
-          style={{ width: logoWidth, height: "auto", opacity, transform: `scale(${scale})` }}
-        />
-      </AbsoluteFill>
+      <AnimatedLogo />
     </AbsoluteFill>
   );
 };

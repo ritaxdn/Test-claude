@@ -1,10 +1,8 @@
 import React from "react";
 import {
   AbsoluteFill,
-  Img,
   interpolate,
   spring,
-  staticFile,
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
@@ -14,6 +12,7 @@ import {
 } from "@remotion/transitions";
 import { fade } from "@remotion/transitions/fade";
 import { slide } from "@remotion/transitions/slide";
+import { AnimatedLogo } from "./AnimatedLogo";
 
 /**
  * Cellulift brand — "Editorial Light" direction.
@@ -39,7 +38,6 @@ const FONT = {
 };
 // Rainbow accent — always a true gradient, never flattened.
 const GRAD = "linear-gradient(90deg, #00BCD4, #7B61FF, #E91E8C, #FF5722, #FFC107)";
-const LOGO = staticFile("cellulift-logo.png");
 
 /** Soft rainbow radial glow, gently drifting — restrained ambient motion. */
 const Glow: React.FC = () => {
@@ -55,43 +53,8 @@ const Glow: React.FC = () => {
   );
 };
 
-/** Scene 1: the real logo reveals — punchy fade + zoom, then a marked pulse. */
-const LogoScene: React.FC = () => {
-  const frame = useCurrentFrame();
-  const { fps, width, height } = useVideoConfig();
-  const isPortrait = height > width;
-  const logoWidth = isPortrait ? Math.round(width * 0.86) : 900;
-  const glowW = logoWidth * 1.33;
-  const glowH = logoWidth * 0.86;
-
-  const enter = spring({ frame, fps, config: { damping: 18, mass: 0.8, stiffness: 120 } });
-  const enterScale = interpolate(enter, [0, 1], [0.82, 1]);
-  const opacity = interpolate(frame, [0, 14], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-  const pulse = frame > 26 ? Math.sin((frame - 26) / 13) : 0;
-  const scale = enterScale * (1 + pulse * 0.025);
-  const glow = 0.16 + pulse * 0.08;
-
-  return (
-    <AbsoluteFill style={{ justifyContent: "center", alignItems: "center" }}>
-      <div
-        style={{
-          position: "absolute",
-          width: glowW,
-          height: glowH,
-          borderRadius: "50%",
-          opacity,
-          background: `radial-gradient(closest-side, rgba(123,97,255,${glow}), rgba(233,30,140,${glow * 0.6}) 45%, transparent 72%)`,
-          filter: "blur(20px)",
-        }}
-      />
-      {/* THE LOGO — unchanged */}
-      <Img src={LOGO} style={{ width: logoWidth, height: "auto", opacity, transform: `scale(${scale})` }} />
-    </AbsoluteFill>
-  );
-};
+/** Scene 1: the real logo — arc draws in, ECG traces, letters pop one by one. */
+const LogoScene: React.FC = () => <AnimatedLogo />;
 
 /** Scene 2: three editorial cards, staggered fade + rise. */
 const PillarsScene: React.FC = () => {
