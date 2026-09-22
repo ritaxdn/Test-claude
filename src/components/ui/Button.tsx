@@ -10,7 +10,7 @@ const base =
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-ink text-warm-white hover:bg-ink-soft active:scale-[0.98] shadow-[0_1px_0_rgba(0,0,0,0.05)]",
+    "bg-sage/35 backdrop-blur-xl border border-sage-light/50 text-ink hover:bg-sage/45 active:scale-[0.98] shadow-[0_8px_32px_rgba(91,119,112,0.25)]",
   ghost:
     "border border-light text-ink hover:border-ink hover:bg-ink/[0.03] active:scale-[0.98]",
   text: "text-ink underline-offset-4 hover:underline px-0 py-0",
