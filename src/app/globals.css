@@ -42,6 +42,10 @@
   --color-ink-soft: var(--ink-soft);
   --color-muted: var(--muted);
   --color-light: var(--light);
+  --color-sage: var(--sage);
+  --color-sage-light: var(--sage-light);
+  --color-sage-mist: var(--sage-mist);
+  --color-sage-pale: var(--sage-pale);
   --color-rainbow-1: var(--rainbow-1);
   --color-rainbow-2: var(--rainbow-2);
   --color-rainbow-3: var(--rainbow-3);
