@@ -28,7 +28,7 @@ export function AcademyCalendar({
         <SectionHeading eyebrow={eyebrow} title={title} />
         <div className="mt-14">
           <Cal
-            calLink="cellulift"
+calLink="celluliftacademy"
             style={{ width: "100%", height: "100%", overflow: "scroll" }}
             config={{ layout: "month_view" }}
           />
