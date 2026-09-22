@@ -12,17 +12,9 @@ import type { Locale } from "@/lib/i18n/config";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
 
 export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
-  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [lastPathname, setLastPathname] = useState<string | null>(null);
   const pathname = usePathname();
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   if (pathname !== lastPathname) {
     setLastPathname(pathname);
@@ -42,14 +34,7 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
     href === `/${locale}` ? pathname === href : pathname.startsWith(href);
 
   return (
-    <header
-      className={cn(
-        "sticky top-0 z-40 w-full transition-all duration-300",
-        scrolled
-          ? "bg-ivory/90 backdrop-blur-md border-b border-hairline"
-          : "bg-transparent"
-      )}
-    >
+    <header className="sticky top-0 z-40 w-full border-b border-white/10 bg-ink/75 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-xl backdrop-saturate-150">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4 md:px-10">
         <Logo locale={locale} size="sm" />
 
@@ -60,7 +45,9 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
               href={link.href}
               className={cn(
                 "font-body text-sm transition-colors",
-                isActive(link.href) ? "text-ink" : "text-ink-soft hover:text-ink"
+                isActive(link.href)
+                  ? "text-warm-white"
+                  : "text-sage-mist hover:text-warm-white"
               )}
             >
               {link.label}
@@ -78,7 +65,7 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className="flex h-11 w-11 items-center justify-center text-ink lg:hidden"
+          className="flex h-11 w-11 items-center justify-center text-warm-white lg:hidden"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
         >
@@ -87,15 +74,15 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
       </div>
 
       {open && (
-        <div className="border-t border-hairline bg-ivory px-6 pb-8 pt-4 lg:hidden">
+        <div className="border-t border-white/10 bg-ink/90 px-6 pb-8 pt-4 backdrop-blur-xl lg:hidden">
           <nav className="flex flex-col gap-1">
             {links.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "border-b border-hairline py-3.5 font-body text-base",
-                  isActive(link.href) ? "text-ink" : "text-ink-soft"
+                  "border-b border-white/10 py-3.5 font-body text-base",
+                  isActive(link.href) ? "text-warm-white" : "text-sage-mist"
                 )}
               >
                 {link.label}
