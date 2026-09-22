@@ -12,6 +12,11 @@
   --muted: #8a8680;
   --light: #c4c0b8;
 
+    /* Sage glass palette */
+  --sage: #5b7770;
+  --sage-light: #8da78f;
+  --sage-mist: #cbd1c6;
+  --sage-pale: #dfece1;
   /* Rainbow accent gradient stops */
   --rainbow-1: #00bcd4;
   --rainbow-2: #7b61ff;
