@@ -14,26 +14,92 @@ export type Article = {
   sections: ArticleSection[];
 };
 
-export const expertise = [
-  {
-    title: "Anatomie du visage",
-    text: "Chaque injection repose sur une connaissance fine des plans anatomiques, des vaisseaux et des compartiments graisseux.",
-  },
-  {
-    title: "Vieillissement cutané",
-    text: "Comprendre les mécanismes du vieillissement pour traiter la cause, pas seulement le symptôme.",
-  },
-  {
-    title: "Harmonie des proportions",
-    text: "Une lecture globale du visage : le résultat se juge sur l'ensemble, jamais sur une ride isolée.",
-  },
-  {
-    title: "Sécurité des actes",
-    text: "Prévention, reconnaissance et prise en charge des complications font partie intégrante de la pratique.",
-  },
-];
-
 export const articles: Article[] = [
+  {
+    slug: "anatomie-injections-reussies",
+    category: "Comprendre",
+    title: "Asymétries, lèvres, complications : pourquoi l'anatomie change tout",
+    excerpt:
+      "Une grande partie des résultats décevants en médecine esthétique ont la même origine : un geste réalisé sans respect des repères anatomiques. Explications.",
+    readingTime: "6 min",
+    date: "2026-09-15",
+    takeaways: [
+      "Un visage ne se lit pas ride par ride : les proportions comptent plus que les millilitres.",
+      "Les repères anatomiques déterminent où, à quelle profondeur et avec quel produit injecter.",
+      "La qualification du praticien est le premier facteur de sécurité.",
+    ],
+    sections: [
+      {
+        heading: "Ce que l'on voit en consultation",
+        paragraphs: [
+          "Des lèvres trop volumineuses ou déséquilibrées, des asymétries accentuées, un regard alourdi, des produits qui ont migré, et parfois de vraies complications. Ces situations ne sont pas une fatalité : elles résultent le plus souvent d'une indication mal posée ou d'un geste qui ne tient pas compte de l'anatomie.",
+        ],
+      },
+      {
+        heading: "L'anatomie, fondement de chaque geste",
+        paragraphs: [
+          "Sous la peau, le visage est organisé en plans : os, compartiments graisseux, muscles, vaisseaux. Chaque zone a ses profondeurs d'injection, ses produits adaptés et ses zones à risque. Injecter sans cette carte mentale, c'est travailler à l'aveugle.",
+          "Les lèvres en sont un bon exemple. Leur beauté tient à des repères précis — l'arc de Cupidon, la proportion entre lèvre supérieure et inférieure, la projection — bien plus qu'à leur volume. Ajouter du produit sans respecter ces repères déforme la bouche au lieu de la sublimer.",
+        ],
+      },
+      {
+        heading: "Standardiser, c'est dénaturer",
+        paragraphs: [
+          "Appliquer à tous le même « idéal » — les mêmes pommettes, les mêmes lèvres — efface ce qui fait l'identité d'un visage. Une asymétrie légère est souvent naturelle ; vouloir la corriger à tout prix peut créer un déséquilibre plus visible.",
+          "C'est pourquoi la méthode du cabinet suit toujours le même ordre : anatomie, indication, précision, naturel, suivi.",
+        ],
+      },
+      {
+        heading: "Comment choisir son praticien",
+        paragraphs: [
+          "En France, les injections d'acide hyaluronique et de toxine botulique sont des actes médicaux. Vérifiez que la personne qui vous traite est médecin (numéro RPPS consultable sur l'annuaire santé), qu'elle vous examine avant de proposer un acte, qu'elle vous informe des risques et qu'elle assure un suivi.",
+          "Et méfiez-vous d'un praticien qui ne dit jamais non : savoir refuser un acte est un signe de sérieux, pas un manque de volonté.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "gynecologie-esthetique",
+    category: "Soins",
+    title: "Gynécologie esthétique : une médecine de l'intime, pas un effet de mode",
+    excerpt:
+      "Laser, injections, chirurgie des petites lèvres… Ces actes répondent à de vraies demandes, qui méritent une approche médicale, sobre et sans tabou.",
+    readingTime: "5 min",
+    date: "2026-09-08",
+    takeaways: [
+      "Toute demande commence par une consultation médicale et un examen.",
+      "Chaque acte a ses indications — et ses limites.",
+      "La confidentialité et le temps de réflexion font partie de la prise en charge.",
+    ],
+    sections: [
+      {
+        heading: "Des demandes légitimes",
+        paragraphs: [
+          "Inconfort, sécheresse, relâchement après une grossesse, gêne esthétique ou fonctionnelle : les motifs de consultation sont variés et souvent tus. Ils méritent d'être entendus sans jugement, dans un cadre strictement médical.",
+        ],
+      },
+      {
+        heading: "Ce que recouvre la gynécologie esthétique",
+        paragraphs: [
+          "Elle regroupe plusieurs familles d'actes : les lasers gynécologiques, les injections (comblement des grandes lèvres, PRP), l'éclaircissement des hyperpigmentations et, pour certaines indications, la nymphoplastie — la réduction chirurgicale des petites lèvres.",
+          "Ces actes n'ont pas tous le même niveau de preuve ni les mêmes suites. C'est pourquoi l'indication est toujours discutée au cas par cas, en expliquant clairement ce que l'on peut attendre — et ce que l'on ne peut pas promettre.",
+        ],
+      },
+      {
+        heading: "Une consultation avant tout",
+        paragraphs: [
+          "La première consultation est un temps d'échange et d'examen, sans obligation de soin. Elle permet de vérifier l'absence de contre-indication, d'écarter une cause médicale nécessitant une autre prise en charge, et de vous remettre une information complète et un devis.",
+          "Pour les actes chirurgicaux, un délai de réflexion est systématiquement respecté.",
+        ],
+      },
+      {
+        heading: "La même philosophie",
+        paragraphs: [
+          "Améliorer sans dénaturer s'applique ici aussi : il n'existe pas d'anatomie intime « standard ». L'objectif est votre confort et votre bien-être, pas la conformité à un modèle.",
+        ],
+      },
+    ],
+  },
   {
     slug: "vieillissement-du-visage",
     category: "Comprendre",
@@ -212,7 +278,7 @@ export const articles: Article[] = [
       {
         heading: "Et au cabinet ?",
         paragraphs: [
-          "Les soins médicaux — peelings, skinboosters, lasers — viennent potentialiser ces bases, jamais les remplacer. Lors de la consultation, je vous propose une routine adaptée à votre peau, car un bon résultat se construit aussi à la maison.",
+          "Les soins médicaux — injections, lasers — viennent potentialiser ces bases, jamais les remplacer. Lors de la consultation, je vous propose une routine adaptée à votre peau, car un bon résultat se construit aussi à la maison.",
         ],
       },
     ],

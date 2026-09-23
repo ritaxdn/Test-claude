@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ArticleCard } from "@/components/ArticleCard";
-import { articles, expertise } from "@/content/journal";
+import { articles } from "@/content/journal";
+import { pillars } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "Journal",
@@ -32,11 +33,12 @@ export default function Journal() {
           </div>
 
           <section className="mt-24 rounded-[1.75rem] bg-ink p-8 text-white md:p-12">
-            <p className="eyebrow !text-accent-soft">Domaines d&apos;expertise</p>
-            <div className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-              {expertise.map((e) => (
-                <div key={e.title}>
-                  <h2 className="font-display text-2xl font-medium">{e.title}</h2>
+            <p className="eyebrow !text-accent-soft">Trois piliers d&apos;expertise</p>
+            <div className="mt-8 grid gap-8 md:grid-cols-3">
+              {pillars.map((e) => (
+                <div key={e.id}>
+                  <p className="text-xs uppercase tracking-wide text-accent">{e.label}</p>
+                  <h2 className="mt-2 font-display text-2xl font-medium">{e.title}</h2>
                   <p className="mt-3 text-sm leading-relaxed text-porcelain/70">{e.text}</p>
                 </div>
               ))}

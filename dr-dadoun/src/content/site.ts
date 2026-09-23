@@ -7,7 +7,7 @@ export const doctor = {
   fullName: "Docteur Dadoun", // À COMPLÉTER : prénom + nom
   title: "Médecin esthétique",
   rpps: "10000000000", // À COMPLÉTER : numéro RPPS
-  ordre: "Inscrit(e) au Conseil de l'Ordre des médecins de Paris", // À COMPLÉTER
+  ordre: "Inscrit au Conseil de l'Ordre des médecins de Paris", // À COMPLÉTER
 };
 
 export const practice = {
@@ -31,71 +31,120 @@ export const practice = {
 };
 
 export const nav = [
-  { href: "/#docteur", label: "Le Docteur" },
+  { href: "/#philosophie", label: "Philosophie" },
   { href: "/#soins", label: "Soins" },
-  { href: "/#approche", label: "Approche" },
+  { href: "/#docteur", label: "Le Docteur" },
   { href: "/#parcours", label: "Parcours" },
   { href: "/journal", label: "Journal" },
-  { href: "/#faq", label: "FAQ" },
+  { href: "/formations", label: "Formations" },
   { href: "/#cabinet", label: "Cabinet" },
 ];
 
 export const hero = {
   eyebrow: "Médecine esthétique · Paris",
   // Le titre est affiché en 3 lignes ; la vignette photo s'insère au début de la 2e.
-  title: ["Révéler", "votre beauté", "naturelle"],
-  text: "Des soins médicaux sur mesure, pensés pour un résultat naturel, harmonieux et durable — dans le respect de votre visage et de votre histoire.",
+  title: ["Améliorer", "sans", "dénaturer"],
+  text: "Chaque visage a son anatomie, ses proportions, son identité. Le Dr Dadoun ne cherche pas à y appliquer un idéal standardisé : il corrige ce qui peut raisonnablement l'être, et préserve tout le reste.",
   stats: [
     { value: "15+", label: "Années d'expérience" }, // À COMPLÉTER : chiffre réel
-    { value: "9", label: "Soins médicaux proposés" },
+    { value: "3", label: "Territoires d'expertise" },
     { value: "100 %", label: "Actes réalisés par le médecin" },
-    { value: "24 h", label: "Pour confirmer votre rendez-vous" },
+    { value: "1", label: "Même médecin, du diagnostic au suivi" },
   ],
 };
+
+// La philosophie : « Améliorer sans dénaturer »
+export const philosophy = {
+  title: "Améliorer sans dénaturer",
+  intro:
+    "Pas d'idéal esthétique appliqué à tous. Le point de départ est toujours votre anatomie, vos proportions et ce qui vous convient réellement. L'objectif : accompagner le vieillissement et corriger ce qui peut l'être, en préservant le naturel et l'identité du visage.",
+  // Le contre-modèle : la méthode, étape par étape
+  method: [
+    { title: "Anatomie", text: "La base de tout geste : les repères osseux, les vaisseaux, les plans de la peau." },
+    { title: "Indication", text: "Le bon acte, pour la bonne raison. Et parfois, aucun acte." },
+    { title: "Précision", text: "Des doses justes et des points d'injection pensés au millimètre." },
+    { title: "Naturel", text: "Un visage reposé qui reste le vôtre, jamais un visage « refait »." },
+    { title: "Suivi", text: "Un contrôle après le soin et un médecin présent si vous avez une question." },
+  ],
+  // La preuve comportementale : savoir dire non
+  refusals: {
+    title: "Savoir dire non",
+    text: "Un médecin qui accepte tout ne protège personne. Le Dr Dadoun refuse un acte lorsque :",
+    reasons: [
+      "il ne peut pas donner le résultat que vous recherchez ;",
+      "le risque de complication est trop important ;",
+      "le résultat ne vous conviendrait pas.",
+    ],
+    note: "Dans ce cas, il vous explique pourquoi — et ce qui serait plus adapté.",
+  },
+};
+
+// Les trois piliers de l'expertise
+export const pillars = [
+  {
+    id: "science",
+    label: "Science",
+    title: "Anatomie & sécurité",
+    text: "L'anatomie est la base. Comprendre les structures du visage, poser la bonne indication, prévenir les complications.",
+  },
+  {
+    id: "technique",
+    label: "Technique",
+    title: "Lasers & injectables",
+    text: "Deux domaines de maîtrise : les technologies laser et les injections, réalisées avec des protocoles précis.",
+  },
+  {
+    id: "regard",
+    label: "Regard esthétique",
+    title: "Proportions & harmonie",
+    text: "Un sens artistique au service du naturel : juger un résultat sur l'ensemble du visage, jamais sur une ride isolée.",
+  },
+];
 
 export const highlights = [
   {
     image: "highlight-consultation.jpg",
-    title: "Consultation sur mesure",
-    text: "Un diagnostic complet du visage et un plan de traitement personnalisé.",
+    title: "Anatomie d'abord",
+    text: "Un diagnostic précis du visage avant toute proposition de soin.",
   },
   {
     image: "highlight-injections.jpg",
-    title: "Injections expertes",
-    text: "Acide hyaluronique et toxine botulique, dosés avec justesse.",
-  },
-  {
-    image: "highlight-peau.jpg",
-    title: "Qualité de peau",
-    text: "Peelings, skinboosters et microneedling pour un teint lumineux.",
+    title: "Injections",
+    text: "Toxine botulique et acide hyaluronique, dosés au plus juste.",
   },
   {
     image: "highlight-lasers.jpg",
     title: "Lasers médicaux",
-    text: "Des technologies de dernière génération, sous contrôle médical.",
+    text: "Laser CO₂, endolifting, diode vasculaire : une expertise laser de pointe.",
+  },
+  {
+    image: "highlight-peau.jpg",
+    title: "Gynécologie esthétique",
+    text: "Une prise en charge médicale, confidentielle et respectueuse de l'intimité.",
   },
   {
     image: "highlight-rdv.jpg",
-    title: "Rendez-vous en ligne",
-    text: "Choisissez votre créneau en quelques clics, confirmation sous 24 h.",
+    title: "Un suivi réel",
+    text: "Le même médecin, présent du premier rendez-vous au contrôle.",
   },
 ];
 
 export const about = {
-  title: "Une médecine esthétique de la justesse",
+  title: "Médecin, technicien, et un regard d'esthète",
   paragraphs: [
     // À COMPLÉTER : biographie réelle du Dr Dadoun
-    "Docteur en médecine, le Dr Dadoun consacre sa pratique à la médecine esthétique du visage et de la peau. Sa conviction : un beau résultat est celui que l'on ne remarque pas, mais qui se ressent — un visage reposé, lumineux, fidèle à lui-même.",
-    "Chaque consultation commence par l'écoute et une analyse précise de votre visage : structure osseuse, qualité de peau, expressions. Le plan de traitement proposé est toujours progressif, expliqué et adapté à vos attentes comme à votre budget.",
+    "Le Dr Dadoun exerce la médecine esthétique à l'intersection de trois exigences : la rigueur médicale, la maîtrise technique et le regard esthétique. Il considère l'anatomie comme le fondement de chaque geste.",
+    "Minutieux, il prend le temps d'observer les détails — asymétries, proportions, qualité de peau — avant de proposer quoi que ce soit. Et il reste présent après le soin : le suivi fait partie intégrante de sa pratique.",
+    "Il transmet aussi son savoir aux professionnels de santé, à travers des formations sur les injections, les lasers et l'anatomie appliquée.",
   ],
   credentials: [
     // À COMPLÉTER : diplômes et formations réels
-    "Doctorat en médecine — Faculté de médecine de Paris",
+    "Doctorat en médecine",
     "Diplôme Inter-Universitaire de médecine morphologique et anti-âge",
-    "Formations continues en injections et lasers médicaux",
-    "Membre de sociétés savantes de médecine esthétique",
+    "Formations spécialisées en lasers médicaux et injectables",
+    "Formateur auprès des professionnels de santé",
   ],
-  quote: "Mon rôle n'est pas de changer un visage, mais de lui rendre son éclat.",
+  quote: "Mon rôle n'est pas de transformer un visage, mais de l'améliorer sans le dénaturer.",
 };
 
 export type Treatment = {
@@ -112,157 +161,174 @@ export type TreatmentCategory = {
   treatments: Treatment[];
 };
 
+// À VALIDER par le Dr Dadoun : descriptions, durées et suites de chaque acte.
 export const treatments: TreatmentCategory[] = [
   {
     id: "injections",
-    title: "Injections",
-    intro: "Restaurer les volumes, adoucir les rides, harmoniser les traits.",
+    title: "Injections du visage",
+    intro: "Adoucir, restaurer, harmoniser — dans le respect des repères anatomiques.",
     treatments: [
-      {
-        name: "Acide hyaluronique",
-        description:
-          "Redonne du volume aux pommettes, redessine l'ovale et les lèvres, comble les sillons tout en respectant l'expression naturelle.",
-        duration: "30 à 45 min",
-        downtime: "Rougeurs légères 24–48 h",
-      },
       {
         name: "Toxine botulique",
         description:
-          "Détend les muscles responsables des rides d'expression (front, lion, pattes d'oie) pour un regard reposé et lisse.",
+          "Détend les muscles responsables des rides d'expression (front, lion, pattes d'oie) pour un regard reposé, sans figer le visage.",
         duration: "15 à 20 min",
         downtime: "Aucune éviction sociale",
       },
       {
-        name: "Skinboosters",
+        name: "Acide hyaluronique",
         description:
-          "Micro-injections d'acide hyaluronique non réticulé pour hydrater la peau en profondeur et lui rendre son éclat.",
-        duration: "30 min",
-        downtime: "Petites papules 24 h",
-      },
-    ],
-  },
-  {
-    id: "peau",
-    title: "Qualité de peau",
-    intro: "Éclat, texture, taches : des protocoles pour une peau saine.",
-    treatments: [
-      {
-        name: "Peelings médicaux",
-        description:
-          "Exfoliation contrôlée pour atténuer taches, cicatrices d'acné et ridules, et unifier le teint.",
-        duration: "20 à 30 min",
-        downtime: "Selon la profondeur, 0 à 7 jours",
-      },
-      {
-        name: "Mésothérapie & PRP",
-        description:
-          "Cocktails revitalisants ou plasma riche en plaquettes pour stimuler la régénération cutanée et capillaire.",
+          "Restaure les volumes, redessine les lèvres et l'ovale, atténue les sillons — en respectant les proportions naturelles du visage.",
         duration: "30 à 45 min",
-        downtime: "Rougeurs légères quelques heures",
-      },
-      {
-        name: "Microneedling",
-        description:
-          "Micro-perforations stimulant la production de collagène : pores, cicatrices et relâchement léger.",
-        duration: "45 min",
-        downtime: "Rougeurs 24–72 h",
+        downtime: "Gonflement léger 24–48 h",
       },
     ],
   },
   {
-    id: "technologies",
+    id: "lasers",
     title: "Lasers & technologies",
-    intro: "Des technologies médicales de dernière génération.",
+    intro: "Des technologies médicales maîtrisées, choisies selon l'indication.",
     treatments: [
       {
-        name: "Laser pigmentaire & vasculaire",
+        name: "Laser CO₂",
         description:
-          "Traitement ciblé des taches brunes, rougeurs diffuses et petits vaisseaux visibles du visage.",
+          "Resurfaçage de la peau : texture, cicatrices, ridules et relâchement cutané. L'intensité est adaptée à chaque peau.",
+        duration: "30 à 60 min",
+        downtime: "Rougeurs et croûtelles, 5 à 10 jours",
+      },
+      {
+        name: "Endolifting",
+        description:
+          "Une fibre laser très fine, glissée sous la peau, stimule la rétraction des tissus et le collagène pour raffermir l'ovale et le cou.",
+        duration: "45 à 90 min",
+        downtime: "Gonflement modéré quelques jours",
+      },
+      {
+        name: "Diode vasculaire",
+        description:
+          "Traitement ciblé des petits vaisseaux visibles et des rougeurs du visage.",
         duration: "15 à 30 min",
-        downtime: "Croûtelles 5–7 jours",
-      },
-      {
-        name: "Épilation laser",
-        description:
-          "Réduction durable de la pilosité, adaptée à chaque phototype, réalisée sous contrôle médical.",
-        duration: "Selon la zone",
-        downtime: "Aucune éviction sociale",
-      },
-      {
-        name: "Radiofréquence & HIFU",
-        description:
-          "Raffermissement sans aiguille de l'ovale du visage, du cou et du décolleté par stimulation du collagène.",
-        duration: "45 à 60 min",
-        downtime: "Aucune éviction sociale",
+        downtime: "Rougeurs transitoires",
       },
     ],
   },
-];
-
-export const principles = [
   {
-    title: "Écoute",
-    text: "Comprendre vos attentes avant toute proposition. Une consultation dédiée, sans engagement.",
-  },
-  {
-    title: "Naturel",
-    text: "Des doses justes et une approche progressive, pour un résultat harmonieux qui vous ressemble.",
-  },
-  {
-    title: "Sécurité",
-    text: "Actes réalisés par un médecin, produits certifiés CE, asepsie rigoureuse et traçabilité systématique.",
-  },
-  {
-    title: "Transparence",
-    text: "Un devis détaillé, des explications claires sur les bénéfices, limites et effets secondaires possibles.",
+    id: "gyneco",
+    title: "Gynécologie esthétique",
+    intro: "Des actes médicaux intimes, abordés avec sérieux, pudeur et confidentialité.",
+    treatments: [
+      {
+        name: "Laser gynécologique",
+        description:
+          "Prise en charge de certains troubles intimes (sécheresse, relâchement) après bilan médical et vérification de l'indication.",
+        duration: "20 à 30 min",
+        downtime: "Reprise rapide, selon avis médical",
+      },
+      {
+        name: "Éclaircissement intime",
+        description:
+          "Atténuation des hyperpigmentations de la zone intime par des protocoles médicaux adaptés à la peau.",
+        duration: "20 à 30 min",
+        downtime: "Selon le protocole",
+      },
+      {
+        name: "Comblement des grandes lèvres",
+        description:
+          "Injection d'acide hyaluronique pour restaurer le volume des grandes lèvres, avec un résultat discret.",
+        duration: "30 à 45 min",
+        downtime: "Gonflement léger quelques jours",
+      },
+      {
+        name: "Nymphoplastie",
+        description:
+          "Réduction des petites lèvres, réalisée après une consultation approfondie et un temps de réflexion.",
+        duration: "Selon le geste",
+        downtime: "Précisée lors de la consultation",
+      },
+      {
+        name: "O-Shot & G-Shot",
+        description:
+          "Injections de plasma riche en plaquettes (PRP) dans la sphère intime. L'indication et les résultats attendus sont discutés en consultation.",
+        duration: "30 à 45 min",
+        downtime: "Reprise rapide",
+      },
+    ],
   },
 ];
 
 export const steps = [
   {
     title: "Consultation",
-    text: "Échange sur vos attentes, antécédents médicaux et analyse du visage. Le médecin vous indique ce qui est réellement indiqué — et ce qui ne l'est pas.",
+    text: "Écoute de vos attentes, antécédents médicaux et analyse anatomique. Le médecin vous dit ce qui est réellement indiqué — et ce qui ne l'est pas.",
   },
   {
     title: "Plan de traitement",
-    text: "Proposition d'un protocole personnalisé, remise d'un devis détaillé et d'un temps de réflexion avant tout soin.",
+    text: "Un protocole personnalisé, un devis détaillé et un temps de réflexion avant tout soin.",
   },
   {
     title: "Le soin",
-    text: "Réalisation de l'acte au cabinet, dans des conditions d'hygiène et de confort optimales.",
+    text: "Réalisé par le médecin lui-même, au cabinet, dans des conditions d'hygiène et de confort optimales.",
   },
   {
     title: "Suivi",
-    text: "Contrôle à 2–3 semaines si nécessaire, et un médecin joignable pour toute question après le soin.",
+    text: "Un contrôle après le soin si nécessaire, et un médecin joignable pour toute question.",
   },
 ];
 
 export const faq = [
   {
-    q: "Les injections sont-elles douloureuses ?",
-    a: "La plupart des produits contiennent un anesthésiant local et des aiguilles très fines sont utilisées. Une crème anesthésiante peut être appliquée au préalable. La sensation est généralement bien tolérée.",
-  },
-  {
     q: "Le résultat sera-t-il naturel ?",
-    a: "C'est la priorité du cabinet. Les traitements sont dosés avec mesure et peuvent être réalisés en plusieurs temps. L'objectif est que l'on vous trouve reposé(e), pas « refait(e) ».",
+    a: "C'est le fondement de la pratique du Dr Dadoun : améliorer sans dénaturer. Les doses sont justes, les traitements peuvent être réalisés en plusieurs temps, et l'objectif est que l'on vous trouve reposé(e), pas transformé(e).",
   },
   {
-    q: "Combien de temps durent les résultats ?",
-    a: "Cela dépend du soin : environ 4 à 6 mois pour la toxine botulique, 9 à 18 mois pour l'acide hyaluronique selon la zone et le produit. Le médecin vous précisera la durée attendue lors de la consultation.",
+    q: "Le médecin peut-il refuser de réaliser un acte ?",
+    a: "Oui. Lorsqu'un acte ne peut pas donner le résultat recherché, que le risque de complication est trop important, ou que le résultat ne vous conviendrait pas, le Dr Dadoun vous le dit et vous explique pourquoi.",
   },
   {
-    q: "Y a-t-il des contre-indications ?",
-    a: "Oui, notamment la grossesse, l'allaitement, certaines maladies auto-immunes, infections cutanées en cours ou traitements anticoagulants. Un questionnaire médical complet est systématiquement réalisé.",
+    q: "Comment se déroule une consultation de gynécologie esthétique ?",
+    a: "Dans un cadre strictement médical et confidentiel. La première consultation est un temps d'échange et d'examen, sans obligation de soin. Vous pouvez poser toutes vos questions, sans tabou.",
+  },
+  {
+    q: "Les injections sont-elles douloureuses ?",
+    a: "La plupart des produits contiennent un anesthésiant local et des aiguilles très fines sont utilisées. Une crème anesthésiante peut être appliquée au préalable.",
+  },
+  {
+    q: "J'ai eu une complication après un soin réalisé ailleurs. Pouvez-vous m'aider ?",
+    a: "Une consultation permet d'évaluer la situation (asymétrie, produit mal placé, résultat insatisfaisant) et de vous proposer, si c'est possible, une prise en charge adaptée.",
   },
   {
     q: "Les soins sont-ils remboursés ?",
     a: "Les actes de médecine esthétique ne sont pas pris en charge par l'Assurance Maladie. Un devis détaillé vous est remis avant toute intervention.",
   },
-  {
-    q: "Comment prendre rendez-vous ?",
-    a: "En ligne via Doctolib, 24h/24, ou par téléphone aux horaires d'ouverture du cabinet.",
-  },
 ];
+
+// Formations pour les professionnels de santé (B2B)
+export const training = {
+  title: "Former les praticiens",
+  intro:
+    "Le Dr Dadoun transmet ce qu'il pratique : une approche fondée sur l'anatomie, la maîtrise technique et la sécurité du patient.",
+  audience: "Médecins et professionnels de santé habilités",
+  modules: [
+    {
+      title: "Anatomie appliquée aux injections",
+      text: "Repères osseux, plans d'injection, zones à risque vasculaire : les fondamentaux pour des gestes sûrs et précis.",
+    },
+    {
+      title: "Injectables",
+      text: "Toxine botulique et acide hyaluronique : indications, techniques, dosages, prévention et gestion des complications.",
+    },
+    {
+      title: "Lasers médicaux",
+      text: "Laser CO₂, endolifting, diode vasculaire : choix des paramètres, indications et sécurité.",
+    },
+    {
+      title: "Matériel & technologies",
+      text: "Prise en main du matériel associé aux techniques enseignées, pour une mise en pratique immédiate.",
+    },
+  ],
+  promises: ["Pratique encadrée", "Petits groupes", "Anatomie au cœur", "Suivi après la formation"],
+  contactSubject: "Formations professionnelles — demande d'information",
+};
 
 // Prise de rendez-vous en ligne (calendrier du site).
 // Les créneaux proposés découlent de ces horaires ; chaque demande est
@@ -301,10 +367,16 @@ export const booking = {
       text: "Pour les patients ayant déjà eu leur consultation préalable.",
     },
     {
-      id: "peau-laser",
-      label: "Soin de peau ou laser",
-      duration: "30 – 60 min",
-      text: "Peeling, microneedling, laser… selon le protocole défini.",
+      id: "laser",
+      label: "Séance de laser",
+      duration: "30 – 90 min",
+      text: "Laser CO₂, endolifting, diode vasculaire… selon le protocole défini.",
+    },
+    {
+      id: "gyneco",
+      label: "Consultation de gynécologie esthétique",
+      duration: "30 min",
+      text: "Un échange médical confidentiel, sans obligation de soin.",
     },
   ],
 };

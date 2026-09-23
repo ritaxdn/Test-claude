@@ -22,7 +22,7 @@ export function Header() {
         className={`mx-auto max-w-6xl rounded-[1.75rem] border backdrop-blur-xl transition-all duration-300 ${
           scrolled || open
             ? "border-line bg-white/85 shadow-[0_12px_40px_-20px_rgba(10,27,33,0.35)]"
-            : "border-white/60 bg-white/45"
+            : "border-white/60 bg-white/70"
         }`}
       >
         <div className="flex h-14 items-center justify-between pl-5 pr-2">

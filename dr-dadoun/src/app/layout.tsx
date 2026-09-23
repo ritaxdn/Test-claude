@@ -9,12 +9,12 @@ export const metadata: Metadata = {
     template: `%s · ${doctor.name}`,
   },
   description:
-    "Cabinet de médecine esthétique du Dr Dadoun : injections d'acide hyaluronique, toxine botulique, skinboosters, peelings et lasers. Des résultats naturels, en toute sécurité.",
+    "Dr Dadoun, médecin esthétique à Paris : améliorer sans dénaturer. Injections, lasers médicaux et gynécologie esthétique, fondés sur l'anatomie et la précision.",
   openGraph: {
     type: "website",
     locale: "fr_FR",
     title: `${doctor.name} — ${doctor.title}`,
-    description: "Révéler votre beauté, sans la transformer.",
+    description: "Améliorer sans dénaturer.",
   },
 };
 
