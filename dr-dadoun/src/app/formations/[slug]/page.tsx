@@ -5,7 +5,6 @@ import { ArrowLeft, ArrowRight, ArrowUpRight, CalendarDays, Mail } from "lucide-
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { formationsPage as f, getCourse } from "@/content/formations";
-import { practice } from "@/content/site";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -22,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 const section = "mx-auto max-w-6xl px-5 md:px-8";
 const pill =
   "inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-xs font-medium uppercase tracking-wide transition-colors";
-const mailto = (subject: string) => `mailto:${practice.email}?subject=${encodeURIComponent(subject)}`;
+const requestLink = (demande: string, formation: string) => `/formations?demande=${demande}&formation=${formation}#demande`;
 
 export default async function CoursePage({ params }: Props) {
   const course = getCourse((await params).slug);
@@ -92,12 +91,12 @@ export default async function CoursePage({ params }: Props) {
               <p className="mt-4 leading-relaxed text-ink-soft">{f.sessions.empty}</p>
             )}
             <div className="mt-8 flex flex-col gap-3">
-              <a href={mailto(`${f.mail.program} — ${course.title}`)} className={`${pill} bg-ink text-white hover:bg-accent-deep`}>
+              <Link href={requestLink("programme", course.slug)} className={`${pill} bg-ink text-white hover:bg-accent-deep`}>
                 Demander le programme <ArrowUpRight size={14} />
-              </a>
-              <a href={mailto(`${f.mail.sessions} — ${course.title}`)} className={`${pill} border border-ink/15 bg-white text-ink hover:border-ink`}>
+              </Link>
+              <Link href={requestLink("sessions", course.slug)} className={`${pill} border border-ink/15 bg-white text-ink hover:border-ink`}>
                 <Mail size={14} /> Être informé des prochaines sessions
-              </a>
+              </Link>
             </div>
           </div>
         </section>

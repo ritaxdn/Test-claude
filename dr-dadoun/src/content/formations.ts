@@ -119,6 +119,25 @@ export const formationsPage = {
     text: "Recevez le programme détaillé des formations, ou soyez informé dès l'ouverture des prochaines sessions.",
   },
 
+  // Formulaire de demande (professionnels) — envoyé au cabinet par e-mail.
+  request: {
+    title: ["Vous souhaitez vous former", "auprès du Dr Dadoun ?"],
+    text: "Choisissez la ou les formations qui vous intéressent : le cabinet vous répond avec le programme et les prochaines dates.",
+    kinds: [
+      { id: "programme", label: "Recevoir le programme" },
+      { id: "sessions", label: "Être informé des prochaines sessions" },
+      { id: "inscription", label: "M'inscrire à une session" },
+    ],
+    professions: [
+      "Médecin esthétique",
+      "Dermatologue",
+      "Chirurgien",
+      "Gynécologue",
+      "Médecin généraliste",
+      "Autre professionnel de santé",
+    ],
+  },
+
   mail: {
     program: "Formations — demande de programme",
     sessions: "Formations — être informé des prochaines sessions",

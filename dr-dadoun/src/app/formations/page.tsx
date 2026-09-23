@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import { ArrowDown, ArrowRight, ArrowUpRight, CalendarDays, Check, GraduationCap, Mail } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { MediaSlot } from "@/components/formations/MediaSlot";
+import { FormationRequestSection } from "@/components/formations/FormationRequest";
 import { RevealOnScroll } from "@/components/formations/RevealOnScroll";
 import { formationsPage as f } from "@/content/formations";
 import { practice } from "@/content/site";
@@ -15,7 +17,9 @@ export const metadata: Metadata = {
 };
 
 const section = "mx-auto max-w-6xl px-5 md:px-8";
-const mailto = (subject: string) => `mailto:${practice.email}?subject=${encodeURIComponent(subject)}`;
+// Liens vers le formulaire de demande, avec pré-sélection.
+const requestLink = (demande: string, formation?: string) =>
+  `/formations?demande=${demande}${formation ? `&formation=${formation}` : ""}#demande`;
 
 const pill =
   "inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-xs font-medium uppercase tracking-wide transition-colors";
@@ -234,9 +238,9 @@ export default function Formations() {
                 <span className="text-accent-deep">formations</span>
               </h2>
               {f.sessions.list.length > 0 && (
-                <a href={mailto(f.mail.sessions)} className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-wide underline decoration-accent underline-offset-4">
+                <Link href={requestLink("sessions")} className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-wide underline decoration-accent underline-offset-4">
                   Être informé des prochaines sessions <ArrowUpRight size={14} />
-                </a>
+                </Link>
               )}
             </div>
 
@@ -254,12 +258,12 @@ export default function Formations() {
                     {s.status === "full" ? (
                       <span className="text-xs font-medium uppercase tracking-wide text-muted">Complet</span>
                     ) : (
-                      <a
-                        href={mailto(`Inscription — ${courseTitle(s.course)} — ${s.date}`)}
+                      <Link
+                        href={requestLink("inscription", s.course)}
                         className="group inline-flex items-center gap-2 text-xs font-medium uppercase tracking-wide"
                       >
                         S&apos;inscrire <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
-                      </a>
+                      </Link>
                     )}
                   </li>
                 ))}
@@ -273,30 +277,34 @@ export default function Formations() {
                   <CalendarDays size={22} strokeWidth={1.5} className="shrink-0 text-accent-deep" />
                   <p className="font-display text-xl font-medium md:text-2xl">{f.sessions.empty}</p>
                 </div>
-                <a href={mailto(f.mail.sessions)} className={`${pill} shrink-0 bg-ink text-white hover:bg-accent-deep`}>
+                <Link href={requestLink("sessions")} className={`${pill} shrink-0 bg-ink text-white hover:bg-accent-deep`}>
                   <Mail size={14} /> Être informé des prochaines sessions
-                </a>
+                </Link>
               </div>
             )}
           </div>
         </section>
 
-        {/* 7 — CTA final */}
-        <section className="pb-24 md:pb-32">
-          <div className={`${section} border-t border-line pt-20 text-center md:pt-28`} data-reveal>
-            <h2 className="mx-auto max-w-4xl font-display text-4xl font-medium uppercase leading-[0.98] md:text-6xl">
-              {f.final.title[0]}
-              <br />
-              <span className="text-accent-deep">{f.final.title[1]}</span>
-            </h2>
-            <p className="mx-auto mt-6 max-w-md leading-relaxed text-ink-soft">{f.final.text}</p>
-            <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
-              <a href={mailto(f.mail.program)} className={`${pill} bg-ink text-white hover:bg-accent-deep`}>
-                Demander le programme <ArrowUpRight size={14} />
-              </a>
-              <a href={mailto(f.mail.sessions)} className={`${pill} border border-ink/15 bg-white text-ink hover:border-ink`}>
-                Être informé des prochaines sessions
-              </a>
+        {/* 7 — Demande (formulaire) */}
+        <section id="demande" className="scroll-mt-24 pb-24 md:pb-32">
+          <div className={`${section} border-t border-line pt-20 md:pt-28`}>
+            <div className="mx-auto max-w-3xl text-center" data-reveal>
+              <h2 className="font-display text-4xl font-medium uppercase leading-[0.98] md:text-6xl">
+                {f.request.title[0]}
+                <br />
+                <span className="text-accent-deep">{f.request.title[1]}</span>
+              </h2>
+              <p className="mx-auto mt-6 max-w-md leading-relaxed text-ink-soft">{f.request.text}</p>
+            </div>
+            <div className="mx-auto mt-12 max-w-3xl">
+              <Suspense>
+                <FormationRequestSection
+                  courses={f.courses.map((c) => ({ slug: c.slug, title: c.title }))}
+                  kinds={f.request.kinds}
+                  professions={f.request.professions}
+                  phone={practice.phone}
+                />
+              </Suspense>
             </div>
           </div>
         </section>
