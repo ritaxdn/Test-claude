@@ -104,7 +104,7 @@ export default function Home() {
   const heroVideo = video("hero.mp4");
   const heroPoster = video("hero-poster.jpg");
   const heroMedia =
-    "absolute inset-0 h-full w-full object-cover opacity-60 lg:left-auto lg:w-auto lg:aspect-square lg:opacity-100";
+    "absolute inset-0 h-full w-full object-cover opacity-45 lg:left-auto lg:w-auto lg:aspect-square lg:opacity-100";
 
   return (
     <>
@@ -113,17 +113,18 @@ export default function Home() {
         {/* ——— Hero ——— */}
         <section className="p-2 md:p-3">
           <div
-            className={`relative flex min-h-[640px] flex-col overflow-hidden rounded-[1.75rem] text-white md:min-h-[760px] lg:h-[calc(100svh-1.5rem)] ${
-              heroVideo ? "bg-black" : ""
+            className={`relative flex min-h-[640px] flex-col overflow-hidden rounded-[1.75rem] md:min-h-[760px] lg:h-[calc(100svh-1.5rem)] ${
+              heroVideo ? "border border-line bg-white text-ink" : "text-white"
             }`}
           >
             {heroVideo ? (
               <>
-                {/* Vidéo carrée sur fond noir : plein cadre atténué sur mobile, à droite en pleine hauteur sur grand écran */}
+                {/* Vidéo sur fond noir inversée en CSS : fond blanc, tracés cyan.
+                    Plein cadre atténué sur mobile, à droite en pleine hauteur sur grand écran. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={heroPoster ?? undefined} alt="" aria-hidden="true" className={heroMedia} />
+                <img src={heroPoster ?? undefined} alt="" aria-hidden="true" className={`media-inverted ${heroMedia}`} />
                 <video
-                  className={`hero-video ${heroMedia}`}
+                  className={`hero-video media-inverted ${heroMedia}`}
                   src={heroVideo}
                   poster={heroPoster ?? undefined}
                   autoPlay
@@ -133,7 +134,7 @@ export default function Home() {
                   preload="auto"
                   aria-hidden="true"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/50 lg:bg-gradient-to-r lg:from-black lg:from-35% lg:via-black/40 lg:via-55% lg:to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/40 to-white/70 lg:bg-gradient-to-r lg:from-white lg:from-35% lg:via-white/40 lg:via-55% lg:to-transparent" />
               </>
             ) : (
               <>
@@ -147,19 +148,25 @@ export default function Home() {
             <div className={`${section} relative flex w-full flex-1 flex-col pb-8 pt-32 md:pb-10 md:pt-40`}>
               <div className="flex flex-1 flex-col justify-between gap-12 lg:flex-row">
                 <div>
-                  <p className="rise text-xs font-medium uppercase tracking-wide text-white/90">{hero.eyebrow}</p>
+                  <p className={`rise text-xs font-medium uppercase tracking-wide ${heroVideo ? "text-accent-deep" : "text-white/90"}`}>
+                    {hero.eyebrow}
+                  </p>
                   <h1 className="rise rise-2 mt-4 font-display text-[2.5rem] font-medium uppercase leading-[0.95] min-[400px]:text-[2.8rem] sm:text-7xl sm:leading-[0.92] lg:text-[5.6rem]">
                     <span className="block">{hero.title[0]}</span>
                     <span className="flex items-center gap-2.5 whitespace-nowrap sm:gap-4">
                       <span className="relative inline-block h-[0.78em] w-[1em] shrink-0 overflow-hidden rounded-lg sm:w-[1.2em] sm:rounded-2xl">
-                        <Photo src={image("hero-chip.jpg") ?? (heroVideo ? heroPoster : null)} alt="" fallback={5} sizes="160px" />
+                        {image("hero-chip.jpg") || !heroVideo ? (
+                          <Photo src={image("hero-chip.jpg")} alt="" fallback={5} sizes="160px" />
+                        ) : (
+                          <Photo src={heroPoster} alt="" fallback={5} sizes="160px" className="media-inverted" />
+                        )}
                       </span>
-                      {hero.title[1]}
+                      <span className={heroVideo ? "text-accent-deep" : ""}>{hero.title[1]}</span>
                     </span>
                     <span className="block">{hero.title[2]}</span>
                   </h1>
                   <div className="rise rise-3 mt-9 flex flex-wrap gap-3">
-                    <PillLink href={practice.bookingUrl} icon={CalendarDays} variant={heroVideo ? "accent" : "dark"}>
+                    <PillLink href={practice.bookingUrl} icon={CalendarDays}>
                       Prendre rendez-vous
                     </PillLink>
                     <PillLink href="#soins" variant="light" icon={Search}>
@@ -170,24 +177,26 @@ export default function Home() {
 
                 <dl
                   className={`rise rise-4 grid grid-cols-2 gap-x-6 gap-y-7 lg:grid-cols-1 lg:content-start lg:gap-y-8 lg:self-start lg:text-right ${
-                    heroVideo ? "lg:rounded-2xl lg:border lg:border-white/10 lg:bg-black/45 lg:p-7 lg:backdrop-blur-md" : ""
+                    heroVideo ? "lg:rounded-2xl lg:border lg:border-line lg:bg-white/70 lg:p-7 lg:backdrop-blur-md" : ""
                   }`}
                 >
                   {hero.stats.map((s) => (
                     <div key={s.label}>
                       <dt className="font-display text-4xl font-medium md:text-5xl">{s.value}</dt>
-                      <dd className="mt-1 text-xs text-white/85">{s.label}</dd>
+                      <dd className={`mt-1 text-xs ${heroVideo ? "text-ink-soft" : "text-white/85"}`}>{s.label}</dd>
                     </div>
                   ))}
                 </dl>
               </div>
 
               <div className="mt-12 flex items-end justify-between gap-6">
-                <p className="max-w-md text-sm leading-relaxed text-white/90">{hero.text}</p>
+                <p className={`max-w-md text-sm leading-relaxed ${heroVideo ? "text-ink-soft" : "text-white/90"}`}>{hero.text}</p>
                 <a
                   href="#philosophie"
                   aria-label="Faire défiler"
-                  className="hidden h-11 w-20 shrink-0 items-center justify-center rounded-full border border-white/60 transition-colors hover:bg-white/15 md:flex"
+                  className={`hidden h-11 w-20 shrink-0 items-center justify-center rounded-full border transition-colors md:flex ${
+                    heroVideo ? "border-ink/20 hover:bg-sand" : "border-white/60 hover:bg-white/15"
+                  }`}
                 >
                   <Mouse size={16} strokeWidth={1.5} />
                 </a>
