@@ -17,10 +17,8 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Photo } from "@/components/Photo";
 import { Highlights } from "@/components/Highlights";
-import { ArticleCard } from "@/components/ArticleCard";
 import { BookingCalendar } from "@/components/BookingCalendar";
 import { image, video } from "@/lib/images";
-import { articles } from "@/content/journal";
 import {
   about,
   doctor,
@@ -253,9 +251,6 @@ export default function Home() {
                 <PillLink href={practice.bookingUrl} icon={CalendarDays}>
                   Prendre rendez-vous
                 </PillLink>
-                <PillLink href="/journal" variant="light" icon={Search}>
-                  Lire le journal
-                </PillLink>
               </div>
             </div>
 
@@ -310,7 +305,7 @@ export default function Home() {
                     <p className="text-xs text-ink-soft">{doctor.title}</p>
                   </div>
                   <span className="rounded-full bg-ink px-3 py-1.5 text-[0.65rem] font-medium uppercase tracking-wide text-white">
-                    Paris
+                    {practice.city}
                   </span>
                 </div>
               </div>
@@ -334,6 +329,7 @@ export default function Home() {
                     </div>
                   ))}
                 </div>
+                {about.credentials.length > 0 && (
                 <ul className="mt-2 grid gap-2 sm:grid-cols-2">
                   {about.credentials.map((c) => (
                     <li key={c} className="rounded-xl bg-white px-4 py-3 text-sm leading-snug text-ink-soft">
@@ -341,6 +337,7 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
+                )}
               </div>
             </div>
           </div>
@@ -367,41 +364,6 @@ export default function Home() {
                   </li>
                 ))}
               </ol>
-            </div>
-          </div>
-        </section>
-
-        {/* ——— Le savoir ——— */}
-        <section id="savoir" className="py-24 md:py-32">
-          <div className={section}>
-            <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
-              <SectionTitle
-                title={
-                  <>
-                    Une expertise médicale,
-                    <br />
-                    <span className="text-accent-deep">partagée avec vous</span>
-                  </>
-                }
-                text="Comprendre avant de traiter : le Dr Dadoun partage son savoir dans le Journal, sans jargon ni promesse excessive."
-              />
-              <PillLink href="/journal" variant="light" icon={ArrowUpRight}>
-                Tous les articles
-              </PillLink>
-            </div>
-            <div className="mt-14 grid gap-3 md:grid-cols-3">
-              {pillars.map((p) => (
-                <div key={p.id} className="rounded-2xl border border-line p-6">
-                  <p className="text-xs font-medium uppercase tracking-wide text-accent-deep">{p.label}</p>
-                  <h3 className="mt-3 font-display text-xl font-medium">{p.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-ink-soft">{p.text}</p>
-                </div>
-              ))}
-            </div>
-            <div className="mt-3 grid gap-3 md:grid-cols-3">
-              {articles.slice(0, 3).map((a, i) => (
-                <ArticleCard key={a.slug} article={a} index={i} />
-              ))}
             </div>
           </div>
         </section>
@@ -471,7 +433,7 @@ export default function Home() {
               <SectionTitle title="Questions fréquentes" />
               <p className="mt-5 text-sm leading-relaxed text-ink-soft">
                 Une autre question ? Le cabinet vous répond au{" "}
-                <a href={`tel:${practice.phoneHref}`} className="font-medium text-ink underline decoration-accent underline-offset-4">
+                <a href={`tel:${practice.phoneHref}`} className="whitespace-nowrap font-medium text-ink underline decoration-accent underline-offset-4">
                   {practice.phone}
                 </a>
                 .
@@ -501,7 +463,7 @@ export default function Home() {
                 <>
                   Vous accueillir
                   <br />
-                  <span className="text-accent-deep">au cœur de Paris</span>
+                  <span className="text-accent-deep">au cœur de Casablanca</span>
                 </>
               }
             />

@@ -43,7 +43,8 @@ export function Footer() {
 
           <div className="mt-8 flex flex-col justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/50 sm:flex-row">
             <p>
-              © {new Date().getFullYear()} {doctor.fullName} · RPPS {doctor.rpps}
+              © {new Date().getFullYear()} {doctor.fullName}
+              {doctor.ordreNumber && ` · N° Ordre ${doctor.ordreNumber}`}
             </p>
             <Link href="/mentions-legales" className="hover:text-white">
               Mentions légales & confidentialité

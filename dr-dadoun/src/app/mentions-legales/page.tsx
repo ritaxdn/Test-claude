@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   robots: { index: false },
 };
 
-// À COMPLÉTER : faire relire ces mentions (hébergeur, RGPD) avant la mise en ligne.
+// À COMPLÉTER : faire relire ces mentions (hébergeur, loi 09-08 / CNDP) avant la mise en ligne.
 export default function MentionsLegales() {
   return (
     <>
@@ -29,8 +29,12 @@ export default function MentionsLegales() {
               <br />
               Téléphone : {practice.phone} · E-mail : {practice.email}
               <br />
-              Numéro RPPS : {doctor.rpps}
-              <br />
+              {doctor.ordreNumber && (
+                <>
+                  N° d&apos;inscription à l&apos;Ordre : {doctor.ordreNumber}
+                  <br />
+                </>
+              )}
               {doctor.ordre}
             </p>
           </section>
@@ -56,8 +60,9 @@ export default function MentionsLegales() {
               téléphone, e-mail, besoins cochés) sont transmises au cabinet dans le seul but de traiter
               votre demande. Elles ne sont ni cédées ni utilisées à des fins commerciales, et sont
               supprimées une fois la demande traitée. Le site n&apos;utilise pas de cookies de suivi.
-              Conformément au RGPD, vous pouvez exercer vos droits d&apos;accès, de rectification et
-              de suppression en écrivant à {practice.email}.
+              Conformément à la loi n° 09-08 relative à la protection des données personnelles, vous
+              pouvez exercer vos droits d&apos;accès, de rectification et d&apos;opposition
+              en écrivant à {practice.email}.
             </p>
           </section>
         </div>
