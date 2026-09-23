@@ -57,8 +57,21 @@ function Calendar() {
   const [time, setTime] = useState<string | null>(null);
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState("");
+  const [needs, setNeeds] = useState<string[]>([]);
 
   const type = booking.types.find((t) => t.id === typeId)!;
+
+  // Besoins proposés selon le motif choisi.
+  const needGroups = booking.needs.filter((g) =>
+    typeId === "gyneco"
+      ? g.group !== "Visage & peau"
+      : ["injection", "laser"].includes(typeId)
+        ? g.group !== "Gynécologie esthétique"
+        : true,
+  );
+  const visibleNeeds = needs.filter((n) => needGroups.some((g) => g.options.includes(n)));
+  const toggleNeed = (n: string) =>
+    setNeeds((cur) => (cur.includes(n) ? cur.filter((x) => x !== n) : [...cur, n]));
 
   const isBookable = (d: Date) =>
     d >= today &&
@@ -95,6 +108,7 @@ function Calendar() {
         body: JSON.stringify({
           ...Object.fromEntries(form),
           type: type.label,
+          needs: visibleNeeds,
           date: toKey(date),
           time,
         }),
@@ -271,16 +285,37 @@ function Calendar() {
                 <Field label="Téléphone" name="phone" type="tel" autoComplete="tel" />
                 <Field label="E-mail" name="email" type="email" autoComplete="email" />
               </div>
-              <label className="mt-4 block text-sm">
-                <span className="text-ink-soft">Message (facultatif)</span>
-                <textarea
-                  name="message"
-                  rows={3}
-                  maxLength={600}
-                  placeholder="Merci de ne pas indiquer d'informations médicales détaillées."
-                  className="mt-1.5 w-full rounded-xl border border-line bg-white/60 px-4 py-3 outline-none focus:border-accent"
-                />
-              </label>
+              <fieldset className="mt-6">
+                <legend className="text-sm text-ink-soft">
+                  Qu&apos;aimeriez-vous aborder ? <span className="text-muted">(facultatif, plusieurs choix possibles)</span>
+                </legend>
+                <div className="mt-3 space-y-4">
+                  {needGroups.map((g) => (
+                    <div key={g.group}>
+                      <p className="text-[0.7rem] font-medium uppercase tracking-wide text-muted">{g.group}</p>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {g.options.map((n) => {
+                          const on = needs.includes(n);
+                          return (
+                            <button
+                              key={n}
+                              type="button"
+                              aria-pressed={on}
+                              onClick={() => toggleNeed(n)}
+                              className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm transition-colors ${
+                                on ? "border-accent-deep bg-accent-soft/50 text-ink" : "border-line text-ink-soft hover:border-accent"
+                              }`}
+                            >
+                              {on && <Check size={14} className="text-accent-deep" />}
+                              {n}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </fieldset>
               <label className="mt-4 flex items-start gap-3 text-xs leading-relaxed text-muted">
                 <input type="checkbox" name="consent" required className="mt-0.5 accent-[var(--accent-deep)]" />
                 J&apos;accepte que mes coordonnées soient utilisées par le cabinet uniquement pour traiter ma

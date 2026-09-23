@@ -2,27 +2,15 @@ import Link from "next/link";
 import {
   ArrowRight,
   ArrowUpRight,
-  Ban,
   GraduationCap,
   CalendarDays,
   Clock,
-  Flame,
-  Flower2,
-  HeartPulse,
-  Gem,
   Mail,
   MapPin,
   Mouse,
   Phone,
-  Pipette,
   Plus,
-  ScanFace,
   Search,
-  Sparkles,
-  Sun,
-  Syringe,
-  Waves,
-  Zap,
   type LucideIcon,
 } from "lucide-react";
 import { Header } from "@/components/Header";
@@ -31,7 +19,7 @@ import { Photo } from "@/components/Photo";
 import { Highlights } from "@/components/Highlights";
 import { ArticleCard } from "@/components/ArticleCard";
 import { BookingCalendar } from "@/components/BookingCalendar";
-import { image } from "@/lib/images";
+import { image, video } from "@/lib/images";
 import { articles } from "@/content/journal";
 import {
   about,
@@ -45,20 +33,9 @@ import {
   steps,
   training,
   treatments,
+  universes,
 } from "@/content/site";
 
-const treatmentIcons: Record<string, LucideIcon> = {
-  "Toxine botulique": ScanFace,
-  "Acide hyaluronique": Syringe,
-  "Laser CO₂": Flame,
-  Endolifting: Waves,
-  "Diode vasculaire": Zap,
-  "Laser gynécologique": Sun,
-  "Éclaircissement intime": Sparkles,
-  "Comblement des grandes lèvres": Pipette,
-  Nymphoplastie: Flower2,
-  "O-Shot & G-Shot": HeartPulse,
-};
 
 function PillLink({
   href,
@@ -68,17 +45,18 @@ function PillLink({
 }: {
   href: string;
   children: React.ReactNode;
-  variant?: "dark" | "light";
+  variant?: "dark" | "light" | "accent";
   icon?: LucideIcon;
 }) {
+  const styles = {
+    dark: "bg-ink text-white hover:bg-accent-deep",
+    light: "border border-ink/15 bg-white text-ink hover:border-ink",
+    accent: "bg-accent text-ink hover:bg-accent-soft",
+  };
   return (
     <a
       href={href}
-      className={`inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-xs font-medium uppercase tracking-wide transition-colors ${
-        variant === "dark"
-          ? "bg-ink text-white hover:bg-accent-deep"
-          : "border border-ink/15 bg-white text-ink hover:border-ink"
-      }`}
+      className={`inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-xs font-medium uppercase tracking-wide transition-colors ${styles[variant]}`}
     >
       {Icon && <Icon size={14} />}
       {children}
@@ -100,29 +78,68 @@ function SectionTitle({ title, text, light }: { title: React.ReactNode; text?: s
 const section = "mx-auto max-w-6xl px-5 md:px-8";
 
 export default function Home() {
+  const heroVideo = video("hero.mp4");
+  const heroPoster = video("hero-poster.jpg");
+  // Petit écran : visage réduit, centré à droite, en filigrane. Grand écran : à droite, pleine hauteur.
+  const heroMedia =
+    "absolute right-[-14%] top-[47%] aspect-square w-[72%] max-w-[480px] object-cover opacity-30 sm:right-[-2%] sm:top-[40%] sm:w-[55%] lg:inset-y-0 lg:right-0 lg:top-0 lg:h-full lg:w-auto lg:max-w-none lg:opacity-100";
+
   return (
     <>
       <Header />
       <main id="top">
         {/* ——— Hero ——— */}
         <section className="p-2 md:p-3">
-          <div className="relative flex min-h-[640px] flex-col overflow-hidden rounded-[1.75rem] text-white md:min-h-[760px] lg:h-[calc(100svh-1.5rem)]">
-            <Photo src={image("hero.jpg")} alt={`${doctor.name}, ${doctor.title.toLowerCase()}`} fallback={0} priority />
-            {/* Voile pour la lisibilité du texte blanc */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#0a5f6d]/60 via-[#0a5f6d]/10 to-[#0a5f6d]/45" />
-            <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#07515d]/40 to-transparent" />
+          <div
+            className={`relative flex min-h-[640px] flex-col overflow-hidden rounded-[1.75rem] md:min-h-[760px] lg:h-[calc(100svh-1.5rem)] ${
+              heroVideo ? "border border-line bg-white text-ink" : "text-white"
+            }`}
+          >
+            {heroVideo ? (
+              <>
+                {/* Vidéo sur fond noir inversée en CSS : fond blanc, tracés cyan.
+                    Plein cadre atténué sur mobile, à droite en pleine hauteur sur grand écran. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={heroPoster ?? undefined} alt="" aria-hidden="true" className={`media-inverted ${heroMedia}`} />
+                <video
+                  className={`hero-video media-inverted ${heroMedia}`}
+                  src={heroVideo}
+                  poster={heroPoster ?? undefined}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="auto"
+                  aria-hidden="true"
+                />
+                <div className="absolute inset-0 hidden lg:block lg:bg-gradient-to-r lg:from-white lg:from-35% lg:via-white/40 lg:via-55% lg:to-transparent" />
+              </>
+            ) : (
+              <>
+                <Photo src={image("hero.jpg")} alt={`${doctor.name}, ${doctor.title.toLowerCase()}`} fallback={0} priority />
+                {/* Voile pour la lisibilité du texte blanc */}
+                <div className="absolute inset-0 bg-gradient-to-r from-[#0a5f6d]/60 via-[#0a5f6d]/10 to-[#0a5f6d]/45" />
+                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#07515d]/40 to-transparent" />
+              </>
+            )}
 
             <div className={`${section} relative flex w-full flex-1 flex-col pb-8 pt-32 md:pb-10 md:pt-40`}>
               <div className="flex flex-1 flex-col justify-between gap-12 lg:flex-row">
                 <div>
-                  <p className="rise text-xs font-medium uppercase tracking-wide text-white/90">{hero.eyebrow}</p>
+                  <p className={`rise text-xs font-medium uppercase tracking-wide ${heroVideo ? "text-accent-deep" : "text-white/90"}`}>
+                    {hero.eyebrow}
+                  </p>
                   <h1 className="rise rise-2 mt-4 font-display text-[2.5rem] font-medium uppercase leading-[0.95] min-[400px]:text-[2.8rem] sm:text-7xl sm:leading-[0.92] lg:text-[5.6rem]">
                     <span className="block">{hero.title[0]}</span>
                     <span className="flex items-center gap-2.5 whitespace-nowrap sm:gap-4">
                       <span className="relative inline-block h-[0.78em] w-[1em] shrink-0 overflow-hidden rounded-lg sm:w-[1.2em] sm:rounded-2xl">
-                        <Photo src={image("hero-chip.jpg")} alt="" fallback={5} sizes="160px" />
+                        {image("hero-chip.jpg") || !heroVideo ? (
+                          <Photo src={image("hero-chip.jpg")} alt="" fallback={5} sizes="160px" />
+                        ) : (
+                          <Photo src={heroPoster} alt="" fallback={5} sizes="160px" className="media-inverted" />
+                        )}
                       </span>
-                      {hero.title[1]}
+                      <span className={heroVideo ? "text-accent-deep" : ""}>{hero.title[1]}</span>
                     </span>
                     <span className="block">{hero.title[2]}</span>
                   </h1>
@@ -136,22 +153,28 @@ export default function Home() {
                   </div>
                 </div>
 
-                <dl className="rise rise-4 grid grid-cols-2 gap-x-6 gap-y-7 lg:grid-cols-1 lg:content-start lg:gap-y-8 lg:text-right">
+                <dl
+                  className={`rise rise-4 grid grid-cols-2 gap-x-6 gap-y-7 lg:grid-cols-1 lg:content-start lg:gap-y-8 lg:self-start lg:text-right ${
+                    heroVideo ? "lg:rounded-2xl lg:border lg:border-line lg:bg-white/70 lg:p-7 lg:backdrop-blur-md" : ""
+                  }`}
+                >
                   {hero.stats.map((s) => (
                     <div key={s.label}>
                       <dt className="font-display text-4xl font-medium md:text-5xl">{s.value}</dt>
-                      <dd className="mt-1 text-xs text-white/85">{s.label}</dd>
+                      <dd className={`mt-1 text-xs ${heroVideo ? "text-ink-soft" : "text-white/85"}`}>{s.label}</dd>
                     </div>
                   ))}
                 </dl>
               </div>
 
               <div className="mt-12 flex items-end justify-between gap-6">
-                <p className="max-w-md text-sm leading-relaxed text-white/90">{hero.text}</p>
+                <p className={`max-w-md text-sm leading-relaxed ${heroVideo ? "text-ink-soft" : "text-white/90"}`}>{hero.text}</p>
                 <a
                   href="#philosophie"
                   aria-label="Faire défiler"
-                  className="hidden h-11 w-20 shrink-0 items-center justify-center rounded-full border border-white/60 transition-colors hover:bg-white/15 md:flex"
+                  className={`hidden h-11 w-20 shrink-0 items-center justify-center rounded-full border transition-colors md:flex ${
+                    heroVideo ? "border-ink/20 hover:bg-sand" : "border-white/60 hover:bg-white/15"
+                  }`}
                 >
                   <Mouse size={16} strokeWidth={1.5} />
                 </a>
@@ -190,26 +213,6 @@ export default function Home() {
               ))}
             </ol>
 
-            <div className="mt-3 grid gap-8 rounded-2xl bg-ink p-7 text-white md:grid-cols-[auto_1fr_1.2fr] md:items-center md:p-10">
-              <span className="flex h-14 w-14 items-center justify-center rounded-full bg-accent text-ink">
-                <Ban size={24} strokeWidth={1.75} />
-              </span>
-              <div>
-                <h3 className="font-display text-3xl font-medium">{philosophy.refusals.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-white/70">{philosophy.refusals.text}</p>
-              </div>
-              <div>
-                <ul className="space-y-2">
-                  {philosophy.refusals.reasons.map((r) => (
-                    <li key={r} className="flex gap-3 rounded-xl bg-white/[0.06] px-4 py-3 text-sm">
-                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
-                      {r}
-                    </li>
-                  ))}
-                </ul>
-                <p className="mt-3 text-xs text-white/60">{philosophy.refusals.note}</p>
-              </div>
-            </div>
           </div>
         </section>
 
@@ -239,9 +242,9 @@ export default function Home() {
               <SectionTitle
                 title={
                   <>
-                    Les soins,
+                    Deux univers,
                     <br />
-                    <span className="text-accent-deep">selon l&apos;indication</span>
+                    <span className="text-accent-deep">une même exigence</span>
                   </>
                 }
                 text="Chaque soin est précédé d'une consultation médicale afin de vérifier son indication et l'absence de contre-indication."
@@ -256,38 +259,41 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="mt-14 space-y-12">
-              {treatments.map((cat) => (
-                <div key={cat.id}>
-                  <div className="mb-4 flex flex-col justify-between gap-1 border-b border-line pb-3 sm:flex-row sm:items-end">
-                    <h3 className="font-display text-2xl font-medium">{cat.title}</h3>
-                    <p className="text-sm text-muted">{cat.intro}</p>
-                  </div>
-                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                    {cat.treatments.map((t) => {
-                      const Icon = treatmentIcons[t.name] ?? Gem;
-                      return (
-                        <details key={t.name} className="group rounded-2xl bg-sand p-2.5 transition-colors open:bg-accent-soft/40">
-                          <summary className="flex cursor-pointer items-center gap-4">
-                            <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-white text-accent-deep shadow-[0_6px_20px_-12px_rgba(10,27,33,0.35)]">
-                              <Icon size={24} strokeWidth={1.5} />
-                            </span>
-                            <span className="flex-1 text-[0.95rem] font-medium">{t.name}</span>
-                            <Plus size={18} className="faq-icon mr-3 shrink-0 text-muted transition-transform" />
-                          </summary>
-                          <div className="px-2.5 pb-3 pt-4 text-sm leading-relaxed text-ink-soft">
-                            <p>{t.description}</p>
-                            <p className="mt-3 flex flex-wrap gap-2 text-xs">
-                              <span className="rounded-full bg-white px-3 py-1">Durée : {t.duration}</span>
-                              <span className="rounded-full bg-white px-3 py-1">Suites : {t.downtime}</span>
-                            </p>
-                          </div>
-                        </details>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
+            <div className="mt-14 grid gap-3 lg:grid-cols-2">
+              {universes.map((u, i) => {
+                const acts = treatments
+                  .filter((c) => u.categories.includes(c.id))
+                  .reduce((n, c) => n + c.treatments.length, 0);
+                return (
+                  <Link
+                    key={u.slug}
+                    href={`/soins/${u.slug}`}
+                    className="group relative flex min-h-[30rem] flex-col justify-end overflow-hidden rounded-2xl text-white md:min-h-[38rem]"
+                  >
+                    <Photo
+                      src={image(u.image)}
+                      alt={u.title}
+                      fallback={i === 0 ? 1 : 2}
+                      sizes="(min-width:1024px) 50vw, 100vw"
+                      className="transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#07343c]/85 via-[#07343c]/25 to-transparent" />
+                    <div className="relative p-7 md:p-10">
+                      <p className="text-xs font-medium uppercase tracking-[0.14em] text-white/80">
+                        {u.tagline}
+                      </p>
+                      <h3 className="mt-3 font-display text-4xl font-medium uppercase leading-[0.95] md:text-6xl">{u.title}</h3>
+                      <p className="mt-4 max-w-md text-sm leading-relaxed text-white/85">{u.intro}</p>
+                      <span className="mt-8 inline-flex items-center gap-3 text-xs font-medium uppercase tracking-wide">
+                        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-ink transition-transform duration-300 group-hover:translate-x-1">
+                          <ArrowRight size={16} />
+                        </span>
+                        Découvrir les {acts} actes
+                      </span>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </section>
@@ -412,12 +418,12 @@ export default function Home() {
                   </span>
                   <h2 className="mt-8 font-display text-4xl font-medium leading-[1.05] md:text-5xl">{training.title}</h2>
                   <p className="mt-4 max-w-md text-sm leading-relaxed text-white/70">{training.intro}</p>
-                  <a
+                  <Link
                     href="/formations"
                     className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 text-xs font-medium uppercase tracking-wide text-ink hover:bg-accent-soft"
                   >
                     Découvrir les formations <ArrowUpRight size={14} />
-                  </a>
+                  </Link>
                 </div>
               </div>
               <div className="grid gap-3 sm:grid-cols-2">

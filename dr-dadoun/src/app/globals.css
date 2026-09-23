@@ -75,6 +75,9 @@ h1 em, h2 em, h3 em { font-style: normal; }
 .mesh-4 { background: radial-gradient(80% 70% at 80% 30%, #d4f3f6, transparent 70%), radial-gradient(70% 70% at 20% 80%, #0a7282, transparent 70%), #3fb0c0; }
 .mesh-5 { background: radial-gradient(80% 70% at 30% 70%, #f3cfbf, transparent 70%), radial-gradient(70% 70% at 80% 20%, #7ad3df, transparent 70%), #cdebef; }
 
+/* Vidéo/visuel sur fond noir → fond blanc, en gardant des teintes cyan */
+.media-inverted { filter: invert(1) hue-rotate(180deg); }
+
 /* Défilement horizontal sans barre visible */
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -96,4 +99,13 @@ details[open] .faq-icon { transform: rotate(45deg); }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .rise { animation: none; }
+  .hero-video { display: none; }
 }
+
+/* Apparition douce au défilement (page Formations) */
+.reveal-ready [data-reveal] {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-ready [data-reveal].is-visible { opacity: 1; transform: none; }

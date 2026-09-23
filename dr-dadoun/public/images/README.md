@@ -13,6 +13,8 @@ Tant qu'un fichier est absent, un dégradé cyan s'affiche à sa place.
 | `highlight-peau.jpg` | Carrousel — Gynécologie esthétique | Visuel sobre et suggestif (textures, fleurs, cabinet) — jamais explicite |
 | `highlight-lasers.jpg` | Carrousel — Lasers | Appareil au cabinet |
 | `highlight-rdv.jpg` | Carrousel — Suivi réel | Le médecin en consultation de suivi |
+| `univers-visage.jpg` | Univers « Visage & peau » (accueil + page) | Visage lumineux, geste d'injection ou laser |
+| `univers-gyneco.jpg` | Univers « Gynécologie esthétique » | Visuel sobre et suggestif (textures, fleur, lumière) — jamais explicite |
 | `cabinet.jpg` | Section « Le cabinet » | Photo du cabinet |
 
 Rappel déontologique : pas de photos avant/après ni de témoignages de patients.
