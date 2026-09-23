@@ -168,7 +168,7 @@ export default function Home() {
               <div className="mt-12 flex items-end justify-between gap-6">
                 <p className={`max-w-md text-sm leading-relaxed ${heroVideo ? "text-ink-soft" : "text-white/90"}`}>{hero.text}</p>
                 <a
-                  href="#philosophie"
+                  href="#docteur"
                   aria-label="Faire défiler"
                   className={`hidden h-11 w-20 shrink-0 items-center justify-center rounded-full border transition-colors md:flex ${
                     heroVideo ? "border-ink/20 hover:bg-sand" : "border-white/60 hover:bg-white/15"
@@ -181,36 +181,95 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ——— Philosophie ——— */}
-        <section id="philosophie" className="pt-24 md:pt-32">
-          <div className={section}>
-            <div className="grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:items-end">
+        {/* ——— Le Dr Dadoun : philosophie, expérience, méthode, parcours ——— */}
+        <section id="docteur" className="px-2 pt-2 md:px-3 md:pt-3">
+          <div className="rounded-[1.75rem] bg-sand py-20 md:py-28">
+            <div className={`${section} grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20`}>
+              {/* Portrait */}
+              <div className="lg:sticky lg:top-28 lg:self-start">
+                <div className="relative aspect-[4/5] overflow-hidden rounded-2xl">
+                  <Photo src={image("docteur.jpg")} alt={`Portrait du ${doctor.name}`} fallback={2} sizes="(min-width:1024px) 40vw, 100vw" className="object-[50%_15%]" />
+                  <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between gap-3 rounded-2xl border border-white/60 bg-white/70 px-5 py-4 backdrop-blur-md">
+                    <div>
+                      <p className="font-display text-lg font-semibold uppercase tracking-tight">{doctor.name}</p>
+                      <p className="text-xs text-ink-soft">{doctor.title}</p>
+                    </div>
+                    <span className="rounded-full bg-ink px-3 py-1.5 text-[0.65rem] font-medium uppercase tracking-wide text-white">
+                      {practice.city}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
               <div>
-                <p className="eyebrow">La philosophie</p>
-                <h2 className="mt-4 font-display text-5xl font-medium uppercase leading-[0.95] md:text-7xl">
+                {/* Philosophie */}
+                <p className="eyebrow">Le Dr Dadoun</p>
+                <h2 className="mt-4 font-display text-5xl font-medium uppercase leading-[0.95] md:text-6xl">
                   Améliorer
                   <br />
                   <span className="text-accent-deep">sans dénaturer</span>
                 </h2>
+                <p className="mt-6 text-sm font-medium uppercase tracking-[0.14em] text-muted">
+                  {pillars.map((p) => p.label).join(" · ")}
+                </p>
+                <p className="mt-6 text-[1.05rem] leading-relaxed text-ink-soft">{philosophy.intro}</p>
+
+                {/* Expérience */}
+                <dl className="mt-10 grid grid-cols-3 border-y border-ink/10">
+                  {[
+                    { value: "35+", label: "ans d'expérience" },
+                    { value: "10+", label: "ans de formation" },
+                    { value: "Lasériste", label: "lasers médicaux" },
+                  ].map((fact) => (
+                    <div key={fact.label} className="py-6 pr-3">
+                      <dt className="font-display text-3xl font-medium md:text-4xl">{fact.value}</dt>
+                      <dd className="mt-1 text-xs text-muted">{fact.label}</dd>
+                    </div>
+                  ))}
+                </dl>
+
+                <div className="mt-10 space-y-4 leading-relaxed text-ink-soft">
+                  {about.paragraphs.map((p) => (
+                    <p key={p.slice(0, 24)}>{p}</p>
+                  ))}
+                </div>
+                <blockquote className="mt-8 border-l-2 border-accent pl-5 font-display text-xl font-medium leading-snug">
+                  « {about.quote} »
+                </blockquote>
+
+                {/* Méthode */}
+                <h3 className="mt-14 text-xs font-medium uppercase tracking-[0.14em] text-accent-deep">Sa méthode</h3>
+                <ol className="mt-4 border-t border-ink/10">
+                  {philosophy.method.map((m, i) => (
+                    <li key={m.title} className="grid grid-cols-[2.25rem_1fr] gap-x-3 border-b border-ink/10 py-4 sm:grid-cols-[2.25rem_9rem_1fr]">
+                      <span className="pt-0.5 text-xs font-medium text-muted">0{i + 1}</span>
+                      <p className="font-display text-lg font-medium">{m.title}</p>
+                      <p className="col-start-2 text-sm leading-relaxed text-ink-soft sm:col-start-3">{m.text}</p>
+                    </li>
+                  ))}
+                </ol>
+
+                {/* Parcours & diplômes */}
+                <h3 className="mt-14 text-xs font-medium uppercase tracking-[0.14em] text-accent-deep">Parcours & diplômes</h3>
+                <ol className="mt-5 border-l border-ink/15 pl-6">
+                  {about.education.length > 0 ? (
+                    about.education.map((e) => (
+                      <li key={e.title} className="relative pb-6 last:pb-0">
+                        <span className="absolute -left-[1.85rem] top-1.5 h-2.5 w-2.5 rounded-full bg-accent" aria-hidden="true" />
+                        {e.period && <p className="text-xs font-medium text-accent-deep">{e.period}</p>}
+                        <p className="font-medium">{e.title}</p>
+                        {e.place && <p className="text-sm text-ink-soft">{e.place}</p>}
+                      </li>
+                    ))
+                  ) : (
+                    <li className="relative">
+                      <span className="absolute -left-[1.85rem] top-1.5 h-2.5 w-2.5 rounded-full border border-ink/30 bg-sand" aria-hidden="true" />
+                      <p className="text-sm text-muted">Écoles, diplômes et formations : bientôt disponibles.</p>
+                    </li>
+                  )}
+                </ol>
               </div>
-              <p className="text-[0.95rem] leading-relaxed text-ink-soft">{philosophy.intro}</p>
             </div>
-
-            <ol className="mt-14 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-              {philosophy.method.map((m, i) => (
-                <li key={m.title} className="relative rounded-2xl bg-sand p-6">
-                  <div className="flex items-center justify-between">
-                    <span className="font-display text-sm font-medium text-muted">0{i + 1}</span>
-                    {i < philosophy.method.length - 1 && (
-                      <ArrowRight size={16} className="hidden text-accent lg:block" aria-hidden="true" />
-                    )}
-                  </div>
-                  <h3 className="mt-10 font-display text-2xl font-medium">{m.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-ink-soft">{m.text}</p>
-                </li>
-              ))}
-            </ol>
-
           </div>
         </section>
 
@@ -289,56 +348,6 @@ export default function Home() {
                   </Link>
                 );
               })}
-            </div>
-          </div>
-        </section>
-
-        {/* ——— Le docteur ——— */}
-        <section id="docteur" className="px-2 md:px-3">
-          <div className="rounded-[1.75rem] bg-sand py-20 md:py-28">
-            <div className={`${section} grid items-center gap-12 lg:grid-cols-[1fr_1.15fr] lg:gap-20`}>
-              <div className="relative aspect-[4/5] overflow-hidden rounded-2xl">
-                <Photo src={image("docteur.jpg")} alt={`Portrait du ${doctor.name}`} fallback={2} sizes="(min-width:1024px) 45vw, 100vw" className="object-[50%_15%]" />
-                <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between rounded-2xl border border-white/60 bg-white/70 px-5 py-4 backdrop-blur-md">
-                  <div>
-                    <p className="font-display text-lg font-semibold uppercase tracking-tight">{doctor.name}</p>
-                    <p className="text-xs text-ink-soft">{doctor.title}</p>
-                  </div>
-                  <span className="rounded-full bg-ink px-3 py-1.5 text-[0.65rem] font-medium uppercase tracking-wide text-white">
-                    {practice.city}
-                  </span>
-                </div>
-              </div>
-
-              <div>
-                <p className="eyebrow">Le Docteur</p>
-                <h2 className="mt-4 font-display text-4xl font-medium leading-[1.05] md:text-5xl">{about.title}</h2>
-                <div className="mt-7 space-y-4 leading-relaxed text-ink-soft">
-                  {about.paragraphs.map((p) => (
-                    <p key={p.slice(0, 24)}>{p}</p>
-                  ))}
-                </div>
-                <blockquote className="mt-8 border-l-2 border-accent pl-5 font-display text-xl font-medium leading-snug">
-                  « {about.quote} »
-                </blockquote>
-                <div className="mt-8 grid gap-2 sm:grid-cols-3">
-                  {pillars.map((p) => (
-                    <div key={p.id} className="rounded-xl border border-accent/30 bg-white p-4">
-                      <p className="text-[0.7rem] font-medium uppercase tracking-wide text-accent-deep">{p.label}</p>
-                      <p className="mt-1 text-sm font-medium leading-snug">{p.title}</p>
-                    </div>
-                  ))}
-                </div>
-                {about.credentials.length > 0 && (
-                <ul className="mt-2 grid gap-2 sm:grid-cols-2">
-                  {about.credentials.map((c) => (
-                    <li key={c} className="rounded-xl bg-white px-4 py-3 text-sm leading-snug text-ink-soft">
-                      {c}
-                    </li>
-                  ))}
-                </ul>
-                )}
-              </div>
             </div>
           </div>
         </section>

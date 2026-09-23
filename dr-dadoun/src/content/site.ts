@@ -30,7 +30,6 @@ export const practice = {
 };
 
 export const nav = [
-  { href: "/#philosophie", label: "Philosophie" },
   { href: "/#soins", label: "Soins" },
   { href: "/#docteur", label: "Le Docteur" },
   { href: "/#parcours", label: "Parcours" },
@@ -124,8 +123,10 @@ export const about = {
     "Minutieux, il prend le temps d'observer les détails — asymétries, proportions, qualité de peau — avant de proposer quoi que ce soit. Et il reste présent après le soin : le suivi fait partie intégrante de sa pratique.",
     "Il transmet aussi son savoir aux professionnels de santé, à travers des formations sur les injections, les lasers et l'anatomie appliquée.",
   ],
-  // À COMPLÉTER : diplômes et formations réels (liste vide = section masquée).
-  credentials: [] as string[],
+  // Parcours & diplômes : écoles, diplômes, formations, étapes (du plus récent au plus ancien).
+  // Utilisé sur l'accueil (section « Le Dr Dadoun ») et sur /formations.
+  // À COMPLÉTER — ex. { period: "1989", title: "Doctorat en médecine", place: "Faculté de médecine de …" }
+  education: [] as { period?: string; title: string; place?: string }[],
   quote: "Mon rôle n'est pas de transformer un visage, mais de l'améliorer sans le dénaturer.",
 };
 
