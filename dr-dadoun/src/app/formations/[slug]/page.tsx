@@ -94,8 +94,8 @@ export default async function CoursePage({ params }: Props) {
               <Link href={requestLink("programme", course.slug)} className={`${pill} bg-ink text-white hover:bg-accent-deep`}>
                 Demander le programme <ArrowUpRight size={14} />
               </Link>
-              <Link href={requestLink("sessions", course.slug)} className={`${pill} border border-ink/15 bg-white text-ink hover:border-ink`}>
-                <Mail size={14} /> Être informé des prochaines sessions
+              <Link href="/formations#newsletter" className={`${pill} border border-ink/15 bg-white text-ink hover:border-ink`}>
+                <Mail size={14} /> Newsletter : être informé des sessions
               </Link>
             </div>
           </div>
