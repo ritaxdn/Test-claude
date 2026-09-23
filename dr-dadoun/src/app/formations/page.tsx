@@ -30,7 +30,7 @@ export default function Formations() {
 
   return (
     <>
-      <Header />
+      <Header variant="pro" />
       <RevealOnScroll />
       <main>
         {/* 1 — Hero */}
@@ -70,7 +70,7 @@ export default function Formations() {
         </section>
 
         {/* 2 — L'expérience au service de la transmission */}
-        <section className="py-28 md:py-40">
+        <section id="transmission" className="scroll-mt-24 py-28 md:py-40">
           <div className={`${section} grid gap-14 lg:grid-cols-2 lg:items-center lg:gap-20`}>
             <div data-reveal>
               <MediaSlot
@@ -165,7 +165,7 @@ export default function Formations() {
         </section>
 
         {/* 5 — Le parcours du Dr Dadoun */}
-        <section className="px-2 md:px-3">
+        <section id="parcours" className="scroll-mt-24 px-2 md:px-3">
           <div className="rounded-[1.75rem] bg-ink py-20 text-white md:py-28">
             <div className={section}>
               <h2 className="font-display text-4xl font-medium uppercase leading-[0.98] md:text-[3.4rem]" data-reveal>
@@ -230,7 +230,7 @@ export default function Formations() {
         </section>
 
         {/* 6 — Prochaines formations */}
-        <section className="py-28 md:py-40">
+        <section id="sessions" className="scroll-mt-24 py-28 md:py-40">
           <div className={section}>
             <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end" data-reveal>
               <h2 className="font-display text-4xl font-medium uppercase leading-[0.98] md:text-[3.4rem]">
@@ -310,7 +310,7 @@ export default function Formations() {
           </div>
         </section>
       </main>
-      <Footer />
+      <Footer variant="pro" />
     </>
   );
 }
