@@ -129,16 +129,7 @@ export default function Home() {
                   </p>
                   <h1 className="rise rise-2 mt-4 font-display text-[2.5rem] font-medium uppercase leading-[0.95] min-[400px]:text-[2.8rem] sm:text-7xl sm:leading-[0.92] lg:text-[5.6rem]">
                     <span className="block">{hero.title[0]}</span>
-                    <span className="flex items-center gap-2.5 whitespace-nowrap sm:gap-4">
-                      <span className="relative inline-block h-[0.78em] w-[1em] shrink-0 overflow-hidden rounded-lg sm:w-[1.2em] sm:rounded-2xl">
-                        {image("hero-chip.jpg") || !heroVideo ? (
-                          <Photo src={image("hero-chip.jpg")} alt="" fallback={5} sizes="160px" />
-                        ) : (
-                          <Photo src={heroPoster} alt="" fallback={5} sizes="160px" className="media-inverted" />
-                        )}
-                      </span>
-                      <span className={heroVideo ? "text-accent-deep" : ""}>{hero.title[1]}</span>
-                    </span>
+                    <span className={`block ${heroVideo ? "text-accent-deep" : ""}`}>{hero.title[1]}</span>
                     <span className="block">{hero.title[2]}</span>
                   </h1>
                   <div className="rise rise-3 mt-9 flex flex-wrap gap-3">
