@@ -191,7 +191,7 @@ export default function Home() {
 
               <div>
                 {/* Philosophie */}
-                <p className="eyebrow">Le Dr Dadoun</p>
+                <p className="eyebrow">Qui suis-je</p>
                 <h2 className="mt-4 font-display text-4xl font-medium leading-[1.02] md:text-[3.4rem]">
                   Médecin, technicien,
                   <br />
@@ -206,7 +206,7 @@ export default function Home() {
                 </div>
 
                 {/* Méthode */}
-                <h3 className="mt-14 text-xs font-medium uppercase tracking-[0.14em] text-accent-deep">Sa méthode</h3>
+                <h3 className="mt-14 text-xs font-medium uppercase tracking-[0.14em] text-accent-deep">Ma méthode</h3>
                 <ol className="mt-4 border-t border-ink/10">
                   {philosophy.method.map((m, i) => (
                     <li key={m.title} className="grid grid-cols-[2.25rem_1fr] gap-x-3 border-b border-ink/10 py-4 sm:grid-cols-[2.25rem_9rem_1fr]">
@@ -218,7 +218,7 @@ export default function Home() {
                 </ol>
 
                 {/* Parcours & diplômes */}
-                <h3 className="mt-14 text-xs font-medium uppercase tracking-[0.14em] text-accent-deep">Parcours & diplômes</h3>
+                <h3 className="mt-14 text-xs font-medium uppercase tracking-[0.14em] text-accent-deep">Mon parcours & mes diplômes</h3>
                 <ol className="mt-5 border-l border-ink/15 pl-6">
                   {about.education.length > 0 ? (
                     about.education.map((e) => (
@@ -311,7 +311,7 @@ export default function Home() {
                 <h2 className="mt-8 font-display text-4xl font-medium uppercase leading-[0.98] md:text-6xl">
                   Se former
                   <br />
-                  <span className="text-accent">auprès du Dr Dadoun</span>
+                  <span className="text-accent">à mes côtés</span>
                 </h2>
                 <p className="mt-5 max-w-md text-sm leading-relaxed text-white/70">{training.intro}</p>
               </div>
