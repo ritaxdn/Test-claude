@@ -1,5 +1,6 @@
 // Contenu de la page /formations (audience : médecins et professionnels de santé habilités).
 // Règle : n'ajouter ici que des informations vérifiées. Rien n'est inventé.
+import { about } from "@/content/site";
 
 export type Course = {
   slug: string; // sert d'adresse : /formations/<slug>
@@ -100,8 +101,8 @@ export const formationsPage = {
       { value: "Médecin", label: "esthétique" },
       { value: "Lasériste", label: "lasers médicaux" },
     ],
-    // À COMPLÉTER : diplômes, formations, étapes professionnelles (avec dates).
-    steps: [] as CareerStep[],
+    // Parcours partagé avec l'accueil : à compléter dans site.ts (about.education).
+    steps: about.education.map((e) => ({ period: e.period, title: e.title, detail: e.place })) as CareerStep[],
     pendingNote: "Diplômes, formations et étapes du parcours : bientôt disponibles.",
     media: { image: "docteur.jpg", label: "Portrait du Dr Dadoun" },
   },

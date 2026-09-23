@@ -184,6 +184,7 @@ export default function Formations() {
                     image={f.career.media.image}
                     label={f.career.media.label}
                     tone="dark"
+                    position="object-[50%_15%]"
                     className="aspect-[4/5] w-full max-w-sm"
                     sizes="(min-width:1024px) 40vw, 100vw"
                   />
