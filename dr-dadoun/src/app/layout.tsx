@@ -5,11 +5,11 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: `${doctor.name} — ${doctor.title} à Paris`,
+    default: `${doctor.name} — Médecin esthétique à ${practice.city}`,
     template: `%s · ${doctor.name}`,
   },
   description:
-    "Dr Dadoun, médecin esthétique à Paris : améliorer sans dénaturer. Injections, lasers médicaux et gynécologie esthétique, fondés sur l'anatomie et la précision.",
+    "Dr Dadoun, médecin esthétique et lasériste à Casablanca : améliorer sans dénaturer. Injections, lasers médicaux et gynécologie esthétique, fondés sur l'anatomie et la précision.",
   openGraph: {
     type: "website",
     locale: "fr_FR",
@@ -27,8 +27,9 @@ const jsonLd = {
   address: {
     "@type": "PostalAddress",
     streetAddress: practice.addressLine1,
-    addressLocality: practice.addressLine2,
-    addressCountry: "FR",
+    addressLocality: practice.city,
+    postalCode: "20250",
+    addressCountry: "MA",
   },
 };
 

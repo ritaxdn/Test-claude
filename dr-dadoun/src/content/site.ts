@@ -5,28 +5,27 @@
 export const doctor = {
   name: "Dr Dadoun",
   fullName: "Docteur Dadoun", // À COMPLÉTER : prénom + nom
-  title: "Médecin esthétique",
-  rpps: "10000000000", // À COMPLÉTER : numéro RPPS
-  ordre: "Inscrit au Conseil de l'Ordre des médecins de Paris", // À COMPLÉTER
+  title: "Médecin esthétique · Lasériste",
+  // À COMPLÉTER : numéro d'inscription à l'Ordre National des Médecins (laisser vide tant qu'il n'est pas fourni)
+  ordreNumber: "",
+  ordre: "Inscrit à l'Ordre National des Médecins du Maroc",
 };
 
 export const practice = {
-  addressLine1: "12 avenue Victor Hugo", // À COMPLÉTER
-  addressLine2: "75016 Paris", // À COMPLÉTER
-  phone: "01 23 45 67 89", // À COMPLÉTER
-  phoneHref: "+33123456789", // À COMPLÉTER
+  addressLine1: "N°02 Rue Savoie, Quartier des Hôpitaux",
+  addressLine2: "20250 Casablanca, Maroc",
+  city: "Casablanca",
+  phone: "05 22 49 01 09",
+  phoneHref: "+212522490109",
   email: "contact@dr-dadoun.fr", // À COMPLÉTER
   bookingUrl: "/rendez-vous",
-  mapsUrl: "https://maps.google.com/?q=12+avenue+Victor+Hugo+75016+Paris", // À COMPLÉTER
-  access: [
-    "Métro : Victor Hugo (ligne 2)",
-    "Parking : Parking Victor Hugo à 2 min",
-    "Cabinet accessible aux personnes à mobilité réduite",
-  ],
+  mapsUrl: "https://www.google.com/maps/search/?api=1&query=N%C2%B002+Rue+Savoie+Quartier+des+H%C3%B4pitaux+Casablanca",
+  // À COMPLÉTER : indications d'accès (parking, étage…)
+  access: [] as string[],
+  // À CONFIRMER : heure de fermeture et samedi.
   hours: [
-    { day: "Lundi – Vendredi", time: "9h00 – 19h30" },
-    { day: "Samedi", time: "9h00 – 13h00" },
-    { day: "Dimanche", time: "Fermé" },
+    { day: "Lundi – Vendredi", time: "À partir de 13h30" },
+    { day: "Samedi – Dimanche", time: "Fermé" },
   ],
 };
 
@@ -35,18 +34,17 @@ export const nav = [
   { href: "/#soins", label: "Soins" },
   { href: "/#docteur", label: "Le Docteur" },
   { href: "/#parcours", label: "Parcours" },
-  { href: "/journal", label: "Journal" },
   { href: "/formations", label: "Formations" },
   { href: "/#cabinet", label: "Cabinet" },
 ];
 
 export const hero = {
-  eyebrow: "Médecine esthétique · Paris",
+  eyebrow: "Médecine esthétique · Casablanca",
   // Le titre est affiché en 3 lignes ; la vignette photo s'insère au début de la 2e.
   title: ["Améliorer", "sans", "dénaturer"],
   text: "Chaque visage a son anatomie, ses proportions, son identité. Le Dr Dadoun ne cherche pas à y appliquer un idéal standardisé : il corrige ce qui peut raisonnablement l'être, et préserve tout le reste.",
   stats: [
-    { value: "15+", label: "Années d'expérience" }, // À COMPLÉTER : chiffre réel
+    { value: "35+", label: "Années d'expérience" },
     { value: "3", label: "Territoires d'expertise" },
     { value: "100 %", label: "Actes réalisés par le médecin" },
     { value: "1", label: "Même médecin, du diagnostic au suivi" },
@@ -126,13 +124,8 @@ export const about = {
     "Minutieux, il prend le temps d'observer les détails — asymétries, proportions, qualité de peau — avant de proposer quoi que ce soit. Et il reste présent après le soin : le suivi fait partie intégrante de sa pratique.",
     "Il transmet aussi son savoir aux professionnels de santé, à travers des formations sur les injections, les lasers et l'anatomie appliquée.",
   ],
-  credentials: [
-    // À COMPLÉTER : diplômes et formations réels
-    "Doctorat en médecine",
-    "Diplôme Inter-Universitaire de médecine morphologique et anti-âge",
-    "Formations spécialisées en lasers médicaux et injectables",
-    "Formateur auprès des professionnels de santé",
-  ],
+  // À COMPLÉTER : diplômes et formations réels (liste vide = section masquée).
+  credentials: [] as string[],
   quote: "Mon rôle n'est pas de transformer un visage, mais de l'améliorer sans le dénaturer.",
 };
 
@@ -313,7 +306,7 @@ export const faq = [
   },
   {
     q: "Les soins sont-ils remboursés ?",
-    a: "Les actes de médecine esthétique ne sont pas pris en charge par l'Assurance Maladie. Un devis détaillé vous est remis avant toute intervention.",
+    a: "Les actes de médecine esthétique ne sont pas pris en charge par l'assurance maladie ni par les mutuelles. Un devis détaillé vous est remis avant toute intervention.",
   },
 ];
 
@@ -325,7 +318,7 @@ export const training = {
   audience: "Médecins et professionnels de santé habilités",
   modules: [
     {
-      title: "Anatomie appliquée aux injections",
+      title: "Anatomie appliquée",
       text: "Repères osseux, plans d'injection, zones à risque vasculaire : les fondamentaux pour des gestes sûrs et précis.",
     },
     {
@@ -334,11 +327,11 @@ export const training = {
     },
     {
       title: "Lasers médicaux",
-      text: "Laser CO₂, endolifting, diode vasculaire : choix des paramètres, indications et sécurité.",
+      text: "Choix des paramètres, indications, protocoles et sécurité.",
     },
     {
-      title: "Matériel & technologies",
-      text: "Prise en main du matériel associé aux techniques enseignées, pour une mise en pratique immédiate.",
+      title: "Endolifting",
+      text: "Approche, indications, paramètres et maîtrise de la technique.",
     },
   ],
   promises: ["Pratique encadrée", "Petits groupes", "Anatomie au cœur", "Suivi après la formation"],
@@ -352,16 +345,17 @@ export const booking = {
   slotMinutes: 30,
   maxDaysAhead: 60,
   // 0 = dimanche … 6 = samedi. Plages au format "HH:MM".
+  // À CONFIRMER : heure de fermeture (19h30 par défaut) et ouverture le samedi.
   openings: {
-    1: [["09:00", "12:30"], ["14:00", "19:30"]],
-    2: [["09:00", "12:30"], ["14:00", "19:30"]],
-    3: [["09:00", "12:30"], ["14:00", "19:30"]],
-    4: [["09:00", "12:30"], ["14:00", "19:30"]],
-    5: [["09:00", "12:30"], ["14:00", "19:30"]],
-    6: [["09:00", "13:00"]],
+    1: [["13:30", "19:30"]],
+    2: [["13:30", "19:30"]],
+    3: [["13:30", "19:30"]],
+    4: [["13:30", "19:30"]],
+    5: [["13:30", "19:30"]],
   } as Record<number, [string, string][]>,
   // À COMPLÉTER : jours de fermeture exceptionnelle (congés, jours fériés)
-  closedDates: ["2026-11-01", "2026-11-11", "2026-12-25", "2027-01-01"],
+  // Jours fériés fixes au Maroc (à compléter avec les fêtes religieuses et les congés du cabinet).
+  closedDates: ["2026-11-06", "2026-11-18", "2027-01-01", "2027-01-11", "2027-05-01", "2027-07-30", "2027-08-14", "2027-08-20", "2027-08-21"],
   // Besoins proposés à cocher dans le formulaire (pas de texte libre).
   needs: [
     {

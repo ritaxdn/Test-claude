@@ -14,7 +14,7 @@ export type Course = {
 export type Session = {
   course: string; // slug de la formation concernée
   date: string; // ex. "12 – 13 mars 2027"
-  place: string; // ex. "Paris 16e"
+  place: string; // ex. "Casablanca"
   format: string; // modalités, ex. "2 jours · théorie + pratique · 8 participants max."
   status?: "open" | "full";
 };
