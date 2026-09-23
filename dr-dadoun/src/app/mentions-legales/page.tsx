@@ -52,10 +52,12 @@ export default function MentionsLegales() {
           <section>
             <h2>Données personnelles</h2>
             <p>
-              Ce site ne collecte aucune donnée personnelle et n&apos;utilise pas de cookies de
-              suivi. La prise de rendez-vous en ligne est assurée par Doctolib, soumis à sa propre
-              politique de confidentialité. Conformément au RGPD, vous pouvez exercer vos droits
-              d&apos;accès, de rectification et de suppression en écrivant à {practice.email}.
+              Les informations saisies dans le formulaire de prise de rendez-vous (nom, prénom,
+              téléphone, e-mail, message) sont transmises au cabinet dans le seul but de traiter
+              votre demande. Elles ne sont ni cédées ni utilisées à des fins commerciales, et sont
+              supprimées une fois la demande traitée. Le site n&apos;utilise pas de cookies de suivi.
+              Conformément au RGPD, vous pouvez exercer vos droits d&apos;accès, de rectification et
+              de suppression en écrivant à {practice.email}.
             </p>
           </section>
         </div>

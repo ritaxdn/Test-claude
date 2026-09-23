@@ -16,7 +16,7 @@ export const practice = {
   phone: "01 23 45 67 89", // À COMPLÉTER
   phoneHref: "+33123456789", // À COMPLÉTER
   email: "contact@dr-dadoun.fr", // À COMPLÉTER
-  bookingUrl: "https://www.doctolib.fr", // À COMPLÉTER : lien Doctolib du cabinet
+  bookingUrl: "/rendez-vous",
   mapsUrl: "https://maps.google.com/?q=12+avenue+Victor+Hugo+75016+Paris", // À COMPLÉTER
   access: [
     "Métro : Victor Hugo (ligne 2)",
@@ -31,12 +31,13 @@ export const practice = {
 };
 
 export const nav = [
-  { href: "#docteur", label: "Le Docteur" },
-  { href: "#soins", label: "Soins" },
-  { href: "#approche", label: "Approche" },
-  { href: "#parcours", label: "Parcours" },
-  { href: "#faq", label: "FAQ" },
-  { href: "#cabinet", label: "Cabinet" },
+  { href: "/#docteur", label: "Le Docteur" },
+  { href: "/#soins", label: "Soins" },
+  { href: "/#approche", label: "Approche" },
+  { href: "/#parcours", label: "Parcours" },
+  { href: "/journal", label: "Journal" },
+  { href: "/#faq", label: "FAQ" },
+  { href: "/#cabinet", label: "Cabinet" },
 ];
 
 export const hero = {
@@ -232,3 +233,48 @@ export const faq = [
     a: "En ligne via Doctolib, 24h/24, ou par téléphone aux horaires d'ouverture du cabinet.",
   },
 ];
+
+// Prise de rendez-vous en ligne (calendrier du site).
+// Les créneaux proposés découlent de ces horaires ; chaque demande est
+// ensuite confirmée par le cabinet.
+export const booking = {
+  slotMinutes: 30,
+  maxDaysAhead: 60,
+  // 0 = dimanche … 6 = samedi. Plages au format "HH:MM".
+  openings: {
+    1: [["09:00", "12:30"], ["14:00", "19:30"]],
+    2: [["09:00", "12:30"], ["14:00", "19:30"]],
+    3: [["09:00", "12:30"], ["14:00", "19:30"]],
+    4: [["09:00", "12:30"], ["14:00", "19:30"]],
+    5: [["09:00", "12:30"], ["14:00", "19:30"]],
+    6: [["09:00", "13:00"]],
+  } as Record<number, [string, string][]>,
+  // À COMPLÉTER : jours de fermeture exceptionnelle (congés, jours fériés)
+  closedDates: ["2026-11-01", "2026-11-11", "2026-12-25", "2027-01-01"],
+  types: [
+    {
+      id: "premiere",
+      label: "Première consultation",
+      duration: "30 min",
+      text: "Bilan, analyse du visage et plan de traitement personnalisé.",
+    },
+    {
+      id: "suivi",
+      label: "Consultation de suivi",
+      duration: "20 min",
+      text: "Contrôle après un soin ou réévaluation de votre protocole.",
+    },
+    {
+      id: "injection",
+      label: "Séance d'injections",
+      duration: "30 – 45 min",
+      text: "Pour les patients ayant déjà eu leur consultation préalable.",
+    },
+    {
+      id: "peau-laser",
+      label: "Soin de peau ou laser",
+      duration: "30 – 60 min",
+      text: "Peeling, microneedling, laser… selon le protocole défini.",
+    },
+  ],
+};

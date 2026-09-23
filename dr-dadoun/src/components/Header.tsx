@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { doctor, nav, practice } from "@/content/site";
 
@@ -24,12 +25,12 @@ export function Header() {
       }`}
     >
       <div className="mx-auto flex h-18 max-w-6xl items-center justify-between px-5 md:px-8">
-        <a href="#top" className="flex flex-col leading-none" onClick={() => setOpen(false)}>
+        <Link href="/" className="flex flex-col leading-none" onClick={() => setOpen(false)}>
           <span className="font-display text-2xl italic tracking-tight">{doctor.name}</span>
           <span className="mt-1 text-[0.62rem] uppercase tracking-[0.3em] text-muted">
             {doctor.title}
           </span>
-        </a>
+        </Link>
 
         <nav aria-label="Navigation principale" className="hidden items-center gap-7 lg:flex">
           {nav.map((item) => (
@@ -43,8 +44,6 @@ export function Header() {
           ))}
           <a
             href={practice.bookingUrl}
-            target="_blank"
-            rel="noopener noreferrer"
             className="rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-porcelain transition-colors hover:bg-rose-deep"
           >
             Prendre rendez-vous
@@ -82,8 +81,6 @@ export function Header() {
           </ul>
           <a
             href={practice.bookingUrl}
-            target="_blank"
-            rel="noopener noreferrer"
             className="mt-6 block rounded-full bg-ink py-3.5 text-center text-sm font-medium text-porcelain"
           >
             Prendre rendez-vous

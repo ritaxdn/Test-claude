@@ -1,6 +1,10 @@
 import { ArrowUpRight, Clock, MapPin, Phone, Mail, Plus } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import Link from "next/link";
+import { ArticleCard } from "@/components/ArticleCard";
+import { BookingCalendar } from "@/components/BookingCalendar";
+import { articles, expertise } from "@/content/journal";
 import {
   about,
   doctor,
@@ -16,8 +20,6 @@ function BookingButton({ variant = "dark" }: { variant?: "dark" | "light" }) {
   return (
     <a
       href={practice.bookingUrl}
-      target="_blank"
-      rel="noopener noreferrer"
       className={`group inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-medium transition-colors ${
         variant === "dark"
           ? "bg-ink text-porcelain hover:bg-rose-deep"
@@ -210,8 +212,36 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Le savoir */}
+        <section id="savoir" className="py-24 md:py-32">
+          <div className="mx-auto max-w-6xl px-5 md:px-8">
+            <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+              <SectionTitle eyebrow="Le savoir" title="Une expertise médicale, partagée avec vous" />
+              <Link
+                href="/journal"
+                className="inline-flex items-center gap-1.5 text-sm font-medium underline decoration-rose underline-offset-4"
+              >
+                Tous les articles du Journal <ArrowUpRight size={14} />
+              </Link>
+            </div>
+            <div className="mt-14 grid gap-px overflow-hidden rounded-3xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+              {expertise.map((e) => (
+                <div key={e.title} className="bg-porcelain p-7">
+                  <h3 className="font-display text-xl">{e.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-ink-soft">{e.text}</p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-6 grid gap-6 md:grid-cols-3">
+              {articles.slice(0, 3).map((a, i) => (
+                <ArticleCard key={a.slug} article={a} index={i} />
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* FAQ */}
-        <section id="faq" className="bg-sand/60 py-24 md:py-32">
+        <section id="faq" className="border-t border-line py-24 md:py-32">
           <div className="mx-auto grid max-w-6xl gap-12 px-5 md:px-8 lg:grid-cols-[1fr_1.6fr]">
             <div>
               <SectionTitle eyebrow="Questions fréquentes" title="Vos questions, nos réponses" />
@@ -233,6 +263,22 @@ export default function Home() {
                   <p className="mt-4 pr-10 leading-relaxed text-ink-soft">{item.a}</p>
                 </details>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Rendez-vous */}
+        <section id="rendez-vous" className="bg-sand/60 py-24 md:py-32">
+          <div className="mx-auto max-w-6xl px-5 md:px-8">
+            <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+              <SectionTitle eyebrow="Rendez-vous en ligne" title="Choisissez votre créneau" />
+              <p className="max-w-sm text-ink-soft">
+                Sélectionnez le motif, le jour et l&apos;heure : le cabinet vous confirme le rendez-vous
+                sous 24 h ouvrées.
+              </p>
+            </div>
+            <div className="mt-12">
+              <BookingCalendar />
             </div>
           </div>
         </section>
