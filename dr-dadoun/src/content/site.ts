@@ -93,7 +93,7 @@ export const about = {
     // À COMPLÉTER : biographie réelle du Dr Dadoun
     "J'exerce la médecine esthétique à l'intersection de trois exigences : la rigueur médicale, la maîtrise technique et le regard esthétique. Pour moi, l'anatomie est le fondement de chaque geste.",
     "Je prends le temps d'observer les détails — asymétries, proportions, qualité de peau — avant de proposer quoi que ce soit. Et je reste présent après le soin : le suivi fait partie intégrante de ma pratique.",
-    "Je transmets aussi mon savoir aux professionnels de santé, à travers des formations sur les injections, les lasers et l'anatomie appliquée.",
+    "Je transmets aussi mon savoir aux médecins, à travers des formations sur les injections, les lasers médicaux et l'endolifting.",
   ],
   // Parcours & diplômes : écoles, diplômes, formations, étapes (du plus récent au plus ancien).
   // Utilisé sur l'accueil (section « Le Dr Dadoun ») et sur /formations.
@@ -283,17 +283,13 @@ export const faq = [
   },
 ];
 
-// Formations pour les professionnels de santé (B2B)
+// Formations pour les médecins (B2B)
 export const training = {
   title: "Former les praticiens",
   intro:
-    "Je transmets ce que je pratique : une approche fondée sur l'anatomie, la maîtrise technique et la sécurité du patient.",
-  audience: "Médecins et professionnels de santé habilités",
+    "Je transmets ce que je pratique : une approche fondée sur l'indication, la maîtrise technique et la sécurité du patient.",
+  audience: "Médecins",
   modules: [
-    {
-      title: "Anatomie appliquée",
-      text: "Repères osseux, plans d'injection, zones à risque vasculaire : les fondamentaux pour des gestes sûrs et précis.",
-    },
     {
       title: "Injectables",
       text: "Toxine botulique et acide hyaluronique : indications, techniques, dosages, prévention et gestion des complications.",
@@ -307,8 +303,8 @@ export const training = {
       text: "Approche, indications, paramètres et maîtrise de la technique.",
     },
   ],
-  promises: ["Pratique encadrée", "Petits groupes", "Anatomie au cœur", "Suivi après la formation"],
-  contactSubject: "Formations professionnelles — demande d'information",
+  promises: ["Pratique encadrée", "Petits groupes", "Suivi après la formation"],
+  contactSubject: "Formations médecins — demande d'information",
 };
 
 // Prise de rendez-vous en ligne (calendrier du site).

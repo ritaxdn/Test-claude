@@ -296,7 +296,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ——— Se former (professionnels) ——— */}
+        {/* ——— Se former (médecins) ——— */}
         <section id="formations" className="pb-24 md:pb-32">
           <div className={section}>
             <Link
@@ -306,7 +306,7 @@ export default function Home() {
               <div className="mesh-4 absolute -bottom-40 -right-24 h-96 w-96 rounded-full opacity-50 blur-3xl" aria-hidden="true" />
               <div className="relative max-w-xl">
                 <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs uppercase tracking-wide">
-                  <GraduationCap size={14} /> Espace professionnels
+                  <GraduationCap size={14} /> Espace médecins
                 </span>
                 <h2 className="mt-8 font-display text-4xl font-medium uppercase leading-[0.98] md:text-6xl">
                   Se former

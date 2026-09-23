@@ -1,4 +1,4 @@
-// Contenu de la page /formations (audience : médecins et professionnels de santé habilités).
+// Contenu de la page /formations (audience : médecins uniquement).
 // Règle : n'ajouter ici que des informations vérifiées. Rien n'est inventé.
 import { about } from "@/content/site";
 
@@ -34,8 +34,8 @@ export const formationsPage = {
       { value: "35+", label: "ans d'expérience" },
       { value: "10+", label: "ans de formation" },
     ],
-    text: "Je transmets ce que je pratique : une approche fondée sur l'anatomie, la maîtrise technique et la sécurité du patient.",
-    audience: "Réservé aux médecins et professionnels de santé habilités",
+    text: "Je transmets ce que je pratique : une approche fondée sur l'indication, la maîtrise technique et la sécurité du patient.",
+    audience: "Réservé aux médecins",
   },
 
   transmission: {
@@ -43,9 +43,9 @@ export const formationsPage = {
     intro:
       "Plus de trente-cinq ans de pratique, plus de dix ans d'enseignement. Je transmets une méthode : comprendre avant d'agir, poser la bonne indication, maîtriser son geste.",
     principles: [
-      { title: "Anatomie", text: "Le fondement de chaque geste : repères, plans, zones à risque." },
       { title: "Indication", text: "Savoir quand agir, comment — et quand s'abstenir." },
       { title: "Maîtrise technique", text: "Des protocoles précis, reproductibles, adaptés à chaque patient." },
+      { title: "Précision", text: "Des gestes et des dosages justes, au millimètre." },
       { title: "Sécurité", text: "Prévenir, reconnaître et prendre en charge les complications." },
     ],
     media: {
@@ -58,11 +58,6 @@ export const formationsPage = {
   // Pour ajouter une formation : ajouter un objet ici. La carte et sa page
   // /formations/<slug> sont créées automatiquement.
   courses: [
-    {
-      slug: "anatomie-appliquee",
-      title: "Anatomie appliquée",
-      summary: "Fondamentaux anatomiques appliqués aux gestes de médecine esthétique.",
-    },
     {
       slug: "injectables",
       title: "Injectables",
@@ -86,7 +81,7 @@ export const formationsPage = {
     points: [
       "Petits groupes",
       "Pratique encadrée",
-      "Anatomie au cœur de l'enseignement",
+      "Indication et sécurité au cœur de l'enseignement",
       "Suivi après la formation",
     ],
     media: { image: "formation-pratique.jpg", label: "Pratique encadrée" },
@@ -119,7 +114,7 @@ export const formationsPage = {
     text: "Recevez le programme détaillé des formations, ou soyez informé dès l'ouverture des prochaines sessions.",
   },
 
-  // Formulaire de demande (professionnels) — envoyé au cabinet par e-mail.
+  // Formulaire de demande (médecins) — envoyé au cabinet par e-mail.
   request: {
     title: ["Vous souhaitez vous former", "à mes côtés ?"],
     text: "Choisissez la ou les formations qui vous intéressent : le cabinet vous répond avec le programme et les prochaines dates.",
@@ -134,7 +129,7 @@ export const formationsPage = {
       "Chirurgien",
       "Gynécologue",
       "Médecin généraliste",
-      "Autre professionnel de santé",
+      "Autre spécialité médicale",
     ],
   },
 
