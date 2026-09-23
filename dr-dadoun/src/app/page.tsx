@@ -103,8 +103,9 @@ const section = "mx-auto max-w-6xl px-5 md:px-8";
 export default function Home() {
   const heroVideo = video("hero.mp4");
   const heroPoster = video("hero-poster.jpg");
+  // Petit écran : visage réduit, centré à droite, en filigrane. Grand écran : à droite, pleine hauteur.
   const heroMedia =
-    "absolute inset-0 h-full w-full object-cover opacity-45 lg:left-auto lg:w-auto lg:aspect-square lg:opacity-100";
+    "absolute right-[-14%] top-[47%] aspect-square w-[72%] max-w-[480px] object-cover opacity-30 sm:right-[-2%] sm:top-[40%] sm:w-[55%] lg:inset-y-0 lg:right-0 lg:top-0 lg:h-full lg:w-auto lg:max-w-none lg:opacity-100";
 
   return (
     <>
@@ -134,7 +135,7 @@ export default function Home() {
                   preload="auto"
                   aria-hidden="true"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/40 to-white/70 lg:bg-gradient-to-r lg:from-white lg:from-35% lg:via-white/40 lg:via-55% lg:to-transparent" />
+                <div className="absolute inset-0 hidden lg:block lg:bg-gradient-to-r lg:from-white lg:from-35% lg:via-white/40 lg:via-55% lg:to-transparent" />
               </>
             ) : (
               <>
