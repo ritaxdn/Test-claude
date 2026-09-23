@@ -2,7 +2,6 @@ import Link from "next/link";
 import {
   ArrowRight,
   ArrowUpRight,
-  Ban,
   GraduationCap,
   CalendarDays,
   Clock,
@@ -214,26 +213,6 @@ export default function Home() {
               ))}
             </ol>
 
-            <div className="mt-3 grid gap-8 rounded-2xl bg-ink p-7 text-white md:grid-cols-[auto_1fr_1.2fr] md:items-center md:p-10">
-              <span className="flex h-14 w-14 items-center justify-center rounded-full bg-accent text-ink">
-                <Ban size={24} strokeWidth={1.75} />
-              </span>
-              <div>
-                <h3 className="font-display text-3xl font-medium">{philosophy.refusals.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-white/70">{philosophy.refusals.text}</p>
-              </div>
-              <div>
-                <ul className="space-y-2">
-                  {philosophy.refusals.reasons.map((r) => (
-                    <li key={r} className="flex gap-3 rounded-xl bg-white/[0.06] px-4 py-3 text-sm">
-                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
-                      {r}
-                    </li>
-                  ))}
-                </ul>
-                <p className="mt-3 text-xs text-white/60">{philosophy.refusals.note}</p>
-              </div>
-            </div>
           </div>
         </section>
 
@@ -301,7 +280,7 @@ export default function Home() {
                     <div className="absolute inset-0 bg-gradient-to-t from-[#07343c]/85 via-[#07343c]/25 to-transparent" />
                     <div className="relative p-7 md:p-10">
                       <p className="text-xs font-medium uppercase tracking-[0.14em] text-white/80">
-                        Univers 0{i + 1} · {u.tagline}
+                        {u.tagline}
                       </p>
                       <h3 className="mt-3 font-display text-4xl font-medium uppercase leading-[0.95] md:text-6xl">{u.title}</h3>
                       <p className="mt-4 max-w-md text-sm leading-relaxed text-white/85">{u.intro}</p>

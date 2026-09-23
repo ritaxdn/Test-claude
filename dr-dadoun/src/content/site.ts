@@ -66,17 +66,6 @@ export const philosophy = {
     { title: "Naturel", text: "Un visage reposé qui reste le vôtre, jamais un visage « refait »." },
     { title: "Suivi", text: "Un contrôle après le soin et un médecin présent si vous avez une question." },
   ],
-  // La preuve comportementale : savoir dire non
-  refusals: {
-    title: "Savoir dire non",
-    text: "Un médecin qui accepte tout ne protège personne. Le Dr Dadoun refuse un acte lorsque :",
-    reasons: [
-      "il ne peut pas donner le résultat que vous recherchez ;",
-      "le risque de complication est trop important ;",
-      "le résultat ne vous conviendrait pas.",
-    ],
-    note: "Dans ce cas, il vous explique pourquoi — et ce qui serait plus adapté.",
-  },
 };
 
 // Les trois piliers de l'expertise

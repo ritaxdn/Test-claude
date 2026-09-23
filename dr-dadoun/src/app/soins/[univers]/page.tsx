@@ -48,7 +48,7 @@ export default async function UniversePage({ params }: Props) {
                 <ArrowLeft size={16} /> Tous les soins
               </Link>
               <p className="mt-10 text-xs font-medium uppercase tracking-[0.14em] text-white/80">
-                Univers 0{index + 1} · {u.tagline}
+                {u.tagline}
               </p>
               <h1 className="mt-3 font-display text-5xl font-medium uppercase leading-[0.92] md:text-8xl">{u.title}</h1>
               <div className="mt-6 flex flex-col justify-between gap-8 md:flex-row md:items-end">
