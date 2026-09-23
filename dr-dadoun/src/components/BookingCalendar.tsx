@@ -109,7 +109,7 @@ function Calendar() {
 
   if (status === "sent" && time) {
     return (
-      <div className="rounded-3xl bg-porcelain p-10 text-center shadow-[0_30px_60px_-35px_rgba(11,42,51,0.45)] md:p-14">
+      <div className="rounded-3xl bg-porcelain p-10 text-center shadow-[0_20px_60px_-40px_rgba(10,27,33,0.4)] md:p-14">
         <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-accent-deep text-porcelain">
           <Check size={26} />
         </span>
@@ -123,11 +123,11 @@ function Calendar() {
     );
   }
 
-  const stepTitle = "font-display text-xl flex items-center gap-3";
+  const stepTitle = "font-display text-xl font-medium flex items-center gap-3";
   const stepNum = "flex h-7 w-7 items-center justify-center rounded-full bg-ink text-xs font-sans text-porcelain";
 
   return (
-    <div className="overflow-hidden rounded-3xl bg-porcelain shadow-[0_30px_60px_-35px_rgba(11,42,51,0.45)]">
+    <div className="overflow-hidden rounded-3xl bg-porcelain shadow-[0_20px_60px_-40px_rgba(10,27,33,0.4)]">
       <div className="grid lg:grid-cols-[1fr_1.35fr]">
         {/* 1. Motif */}
         <div className="border-b border-line p-6 md:p-8 lg:border-b-0 lg:border-r">

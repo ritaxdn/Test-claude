@@ -39,7 +39,7 @@ export default async function ArticlePage({ params }: Props) {
             <ArrowLeft size={16} /> Tous les articles
           </Link>
           <p className="eyebrow mt-10">{article.category}</p>
-          <h1 className="mt-4 font-display text-4xl leading-[1.1] md:text-5xl">{article.title}</h1>
+          <h1 className="mt-4 font-display font-medium text-4xl leading-[1.1] md:text-5xl">{article.title}</h1>
           <p className="mt-6 text-lg leading-relaxed text-ink-soft">{article.excerpt}</p>
           <p className="mt-6 text-sm text-muted">
             Par {doctor.name} · {formatDate(article.date)} · Lecture {article.readingTime}
@@ -60,7 +60,7 @@ export default async function ArticlePage({ params }: Props) {
           <div className="mt-12 space-y-10">
             {article.sections.map((s) => (
               <section key={s.heading}>
-                <h2 className="font-display text-3xl">{s.heading}</h2>
+                <h2 className="font-display text-3xl font-medium">{s.heading}</h2>
                 {s.paragraphs.map((p) => (
                   <p key={p.slice(0, 32)} className="mt-4 text-[1.05rem] leading-[1.8] text-ink-soft">
                     {p}

@@ -1,34 +1,54 @@
 import Link from "next/link";
-import { doctor, practice } from "@/content/site";
+import { doctor, nav, practice } from "@/content/site";
 
 export function Footer() {
   return (
-    <footer className="border-t border-line bg-sand/60">
-      <div className="mx-auto max-w-6xl px-5 py-14 md:px-8">
-        <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
-          <div>
-            <p className="font-display text-3xl italic">{doctor.name}</p>
-            <p className="mt-2 text-xs uppercase tracking-[0.3em] text-muted">{doctor.title}</p>
+    <footer className="p-2 md:p-3">
+      <div className="rounded-[1.75rem] bg-ink text-white">
+        <div className="mx-auto max-w-6xl px-5 py-14 md:px-8">
+          <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
+            <div>
+              <p className="font-display text-5xl font-medium uppercase tracking-tight md:text-6xl">{doctor.name}</p>
+              <p className="mt-2 text-sm text-white/60">{doctor.title}</p>
+            </div>
+            <nav aria-label="Pied de page">
+              <ul className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm text-white/75">
+                {nav.map((item) => (
+                  <li key={item.href}>
+                    <a href={item.href} className="hover:text-white">
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+            <address className="space-y-1 text-sm not-italic text-white/75">
+              <p>{practice.addressLine1}</p>
+              <p>{practice.addressLine2}</p>
+              <p className="pt-2">
+                <a href={`tel:${practice.phoneHref}`} className="hover:text-white">{practice.phone}</a>
+              </p>
+              <p>
+                <a href={`mailto:${practice.email}`} className="hover:text-white">{practice.email}</a>
+              </p>
+            </address>
           </div>
-          <p className="text-sm text-ink-soft">
-            {practice.addressLine1}, {practice.addressLine2} · {practice.phone}
-          </p>
-        </div>
 
-        <p className="mt-10 max-w-3xl text-xs leading-relaxed text-muted">
-          Les informations présentées sur ce site sont délivrées à titre informatif, conformément
-          aux règles déontologiques de la profession médicale. Elles ne se substituent pas à une
-          consultation. Tout acte de médecine esthétique nécessite une consultation préalable et
-          peut comporter des risques et effets secondaires.
-        </p>
-
-        <div className="mt-8 flex flex-col justify-between gap-3 border-t border-line pt-6 text-xs text-muted sm:flex-row">
-          <p>
-            © {new Date().getFullYear()} {doctor.fullName} · RPPS {doctor.rpps}
+          <p className="mt-12 max-w-3xl text-xs leading-relaxed text-white/50">
+            Les informations présentées sur ce site sont délivrées à titre informatif, conformément
+            aux règles déontologiques de la profession médicale. Elles ne se substituent pas à une
+            consultation. Tout acte de médecine esthétique nécessite une consultation préalable et
+            peut comporter des risques et effets secondaires.
           </p>
-          <Link href="/mentions-legales" className="hover:text-ink">
-            Mentions légales & confidentialité
-          </Link>
+
+          <div className="mt-8 flex flex-col justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/50 sm:flex-row">
+            <p>
+              © {new Date().getFullYear()} {doctor.fullName} · RPPS {doctor.rpps}
+            </p>
+            <Link href="/mentions-legales" className="hover:text-white">
+              Mentions légales & confidentialité
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

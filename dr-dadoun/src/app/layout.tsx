@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { bodoni, manrope } from "@/lib/fonts";
+import { inter, interTight } from "@/lib/fonts";
 import { doctor, practice } from "@/content/site";
 import "./globals.css";
 
@@ -34,7 +34,7 @@ const jsonLd = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" className={`${bodoni.variable} ${manrope.variable}`}>
+    <html lang="fr" className={`${interTight.variable} ${inter.variable}`}>
       <body>
         {children}
         <script

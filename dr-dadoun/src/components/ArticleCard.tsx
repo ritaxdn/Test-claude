@@ -6,15 +6,15 @@ export function ArticleCard({ article, index }: { article: Article; index: numbe
   return (
     <Link
       href={`/journal/${article.slug}`}
-      className="group flex flex-col rounded-3xl border border-line bg-porcelain p-7 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_50px_-28px_rgba(11,42,51,0.4)]"
+      className="group flex flex-col rounded-2xl bg-sand p-6 transition-colors duration-300 hover:bg-accent-soft/50"
     >
       <div className="flex items-center justify-between text-xs">
         <span className="eyebrow">{article.category}</span>
-        <span className="font-display text-sm italic text-muted">N° {String(index + 1).padStart(2, "0")}</span>
+        <span className="font-display text-sm font-medium text-muted">N° {String(index + 1).padStart(2, "0")}</span>
       </div>
-      <h3 className="mt-6 font-display text-2xl leading-snug">{article.title}</h3>
+      <h3 className="mt-6 font-display text-2xl font-medium leading-tight">{article.title}</h3>
       <p className="mt-3 flex-1 text-sm leading-relaxed text-ink-soft">{article.excerpt}</p>
-      <div className="mt-6 flex items-center justify-between border-t border-line pt-5 text-xs text-muted">
+      <div className="mt-6 flex items-center justify-between border-t border-ink/10 pt-5 text-xs text-muted">
         <span>
           {formatDate(article.date)} · {article.readingTime}
         </span>

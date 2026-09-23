@@ -1,15 +1,15 @@
-import { Bodoni_Moda, Manrope } from "next/font/google";
+import { Inter, Inter_Tight } from "next/font/google";
 
-export const bodoni = Bodoni_Moda({
-  variable: "--font-bodoni",
+export const interTight = Inter_Tight({
+  variable: "--font-inter-tight",
   subsets: ["latin"],
-  style: ["normal", "italic"],
+  weight: ["400", "500", "600"],
   display: "swap",
 });
 
-export const manrope = Manrope({
-  variable: "--font-manrope",
+export const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
+  weight: ["400", "500", "600"],
   display: "swap",
 });

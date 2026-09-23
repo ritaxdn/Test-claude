@@ -42,14 +42,44 @@ export const nav = [
 
 export const hero = {
   eyebrow: "Médecine esthétique · Paris",
-  title: ["Révéler votre beauté,", "sans la transformer."],
+  // Le titre est affiché en 3 lignes ; la vignette photo s'insère au début de la 2e.
+  title: ["Révéler", "votre beauté", "naturelle"],
   text: "Des soins médicaux sur mesure, pensés pour un résultat naturel, harmonieux et durable — dans le respect de votre visage et de votre histoire.",
-  facts: [
-    { value: "Consultation", label: "d'évaluation personnalisée" },
-    { value: "Produits", label: "certifiés CE, traçabilité complète" },
-    { value: "Suivi", label: "médical après chaque soin" },
+  stats: [
+    { value: "15+", label: "Années d'expérience" }, // À COMPLÉTER : chiffre réel
+    { value: "9", label: "Soins médicaux proposés" },
+    { value: "100 %", label: "Actes réalisés par le médecin" },
+    { value: "24 h", label: "Pour confirmer votre rendez-vous" },
   ],
 };
+
+export const highlights = [
+  {
+    image: "highlight-consultation.jpg",
+    title: "Consultation sur mesure",
+    text: "Un diagnostic complet du visage et un plan de traitement personnalisé.",
+  },
+  {
+    image: "highlight-injections.jpg",
+    title: "Injections expertes",
+    text: "Acide hyaluronique et toxine botulique, dosés avec justesse.",
+  },
+  {
+    image: "highlight-peau.jpg",
+    title: "Qualité de peau",
+    text: "Peelings, skinboosters et microneedling pour un teint lumineux.",
+  },
+  {
+    image: "highlight-lasers.jpg",
+    title: "Lasers médicaux",
+    text: "Des technologies de dernière génération, sous contrôle médical.",
+  },
+  {
+    image: "highlight-rdv.jpg",
+    title: "Rendez-vous en ligne",
+    text: "Choisissez votre créneau en quelques clics, confirmation sous 24 h.",
+  },
+];
 
 export const about = {
   title: "Une médecine esthétique de la justesse",
