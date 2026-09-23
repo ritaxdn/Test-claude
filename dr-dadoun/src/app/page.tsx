@@ -458,12 +458,12 @@ export default function Home() {
                   </span>
                   <h2 className="mt-8 font-display text-4xl font-medium leading-[1.05] md:text-5xl">{training.title}</h2>
                   <p className="mt-4 max-w-md text-sm leading-relaxed text-white/70">{training.intro}</p>
-                  <a
+                  <Link
                     href="/formations"
                     className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 text-xs font-medium uppercase tracking-wide text-ink hover:bg-accent-soft"
                   >
                     Découvrir les formations <ArrowUpRight size={14} />
-                  </a>
+                  </Link>
                 </div>
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
