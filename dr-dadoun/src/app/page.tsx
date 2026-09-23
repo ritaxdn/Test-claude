@@ -6,23 +6,12 @@ import {
   GraduationCap,
   CalendarDays,
   Clock,
-  Flame,
-  Flower2,
-  HeartPulse,
-  Gem,
   Mail,
   MapPin,
   Mouse,
   Phone,
-  Pipette,
   Plus,
-  ScanFace,
   Search,
-  Sparkles,
-  Sun,
-  Syringe,
-  Waves,
-  Zap,
   type LucideIcon,
 } from "lucide-react";
 import { Header } from "@/components/Header";
@@ -45,20 +34,9 @@ import {
   steps,
   training,
   treatments,
+  universes,
 } from "@/content/site";
 
-const treatmentIcons: Record<string, LucideIcon> = {
-  "Toxine botulique": ScanFace,
-  "Acide hyaluronique": Syringe,
-  "Laser CO₂": Flame,
-  Endolifting: Waves,
-  "Diode vasculaire": Zap,
-  "Laser gynécologique": Sun,
-  "Éclaircissement intime": Sparkles,
-  "Comblement des grandes lèvres": Pipette,
-  Nymphoplastie: Flower2,
-  "O-Shot & G-Shot": HeartPulse,
-};
 
 function PillLink({
   href,
@@ -285,9 +263,9 @@ export default function Home() {
               <SectionTitle
                 title={
                   <>
-                    Les soins,
+                    Deux univers,
                     <br />
-                    <span className="text-accent-deep">selon l&apos;indication</span>
+                    <span className="text-accent-deep">une même exigence</span>
                   </>
                 }
                 text="Chaque soin est précédé d'une consultation médicale afin de vérifier son indication et l'absence de contre-indication."
@@ -302,38 +280,41 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="mt-14 space-y-12">
-              {treatments.map((cat) => (
-                <div key={cat.id}>
-                  <div className="mb-4 flex flex-col justify-between gap-1 border-b border-line pb-3 sm:flex-row sm:items-end">
-                    <h3 className="font-display text-2xl font-medium">{cat.title}</h3>
-                    <p className="text-sm text-muted">{cat.intro}</p>
-                  </div>
-                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                    {cat.treatments.map((t) => {
-                      const Icon = treatmentIcons[t.name] ?? Gem;
-                      return (
-                        <details key={t.name} className="group rounded-2xl bg-sand p-2.5 transition-colors open:bg-accent-soft/40">
-                          <summary className="flex cursor-pointer items-center gap-4">
-                            <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-white text-accent-deep shadow-[0_6px_20px_-12px_rgba(10,27,33,0.35)]">
-                              <Icon size={24} strokeWidth={1.5} />
-                            </span>
-                            <span className="flex-1 text-[0.95rem] font-medium">{t.name}</span>
-                            <Plus size={18} className="faq-icon mr-3 shrink-0 text-muted transition-transform" />
-                          </summary>
-                          <div className="px-2.5 pb-3 pt-4 text-sm leading-relaxed text-ink-soft">
-                            <p>{t.description}</p>
-                            <p className="mt-3 flex flex-wrap gap-2 text-xs">
-                              <span className="rounded-full bg-white px-3 py-1">Durée : {t.duration}</span>
-                              <span className="rounded-full bg-white px-3 py-1">Suites : {t.downtime}</span>
-                            </p>
-                          </div>
-                        </details>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
+            <div className="mt-14 grid gap-3 lg:grid-cols-2">
+              {universes.map((u, i) => {
+                const acts = treatments
+                  .filter((c) => u.categories.includes(c.id))
+                  .reduce((n, c) => n + c.treatments.length, 0);
+                return (
+                  <Link
+                    key={u.slug}
+                    href={`/soins/${u.slug}`}
+                    className="group relative flex min-h-[30rem] flex-col justify-end overflow-hidden rounded-2xl text-white md:min-h-[38rem]"
+                  >
+                    <Photo
+                      src={image(u.image)}
+                      alt={u.title}
+                      fallback={i === 0 ? 1 : 2}
+                      sizes="(min-width:1024px) 50vw, 100vw"
+                      className="transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#07343c]/85 via-[#07343c]/25 to-transparent" />
+                    <div className="relative p-7 md:p-10">
+                      <p className="text-xs font-medium uppercase tracking-[0.14em] text-white/80">
+                        Univers 0{i + 1} · {u.tagline}
+                      </p>
+                      <h3 className="mt-3 font-display text-4xl font-medium uppercase leading-[0.95] md:text-6xl">{u.title}</h3>
+                      <p className="mt-4 max-w-md text-sm leading-relaxed text-white/85">{u.intro}</p>
+                      <span className="mt-8 inline-flex items-center gap-3 text-xs font-medium uppercase tracking-wide">
+                        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-ink transition-transform duration-300 group-hover:translate-x-1">
+                          <ArrowRight size={16} />
+                        </span>
+                        Découvrir les {acts} actes
+                      </span>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </section>

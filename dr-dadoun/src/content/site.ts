@@ -256,6 +256,32 @@ export const treatments: TreatmentCategory[] = [
   },
 ];
 
+// Les deux univers de soins. Chacun regroupe des familles d'actes (ids de `treatments`).
+// Page de chaque univers : /soins/<slug>
+export const universes = [
+  {
+    slug: "visage-peau",
+    title: "Visage & peau",
+    tagline: "Injections et lasers médicaux",
+    intro:
+      "Rides d'expression, volumes, qualité de peau, relâchement : des traitements fondés sur l'anatomie du visage, pour un résultat qui reste le vôtre.",
+    image: "univers-visage.jpg",
+    categories: ["injections", "lasers"],
+  },
+  {
+    slug: "gynecologie-esthetique",
+    title: "Gynécologie esthétique",
+    tagline: "Une médecine de l'intime",
+    intro:
+      "Des actes médicaux intimes, abordés avec sérieux, pudeur et confidentialité. Chaque demande commence par une consultation, sans obligation de soin.",
+    image: "univers-gyneco.jpg",
+    categories: ["gyneco"],
+    note: "Consultations dans un cadre strictement médical et confidentiel.",
+  },
+];
+
+export const getUniverse = (slug: string) => universes.find((u) => u.slug === slug);
+
 export const steps = [
   {
     title: "Consultation",
@@ -347,6 +373,35 @@ export const booking = {
   } as Record<number, [string, string][]>,
   // À COMPLÉTER : jours de fermeture exceptionnelle (congés, jours fériés)
   closedDates: ["2026-11-01", "2026-11-11", "2026-12-25", "2027-01-01"],
+  // Besoins proposés à cocher dans le formulaire (pas de texte libre).
+  needs: [
+    {
+      group: "Visage & peau",
+      options: [
+        "Rides d'expression",
+        "Perte de volume",
+        "Lèvres",
+        "Ovale du visage / relâchement",
+        "Qualité de peau / texture",
+        "Taches / rougeurs",
+        "Cicatrices",
+      ],
+    },
+    {
+      group: "Gynécologie esthétique",
+      options: [
+        "Sécheresse / inconfort intime",
+        "Relâchement intime",
+        "Volume des grandes lèvres",
+        "Petites lèvres",
+        "Pigmentation intime",
+      ],
+    },
+    {
+      group: "Autre",
+      options: ["Avis sur un soin réalisé ailleurs", "Je ne sais pas encore, je souhaite un conseil"],
+    },
+  ],
   types: [
     {
       id: "premiere",

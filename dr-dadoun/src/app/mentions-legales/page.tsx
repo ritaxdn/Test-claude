@@ -53,7 +53,7 @@ export default function MentionsLegales() {
             <h2>Données personnelles</h2>
             <p>
               Les informations saisies dans le formulaire de prise de rendez-vous (nom, prénom,
-              téléphone, e-mail, message) sont transmises au cabinet dans le seul but de traiter
+              téléphone, e-mail, besoins cochés) sont transmises au cabinet dans le seul but de traiter
               votre demande. Elles ne sont ni cédées ni utilisées à des fins commerciales, et sont
               supprimées une fois la demande traitée. Le site n&apos;utilise pas de cookies de suivi.
               Conformément au RGPD, vous pouvez exercer vos droits d&apos;accès, de rectification et

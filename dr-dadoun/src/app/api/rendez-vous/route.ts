@@ -12,6 +12,8 @@ const clean = (v: unknown, max = 120) => (typeof v === "string" ? v.trim().slice
 const escape = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 
+const allNeeds = new Set(booking.needs.flatMap((g) => g.options));
+
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
   if (!body || typeof body !== "object") {
@@ -29,7 +31,10 @@ export async function POST(request: Request) {
     lastName: clean(body.lastName),
     phone: clean(body.phone, 30),
     email: clean(body.email),
-    message: clean(body.message, 600),
+    // Seuls les besoins de la liste proposée sont acceptés.
+    needs: Array.isArray(body.needs)
+      ? body.needs.filter((n: unknown): n is string => typeof n === "string" && allNeeds.has(n)).slice(0, 20)
+      : [],
   };
 
   const validType = booking.types.some((t) => t.label === data.type);
@@ -60,7 +65,7 @@ export async function POST(request: Request) {
     ["Patient", `${data.firstName} ${data.lastName}`],
     ["Téléphone", data.phone],
     ["E-mail", data.email],
-    ["Message", data.message || "—"],
+    ["Besoins", data.needs.length ? data.needs.join(", ") : "—"],
   ];
 
   const res = await fetch("https://api.resend.com/emails", {
