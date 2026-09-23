@@ -64,6 +64,11 @@ export default function MentionsLegales() {
               pouvez exercer vos droits d&apos;accès, de rectification et d&apos;opposition
               en écrivant à {practice.email}.
             </p>
+            <p className="mt-4">
+              Les adresses laissées pour la newsletter Cellulift Academy (formations destinées aux
+              médecins) sont utilisées uniquement pour l&apos;envoi de cette newsletter. Chaque e-mail
+              contient un lien de désinscription.
+            </p>
           </section>
         </div>
       </main>

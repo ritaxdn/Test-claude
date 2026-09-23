@@ -111,7 +111,16 @@ export const formationsPage = {
 
   final: {
     title: ["Vous souhaitez vous former", "à mes côtés ?"],
-    text: "Recevez le programme détaillé des formations, ou soyez informé dès l'ouverture des prochaines sessions.",
+    text: "Recevez le programme détaillé d'une formation ou inscrivez-vous à une session.",
+  },
+
+  // Newsletter Cellulift Academy : pour rester informé des prochaines sessions.
+  newsletter: {
+    name: "Cellulift Academy",
+    title: "Restez informé des prochaines sessions",
+    text: "Inscrivez-vous à la newsletter Cellulift Academy : vous recevrez en priorité les dates, les lieux et les nouvelles formations.",
+    consent:
+      "J'accepte de recevoir la newsletter de Cellulift Academy. Je peux me désinscrire à tout moment via le lien présent dans chaque e-mail.",
   },
 
   // Formulaire de demande (médecins) — envoyé au cabinet par e-mail.
@@ -120,7 +129,6 @@ export const formationsPage = {
     text: "Choisissez la ou les formations qui vous intéressent : le cabinet vous répond avec le programme et les prochaines dates.",
     kinds: [
       { id: "programme", label: "Recevoir le programme" },
-      { id: "sessions", label: "Être informé des prochaines sessions" },
       { id: "inscription", label: "M'inscrire à une session" },
     ],
     professions: [

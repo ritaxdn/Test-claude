@@ -36,6 +36,18 @@ Variables d'environnement à définir (sinon les demandes sont seulement journal
 | `BOOKING_EMAIL_TO` | `secretariat@dr-dadoun.fr` |
 | `BOOKING_EMAIL_FROM` | `Site Dr Dadoun <rdv@dr-dadoun.fr>` |
 
+### Newsletter Cellulift Academy
+
+Les inscriptions à la newsletter (page `/formations`) sont ajoutées à une *Audience* Resend,
+qui sert de base de données des inscrits et permet d'envoyer les newsletters depuis Resend.
+
+| Variable | Rôle |
+| --- | --- |
+| `RESEND_AUDIENCE_ID` | identifiant de l'audience « Cellulift Academy » (Resend → Audiences) |
+
+La clé `RESEND_API_KEY` doit avoir l'accès **Full access** pour ajouter des contacts.
+Sans audience configurée, chaque inscription est envoyée par e-mail au cabinet.
+
 ## Déploiement (Vercel)
 
 Choisir `dr-dadoun` comme *Root Directory* du projet.

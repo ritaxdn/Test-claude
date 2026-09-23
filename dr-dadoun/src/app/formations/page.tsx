@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
-import { ArrowDown, ArrowRight, ArrowUpRight, CalendarDays, Check, GraduationCap, Mail } from "lucide-react";
+import { ArrowDown, ArrowRight, CalendarDays, Check, GraduationCap, Mail } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { MediaSlot } from "@/components/formations/MediaSlot";
 import { FormationRequestSection } from "@/components/formations/FormationRequest";
+import { NewsletterSignup } from "@/components/formations/NewsletterSignup";
 import { RevealOnScroll } from "@/components/formations/RevealOnScroll";
 import { formationsPage as f } from "@/content/formations";
 import { practice } from "@/content/site";
@@ -237,11 +238,6 @@ export default function Formations() {
                 <br />
                 <span className="text-accent-deep">formations</span>
               </h2>
-              {f.sessions.list.length > 0 && (
-                <Link href={requestLink("sessions")} className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-wide underline decoration-accent underline-offset-4">
-                  Être informé des prochaines sessions <ArrowUpRight size={14} />
-                </Link>
-              )}
             </div>
 
             {f.sessions.list.length > 0 ? (
@@ -269,19 +265,24 @@ export default function Formations() {
                 ))}
               </ul>
             ) : (
-              <div
-                className="mt-12 flex flex-col items-start justify-between gap-6 rounded-2xl border border-dashed border-ink/20 p-8 md:flex-row md:items-center md:p-10"
-                data-reveal
-              >
-                <div className="flex items-center gap-4">
-                  <CalendarDays size={22} strokeWidth={1.5} className="shrink-0 text-accent-deep" />
-                  <p className="font-display text-xl font-medium md:text-2xl">{f.sessions.empty}</p>
-                </div>
-                <Link href={requestLink("sessions")} className={`${pill} shrink-0 bg-ink text-white hover:bg-accent-deep`}>
-                  <Mail size={14} /> Être informé des prochaines sessions
-                </Link>
-              </div>
+              <p className="mt-12 flex items-center gap-4 border-y border-line py-8 font-display text-xl font-medium md:text-2xl" data-reveal>
+                <CalendarDays size={22} strokeWidth={1.5} className="shrink-0 text-accent-deep" />
+                {f.sessions.empty}
+              </p>
             )}
+
+            {/* Newsletter Cellulift Academy */}
+            <div id="newsletter" className="mt-10 scroll-mt-28 rounded-2xl bg-sand p-6 md:p-10" data-reveal>
+              <div className="flex items-center gap-3">
+                <Mail size={18} className="text-accent-deep" />
+                <p className="text-xs font-medium uppercase tracking-[0.14em] text-accent-deep">Newsletter {f.newsletter.name}</p>
+              </div>
+              <h3 className="mt-4 font-display text-2xl font-medium md:text-3xl">{f.newsletter.title}</h3>
+              <p className="mt-2 max-w-xl text-sm leading-relaxed text-ink-soft">{f.newsletter.text}</p>
+              <div className="mt-6">
+                <NewsletterSignup name={f.newsletter.name} consent={f.newsletter.consent} specialties={f.request.professions} />
+              </div>
+            </div>
           </div>
         </section>
 
