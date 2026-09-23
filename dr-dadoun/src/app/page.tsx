@@ -16,7 +16,6 @@ import {
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Photo } from "@/components/Photo";
-import { Highlights } from "@/components/Highlights";
 import { BookingCalendar } from "@/components/BookingCalendar";
 import { image, video } from "@/lib/images";
 import {
@@ -24,11 +23,8 @@ import {
   doctor,
   faq,
   hero,
-  highlights,
   practice,
   philosophy,
-  pillars,
-  steps,
   training,
   treatments,
   universes,
@@ -195,38 +191,18 @@ export default function Home() {
               <div>
                 {/* Philosophie */}
                 <p className="eyebrow">Le Dr Dadoun</p>
-                <h2 className="mt-4 font-display text-5xl font-medium uppercase leading-[0.95] md:text-6xl">
-                  Améliorer
+                <h2 className="mt-4 font-display text-4xl font-medium leading-[1.02] md:text-[3.4rem]">
+                  Médecin, technicien,
                   <br />
-                  <span className="text-accent-deep">sans dénaturer</span>
+                  <span className="text-accent-deep">et un regard d&apos;esthète</span>
                 </h2>
-                <p className="mt-6 text-sm font-medium uppercase tracking-[0.14em] text-muted">
-                  {pillars.map((p) => p.label).join(" · ")}
-                </p>
                 <p className="mt-6 text-[1.05rem] leading-relaxed text-ink-soft">{philosophy.intro}</p>
-
-                {/* Expérience */}
-                <dl className="mt-10 grid grid-cols-3 border-y border-ink/10">
-                  {[
-                    { value: "35+", label: "ans d'expérience" },
-                    { value: "10+", label: "ans de formation" },
-                    { value: "Lasériste", label: "lasers médicaux" },
-                  ].map((fact) => (
-                    <div key={fact.label} className="py-6 pr-3">
-                      <dt className="font-display text-3xl font-medium md:text-4xl">{fact.value}</dt>
-                      <dd className="mt-1 text-xs text-muted">{fact.label}</dd>
-                    </div>
-                  ))}
-                </dl>
 
                 <div className="mt-10 space-y-4 leading-relaxed text-ink-soft">
                   {about.paragraphs.map((p) => (
                     <p key={p.slice(0, 24)}>{p}</p>
                   ))}
                 </div>
-                <blockquote className="mt-8 border-l-2 border-accent pl-5 font-display text-xl font-medium leading-snug">
-                  « {about.quote} »
-                </blockquote>
 
                 {/* Méthode */}
                 <h3 className="mt-14 text-xs font-medium uppercase tracking-[0.14em] text-accent-deep">Sa méthode</h3>
@@ -264,27 +240,8 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ——— L'essentiel (carrousel) ——— */}
-        <section id="essentiel" className="overflow-hidden py-24 md:py-32">
-          <div className={section}>
-            <Highlights
-              items={highlights.map((h) => ({ title: h.title, text: h.text, src: image(h.image) }))}
-            >
-              <SectionTitle
-                title={
-                  <>
-                    Un seul médecin,
-                    <span className="text-accent-deep"> du diagnostic au suivi.</span>
-                  </>
-                }
-                text="Injections, lasers, gynécologie esthétique : chaque acte est posé, réalisé et suivi par le Dr Dadoun lui-même, pour un résultat cohérent."
-              />
-            </Highlights>
-          </div>
-        </section>
-
         {/* ——— Soins ——— */}
-        <section id="soins" className="pb-24 md:pb-32">
+        <section id="soins" className="py-24 md:py-32">
           <div className={section}>
             <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
               <SectionTitle
@@ -295,13 +252,8 @@ export default function Home() {
                     <span className="text-accent-deep">une même exigence</span>
                   </>
                 }
-                text="Chaque soin est précédé d'une consultation médicale afin de vérifier son indication et l'absence de contre-indication."
+                text="Deux univers, chacun avec ses actes — tous fondés sur l'anatomie et la bonne indication."
               />
-              <div className="flex flex-wrap gap-3">
-                <PillLink href={practice.bookingUrl} icon={CalendarDays}>
-                  Prendre rendez-vous
-                </PillLink>
-              </div>
             </div>
 
             <div className="mt-14 grid gap-3 lg:grid-cols-2">
@@ -343,60 +295,32 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ——— Parcours ——— */}
-        <section id="parcours" className="px-2 md:px-3">
-          <div className="relative overflow-hidden rounded-[1.75rem] bg-ink py-20 text-white md:py-28">
-            <div className="mesh-4 absolute -right-40 -top-40 h-[28rem] w-[28rem] rounded-full opacity-40 blur-3xl" aria-hidden="true" />
-            <div className={`${section} relative`}>
-              <SectionTitle
-                light
-                title="De la première consultation au suivi"
-                text="Un parcours clair, sans précipitation : vous disposez toujours d'un temps de réflexion avant tout soin."
-              />
-              <ol className="mt-14 grid gap-3 md:grid-cols-4">
-                {steps.map((s, i) => (
-                  <li key={s.title} className="rounded-2xl border border-white/10 bg-white/[0.04] p-6">
-                    <span className="flex h-10 w-10 items-center justify-center rounded-full bg-accent text-sm font-medium text-ink">
-                      {i + 1}
-                    </span>
-                    <h3 className="mt-8 font-display text-2xl font-medium">{s.title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-white/70">{s.text}</p>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          </div>
-        </section>
-
-        {/* ——— Formations (professionnels) ——— */}
+        {/* ——— Se former (professionnels) ——— */}
         <section id="formations" className="pb-24 md:pb-32">
           <div className={section}>
-            <div className="grid gap-3 lg:grid-cols-[1.1fr_1fr]">
-              <div className="relative overflow-hidden rounded-2xl bg-ink p-8 text-white md:p-10">
-                <div className="mesh-4 absolute -bottom-32 -right-32 h-80 w-80 rounded-full opacity-50 blur-3xl" aria-hidden="true" />
-                <div className="relative">
-                  <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs uppercase tracking-wide">
-                    <GraduationCap size={14} /> Espace professionnels
-                  </span>
-                  <h2 className="mt-8 font-display text-4xl font-medium leading-[1.05] md:text-5xl">{training.title}</h2>
-                  <p className="mt-4 max-w-md text-sm leading-relaxed text-white/70">{training.intro}</p>
-                  <Link
-                    href="/formations"
-                    className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 text-xs font-medium uppercase tracking-wide text-ink hover:bg-accent-soft"
-                  >
-                    Découvrir les formations <ArrowUpRight size={14} />
-                  </Link>
-                </div>
+            <Link
+              href="/formations"
+              className="group relative flex flex-col justify-between gap-10 overflow-hidden rounded-2xl bg-ink p-8 text-white md:flex-row md:items-end md:p-12"
+            >
+              <div className="mesh-4 absolute -bottom-40 -right-24 h-96 w-96 rounded-full opacity-50 blur-3xl" aria-hidden="true" />
+              <div className="relative max-w-xl">
+                <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs uppercase tracking-wide">
+                  <GraduationCap size={14} /> Espace professionnels
+                </span>
+                <h2 className="mt-8 font-display text-4xl font-medium uppercase leading-[0.98] md:text-6xl">
+                  Se former
+                  <br />
+                  <span className="text-accent">auprès du Dr Dadoun</span>
+                </h2>
+                <p className="mt-5 max-w-md text-sm leading-relaxed text-white/70">{training.intro}</p>
               </div>
-              <div className="grid gap-3 sm:grid-cols-2">
-                {training.modules.map((m) => (
-                  <div key={m.title} className="rounded-2xl bg-sand p-6">
-                    <h3 className="font-display text-lg font-medium leading-snug">{m.title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-ink-soft">{m.text}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+              <span className="relative inline-flex shrink-0 items-center gap-3 text-xs font-medium uppercase tracking-wide">
+                Découvrir les formations
+                <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-ink transition-transform duration-300 group-hover:translate-x-1">
+                  <ArrowRight size={16} />
+                </span>
+              </span>
+            </Link>
           </div>
         </section>
 
@@ -419,6 +343,14 @@ export default function Home() {
                   sous 24 h ouvrées.
                 </p>
               </div>
+              <ol className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-ink-soft" aria-label="Votre parcours">
+                {["Consultation", "Plan de traitement", "Soin", "Suivi"].map((step, i) => (
+                  <li key={step} className="flex items-center gap-3">
+                    {i > 0 && <ArrowRight size={14} className="text-accent" aria-hidden="true" />}
+                    <span className="rounded-full border border-ink/10 bg-white px-3.5 py-1.5">{step}</span>
+                  </li>
+                ))}
+              </ol>
               <div className="mt-12">
                 <BookingCalendar />
               </div>
@@ -504,9 +436,9 @@ export default function Home() {
               </div>
 
               <div className="flex flex-col rounded-2xl bg-ink p-6 text-white">
-                <h3 className="font-display text-2xl font-medium">Prendre rendez-vous</h3>
+                <h3 className="font-display text-2xl font-medium">Nous contacter</h3>
                 <p className="mt-2 text-sm leading-relaxed text-white/70">
-                  Réservez en ligne ou contactez le secrétariat.
+                  Le secrétariat vous répond aux horaires d&apos;ouverture du cabinet.
                 </p>
                 <ul className="mt-6 space-y-3 text-sm">
                   <li>
@@ -520,12 +452,6 @@ export default function Home() {
                     </a>
                   </li>
                 </ul>
-                <Link
-                  href={practice.bookingUrl}
-                  className="mt-auto inline-flex items-center justify-center gap-2 rounded-full bg-white py-3.5 text-xs font-medium uppercase tracking-wide text-ink hover:bg-accent-soft"
-                >
-                  <CalendarDays size={14} /> Réserver en ligne
-                </Link>
               </div>
             </div>
           </div>

@@ -31,10 +31,10 @@ export const practice = {
 };
 
 export const nav = [
-  { href: "/#soins", label: "Soins" },
   { href: "/#docteur", label: "Le Docteur" },
-  { href: "/#parcours", label: "Parcours" },
-  { href: "/formations", label: "Formations" },
+  { href: "/#soins", label: "Soins" },
+  { href: "/formations", label: "Se former" },
+  { href: "/#rendez-vous", label: "Rendez-vous" },
   { href: "/#cabinet", label: "Cabinet" },
 ];
 
@@ -45,9 +45,8 @@ export const hero = {
   text: "Chaque visage a son anatomie, ses proportions, son identité. Le Dr Dadoun ne cherche pas à y appliquer un idéal standardisé : il corrige ce qui peut raisonnablement l'être, et préserve tout le reste.",
   stats: [
     { value: "35+", label: "Années d'expérience" },
-    { value: "3", label: "Territoires d'expertise" },
-    { value: "100 %", label: "Actes réalisés par le médecin" },
-    { value: "1", label: "Même médecin, du diagnostic au suivi" },
+    { value: "10+", label: "Années de formation de médecins" },
+    { value: "2", label: "Univers de soins" },
   ],
 };
 
@@ -85,34 +84,6 @@ export const pillars = [
     label: "Regard esthétique",
     title: "Proportions & harmonie",
     text: "Un sens artistique au service du naturel : juger un résultat sur l'ensemble du visage, jamais sur une ride isolée.",
-  },
-];
-
-export const highlights = [
-  {
-    image: "highlight-consultation.jpg",
-    title: "Anatomie d'abord",
-    text: "Un diagnostic précis du visage avant toute proposition de soin.",
-  },
-  {
-    image: "highlight-injections.jpg",
-    title: "Injections",
-    text: "Toxine botulique et acide hyaluronique, dosés au plus juste.",
-  },
-  {
-    image: "highlight-lasers.jpg",
-    title: "Lasers médicaux",
-    text: "Laser CO₂, endolifting, diode vasculaire : une expertise laser de pointe.",
-  },
-  {
-    image: "highlight-peau.jpg",
-    title: "Gynécologie esthétique",
-    text: "Une prise en charge médicale, confidentielle et respectueuse de l'intimité.",
-  },
-  {
-    image: "highlight-rdv.jpg",
-    title: "Un suivi réel",
-    text: "Le même médecin, présent du premier rendez-vous au contrôle.",
   },
 ];
 
@@ -266,33 +237,14 @@ export const universes = [
 
 export const getUniverse = (slug: string) => universes.find((u) => u.slug === slug);
 
-export const steps = [
-  {
-    title: "Consultation",
-    text: "Écoute de vos attentes, antécédents médicaux et analyse anatomique. Le médecin vous dit ce qui est réellement indiqué — et ce qui ne l'est pas.",
-  },
-  {
-    title: "Plan de traitement",
-    text: "Un protocole personnalisé, un devis détaillé et un temps de réflexion avant tout soin.",
-  },
-  {
-    title: "Le soin",
-    text: "Réalisé par le médecin lui-même, au cabinet, dans des conditions d'hygiène et de confort optimales.",
-  },
-  {
-    title: "Suivi",
-    text: "Un contrôle après le soin si nécessaire, et un médecin joignable pour toute question.",
-  },
-];
-
 export const faq = [
   {
     q: "Le résultat sera-t-il naturel ?",
-    a: "C'est le fondement de la pratique du Dr Dadoun : améliorer sans dénaturer. Les doses sont justes, les traitements peuvent être réalisés en plusieurs temps, et l'objectif est que l'on vous trouve reposé(e), pas transformé(e).",
+    a: "Oui, c'est l'objectif : des doses justes, parfois en plusieurs temps, pour un visage reposé — pas transformé.",
   },
   {
     q: "Le médecin peut-il refuser de réaliser un acte ?",
-    a: "Oui. Lorsqu'un acte ne peut pas donner le résultat recherché, que le risque de complication est trop important, ou que le résultat ne vous conviendrait pas, le Dr Dadoun vous le dit et vous explique pourquoi.",
+    a: "Oui, lorsqu'un acte ne peut pas donner le résultat attendu ou comporte trop de risques. Il vous explique alors pourquoi, et ce qui serait plus adapté.",
   },
   {
     q: "Comment se déroule une consultation de gynécologie esthétique ?",
