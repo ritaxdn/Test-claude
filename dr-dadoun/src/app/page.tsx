@@ -68,17 +68,18 @@ function PillLink({
 }: {
   href: string;
   children: React.ReactNode;
-  variant?: "dark" | "light";
+  variant?: "dark" | "light" | "accent";
   icon?: LucideIcon;
 }) {
+  const styles = {
+    dark: "bg-ink text-white hover:bg-accent-deep",
+    light: "border border-ink/15 bg-white text-ink hover:border-ink",
+    accent: "bg-accent text-ink hover:bg-accent-soft",
+  };
   return (
     <a
       href={href}
-      className={`inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-xs font-medium uppercase tracking-wide transition-colors ${
-        variant === "dark"
-          ? "bg-ink text-white hover:bg-accent-deep"
-          : "border border-ink/15 bg-white text-ink hover:border-ink"
-      }`}
+      className={`inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-xs font-medium uppercase tracking-wide transition-colors ${styles[variant]}`}
     >
       {Icon && <Icon size={14} />}
       {children}
@@ -101,6 +102,9 @@ const section = "mx-auto max-w-6xl px-5 md:px-8";
 
 export default function Home() {
   const heroVideo = video("hero.mp4");
+  const heroPoster = video("hero-poster.jpg");
+  const heroMedia =
+    "absolute inset-0 h-full w-full object-cover opacity-60 lg:left-auto lg:w-auto lg:aspect-square lg:opacity-100";
 
   return (
     <>
@@ -108,24 +112,37 @@ export default function Home() {
       <main id="top">
         {/* ——— Hero ——— */}
         <section className="p-2 md:p-3">
-          <div className="relative flex min-h-[640px] flex-col overflow-hidden rounded-[1.75rem] text-white md:min-h-[760px] lg:h-[calc(100svh-1.5rem)]">
-            <Photo src={image("hero.jpg")} alt={`${doctor.name}, ${doctor.title.toLowerCase()}`} fallback={0} priority />
-            {heroVideo && (
-              <video
-                className="hero-video absolute inset-0 h-full w-full object-cover"
-                src={heroVideo}
-                poster={image("hero.jpg") ?? undefined}
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="metadata"
-                aria-hidden="true"
-              />
+          <div
+            className={`relative flex min-h-[640px] flex-col overflow-hidden rounded-[1.75rem] text-white md:min-h-[760px] lg:h-[calc(100svh-1.5rem)] ${
+              heroVideo ? "bg-black" : ""
+            }`}
+          >
+            {heroVideo ? (
+              <>
+                {/* Vidéo carrée sur fond noir : plein cadre atténué sur mobile, à droite en pleine hauteur sur grand écran */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={heroPoster ?? undefined} alt="" aria-hidden="true" className={heroMedia} />
+                <video
+                  className={`hero-video ${heroMedia}`}
+                  src={heroVideo}
+                  poster={heroPoster ?? undefined}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="auto"
+                  aria-hidden="true"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/50 lg:bg-gradient-to-r lg:from-black lg:from-35% lg:via-black/40 lg:via-55% lg:to-transparent" />
+              </>
+            ) : (
+              <>
+                <Photo src={image("hero.jpg")} alt={`${doctor.name}, ${doctor.title.toLowerCase()}`} fallback={0} priority />
+                {/* Voile pour la lisibilité du texte blanc */}
+                <div className="absolute inset-0 bg-gradient-to-r from-[#0a5f6d]/60 via-[#0a5f6d]/10 to-[#0a5f6d]/45" />
+                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#07515d]/40 to-transparent" />
+              </>
             )}
-            {/* Voile pour la lisibilité du texte blanc */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#0a5f6d]/60 via-[#0a5f6d]/10 to-[#0a5f6d]/45" />
-            <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#07515d]/40 to-transparent" />
 
             <div className={`${section} relative flex w-full flex-1 flex-col pb-8 pt-32 md:pb-10 md:pt-40`}>
               <div className="flex flex-1 flex-col justify-between gap-12 lg:flex-row">
@@ -135,14 +152,14 @@ export default function Home() {
                     <span className="block">{hero.title[0]}</span>
                     <span className="flex items-center gap-2.5 whitespace-nowrap sm:gap-4">
                       <span className="relative inline-block h-[0.78em] w-[1em] shrink-0 overflow-hidden rounded-lg sm:w-[1.2em] sm:rounded-2xl">
-                        <Photo src={image("hero-chip.jpg")} alt="" fallback={5} sizes="160px" />
+                        <Photo src={image("hero-chip.jpg") ?? (heroVideo ? heroPoster : null)} alt="" fallback={5} sizes="160px" />
                       </span>
                       {hero.title[1]}
                     </span>
                     <span className="block">{hero.title[2]}</span>
                   </h1>
                   <div className="rise rise-3 mt-9 flex flex-wrap gap-3">
-                    <PillLink href={practice.bookingUrl} icon={CalendarDays}>
+                    <PillLink href={practice.bookingUrl} icon={CalendarDays} variant={heroVideo ? "accent" : "dark"}>
                       Prendre rendez-vous
                     </PillLink>
                     <PillLink href="#soins" variant="light" icon={Search}>
@@ -151,7 +168,11 @@ export default function Home() {
                   </div>
                 </div>
 
-                <dl className="rise rise-4 grid grid-cols-2 gap-x-6 gap-y-7 lg:grid-cols-1 lg:content-start lg:gap-y-8 lg:text-right">
+                <dl
+                  className={`rise rise-4 grid grid-cols-2 gap-x-6 gap-y-7 lg:grid-cols-1 lg:content-start lg:gap-y-8 lg:self-start lg:text-right ${
+                    heroVideo ? "lg:rounded-2xl lg:border lg:border-white/10 lg:bg-black/45 lg:p-7 lg:backdrop-blur-md" : ""
+                  }`}
+                >
                   {hero.stats.map((s) => (
                     <div key={s.label}>
                       <dt className="font-display text-4xl font-medium md:text-5xl">{s.value}</dt>
