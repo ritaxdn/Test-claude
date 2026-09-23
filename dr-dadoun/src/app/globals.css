@@ -1,0 +1,99 @@
+@import "tailwindcss";
+
+:root {
+  /* Surfaces */
+  --porcelain: #ffffff;
+  --sand: #f1f5f6;
+  /* Texte */
+  --ink: #0a1b21;
+  --ink-soft: #3b525a;
+  --muted: #5d747c;
+  --line: #dde7ea;
+  /* Cyan */
+  --accent-soft: #c4eef3;
+  --accent: #1aa9bc;
+  --accent-deep: #0a7282;
+}
+
+@theme inline {
+  --color-porcelain: var(--porcelain);
+  --color-sand: var(--sand);
+  --color-accent-soft: var(--accent-soft);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-deep: var(--accent-deep);
+
+  --font-display: var(--font-inter-tight), "Helvetica Neue", Arial, sans-serif;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+body {
+  background: var(--porcelain);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+  font-weight: 500;
+}
+
+/* Titres : grotesque serré, l'accent se fait par la couleur, pas l'italique */
+.font-display { letter-spacing: -0.035em; }
+h1 em, h2 em, h3 em { font-style: normal; }
+
+/* Dégradés « mesh » de remplacement tant qu'une photo n'est pas fournie */
+.mesh-0 {
+  background:
+    radial-gradient(55% 75% at 12% 45%, #1fa3b6 0%, transparent 70%),
+    radial-gradient(45% 55% at 48% 30%, #bfeaf0 0%, transparent 70%),
+    radial-gradient(45% 55% at 88% 15%, #e6dbea 0%, transparent 70%),
+    radial-gradient(40% 50% at 70% 72%, #f6d8ca 0%, transparent 70%),
+    radial-gradient(60% 50% at 30% 100%, #5cc4d2 0%, transparent 70%),
+    #cdebf0;
+}
+.mesh-1 { background: radial-gradient(80% 70% at 30% 20%, #bdeef4, transparent 70%), radial-gradient(70% 70% at 80% 90%, #1aa9bc, transparent 70%), #7fd0dc; }
+.mesh-2 { background: radial-gradient(80% 70% at 70% 20%, #f7d9cb, transparent 70%), radial-gradient(70% 70% at 20% 90%, #58c2d0, transparent 70%), #b9e3e8; }
+.mesh-3 { background: radial-gradient(80% 70% at 20% 20%, #e9ddee, transparent 70%), radial-gradient(70% 70% at 80% 80%, #2fb2c4, transparent 70%), #a9dde5; }
+.mesh-4 { background: radial-gradient(80% 70% at 80% 30%, #d4f3f6, transparent 70%), radial-gradient(70% 70% at 20% 80%, #0a7282, transparent 70%), #3fb0c0; }
+.mesh-5 { background: radial-gradient(80% 70% at 30% 70%, #f3cfbf, transparent 70%), radial-gradient(70% 70% at 80% 20%, #7ad3df, transparent 70%), #cdebef; }
+
+/* Défilement horizontal sans barre visible */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+
+.rise { animation: rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.rise-2 { animation-delay: 0.12s; }
+.rise-3 { animation-delay: 0.24s; }
+.rise-4 { animation-delay: 0.36s; }
+
+details > summary { list-style: none; }
+details > summary::-webkit-details-marker { display: none; }
+details[open] .faq-icon { transform: rotate(45deg); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .rise { animation: none; }
+}
