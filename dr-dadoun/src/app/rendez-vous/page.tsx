@@ -20,13 +20,13 @@ export default function RendezVous() {
             <div className="max-w-2xl">
               <p className="eyebrow">Rendez-vous en ligne</p>
               <h1 className="mt-4 font-display text-5xl leading-[1.05] md:text-6xl">
-                Réservez votre <em className="text-rose-deep">consultation</em>
+                Réservez votre <em className="text-accent-deep">consultation</em>
               </h1>
             </div>
             <p className="max-w-sm text-ink-soft">
               Choisissez un créneau : le cabinet vous confirme le rendez-vous sous 24 h ouvrées. Vous
               préférez appeler ?{" "}
-              <a href={`tel:${practice.phoneHref}`} className="inline-flex items-center gap-1 underline decoration-rose underline-offset-4">
+              <a href={`tel:${practice.phoneHref}`} className="inline-flex items-center gap-1 underline decoration-accent underline-offset-4">
                 <Phone size={14} /> {practice.phone}
               </a>
             </p>

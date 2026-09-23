@@ -50,7 +50,7 @@ export default async function ArticlePage({ params }: Props) {
             <ul className="mt-4 space-y-3">
               {article.takeaways.map((t) => (
                 <li key={t} className="flex gap-3 text-sm leading-relaxed">
-                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-rose" />
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
                   {t}
                 </li>
               ))}
@@ -81,7 +81,7 @@ export default async function ArticlePage({ params }: Props) {
             </div>
             <Link
               href={practice.bookingUrl}
-              className="inline-flex shrink-0 items-center gap-2 rounded-full bg-porcelain px-6 py-3 text-sm font-medium text-ink hover:bg-blush"
+              className="inline-flex shrink-0 items-center gap-2 rounded-full bg-porcelain px-6 py-3 text-sm font-medium text-ink hover:bg-accent-soft"
             >
               Prendre rendez-vous <ArrowUpRight size={16} />
             </Link>

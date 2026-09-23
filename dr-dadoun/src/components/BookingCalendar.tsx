@@ -109,8 +109,8 @@ function Calendar() {
 
   if (status === "sent" && time) {
     return (
-      <div className="rounded-3xl bg-porcelain p-10 text-center shadow-[0_30px_60px_-35px_rgba(42,32,29,0.45)] md:p-14">
-        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-rose text-porcelain">
+      <div className="rounded-3xl bg-porcelain p-10 text-center shadow-[0_30px_60px_-35px_rgba(11,42,51,0.45)] md:p-14">
+        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-accent-deep text-porcelain">
           <Check size={26} />
         </span>
         <h3 className="mt-6 font-display text-3xl">Demande envoyée</h3>
@@ -127,7 +127,7 @@ function Calendar() {
   const stepNum = "flex h-7 w-7 items-center justify-center rounded-full bg-ink text-xs font-sans text-porcelain";
 
   return (
-    <div className="overflow-hidden rounded-3xl bg-porcelain shadow-[0_30px_60px_-35px_rgba(42,32,29,0.45)]">
+    <div className="overflow-hidden rounded-3xl bg-porcelain shadow-[0_30px_60px_-35px_rgba(11,42,51,0.45)]">
       <div className="grid lg:grid-cols-[1fr_1.35fr]">
         {/* 1. Motif */}
         <div className="border-b border-line p-6 md:p-8 lg:border-b-0 lg:border-r">
@@ -143,7 +143,7 @@ function Calendar() {
                 aria-checked={t.id === typeId}
                 onClick={() => setTypeId(t.id)}
                 className={`w-full rounded-2xl border p-4 text-left transition-colors ${
-                  t.id === typeId ? "border-rose bg-blush/40" : "border-line hover:border-rose/60"
+                  t.id === typeId ? "border-accent bg-accent-soft/40" : "border-line hover:border-accent/60"
                 }`}
               >
                 <span className="flex items-baseline justify-between gap-3">
@@ -212,7 +212,7 @@ function Calendar() {
                         selected
                           ? "bg-ink text-porcelain"
                           : ok
-                            ? "font-medium hover:bg-blush"
+                            ? "font-medium hover:bg-accent-soft"
                             : "cursor-not-allowed text-muted/35"
                       }`}
                     >
@@ -278,17 +278,17 @@ function Calendar() {
                   rows={3}
                   maxLength={600}
                   placeholder="Merci de ne pas indiquer d'informations médicales détaillées."
-                  className="mt-1.5 w-full rounded-xl border border-line bg-white/60 px-4 py-3 outline-none focus:border-rose"
+                  className="mt-1.5 w-full rounded-xl border border-line bg-white/60 px-4 py-3 outline-none focus:border-accent"
                 />
               </label>
               <label className="mt-4 flex items-start gap-3 text-xs leading-relaxed text-muted">
-                <input type="checkbox" name="consent" required className="mt-0.5 accent-[var(--rose-deep)]" />
+                <input type="checkbox" name="consent" required className="mt-0.5 accent-[var(--accent-deep)]" />
                 J&apos;accepte que mes coordonnées soient utilisées par le cabinet uniquement pour traiter ma
                 demande de rendez-vous.
               </label>
 
               {status === "error" && (
-                <p className="mt-4 text-sm text-rose-deep" role="alert">
+                <p className="mt-4 text-sm text-accent-deep" role="alert">
                   {error} Vous pouvez aussi appeler le cabinet au {practice.phone}.
                 </p>
               )}
@@ -296,7 +296,7 @@ function Calendar() {
               <button
                 type="submit"
                 disabled={status === "sending"}
-                className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-ink py-3.5 text-sm font-medium text-porcelain transition-colors hover:bg-rose-deep disabled:opacity-60"
+                className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-ink py-3.5 text-sm font-medium text-porcelain transition-colors hover:bg-accent-deep disabled:opacity-60"
               >
                 {status === "sending" && <Loader2 size={16} className="animate-spin" />}
                 Envoyer ma demande
@@ -319,7 +319,7 @@ function Field({ label, name, type = "text", autoComplete }: { label: string; na
         required
         maxLength={120}
         autoComplete={autoComplete}
-        className="mt-1.5 w-full rounded-xl border border-line bg-white/60 px-4 py-3 outline-none focus:border-rose"
+        className="mt-1.5 w-full rounded-xl border border-line bg-white/60 px-4 py-3 outline-none focus:border-accent"
       />
     </label>
   );

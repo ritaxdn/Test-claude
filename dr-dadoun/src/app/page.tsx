@@ -22,8 +22,8 @@ function BookingButton({ variant = "dark" }: { variant?: "dark" | "light" }) {
       href={practice.bookingUrl}
       className={`group inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-medium transition-colors ${
         variant === "dark"
-          ? "bg-ink text-porcelain hover:bg-rose-deep"
-          : "bg-porcelain text-ink hover:bg-blush"
+          ? "bg-ink text-porcelain hover:bg-accent-deep"
+          : "bg-porcelain text-ink hover:bg-accent-soft"
       }`}
     >
       Prendre rendez-vous
@@ -38,7 +38,7 @@ function BookingButton({ variant = "dark" }: { variant?: "dark" | "light" }) {
 function SectionTitle({ eyebrow, title, light }: { eyebrow: string; title: string; light?: boolean }) {
   return (
     <div className="max-w-2xl">
-      <p className={`eyebrow ${light ? "!text-blush" : ""}`}>{eyebrow}</p>
+      <p className={`eyebrow ${light ? "!text-accent-soft" : ""}`}>{eyebrow}</p>
       <h2 className="mt-4 font-display text-4xl leading-[1.1] md:text-5xl">{title}</h2>
     </div>
   );
@@ -57,7 +57,7 @@ export default function Home() {
               <h1 className="rise rise-2 mt-6 font-display text-5xl leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl">
                 {hero.title[0]}
                 <br />
-                <em className="text-rose-deep">{hero.title[1]}</em>
+                <em className="text-accent-deep">{hero.title[1]}</em>
               </h1>
               <p className="rise rise-3 mt-7 max-w-lg text-lg leading-relaxed text-ink-soft">
                 {hero.text}
@@ -80,7 +80,7 @@ export default function Home() {
                   <span className="font-display text-[9rem] italic leading-none text-porcelain/80">D</span>
                 </div>
               </div>
-              <div className="absolute -bottom-6 -left-4 rounded-2xl bg-porcelain px-6 py-5 shadow-[0_20px_50px_-20px_rgba(42,32,29,0.35)] sm:-left-10">
+              <div className="absolute -bottom-6 -left-4 rounded-2xl bg-porcelain px-6 py-5 shadow-[0_20px_50px_-20px_rgba(11,42,51,0.35)] sm:-left-10">
                 <p className="font-display text-xl italic">{doctor.name}</p>
                 <p className="mt-1 text-xs uppercase tracking-[0.2em] text-muted">{doctor.title}</p>
               </div>
@@ -111,7 +111,7 @@ export default function Home() {
               </div>
             </div>
             <div className="flex flex-col justify-between gap-10">
-              <blockquote className="border-l-2 border-rose pl-6 font-display text-3xl italic leading-snug">
+              <blockquote className="border-l-2 border-accent pl-6 font-display text-3xl italic leading-snug">
                 « {about.quote} »
               </blockquote>
               <div className="rounded-3xl bg-sand p-8">
@@ -119,7 +119,7 @@ export default function Home() {
                 <ul className="mt-5 space-y-4">
                   {about.credentials.map((c) => (
                     <li key={c} className="flex gap-4 text-sm leading-relaxed text-ink-soft">
-                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-rose" />
+                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
                       {c}
                     </li>
                   ))}
@@ -144,7 +144,7 @@ export default function Home() {
               {treatments.map((cat, i) => (
                 <div key={cat.id} className="grid gap-8 border-t border-line pt-10 lg:grid-cols-[1fr_2.4fr]">
                   <div>
-                    <span className="font-display text-sm italic text-rose-deep">0{i + 1}</span>
+                    <span className="font-display text-sm italic text-accent-deep">0{i + 1}</span>
                     <h3 className="mt-2 font-display text-3xl">{cat.title}</h3>
                     <p className="mt-3 text-sm leading-relaxed text-muted">{cat.intro}</p>
                   </div>
@@ -152,7 +152,7 @@ export default function Home() {
                     {cat.treatments.map((t) => (
                       <article
                         key={t.name}
-                        className="flex flex-col rounded-3xl bg-porcelain p-7 transition-shadow duration-300 hover:shadow-[0_24px_50px_-28px_rgba(42,32,29,0.4)]"
+                        className="flex flex-col rounded-3xl bg-porcelain p-7 transition-shadow duration-300 hover:shadow-[0_24px_50px_-28px_rgba(11,42,51,0.4)]"
                       >
                         <h4 className="font-display text-xl">{t.name}</h4>
                         <p className="mt-3 flex-1 text-sm leading-relaxed text-ink-soft">{t.description}</p>
@@ -182,7 +182,7 @@ export default function Home() {
             <div className="mt-16 grid gap-px overflow-hidden rounded-3xl bg-porcelain/15 sm:grid-cols-2 lg:grid-cols-4">
               {principles.map((p, i) => (
                 <div key={p.title} className="bg-ink p-8">
-                  <span className="font-display text-5xl italic text-rose">{i + 1}</span>
+                  <span className="font-display text-5xl italic text-accent">{i + 1}</span>
                   <h3 className="mt-6 font-display text-2xl">{p.title}</h3>
                   <p className="mt-3 text-sm leading-relaxed text-porcelain/70">{p.text}</p>
                 </div>
@@ -199,7 +199,7 @@ export default function Home() {
               {steps.map((s, i) => (
                 <li key={s.title} className="relative">
                   <div className="flex items-center gap-4">
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-rose font-display text-lg italic text-rose-deep">
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-accent font-display text-lg italic text-accent-deep">
                       {i + 1}
                     </span>
                     <span className="hidden h-px flex-1 bg-line md:block" aria-hidden="true" />
@@ -219,7 +219,7 @@ export default function Home() {
               <SectionTitle eyebrow="Le savoir" title="Une expertise médicale, partagée avec vous" />
               <Link
                 href="/journal"
-                className="inline-flex items-center gap-1.5 text-sm font-medium underline decoration-rose underline-offset-4"
+                className="inline-flex items-center gap-1.5 text-sm font-medium underline decoration-accent underline-offset-4"
               >
                 Tous les articles du Journal <ArrowUpRight size={14} />
               </Link>
@@ -247,7 +247,7 @@ export default function Home() {
               <SectionTitle eyebrow="Questions fréquentes" title="Vos questions, nos réponses" />
               <p className="mt-6 text-ink-soft">
                 Une autre question ? Le cabinet vous répond par téléphone au{" "}
-                <a href={`tel:${practice.phoneHref}`} className="underline decoration-rose underline-offset-4">
+                <a href={`tel:${practice.phoneHref}`} className="underline decoration-accent underline-offset-4">
                   {practice.phone}
                 </a>
                 .
@@ -258,7 +258,7 @@ export default function Home() {
                 <details key={item.q} className="group py-6">
                   <summary className="flex cursor-pointer items-start justify-between gap-6 font-display text-xl">
                     {item.q}
-                    <Plus size={20} className="faq-icon mt-1 shrink-0 text-rose-deep transition-transform" />
+                    <Plus size={20} className="faq-icon mt-1 shrink-0 text-accent-deep transition-transform" />
                   </summary>
                   <p className="mt-4 pr-10 leading-relaxed text-ink-soft">{item.a}</p>
                 </details>
@@ -289,7 +289,7 @@ export default function Home() {
             <SectionTitle eyebrow="Le cabinet" title="Vous accueillir au cœur de Paris" />
             <div className="mt-14 grid gap-6 lg:grid-cols-3">
               <div className="rounded-3xl border border-line p-8">
-                <MapPin size={20} className="text-rose-deep" />
+                <MapPin size={20} className="text-accent-deep" />
                 <h3 className="mt-5 font-display text-2xl">Adresse</h3>
                 <p className="mt-3 text-ink-soft">
                   {practice.addressLine1}
@@ -305,14 +305,14 @@ export default function Home() {
                   href={practice.mapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium underline decoration-rose underline-offset-4"
+                  className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium underline decoration-accent underline-offset-4"
                 >
                   Itinéraire <ArrowUpRight size={14} />
                 </a>
               </div>
 
               <div className="rounded-3xl border border-line p-8">
-                <Clock size={20} className="text-rose-deep" />
+                <Clock size={20} className="text-accent-deep" />
                 <h3 className="mt-5 font-display text-2xl">Horaires</h3>
                 <dl className="mt-3 space-y-3">
                   {practice.hours.map((h) => (
@@ -332,12 +332,12 @@ export default function Home() {
                 </p>
                 <ul className="mt-6 space-y-3 text-sm">
                   <li>
-                    <a href={`tel:${practice.phoneHref}`} className="inline-flex items-center gap-3 hover:text-blush">
+                    <a href={`tel:${practice.phoneHref}`} className="inline-flex items-center gap-3 hover:text-accent-soft">
                       <Phone size={16} /> {practice.phone}
                     </a>
                   </li>
                   <li>
-                    <a href={`mailto:${practice.email}`} className="inline-flex items-center gap-3 hover:text-blush">
+                    <a href={`mailto:${practice.email}`} className="inline-flex items-center gap-3 hover:text-accent-soft">
                       <Mail size={16} /> {practice.email}
                     </a>
                   </li>

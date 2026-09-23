@@ -37,14 +37,14 @@ export function Header() {
             <a
               key={item.href}
               href={item.href}
-              className="text-sm text-ink-soft transition-colors hover:text-rose-deep"
+              className="text-sm text-ink-soft transition-colors hover:text-accent-deep"
             >
               {item.label}
             </a>
           ))}
           <a
             href={practice.bookingUrl}
-            className="rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-porcelain transition-colors hover:bg-rose-deep"
+            className="rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-porcelain transition-colors hover:bg-accent-deep"
           >
             Prendre rendez-vous
           </a>

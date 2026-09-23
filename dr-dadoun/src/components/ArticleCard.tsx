@@ -6,7 +6,7 @@ export function ArticleCard({ article, index }: { article: Article; index: numbe
   return (
     <Link
       href={`/journal/${article.slug}`}
-      className="group flex flex-col rounded-3xl border border-line bg-porcelain p-7 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_50px_-28px_rgba(42,32,29,0.4)]"
+      className="group flex flex-col rounded-3xl border border-line bg-porcelain p-7 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_50px_-28px_rgba(11,42,51,0.4)]"
     >
       <div className="flex items-center justify-between text-xs">
         <span className="eyebrow">{article.category}</span>

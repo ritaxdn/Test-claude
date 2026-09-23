@@ -18,7 +18,7 @@ export default function Journal() {
         <div className="mx-auto max-w-6xl px-5 md:px-8">
           <p className="eyebrow">Le Journal</p>
           <h1 className="mt-4 max-w-3xl font-display text-5xl leading-[1.05] md:text-6xl">
-            Comprendre avant de <em className="text-rose-deep">traiter</em>
+            Comprendre avant de <em className="text-accent-deep">traiter</em>
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft">
             Un patient bien informé fait des choix éclairés. Dans ces articles, le Dr Dadoun partage
@@ -32,7 +32,7 @@ export default function Journal() {
           </div>
 
           <section className="mt-24 rounded-3xl bg-ink p-8 text-porcelain md:p-12">
-            <p className="eyebrow !text-blush">Domaines d&apos;expertise</p>
+            <p className="eyebrow !text-accent-soft">Domaines d&apos;expertise</p>
             <div className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
               {expertise.map((e) => (
                 <div key={e.title}>

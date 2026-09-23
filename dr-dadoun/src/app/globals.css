@@ -1,27 +1,28 @@
 @import "tailwindcss";
 
 :root {
-  --porcelain: #f7f2ed;
-  --sand: #ede4db;
-  --blush: #e6d3c6;
-  --ink: #2a201d;
-  --ink-soft: #54463f;
-  --muted: #8d7c72;
-  --line: #d9ccc1;
-  --rose: #a86f5c;
-  --rose-deep: #8a5646;
+  /* Palette cyan */
+  --porcelain: #f2f9fa;
+  --sand: #e0f0f3;
+  --accent-soft: #bfedf2;
+  --ink: #0b2a33;
+  --ink-soft: #35535d;
+  --muted: #56747d;
+  --line: #c9e2e7;
+  --accent: #1aa9bc;
+  --accent-deep: #0a7282;
 }
 
 @theme inline {
   --color-porcelain: var(--porcelain);
   --color-sand: var(--sand);
-  --color-blush: var(--blush);
+  --color-accent-soft: var(--accent-soft);
   --color-ink: var(--ink);
   --color-ink-soft: var(--ink-soft);
   --color-muted: var(--muted);
   --color-line: var(--line);
-  --color-rose: var(--rose);
-  --color-rose-deep: var(--rose-deep);
+  --color-accent: var(--accent);
+  --color-accent-deep: var(--accent-deep);
 
   --font-display: var(--font-bodoni), "Didot", "Times New Roman", serif;
   --font-sans: var(--font-manrope), system-ui, sans-serif;
@@ -40,7 +41,7 @@ body {
 }
 
 ::selection {
-  background: var(--blush);
+  background: var(--accent-soft);
   color: var(--ink);
 }
 
@@ -48,16 +49,16 @@ body {
   font-size: 0.72rem;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: var(--rose-deep);
+  color: var(--accent-deep);
   font-weight: 600;
 }
 
 /* Soft halo used behind the hero portrait */
 .halo {
   background:
-    radial-gradient(circle at 30% 30%, #f3e3d8 0%, transparent 55%),
-    radial-gradient(circle at 70% 70%, #e2c8b8 0%, transparent 60%),
-    linear-gradient(160deg, #efe3d9, #dcc3b3);
+    radial-gradient(circle at 30% 25%, #e6f8fa 0%, transparent 55%),
+    radial-gradient(circle at 70% 75%, #6fd3e0 0%, transparent 60%),
+    linear-gradient(160deg, #cdeff3, #3fb8c9);
 }
 
 @keyframes rise {
