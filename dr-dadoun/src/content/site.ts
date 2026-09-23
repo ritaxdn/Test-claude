@@ -22,10 +22,11 @@ export const practice = {
   mapsUrl: "https://www.google.com/maps/search/?api=1&query=N%C2%B002+Rue+Savoie+Quartier+des+H%C3%B4pitaux+Casablanca",
   // À COMPLÉTER : indications d'accès (parking, étage…)
   access: [] as string[],
-  // À CONFIRMER : heure de fermeture et samedi.
+  // Samedi après-midi : formations.
   hours: [
-    { day: "Lundi – Vendredi", time: "À partir de 13h30" },
-    { day: "Samedi – Dimanche", time: "Fermé" },
+    { day: "Lundi – Vendredi", time: "13h30 – 19h30" },
+    { day: "Samedi", time: "9h00 – 14h00" }, // À CONFIRMER : heure d'ouverture du samedi
+    { day: "Dimanche", time: "Fermé" },
   ],
 };
 
@@ -346,13 +347,14 @@ export const booking = {
   slotMinutes: 30,
   maxDaysAhead: 60,
   // 0 = dimanche … 6 = samedi. Plages au format "HH:MM".
-  // À CONFIRMER : heure de fermeture (19h30 par défaut) et ouverture le samedi.
+  // Samedi : matin uniquement (l'après-midi est réservé aux formations).
   openings: {
     1: [["13:30", "19:30"]],
     2: [["13:30", "19:30"]],
     3: [["13:30", "19:30"]],
     4: [["13:30", "19:30"]],
     5: [["13:30", "19:30"]],
+    6: [["09:00", "14:00"]], // À CONFIRMER : heure d'ouverture du samedi
   } as Record<number, [string, string][]>,
   // À COMPLÉTER : jours de fermeture exceptionnelle (congés, jours fériés)
   // Jours fériés fixes au Maroc (à compléter avec les fêtes religieuses et les congés du cabinet).
