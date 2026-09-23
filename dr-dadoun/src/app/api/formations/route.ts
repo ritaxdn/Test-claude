@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { formationsPage as f } from "@/content/formations";
 import { clean, sendToPractice } from "@/lib/mail";
 
-// Reçoit les demandes des professionnels (page /formations) et les transmet au cabinet.
+// Reçoit les demandes des médecins (page /formations) et les transmet au cabinet.
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
   if (!body || typeof body !== "object") {
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
       ["Téléphone", data.phone || "—"],
       ["Message", data.message || "—"],
     ],
-    footer: "Répondre directement à cet e-mail pour contacter le professionnel.",
+    footer: "Répondre directement à cet e-mail pour contacter le médecin.",
   });
   if (!ok) return NextResponse.json({ error: "L'envoi a échoué." }, { status: 502 });
   return NextResponse.json({ ok: true });

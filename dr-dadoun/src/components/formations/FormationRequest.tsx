@@ -19,7 +19,7 @@ export function FormationRequestSection(props: Props) {
   return <FormationRequest key={params.toString()} {...props} />;
 }
 
-/** Demande d'information ou d'inscription aux formations (professionnels de santé). */
+/** Demande d'information ou d'inscription aux formations (médecins). */
 function FormationRequest({ courses, kinds, professions, phone }: Props) {
   // Pré-sélection depuis un lien : /formations?formation=<slug>&demande=<kind>#demande
   const params = useSearchParams();

@@ -1,4 +1,4 @@
-// Contenu de la page /formations (audience : médecins et professionnels de santé habilités).
+// Contenu de la page /formations (audience : médecins uniquement).
 // Règle : n'ajouter ici que des informations vérifiées. Rien n'est inventé.
 import { about } from "@/content/site";
 
@@ -28,41 +28,36 @@ export type CareerStep = {
 
 export const formationsPage = {
   hero: {
-    eyebrow: "Médecin esthétique · Lasériste · Formateur",
-    title: ["Apprendre", "auprès du Dr", "Dadoun"],
+    eyebrow: "Dr Dadoun · Médecin esthétique · Lasériste · Formateur",
+    title: ["Apprendre", "à mes", "côtés"],
     facts: [
       { value: "35+", label: "ans d'expérience" },
       { value: "10+", label: "ans de formation" },
     ],
-    text: "Le Dr Dadoun transmet ce qu'il pratique : une approche fondée sur l'anatomie, la maîtrise technique et la sécurité du patient.",
-    audience: "Réservé aux médecins et professionnels de santé habilités",
+    text: "Je transmets ce que je pratique : une approche fondée sur l'indication, la maîtrise technique et la sécurité du patient.",
+    audience: "Réservé aux médecins",
   },
 
   transmission: {
     title: ["L'expérience", "au service de la transmission"],
     intro:
-      "Plus de trente-cinq ans de pratique, plus de dix ans d'enseignement. Le Dr Dadoun transmet une méthode : comprendre avant d'agir, poser la bonne indication, maîtriser son geste.",
+      "Plus de trente-cinq ans de pratique, plus de dix ans d'enseignement. Je transmets une méthode : comprendre avant d'agir, poser la bonne indication, maîtriser son geste.",
     principles: [
-      { title: "Anatomie", text: "Le fondement de chaque geste : repères, plans, zones à risque." },
       { title: "Indication", text: "Savoir quand agir, comment — et quand s'abstenir." },
       { title: "Maîtrise technique", text: "Des protocoles précis, reproductibles, adaptés à chaque patient." },
+      { title: "Précision", text: "Des gestes et des dosages justes, au millimètre." },
       { title: "Sécurité", text: "Prévenir, reconnaître et prendre en charge les complications." },
     ],
     media: {
       image: "formation-transmission.jpg",
       video: "formation-transmission.mp4",
-      label: "Le Dr Dadoun en formation",
+      label: "En formation",
     },
   },
 
   // Pour ajouter une formation : ajouter un objet ici. La carte et sa page
   // /formations/<slug> sont créées automatiquement.
   courses: [
-    {
-      slug: "anatomie-appliquee",
-      title: "Anatomie appliquée",
-      summary: "Fondamentaux anatomiques appliqués aux gestes de médecine esthétique.",
-    },
     {
       slug: "injectables",
       title: "Injectables",
@@ -86,14 +81,14 @@ export const formationsPage = {
     points: [
       "Petits groupes",
       "Pratique encadrée",
-      "Anatomie au cœur de l'enseignement",
+      "Indication et sécurité au cœur de l'enseignement",
       "Suivi après la formation",
     ],
     media: { image: "formation-pratique.jpg", label: "Pratique encadrée" },
   },
 
   career: {
-    title: ["Le parcours", "du Dr Dadoun"],
+    title: ["Mon", "parcours"],
     // Informations certaines uniquement.
     facts: [
       { value: "35+", label: "ans d'expérience" },
@@ -104,7 +99,7 @@ export const formationsPage = {
     // Parcours partagé avec l'accueil : à compléter dans site.ts (about.education).
     steps: about.education.map((e) => ({ period: e.period, title: e.title, detail: e.place })) as CareerStep[],
     pendingNote: "Diplômes, formations et étapes du parcours : bientôt disponibles.",
-    media: { image: "docteur.jpg", label: "Portrait du Dr Dadoun" },
+    media: { image: "docteur.jpg", label: "Portrait" },
   },
 
   sessions: {
@@ -115,13 +110,13 @@ export const formationsPage = {
   },
 
   final: {
-    title: ["Vous souhaitez vous former", "auprès du Dr Dadoun ?"],
+    title: ["Vous souhaitez vous former", "à mes côtés ?"],
     text: "Recevez le programme détaillé des formations, ou soyez informé dès l'ouverture des prochaines sessions.",
   },
 
-  // Formulaire de demande (professionnels) — envoyé au cabinet par e-mail.
+  // Formulaire de demande (médecins) — envoyé au cabinet par e-mail.
   request: {
-    title: ["Vous souhaitez vous former", "auprès du Dr Dadoun ?"],
+    title: ["Vous souhaitez vous former", "à mes côtés ?"],
     text: "Choisissez la ou les formations qui vous intéressent : le cabinet vous répond avec le programme et les prochaines dates.",
     kinds: [
       { id: "programme", label: "Recevoir le programme" },
@@ -134,7 +129,7 @@ export const formationsPage = {
       "Chirurgien",
       "Gynécologue",
       "Médecin généraliste",
-      "Autre professionnel de santé",
+      "Autre spécialité médicale",
     ],
   },
 

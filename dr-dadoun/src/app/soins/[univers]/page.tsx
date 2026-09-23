@@ -111,7 +111,7 @@ export default async function UniversePage({ params }: Props) {
             <div className="rounded-2xl bg-ink p-8 text-white md:p-10">
               <h2 className="font-display text-3xl font-medium leading-tight md:text-4xl">Chaque soin commence par une consultation</h2>
               <p className="mt-4 max-w-md text-sm leading-relaxed text-white/70">
-                Le Dr Dadoun vérifie l&apos;indication, vous explique ce que l&apos;on peut attendre — et vous dit
+                Je vérifie l&apos;indication, je vous explique ce que l&apos;on peut attendre — et je vous dis
                 aussi quand un acte ne vous conviendrait pas.
               </p>
               <a href={practice.bookingUrl} className={`${pill} mt-8 bg-white text-ink hover:bg-accent-soft`}>

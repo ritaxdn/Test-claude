@@ -11,9 +11,9 @@ import { formationsPage as f } from "@/content/formations";
 import { practice } from "@/content/site";
 
 export const metadata: Metadata = {
-  title: "Formations professionnelles",
+  title: "Formations pour médecins",
   description:
-    "Formations du Dr Dadoun pour les médecins et professionnels de santé : anatomie appliquée, injectables, lasers médicaux, endolifting.",
+    "Formations du Dr Dadoun réservées aux médecins : injectables, lasers médicaux, endolifting.",
 };
 
 const section = "mx-auto max-w-6xl px-5 md:px-8";
@@ -110,7 +110,7 @@ export default function Formations() {
                 Chaque domaine fait l&apos;objet d&apos;une formation à part entière, avec son programme et ses sessions.
               </p>
             </div>
-            <ul className="mt-14 grid gap-4 md:grid-cols-2">
+            <ul className="mt-14 grid gap-4 md:grid-cols-3">
               {f.courses.map((c, i) => (
                 <li key={c.slug} data-reveal>
                   <Link
@@ -208,7 +208,7 @@ export default function Formations() {
                       {[
                         { title: "Médecine esthétique", detail: "Plus de 35 ans d'expérience." },
                         { title: "Lasers médicaux", detail: "Lasériste." },
-                        { title: "Transmission", detail: "Formateur de professionnels de santé depuis plus de 10 ans." },
+                        { title: "Transmission", detail: "Formateur de médecins depuis plus de 10 ans." },
                       ].map((s) => (
                         <li key={s.title} className="relative pb-10">
                           <span className="absolute -left-[2.3rem] top-1.5 h-2.5 w-2.5 rounded-full bg-accent" aria-hidden="true" />

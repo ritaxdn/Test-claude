@@ -42,7 +42,7 @@ export const hero = {
   eyebrow: "Médecine esthétique · Casablanca",
   // Le titre est affiché en 3 lignes ; la vignette photo s'insère au début de la 2e.
   title: ["Améliorer", "sans", "dénaturer"],
-  text: "Chaque visage a son anatomie, ses proportions, son identité. Le Dr Dadoun ne cherche pas à y appliquer un idéal standardisé : il corrige ce qui peut raisonnablement l'être, et préserve tout le reste.",
+  text: "Chaque visage a son anatomie, ses proportions, son identité. Je ne cherche pas à y appliquer un idéal standardisé : je corrige ce qui peut raisonnablement l'être, et je préserve tout le reste.",
   stats: [
     { value: "35+", label: "Années d'expérience" },
     { value: "10+", label: "Années de formation de médecins" },
@@ -54,14 +54,14 @@ export const hero = {
 export const philosophy = {
   title: "Améliorer sans dénaturer",
   intro:
-    "Pas d'idéal esthétique appliqué à tous. Le point de départ est toujours votre anatomie, vos proportions et ce qui vous convient réellement. L'objectif : accompagner le vieillissement et corriger ce qui peut l'être, en préservant le naturel et l'identité du visage.",
+    "Je n'applique pas le même idéal esthétique à tous. Mon point de départ est toujours votre anatomie, vos proportions et ce qui vous convient réellement. Mon objectif : accompagner le vieillissement et corriger ce qui peut l'être, en préservant le naturel et l'identité de votre visage.",
   // Le contre-modèle : la méthode, étape par étape
   method: [
     { title: "Anatomie", text: "La base de tout geste : les repères osseux, les vaisseaux, les plans de la peau." },
     { title: "Indication", text: "Le bon acte, pour la bonne raison. Et parfois, aucun acte." },
     { title: "Précision", text: "Des doses justes et des points d'injection pensés au millimètre." },
     { title: "Naturel", text: "Un visage reposé qui reste le vôtre, jamais un visage « refait »." },
-    { title: "Suivi", text: "Un contrôle après le soin et un médecin présent si vous avez une question." },
+    { title: "Suivi", text: "Un contrôle après le soin, et je reste joignable si vous avez une question." },
   ],
 };
 
@@ -91,9 +91,9 @@ export const about = {
   title: "Médecin, technicien, et un regard d'esthète",
   paragraphs: [
     // À COMPLÉTER : biographie réelle du Dr Dadoun
-    "Le Dr Dadoun exerce la médecine esthétique à l'intersection de trois exigences : la rigueur médicale, la maîtrise technique et le regard esthétique. Il considère l'anatomie comme le fondement de chaque geste.",
-    "Minutieux, il prend le temps d'observer les détails — asymétries, proportions, qualité de peau — avant de proposer quoi que ce soit. Et il reste présent après le soin : le suivi fait partie intégrante de sa pratique.",
-    "Il transmet aussi son savoir aux professionnels de santé, à travers des formations sur les injections, les lasers et l'anatomie appliquée.",
+    "J'exerce la médecine esthétique à l'intersection de trois exigences : la rigueur médicale, la maîtrise technique et le regard esthétique. Pour moi, l'anatomie est le fondement de chaque geste.",
+    "Je prends le temps d'observer les détails — asymétries, proportions, qualité de peau — avant de proposer quoi que ce soit. Et je reste présent après le soin : le suivi fait partie intégrante de ma pratique.",
+    "Je transmets aussi mon savoir aux médecins, à travers des formations sur les injections, les lasers médicaux et l'endolifting.",
   ],
   // Parcours & diplômes : écoles, diplômes, formations, étapes (du plus récent au plus ancien).
   // Utilisé sur l'accueil (section « Le Dr Dadoun ») et sur /formations.
@@ -240,19 +240,19 @@ export const getUniverse = (slug: string) => universes.find((u) => u.slug === sl
 export const steps = [
   {
     title: "Consultation",
-    text: "Écoute de vos attentes, antécédents médicaux et analyse anatomique. Le médecin vous dit ce qui est réellement indiqué — et ce qui ne l'est pas.",
+    text: "Écoute de vos attentes, antécédents médicaux et analyse anatomique. Je vous dis ce qui est réellement indiqué — et ce qui ne l'est pas.",
   },
   {
     title: "Plan de traitement",
-    text: "Un protocole personnalisé, un devis détaillé et un temps de réflexion avant tout soin.",
+    text: "Je vous propose un protocole personnalisé, avec un devis détaillé et un temps de réflexion avant tout soin.",
   },
   {
     title: "Le soin",
-    text: "Réalisé par le médecin lui-même, au cabinet, dans des conditions d'hygiène et de confort optimales.",
+    text: "Je réalise moi-même chaque soin, au cabinet, dans des conditions d'hygiène et de confort optimales.",
   },
   {
     title: "Suivi",
-    text: "Un contrôle après le soin si nécessaire, et un médecin joignable pour toute question.",
+    text: "Un contrôle après le soin si nécessaire, et je reste joignable pour toute question.",
   },
 ];
 
@@ -262,8 +262,8 @@ export const faq = [
     a: "Oui, c'est l'objectif : des doses justes, parfois en plusieurs temps, pour un visage reposé — pas transformé.",
   },
   {
-    q: "Le médecin peut-il refuser de réaliser un acte ?",
-    a: "Oui, lorsqu'un acte ne peut pas donner le résultat attendu ou comporte trop de risques. Il vous explique alors pourquoi, et ce qui serait plus adapté.",
+    q: "Pouvez-vous refuser de réaliser un acte ?",
+    a: "Oui, lorsqu'un acte ne peut pas donner le résultat attendu ou comporte trop de risques. Je vous explique alors pourquoi, et ce qui serait plus adapté.",
   },
   {
     q: "Comment se déroule une consultation de gynécologie esthétique ?",
@@ -283,17 +283,13 @@ export const faq = [
   },
 ];
 
-// Formations pour les professionnels de santé (B2B)
+// Formations pour les médecins (B2B)
 export const training = {
   title: "Former les praticiens",
   intro:
-    "Le Dr Dadoun transmet ce qu'il pratique : une approche fondée sur l'anatomie, la maîtrise technique et la sécurité du patient.",
-  audience: "Médecins et professionnels de santé habilités",
+    "Je transmets ce que je pratique : une approche fondée sur l'indication, la maîtrise technique et la sécurité du patient.",
+  audience: "Médecins",
   modules: [
-    {
-      title: "Anatomie appliquée",
-      text: "Repères osseux, plans d'injection, zones à risque vasculaire : les fondamentaux pour des gestes sûrs et précis.",
-    },
     {
       title: "Injectables",
       text: "Toxine botulique et acide hyaluronique : indications, techniques, dosages, prévention et gestion des complications.",
@@ -307,8 +303,8 @@ export const training = {
       text: "Approche, indications, paramètres et maîtrise de la technique.",
     },
   ],
-  promises: ["Pratique encadrée", "Petits groupes", "Anatomie au cœur", "Suivi après la formation"],
-  contactSubject: "Formations professionnelles — demande d'information",
+  promises: ["Pratique encadrée", "Petits groupes", "Suivi après la formation"],
+  contactSubject: "Formations médecins — demande d'information",
 };
 
 // Prise de rendez-vous en ligne (calendrier du site).
