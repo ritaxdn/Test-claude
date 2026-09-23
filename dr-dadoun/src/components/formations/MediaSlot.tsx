@@ -9,10 +9,11 @@ type Props = {
   className?: string; // doit fixer la taille / le ratio
   tone?: "light" | "dark";
   sizes?: string;
+  position?: string; // cadrage de la photo, ex. "object-[50%_15%]"
 };
 
 /** Zone photo/vidéo. Tant qu'aucun fichier n'est fourni, affiche un emplacement sobre et explicite. */
-export function MediaSlot({ image: img, video: vid, label, className = "", tone = "light", sizes }: Props) {
+export function MediaSlot({ image: img, video: vid, label, className = "", tone = "light", sizes, position }: Props) {
   const videoSrc = vid ? video(vid) : null;
   const imageSrc = img ? image(img) : null;
 
@@ -30,7 +31,7 @@ export function MediaSlot({ image: img, video: vid, label, className = "", tone 
           aria-label={label}
         />
       ) : imageSrc ? (
-        <Photo src={imageSrc} alt={label} sizes={sizes} />
+        <Photo src={imageSrc} alt={label} sizes={sizes} className={position} />
       ) : (
         <div
           className={`absolute inset-0 flex items-end p-5 ${

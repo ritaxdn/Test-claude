@@ -298,7 +298,7 @@ export default function Home() {
           <div className="rounded-[1.75rem] bg-sand py-20 md:py-28">
             <div className={`${section} grid items-center gap-12 lg:grid-cols-[1fr_1.15fr] lg:gap-20`}>
               <div className="relative aspect-[4/5] overflow-hidden rounded-2xl">
-                <Photo src={image("docteur.jpg")} alt={`Portrait du ${doctor.name}`} fallback={2} sizes="(min-width:1024px) 45vw, 100vw" />
+                <Photo src={image("docteur.jpg")} alt={`Portrait du ${doctor.name}`} fallback={2} sizes="(min-width:1024px) 45vw, 100vw" className="object-[50%_15%]" />
                 <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between rounded-2xl border border-white/60 bg-white/70 px-5 py-4 backdrop-blur-md">
                   <div>
                     <p className="font-display text-lg font-semibold uppercase tracking-tight">{doctor.name}</p>
