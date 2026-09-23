@@ -26,6 +26,7 @@ import {
   practice,
   philosophy,
   training,
+  steps,
   treatments,
   universes,
 } from "@/content/site";
@@ -247,12 +248,12 @@ export default function Home() {
               <SectionTitle
                 title={
                   <>
-                    Deux univers,
+                    Deux expertises,
                     <br />
                     <span className="text-accent-deep">une même exigence</span>
                   </>
                 }
-                text="Deux univers, chacun avec ses actes — tous fondés sur l'anatomie et la bonne indication."
+                text="Visage & peau, gynécologie esthétique : chaque acte fondé sur l'anatomie et la bonne indication."
               />
             </div>
 
@@ -324,6 +325,31 @@ export default function Home() {
           </div>
         </section>
 
+        {/* ——— Parcours : de la première consultation au suivi ——— */}
+        <section id="parcours" className="pb-24 md:pb-32">
+          <div className={section}>
+            <SectionTitle
+              title={
+                <>
+                  De la première consultation
+                  <br />
+                  <span className="text-accent-deep">au suivi</span>
+                </>
+              }
+              text="Un parcours clair, sans précipitation : vous disposez toujours d'un temps de réflexion avant tout soin."
+            />
+            <ol className="mt-14 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+              {steps.map((s, i) => (
+                <li key={s.title} className="border-t border-ink/15 pt-6">
+                  <span className="font-display text-sm font-medium text-accent-deep">0{i + 1}</span>
+                  <h3 className="mt-4 font-display text-2xl font-medium">{s.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-ink-soft">{s.text}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+
         {/* ——— Rendez-vous ——— */}
         <section id="rendez-vous" className="px-2 md:px-3">
           <div className="rounded-[1.75rem] bg-sand py-20 md:py-28">
@@ -343,14 +369,6 @@ export default function Home() {
                   sous 24 h ouvrées.
                 </p>
               </div>
-              <ol className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-ink-soft" aria-label="Votre parcours">
-                {["Consultation", "Plan de traitement", "Soin", "Suivi"].map((step, i) => (
-                  <li key={step} className="flex items-center gap-3">
-                    {i > 0 && <ArrowRight size={14} className="text-accent" aria-hidden="true" />}
-                    <span className="rounded-full border border-ink/10 bg-white px-3.5 py-1.5">{step}</span>
-                  </li>
-                ))}
-              </ol>
               <div className="mt-12">
                 <BookingCalendar />
               </div>

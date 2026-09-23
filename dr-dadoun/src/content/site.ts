@@ -46,7 +46,7 @@ export const hero = {
   stats: [
     { value: "35+", label: "Années d'expérience" },
     { value: "10+", label: "Années de formation de médecins" },
-    { value: "2", label: "Univers de soins" },
+    { value: "2", label: "Domaines d'expertise" },
   ],
 };
 
@@ -236,6 +236,25 @@ export const universes = [
 ];
 
 export const getUniverse = (slug: string) => universes.find((u) => u.slug === slug);
+
+export const steps = [
+  {
+    title: "Consultation",
+    text: "Écoute de vos attentes, antécédents médicaux et analyse anatomique. Le médecin vous dit ce qui est réellement indiqué — et ce qui ne l'est pas.",
+  },
+  {
+    title: "Plan de traitement",
+    text: "Un protocole personnalisé, un devis détaillé et un temps de réflexion avant tout soin.",
+  },
+  {
+    title: "Le soin",
+    text: "Réalisé par le médecin lui-même, au cabinet, dans des conditions d'hygiène et de confort optimales.",
+  },
+  {
+    title: "Suivi",
+    text: "Un contrôle après le soin si nécessaire, et un médecin joignable pour toute question.",
+  },
+];
 
 export const faq = [
   {

@@ -133,7 +133,7 @@ export default async function UniversePage({ params }: Props) {
                 <div className="absolute inset-0 bg-gradient-to-t from-[#07343c]/80 to-transparent" />
                 <div className="relative flex items-end justify-between gap-6 p-7">
                   <div>
-                    <p className="text-xs uppercase tracking-[0.14em] text-white/80">L&apos;autre univers</p>
+                    <p className="text-xs uppercase tracking-[0.14em] text-white/80">L&apos;autre expertise</p>
                     <p className="mt-2 font-display text-3xl font-medium uppercase">{other.title}</p>
                   </div>
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-ink transition-transform duration-300 group-hover:translate-x-1">
