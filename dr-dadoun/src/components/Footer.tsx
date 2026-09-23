@@ -1,7 +1,10 @@
 import Link from "next/link";
-import { doctor, nav, practice } from "@/content/site";
+import { doctor, nav, practice, spaces } from "@/content/site";
+import { navPro } from "@/content/formations";
 
-export function Footer() {
+export function Footer({ variant = "patients" }: { variant?: "patients" | "pro" }) {
+  const pro = variant === "pro";
+  const links = [...(pro ? navPro : nav), pro ? spaces.patients : spaces.pro];
   return (
     <footer className="p-2 md:p-3">
       <div className="rounded-[1.75rem] bg-ink text-white">
@@ -9,11 +12,11 @@ export function Footer() {
           <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
             <div>
               <p className="font-display text-5xl font-medium uppercase tracking-tight md:text-6xl">{doctor.name}</p>
-              <p className="mt-2 text-sm text-white/60">{doctor.title}</p>
+              <p className="mt-2 text-sm text-white/60">{pro ? "Formations pour médecins" : doctor.title}</p>
             </div>
             <nav aria-label="Pied de page">
               <ul className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm text-white/75">
-                {nav.map((item) => (
+                {links.map((item) => (
                   <li key={item.href}>
                     <a href={item.href} className="hover:text-white">
                       {item.label}

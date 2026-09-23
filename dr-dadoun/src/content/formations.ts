@@ -26,6 +26,15 @@ export type CareerStep = {
   detail?: string;
 };
 
+// Menu de l'espace médecins (pages /formations).
+export const navPro = [
+  { href: "/formations#transmission", label: "Transmission" },
+  { href: "/formations#formations", label: "Formations" },
+  { href: "/formations#parcours", label: "Parcours" },
+  { href: "/formations#sessions", label: "Sessions" },
+];
+export const proCta = { href: "/formations?demande=programme#demande", label: "Demander le programme" };
+
 export const formationsPage = {
   hero: {
     eyebrow: "Dr Dadoun · Médecin esthétique · Lasériste · Formateur",

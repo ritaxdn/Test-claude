@@ -30,13 +30,19 @@ export const practice = {
   ],
 };
 
+// Menu de l'espace patients.
 export const nav = [
   { href: "/#docteur", label: "Le Docteur" },
   { href: "/#soins", label: "Soins" },
-  { href: "/formations", label: "Se former" },
   { href: "/#rendez-vous", label: "Rendez-vous" },
   { href: "/#cabinet", label: "Cabinet" },
 ];
+
+// Passerelles entre les deux espaces (patients / médecins), séparés.
+export const spaces = {
+  pro: { href: "/formations", label: "Espace médecins" },
+  patients: { href: "/", label: "Espace patients" },
+};
 
 export const hero = {
   eyebrow: "Médecine esthétique · Casablanca",
@@ -45,7 +51,6 @@ export const hero = {
   text: "Chaque visage a son anatomie, ses proportions, son identité. Je ne cherche pas à y appliquer un idéal standardisé : je corrige ce qui peut raisonnablement l'être, et je préserve tout le reste.",
   stats: [
     { value: "35+", label: "Années d'expérience" },
-    { value: "10+", label: "Années de formation de médecins" },
     { value: "2", label: "Domaines d'expertise" },
   ],
 };
@@ -93,7 +98,6 @@ export const about = {
     // À COMPLÉTER : biographie réelle du Dr Dadoun
     "J'exerce la médecine esthétique à l'intersection de trois exigences : la rigueur médicale, la maîtrise technique et le regard esthétique. Pour moi, l'anatomie est le fondement de chaque geste.",
     "Je prends le temps d'observer les détails — asymétries, proportions, qualité de peau — avant de proposer quoi que ce soit. Et je reste présent après le soin : le suivi fait partie intégrante de ma pratique.",
-    "Je transmets aussi mon savoir aux médecins, à travers des formations sur les injections, les lasers médicaux et l'endolifting.",
   ],
   // Parcours & diplômes : écoles, diplômes, formations, étapes (du plus récent au plus ancien).
   // Utilisé sur l'accueil (section « Le Dr Dadoun ») et sur /formations.

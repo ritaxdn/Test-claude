@@ -2,7 +2,6 @@ import Link from "next/link";
 import {
   ArrowRight,
   ArrowUpRight,
-  GraduationCap,
   CalendarDays,
   Clock,
   Mail,
@@ -25,7 +24,6 @@ import {
   hero,
   practice,
   philosophy,
-  training,
   steps,
   treatments,
   universes,
@@ -293,35 +291,6 @@ export default function Home() {
                 );
               })}
             </div>
-          </div>
-        </section>
-
-        {/* ——— Se former (médecins) ——— */}
-        <section id="formations" className="pb-24 md:pb-32">
-          <div className={section}>
-            <Link
-              href="/formations"
-              className="group relative flex flex-col justify-between gap-10 overflow-hidden rounded-2xl bg-ink p-8 text-white md:flex-row md:items-end md:p-12"
-            >
-              <div className="mesh-4 absolute -bottom-40 -right-24 h-96 w-96 rounded-full opacity-50 blur-3xl" aria-hidden="true" />
-              <div className="relative max-w-xl">
-                <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs uppercase tracking-wide">
-                  <GraduationCap size={14} /> Espace médecins
-                </span>
-                <h2 className="mt-8 font-display text-4xl font-medium uppercase leading-[0.98] md:text-6xl">
-                  Se former
-                  <br />
-                  <span className="text-accent">à mes côtés</span>
-                </h2>
-                <p className="mt-5 max-w-md text-sm leading-relaxed text-white/70">{training.intro}</p>
-              </div>
-              <span className="relative inline-flex shrink-0 items-center gap-3 text-xs font-medium uppercase tracking-wide">
-                Découvrir les formations
-                <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-ink transition-transform duration-300 group-hover:translate-x-1">
-                  <ArrowRight size={16} />
-                </span>
-              </span>
-            </Link>
           </div>
         </section>
 

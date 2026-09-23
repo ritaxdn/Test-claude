@@ -37,7 +37,7 @@ export default async function CoursePage({ params }: Props) {
 
   return (
     <>
-      <Header />
+      <Header variant="pro" />
       <main className="pt-32 md:pt-40">
         <section className={section}>
           <Link href="/formations#formations" className="inline-flex items-center gap-2 text-sm text-muted hover:text-ink">
@@ -118,7 +118,7 @@ export default async function CoursePage({ params }: Props) {
           </ul>
         </section>
       </main>
-      <Footer />
+      <Footer variant="pro" />
     </>
   );
 }
