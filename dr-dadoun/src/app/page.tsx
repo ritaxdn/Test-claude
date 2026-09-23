@@ -31,7 +31,7 @@ import { Photo } from "@/components/Photo";
 import { Highlights } from "@/components/Highlights";
 import { ArticleCard } from "@/components/ArticleCard";
 import { BookingCalendar } from "@/components/BookingCalendar";
-import { image } from "@/lib/images";
+import { image, video } from "@/lib/images";
 import { articles } from "@/content/journal";
 import {
   about,
@@ -100,6 +100,8 @@ function SectionTitle({ title, text, light }: { title: React.ReactNode; text?: s
 const section = "mx-auto max-w-6xl px-5 md:px-8";
 
 export default function Home() {
+  const heroVideo = video("hero.mp4");
+
   return (
     <>
       <Header />
@@ -108,6 +110,19 @@ export default function Home() {
         <section className="p-2 md:p-3">
           <div className="relative flex min-h-[640px] flex-col overflow-hidden rounded-[1.75rem] text-white md:min-h-[760px] lg:h-[calc(100svh-1.5rem)]">
             <Photo src={image("hero.jpg")} alt={`${doctor.name}, ${doctor.title.toLowerCase()}`} fallback={0} priority />
+            {heroVideo && (
+              <video
+                className="hero-video absolute inset-0 h-full w-full object-cover"
+                src={heroVideo}
+                poster={image("hero.jpg") ?? undefined}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                aria-hidden="true"
+              />
+            )}
             {/* Voile pour la lisibilité du texte blanc */}
             <div className="absolute inset-0 bg-gradient-to-r from-[#0a5f6d]/60 via-[#0a5f6d]/10 to-[#0a5f6d]/45" />
             <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#07515d]/40 to-transparent" />
