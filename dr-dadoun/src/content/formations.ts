@@ -134,7 +134,7 @@ export const formationsPage = {
     professions: [
       "Médecin esthétique",
       "Dermatologue",
-      "Chirurgien",
+      "Dentiste",
       "Gynécologue",
       "Médecin généraliste",
       "Autre spécialité médicale",
