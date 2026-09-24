@@ -59,10 +59,10 @@ export const hero = {
   eyebrow: "Médecine esthétique · Casablanca",
   // Le titre est affiché en 3 lignes ; la vignette photo s'insère au début de la 2e.
   title: ["Améliorer", "sans", "dénaturer"],
-  text: "Chaque visage a son anatomie, ses proportions, son identité. Je ne cherche pas à y appliquer un idéal standardisé : je corrige ce qui peut raisonnablement l'être, et je préserve tout le reste.",
+  text: "Analyse, indication, précision, suivi. Chaque prise en charge commence par comprendre ce qui se passe, avant de proposer quoi que ce soit.",
   stats: [
     { value: "35+", label: "Années d'expérience" },
-    { value: "2", label: "Domaines d'expertise" },
+    { value: "10+", label: "Années à former des médecins" },
   ],
 };
 
@@ -239,14 +239,14 @@ export const universes = [
     title: "Visage & peau",
     tagline: "Injections et lasers médicaux",
     intro:
-      "Rides d'expression, volumes, qualité de peau, relâchement : des traitements fondés sur l'anatomie du visage, pour un résultat qui reste le vôtre.",
+      "Rides d'expression, volumes, qualité de peau, relâchement : chaque traitement part de l'anatomie du visage et d'une indication posée en consultation.",
     image: "univers-visage.jpg",
     categories: ["injections", "lasers"],
   },
   {
     slug: "gynecologie-esthetique",
     title: "Gynécologie esthétique",
-    tagline: "Une médecine de l'intime",
+    tagline: "Médecine gynécologique & esthétique",
     intro:
       "Des actes médicaux intimes, abordés avec sérieux, pudeur et confidentialité. Chaque demande commence par une consultation, sans obligation de soin.",
     image: "univers-gyneco.jpg",
@@ -278,12 +278,12 @@ export const steps = [
     text: "Écoute de vos attentes, antécédents médicaux et analyse anatomique. Je vous dis ce qui est réellement indiqué — et ce qui ne l'est pas.",
   },
   {
-    title: "Plan de traitement",
-    text: "Je vous propose un protocole personnalisé, avec un devis détaillé et un temps de réflexion avant tout soin.",
+    title: "Indication & plan de traitement",
+    text: "Je pose l'indication et vous propose un protocole adapté, avec un devis détaillé et un temps de réflexion avant tout soin.",
   },
   {
     title: "Le soin",
-    text: "Je réalise moi-même chaque soin, au cabinet, dans des conditions d'hygiène et de confort optimales.",
+    text: "Le geste est réalisé selon le protocole défini ensemble, avec la précision et les ajustements nécessaires à votre anatomie.",
   },
   {
     title: "Suivi",
@@ -403,31 +403,26 @@ export const booking = {
       id: "premiere",
       label: "Première consultation",
       duration: "30 min",
-      text: "Bilan, analyse du visage et plan de traitement personnalisé.",
-    },
-    {
-      id: "suivi",
-      label: "Consultation de suivi",
-      duration: "20 min",
-      text: "Contrôle après un soin ou réévaluation de votre protocole.",
-    },
-    {
-      id: "injection",
-      label: "Séance d'injections",
-      duration: "30 – 45 min",
-      text: "Pour les patients ayant déjà eu leur consultation préalable.",
-    },
-    {
-      id: "laser",
-      label: "Séance de laser",
-      duration: "30 – 90 min",
-      text: "Laser CO₂, endolifting, diode vasculaire… selon le protocole défini.",
+      text: "Analyse, indication et plan de traitement. C'est par là que tout commence.",
     },
     {
       id: "gyneco",
       label: "Consultation de gynécologie esthétique",
       duration: "30 min",
       text: "Un échange médical confidentiel, sans obligation de soin.",
+    },
+    {
+      id: "suivi",
+      label: "Consultation de suivi",
+      duration: "20 min",
+      text: "Contrôle après un soin ou réévaluation de votre traitement.",
+    },
+    // Les soins ne se réservent qu'après une consultation : le protocole décidé fixe le soin et sa durée.
+    {
+      id: "soin",
+      label: "Soin programmé",
+      duration: "Selon le protocole",
+      text: "Réservé aux patients ayant déjà consulté : pour réaliser le soin indiqué lors de votre consultation.",
     },
   ],
 };

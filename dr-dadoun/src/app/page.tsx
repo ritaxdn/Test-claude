@@ -246,12 +246,12 @@ export default function Home() {
               <SectionTitle
                 title={
                   <>
-                    Deux expertises,
+                    Une indication juste
                     <br />
-                    <span className="text-accent-deep">une même exigence</span>
+                    <span className="text-accent-deep">avant chaque geste</span>
                   </>
                 }
-                text="Visage & peau, gynécologie esthétique : chaque acte fondé sur l'anatomie et la bonne indication."
+                text="Visage, peau, gynécologie esthétique : chaque prise en charge commence par l'analyse, l'anatomie et l'indication."
               />
             </div>
 
@@ -367,15 +367,15 @@ export default function Home() {
                 <SectionTitle
                   title={
                     <>
-                      Choisissez
+                      Prenez
                       <br />
-                      <span className="text-accent-deep">votre créneau</span>
+                      <span className="text-accent-deep">rendez-vous</span>
                     </>
                   }
                 />
                 <p className="max-w-sm text-sm leading-relaxed text-ink-soft">
-                  Sélectionnez le motif, le jour et l&apos;heure : le cabinet vous confirme le rendez-vous
-                  sous 24 h ouvrées.
+                  Choisissez le motif de votre consultation et le créneau qui vous convient. Le cabinet vous
+                  confirme le rendez-vous sous 24 h ouvrées.
                 </p>
               </div>
               <div className="mt-12">
