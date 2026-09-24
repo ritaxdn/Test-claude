@@ -26,7 +26,8 @@ export default function RendezVous() {
               </h1>
             </div>
             <p className="max-w-sm text-ink-soft">
-              Choisissez un créneau : le cabinet vous confirme le rendez-vous sous 24 h ouvrées. Vous
+              Choisissez le motif de votre consultation et le créneau qui vous convient. Le cabinet vous
+              confirme le rendez-vous sous 24 h ouvrées. Vous
               préférez appeler ?{" "}
               <a href={`tel:${practice.phoneHref}`} className="inline-flex items-center gap-1 underline decoration-accent underline-offset-4">
                 <Phone size={14} /> {practice.phone}

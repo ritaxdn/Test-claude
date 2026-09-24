@@ -126,10 +126,10 @@ export function Header({ variant = "patients" }: { variant?: "patients" | "pro" 
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Écrire au cabinet sur WhatsApp"
-          className="fixed bottom-4 right-4 z-50 inline-flex items-center gap-2 rounded-full bg-[#25D366] px-4 py-3 text-sm font-medium text-white shadow-[0_12px_30px_-10px_rgba(10,27,33,0.45)] transition-transform hover:-translate-y-0.5 md:bottom-6 md:right-6"
+          className="fixed bottom-4 right-4 z-50 inline-flex items-center gap-2 rounded-full border border-line bg-white/85 px-4 py-2.5 text-[0.7rem] font-medium uppercase tracking-wide text-ink shadow-[0_12px_30px_-18px_rgba(10,27,33,0.45)] backdrop-blur-md transition-colors hover:border-ink/30 hover:text-accent-deep md:bottom-6 md:right-6"
         >
-          <MessageCircle size={18} strokeWidth={2} />
-          <span className="hidden sm:inline">WhatsApp</span>
+          <MessageCircle size={15} strokeWidth={1.75} />
+          WhatsApp
         </a>
       )}
     </header>

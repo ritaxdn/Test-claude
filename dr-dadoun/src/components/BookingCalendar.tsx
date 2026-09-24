@@ -62,13 +62,7 @@ function Calendar() {
   const type = booking.types.find((t) => t.id === typeId)!;
 
   // Besoins proposés selon le motif choisi.
-  const needGroups = booking.needs.filter((g) =>
-    typeId === "gyneco"
-      ? g.group !== "Visage & peau"
-      : ["injection", "laser"].includes(typeId)
-        ? g.group !== "Gynécologie esthétique"
-        : true,
-  );
+  const needGroups = booking.needs.filter((g) => (typeId === "gyneco" ? g.group !== "Visage & peau" : true));
   const visibleNeeds = needs.filter((n) => needGroups.some((g) => g.options.includes(n)));
   const toggleNeed = (n: string) =>
     setNeeds((cur) => (cur.includes(n) ? cur.filter((x) => x !== n) : [...cur, n]));

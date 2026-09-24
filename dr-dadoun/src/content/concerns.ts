@@ -85,7 +85,7 @@ export const concerns: Concern[] = [
     assess: [
       "Les zones où le volume a réellement diminué",
       "Les proportions de votre visage",
-      "Le résultat souhaité, pour qu'il reste le vôtre",
+      "Le résultat que vous souhaitez, et ce qui est réaliste",
     ],
     options: [
       { act: "acide-hyaluronique", why: "Il restaure les volumes et redessine lèvres et ovale, dans le respect des proportions." },
