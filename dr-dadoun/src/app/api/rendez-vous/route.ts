@@ -31,6 +31,7 @@ export async function POST(request: Request) {
     lastName: clean(body.lastName),
     phone: clean(body.phone, 30),
     email: clean(body.email),
+    ageRange: clean(body.ageRange, 30),
     // Seuls les besoins de la liste proposée sont acceptés.
     needs: Array.isArray(body.needs)
       ? body.needs.filter((n: unknown): n is string => typeof n === "string" && allNeeds.has(n)).slice(0, 20)
@@ -41,7 +42,8 @@ export async function POST(request: Request) {
   const validDate = /^\d{4}-\d{2}-\d{2}$/.test(data.date) && !booking.closedDates.includes(data.date);
   const validTime = /^\d{2}:\d{2}$/.test(data.time);
   const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email);
-  if (!validType || !validDate || !validTime || !validEmail || !data.firstName || !data.lastName || !data.phone || !body.consent) {
+  const validAge = booking.ageRanges.includes(data.ageRange);
+  if (!validType || !validDate || !validTime || !validEmail || !validAge || !data.firstName || !data.lastName || !data.phone || !body.consent) {
     return NextResponse.json({ error: "Merci de vérifier les informations saisies." }, { status: 422 });
   }
 
@@ -63,6 +65,7 @@ export async function POST(request: Request) {
     ["Motif", data.type],
     ["Date souhaitée", when],
     ["Patient", `${data.firstName} ${data.lastName}`],
+    ["Tranche d'âge", data.ageRange],
     ["Téléphone", data.phone],
     ["E-mail", data.email],
     ["Besoins", data.needs.length ? data.needs.join(", ") : "—"],
