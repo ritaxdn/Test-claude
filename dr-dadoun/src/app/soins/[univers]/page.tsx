@@ -6,7 +6,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Photo } from "@/components/Photo";
 import { image } from "@/lib/images";
-import { getUniverse, practice, treatments, universes } from "@/content/site";
+import { getUniverse, practice, slugify, treatments, universes } from "@/content/site";
 import { JsonLd } from "@/components/JsonLd";
 import { absolute, breadcrumb, clinicId } from "@/lib/seo";
 
@@ -29,8 +29,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 const section = "mx-auto max-w-6xl px-5 md:px-8";
-const slugify = (s: string) =>
-  s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/₂/g, "2").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 const pill =
   "inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-xs font-medium uppercase tracking-wide transition-colors";
 
@@ -94,7 +92,11 @@ export default async function UniversePage({ params }: Props) {
                     <li key={t.name} id={slugify(t.name)} className="scroll-mt-28 grid gap-3 border-b border-line py-8 sm:grid-cols-[3rem_1fr]">
                       <span className="pt-1.5 text-xs font-medium text-muted">{String(n).padStart(2, "0")}</span>
                       <div>
-                        <h3 className="font-display text-2xl font-medium md:text-3xl">{t.name}</h3>
+                        <h3 className="font-display text-2xl font-medium md:text-3xl">
+                          <Link href={`/soins/${u.slug}/${slugify(t.name)}`} className="hover:text-accent-deep">
+                            {t.name}
+                          </Link>
+                        </h3>
                         <p className="mt-3 max-w-xl leading-relaxed text-ink-soft">{t.description}</p>
                         <dl className="mt-5 flex flex-wrap gap-x-8 gap-y-2 text-sm">
                           <div className="flex gap-2">
@@ -106,6 +108,13 @@ export default async function UniversePage({ params }: Props) {
                             <dd className="font-medium">{t.downtime}</dd>
                           </div>
                         </dl>
+                        <Link
+                          href={`/soins/${u.slug}/${slugify(t.name)}`}
+                          className="group mt-6 inline-flex items-center gap-2 text-sm font-medium text-accent-deep hover:text-ink"
+                        >
+                          En savoir plus
+                          <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
+                        </Link>
                       </div>
                     </li>
                   );
@@ -172,7 +181,7 @@ export default async function UniversePage({ params }: Props) {
               .map((t, i) => ({
                 "@type": "ListItem",
                 position: i + 1,
-                url: absolute(`/soins/${u.slug}#${slugify(t.name)}`),
+                url: absolute(`/soins/${u.slug}/${slugify(t.name)}`),
                 item: { "@type": "MedicalProcedure", name: t.name, description: t.description, howPerformed: `Durée : ${t.duration}. Suites : ${t.downtime}.` },
               })),
           },

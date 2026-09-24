@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowRight, ArrowUpRight, CalendarDays, Mail } from "lucide-
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { JsonLd } from "@/components/JsonLd";
+import { MediaSlot } from "@/components/formations/MediaSlot";
 import { absolute, breadcrumb, physicianId } from "@/lib/seo";
 import { formationsPage as f, getCourse } from "@/content/formations";
 
@@ -46,14 +47,25 @@ export default async function CoursePage({ params }: Props) {
     <>
       <Header variant="pro" />
       <main className="pt-32 md:pt-40">
-        <section className={section}>
-          <Link href="/formations#formations" className="inline-flex items-center gap-2 text-sm text-muted hover:text-ink">
-            <ArrowLeft size={16} /> Toutes les formations
-          </Link>
-          <p className="eyebrow mt-12">Formation {String(index + 1).padStart(2, "0")}</p>
-          <h1 className="mt-4 font-display text-5xl font-medium uppercase leading-[0.95] md:text-7xl">{course.title}</h1>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-soft">{course.summary}</p>
-          <p className="mt-4 text-sm text-muted">{f.hero.audience}.</p>
+        <section className={`${section} grid gap-12 lg:grid-cols-[1.4fr_1fr] lg:items-end`}>
+          <div>
+            <Link href="/formations#formations" className="inline-flex items-center gap-2 text-sm text-muted hover:text-ink">
+              <ArrowLeft size={16} /> Toutes les formations
+            </Link>
+            <p className="eyebrow mt-12">Formation {String(index + 1).padStart(2, "0")}</p>
+            <h1 className="mt-4 font-display text-5xl font-medium uppercase leading-[0.95] md:text-7xl">{course.title}</h1>
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-soft">{course.summary}</p>
+            <p className="mt-4 text-sm text-muted">{f.hero.audience}.</p>
+          </div>
+          {course.media && (
+            <MediaSlot
+              video={course.media.video}
+              image={course.media.image}
+              label={course.media.label}
+              className="aspect-[4/5] w-full max-w-sm lg:justify-self-end"
+              sizes="(min-width:1024px) 30vw, 100vw"
+            />
+          )}
         </section>
 
         <section className={`${section} mt-20 grid gap-14 border-t border-line pt-14 lg:grid-cols-[1.3fr_1fr] lg:gap-20`}>
