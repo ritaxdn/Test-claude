@@ -8,13 +8,17 @@ import { MediaSlot } from "@/components/formations/MediaSlot";
 import { FormationRequestSection } from "@/components/formations/FormationRequest";
 import { NewsletterSignup } from "@/components/formations/NewsletterSignup";
 import { RevealOnScroll } from "@/components/formations/RevealOnScroll";
+import { JsonLd } from "@/components/JsonLd";
+import { absolute, breadcrumb, physicianId } from "@/lib/seo";
 import { formationsPage as f } from "@/content/formations";
 import { practice } from "@/content/site";
 
 export const metadata: Metadata = {
-  title: "Formations pour médecins",
+  title: "Formations en médecine esthétique pour médecins — Casablanca",
   description:
-    "Formations du Dr Dadoun réservées aux médecins : injectables, lasers médicaux, endolifting.",
+    "Formations réservées aux médecins, dispensées par le Dr Dadoun à Casablanca (35+ ans d'expérience, formateur depuis 10+ ans) : injectables, lasers médicaux, endolifting. Petits groupes, pratique encadrée.",
+  alternates: { canonical: "/formations" },
+  openGraph: { url: "/formations" },
 };
 
 const section = "mx-auto max-w-6xl px-5 md:px-8";
@@ -311,6 +315,27 @@ export default function Formations() {
         </section>
       </main>
       <Footer variant="pro" />
+      <JsonLd data={breadcrumb([{ name: "Accueil", path: "/" }, { name: "Formations", path: "/formations" }])} />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          name: "Formations pour médecins du Dr Dadoun",
+          itemListElement: f.courses.map((c, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            item: {
+              "@type": "Course",
+              name: `Formation ${c.title}`,
+              description: c.summary,
+              url: absolute(`/formations/${c.slug}`),
+              provider: { "@id": physicianId },
+              audience: { "@type": "Audience", audienceType: "Médecins" },
+              inLanguage: "fr",
+            },
+          })),
+        }}
+      />
     </>
   );
 }

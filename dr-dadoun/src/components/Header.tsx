@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowUpRight, CalendarDays, GraduationCap, Menu, X } from "lucide-react";
+import { ArrowUpRight, CalendarDays, GraduationCap, Menu, MessageCircle, X } from "lucide-react";
 import { doctor, nav, practice, spaces } from "@/content/site";
 import { navPro, proCta } from "@/content/formations";
 
@@ -118,6 +118,20 @@ export function Header({ variant = "patients" }: { variant?: "patients" | "pro" 
           </nav>
         )}
       </div>
+
+      {/* Bouton WhatsApp (espace patients uniquement) */}
+      {!pro && practice.whatsapp && (
+        <a
+          href={`https://wa.me/${practice.whatsapp}?text=${encodeURIComponent("Bonjour, je souhaite prendre rendez-vous avec le Dr Dadoun.")}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Écrire au cabinet sur WhatsApp"
+          className="fixed bottom-4 right-4 z-50 inline-flex items-center gap-2 rounded-full bg-[#25D366] px-4 py-3 text-sm font-medium text-white shadow-[0_12px_30px_-10px_rgba(10,27,33,0.45)] transition-transform hover:-translate-y-0.5 md:bottom-6 md:right-6"
+        >
+          <MessageCircle size={18} strokeWidth={2} />
+          <span className="hidden sm:inline">WhatsApp</span>
+        </a>
+      )}
     </header>
   );
 }

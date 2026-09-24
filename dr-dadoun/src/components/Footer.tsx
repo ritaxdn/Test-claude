@@ -31,9 +31,11 @@ export function Footer({ variant = "patients" }: { variant?: "patients" | "pro" 
               <p className="pt-2">
                 <a href={`tel:${practice.phoneHref}`} className="hover:text-white">{practice.phone}</a>
               </p>
-              <p>
-                <a href={`mailto:${practice.email}`} className="hover:text-white">{practice.email}</a>
-              </p>
+              {practice.email && (
+                <p>
+                  <a href={`mailto:${practice.email}`} className="hover:text-white">{practice.email}</a>
+                </p>
+              )}
             </address>
           </div>
 

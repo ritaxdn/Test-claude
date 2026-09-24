@@ -27,7 +27,8 @@ export default function MentionsLegales() {
               <br />
               {practice.addressLine1}, {practice.addressLine2}
               <br />
-              Téléphone : {practice.phone} · E-mail : {practice.email}
+              Téléphone : {practice.phone}
+              {practice.email && ` · E-mail : ${practice.email}`}
               <br />
               {doctor.ordreNumber && (
                 <>
@@ -62,7 +63,7 @@ export default function MentionsLegales() {
               supprimées une fois la demande traitée. Le site n&apos;utilise pas de cookies de suivi.
               Conformément à la loi n° 09-08 relative à la protection des données personnelles, vous
               pouvez exercer vos droits d&apos;accès, de rectification et d&apos;opposition
-              en écrivant à {practice.email}.
+              en écrivant au cabinet ({practice.email || `${practice.addressLine1}, ${practice.addressLine2}`}).
             </p>
             <p className="mt-4">
               Les adresses laissées pour la newsletter Cellulift Academy (formations destinées aux

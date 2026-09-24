@@ -13,6 +13,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { Header } from "@/components/Header";
+import { JsonLd } from "@/components/JsonLd";
 import { Footer } from "@/components/Footer";
 import { Photo } from "@/components/Photo";
 import { BookingCalendar } from "@/components/BookingCalendar";
@@ -119,14 +120,14 @@ export default function Home() {
             <div className={`${section} relative flex w-full flex-1 flex-col pb-8 pt-32 md:pb-10 md:pt-40`}>
               <div className="flex flex-1 flex-col justify-between gap-12 lg:flex-row">
                 <div>
-                  <p className={`rise text-xs font-medium uppercase tracking-wide ${heroVideo ? "text-accent-deep" : "text-white/90"}`}>
-                    {hero.eyebrow}
-                  </p>
-                  <h1 className="rise rise-2 mt-4 font-display text-[2.5rem] font-medium uppercase leading-[0.95] min-[400px]:text-[2.8rem] sm:text-7xl sm:leading-[0.92] lg:text-[5.6rem]">
+                  <h1 className={`rise text-xs font-medium uppercase tracking-wide ${heroVideo ? "text-accent-deep" : "text-white/90"}`}>
+                    {doctor.name} · Médecin esthétique & lasériste à {practice.city}
+                  </h1>
+                  <p className="rise rise-2 mt-4 font-display text-[2.5rem] font-medium uppercase leading-[0.95] min-[400px]:text-[2.8rem] sm:text-7xl sm:leading-[0.92] lg:text-[5.6rem]">
                     <span className="block">{hero.title[0]}</span>
                     <span className={`block ${heroVideo ? "text-accent-deep" : ""}`}>{hero.title[1]}</span>
                     <span className="block">{hero.title[2]}</span>
-                  </h1>
+                  </p>
                   <div className="rise rise-3 mt-9 flex flex-wrap gap-3">
                     <PillLink href={practice.bookingUrl} icon={CalendarDays}>
                       Prendre rendez-vous
@@ -433,11 +434,13 @@ export default function Home() {
                       <Phone size={16} /> {practice.phone}
                     </a>
                   </li>
+                  {practice.email && (
                   <li>
                     <a href={`mailto:${practice.email}`} className="inline-flex items-center gap-3 hover:text-accent-soft">
                       <Mail size={16} /> {practice.email}
                     </a>
                   </li>
+                  )}
                 </ul>
               </div>
             </div>
@@ -445,6 +448,13 @@ export default function Home() {
         </section>
       </main>
       <Footer />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+        }}
+      />
     </>
   );
 }

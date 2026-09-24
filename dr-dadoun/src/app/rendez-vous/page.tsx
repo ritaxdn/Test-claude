@@ -6,8 +6,10 @@ import { BookingCalendar } from "@/components/BookingCalendar";
 import { practice } from "@/content/site";
 
 export const metadata: Metadata = {
-  title: "Prendre rendez-vous",
-  description: "Choisissez le motif, la date et l'heure de votre rendez-vous au cabinet du Dr Dadoun.",
+  title: "Prendre rendez-vous en ligne — Médecin esthétique à Casablanca",
+  description:
+    "Réservez votre consultation de médecine esthétique à Casablanca avec le Dr Dadoun : choisissez le motif, le jour et l'heure. Cabinet Quartier des Hôpitaux, ouvert du lundi au samedi.",
+  alternates: { canonical: "/rendez-vous" },
 };
 
 export default function RendezVous() {

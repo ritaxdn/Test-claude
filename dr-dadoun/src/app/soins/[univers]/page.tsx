@@ -7,6 +7,8 @@ import { Footer } from "@/components/Footer";
 import { Photo } from "@/components/Photo";
 import { image } from "@/lib/images";
 import { getUniverse, practice, treatments, universes } from "@/content/site";
+import { JsonLd } from "@/components/JsonLd";
+import { absolute, breadcrumb, clinicId } from "@/lib/seo";
 
 type Props = { params: Promise<{ univers: string }> };
 
@@ -17,10 +19,18 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const u = getUniverse((await params).univers);
   if (!u) return {};
-  return { title: u.title, description: u.intro };
+  const acts = treatments.filter((c) => u.categories.includes(c.id)).flatMap((c) => c.treatments.map((t) => t.name));
+  return {
+    title: `${u.title} à Casablanca : ${acts.slice(0, 4).join(", ")}`,
+    description: `${u.intro} Cabinet du Dr Dadoun, médecin esthétique et lasériste à Casablanca : ${acts.join(", ")}.`,
+    alternates: { canonical: `/soins/${u.slug}` },
+    openGraph: { url: `/soins/${u.slug}` },
+  };
 }
 
 const section = "mx-auto max-w-6xl px-5 md:px-8";
+const slugify = (s: string) =>
+  s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/₂/g, "2").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 const pill =
   "inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-xs font-medium uppercase tracking-wide transition-colors";
 
@@ -48,7 +58,7 @@ export default async function UniversePage({ params }: Props) {
                 <ArrowLeft size={16} /> Tous les soins
               </Link>
               <p className="mt-10 text-xs font-medium uppercase tracking-[0.14em] text-white/80">
-                {u.tagline}
+                {u.tagline} · {practice.city}
               </p>
               <h1 className="mt-3 font-display text-5xl font-medium uppercase leading-[0.92] md:text-8xl">{u.title}</h1>
               <div className="mt-6 flex flex-col justify-between gap-8 md:flex-row md:items-end">
@@ -81,7 +91,7 @@ export default async function UniversePage({ params }: Props) {
                 {cat.treatments.map((t, ti) => {
                   const n = offsets[ci] + ti + 1;
                   return (
-                    <li key={t.name} className="grid gap-3 border-b border-line py-8 sm:grid-cols-[3rem_1fr]">
+                    <li key={t.name} id={slugify(t.name)} className="scroll-mt-28 grid gap-3 border-b border-line py-8 sm:grid-cols-[3rem_1fr]">
                       <span className="pt-1.5 text-xs font-medium text-muted">{String(n).padStart(2, "0")}</span>
                       <div>
                         <h3 className="font-display text-2xl font-medium md:text-3xl">{t.name}</h3>
@@ -146,6 +156,28 @@ export default async function UniversePage({ params }: Props) {
         </section>
       </main>
       <Footer />
+      <JsonLd data={breadcrumb([{ name: "Accueil", path: "/" }, { name: "Soins", path: "/#soins" }, { name: u.title, path: `/soins/${u.slug}` }])} />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "MedicalWebPage",
+          name: `${u.title} à Casablanca`,
+          url: absolute(`/soins/${u.slug}`),
+          about: { "@type": "MedicalSpecialty", name: u.title },
+          provider: { "@id": clinicId },
+          mainEntity: {
+            "@type": "ItemList",
+            itemListElement: categories
+              .flatMap((c) => c.treatments)
+              .map((t, i) => ({
+                "@type": "ListItem",
+                position: i + 1,
+                url: absolute(`/soins/${u.slug}#${slugify(t.name)}`),
+                item: { "@type": "MedicalProcedure", name: t.name, description: t.description, howPerformed: `Durée : ${t.duration}. Suites : ${t.downtime}.` },
+              })),
+          },
+        }}
+      />
     </>
   );
 }
