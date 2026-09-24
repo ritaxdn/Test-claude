@@ -32,6 +32,7 @@ export async function POST(request: Request) {
     phone: clean(body.phone, 30),
     email: clean(body.email),
     ageRange: clean(body.ageRange, 30),
+    domain: clean(body.domain, 60),
     // Seuls les besoins de la liste proposée sont acceptés.
     needs: Array.isArray(body.needs)
       ? body.needs.filter((n: unknown): n is string => typeof n === "string" && allNeeds.has(n)).slice(0, 20)
@@ -41,9 +42,11 @@ export async function POST(request: Request) {
   const validType = booking.types.some((t) => t.label === data.type);
   const validDate = /^\d{4}-\d{2}-\d{2}$/.test(data.date) && !booking.closedDates.includes(data.date);
   const validTime = /^\d{2}:\d{2}$/.test(data.time);
-  const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email);
-  const validAge = booking.ageRanges.includes(data.ageRange);
-  if (!validType || !validDate || !validTime || !validEmail || !validAge || !data.firstName || !data.lastName || !data.phone || !body.consent) {
+  // E-mail, tranche d'âge et domaine sont facultatifs (moins d'abandons) mais vérifiés s'ils sont remplis.
+  const validEmail = !data.email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email);
+  const validAge = !data.ageRange || booking.ageRanges.includes(data.ageRange);
+  const validDomain = !data.domain || booking.needs.some((g) => g.group === data.domain);
+  if (!validType || !validDate || !validTime || !validEmail || !validAge || !validDomain || !data.firstName || !data.lastName || !data.phone || !body.consent) {
     return NextResponse.json({ error: "Merci de vérifier les informations saisies." }, { status: 422 });
   }
 
@@ -65,10 +68,11 @@ export async function POST(request: Request) {
     ["Motif", data.type],
     ["Date souhaitée", when],
     ["Patient", `${data.firstName} ${data.lastName}`],
-    ["Tranche d'âge", data.ageRange],
+    ["Tranche d'âge", data.ageRange || "—"],
     ["Téléphone", data.phone],
-    ["E-mail", data.email],
-    ["Besoins", data.needs.length ? data.needs.join(", ") : "—"],
+    ["E-mail", data.email || "—"],
+    ["Domaine", data.domain || "—"],
+    ["Préoccupation", data.needs.length ? data.needs.join(", ") : "—"],
   ];
 
   const res = await fetch("https://api.resend.com/emails", {
@@ -77,7 +81,7 @@ export async function POST(request: Request) {
     body: JSON.stringify({
       from: BOOKING_EMAIL_FROM,
       to: BOOKING_EMAIL_TO,
-      reply_to: data.email,
+      ...(data.email ? { reply_to: data.email } : {}),
       subject: `Demande de RDV — ${data.firstName} ${data.lastName} — ${when}`,
       html: `<h2>Nouvelle demande de rendez-vous</h2><table>${rows
         .map(([k, v]) => `<tr><td style="padding:4px 12px 4px 0;color:#8d7c72">${k}</td><td>${escape(v)}</td></tr>`)
