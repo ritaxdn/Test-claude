@@ -10,6 +10,7 @@ export type Course = {
   objectives?: string[];
   audience?: string;
   duration?: string;
+  media?: { video: string; image?: string; label: string }; // vidéo de la formation (public/videos/)
 };
 
 export type Session = {
@@ -60,7 +61,7 @@ export const formationsPage = {
     media: {
       image: "formation-transmission.jpg",
       video: "formation-transmission.mp4",
-      label: "En formation",
+      label: "Le Dr Dadoun en formation, devant un groupe de médecins",
     },
   },
 
@@ -76,6 +77,7 @@ export const formationsPage = {
       slug: "lasers-medicaux",
       title: "Lasers médicaux",
       summary: "Choix des paramètres, indications, protocoles et sécurité.",
+      media: { video: "formation-laser-co2.mp4", image: "formation-laser-co2.jpg", label: "Formation laser CO₂ fractionné" },
     },
     {
       slug: "endolifting",
@@ -93,7 +95,11 @@ export const formationsPage = {
       "Indication et sécurité au cœur de l'enseignement",
       "Suivi après la formation",
     ],
-    media: { image: "formation-pratique.jpg", label: "Pratique encadrée" },
+    // Deux vidéos côte à côte (format vertical).
+    media: [
+      { video: "formation-pratique.mp4", image: "formation-pratique.jpg", label: "Pratique encadrée sur patient" },
+      { video: "formation-pratique-2.mp4", image: "formation-pratique-2.jpg", label: "Démonstration du geste" },
+    ],
   },
 
   career: {

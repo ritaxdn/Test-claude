@@ -27,7 +27,8 @@ export const practice = {
     { days: ["Saturday"], opens: "09:00", closes: "14:00" },
   ],
   // À COMPLÉTER : liens officiels (Instagram, Facebook, fiche Google…) pour Google et les IA.
-  sameAs: [] as string[],
+  sameAs: ["https://www.instagram.com/dr_dadoun/"] as string[],
+  instagram: { handle: "@dr_dadoun", url: "https://www.instagram.com/dr_dadoun/" },
   bookingUrl: "/rendez-vous",
   mapsUrl: "https://www.google.com/maps/search/?api=1&query=N%C2%B002+Rue+Savoie+Quartier+des+H%C3%B4pitaux+Casablanca",
   // À COMPLÉTER : indications d'accès (parking, étage…)

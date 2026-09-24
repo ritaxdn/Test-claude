@@ -157,13 +157,17 @@ export default function Formations() {
                 ))}
               </ul>
             </div>
-            <div data-reveal>
-              <MediaSlot
-                image={f.practice.media.image}
-                label={f.practice.media.label}
-                className="aspect-[4/3] w-full"
-                sizes="(min-width:1024px) 50vw, 100vw"
-              />
+            <div className="grid grid-cols-2 gap-3" data-reveal>
+              {f.practice.media.map((m, i) => (
+                <MediaSlot
+                  key={m.video}
+                  image={m.image}
+                  video={m.video}
+                  label={m.label}
+                  className={`aspect-[9/16] w-full ${i === 1 ? "mt-10 md:mt-16" : ""}`}
+                  sizes="(min-width:1024px) 25vw, 50vw"
+                />
+              ))}
             </div>
           </div>
         </section>

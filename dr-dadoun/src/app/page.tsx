@@ -16,6 +16,7 @@ import { Header } from "@/components/Header";
 import { JsonLd } from "@/components/JsonLd";
 import { Footer } from "@/components/Footer";
 import { Photo } from "@/components/Photo";
+import { InstagramIcon } from "@/components/InstagramIcon";
 import { BookingCalendar } from "@/components/BookingCalendar";
 import { image, video } from "@/lib/images";
 import {
@@ -441,6 +442,16 @@ export default function Home() {
                     </a>
                   </li>
                   )}
+                  <li>
+                    <a
+                      href={practice.instagram.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-3 hover:text-accent-soft"
+                    >
+                      <InstagramIcon /> {practice.instagram.handle}
+                    </a>
+                  </li>
                 </ul>
               </div>
             </div>

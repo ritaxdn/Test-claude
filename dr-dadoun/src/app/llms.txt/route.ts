@@ -16,6 +16,7 @@ export function GET() {
     `- Téléphone : ${practice.phone} (+212 5 22 49 01 09)`,
     ...practice.hours.map((h) => `- ${h.day} : ${h.time}`),
     `- Prise de rendez-vous en ligne : ${absolute("/rendez-vous")}`,
+    `- Instagram : ${practice.instagram.url}`,
     "",
     "## Approche",
     philosophy.intro,

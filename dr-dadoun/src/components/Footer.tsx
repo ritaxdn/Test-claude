@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { doctor, nav, practice, spaces } from "@/content/site";
 import { navPro } from "@/content/formations";
+import { InstagramIcon } from "@/components/InstagramIcon";
 
 export function Footer({ variant = "patients" }: { variant?: "patients" | "pro" }) {
   const pro = variant === "pro";
@@ -36,6 +37,16 @@ export function Footer({ variant = "patients" }: { variant?: "patients" | "pro" 
                   <a href={`mailto:${practice.email}`} className="hover:text-white">{practice.email}</a>
                 </p>
               )}
+              <p className="pt-2">
+                <a
+                  href={practice.instagram.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 hover:text-white"
+                >
+                  <InstagramIcon size={14} /> {practice.instagram.handle}
+                </a>
+              </p>
             </address>
           </div>
 
