@@ -1,4 +1,4 @@
-import { doctor, faq, philosophy, practice, treatments, universes } from "@/content/site";
+import { actPath, acts, doctor, faq, philosophy, practice, universes } from "@/content/site";
 import { formationsPage } from "@/content/formations";
 import { absolute } from "@/lib/seo";
 
@@ -25,9 +25,9 @@ export function GET() {
     ...universes.flatMap((u) => [
       `### ${u.title} (${absolute(`/soins/${u.slug}`)})`,
       u.intro,
-      ...treatments
-        .filter((c) => u.categories.includes(c.id))
-        .flatMap((c) => c.treatments.map((t) => `- ${t.name} : ${t.description} Durée : ${t.duration}. Suites : ${t.downtime}.`)),
+      ...acts
+        .filter((a) => a.universe.slug === u.slug)
+        .map((a) => `- [${a.name}](${absolute(actPath(a))}) : ${a.description} Durée : ${a.duration}. Suites : ${a.downtime}.`),
       "",
     ]),
     "## Questions fréquentes",

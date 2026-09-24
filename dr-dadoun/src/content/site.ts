@@ -251,6 +251,21 @@ export const universes = [
 
 export const getUniverse = (slug: string) => universes.find((u) => u.slug === slug);
 
+// Adresse d'un acte à partir de son nom : « Laser CO₂ » → « laser-co2 ».
+export const slugify = (s: string) =>
+  s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/₂/g, "2").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+
+// Chaque acte a sa propre page : /soins/<univers>/<acte>. Générées automatiquement depuis `treatments`.
+export const acts = universes.flatMap((u) =>
+  treatments
+    .filter((c) => u.categories.includes(c.id))
+    .flatMap((c) => c.treatments.map((t) => ({ ...t, slug: slugify(t.name), universe: u, category: c }))),
+);
+export type Act = (typeof acts)[number];
+
+export const getAct = (univers: string, slug: string) => acts.find((a) => a.universe.slug === univers && a.slug === slug);
+export const actPath = (a: Act) => `/soins/${a.universe.slug}/${a.slug}`;
+
 export const steps = [
   {
     title: "Consultation",
