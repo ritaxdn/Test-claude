@@ -200,11 +200,6 @@ export default function Home() {
                 </h2>
                 <p className="mt-6 text-[1.05rem] leading-relaxed text-ink-soft">{philosophy.intro}</p>
 
-                <div className="mt-10 space-y-4 leading-relaxed text-ink-soft">
-                  {about.paragraphs.map((p) => (
-                    <p key={p.slice(0, 24)}>{p}</p>
-                  ))}
-                </div>
 
                 {/* Méthode */}
                 <h3 className="mt-14 text-xs font-medium uppercase tracking-[0.14em] text-accent-deep">Ma méthode</h3>
@@ -251,7 +246,7 @@ export default function Home() {
                     <span className="text-accent-deep">avant chaque geste</span>
                   </>
                 }
-                text="Visage, peau, gynécologie esthétique : chaque prise en charge commence par l'analyse, l'anatomie et l'indication."
+                text="Visage, peau, gynécologie esthétique."
               />
             </div>
 
@@ -264,7 +259,7 @@ export default function Home() {
                   <Link
                     key={u.slug}
                     href={`/soins/${u.slug}`}
-                    className="group relative flex min-h-[30rem] flex-col justify-end overflow-hidden rounded-2xl text-white md:min-h-[38rem]"
+                    className="group relative flex min-h-[15rem] flex-col justify-end overflow-hidden rounded-2xl text-white md:min-h-[19rem]"
                   >
                     <Photo
                       src={image(u.image)}
@@ -274,13 +269,12 @@ export default function Home() {
                       className="transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#07343c]/85 via-[#07343c]/25 to-transparent" />
-                    <div className="relative p-7 md:p-10">
+                    <div className="relative p-6 md:p-8">
                       <p className="text-xs font-medium uppercase tracking-[0.14em] text-white/80">
                         {u.tagline}
                       </p>
-                      <h3 className="mt-3 font-display text-4xl font-medium uppercase leading-[0.95] md:text-6xl">{u.title}</h3>
-                      <p className="mt-4 max-w-md text-sm leading-relaxed text-white/85">{u.intro}</p>
-                      <span className="mt-8 inline-flex items-center gap-3 text-xs font-medium uppercase tracking-wide">
+                      <h3 className="mt-2 font-display text-3xl font-medium uppercase leading-[0.95] md:text-4xl">{u.title}</h3>
+                      <span className="mt-6 inline-flex items-center gap-3 text-xs font-medium uppercase tracking-wide">
                         <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-ink transition-transform duration-300 group-hover:translate-x-1">
                           <ArrowRight size={16} />
                         </span>
@@ -296,13 +290,14 @@ export default function Home() {
             <div id="preoccupations" className="mt-20 scroll-mt-28 md:mt-28">
               <div className="flex flex-col justify-between gap-6 border-t border-line pt-12 md:flex-row md:items-end">
                 <div>
-                  <p className="eyebrow">Par où commencer ?</p>
-                  <h3 className="mt-4 font-display text-4xl font-medium uppercase leading-[0.95] md:text-5xl">
+                  <h3 className="font-display text-4xl font-medium uppercase leading-[0.95] md:text-5xl">
                     Votre <span className="text-accent-deep">préoccupation</span>
                   </h3>
                 </div>
-                <p className="max-w-sm text-sm leading-relaxed text-ink-soft">
-                  Inutile de connaître le nom d&apos;une technique : partez de ce qui vous gêne, je vous explique les solutions possibles.
+                <p className="max-w-sm leading-relaxed text-ink-soft">
+                  Vous n&apos;avez pas besoin de connaître le traitement.
+                  <br />
+                  Commencez par ce qui vous gêne.
                 </p>
               </div>
               {(["visage", "intime"] as const).map((g) => (
@@ -345,7 +340,7 @@ export default function Home() {
                   <span className="text-accent-deep">au suivi</span>
                 </>
               }
-              text="Un parcours clair, sans précipitation : vous disposez toujours d'un temps de réflexion avant tout soin."
+              text="Toujours un temps de réflexion avant tout soin."
             />
             <ol className="mt-14 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
               {steps.map((s, i) => (
@@ -464,9 +459,6 @@ export default function Home() {
 
               <div className="flex flex-col rounded-2xl bg-ink p-6 text-white">
                 <h3 className="font-display text-2xl font-medium">Nous contacter</h3>
-                <p className="mt-2 text-sm leading-relaxed text-white/70">
-                  Le secrétariat vous répond aux horaires d&apos;ouverture du cabinet.
-                </p>
                 <ul className="mt-6 space-y-3 text-sm">
                   <li>
                     <a href={`tel:${practice.phoneHref}`} className="inline-flex items-center gap-3 hover:text-accent-soft">
