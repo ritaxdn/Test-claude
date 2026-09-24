@@ -113,7 +113,6 @@ export const formationsPage = {
     ],
     // Parcours partagé avec l'accueil : à compléter dans site.ts (about.education).
     steps: about.education.map((e) => ({ period: e.period, title: e.title, detail: e.place })) as CareerStep[],
-    pendingNote: "Diplômes, formations et étapes du parcours : bientôt disponibles.",
     media: { image: "docteur.jpg", label: "Portrait" },
   },
 

@@ -139,6 +139,13 @@ export default async function ActPage({ params }: Props) {
           )}
         </section>
 
+        {/* Phrase signature */}
+        <section className={`${section} pt-20 md:pt-28`}>
+          <p className="max-w-3xl text-balance font-display text-3xl font-medium leading-tight text-accent-deep md:text-5xl">
+            {a.motto ?? a.category.motto}
+          </p>
+        </section>
+
         {/* Fiche détaillée (publiée seulement après validation médicale) */}
         {fiche && (
           <>
