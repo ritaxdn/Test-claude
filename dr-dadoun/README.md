@@ -14,12 +14,10 @@ npm run build
 
 Tout le texte du site se trouve dans `src/content/site.ts`.
 Les valeurs marquées `À COMPLÉTER` sont des exemples à remplacer avant la mise en ligne :
-prénom, n° RPPS, adresse, téléphone, e-mail, biographie, diplômes,
-horaires et jours de fermeture du calendrier (`booking`), et le portrait (`src/app/page.tsx`, bloc « Hero »).
+nom complet, n° d'inscription à l'Ordre, e-mail, diplômes (`about.education`), jours de fermeture
+du calendrier (`booking.closedDates`), liens officiels (`practice.sameAs`).
 
-Les articles du Journal (le savoir du Dr Dadoun) sont dans `src/content/journal.ts` :
-ajouter un objet au tableau `articles` crée automatiquement une nouvelle page
-`/journal/<slug>`.
+Le contenu de l'espace médecins (formations, sessions, newsletter) est dans `src/content/formations.ts`.
 
 ## Prise de rendez-vous
 
@@ -47,6 +45,16 @@ qui sert de base de données des inscrits et permet d'envoyer les newsletters de
 
 La clé `RESEND_API_KEY` doit avoir l'accès **Full access** pour ajouter des contacts.
 Sans audience configurée, chaque inscription est envoyée par e-mail au cabinet.
+
+## SEO et GEO
+
+- Métadonnées par page (titres et descriptions ciblés « … à Casablanca »), URL canoniques.
+- Données structurées schema.org : `MedicalClinic`, `Physician`, horaires, actes (`MedicalProcedure`),
+  `FAQPage`, fil d'Ariane, formations (`Course`) — voir `src/lib/seo.ts`.
+- `/sitemap.xml`, `/robots.txt` (moteurs et assistants IA explicitement autorisés), `/llms.txt`
+  (résumé du site pour les IA, généré depuis le contenu), image de partage `/opengraph-image`.
+- Adresse publique du site : variable `NEXT_PUBLIC_SITE_URL` (ex. `https://www.drdadoun.ma`) à définir
+  dans Vercel quand le nom de domaine sera branché.
 
 ## Déploiement (Vercel)
 

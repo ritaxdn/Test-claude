@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, ArrowUpRight, CalendarDays, Mail } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { JsonLd } from "@/components/JsonLd";
+import { absolute, breadcrumb, physicianId } from "@/lib/seo";
 import { formationsPage as f, getCourse } from "@/content/formations";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -15,7 +17,12 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const course = getCourse((await params).slug);
   if (!course) return {};
-  return { title: `Formation ${course.title}`, description: course.summary };
+  return {
+    title: `Formation ${course.title} pour médecins — Casablanca`,
+    description: `${course.summary} Formation réservée aux médecins, dispensée par le Dr Dadoun à Casablanca.`,
+    alternates: { canonical: `/formations/${course.slug}` },
+    openGraph: { url: `/formations/${course.slug}` },
+  };
 }
 
 const section = "mx-auto max-w-6xl px-5 md:px-8";
@@ -119,6 +126,22 @@ export default async function CoursePage({ params }: Props) {
         </section>
       </main>
       <Footer variant="pro" />
+      <JsonLd data={breadcrumb([{ name: "Accueil", path: "/" }, { name: "Formations", path: "/formations" }, { name: course.title, path: `/formations/${course.slug}` }])} />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Course",
+          name: `Formation ${course.title}`,
+          description: course.summary,
+          url: absolute(`/formations/${course.slug}`),
+          provider: { "@id": physicianId },
+          audience: { "@type": "Audience", audienceType: "Médecins" },
+          inLanguage: "fr",
+          ...(sessions.length
+            ? { hasCourseInstance: sessions.map((s) => ({ "@type": "CourseInstance", name: s.date, location: s.place, courseMode: "onsite" })) }
+            : {}),
+        }}
+      />
     </>
   );
 }

@@ -17,7 +17,17 @@ export const practice = {
   city: "Casablanca",
   phone: "05 22 49 01 09",
   phoneHref: "+212522490109",
-  email: "contact@dr-dadoun.fr", // À COMPLÉTER
+  // À COMPLÉTER : vraie adresse e-mail (vide = masquée partout, y compris pour Google).
+  email: "",
+  // Numéro WhatsApp au format international, sans + ni espaces (vide = bouton masqué).
+  whatsapp: "212522490109",
+  // Horaires structurés pour Google (schema.org).
+  openingHours: [
+    { days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "13:30", closes: "19:30" },
+    { days: ["Saturday"], opens: "09:00", closes: "14:00" },
+  ],
+  // À COMPLÉTER : liens officiels (Instagram, Facebook, fiche Google…) pour Google et les IA.
+  sameAs: [] as string[],
   bookingUrl: "/rendez-vous",
   mapsUrl: "https://www.google.com/maps/search/?api=1&query=N%C2%B002+Rue+Savoie+Quartier+des+H%C3%B4pitaux+Casablanca",
   // À COMPLÉTER : indications d'accès (parking, étage…)
@@ -261,6 +271,14 @@ export const steps = [
 ];
 
 export const faq = [
+  {
+    q: "Où se trouve le cabinet ?",
+    a: "Le cabinet se trouve au N°02 Rue Savoie, dans le Quartier des Hôpitaux, à Casablanca (20250). Il est ouvert du lundi au vendredi de 13h30 à 19h30 et le samedi de 9h00 à 14h00.",
+  },
+  {
+    q: "Quels soins de médecine esthétique proposez-vous à Casablanca ?",
+    a: "Au visage : toxine botulique, acide hyaluronique, laser CO₂, endolifting et diode vasculaire. En gynécologie esthétique : laser gynécologique, éclaircissement intime, comblement des grandes lèvres, nymphoplastie, O-Shot et G-Shot. Chaque soin commence par une consultation.",
+  },
   {
     q: "Le résultat sera-t-il naturel ?",
     a: "Oui, c'est l'objectif : des doses justes, parfois en plusieurs temps, pour un visage reposé — pas transformé.",
