@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { HoverFollow } from "@/components/ui/HoverFollow";
@@ -33,16 +34,27 @@ export function TechnologyCard({
           )}
         />
 
-        {typeof index === "number" && (
-          <span
-            className="font-label hidden text-current opacity-50 md:col-span-1 md:block"
-            style={{ fontSize: "12px", letterSpacing: "0.1em" }}
-          >
-            {String(index).padStart(2, "0")}
-          </span>
-        )}
+        <div className="flex items-center gap-3 md:col-span-2">
+          {typeof index === "number" && (
+            <span
+              className="font-label hidden shrink-0 text-current opacity-50 md:block"
+              style={{ fontSize: "12px", letterSpacing: "0.1em" }}
+            >
+              {String(index).padStart(2, "0")}
+            </span>
+          )}
+          <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-hairline bg-warm-white">
+            <Image
+              src={technology.image}
+              alt={technology.name}
+              fill
+              sizes="56px"
+              className="object-contain p-1"
+            />
+          </div>
+        </div>
 
-        <div className="md:col-span-5">
+        <div className="md:col-span-3">
           <span
             className="font-label block text-current opacity-50 md:hidden"
             style={{ fontSize: "11px", letterSpacing: "0.12em" }}
@@ -54,7 +66,7 @@ export function TechnologyCard({
           </h3>
         </div>
 
-        <p className="font-body text-sm font-light leading-relaxed opacity-80 md:col-span-4">
+        <p className="font-body text-sm font-light leading-relaxed opacity-80 md:col-span-5">
           {technology.tagline[locale]}
         </p>
 

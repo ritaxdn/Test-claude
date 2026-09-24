@@ -20,8 +20,8 @@ export async function generateMetadata({
   return {
     title: isFr ? "Technologies" : "Technologies",
     description: isFr
-      ? "Découvrez les technologies médico-esthétiques distribuées par Cellulift : remodelage corporel, rajeunissement facial, épilation laser et technologies capillaires."
-      : "Discover the medical aesthetic technologies distributed by Cellulift: body contouring, facial rejuvenation, laser hair removal and hair restoration.",
+      ? "Découvrez le catalogue de technologies médico-esthétiques distribuées par Cellulift : réjuvénation cutanée, photomodulation, thérapie avancée, HIFU, lasers et amincissement."
+      : "Discover Cellulift's catalogue of medical aesthetic technologies: skin rejuvenation, photomodulation, advanced therapy, HIFU, lasers and body slimming.",
     alternates: localeAlternates("/technologies"),
   };
 }

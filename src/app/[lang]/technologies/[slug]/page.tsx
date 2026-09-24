@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ArrowLeft, ArrowUpRight, Check } from "lucide-react";
@@ -62,7 +63,7 @@ export default async function TechnologyDetailPage({
     <>
       <section
         className={cn(
-          "isolate relative flex min-h-[70vh] flex-col justify-end overflow-hidden border-b border-hairline pt-28 pb-14 text-warm-white md:pt-36",
+          "isolate relative overflow-hidden border-b border-hairline pt-28 pb-14 text-warm-white md:pt-36",
           categoryPlateClass[tech.category]
         )}
       >
@@ -79,91 +80,97 @@ export default async function TechnologyDetailPage({
             </Link>
           </Reveal>
 
-          <div className="mt-10 flex flex-col justify-between gap-10 md:flex-row md:items-end">
-            <div>
-              <span
-                className="font-label text-muted"
-                style={{ fontSize: "11px", letterSpacing: "0.2em" }}
-              >
-                {categories[tech.category][lang].toUpperCase()}
-              </span>
-              <SplitReveal
-                lines={[tech.name]}
-                className="text-display-1 mt-3 text-warm-white"
-                delay={0.1}
-              />
-            </div>
-
-            <Reveal delay={0.4} className="max-w-sm md:text-right">
-              <p className="font-body text-base font-light leading-relaxed text-muted">
-                {tech.tagline[lang]}
-              </p>
-              <div className="mt-5 flex flex-wrap gap-2 md:justify-end">
-                {tech.certifications.map((cert) => (
-                  <Badge key={cert}>{cert}</Badge>
-                ))}
-              </div>
-            </Reveal>
-          </div>
+          <span
+            className="font-label mt-10 block text-muted"
+            style={{ fontSize: "11px", letterSpacing: "0.2em" }}
+          >
+            {categories[tech.category][lang].toUpperCase()}
+          </span>
+          <SplitReveal
+            lines={[tech.name]}
+            className="text-display-1 mt-3 text-warm-white"
+            delay={0.1}
+          />
         </Container>
       </section>
 
       <section className="py-20 md:py-28">
         <Container className="grid grid-cols-1 gap-12 md:grid-cols-12">
-          <div className="md:col-span-3">
+          <Reveal className="md:col-span-5">
+            <div className="relative aspect-square overflow-hidden rounded-2xl border border-hairline bg-warm-white">
+              <Image
+                src={tech.image}
+                alt={tech.name}
+                fill
+                sizes="(min-width: 768px) 40vw, 90vw"
+                className="object-contain p-8"
+              />
+            </div>
+          </Reveal>
+
+          <div className="md:col-span-6 md:col-start-7">
             <Reveal>
               <p className="font-body text-lg leading-relaxed text-ink-soft md:text-xl">
+                {tech.tagline[lang]}
+              </p>
+            </Reveal>
+            <Reveal delay={0.08}>
+              <div className="mt-5 flex flex-wrap gap-2">
+                {tech.certifications.map((cert) => (
+                  <Badge key={cert}>{cert}</Badge>
+                ))}
+              </div>
+            </Reveal>
+            <Reveal delay={0.14}>
+              <p className="font-body mt-6 text-base font-light leading-relaxed text-ink-soft">
                 {tech.description[lang]}
               </p>
             </Reveal>
-            <Reveal delay={0.15} className="mt-8 hidden md:block">
+
+            <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2">
+              <div>
+                <h2
+                  className="font-label text-muted"
+                  style={{ fontSize: "11px", letterSpacing: "0.15em" }}
+                >
+                  {dict.common.indications.toUpperCase()}
+                </h2>
+                <RevealGroup className="mt-5 flex flex-col gap-3">
+                  {tech.indications.map((item, i) => (
+                    <RevealItem key={i} className="flex items-start gap-3">
+                      <Check size={16} className="mt-1 shrink-0 text-rainbow-1" />
+                      <span className="font-body text-sm font-light text-ink-soft">
+                        {item[lang]}
+                      </span>
+                    </RevealItem>
+                  ))}
+                </RevealGroup>
+              </div>
+
+              <div>
+                <h2
+                  className="font-label text-muted"
+                  style={{ fontSize: "11px", letterSpacing: "0.15em" }}
+                >
+                  {dict.common.benefits.toUpperCase()}
+                </h2>
+                <RevealGroup className="mt-5 flex flex-col gap-3">
+                  {tech.benefits.map((item, i) => (
+                    <RevealItem key={i} className="flex items-start gap-3">
+                      <Check size={16} className="mt-1 shrink-0 text-rainbow-3" />
+                      <span className="font-body text-sm font-light text-ink-soft">
+                        {item[lang]}
+                      </span>
+                    </RevealItem>
+                  ))}
+                </RevealGroup>
+              </div>
+            </div>
+
+            <Reveal delay={0.2} className="mt-10">
               <Magnetic className="inline-block">
                 <Button href={`/${lang}/contact`}>{dict.common.requestDemo}</Button>
               </Magnetic>
-            </Reveal>
-          </div>
-
-          <div className="grid grid-cols-1 gap-10 md:col-span-8 md:col-start-5 md:grid-cols-2">
-            <div>
-              <h2
-                className="font-label text-muted"
-                style={{ fontSize: "11px", letterSpacing: "0.15em" }}
-              >
-                {dict.common.indications.toUpperCase()}
-              </h2>
-              <RevealGroup className="mt-5 flex flex-col gap-3">
-                {tech.indications.map((item, i) => (
-                  <RevealItem key={i} className="flex items-start gap-3">
-                    <Check size={16} className="mt-1 shrink-0 text-rainbow-1" />
-                    <span className="font-body text-sm font-light text-ink-soft">
-                      {item[lang]}
-                    </span>
-                  </RevealItem>
-                ))}
-              </RevealGroup>
-            </div>
-
-            <div>
-              <h2
-                className="font-label text-muted"
-                style={{ fontSize: "11px", letterSpacing: "0.15em" }}
-              >
-                {dict.common.benefits.toUpperCase()}
-              </h2>
-              <RevealGroup className="mt-5 flex flex-col gap-3">
-                {tech.benefits.map((item, i) => (
-                  <RevealItem key={i} className="flex items-start gap-3">
-                    <Check size={16} className="mt-1 shrink-0 text-rainbow-3" />
-                    <span className="font-body text-sm font-light text-ink-soft">
-                      {item[lang]}
-                    </span>
-                  </RevealItem>
-                ))}
-              </RevealGroup>
-            </div>
-
-            <Reveal delay={0.15} className="md:hidden">
-              <Button href={`/${lang}/contact`}>{dict.common.requestDemo}</Button>
             </Reveal>
           </div>
         </Container>

@@ -21,7 +21,10 @@ export function FeaturedTechnologies({
   viewAllLabel: string;
   readMoreLabel: string;
 }) {
-  const featured = technologies.slice(0, 3);
+  const featuredSlugs = ["aquapeel", "rejuvskin", "megalight"];
+  const featured = featuredSlugs
+    .map((slug) => technologies.find((t) => t.slug === slug))
+    .filter((t): t is (typeof technologies)[number] => Boolean(t));
 
   return (
     <section className="py-28 md:py-40">
