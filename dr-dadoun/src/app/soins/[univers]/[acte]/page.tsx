@@ -280,7 +280,7 @@ export default async function ActPage({ params }: Props) {
             <div className="flex flex-col justify-between rounded-2xl bg-ink p-8 text-white md:p-10">
               <div>
                 <h2 className="font-display text-3xl font-medium leading-tight md:text-4xl">
-                  Parlons de votre projet en consultation
+                  Chaque soin commence par une consultation
                 </h2>
                 <p className="mt-4 max-w-md text-sm leading-relaxed text-white/70">
                   {practice.addressLine1}, {practice.addressLine2}.

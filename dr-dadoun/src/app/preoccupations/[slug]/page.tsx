@@ -133,7 +133,7 @@ export default async function ConcernPage({ params }: Props) {
             </div>
             <div className="flex flex-col justify-between rounded-2xl bg-ink p-8 text-white md:p-10">
               <div>
-                <h2 className="font-display text-2xl font-medium md:text-3xl">Parlons-en en consultation</h2>
+                <h2 className="font-display text-2xl font-medium md:text-3xl">Tout commence par une consultation</h2>
                 <p className="mt-4 text-sm leading-relaxed text-white/70">
                   {practice.addressLine1}, {practice.addressLine2}.
                 </p>
