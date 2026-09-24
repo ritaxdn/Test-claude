@@ -70,14 +70,14 @@ export const hero = {
 export const philosophy = {
   title: "Améliorer sans dénaturer",
   intro:
-    "Je n'applique pas le même idéal esthétique à tous. Mon point de départ est toujours votre anatomie, vos proportions et ce qui vous convient réellement. Mon objectif : accompagner le vieillissement et corriger ce qui peut l'être, en préservant le naturel et l'identité de votre visage.",
+    "Chaque visage a son anatomie, ses proportions et son histoire. Avant de proposer un traitement, j'observe, j'analyse et je pose une indication. Parce qu'en médecine esthétique, le résultat ne dépend pas seulement du geste. Il dépend d'abord de sa justesse.",
   // Le contre-modèle : la méthode, étape par étape
   method: [
-    { title: "Anatomie", text: "La base de tout geste : les repères osseux, les vaisseaux, les plans de la peau." },
-    { title: "Indication", text: "Le bon acte, pour la bonne raison. Et parfois, aucun acte." },
-    { title: "Précision", text: "Des doses justes et des points d'injection pensés au millimètre." },
-    { title: "Naturel", text: "Un visage reposé qui reste le vôtre, jamais un visage « refait »." },
-    { title: "Suivi", text: "Un contrôle après le soin, et je reste joignable si vous avez une question." },
+    { title: "Observer", text: "Chaque prise en charge commence par l'analyse du visage, de ses proportions et de son évolution." },
+    { title: "Indiquer", text: "Choisir le traitement adapté — et savoir quand ne pas traiter." },
+    { title: "Maîtriser", text: "L'anatomie guide le geste. La précision en détermine la qualité." },
+    { title: "Préserver", text: "Corriger sans standardiser. Traiter sans effacer les expressions ni l'identité." },
+    { title: "Suivre", text: "La prise en charge ne s'arrête pas au geste. Le suivi en fait partie." },
   ],
 };
 
@@ -104,11 +104,10 @@ export const pillars = [
 ];
 
 export const about = {
-  title: "Médecin, technicien, et un regard d'esthète",
+  title: ["Comprendre", "avant de traiter."],
   paragraphs: [
-    // À COMPLÉTER : biographie réelle du Dr Dadoun
-    "J'exerce la médecine esthétique à l'intersection de trois exigences : la rigueur médicale, la maîtrise technique et le regard esthétique. Pour moi, l'anatomie est le fondement de chaque geste.",
-    "Je prends le temps d'observer les détails — asymétries, proportions, qualité de peau — avant de proposer quoi que ce soit. Et je reste présent après le soin : le suivi fait partie intégrante de ma pratique.",
+    "Je recherche un résultat qui ne se remarque pas par ce qui a été fait, mais par ce qu'il préserve : vos expressions, vos proportions, votre identité.",
+    "Mon approche repose sur une connaissance précise de l'anatomie, une indication adaptée et des gestes mesurés. Et lorsqu'un traitement n'est pas indiqué, savoir ne pas intervenir fait aussi partie de la médecine.",
   ],
   // Parcours & diplômes : écoles, diplômes, formations, étapes (du plus récent au plus ancien).
   // Utilisé sur l'accueil (section « Le Dr Dadoun ») et sur /formations.
@@ -119,6 +118,7 @@ export const about = {
 
 export type Treatment = {
   name: string;
+  motto?: string; // phrase signature propre à l'acte (sinon celle de sa famille)
   description: string;
   duration: string;
   downtime: string;
@@ -128,6 +128,7 @@ export type TreatmentCategory = {
   id: string;
   title: string;
   intro: string;
+  motto: string; // phrase signature : « Comprendre avant de traiter », décliné
   treatments: Treatment[];
 };
 
@@ -137,6 +138,7 @@ export const treatments: TreatmentCategory[] = [
     id: "injections",
     title: "Injections du visage",
     intro: "Adoucir, restaurer, harmoniser — dans le respect des repères anatomiques.",
+    motto: "Analyser avant d'injecter.",
     treatments: [
       {
         name: "Toxine botulique",
@@ -158,6 +160,7 @@ export const treatments: TreatmentCategory[] = [
     id: "lasers",
     title: "Lasers & technologies",
     intro: "Des technologies médicales maîtrisées, choisies selon l'indication.",
+    motto: "Diagnostiquer avant de traiter.",
     treatments: [
       {
         name: "Laser CO₂",
@@ -168,6 +171,7 @@ export const treatments: TreatmentCategory[] = [
       },
       {
         name: "Endolifting",
+        motto: "Tous les relâchements ne se traitent pas de la même manière.",
         description:
           "Une fibre laser très fine, glissée sous la peau, stimule la rétraction des tissus et le collagène pour raffermir l'ovale et le cou.",
         duration: "45 à 90 min",
@@ -186,6 +190,7 @@ export const treatments: TreatmentCategory[] = [
     id: "gyneco",
     title: "Gynécologie esthétique",
     intro: "Des actes médicaux intimes, abordés avec sérieux, pudeur et confidentialité.",
+    motto: "Écouter avant de proposer.",
     treatments: [
       {
         name: "Laser gynécologique",

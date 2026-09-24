@@ -194,9 +194,9 @@ export default function Home() {
                 {/* Philosophie */}
                 <p className="eyebrow">Qui suis-je</p>
                 <h2 className="mt-4 font-display text-4xl font-medium leading-[1.02] md:text-[3.4rem]">
-                  Médecin, technicien,
+                  {about.title[0]}
                   <br />
-                  <span className="text-accent-deep">et un regard d&apos;esthète</span>
+                  <span className="text-accent-deep">{about.title[1]}</span>
                 </h2>
                 <p className="mt-6 text-[1.05rem] leading-relaxed text-ink-soft">{philosophy.intro}</p>
 
@@ -218,25 +218,22 @@ export default function Home() {
                   ))}
                 </ol>
 
-                {/* Parcours & diplômes */}
-                <h3 className="mt-14 text-xs font-medium uppercase tracking-[0.14em] text-accent-deep">Mon parcours & mes diplômes</h3>
-                <ol className="mt-5 border-l border-ink/15 pl-6">
-                  {about.education.length > 0 ? (
-                    about.education.map((e) => (
-                      <li key={e.title} className="relative pb-6 last:pb-0">
-                        <span className="absolute -left-[1.85rem] top-1.5 h-2.5 w-2.5 rounded-full bg-accent" aria-hidden="true" />
-                        {e.period && <p className="text-xs font-medium text-accent-deep">{e.period}</p>}
-                        <p className="font-medium">{e.title}</p>
-                        {e.place && <p className="text-sm text-ink-soft">{e.place}</p>}
-                      </li>
-                    ))
-                  ) : (
-                    <li className="relative">
-                      <span className="absolute -left-[1.85rem] top-1.5 h-2.5 w-2.5 rounded-full border border-ink/30 bg-sand" aria-hidden="true" />
-                      <p className="text-sm text-muted">Écoles, diplômes et formations : bientôt disponibles.</p>
-                    </li>
-                  )}
-                </ol>
+                {/* Parcours & diplômes : affiché seulement une fois renseigné (site.ts → about.education) */}
+                {about.education.length > 0 && (
+                  <>
+                    <h3 className="mt-14 text-xs font-medium uppercase tracking-[0.14em] text-accent-deep">Mon parcours & mes diplômes</h3>
+                    <ol className="mt-5 border-l border-ink/15 pl-6">
+                      {about.education.map((e) => (
+                        <li key={e.title} className="relative pb-6 last:pb-0">
+                          <span className="absolute -left-[1.85rem] top-1.5 h-2.5 w-2.5 rounded-full bg-accent" aria-hidden="true" />
+                          {e.period && <p className="text-xs font-medium text-accent-deep">{e.period}</p>}
+                          <p className="font-medium">{e.title}</p>
+                          {e.place && <p className="text-sm text-ink-soft">{e.place}</p>}
+                        </li>
+                      ))}
+                    </ol>
+                  </>
+                )}
               </div>
             </div>
           </div>

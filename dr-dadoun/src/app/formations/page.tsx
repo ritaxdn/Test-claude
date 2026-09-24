@@ -219,16 +219,12 @@ export default function Formations() {
                         { title: "Lasers médicaux", detail: "Lasériste." },
                         { title: "Transmission", detail: "Formateur de médecins depuis plus de 10 ans." },
                       ].map((s) => (
-                        <li key={s.title} className="relative pb-10">
+                        <li key={s.title} className="relative pb-10 last:pb-0">
                           <span className="absolute -left-[2.3rem] top-1.5 h-2.5 w-2.5 rounded-full bg-accent" aria-hidden="true" />
                           <h3 className="font-display text-xl font-medium">{s.title}</h3>
                           <p className="mt-1 text-sm leading-relaxed text-white/65">{s.detail}</p>
                         </li>
                       ))}
-                      <li className="relative">
-                        <span className="absolute -left-[2.3rem] top-1.5 h-2.5 w-2.5 rounded-full border border-white/40 bg-ink" aria-hidden="true" />
-                        <p className="text-sm text-white/50">{f.career.pendingNote}</p>
-                      </li>
                     </>
                   )}
                 </ol>

@@ -82,7 +82,8 @@ export default async function UniversePage({ params }: Props) {
           {categories.map((cat, ci) => (
             <section key={cat.id} className={`${section} grid gap-10 pb-20 last:pb-0 lg:grid-cols-[1fr_2fr] lg:gap-16`}>
               <div className="lg:sticky lg:top-28 lg:self-start">
-                <h2 className="font-display text-3xl font-medium uppercase leading-none md:text-4xl">{cat.title}</h2>
+                <p className="text-sm font-medium text-accent-deep">{cat.motto}</p>
+                <h2 className="mt-3 font-display text-3xl font-medium uppercase leading-none md:text-4xl">{cat.title}</h2>
                 <p className="mt-4 max-w-xs text-sm leading-relaxed text-ink-soft">{cat.intro}</p>
               </div>
               <ol className="border-t border-line">
@@ -128,7 +129,7 @@ export default async function UniversePage({ params }: Props) {
         <section className={`${section} pb-24 md:pb-32`}>
           <div className="grid gap-3 lg:grid-cols-[1.2fr_1fr]">
             <div className="rounded-2xl bg-ink p-8 text-white md:p-10">
-              <h2 className="font-display text-3xl font-medium leading-tight md:text-4xl">Chaque soin commence par une consultation</h2>
+              <h2 className="text-balance font-display text-3xl font-medium leading-tight md:text-4xl">Chaque soin commence par une consultation</h2>
               <p className="mt-4 max-w-md text-sm leading-relaxed text-white/70">
                 Je vérifie l&apos;indication, je vous explique ce que l&apos;on peut attendre — et je vous dis
                 aussi quand un acte ne vous conviendrait pas.
