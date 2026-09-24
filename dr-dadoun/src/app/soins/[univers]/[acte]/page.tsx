@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight, CalendarDays, Phone, ShieldCheck } from "lucide-react";
+import { ArrowLeft, ArrowRight, CalendarDays, Check, Minus, Phone, ShieldCheck } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { JsonLd } from "@/components/JsonLd";
 import { actPath, acts, doctor, getAct, practice, steps, type Act } from "@/content/site";
+import { concernsForAct } from "@/content/concerns";
+import { getFiche } from "@/content/fiches";
 import { absolute, breadcrumb, clinicId, physicianId } from "@/lib/seo";
 
 type Props = { params: Promise<{ univers: string; acte: string }> };
@@ -59,6 +61,8 @@ export default async function ActPage({ params }: Props) {
   if (!a) notFound();
 
   const u = a.universe;
+  const forConcerns = concernsForAct(a.slug);
+  const fiche = getFiche(a.slug);
   const related = acts.filter((x) => x.universe.slug === u.slug && x.slug !== a.slug);
   const qa = questions(a);
   const url = absolute(actPath(a));
@@ -119,7 +123,103 @@ export default async function ActPage({ params }: Props) {
               <ShieldCheck size={18} className="shrink-0 text-accent-deep" /> {u.note}
             </p>
           )}
+          {forConcerns.length > 0 && (
+            <div className="mt-8 flex flex-wrap items-center gap-2">
+              <span className="mr-1 text-sm text-muted">Pour quelle préoccupation ?</span>
+              {forConcerns.map((c) => (
+                <Link
+                  key={c.slug}
+                  href={`/preoccupations/${c.slug}`}
+                  className="rounded-full border border-line bg-white px-4 py-2 text-sm transition-colors hover:border-ink/30 hover:text-accent-deep"
+                >
+                  {c.title}
+                </Link>
+              ))}
+            </div>
+          )}
         </section>
+
+        {/* Fiche détaillée (publiée seulement après validation médicale) */}
+        {fiche && (
+          <>
+            <section className={`${section} grid gap-10 pt-20 md:pt-28 lg:grid-cols-[1fr_2fr] lg:gap-16`}>
+              <h2 className="font-display text-3xl font-medium uppercase leading-none md:text-4xl">Comment ça agit</h2>
+              <div>
+                <p className="max-w-2xl text-lg leading-relaxed text-ink-soft">{fiche.how}</p>
+                <dl className="mt-8 grid gap-6 sm:grid-cols-2">
+                  <div>
+                    <dt className="text-xs uppercase tracking-[0.14em] text-muted">Zones traitées</dt>
+                    <dd className="mt-2 leading-relaxed">{fiche.zones.join(" · ")}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs uppercase tracking-[0.14em] text-muted">Nombre de séances</dt>
+                    <dd className="mt-2 leading-relaxed">{fiche.sessions}</dd>
+                  </div>
+                </dl>
+              </div>
+            </section>
+
+            <section className={`${section} mt-16 grid gap-3 lg:grid-cols-2`}>
+              <div className="rounded-2xl border border-line bg-white p-8 md:p-10">
+                <h2 className="font-display text-2xl font-medium md:text-3xl">Quand ce traitement est-il pertinent ?</h2>
+                <ul className="mt-6 space-y-3">
+                  {fiche.relevant.map((r) => (
+                    <li key={r} className="flex items-start gap-3">
+                      <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent-deep">
+                        <Check size={13} strokeWidth={2.5} />
+                      </span>
+                      {r}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="rounded-2xl border border-line bg-sand/60 p-8 md:p-10">
+                <h2 className="font-display text-2xl font-medium md:text-3xl">Quand n&apos;est-il pas la meilleure option ?</h2>
+                <ul className="mt-6 space-y-3">
+                  {fiche.notBest.map((n) => {
+                    const better = n.better ? acts.find((x) => x.slug === n.better) : undefined;
+                    return (
+                      <li key={n.case} className="flex items-start gap-3">
+                        <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-muted">
+                          <Minus size={13} strokeWidth={2.5} />
+                        </span>
+                        <span>
+                          {n.case}
+                          {better && (
+                            <>
+                              {" "}→{" "}
+                              <Link href={actPath(better)} className="font-medium text-accent-deep underline-offset-4 hover:underline">
+                                {better.name}
+                              </Link>
+                            </>
+                          )}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            </section>
+
+            <section className={`${section} mt-16 grid gap-x-16 gap-y-12 md:grid-cols-2`}>
+              {[
+                { t: "Avant le soin", l: fiche.preparation },
+                { t: "Après le soin", l: fiche.aftercare },
+                { t: "Risques possibles", l: fiche.risks },
+                { t: "Contre-indications", l: fiche.contraindications },
+              ].map((b) => (
+                <div key={b.t}>
+                  <h2 className="font-display text-2xl font-medium">{b.t}</h2>
+                  <ul className="mt-4 border-t border-line">
+                    {b.l.map((x) => (
+                      <li key={x} className="border-b border-line py-3 text-[0.95rem] leading-relaxed text-ink-soft">{x}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </section>
+          </>
+        )}
 
         {/* Déroulement */}
         <section className={`${section} grid gap-10 py-20 md:py-28 lg:grid-cols-[1fr_2fr] lg:gap-16`}>
@@ -216,7 +316,10 @@ export default async function ActPage({ params }: Props) {
             "@id": `${url}#acte`,
             name: a.name,
             description: a.description,
-            howPerformed: `Durée : ${a.duration}. Suites : ${a.downtime}. Après consultation médicale.`,
+            howPerformed: fiche ? fiche.how : `Durée : ${a.duration}. Suites : ${a.downtime}. Après consultation médicale.`,
+            ...(fiche
+              ? { bodyLocation: fiche.zones.join(", "), preparation: fiche.preparation.join(" "), followup: fiche.aftercare.join(" ") }
+              : {}),
           },
         }}
       />

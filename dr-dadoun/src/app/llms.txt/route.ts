@@ -1,5 +1,6 @@
 import { actPath, acts, doctor, faq, philosophy, practice, universes } from "@/content/site";
 import { formationsPage } from "@/content/formations";
+import { concernActs, concerns } from "@/content/concerns";
 import { absolute } from "@/lib/seo";
 
 // /llms.txt : résumé du site destiné aux assistants IA (GEO), généré depuis le contenu.
@@ -31,6 +32,9 @@ export function GET() {
         .map((a) => `- [${a.name}](${absolute(actPath(a))}) : ${a.description} Durée : ${a.duration}. Suites : ${a.downtime}.`),
       "",
     ]),
+    "## Par préoccupation",
+    ...concerns.map((c) => `- [${c.title}](${absolute(`/preoccupations/${c.slug}`)}) : ${concernActs(c).map((a) => a.name).join(", ")}. ${c.elsewhere}`),
+    "",
     "## Questions fréquentes",
     ...faq.flatMap((f) => [`- ${f.q}`, `  ${f.a}`]),
     "",
