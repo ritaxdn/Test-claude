@@ -36,15 +36,15 @@ export function Hero({
       <GridBackdrop className="pointer-events-none absolute inset-0 -z-20" />
       <CircuitLines className="pointer-events-none absolute top-0 right-0 -z-10 h-full w-1/2 text-ink opacity-[0.06]" />
 
-      {/* Oversized outlined wordmark bleeding off the top edge */}
+      {/* Oversized outlined wordmark bleeding off the top edge — pushed larger for a poster-scale layering effect */}
       <div
-        className="pointer-events-none absolute -top-[6vw] left-1/2 -z-10 w-[160vw] -translate-x-1/2 text-center text-outline select-none"
+        className="pointer-events-none absolute -top-[9vw] left-1/2 -z-10 w-[180vw] -translate-x-1/2 text-center text-outline select-none"
         style={
           {
             fontFamily: "var(--font-display)",
             fontWeight: 700,
-            fontSize: "26vw",
-            letterSpacing: "-0.04em",
+            fontSize: "34vw",
+            letterSpacing: "-0.045em",
             "--outline-color": "rgba(26, 24, 20, 0.07)",
           } as React.CSSProperties
         }
@@ -53,7 +53,13 @@ export function Hero({
         CELLULIFT
       </div>
 
-      <div className="mx-auto grid w-full max-w-[1600px] grid-cols-1 gap-y-10 px-6 pt-16 pb-20 md:grid-cols-12 md:px-10 md:pt-24 md:pb-28">
+      {/* Diagonal rainbow accent — a bold-scale take on the brand's "separator" rule */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-[-15%] bottom-[26%] -z-10 h-[3px] origin-left -rotate-[2.5deg] bg-gradient-rainbow opacity-40 md:bottom-[30%]"
+      />
+
+      <div className="mx-auto grid w-full max-w-[1600px] grid-cols-1 gap-y-10 px-6 pt-16 pb-20 md:grid-cols-12 md:px-10 md:pt-20 md:pb-32">
         <div className="md:col-span-1">
           <motion.div
             initial={{ opacity: 0, x: shouldReduceMotion ? 0 : -16 }}
@@ -61,7 +67,7 @@ export function Hero({
             transition={{ duration: 0.7, ease: [0.19, 1, 0.22, 1] }}
             className="flex items-center gap-3 md:flex-col md:items-start md:gap-4"
           >
-            <span className="h-px w-8 bg-ink md:h-16 md:w-px" />
+            <span className="h-px w-8 bg-ink md:h-24 md:w-[3px]" />
             <span
               className="font-label whitespace-nowrap text-muted md:[writing-mode:vertical-rl]"
               style={{ fontSize: "11px", letterSpacing: "0.2em" }}
@@ -71,23 +77,23 @@ export function Hero({
           </motion.div>
         </div>
 
-        <div className="relative md:col-span-8 md:col-start-2">
-          <SplitReveal lines={titleLines} className="text-display-1 text-ink" />
+        <div className="relative md:col-span-10 md:col-start-2">
+          <SplitReveal lines={titleLines} className="text-mega text-ink -ml-1" />
 
           <motion.div
             initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.9, y: shouldReduceMotion ? 0 : 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
+            animate={{ opacity: 1, scale: 1, y: 0, rotate: shouldReduceMotion ? 0 : -3 }}
             transition={{ duration: 0.7, delay: 0.75, ease: [0.19, 1, 0.22, 1] }}
-            className="glass mt-8 inline-flex items-center gap-3 rounded-full px-5 py-3 md:absolute md:-right-6 md:bottom-0 md:mt-0 md:translate-y-1/2"
+            className="glass mt-8 inline-flex items-center gap-3 rounded-full px-6 py-4 md:absolute md:top-[62%] md:right-[6%] md:mt-0 md:-rotate-3"
           >
-            <Sparkles size={16} className="text-gradient-rainbow shrink-0" />
-            <span className="font-label text-ink" style={{ fontSize: "11px", letterSpacing: "0.1em" }}>
+            <Sparkles size={18} className="text-gradient-rainbow shrink-0" />
+            <span className="font-label text-ink" style={{ fontSize: "12px", letterSpacing: "0.1em" }}>
               METAMORPHOSIS TECHNOLOGY
             </span>
           </motion.div>
         </div>
 
-        <div className="flex flex-col gap-8 md:col-span-4 md:col-start-9 md:mt-[8vw] md:items-end md:text-right">
+        <div className="flex flex-col gap-8 md:col-span-4 md:col-start-9 md:mt-[6vw] md:items-end md:text-right">
           <motion.p
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
             animate={{ opacity: 1, y: 0 }}

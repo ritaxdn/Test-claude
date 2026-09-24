@@ -7,9 +7,9 @@ import { cn } from "@/lib/utils";
 
 const spans = [
   "md:col-span-6",
-  "md:col-span-5 md:col-start-8 md:mt-20",
-  "md:col-span-5 md:mt-10",
-  "md:col-span-4 md:col-start-9 md:mt-24",
+  "md:col-span-5 md:col-start-8 md:mt-24 md:rotate-1",
+  "md:col-span-5 md:mt-12 md:-rotate-1",
+  "md:col-span-4 md:col-start-9 md:mt-32",
 ];
 
 export function StatsBar({
@@ -44,7 +44,7 @@ export function StatsBar({
               key={stat.label[locale]}
               className={cn("col-span-2", spans[i % spans.length])}
             >
-              <p className="font-display text-5xl font-bold text-gradient-rainbow md:text-7xl">
+              <p className="font-display text-6xl font-bold tracking-tight text-gradient-rainbow md:text-8xl">
                 <AnimatedCounter value={stat.value} suffix={stat.suffix} />
               </p>
               <p className="font-body mt-4 max-w-[16ch] text-sm font-light text-muted">
