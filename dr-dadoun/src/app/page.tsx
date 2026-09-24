@@ -3,6 +3,7 @@ import {
   ArrowRight,
   ArrowUpRight,
   CalendarDays,
+  ChevronDown,
   Clock,
   Mail,
   MapPin,
@@ -302,31 +303,40 @@ export default function Home() {
                   Commencez par ce qui vous gêne.
                 </p>
               </div>
-              {(["visage", "intime"] as const).map((g) => (
-                <div key={g} className="mt-10">
-                  <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted">
-                    {g === "visage" ? "Visage & peau" : "Gynécologie esthétique"}
-                  </p>
-                  <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                    {concerns
-                      .filter((c) => c.group === g)
-                      .map((c) => (
-                        <li key={c.slug}>
-                          <Link
-                            href={`/preoccupations/${c.slug}`}
-                            className="group flex h-full items-center justify-between gap-4 rounded-2xl border border-line bg-white p-5 transition-colors hover:border-ink/25 hover:bg-sand/50 md:p-6"
-                          >
-                            <div>
-                              <p className="font-display text-xl font-medium">{c.title}</p>
-                              <p className="mt-1 text-sm text-ink-soft">{c.short}</p>
-                            </div>
-                            <ArrowRight size={16} className="shrink-0 transition-transform duration-300 group-hover:translate-x-1" />
-                          </Link>
-                        </li>
-                      ))}
-                  </ul>
+              {/* Liste déroulante : de vrais liens (lisibles par Google), sans JavaScript */}
+              <details className="group relative mt-10 max-w-2xl">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 rounded-2xl border border-line bg-white px-6 py-5 text-lg transition-colors hover:border-ink/25 group-open:rounded-b-none group-open:border-b-transparent [&::-webkit-details-marker]:hidden">
+                  <span className="text-ink-soft">Choisissez ce qui vous gêne</span>
+                  <ChevronDown size={20} className="shrink-0 transition-transform duration-300 group-open:rotate-180" />
+                </summary>
+                <div className="max-h-[26rem] overflow-y-auto rounded-b-2xl border border-t-0 border-line bg-white px-3 pb-3">
+                  {(["visage", "intime"] as const).map((g) => (
+                    <div key={g} className="border-t border-line pt-3 first:border-t-0">
+                      <p className="px-3 pb-1 text-[0.7rem] font-medium uppercase tracking-[0.14em] text-muted">
+                        {g === "visage" ? "Visage & peau" : "Gynécologie esthétique"}
+                      </p>
+                      <ul className="pb-2">
+                        {concerns
+                          .filter((c) => c.group === g)
+                          .map((c) => (
+                            <li key={c.slug}>
+                              <Link
+                                href={`/preoccupations/${c.slug}`}
+                                className="group/item flex items-center justify-between gap-4 rounded-xl px-3 py-3 transition-colors hover:bg-sand"
+                              >
+                                <span>
+                                  <span className="block font-medium">{c.title}</span>
+                                  <span className="block text-sm text-ink-soft">{c.short}</span>
+                                </span>
+                                <ArrowRight size={16} className="shrink-0 text-muted transition-transform group-hover/item:translate-x-1 group-hover/item:text-ink" />
+                              </Link>
+                            </li>
+                          ))}
+                      </ul>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </details>
             </div>
           </div>
         </section>
