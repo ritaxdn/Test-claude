@@ -57,15 +57,12 @@ function Calendar() {
   const [time, setTime] = useState<string | null>(null);
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState("");
-  const [needs, setNeeds] = useState<string[]>([]);
+  // Qualification du patient : domaine puis préoccupation principale (facultatifs).
+  const [domain, setDomain] = useState("");
+  const [concern, setConcern] = useState("");
 
   const type = booking.types.find((t) => t.id === typeId)!;
-
-  // Besoins proposés selon le motif choisi.
-  const needGroups = booking.needs.filter((g) => (typeId === "gyneco" ? g.group !== "Visage & peau" : true));
-  const visibleNeeds = needs.filter((n) => needGroups.some((g) => g.options.includes(n)));
-  const toggleNeed = (n: string) =>
-    setNeeds((cur) => (cur.includes(n) ? cur.filter((x) => x !== n) : [...cur, n]));
+  const domainGroup = booking.needs.find((g) => g.group === domain);
 
   const isBookable = (d: Date) =>
     d >= today &&
@@ -102,7 +99,8 @@ function Calendar() {
         body: JSON.stringify({
           ...Object.fromEntries(form),
           type: type.label,
-          needs: visibleNeeds,
+          domain,
+          needs: concern ? [concern] : [],
           date: toKey(date),
           time,
         }),
@@ -244,21 +242,28 @@ function Calendar() {
             <Field label="Prénom" name="firstName" autoComplete="given-name" />
             <Field label="Nom" name="lastName" autoComplete="family-name" />
             <Field label="Téléphone" name="phone" type="tel" autoComplete="tel" />
-            <Field label="E-mail" name="email" type="email" autoComplete="email" />
+            <Field label="E-mail" name="email" type="email" autoComplete="email" optional />
             <label className={label}>
-              <span className="text-ink-soft">Tranche d&apos;âge</span>
-              <select name="ageRange" required defaultValue="" className={control}>
-                <option value="" disabled>
-                  Choisir
-                </option>
+              <span className="text-ink-soft">
+                Tranche d&apos;âge <span className="text-muted">(facultatif)</span>
+              </span>
+              <select name="ageRange" defaultValue="" className={control}>
+                <option value="">—</option>
                 {booking.ageRanges.map((a) => (
                   <option key={a}>{a}</option>
                 ))}
               </select>
             </label>
-            <label className={`${label} sm:col-span-2`}>
+            <label className={label}>
               <span className="text-ink-soft">Motif de la visite</span>
-              <select value={typeId} onChange={(e) => setTypeId(e.target.value)} className={control}>
+              <select
+                value={typeId}
+                onChange={(e) => {
+                  setTypeId(e.target.value);
+                  if (e.target.value === "gyneco" && !domain) setDomain("Gynécologie esthétique");
+                }}
+                className={control}
+              >
                 {booking.types.map((t) => (
                   <option key={t.id} value={t.id}>
                     {t.label}
@@ -266,42 +271,44 @@ function Calendar() {
                 ))}
               </select>
             </label>
+            <label className={label}>
+              <span className="text-ink-soft">
+                Domaine <span className="text-muted">(facultatif)</span>
+              </span>
+              <select
+                value={domain}
+                onChange={(e) => {
+                  setDomain(e.target.value);
+                  setConcern("");
+                }}
+                className={control}
+              >
+                <option value="">—</option>
+                {booking.needs.map((g) => (
+                  <option key={g.group}>{g.group}</option>
+                ))}
+              </select>
+            </label>
+            <label className={label}>
+              <span className="text-ink-soft">
+                Préoccupation <span className="text-muted">(facultatif)</span>
+              </span>
+              <select
+                value={concern}
+                onChange={(e) => setConcern(e.target.value)}
+                disabled={!domainGroup}
+                className={`${control} disabled:opacity-50`}
+              >
+                <option value="">{domainGroup ? "—" : "Choisir d'abord un domaine"}</option>
+                {domainGroup?.options.map((o) => (
+                  <option key={o}>{o}</option>
+                ))}
+              </select>
+            </label>
           </div>
           <p className="mt-2 text-xs text-muted">
-            {type.text} · {type.duration}
+            {type.label} : {type.text.charAt(0).toLowerCase() + type.text.slice(1)}
           </p>
-
-          <fieldset className="mt-6">
-            <legend className="text-sm text-ink-soft">
-              Qu&apos;aimeriez-vous aborder ? <span className="text-muted">(facultatif)</span>
-            </legend>
-            <div className="mt-3 space-y-4">
-              {needGroups.map((g) => (
-                <div key={g.group}>
-                  <p className="text-[0.7rem] font-medium uppercase tracking-wide text-muted">{g.group}</p>
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {g.options.map((n) => {
-                      const on = needs.includes(n);
-                      return (
-                        <button
-                          key={n}
-                          type="button"
-                          aria-pressed={on}
-                          onClick={() => toggleNeed(n)}
-                          className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm transition-colors ${
-                            on ? "border-accent-deep bg-accent-soft/50 text-ink" : "border-line text-ink-soft hover:border-accent"
-                          }`}
-                        >
-                          {on && <Check size={14} className="text-accent-deep" />}
-                          {n}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </fieldset>
 
           <div className={`mt-6 rounded-2xl px-5 py-4 text-sm ${ready ? "bg-sand" : "border border-dashed border-line text-muted"}`}>
             {ready ? (
@@ -316,8 +323,7 @@ function Calendar() {
 
           <label className="mt-4 flex items-start gap-3 text-xs leading-relaxed text-muted">
             <input type="checkbox" name="consent" required className="mt-0.5 accent-[var(--accent-deep)]" />
-            J&apos;accepte que mes coordonnées soient utilisées par le cabinet uniquement pour traiter ma
-            demande de rendez-vous.
+            J&apos;accepte que le cabinet utilise ces informations pour traiter ma demande.
           </label>
 
           {status === "error" && (
@@ -340,14 +346,28 @@ function Calendar() {
   );
 }
 
-function Field({ label, name, type = "text", autoComplete }: { label: string; name: string; type?: string; autoComplete?: string }) {
+function Field({
+  label,
+  name,
+  type = "text",
+  autoComplete,
+  optional,
+}: {
+  label: string;
+  name: string;
+  type?: string;
+  autoComplete?: string;
+  optional?: boolean;
+}) {
   return (
     <label className="block text-sm">
-      <span className="text-ink-soft">{label}</span>
+      <span className="text-ink-soft">
+        {label} {optional && <span className="text-muted">(facultatif)</span>}
+      </span>
       <input
         name={name}
         type={type}
-        required
+        required={!optional}
         maxLength={120}
         autoComplete={autoComplete}
         className="mt-1.5 w-full rounded-xl border border-line bg-white/60 px-4 py-3 outline-none focus:border-accent"
