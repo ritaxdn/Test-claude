@@ -14,6 +14,9 @@ export type Course = {
 };
 
 export type Session = {
+  id?: string; // identifiant de l'événement (colonne « id » du Google Sheet) : active l'inscription en ligne
+  capacity?: number; // nombre de places
+  registered?: number; // inscrits (calculé depuis l'onglet « Inscriptions »)
   course?: string; // slug de la formation concernée (vide pour un autre événement)
   title?: string; // titre libre (congrès, masterclass…) ; sinon, le nom de la formation
   start?: string; // AAAA-MM-JJ : sert à trier et à masquer les dates passées

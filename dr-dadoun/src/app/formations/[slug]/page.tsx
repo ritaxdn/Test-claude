@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowRight, ArrowUpRight, CalendarDays, Mail } from "lucide-
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { JsonLd } from "@/components/JsonLd";
-import { getSessions } from "@/lib/sessions";
+import { getSessions, registrationEnabled } from "@/lib/sessions";
 import { MediaSlot } from "@/components/formations/MediaSlot";
 import { absolute, breadcrumb, physicianId } from "@/lib/seo";
 import { formationsPage as f, getCourse } from "@/content/formations";
@@ -40,6 +40,7 @@ export default async function CoursePage({ params }: Props) {
 
   const index = f.courses.indexOf(course);
   const sessions = (await getSessions()).filter((s) => s.course === course.slug);
+  const online = registrationEnabled();
   const others = f.courses.filter((c) => c.slug !== course.slug);
   const details = [
     course.audience && { label: "Public", value: course.audience },
@@ -103,9 +104,22 @@ export default async function CoursePage({ params }: Props) {
             {sessions.length > 0 ? (
               <ul className="mt-6 border-t border-line">
                 {sessions.map((s) => (
-                  <li key={s.date} className="border-b border-line py-4 text-sm">
+                  <li key={s.id ?? s.date} className="border-b border-line py-4 text-sm">
                     <p className="flex items-center gap-2 font-medium"><CalendarDays size={14} className="text-accent-deep" /> {s.date}</p>
                     <p className="mt-1 text-ink-soft">{s.place} · {s.format}</p>
+                    {s.status === "full" ? (
+                      <p className="mt-2 text-xs font-medium uppercase tracking-wide text-muted">Complet</p>
+                    ) : (
+                      online &&
+                      s.id && (
+                        <Link
+                          href={`/formations/inscription/${s.id}`}
+                          className="mt-2 inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-accent-deep hover:text-ink"
+                        >
+                          S&apos;inscrire <ArrowRight size={13} />
+                        </Link>
+                      )
+                    )}
                   </li>
                 ))}
               </ul>

@@ -11,7 +11,7 @@ import { FormationRequestSection } from "@/components/formations/FormationReques
 import { NewsletterSignup } from "@/components/formations/NewsletterSignup";
 import { RevealOnScroll } from "@/components/formations/RevealOnScroll";
 import { JsonLd } from "@/components/JsonLd";
-import { getSessions, sessionTitle } from "@/lib/sessions";
+import { getSessions, placesLeft, registrationEnabled, sessionTitle } from "@/lib/sessions";
 import { absolute, breadcrumb, physicianId } from "@/lib/seo";
 import { formationsPage as f } from "@/content/formations";
 import { practice } from "@/content/site";
@@ -37,6 +37,7 @@ export const revalidate = 300;
 
 export default async function Formations() {
   const sessions = await getSessions();
+  const online = registrationEnabled();
 
   return (
     <>
@@ -256,12 +257,19 @@ export default async function Formations() {
                     <p className="font-display text-xl font-medium">{sessionTitle(s)}</p>
                     <p className="flex items-center gap-2 text-sm"><CalendarDays size={14} className="text-accent-deep" /> {s.date}</p>
                     <p className="text-sm text-ink-soft">{s.place}</p>
-                    <p className="text-sm text-ink-soft">{s.format}</p>
+                    <p className="text-sm text-ink-soft">
+                      {s.format}
+                      {placesLeft(s) !== undefined && s.status !== "full" && (
+                        <span className="mt-1 block text-xs font-medium text-accent-deep">
+                          {placesLeft(s)} place{placesLeft(s)! > 1 ? "s" : ""} restante{placesLeft(s)! > 1 ? "s" : ""}
+                        </span>
+                      )}
+                    </p>
                     {s.status === "full" ? (
                       <span className="text-xs font-medium uppercase tracking-wide text-muted">Complet</span>
                     ) : (
                       <Link
-                        href={requestLink("inscription", s.course)}
+                        href={online && s.id ? `/formations/inscription/${s.id}` : requestLink("inscription", s.course)}
                         className="group inline-flex items-center gap-2 text-xs font-medium uppercase tracking-wide"
                       >
                         S&apos;inscrire <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
