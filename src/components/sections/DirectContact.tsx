@@ -53,8 +53,8 @@ export function DirectContact({
   ];
 
   return (
-    <Reveal className="border border-hairline bg-warm-white p-8">
-      <h2 className="font-heading text-xl font-light text-ink">{title}</h2>
+    <Reveal className="glass rounded-2xl p-8">
+      <h2 className="font-display text-xl font-semibold text-ink">{title}</h2>
       <ul className="mt-6 flex flex-col gap-5">
         {items.map((item) => (
           <li key={item.label}>
@@ -64,7 +64,7 @@ export function DirectContact({
               rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
               className="group flex items-center gap-3 font-body text-sm text-ink-soft transition-colors hover:text-ink"
             >
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-hairline text-ink transition-colors group-hover:border-ink">
+              <span className="glass flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-ink transition-colors group-hover:border-ink/40">
                 <item.icon size={18} />
               </span>
               <span>
@@ -77,7 +77,7 @@ export function DirectContact({
           </li>
         ))}
         <li className="flex items-center gap-3 font-body text-sm text-ink-soft">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-hairline text-ink">
+          <span className="glass flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-ink">
             <MapPin size={18} />
           </span>
           <span>

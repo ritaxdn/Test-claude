@@ -45,8 +45,8 @@ export default async function ContactPage({
 
       <section className="pb-24 md:pb-32">
         <Container className="grid grid-cols-1 gap-12 lg:grid-cols-[1.4fr_1fr]">
-          <Reveal className="border border-hairline bg-warm-white p-8 md:p-10">
-            <h2 className="font-heading text-2xl font-light text-ink">{content.form.title}</h2>
+          <Reveal className="glass rounded-2xl p-8 md:p-10">
+            <h2 className="font-display text-2xl font-semibold text-ink">{content.form.title}</h2>
             <div className="mt-8">
               <ContactForm text={content.form} />
             </div>

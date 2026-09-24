@@ -27,7 +27,7 @@ export function ProgramCard({
           >
             {program.level[locale].toUpperCase()}
           </span>
-          <h3 className="font-heading mt-2 text-2xl font-light text-ink md:text-3xl">
+          <h3 className="font-display mt-2 text-2xl font-semibold text-ink md:text-3xl">
             {program.title[locale]}
           </h3>
         </div>

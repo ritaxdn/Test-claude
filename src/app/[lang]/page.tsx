@@ -62,7 +62,7 @@ export default async function HomePage({
         cta={content.academyHighlight.cta}
         href={`/${lang}/academy`}
         icon={GraduationCap}
-        tintClassName="bg-plate-academy"
+        glowVar="--plate-academy"
       />
 
       <SplitHighlight
@@ -73,7 +73,7 @@ export default async function HomePage({
         href={`/${lang}/support`}
         icon={LifeBuoy}
         reverse
-        tintClassName="bg-plate-support"
+        glowVar="--plate-support"
       />
 
       <StatsBar locale={lang} eyebrow={content.stats.eyebrow} title={content.stats.title} />

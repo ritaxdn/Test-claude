@@ -40,7 +40,7 @@ export function Testimonials({
           >
             {eyebrow.toUpperCase()}
           </span>
-          <h2 className="font-heading mt-4 text-2xl font-light leading-tight text-ink md:text-3xl">
+          <h2 className="font-display mt-4 text-2xl font-semibold leading-tight text-ink md:text-3xl">
             {title}
           </h2>
 
@@ -66,7 +66,7 @@ export function Testimonials({
 
         <div className="relative md:col-span-8 md:col-start-5">
           <span
-            className="font-heading text-outline -mb-6 block md:-mb-10"
+            className="font-display text-outline -mb-6 block md:-mb-10"
             style={
               {
                 fontSize: "clamp(6rem, 5rem + 6vw, 13rem)",
@@ -89,7 +89,7 @@ export function Testimonials({
                 transition={{ duration: shouldReduceMotion ? 0.01 : 0.6, ease: [0.19, 1, 0.22, 1] }}
                 className="absolute inset-0"
               >
-                <p className="font-heading -mt-6 text-2xl leading-snug font-light text-ink sm:text-3xl md:text-4xl">
+                <p className="font-display -mt-6 text-2xl leading-snug font-medium text-ink sm:text-3xl md:text-4xl">
                   {current.quote[locale]}
                 </p>
                 <div className="mt-8 flex items-center gap-4">

@@ -49,7 +49,7 @@ export function TechnologyCard({
           >
             {categories[technology.category][locale].toUpperCase()}
           </span>
-          <h3 className="font-heading mt-1 text-3xl font-light md:mt-0 md:text-4xl">
+          <h3 className="font-display mt-1 text-3xl font-semibold md:mt-0 md:text-4xl">
             {technology.name}
           </h3>
         </div>

@@ -57,11 +57,11 @@ export function NavOverlay({
           animate={{ clipPath: "inset(0 0 0% 0)" }}
           exit={{ clipPath: "inset(0 0 100% 0)" }}
           transition={{ duration: 0.6, ease: [0.19, 1, 0.22, 1] }}
-          className="fixed inset-0 z-50 flex flex-col bg-ink text-warm-white"
+          className="fixed inset-0 z-50 flex flex-col bg-ivory-2 text-ink"
         >
           <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-6 md:px-10">
             <span
-              className="font-label text-light"
+              className="font-label text-muted"
               style={{ fontSize: "11px", letterSpacing: "0.2em" }}
             >
               CELLULIFT — {locale === "fr" ? "INDEX" : "INDEX"}
@@ -70,7 +70,7 @@ export function NavOverlay({
               type="button"
               onClick={onClose}
               aria-label="Close menu"
-              className="flex h-11 w-11 items-center justify-center text-warm-white transition-transform hover:rotate-90"
+              className="flex h-11 w-11 items-center justify-center text-ink transition-transform hover:rotate-90"
               style={{ transitionDuration: "300ms" }}
             >
               <X size={24} />
@@ -98,7 +98,7 @@ export function NavOverlay({
                   <span
                     className={cn(
                       "font-label shrink-0 transition-colors",
-                      isActive(link.href) ? "text-gradient-rainbow" : "text-light"
+                      isActive(link.href) ? "text-gradient-rainbow" : "text-muted"
                     )}
                     style={{ fontSize: "12px", letterSpacing: "0.1em" }}
                   >
@@ -106,8 +106,8 @@ export function NavOverlay({
                   </span>
                   <span
                     className={cn(
-                      "font-heading text-4xl font-light transition-all duration-300 group-hover:translate-x-3 sm:text-5xl md:text-6xl",
-                      isActive(link.href) ? "text-warm-white" : "text-light group-hover:text-warm-white"
+                      "font-display text-4xl font-semibold transition-all duration-300 group-hover:translate-x-3 sm:text-5xl md:text-6xl",
+                      isActive(link.href) ? "text-ink" : "text-muted group-hover:text-ink"
                     )}
                   >
                     {link.label}
@@ -118,7 +118,7 @@ export function NavOverlay({
           </nav>
 
           <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-6 py-8 md:flex-row md:items-center md:justify-between md:px-10">
-            <div className="[&_a]:text-light [&_a[aria-current]]:text-warm-white">
+            <div className="[&_a]:text-muted [&_a[aria-current]]:text-ink">
               <LanguageSwitcher locale={locale} />
             </div>
             <Button href={`/${locale}/contact`} onClick={onClose} variant="inverse">

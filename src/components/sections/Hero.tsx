@@ -1,10 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { Marquee } from "@/components/ui/Marquee";
 import { SplitReveal } from "@/components/ui/SplitReveal";
+import { GlowMesh } from "@/components/visuals/GlowMesh";
+import { GridBackdrop } from "@/components/visuals/GridBackdrop";
+import { CircuitLines } from "@/components/visuals/CircuitLines";
 import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 
 interface HeroProps {
@@ -29,16 +33,21 @@ export function Hero({
   const shouldReduceMotion = useSafeReducedMotion();
 
   return (
-    <section className="relative overflow-hidden border-b border-hairline">
+    <section className="isolate relative overflow-hidden border-b border-hairline">
+      <GridBackdrop className="pointer-events-none absolute inset-0 -z-20" />
+      <GlowMesh className="pointer-events-none absolute inset-0 -z-20 overflow-hidden" />
+      <CircuitLines className="pointer-events-none absolute top-0 right-0 -z-10 h-full w-1/2 text-ink opacity-[0.35]" />
+
       {/* Oversized outlined wordmark bleeding off the top edge */}
       <div
         className="pointer-events-none absolute -top-[6vw] left-1/2 -z-10 w-[160vw] -translate-x-1/2 text-center text-outline select-none"
         style={
           {
-            fontFamily: "var(--font-heading)",
+            fontFamily: "var(--font-display)",
+            fontWeight: 700,
             fontSize: "26vw",
-            letterSpacing: "-0.03em",
-            "--outline-color": "rgba(26, 24, 20, 0.07)",
+            letterSpacing: "-0.04em",
+            "--outline-color": "rgba(255, 255, 255, 0.07)",
           } as React.CSSProperties
         }
         aria-hidden="true"
@@ -64,11 +73,20 @@ export function Hero({
           </motion.div>
         </div>
 
-        <div className="md:col-span-8 md:col-start-2">
-          <SplitReveal
-            lines={titleLines}
-            className="text-display-1 text-ink"
-          />
+        <div className="relative md:col-span-8 md:col-start-2">
+          <SplitReveal lines={titleLines} className="text-display-1 text-ink" />
+
+          <motion.div
+            initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.9, y: shouldReduceMotion ? 0 : 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.75, ease: [0.19, 1, 0.22, 1] }}
+            className="glass mt-8 inline-flex items-center gap-3 rounded-full px-5 py-3 md:absolute md:-right-6 md:bottom-0 md:mt-0 md:translate-y-1/2"
+          >
+            <Sparkles size={16} className="text-gradient-rainbow shrink-0" />
+            <span className="font-label text-ink" style={{ fontSize: "11px", letterSpacing: "0.1em" }}>
+              METAMORPHOSIS TECHNOLOGY
+            </span>
+          </motion.div>
         </div>
 
         <div className="flex flex-col gap-8 md:col-span-4 md:col-start-9 md:mt-[8vw] md:items-end md:text-right">
@@ -99,7 +117,7 @@ export function Hero({
         </div>
       </div>
 
-      <div className="relative border-t border-hairline py-5">
+      <div className="glass relative border-x-0 border-b-0 py-5">
         <Marquee>
           {certifications.map((cert) => (
             <span

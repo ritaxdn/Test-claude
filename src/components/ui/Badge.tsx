@@ -10,7 +10,7 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center border border-light px-2.5 py-1 font-label text-muted",
+        "glass inline-flex items-center rounded-full px-3 py-1.5 font-label text-muted",
         className
       )}
       style={{ fontSize: "10px", letterSpacing: "0.12em" }}

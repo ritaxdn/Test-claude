@@ -37,7 +37,7 @@ export default function NotFound() {
         >
           {t.eyebrow.toUpperCase()}
         </span>
-        <h1 className="font-heading mt-5 text-4xl font-light text-ink md:text-5xl">
+        <h1 className="font-display mt-5 text-4xl font-semibold text-ink md:text-5xl">
           {t.title}
         </h1>
         <p className="font-body mt-5 text-base font-light leading-relaxed text-ink-soft">

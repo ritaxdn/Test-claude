@@ -37,7 +37,7 @@ export function WhyCellulift({
                     strokeWidth={1.5}
                     className="text-rainbow-2 transition-transform duration-500 group-hover:rotate-12"
                   />
-                  <h3 className="font-heading text-2xl font-light text-ink md:text-3xl">
+                  <h3 className="font-display text-2xl font-semibold text-ink md:text-3xl">
                     {item.title}
                   </h3>
                 </div>

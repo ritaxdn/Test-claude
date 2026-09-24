@@ -26,8 +26,8 @@ export function Positioning({
 
         <div className="md:col-span-8 md:col-start-4">
           <Reveal delay={0.08}>
-            <p className="font-heading text-3xl leading-[1.15] font-light text-ink sm:text-4xl md:text-5xl lg:text-[3.25rem]">
-              <span className="text-gradient-rainbow font-normal">&ldquo;</span>
+            <p className="font-display text-3xl leading-[1.15] font-medium text-ink sm:text-4xl md:text-5xl lg:text-[3.25rem]">
+              <span className="text-gradient-rainbow">&ldquo;</span>
               {title}
             </p>
           </Reveal>

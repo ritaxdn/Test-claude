@@ -24,14 +24,14 @@ export function ProcessSteps({
               className={cn("relative", i % 2 === 1 && "lg:mt-12")}
             >
               <div className="flex items-center gap-4">
-                <span className="font-heading text-3xl font-light text-gradient-rainbow">
+                <span className="font-display text-3xl font-bold text-gradient-rainbow">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 {i < steps.length - 1 && (
                   <span className="hidden h-px flex-1 bg-gradient-rainbow opacity-40 lg:block" />
                 )}
               </div>
-              <h3 className="font-heading mt-5 text-xl font-light text-ink">{step.title}</h3>
+              <h3 className="font-display mt-5 text-xl font-semibold text-ink">{step.title}</h3>
               <p className="font-body mt-3 text-sm font-light leading-relaxed text-ink-soft">
                 {step.description}
               </p>

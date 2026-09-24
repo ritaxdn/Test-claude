@@ -22,19 +22,19 @@ export function StatsBar({
   title: string;
 }) {
   return (
-    <section className="bg-ink py-28 md:py-40">
+    <section className="bg-ivory-2 py-28 md:py-40">
       <Container>
         <div className="max-w-xl">
           <Reveal>
             <span
-              className="font-label text-light"
+              className="font-label text-muted"
               style={{ fontSize: "11px", letterSpacing: "0.2em" }}
             >
               {eyebrow.toUpperCase()}
             </span>
           </Reveal>
           <Reveal delay={0.08}>
-            <h2 className="text-display-3 mt-4 text-warm-white">{title}</h2>
+            <h2 className="text-display-3 mt-4 text-ink">{title}</h2>
           </Reveal>
         </div>
 
@@ -44,10 +44,10 @@ export function StatsBar({
               key={stat.label[locale]}
               className={cn("col-span-2", spans[i % spans.length])}
             >
-              <p className="font-heading text-5xl font-light text-gradient-rainbow md:text-7xl">
+              <p className="font-display text-5xl font-bold text-gradient-rainbow md:text-7xl">
                 <AnimatedCounter value={stat.value} suffix={stat.suffix} />
               </p>
-              <p className="font-body mt-4 max-w-[16ch] text-sm font-light text-light">
+              <p className="font-body mt-4 max-w-[16ch] text-sm font-light text-muted">
                 {stat.label[locale]}
               </p>
             </RevealItem>

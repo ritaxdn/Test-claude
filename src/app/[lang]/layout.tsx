@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { cormorant, raleway, spaceMono } from "@/lib/fonts";
+import { cormorant, bricolage, hanken, spaceMono } from "@/lib/fonts";
 import { locales, isLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { SITE_URL } from "@/lib/site";
@@ -53,7 +53,7 @@ export default async function LangLayout({
   return (
     <html
       lang={lang}
-      className={`${cormorant.variable} ${raleway.variable} ${spaceMono.variable} h-full antialiased`}
+      className={`${cormorant.variable} ${bricolage.variable} ${hanken.variable} ${spaceMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-ivory text-ink">
         <div className="grain-overlay" aria-hidden="true" />

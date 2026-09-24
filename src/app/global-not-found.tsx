@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 import type { Metadata } from "next";
-import { cormorant, raleway, spaceMono } from "@/lib/fonts";
+import { cormorant, bricolage, hanken, spaceMono } from "@/lib/fonts";
 import { defaultLocale, isLocale } from "@/lib/i18n/config";
 import "./globals.css";
 
@@ -41,7 +41,7 @@ export default async function GlobalNotFound() {
   return (
     <html
       lang={lang}
-      className={`${cormorant.variable} ${raleway.variable} ${spaceMono.variable} h-full antialiased`}
+      className={`${cormorant.variable} ${bricolage.variable} ${hanken.variable} ${spaceMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col items-center justify-center bg-ivory px-6 text-center text-ink">
         <span
@@ -50,7 +50,7 @@ export default async function GlobalNotFound() {
         >
           {t.eyebrow.toUpperCase()}
         </span>
-        <h1 className="font-heading mt-5 text-4xl font-light md:text-5xl">{t.title}</h1>
+        <h1 className="font-display mt-5 text-4xl font-semibold md:text-5xl">{t.title}</h1>
         <p className="font-body mt-5 max-w-md text-base font-light leading-relaxed text-ink-soft">
           {t.description}
         </p>
