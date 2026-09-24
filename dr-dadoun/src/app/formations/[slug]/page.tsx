@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowRight, ArrowUpRight, CalendarDays, Mail } from "lucide-
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { JsonLd } from "@/components/JsonLd";
+import { getSessions } from "@/lib/sessions";
 import { MediaSlot } from "@/components/formations/MediaSlot";
 import { absolute, breadcrumb, physicianId } from "@/lib/seo";
 import { formationsPage as f, getCourse } from "@/content/formations";
@@ -31,12 +32,14 @@ const pill =
   "inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-xs font-medium uppercase tracking-wide transition-colors";
 const requestLink = (demande: string, formation: string) => `/formations?demande=${demande}&formation=${formation}#demande`;
 
+export const revalidate = 300;
+
 export default async function CoursePage({ params }: Props) {
   const course = getCourse((await params).slug);
   if (!course) notFound();
 
   const index = f.courses.indexOf(course);
-  const sessions = f.sessions.list.filter((s) => s.course === course.slug);
+  const sessions = (await getSessions()).filter((s) => s.course === course.slug);
   const others = f.courses.filter((c) => c.slug !== course.slug);
   const details = [
     course.audience && { label: "Public", value: course.audience },
@@ -53,7 +56,7 @@ export default async function CoursePage({ params }: Props) {
               <ArrowLeft size={16} /> Toutes les formations
             </Link>
             <p className="eyebrow mt-12">Formation {String(index + 1).padStart(2, "0")}</p>
-            <h1 className="mt-4 font-display text-5xl font-medium uppercase leading-[0.95] md:text-7xl">{course.title}</h1>
+            <h1 className="mt-4 font-display text-4xl sm:text-5xl font-medium uppercase leading-[0.95] md:text-7xl">{course.title}</h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-soft">{course.summary}</p>
             <p className="mt-4 text-sm text-muted">{f.hero.audience}.</p>
           </div>
@@ -150,7 +153,13 @@ export default async function CoursePage({ params }: Props) {
           audience: { "@type": "Audience", audienceType: "Médecins" },
           inLanguage: "fr",
           ...(sessions.length
-            ? { hasCourseInstance: sessions.map((s) => ({ "@type": "CourseInstance", name: s.date, location: s.place, courseMode: "onsite" })) }
+            ? { hasCourseInstance: sessions.map((s) => ({
+                "@type": "CourseInstance",
+                name: s.date,
+                location: s.place,
+                courseMode: "onsite",
+                ...(s.start ? { startDate: s.start } : {}),
+              })) }
             : {}),
         }}
       />

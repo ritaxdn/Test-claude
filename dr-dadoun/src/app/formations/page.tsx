@@ -11,6 +11,7 @@ import { FormationRequestSection } from "@/components/formations/FormationReques
 import { NewsletterSignup } from "@/components/formations/NewsletterSignup";
 import { RevealOnScroll } from "@/components/formations/RevealOnScroll";
 import { JsonLd } from "@/components/JsonLd";
+import { getSessions, sessionTitle } from "@/lib/sessions";
 import { absolute, breadcrumb, physicianId } from "@/lib/seo";
 import { formationsPage as f } from "@/content/formations";
 import { practice } from "@/content/site";
@@ -31,8 +32,11 @@ const requestLink = (demande: string, formation?: string) =>
 const pill =
   "inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-xs font-medium uppercase tracking-wide transition-colors";
 
-export default function Formations() {
-  const courseTitle = (slug: string) => f.courses.find((c) => c.slug === slug)?.title ?? slug;
+// Les sessions viennent d'un Google Sheet : la page est régénérée toutes les 5 minutes.
+export const revalidate = 300;
+
+export default async function Formations() {
+  const sessions = await getSessions();
 
   return (
     <>
@@ -62,7 +66,7 @@ export default function Formations() {
                 <dl className="grid grid-cols-2 border-t border-white/15 lg:grid-cols-1">
                   {f.hero.facts.map((fact) => (
                     <div key={fact.label} className="border-b border-white/15 py-6 pr-4 lg:py-8">
-                      <dt className="font-display text-6xl font-medium leading-none md:text-7xl">{fact.value}</dt>
+                      <dt className="font-display text-5xl font-medium leading-none md:text-7xl">{fact.value}</dt>
                       <dd className="mt-3 text-xs uppercase tracking-[0.14em] text-white/65">{fact.label}</dd>
                     </div>
                   ))}
@@ -112,7 +116,7 @@ export default function Formations() {
         <section id="formations" className="scroll-mt-24 pb-28 md:pb-40">
           <div className={section}>
             <div className="flex flex-col justify-between gap-6 border-t border-line pt-14 md:flex-row md:items-end" data-reveal>
-              <h2 className="font-display text-5xl font-medium uppercase leading-[0.95] md:text-7xl">Les formations</h2>
+              <h2 className="font-display text-4xl sm:text-5xl font-medium uppercase leading-[0.95] md:text-7xl">Les formations</h2>
               <p className="max-w-sm text-sm leading-relaxed text-ink-soft">
                 Chaque domaine fait l&apos;objet d&apos;une formation à part entière, avec son programme et ses sessions.
               </p>
@@ -242,14 +246,14 @@ export default function Formations() {
               </h2>
             </div>
 
-            {f.sessions.list.length > 0 ? (
+            {sessions.length > 0 ? (
               <ul className="mt-12 border-t border-line" data-reveal>
-                {f.sessions.list.map((s) => (
+                {sessions.map((s) => (
                   <li
-                    key={`${s.course}-${s.date}`}
+                    key={`${s.course ?? s.title}-${s.date}`}
                     className="grid gap-2 border-b border-line py-6 md:grid-cols-[1.3fr_1fr_0.8fr_1.4fr_7rem] md:items-center md:gap-6"
                   >
-                    <p className="font-display text-xl font-medium">{courseTitle(s.course)}</p>
+                    <p className="font-display text-xl font-medium">{sessionTitle(s)}</p>
                     <p className="flex items-center gap-2 text-sm"><CalendarDays size={14} className="text-accent-deep" /> {s.date}</p>
                     <p className="text-sm text-ink-soft">{s.place}</p>
                     <p className="text-sm text-ink-soft">{s.format}</p>

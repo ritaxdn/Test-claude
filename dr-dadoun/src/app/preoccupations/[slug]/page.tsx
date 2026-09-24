@@ -55,7 +55,7 @@ export default async function ConcernPage({ params }: Props) {
               <p className="mt-10 text-xs font-medium uppercase tracking-[0.14em] text-white/80">
                 Votre préoccupation · {practice.city}
               </p>
-              <h1 className="mt-3 font-display text-5xl font-medium leading-[0.95] md:text-7xl">{c.title}</h1>
+              <h1 className="mt-3 font-display text-4xl sm:text-5xl font-medium leading-[0.95] md:text-7xl">{c.title}</h1>
               <div className="mt-6 flex flex-col justify-between gap-8 md:flex-row md:items-end">
                 <p className="max-w-xl text-lg leading-relaxed text-white/90">{c.intro}</p>
                 <a href={practice.bookingUrl} className={`${pill} shrink-0 bg-white text-ink hover:bg-accent-soft`}>

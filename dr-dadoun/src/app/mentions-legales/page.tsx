@@ -17,7 +17,7 @@ export default function MentionsLegales() {
         <Link href="/" className="inline-flex items-center gap-2 text-sm text-muted hover:text-ink">
           <ArrowLeft size={16} /> Retour à l&apos;accueil
         </Link>
-        <h1 className="mt-10 font-display font-medium text-5xl">Mentions légales</h1>
+        <h1 className="mt-10 font-display font-medium text-4xl sm:text-5xl">Mentions légales</h1>
 
         <div className="mt-12 space-y-10 leading-relaxed text-ink-soft [&_h2]:mb-3 [&_h2]:font-display [&_h2]:font-medium [&_h2]:text-2xl [&_h2]:text-ink">
           <section>

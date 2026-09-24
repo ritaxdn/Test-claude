@@ -46,6 +46,28 @@ qui sert de base de données des inscrits et permet d'envoyer les newsletters de
 La clé `RESEND_API_KEY` doit avoir l'accès **Full access** pour ajouter des contacts.
 Sans audience configurée, chaque inscription est envoyée par e-mail au cabinet.
 
+## Formations : ajouter un événement
+
+Les sessions et événements de la page /formations se gèrent dans un Google Sheet, sans toucher au code.
+
+1. Créer un Google Sheet et importer `docs/formations-evenements-modele.csv` (Fichier → Importer).
+2. Une ligne par événement :
+
+| Colonne | Contenu |
+| --- | --- |
+| `debut` | Date de début au format AAAA-MM-JJ (tri, et masquage une fois passée) |
+| `dates` | Dates affichées, ex. « 12 – 13 mars 2027 » |
+| `formation` | Injectables, Lasers médicaux ou Endolifting (vide pour un autre événement) |
+| `titre` | Titre libre (masterclass, congrès…) ; sinon le nom de la formation s'affiche |
+| `lieu` | Ville ou lieu |
+| `modalites` | Durée, format, nombre de places |
+| `statut` | `ouvert` ou `complet` |
+
+3. Fichier → Partager → Publier sur le web → la feuille → **Valeurs séparées par des virgules (.csv)** → Publier, puis copier le lien.
+4. Dans Vercel, ajouter la variable `FORMATIONS_SHEET_CSV` avec ce lien (Production et Preview), puis redéployer une fois.
+
+Ensuite, chaque modification du Sheet apparaît sur le site en 5 minutes environ. Un événement passé disparaît tout seul.
+
 ## SEO et GEO
 
 - Métadonnées par page (titres et descriptions ciblés « … à Casablanca »), URL canoniques.

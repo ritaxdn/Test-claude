@@ -86,7 +86,7 @@ export default async function ActPage({ params }: Props) {
               <p className="mt-10 text-xs font-medium uppercase tracking-[0.14em] text-white/80">
                 {a.category.title} · {practice.city}
               </p>
-              <h1 className="mt-3 font-display text-5xl font-medium leading-[0.95] md:text-7xl">
+              <h1 className="mt-3 font-display text-4xl sm:text-5xl font-medium leading-[0.95] md:text-7xl">
                 {a.name} <span className="block text-white/70 md:inline">à {practice.city}</span>
               </h1>
               <div className="mt-6 flex flex-col justify-between gap-8 md:flex-row md:items-end">

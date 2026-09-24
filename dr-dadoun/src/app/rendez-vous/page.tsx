@@ -21,7 +21,7 @@ export default function RendezVous() {
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div className="max-w-2xl">
               <p className="eyebrow">Rendez-vous en ligne</p>
-              <h1 className="mt-4 font-display font-medium text-5xl leading-[1.05] md:text-6xl">
+              <h1 className="mt-4 font-display font-medium text-4xl sm:text-5xl leading-[1.05] md:text-6xl">
                 Réservez votre <em className="text-accent-deep">consultation</em>
               </h1>
             </div>
