@@ -59,7 +59,7 @@ export const hero = {
   eyebrow: "Médecine esthétique · Casablanca",
   // Le titre est affiché en 3 lignes ; la vignette photo s'insère au début de la 2e.
   title: ["Améliorer", "sans", "dénaturer"],
-  text: "Analyse, indication, précision, suivi. Chaque prise en charge commence par comprendre ce qui se passe, avant de proposer quoi que ce soit.",
+  text: "Analyse, indication, précision, suivi.",
   stats: [
     { value: "35+", label: "Années d'expérience" },
     { value: "10+", label: "Années à former des médecins" },
@@ -70,14 +70,14 @@ export const hero = {
 export const philosophy = {
   title: "Améliorer sans dénaturer",
   intro:
-    "Chaque visage a son anatomie, ses proportions et son histoire. Avant de proposer un traitement, j'observe, j'analyse et je pose une indication. Parce qu'en médecine esthétique, le résultat ne dépend pas seulement du geste. Il dépend d'abord de sa justesse.",
+    "Chaque visage a son anatomie, ses proportions et son histoire. Avant tout traitement, j'observe, j'analyse et je pose une indication.",
   // Le contre-modèle : la méthode, étape par étape
   method: [
-    { title: "Observer", text: "Chaque prise en charge commence par l'analyse du visage, de ses proportions et de son évolution." },
-    { title: "Indiquer", text: "Choisir le traitement adapté — et savoir quand ne pas traiter." },
-    { title: "Maîtriser", text: "L'anatomie guide le geste. La précision en détermine la qualité." },
-    { title: "Préserver", text: "Corriger sans standardiser. Traiter sans effacer les expressions ni l'identité." },
-    { title: "Suivre", text: "La prise en charge ne s'arrête pas au geste. Le suivi en fait partie." },
+    { title: "Observer", text: "Analyser l'anatomie, les proportions et les besoins." },
+    { title: "Indiquer", text: "Choisir le traitement adapté — ou ne pas traiter." },
+    { title: "Maîtriser", text: "Un geste précis, guidé par l'anatomie." },
+    { title: "Préserver", text: "Corriger sans transformer." },
+    { title: "Suivre", text: "Accompagner au-delà du soin." },
   ],
 };
 
@@ -105,10 +105,6 @@ export const pillars = [
 
 export const about = {
   title: ["Comprendre", "avant de traiter."],
-  paragraphs: [
-    "Je recherche un résultat qui ne se remarque pas par ce qui a été fait, mais par ce qu'il préserve : vos expressions, vos proportions, votre identité.",
-    "Mon approche repose sur une connaissance précise de l'anatomie, une indication adaptée et des gestes mesurés. Et lorsqu'un traitement n'est pas indiqué, savoir ne pas intervenir fait aussi partie de la médecine.",
-  ],
   // Parcours & diplômes : écoles, diplômes, formations, étapes (du plus récent au plus ancien).
   // Utilisé sur l'accueil (section « Le Dr Dadoun ») et sur /formations.
   // À COMPLÉTER — ex. { period: "1989", title: "Doctorat en médecine", place: "Faculté de médecine de …" }
@@ -275,19 +271,19 @@ export const actPath = (a: Act) => `/soins/${a.universe.slug}/${a.slug}`;
 export const steps = [
   {
     title: "Consultation",
-    text: "Écoute de vos attentes, antécédents médicaux et analyse anatomique. Je vous dis ce qui est réellement indiqué — et ce qui ne l'est pas.",
+    text: "Analyse de vos attentes, antécédents et anatomie.",
   },
   {
-    title: "Indication & plan de traitement",
-    text: "Je pose l'indication et vous propose un protocole adapté, avec un devis détaillé et un temps de réflexion avant tout soin.",
+    title: "Plan de traitement",
+    text: "Une indication et un protocole adaptés.",
   },
   {
-    title: "Le soin",
-    text: "Le geste est réalisé selon le protocole défini ensemble, avec la précision et les ajustements nécessaires à votre anatomie.",
+    title: "Soin",
+    text: "Le traitement est réalisé selon le protocole établi.",
   },
   {
     title: "Suivi",
-    text: "Un contrôle après le soin si nécessaire, et je reste joignable pour toute question.",
+    text: "Contrôle et accompagnement après le soin.",
   },
 ];
 
