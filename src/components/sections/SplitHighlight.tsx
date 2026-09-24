@@ -12,7 +12,7 @@ export function SplitHighlight({
   href,
   icon: Icon,
   reverse = false,
-  glowVar = "--plate-academy",
+  tintClassName = "bg-plate-academy",
 }: {
   eyebrow: string;
   title: string;
@@ -21,22 +21,18 @@ export function SplitHighlight({
   href: string;
   icon: LucideIcon;
   reverse?: boolean;
-  glowVar?: string;
+  tintClassName?: string;
 }) {
   return (
     <section className="border-b border-hairline">
       <div className="grid grid-cols-1 lg:grid-cols-12">
         <div
           className={cn(
-            "relative flex min-h-[360px] items-center justify-center overflow-hidden bg-ivory-2 md:min-h-[460px] lg:col-span-5",
-            reverse && "lg:order-2"
+            "relative flex min-h-[360px] items-center justify-center overflow-hidden md:min-h-[460px] lg:col-span-5",
+            reverse && "lg:order-2",
+            tintClassName
           )}
         >
-          <div
-            aria-hidden="true"
-            className="absolute h-[70%] w-[70%] rounded-full opacity-40 blur-[90px]"
-            style={{ background: `radial-gradient(circle, var(${glowVar}) 0%, transparent 70%)` }}
-          />
           <div className="glass relative flex h-40 w-40 items-center justify-center rounded-full">
             <Icon size={64} strokeWidth={1} className="text-ink" aria-hidden="true" />
           </div>

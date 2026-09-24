@@ -2,7 +2,6 @@ import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { SplitReveal } from "@/components/ui/SplitReveal";
 import { GridBackdrop } from "@/components/visuals/GridBackdrop";
-import { GlowMesh } from "@/components/visuals/GlowMesh";
 
 export function PageHero({
   eyebrow,
@@ -16,7 +15,6 @@ export function PageHero({
   return (
     <section className="isolate relative overflow-hidden border-b border-hairline pt-16 pb-20 md:pt-24 md:pb-28">
       <GridBackdrop className="pointer-events-none absolute inset-0 -z-20" />
-      <GlowMesh variant="compact" className="pointer-events-none absolute inset-0 -z-20 overflow-hidden" />
 
       <Container className="grid grid-cols-1 gap-8 md:grid-cols-12">
         <div className="md:col-span-2">

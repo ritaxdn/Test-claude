@@ -57,7 +57,7 @@ export function NavOverlay({
           animate={{ clipPath: "inset(0 0 0% 0)" }}
           exit={{ clipPath: "inset(0 0 100% 0)" }}
           transition={{ duration: 0.6, ease: [0.19, 1, 0.22, 1] }}
-          className="fixed inset-0 z-50 flex flex-col bg-ivory-2 text-ink"
+          className="fixed inset-0 z-50 flex flex-col bg-ink text-warm-white"
         >
           <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-6 md:px-10">
             <span
@@ -70,7 +70,7 @@ export function NavOverlay({
               type="button"
               onClick={onClose}
               aria-label="Close menu"
-              className="flex h-11 w-11 items-center justify-center text-ink transition-transform hover:rotate-90"
+              className="flex h-11 w-11 items-center justify-center text-warm-white transition-transform hover:rotate-90"
               style={{ transitionDuration: "300ms" }}
             >
               <X size={24} />
@@ -107,7 +107,7 @@ export function NavOverlay({
                   <span
                     className={cn(
                       "font-display text-4xl font-semibold transition-all duration-300 group-hover:translate-x-3 sm:text-5xl md:text-6xl",
-                      isActive(link.href) ? "text-ink" : "text-muted group-hover:text-ink"
+                      isActive(link.href) ? "text-warm-white" : "text-muted group-hover:text-warm-white"
                     )}
                   >
                     {link.label}
@@ -118,7 +118,7 @@ export function NavOverlay({
           </nav>
 
           <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-6 py-8 md:flex-row md:items-center md:justify-between md:px-10">
-            <div className="[&_a]:text-muted [&_a[aria-current]]:text-ink">
+            <div className="[&_a]:text-muted [&_a[aria-current]]:text-warm-white">
               <LanguageSwitcher locale={locale} />
             </div>
             <Button href={`/${locale}/contact`} onClick={onClose} variant="inverse">

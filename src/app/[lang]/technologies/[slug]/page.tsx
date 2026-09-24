@@ -7,7 +7,7 @@ import { localeAlternates } from "@/lib/alternates";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import {
   categories,
-  categoryGlowVar,
+  categoryPlateClass,
   getTechnologyBySlug,
   technologies,
 } from "@/content/technologies";
@@ -18,8 +18,8 @@ import { Magnetic } from "@/components/ui/Magnetic";
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
 import { SplitReveal } from "@/components/ui/SplitReveal";
 import { TechnologyCard } from "@/components/technologies/TechnologyCard";
-import { GridBackdrop } from "@/components/visuals/GridBackdrop";
 import { CircuitLines } from "@/components/visuals/CircuitLines";
+import { cn } from "@/lib/utils";
 
 export function generateStaticParams() {
   return locales.flatMap((lang) =>
@@ -60,22 +60,19 @@ export default async function TechnologyDetailPage({
 
   return (
     <>
-      <section className="isolate relative flex min-h-[70vh] flex-col justify-end overflow-hidden border-b border-hairline bg-ivory-2 pt-28 pb-14 md:pt-36">
-        <GridBackdrop className="pointer-events-none absolute inset-0 -z-20" />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute top-0 right-0 -z-10 h-full w-1/2 rounded-full opacity-50 blur-[120px]"
-          style={{
-            background: `radial-gradient(circle, var(${categoryGlowVar[tech.category]}) 0%, transparent 70%)`,
-          }}
-        />
-        <CircuitLines className="pointer-events-none absolute inset-0 -z-10 h-full w-full text-ink opacity-[0.25]" />
+      <section
+        className={cn(
+          "isolate relative flex min-h-[70vh] flex-col justify-end overflow-hidden border-b border-hairline pt-28 pb-14 text-warm-white md:pt-36",
+          categoryPlateClass[tech.category]
+        )}
+      >
+        <CircuitLines className="pointer-events-none absolute inset-0 -z-10 h-full w-full text-warm-white opacity-[0.2]" />
 
         <Container className="w-full max-w-none px-6 md:px-10">
           <Reveal>
             <Link
               href={`/${lang}/technologies`}
-              className="inline-flex items-center gap-2 font-body text-sm text-muted transition-colors hover:text-ink"
+              className="inline-flex items-center gap-2 font-body text-sm text-muted transition-colors hover:text-warm-white"
             >
               <ArrowLeft size={16} />
               {dict.common.backTo} {dict.nav.technologies}
@@ -92,7 +89,7 @@ export default async function TechnologyDetailPage({
               </span>
               <SplitReveal
                 lines={[tech.name]}
-                className="text-display-1 mt-3 text-ink"
+                className="text-display-1 mt-3 text-warm-white"
                 delay={0.1}
               />
             </div>

@@ -22,7 +22,7 @@ export function StatsBar({
   title: string;
 }) {
   return (
-    <section className="bg-ivory-2 py-28 md:py-40">
+    <section className="bg-ink py-28 md:py-40">
       <Container>
         <div className="max-w-xl">
           <Reveal>
@@ -34,7 +34,7 @@ export function StatsBar({
             </span>
           </Reveal>
           <Reveal delay={0.08}>
-            <h2 className="text-display-3 mt-4 text-ink">{title}</h2>
+            <h2 className="text-display-3 mt-4 text-warm-white">{title}</h2>
           </Reveal>
         </div>
 

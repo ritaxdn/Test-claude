@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/Button";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { Marquee } from "@/components/ui/Marquee";
 import { SplitReveal } from "@/components/ui/SplitReveal";
-import { GlowMesh } from "@/components/visuals/GlowMesh";
 import { GridBackdrop } from "@/components/visuals/GridBackdrop";
 import { CircuitLines } from "@/components/visuals/CircuitLines";
 import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
@@ -35,8 +34,7 @@ export function Hero({
   return (
     <section className="isolate relative overflow-hidden border-b border-hairline">
       <GridBackdrop className="pointer-events-none absolute inset-0 -z-20" />
-      <GlowMesh className="pointer-events-none absolute inset-0 -z-20 overflow-hidden" />
-      <CircuitLines className="pointer-events-none absolute top-0 right-0 -z-10 h-full w-1/2 text-ink opacity-[0.35]" />
+      <CircuitLines className="pointer-events-none absolute top-0 right-0 -z-10 h-full w-1/2 text-ink opacity-[0.06]" />
 
       {/* Oversized outlined wordmark bleeding off the top edge */}
       <div
@@ -47,7 +45,7 @@ export function Hero({
             fontWeight: 700,
             fontSize: "26vw",
             letterSpacing: "-0.04em",
-            "--outline-color": "rgba(255, 255, 255, 0.07)",
+            "--outline-color": "rgba(26, 24, 20, 0.07)",
           } as React.CSSProperties
         }
         aria-hidden="true"

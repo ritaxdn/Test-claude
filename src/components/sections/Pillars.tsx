@@ -24,7 +24,7 @@ export function Pillars({
   ];
 
   return (
-    <section className="border-y border-hairline bg-ivory-2 py-28 text-ink md:py-36">
+    <section className="border-y border-hairline bg-ink py-28 text-warm-white md:py-36">
       <Container>
         <div className="max-w-lg">
           <Reveal>
@@ -36,7 +36,7 @@ export function Pillars({
             </span>
           </Reveal>
           <Reveal delay={0.08}>
-            <h2 className="text-display-3 mt-4 text-ink">{title}</h2>
+            <h2 className="text-display-3 mt-4 text-warm-white">{title}</h2>
           </Reveal>
         </div>
 
@@ -49,9 +49,9 @@ export function Pillars({
                 item.offset
               )}
             >
-              <EditorialIndex index={i + 1} total={items.length} className="text-muted [&>span:first-child]:text-ink" />
+              <EditorialIndex index={i + 1} total={items.length} className="text-muted [&>span:first-child]:text-warm-white" />
               <item.icon size={28} strokeWidth={1} className="mt-6 text-rainbow-3" />
-              <h3 className="font-display mt-6 text-2xl font-semibold text-ink">
+              <h3 className="font-display mt-6 text-2xl font-semibold text-warm-white">
                 {item.title}
               </h3>
               <p className="font-body mt-4 text-sm font-light leading-relaxed text-muted">

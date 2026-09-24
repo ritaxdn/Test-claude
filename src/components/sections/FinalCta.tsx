@@ -20,7 +20,7 @@ export function FinalCta({
   ctaSecondary: string;
 }) {
   return (
-    <section className="relative overflow-hidden bg-ivory-2 py-28 text-ink md:py-40">
+    <section className="relative overflow-hidden bg-ink py-28 text-warm-white md:py-40">
       <div
         className="pointer-events-none absolute -right-[10vw] -bottom-[8vw] -z-0 text-outline select-none"
         style={
@@ -40,7 +40,7 @@ export function FinalCta({
         <div className="md:col-span-9">
           <SplitReveal
             lines={title.split(" — ").length > 1 ? title.split(" — ") : [title]}
-            className="text-display-2 text-ink"
+            className="text-display-2 text-warm-white"
           />
           <Reveal delay={0.3}>
             <p className="font-body mt-8 max-w-md text-base font-light leading-relaxed text-muted">
@@ -60,7 +60,7 @@ export function FinalCta({
           <Reveal delay={0.48}>
             <Link
               href={`/${locale}/contact`}
-              className="font-body text-sm text-muted underline-offset-4 transition-colors hover:text-ink hover:underline"
+              className="font-body text-sm text-muted underline-offset-4 transition-colors hover:text-warm-white hover:underline"
             >
               {ctaSecondary} →
             </Link>

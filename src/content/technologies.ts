@@ -27,14 +27,6 @@ export const categoryPlateClass: Record<CategoryKey, string> = {
   "hair-restoration": "bg-plate-hair-restoration",
 };
 
-/** CSS variable name (for inline radial-gradient glows) per category. */
-export const categoryGlowVar: Record<CategoryKey, string> = {
-  body: "--plate-body",
-  face: "--plate-face",
-  "hair-removal": "--plate-hair-removal",
-  "hair-restoration": "--plate-hair-restoration",
-};
-
 export const categories: Record<CategoryKey, LocalizedText> = {
   body: { fr: "Remodelage corporel", en: "Body contouring" },
   face: { fr: "Rajeunissement facial", en: "Facial rejuvenation" },
