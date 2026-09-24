@@ -5,6 +5,8 @@ import { ArrowDown, ArrowRight, CalendarDays, Check, GraduationCap, Mail } from 
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { MediaSlot } from "@/components/formations/MediaSlot";
+import { VideoCarousel } from "@/components/formations/VideoCarousel";
+import { image, video } from "@/lib/images";
 import { FormationRequestSection } from "@/components/formations/FormationRequest";
 import { NewsletterSignup } from "@/components/formations/NewsletterSignup";
 import { RevealOnScroll } from "@/components/formations/RevealOnScroll";
@@ -157,17 +159,13 @@ export default function Formations() {
                 ))}
               </ul>
             </div>
-            <div className="grid grid-cols-2 gap-3" data-reveal>
-              {f.practice.media.map((m, i) => (
-                <MediaSlot
-                  key={m.video}
-                  image={m.image}
-                  video={m.video}
-                  label={m.label}
-                  className={`aspect-[9/16] w-full ${i === 1 ? "mt-10 md:mt-16" : ""}`}
-                  sizes="(min-width:1024px) 25vw, 50vw"
-                />
-              ))}
+            <div className="min-w-0" data-reveal>
+              <VideoCarousel
+                items={f.practice.media.flatMap((m) => {
+                  const src = video(m.video);
+                  return src ? [{ src, poster: image(m.image) ?? undefined, label: m.label }] : [];
+                })}
+              />
             </div>
           </div>
         </section>
