@@ -279,16 +279,21 @@ export default async function ActPage({ params }: Props) {
             </div>
             <div className="flex flex-col justify-between rounded-2xl bg-ink p-8 text-white md:p-10">
               <div>
-                <h2 className="font-display text-3xl font-medium leading-tight md:text-4xl">
+                <h2 className="text-balance font-display text-3xl font-medium leading-tight md:text-4xl">
                   Chaque soin commence par une consultation
                 </h2>
                 <p className="mt-4 max-w-md text-sm leading-relaxed text-white/70">
                   {practice.addressLine1}, {practice.addressLine2}.
                 </p>
               </div>
-              <a href={practice.bookingUrl} className={`${pill} mt-8 self-start bg-white text-ink hover:bg-accent-soft`}>
-                <CalendarDays size={14} /> Prendre rendez-vous
-              </a>
+              <div className="mt-8 flex flex-col gap-2 sm:flex-row">
+                <a href={practice.bookingUrl} className={`${pill} bg-white text-ink hover:bg-accent-soft`}>
+                  <CalendarDays size={14} /> Prendre rendez-vous
+                </a>
+                <a href={`tel:${practice.phoneHref}`} className={`${pill} border border-white/30 text-white hover:bg-white/10`}>
+                  <Phone size={14} /> {practice.phone}
+                </a>
+              </div>
             </div>
           </div>
         </section>
