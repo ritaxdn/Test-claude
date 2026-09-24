@@ -365,6 +365,7 @@ export const booking = {
   // À COMPLÉTER : jours de fermeture exceptionnelle (congés, jours fériés)
   // Jours fériés fixes au Maroc (à compléter avec les fêtes religieuses et les congés du cabinet).
   closedDates: ["2026-11-06", "2026-11-18", "2027-01-01", "2027-01-11", "2027-05-01", "2027-07-30", "2027-08-14", "2027-08-20", "2027-08-21"],
+  ageRanges: ["18 – 24 ans", "25 – 34 ans", "35 – 44 ans", "45 – 54 ans", "55 – 64 ans", "65 ans et plus"],
   // Besoins proposés à cocher dans le formulaire (pas de texte libre).
   needs: [
     {

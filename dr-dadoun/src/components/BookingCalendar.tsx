@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, useSyncExternalStore } from "react";
-import { ArrowLeft, Check, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { booking, practice } from "@/content/site";
 
 const WEEKDAYS = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
@@ -134,205 +134,207 @@ function Calendar() {
   const stepTitle = "font-display text-xl font-medium flex items-center gap-3";
   const stepNum = "flex h-7 w-7 items-center justify-center rounded-full bg-ink text-xs font-sans text-porcelain";
 
+  const ready = !!date && !!time;
+  const label = "block text-sm";
+  const control =
+    "mt-1.5 w-full rounded-xl border border-line bg-white/60 px-4 py-3 outline-none focus:border-accent";
+
   return (
     <div className="overflow-hidden rounded-3xl bg-porcelain shadow-[0_20px_60px_-40px_rgba(10,27,33,0.4)]">
-      <div className="grid lg:grid-cols-[1fr_1.35fr]">
-        {/* 1. Motif */}
+      <div className="grid lg:grid-cols-[1.1fr_1fr]">
+        {/* 1. Date & heure */}
         <div className="border-b border-line p-6 md:p-8 lg:border-b-0 lg:border-r">
           <h3 className={stepTitle}>
-            <span className={stepNum}>1</span> Motif du rendez-vous
+            <span className={stepNum}>1</span> Date et heure
           </h3>
-          <div className="mt-6 space-y-3" role="radiogroup" aria-label="Motif du rendez-vous">
-            {booking.types.map((t) => (
-              <button
-                key={t.id}
-                type="button"
-                role="radio"
-                aria-checked={t.id === typeId}
-                onClick={() => setTypeId(t.id)}
-                className={`w-full rounded-2xl border p-4 text-left transition-colors ${
-                  t.id === typeId ? "border-accent bg-accent-soft/40" : "border-line hover:border-accent/60"
-                }`}
-              >
-                <span className="flex items-baseline justify-between gap-3">
-                  <span className="font-medium">{t.label}</span>
-                  <span className="shrink-0 text-xs text-muted">{t.duration}</span>
-                </span>
-                <span className="mt-1 block text-sm text-ink-soft">{t.text}</span>
-              </button>
-            ))}
+          <div className="mt-6 flex items-center justify-between">
+            <button
+              type="button"
+              onClick={() => setMonth(new Date(month.getFullYear(), month.getMonth() - 1, 1))}
+              disabled={!canPrev}
+              aria-label="Mois précédent"
+              className="rounded-full p-2 hover:bg-sand disabled:opacity-30"
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <p className="font-display text-lg capitalize">
+              {month.toLocaleDateString("fr-FR", { month: "long", year: "numeric" })}
+            </p>
+            <button
+              type="button"
+              onClick={() => setMonth(new Date(month.getFullYear(), month.getMonth() + 1, 1))}
+              disabled={!canNext}
+              aria-label="Mois suivant"
+              className="rounded-full p-2 hover:bg-sand disabled:opacity-30"
+            >
+              <ChevronRight size={18} />
+            </button>
           </div>
-        </div>
 
-        {/* 2. Date & heure */}
-        <div className="p-6 md:p-8">
-          {!date || !time ? (
-            <>
-              <h3 className={stepTitle}>
-                <span className={stepNum}>2</span> Date et heure
-              </h3>
-              <div className="mt-6 flex items-center justify-between">
+          <div className="mt-4 grid grid-cols-7 gap-1 text-center">
+            {WEEKDAYS.map((d) => (
+              <span key={d} className="pb-2 text-[0.7rem] uppercase tracking-wider text-muted">
+                {d}
+              </span>
+            ))}
+            {cells.map((d, i) => {
+              if (!d) return <span key={`e${i}`} />;
+              const ok = isBookable(d);
+              const selected = date && toKey(d) === toKey(date);
+              return (
                 <button
+                  key={toKey(d)}
                   type="button"
-                  onClick={() => setMonth(new Date(month.getFullYear(), month.getMonth() - 1, 1))}
-                  disabled={!canPrev}
-                  aria-label="Mois précédent"
-                  className="rounded-full p-2 hover:bg-sand disabled:opacity-30"
+                  disabled={!ok}
+                  onClick={() => {
+                    setDate(d);
+                    setTime(null);
+                  }}
+                  aria-label={d.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" })}
+                  aria-pressed={!!selected}
+                  className={`mx-auto flex h-11 w-11 items-center justify-center rounded-full text-sm transition-colors ${
+                    selected
+                      ? "bg-ink text-porcelain"
+                      : ok
+                        ? "font-medium hover:bg-accent-soft"
+                        : "cursor-not-allowed text-muted/35"
+                  }`}
                 >
-                  <ChevronLeft size={18} />
+                  {d.getDate()}
                 </button>
-                <p className="font-display text-lg capitalize">
-                  {month.toLocaleDateString("fr-FR", { month: "long", year: "numeric" })}
-                </p>
-                <button
-                  type="button"
-                  onClick={() => setMonth(new Date(month.getFullYear(), month.getMonth() + 1, 1))}
-                  disabled={!canNext}
-                  aria-label="Mois suivant"
-                  className="rounded-full p-2 hover:bg-sand disabled:opacity-30"
-                >
-                  <ChevronRight size={18} />
-                </button>
-              </div>
+              );
+            })}
+          </div>
 
-              <div className="mt-4 grid grid-cols-7 gap-1 text-center">
-                {WEEKDAYS.map((d) => (
-                  <span key={d} className="pb-2 text-[0.7rem] uppercase tracking-wider text-muted">
-                    {d}
-                  </span>
+          {date ? (
+            <div className="mt-6 border-t border-line pt-6">
+              <p className="text-sm capitalize text-ink-soft">{longDate}</p>
+              <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4" role="radiogroup" aria-label="Horaire">
+                {slots.map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    role="radio"
+                    aria-checked={s === time}
+                    onClick={() => setTime(s)}
+                    className={`rounded-full border py-2 text-sm transition-colors ${
+                      s === time ? "border-ink bg-ink text-porcelain" : "border-line hover:border-ink"
+                    }`}
+                  >
+                    {s.replace(":", "h")}
+                  </button>
                 ))}
-                {cells.map((d, i) => {
-                  if (!d) return <span key={`e${i}`} />;
-                  const ok = isBookable(d);
-                  const selected = date && toKey(d) === toKey(date);
-                  return (
-                    <button
-                      key={toKey(d)}
-                      type="button"
-                      disabled={!ok}
-                      onClick={() => {
-                        setDate(d);
-                        setTime(null);
-                      }}
-                      aria-label={d.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" })}
-                      aria-pressed={!!selected}
-                      className={`mx-auto flex h-11 w-11 items-center justify-center rounded-full text-sm transition-colors ${
-                        selected
-                          ? "bg-ink text-porcelain"
-                          : ok
-                            ? "font-medium hover:bg-accent-soft"
-                            : "cursor-not-allowed text-muted/35"
-                      }`}
-                    >
-                      {d.getDate()}
-                    </button>
-                  );
-                })}
               </div>
-
-              {date && (
-                <div className="mt-6 border-t border-line pt-6">
-                  <p className="text-sm capitalize text-ink-soft">{longDate}</p>
-                  <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4">
-                    {slots.map((s) => (
-                      <button
-                        key={s}
-                        type="button"
-                        onClick={() => setTime(s)}
-                        className="rounded-full border border-line py-2 text-sm transition-colors hover:border-ink hover:bg-ink hover:text-porcelain"
-                      >
-                        {s.replace(":", "h")}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {!date && (
-                <p className="mt-6 text-sm text-muted">Sélectionnez un jour pour voir les horaires proposés.</p>
-              )}
-            </>
+            </div>
           ) : (
-            /* 3. Coordonnées */
-            <form onSubmit={submit}>
-              <button
-                type="button"
-                onClick={() => setTime(null)}
-                className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-ink"
-              >
-                <ArrowLeft size={14} /> Changer l&apos;horaire
-              </button>
-              <div className="mt-4 rounded-2xl bg-sand px-5 py-4 text-sm">
-                <span className="font-medium">{type.label}</span> · <span className="capitalize">{longDate}</span> à{" "}
-                {time.replace(":", "h")}
-              </div>
-
-              <h3 className={`${stepTitle} mt-7`}>
-                <span className={stepNum}>3</span> Vos coordonnées
-              </h3>
-
-              {/* Champ piège anti-spam, invisible pour les humains */}
-              <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
-
-              <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                <Field label="Prénom" name="firstName" autoComplete="given-name" />
-                <Field label="Nom" name="lastName" autoComplete="family-name" />
-                <Field label="Téléphone" name="phone" type="tel" autoComplete="tel" />
-                <Field label="E-mail" name="email" type="email" autoComplete="email" />
-              </div>
-              <fieldset className="mt-6">
-                <legend className="text-sm text-ink-soft">
-                  Qu&apos;aimeriez-vous aborder ? <span className="text-muted">(facultatif, plusieurs choix possibles)</span>
-                </legend>
-                <div className="mt-3 space-y-4">
-                  {needGroups.map((g) => (
-                    <div key={g.group}>
-                      <p className="text-[0.7rem] font-medium uppercase tracking-wide text-muted">{g.group}</p>
-                      <div className="mt-2 flex flex-wrap gap-2">
-                        {g.options.map((n) => {
-                          const on = needs.includes(n);
-                          return (
-                            <button
-                              key={n}
-                              type="button"
-                              aria-pressed={on}
-                              onClick={() => toggleNeed(n)}
-                              className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm transition-colors ${
-                                on ? "border-accent-deep bg-accent-soft/50 text-ink" : "border-line text-ink-soft hover:border-accent"
-                              }`}
-                            >
-                              {on && <Check size={14} className="text-accent-deep" />}
-                              {n}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </fieldset>
-              <label className="mt-4 flex items-start gap-3 text-xs leading-relaxed text-muted">
-                <input type="checkbox" name="consent" required className="mt-0.5 accent-[var(--accent-deep)]" />
-                J&apos;accepte que mes coordonnées soient utilisées par le cabinet uniquement pour traiter ma
-                demande de rendez-vous.
-              </label>
-
-              {status === "error" && (
-                <p className="mt-4 text-sm text-accent-deep" role="alert">
-                  {error} Vous pouvez aussi appeler le cabinet au {practice.phone}.
-                </p>
-              )}
-
-              <button
-                type="submit"
-                disabled={status === "sending"}
-                className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-ink py-3.5 text-sm font-medium text-porcelain transition-colors hover:bg-accent-deep disabled:opacity-60"
-              >
-                {status === "sending" && <Loader2 size={16} className="animate-spin" />}
-                Envoyer ma demande
-              </button>
-            </form>
+            <p className="mt-6 text-sm text-muted">Sélectionnez un jour pour voir les horaires proposés.</p>
           )}
         </div>
+
+        {/* 2. Informations */}
+        <form onSubmit={submit} className="p-6 md:p-8">
+          <h3 className={stepTitle}>
+            <span className={stepNum}>2</span> Vos informations
+          </h3>
+
+          {/* Champ piège anti-spam, invisible pour les humains */}
+          <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
+
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            <Field label="Prénom" name="firstName" autoComplete="given-name" />
+            <Field label="Nom" name="lastName" autoComplete="family-name" />
+            <Field label="Téléphone" name="phone" type="tel" autoComplete="tel" />
+            <Field label="E-mail" name="email" type="email" autoComplete="email" />
+            <label className={label}>
+              <span className="text-ink-soft">Tranche d&apos;âge</span>
+              <select name="ageRange" required defaultValue="" className={control}>
+                <option value="" disabled>
+                  Choisir
+                </option>
+                {booking.ageRanges.map((a) => (
+                  <option key={a}>{a}</option>
+                ))}
+              </select>
+            </label>
+            <label className={`${label} sm:col-span-2`}>
+              <span className="text-ink-soft">Motif de la visite</span>
+              <select value={typeId} onChange={(e) => setTypeId(e.target.value)} className={control}>
+                {booking.types.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+          <p className="mt-2 text-xs text-muted">
+            {type.text} · {type.duration}
+          </p>
+
+          <fieldset className="mt-6">
+            <legend className="text-sm text-ink-soft">
+              Qu&apos;aimeriez-vous aborder ? <span className="text-muted">(facultatif)</span>
+            </legend>
+            <div className="mt-3 space-y-4">
+              {needGroups.map((g) => (
+                <div key={g.group}>
+                  <p className="text-[0.7rem] font-medium uppercase tracking-wide text-muted">{g.group}</p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {g.options.map((n) => {
+                      const on = needs.includes(n);
+                      return (
+                        <button
+                          key={n}
+                          type="button"
+                          aria-pressed={on}
+                          onClick={() => toggleNeed(n)}
+                          className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm transition-colors ${
+                            on ? "border-accent-deep bg-accent-soft/50 text-ink" : "border-line text-ink-soft hover:border-accent"
+                          }`}
+                        >
+                          {on && <Check size={14} className="text-accent-deep" />}
+                          {n}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </fieldset>
+
+          <div className={`mt-6 rounded-2xl px-5 py-4 text-sm ${ready ? "bg-sand" : "border border-dashed border-line text-muted"}`}>
+            {ready ? (
+              <>
+                <span className="font-medium">{type.label}</span> · <span className="capitalize">{longDate}</span> à{" "}
+                {time!.replace(":", "h")}
+              </>
+            ) : (
+              "Choisissez un jour et un horaire dans le calendrier."
+            )}
+          </div>
+
+          <label className="mt-4 flex items-start gap-3 text-xs leading-relaxed text-muted">
+            <input type="checkbox" name="consent" required className="mt-0.5 accent-[var(--accent-deep)]" />
+            J&apos;accepte que mes coordonnées soient utilisées par le cabinet uniquement pour traiter ma
+            demande de rendez-vous.
+          </label>
+
+          {status === "error" && (
+            <p className="mt-4 text-sm text-accent-deep" role="alert">
+              {error} Vous pouvez aussi appeler le cabinet au {practice.phone}.
+            </p>
+          )}
+
+          <button
+            type="submit"
+            disabled={!ready || status === "sending"}
+            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-ink py-3.5 text-sm font-medium text-porcelain transition-colors hover:bg-accent-deep disabled:opacity-40"
+          >
+            {status === "sending" && <Loader2 size={16} className="animate-spin" />}
+            Envoyer ma demande
+          </button>
+        </form>
       </div>
     </div>
   );
