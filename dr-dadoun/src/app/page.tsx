@@ -30,6 +30,7 @@ import {
   treatments,
   universes,
 } from "@/content/site";
+import { concerns } from "@/content/concerns";
 
 
 function PillLink({
@@ -292,6 +293,46 @@ export default function Home() {
                   </Link>
                 );
               })}
+            </div>
+
+            {/* Entrée par la préoccupation du patient */}
+            <div id="preoccupations" className="mt-20 scroll-mt-28 md:mt-28">
+              <div className="flex flex-col justify-between gap-6 border-t border-line pt-12 md:flex-row md:items-end">
+                <div>
+                  <p className="eyebrow">Par où commencer ?</p>
+                  <h3 className="mt-4 font-display text-4xl font-medium uppercase leading-[0.95] md:text-5xl">
+                    Votre <span className="text-accent-deep">préoccupation</span>
+                  </h3>
+                </div>
+                <p className="max-w-sm text-sm leading-relaxed text-ink-soft">
+                  Inutile de connaître le nom d&apos;une technique : partez de ce qui vous gêne, je vous explique les solutions possibles.
+                </p>
+              </div>
+              {(["visage", "intime"] as const).map((g) => (
+                <div key={g} className="mt-10">
+                  <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted">
+                    {g === "visage" ? "Visage & peau" : "Gynécologie esthétique"}
+                  </p>
+                  <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    {concerns
+                      .filter((c) => c.group === g)
+                      .map((c) => (
+                        <li key={c.slug}>
+                          <Link
+                            href={`/preoccupations/${c.slug}`}
+                            className="group flex h-full items-center justify-between gap-4 rounded-2xl border border-line bg-white p-5 transition-colors hover:border-ink/25 hover:bg-sand/50 md:p-6"
+                          >
+                            <div>
+                              <p className="font-display text-xl font-medium">{c.title}</p>
+                              <p className="mt-1 text-sm text-ink-soft">{c.short}</p>
+                            </div>
+                            <ArrowRight size={16} className="shrink-0 transition-transform duration-300 group-hover:translate-x-1" />
+                          </Link>
+                        </li>
+                      ))}
+                  </ul>
+                </div>
+              ))}
             </div>
           </div>
         </section>

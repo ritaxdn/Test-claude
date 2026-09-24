@@ -6,6 +6,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { JsonLd } from "@/components/JsonLd";
 import { actPath, acts, doctor, getAct, practice, steps, type Act } from "@/content/site";
+import { concernsForAct } from "@/content/concerns";
 import { absolute, breadcrumb, clinicId, physicianId } from "@/lib/seo";
 
 type Props = { params: Promise<{ univers: string; acte: string }> };
@@ -59,6 +60,7 @@ export default async function ActPage({ params }: Props) {
   if (!a) notFound();
 
   const u = a.universe;
+  const forConcerns = concernsForAct(a.slug);
   const related = acts.filter((x) => x.universe.slug === u.slug && x.slug !== a.slug);
   const qa = questions(a);
   const url = absolute(actPath(a));
@@ -118,6 +120,20 @@ export default async function ActPage({ params }: Props) {
             <p className="mt-6 flex items-center gap-3 text-sm text-ink-soft">
               <ShieldCheck size={18} className="shrink-0 text-accent-deep" /> {u.note}
             </p>
+          )}
+          {forConcerns.length > 0 && (
+            <div className="mt-8 flex flex-wrap items-center gap-2">
+              <span className="mr-1 text-sm text-muted">Pour quelle préoccupation ?</span>
+              {forConcerns.map((c) => (
+                <Link
+                  key={c.slug}
+                  href={`/preoccupations/${c.slug}`}
+                  className="rounded-full border border-line bg-white px-4 py-2 text-sm transition-colors hover:border-ink/30 hover:text-accent-deep"
+                >
+                  {c.title}
+                </Link>
+              ))}
+            </div>
           )}
         </section>
 
