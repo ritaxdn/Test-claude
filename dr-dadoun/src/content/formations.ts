@@ -99,6 +99,7 @@ export const formationsPage = {
     media: [
       { video: "formation-pratique.mp4", image: "formation-pratique.jpg", label: "Pratique encadrée sur patient" },
       { video: "formation-pratique-2.mp4", image: "formation-pratique-2.jpg", label: "Démonstration du geste" },
+      { video: "formation-laser-co2.mp4", image: "formation-laser-co2.jpg", label: "Cours : laser CO₂ fractionné" },
     ],
   },
 

@@ -250,7 +250,7 @@ export default function Home() {
               />
             </div>
 
-            <div className="mt-14 grid gap-3 lg:grid-cols-2">
+            <div className="mt-14 grid gap-3">
               {universes.map((u, i) => {
                 const acts = treatments
                   .filter((c) => u.categories.includes(c.id))
@@ -259,7 +259,7 @@ export default function Home() {
                   <Link
                     key={u.slug}
                     href={`/soins/${u.slug}`}
-                    className="group relative flex min-h-[15rem] flex-col justify-end overflow-hidden rounded-2xl text-white md:min-h-[19rem]"
+                    className="group relative flex min-h-[8.5rem] overflow-hidden rounded-2xl text-white"
                   >
                     <Photo
                       src={image(u.image)}
@@ -268,17 +268,19 @@ export default function Home() {
                       sizes="(min-width:1024px) 50vw, 100vw"
                       className="transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#07343c]/85 via-[#07343c]/25 to-transparent" />
-                    <div className="relative p-6 md:p-8">
-                      <p className="text-xs font-medium uppercase tracking-[0.14em] text-white/80">
-                        {u.tagline}
-                      </p>
-                      <h3 className="mt-2 font-display text-3xl font-medium uppercase leading-[0.95] md:text-4xl">{u.title}</h3>
-                      <span className="mt-6 inline-flex items-center gap-3 text-xs font-medium uppercase tracking-wide">
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#07343c]/85 via-[#07343c]/45 to-[#07343c]/10" />
+                    <div className="relative flex w-full items-center justify-between gap-6 p-6 md:px-10">
+                      <div>
+                        <p className="text-[0.65rem] font-medium uppercase tracking-[0.14em] text-white/80 md:text-xs">
+                          {u.tagline}
+                        </p>
+                        <h3 className="mt-2 font-display text-2xl font-medium uppercase leading-[0.95] md:text-4xl">{u.title}</h3>
+                      </div>
+                      <span className="inline-flex shrink-0 items-center gap-3 text-xs font-medium uppercase tracking-wide">
+                        <span className="hidden sm:inline">{acts} actes</span>
                         <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-ink transition-transform duration-300 group-hover:translate-x-1">
                           <ArrowRight size={16} />
                         </span>
-                        Découvrir les {acts} actes
                       </span>
                     </div>
                   </Link>
