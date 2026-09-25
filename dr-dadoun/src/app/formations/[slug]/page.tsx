@@ -105,12 +105,17 @@ export default async function CoursePage({ params }: Props) {
               <ul className="mt-6 border-t border-line">
                 {sessions.map((s) => (
                   <li key={s.id ?? s.date} className="border-b border-line py-4 text-sm">
-                    <p className="flex items-center gap-2 font-medium"><CalendarDays size={14} className="text-accent-deep" /> {s.date}</p>
-                    <p className="mt-1 text-ink-soft">{s.place} · {s.format}</p>
+                    {s.title && <p className="font-medium">{s.title}</p>}
+                    <p className={`flex items-center gap-2 ${s.title ? "mt-1 text-ink-soft" : "font-medium"}`}>
+                      <CalendarDays size={14} className="text-accent-deep" /> {s.date}
+                    </p>
+                    {(s.place || s.format) && (
+                      <p className="mt-1 text-ink-soft">{[s.place, s.format].filter(Boolean).join(" · ")}</p>
+                    )}
                     {s.status === "full" ? (
                       <p className="mt-2 text-xs font-medium uppercase tracking-wide text-muted">Complet</p>
                     ) : (
-                      (s.link || (online && s.id)) && (
+                      (
                         <Link
                           href={registrationHref(s, online)}
                           {...(s.link ? { target: "_blank", rel: "noopener noreferrer" } : {})}
