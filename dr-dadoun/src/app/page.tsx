@@ -184,7 +184,7 @@ export default function Home() {
                       <p className="font-display text-lg font-semibold uppercase tracking-tight">{doctor.name}</p>
                       <p className="text-xs text-ink-soft">{doctor.title}</p>
                     </div>
-                    <span className="rounded-full bg-ink px-3 py-1.5 text-[0.65rem] font-medium uppercase tracking-wide text-white">
+                    <span className="rounded-full bg-ink px-3 py-1.5 text-[0.7rem] font-medium uppercase tracking-wide text-white">
                       {practice.city}
                     </span>
                   </div>
@@ -272,7 +272,7 @@ export default function Home() {
                     <div className="absolute inset-0 bg-gradient-to-r from-[#07343c]/85 via-[#07343c]/45 to-[#07343c]/10" />
                     <div className="relative flex w-full items-center justify-between gap-6 p-6 md:px-10">
                       <div>
-                        <p className="text-[0.65rem] font-medium uppercase tracking-[0.14em] text-white/80 md:text-xs">
+                        <p className="text-[0.7rem] font-medium uppercase tracking-[0.14em] text-white/80 md:text-xs">
                           {u.tagline}
                         </p>
                         <h3 className="mt-2 font-display text-2xl font-medium uppercase leading-[0.95] md:text-4xl">{u.title}</h3>

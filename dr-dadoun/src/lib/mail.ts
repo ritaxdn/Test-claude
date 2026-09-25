@@ -34,3 +34,27 @@ export async function sendToPractice(opts: {
   if (!res.ok) console.error("[mail] Échec d'envoi Resend :", res.status, await res.text());
   return res.ok;
 }
+
+/** E-mail libre (confirmation envoyée à un participant, par exemple). */
+export async function sendEmail(opts: { to: string; subject: string; html: string; replyTo?: string }): Promise<boolean> {
+  const { RESEND_API_KEY, BOOKING_EMAIL_FROM, BOOKING_EMAIL_TO } = process.env;
+  if (!RESEND_API_KEY || !BOOKING_EMAIL_FROM) {
+    console.log(`[mail] ${opts.subject} → ${opts.to} (e-mail non configuré)`);
+    return true;
+  }
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      from: BOOKING_EMAIL_FROM,
+      to: opts.to,
+      reply_to: opts.replyTo ?? BOOKING_EMAIL_TO,
+      subject: opts.subject,
+      html: opts.html,
+    }),
+  });
+  if (!res.ok) console.error("[mail] Échec d'envoi Resend :", res.status, await res.text());
+  return res.ok;
+}
+
+export { escape as escapeHtml };

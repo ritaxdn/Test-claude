@@ -12,7 +12,7 @@ export function Footer({ variant = "patients" }: { variant?: "patients" | "pro" 
         <div className="mx-auto max-w-6xl px-5 py-14 md:px-8">
           <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
             <div>
-              <p className="font-display text-5xl font-medium uppercase tracking-tight md:text-6xl">{doctor.name}</p>
+              <p className="font-display text-4xl sm:text-5xl font-medium uppercase tracking-tight md:text-6xl">{doctor.name}</p>
               <p className="mt-2 text-sm text-white/60">{pro ? "Formations pour médecins" : doctor.title}</p>
             </div>
             <nav aria-label="Pied de page">

@@ -14,7 +14,12 @@ export type Course = {
 };
 
 export type Session = {
-  course: string; // slug de la formation concernée
+  id?: string; // identifiant de l'événement (colonne « id » du Google Sheet) : active l'inscription en ligne
+  capacity?: number; // nombre de places
+  registered?: number; // inscrits (calculé depuis l'onglet « Inscriptions »)
+  course?: string; // slug de la formation concernée (vide pour un autre événement)
+  title?: string; // titre libre (congrès, masterclass…) ; sinon, le nom de la formation
+  start?: string; // AAAA-MM-JJ : sert à trier et à masquer les dates passées
   date: string; // ex. "12 – 13 mars 2027"
   place: string; // ex. "Casablanca"
   format: string; // modalités, ex. "2 jours · théorie + pratique · 8 participants max."
@@ -119,7 +124,10 @@ export const formationsPage = {
 
   sessions: {
     title: "Prochaines formations",
-    // À COMPLÉTER : ajouter les sessions dès qu'elles sont programmées.
+    // Les événements se gèrent dans un Google Sheet publié en CSV (voir README) :
+    // coller ici son lien de publication, ou le définir dans la variable FORMATIONS_SHEET_CSV.
+    sheetCsv: "",
+    // Liste de secours, utilisée si aucun Google Sheet n'est configuré.
     list: [] as Session[],
     empty: "Les prochaines dates seront annoncées prochainement.",
   },
