@@ -24,6 +24,14 @@
   --rainbow-4: #ff5722;
   --rainbow-5: #ffc107;
 
+  /* Direction « système » : graphite, platine, lignes fines */
+  --void: #08090b;
+  --graphite: #0f1114;
+  --steel: #171a1f;
+  --platinum: #ecebe7;
+  --silver: #9b9ea4;
+  --porcelain: #f1efea;
+
   --gradient-rainbow: linear-gradient(
     90deg,
     var(--rainbow-1) 0%,
@@ -51,6 +59,16 @@
   --color-rainbow-3: var(--rainbow-3);
   --color-rainbow-4: var(--rainbow-4);
   --color-rainbow-5: var(--rainbow-5);
+
+  --color-void: var(--void);
+  --color-graphite: var(--graphite);
+  --color-steel: var(--steel);
+  --color-platinum: var(--platinum);
+  --color-silver: var(--silver);
+  --color-porcelain: var(--porcelain);
+  --font-display: var(--font-archivo), "Arial Narrow", sans-serif;
+  --font-sans: var(--font-instrument), system-ui, sans-serif;
+  --font-data: var(--font-jetbrains), ui-monospace, monospace;
 
   --font-heading: var(--font-cormorant), "Times New Roman", serif;
   --font-body: var(--font-raleway), Arial, sans-serif;
@@ -84,10 +102,17 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-h1,
-h2,
-h3,
-h4,
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+}
+
 .font-heading {
   font-family: var(--font-heading);
   font-weight: 400;
@@ -152,4 +177,54 @@ h4,
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* ——— Direction « système » ——— */
+.display {
+  font-family: var(--font-display);
+  font-stretch: 118%;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 0.92;
+  text-transform: uppercase;
+}
+.data-label {
+  font-family: var(--font-data);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.signal-line {
+  height: 1px;
+  background-image: var(--gradient-rainbow);
+}
+.hairline-grid {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 96px 96px;
+}
+@keyframes scan {
+  0% { transform: translateY(-10%); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(110%); opacity: 0; }
+}
+.scan-beam {
+  animation: scan 6s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+@keyframes signal-run {
+  from { stroke-dashoffset: 1600; }
+  to { stroke-dashoffset: 0; }
+}
+.signal-run {
+  stroke-dasharray: 1600;
+  animation: signal-run 3.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+.pulse-dot {
+  animation: pulse-dot 2.4s ease-in-out infinite;
 }

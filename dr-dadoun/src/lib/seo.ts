@@ -96,6 +96,24 @@ export function siteGraph() {
         ],
         ...contact,
       },
+      {
+        // La personne (et non le cabinet), présentée uniquement comme médecin esthétique & lasériste.
+        "@type": "Person",
+        "@id": absolute("/#personne"),
+        name: doctor.fullName,
+        alternateName: ["Docteur Mohamed Dadoun", "Docteur Dadoun", doctor.name],
+        honorificPrefix: "Dr",
+        jobTitle: doctor.role,
+        description: `${doctor.role} à Casablanca, cabinet ${practice.addressLine1}. Formateur de médecins.`,
+        image: absolute("/images/docteur.jpg"),
+        url: absolute(doctor.path),
+        mainEntityOfPage: absolute(doctor.path),
+        worksFor: { "@id": clinicId },
+        workLocation: { "@id": clinicId },
+        memberOf: about.affiliations.map((a) => ({ "@type": "Organization", name: a.org })),
+        knowsAbout: ["Médecine esthétique", "Lasers médicaux", "Laser CO₂", "Endolifting", "Gynécologie esthétique"],
+        sameAs: [...practice.sameAs, ...about.profiles],
+      },
     ],
   };
 }

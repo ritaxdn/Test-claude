@@ -12,7 +12,7 @@ const description =
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: { default: title, template: `%s · ${doctor.name}` },
+  title: { default: title, template: "%s · Docteur Dadoun" },
   description,
   applicationName: `${doctor.name} — Médecine esthétique`,
   keywords: [
@@ -43,6 +43,8 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large" } },
   formatDetection: { telephone: true, address: true },
   other: { "geo.region": "MA-06", "geo.placename": "Casablanca" },
+  // Google Search Console : coller le code « Balise HTML » dans la variable GOOGLE_SITE_VERIFICATION (Vercel).
+  ...(process.env.GOOGLE_SITE_VERIFICATION ? { verification: { google: process.env.GOOGLE_SITE_VERIFICATION } } : {}),
 };
 
 export const viewport: Viewport = { themeColor: "#0a1b21" };

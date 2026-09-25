@@ -10,7 +10,7 @@ import { Reassurance } from "@/components/Reassurance";
 import { about, doctor, hero, philosophy, practice, universes } from "@/content/site";
 import { formationsPage } from "@/content/formations";
 import { image } from "@/lib/images";
-import { absolute, breadcrumb, physicianId } from "@/lib/seo";
+import { absolute, breadcrumb } from "@/lib/seo";
 
 const title = `${doctor.fullName} — ${doctor.role} à ${practice.city}`;
 
@@ -221,7 +221,7 @@ export default function DoctorPage() {
           url: absolute(doctor.path),
           inLanguage: "fr-MA",
           isPartOf: { "@id": absolute("/#site") },
-          mainEntity: { "@id": physicianId },
+          mainEntity: { "@id": absolute("/#personne") },
         }}
       />
     </>
