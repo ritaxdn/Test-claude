@@ -150,7 +150,7 @@ export const formationsPage = {
         subtitle: "Dr Kahak × Dr Dadoun",
         place: "", // À COMPLÉTER : lieu
         format: "", // À COMPLÉTER : horaire, nombre de places
-        // À COMPLÉTER : link (lien d'inscription Cal.com)
+        link: "https://cal.com/endolifting-jusqu-ou-peut-aller-le-tightening-sans-chirurgie",
       },
       {
         start: "2026-10-26",
@@ -169,7 +169,7 @@ export const formationsPage = {
         subtitle: "Dr Dadoun",
         place: "Marrakech",
         format: "", // À COMPLÉTER : horaire, nombre de places
-        // À COMPLÉTER : link (lien d'inscription Cal.com)
+        link: "https://cal.com/laser-medecine-regenerative-l-energie-peut-elle-potentialiser-la-biostimulation",
       },
     ] as Session[],
     empty: "Les prochaines dates seront annoncées prochainement.",
