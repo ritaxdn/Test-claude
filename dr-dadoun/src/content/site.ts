@@ -9,6 +9,9 @@ export const doctor = {
   // À COMPLÉTER : numéro d'inscription à l'Ordre National des Médecins (laisser vide tant qu'il n'est pas fourni)
   ordreNumber: "",
   ordre: "Inscrit à l'Ordre National des Médecins du Maroc",
+  // Page « entité » du médecin (Google, IA) : parcours, reconnaissances, enseignement.
+  path: "/docteur-mohamed-dadoun",
+  role: "Médecin esthétique & lasériste",
 };
 
 export const practice = {
@@ -43,7 +46,7 @@ export const practice = {
 
 // Menu de l'espace patients.
 export const nav = [
-  { href: "/#docteur", label: "Le Docteur" },
+  { href: "/docteur-mohamed-dadoun", label: "Le Docteur" },
   { href: "/#soins", label: "Soins" },
   { href: "/#rendez-vous", label: "Rendez-vous" },
   { href: "/#cabinet", label: "Cabinet" },
@@ -115,6 +118,12 @@ export const about = {
     { role: "Expert & formateur agréé", org: "American Aesthetic Association (A.A.A)" },
     { role: "Médecin formateur", org: "Académie européenne de médecine et gynéco-esthétique" },
   ],
+  // Conférences, congrès, interventions (du plus récent au plus ancien). Affiché seulement si renseigné.
+  // À COMPLÉTER — ex. { year: "2025", title: "Le laser CO₂ en pratique", event: "…", place: "Casablanca", url: "https://…" }
+  talks: [] as { year: string; title: string; event: string; place?: string; url?: string }[],
+  // Autres profils officiels (page équipe Cellulift, Google Business Profile, annuaires…) : aident Google
+  // à reconnaître le bon Dr Mohamed Dadoun. Instagram est déjà ajouté automatiquement.
+  profiles: [] as string[],
   quote: "Mon rôle n'est pas de transformer un visage, mais de l'améliorer sans le dénaturer.",
 };
 

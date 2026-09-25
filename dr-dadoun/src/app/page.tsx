@@ -245,6 +245,10 @@ export default function Home() {
                     </ol>
                   </>
                 )}
+
+                <Link href={doctor.path} className="mt-10 inline-flex items-center gap-2 text-sm font-medium text-accent-deep hover:text-ink">
+                  Parcours & reconnaissances du {doctor.fullName} <ArrowRight size={14} />
+                </Link>
               </div>
             </div>
           </div>

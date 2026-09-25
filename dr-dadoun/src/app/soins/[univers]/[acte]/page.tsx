@@ -5,6 +5,8 @@ import { ArrowLeft, ArrowRight, CalendarDays, Check, Minus, Phone, ShieldCheck }
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { JsonLd } from "@/components/JsonLd";
+import { DoctorByline } from "@/components/DoctorByline";
+import { Reassurance } from "@/components/Reassurance";
 import { actPath, acts, doctor, getAct, practice, steps, type Act } from "@/content/site";
 import { concernsForAct } from "@/content/concerns";
 import { getFiche } from "@/content/fiches";
@@ -301,7 +303,11 @@ export default async function ActPage({ params }: Props) {
                   <Phone size={14} /> {practice.phone}
                 </a>
               </div>
+              <Reassurance tone="dark" />
             </div>
+          </div>
+          <div className="mt-3">
+            <DoctorByline />
           </div>
         </section>
       </main>
