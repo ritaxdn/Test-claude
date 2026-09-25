@@ -136,7 +136,7 @@ export const formationsPage = {
         title: "Biofiller vs Acide hyaluronique : volumisation ou régénération tissulaire ?",
         place: "", // À COMPLÉTER : lieu
         format: "", // À COMPLÉTER : durée, format, nombre de places
-        link: "", // À COMPLÉTER : lien d'inscription
+        link: "https://cal.com/biofiller-vs-acide-hyaluronique-volumisation-ou-regeneration-tissulaire", // Cal.com (partagé avec Cellulift Academy)
       },
     ] as Session[],
     empty: "Les prochaines dates seront annoncées prochainement.",
