@@ -66,7 +66,7 @@ export default async function ActPage({ params }: Props) {
   const forConcerns = concernsForAct(a.slug);
   const fiche = getFiche(a.slug);
   const related = acts.filter((x) => x.universe.slug === u.slug && x.slug !== a.slug);
-  const qa = questions(a);
+  const qa = [...(fiche?.faq ?? []), ...questions(a)];
   const url = absolute(actPath(a));
 
   return (
@@ -164,7 +164,33 @@ export default async function ActPage({ params }: Props) {
                     <dt className="text-xs uppercase tracking-[0.14em] text-muted">Nombre de séances</dt>
                     <dd className="mt-2 leading-relaxed">{fiche.sessions}</dd>
                   </div>
+                  <div>
+                    <dt className="text-xs uppercase tracking-[0.14em] text-muted">Douleur</dt>
+                    <dd className="mt-2 leading-relaxed">{fiche.pain}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs uppercase tracking-[0.14em] text-muted">Résultats</dt>
+                    <dd className="mt-2 leading-relaxed">{fiche.results}</dd>
+                  </div>
+                  {fiche.phototypes && (
+                    <div className="sm:col-span-2">
+                      <dt className="text-xs uppercase tracking-[0.14em] text-muted">Selon votre type de peau</dt>
+                      <dd className="mt-2 leading-relaxed">{fiche.phototypes}</dd>
+                    </div>
+                  )}
                 </dl>
+                <p className="mt-8 text-sm text-muted">
+                  {fiche.validated ? (
+                    <>
+                      Fiche relue par le{" "}
+                      <Link href={doctor.path} className="underline underline-offset-4 hover:text-ink">{doctor.fullName}</Link>
+                      {fiche.reviewed &&
+                        ` · ${new Date(fiche.reviewed).toLocaleDateString("fr-FR", { month: "long", year: "numeric" })}`}
+                    </>
+                  ) : (
+                    <span className="rounded-full bg-accent-soft px-3 py-1 text-accent-deep">Brouillon · en attente de validation médicale</span>
+                  )}
+                </p>
               </div>
             </section>
 
@@ -329,6 +355,7 @@ export default async function ActPage({ params }: Props) {
           isPartOf: { "@id": absolute("/#site") },
           publisher: { "@id": clinicId },
           reviewedBy: { "@id": physicianId },
+          ...(fiche?.reviewed ? { lastReviewed: fiche.reviewed } : {}),
           mainEntity: {
             "@type": "MedicalProcedure",
             "@id": `${url}#acte`,
