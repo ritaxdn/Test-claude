@@ -19,6 +19,7 @@ export type Session = {
   registered?: number; // inscrits (calculé depuis l'onglet « Inscriptions »)
   course?: string; // slug de la formation concernée (vide pour un autre événement)
   title?: string; // titre libre (congrès, masterclass…) ; sinon, le nom de la formation
+  subtitle?: string; // accroche ou intervenants, affichée sous le titre
   start?: string; // AAAA-MM-JJ : sert à trier et à masquer les dates passées
   date: string; // ex. "12 – 13 mars 2027"
   place: string; // ex. "Casablanca"
@@ -135,11 +136,40 @@ export const formationsPage = {
     list: [
       {
         start: "2026-10-03",
-        date: "3 octobre 2026",
+        date: "Samedi 3 octobre 2026",
         title: "Biofiller vs Acide hyaluronique : volumisation ou régénération tissulaire ?",
         place: "Cellulift, Casablanca",
         format: "À partir de 14h · 20 places",
         link: "https://cal.com/biofiller-vs-acide-hyaluronique-volumisation-ou-regeneration-tissulaire", // Cal.com (partagé avec Cellulift Academy)
+      },
+      {
+        start: "2026-10-10",
+        date: "Samedi 10 octobre 2026",
+        course: "endolifting",
+        title: "Endolifting : jusqu'où peut aller le tightening sans chirurgie ?",
+        subtitle: "Dr Kahak × Dr Dadoun",
+        place: "", // À COMPLÉTER : lieu
+        format: "", // À COMPLÉTER : horaire, nombre de places
+        // À COMPLÉTER : link (lien d'inscription Cal.com)
+      },
+      {
+        start: "2026-10-26",
+        date: "Lundi 26 octobre 2026",
+        title: "Technologie, pricing & protocoles : les 3 leviers d'un centre de bien-être performant",
+        subtitle: "Masterclass Excellia Academy · Pourquoi certaines technologies deviennent rentables… et d'autres restent inutilisées ?",
+        place: "", // À COMPLÉTER : lieu
+        format: "", // À COMPLÉTER : horaire, nombre de places
+        // À COMPLÉTER : link (lien d'inscription Cal.com)
+      },
+      {
+        start: "2026-11-07",
+        date: "Samedi 7 novembre 2026",
+        course: "lasers-medicaux",
+        title: "Laser × médecine régénérative : l'énergie peut-elle potentialiser la biostimulation ?",
+        subtitle: "Dr Dadoun",
+        place: "Marrakech",
+        format: "", // À COMPLÉTER : horaire, nombre de places
+        // À COMPLÉTER : link (lien d'inscription Cal.com)
       },
     ] as Session[],
     empty: "Les prochaines dates seront annoncées prochainement.",

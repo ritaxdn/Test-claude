@@ -251,7 +251,10 @@ export default async function Formations() {
                     key={`${s.course ?? s.title}-${s.date}`}
                     className="grid gap-2 border-b border-line py-6 md:grid-cols-[1.3fr_1fr_0.8fr_1.4fr_7rem] md:items-center md:gap-6"
                   >
-                    <p className="font-display text-xl font-medium">{sessionTitle(s)}</p>
+                    <div>
+                      <p className="font-display text-xl font-medium">{sessionTitle(s)}</p>
+                      {s.subtitle && <p className="mt-1 text-sm text-ink-soft">{s.subtitle}</p>}
+                    </div>
                     <p className="flex items-center gap-2 text-sm"><CalendarDays size={14} className="text-accent-deep" /> {s.date}</p>
                     <p className="text-sm text-ink-soft max-md:empty:hidden">{s.place}</p>
                     <p className="text-sm text-ink-soft max-md:empty:hidden">

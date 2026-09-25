@@ -397,7 +397,7 @@ export default function Home() {
                 />
                 <p className="max-w-sm text-sm leading-relaxed text-ink-soft">
                   Choisissez le motif de votre consultation et le créneau qui vous convient. Le cabinet vous
-                  confirme le rendez-vous sous 24 h ouvrées.
+                  appelle pour confirmer sous 24 h ouvrées.
                 </p>
               </div>
               <div className="mt-12">

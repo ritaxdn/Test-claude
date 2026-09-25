@@ -122,8 +122,8 @@ function Calendar() {
         <h3 className="mt-6 font-display text-3xl">Demande envoyée</h3>
         <p className="mx-auto mt-4 max-w-md leading-relaxed text-ink-soft">
           Votre demande de <strong>{type.label.toLowerCase()}</strong> le <strong>{longDate}</strong> à{" "}
-          <strong>{time.replace(":", "h")}</strong> a bien été transmise. Le cabinet vous confirme le
-          rendez-vous par téléphone ou e-mail sous 24 h ouvrées.
+          <strong>{time.replace(":", "h")}</strong> a bien été transmise. Le cabinet vous appelle pour confirmer le
+          rendez-vous sous 24 h ouvrées.
         </p>
       </div>
     );
