@@ -34,7 +34,7 @@ export function TechnologyGrid({
           className={cn(
             "font-label rounded-full border px-4 py-2 transition-colors",
             active === "all"
-              ? "border-ink bg-ink text-warm-white"
+              ? "glass-strong border-white text-ink"
               : "border-light text-ink-soft hover:border-ink hover:text-ink"
           )}
           style={{ fontSize: "11px", letterSpacing: "0.08em" }}
@@ -49,7 +49,7 @@ export function TechnologyGrid({
             className={cn(
               "font-label rounded-full border px-4 py-2 transition-colors",
               active === key
-                ? "border-ink bg-ink text-warm-white"
+                ? "glass-strong border-white text-ink"
                 : "border-light text-ink-soft hover:border-ink hover:text-ink"
             )}
             style={{ fontSize: "11px", letterSpacing: "0.08em" }}

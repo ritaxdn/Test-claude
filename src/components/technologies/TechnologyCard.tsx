@@ -28,14 +28,18 @@ export function TechnologyCard({
         <h3 className="font-heading mt-4 text-2xl font-light text-ink">
           {technology.name}
         </h3>
-        <p className="font-body mt-3 text-sm font-light leading-relaxed text-ink-soft">
-          {technology.tagline[locale]}
-        </p>
-        <div className="mt-5 flex flex-wrap gap-2">
-          {technology.certifications.map((cert) => (
-            <Badge key={cert}>{cert}</Badge>
-          ))}
-        </div>
+        {technology.tagline && (
+          <p className="font-body mt-3 text-sm font-light leading-relaxed text-ink-soft">
+            {technology.tagline[locale]}
+          </p>
+        )}
+        {technology.certifications && (
+          <div className="mt-5 flex flex-wrap gap-2">
+            {technology.certifications.map((cert) => (
+              <Badge key={cert}>{cert}</Badge>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="mt-8 flex items-center gap-2 font-body text-sm text-ink transition-transform duration-300 group-hover:translate-x-1">

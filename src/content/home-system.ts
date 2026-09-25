@@ -61,7 +61,7 @@ export const homeSystem = {
     technologies: {
       eyebrow: "02 — Technologies",
       title: "Les produits du système.",
-      intro: "Chaque technologie arrive avec son protocole, sa formation et son support.",
+      intro: "Cinq familles de technologies. Chacune arrive avec son protocole, sa formation et son support.",
       columns: { ref: "Réf.", name: "Technologie", category: "Domaine", indications: "Indications" },
       viewAll: "Toutes les technologies",
     },
@@ -145,7 +145,7 @@ export const homeSystem = {
     technologies: {
       eyebrow: "02 — Technologies",
       title: "The products of the system.",
-      intro: "Every technology comes with its protocol, its training and its support.",
+      intro: "Five families of technologies. Each comes with its protocol, its training and its support.",
       columns: { ref: "Ref.", name: "Technology", category: "Field", indications: "Indications" },
       viewAll: "All technologies",
     },

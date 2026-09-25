@@ -35,7 +35,7 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
 
   return (
     <header className="sticky top-0 z-40 w-full px-3 pt-3 md:px-5">
-      <div className="glass mx-auto flex w-full max-w-7xl items-center justify-between rounded-full py-2.5 pl-6 pr-2.5 md:pl-8">
+      <div className="glass-strong mx-auto flex w-full max-w-7xl items-center justify-between rounded-full py-2.5 pl-6 pr-2.5 md:pl-8">
         <Logo locale={locale} size="sm" />
 
         <nav className="hidden items-center gap-1 lg:flex">
