@@ -31,6 +31,11 @@
   --platinum: #ecebe7;
   --silver: #9b9ea4;
   --porcelain: #f1efea;
+  /* Nacre (inspirations claires, irisées) */
+  --pearl: #eceef3;
+  --pearl-2: #e2e4eb;
+  --deep: #1d1b26;
+  --deep-soft: #5d5b6b;
 
   --gradient-rainbow: linear-gradient(
     90deg,
@@ -66,6 +71,10 @@
   --color-platinum: var(--platinum);
   --color-silver: var(--silver);
   --color-porcelain: var(--porcelain);
+  --color-pearl: var(--pearl);
+  --color-pearl-2: var(--pearl-2);
+  --color-deep: var(--deep);
+  --color-deep-soft: var(--deep-soft);
   --font-display: var(--font-archivo), "Arial Narrow", sans-serif;
   --font-sans: var(--font-instrument), system-ui, sans-serif;
   --font-data: var(--font-jetbrains), ui-monospace, monospace;
@@ -227,4 +236,51 @@ body {
 }
 .pulse-dot {
   animation: pulse-dot 2.4s ease-in-out infinite;
+}
+
+/* ——— Nacre & irisé ——— */
+.pearl-bg {
+  background:
+    radial-gradient(60% 50% at 85% 10%, rgba(123, 97, 255, 0.10), transparent 70%),
+    radial-gradient(50% 40% at 10% 60%, rgba(0, 188, 212, 0.08), transparent 70%),
+    radial-gradient(50% 40% at 90% 90%, rgba(233, 30, 140, 0.07), transparent 70%),
+    var(--pearl);
+}
+.glass {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.46));
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9) inset, 0 24px 60px -30px rgba(29, 27, 38, 0.25);
+  backdrop-filter: blur(22px) saturate(1.4);
+  -webkit-backdrop-filter: blur(22px) saturate(1.4);
+}
+.iridescent-text {
+  background: linear-gradient(100deg, var(--deep) 0%, var(--deep) 38%, #6b5cff 55%, #d0469c 72%, #e38a3c 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+@keyframes float {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -14px, 0); }
+}
+.float { animation: float 9s ease-in-out infinite; }
+.float-slow { animation: float 13s ease-in-out infinite; }
+@keyframes iris-spin {
+  to { transform: rotate(360deg); }
+}
+.iris-spin { animation: iris-spin 24s linear infinite; }
+
+/* Verre en relief (boutons, éléments actifs) */
+.glass-strong {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.62));
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 1) inset, 0 14px 34px -18px rgba(29, 27, 38, 0.35);
+  backdrop-filter: blur(18px) saturate(1.5);
+  -webkit-backdrop-filter: blur(18px) saturate(1.5);
+}
+.glass-soft {
+  background: rgba(255, 255, 255, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(14px) saturate(1.3);
+  -webkit-backdrop-filter: blur(14px) saturate(1.3);
 }

@@ -7,6 +7,10 @@ export const homeSystem = {
       eyebrow: "Cellulift · Medical aesthetic systems · Afrique",
       title: ["Plus qu'une", "technologie."],
       titleAccent: "Un système pour développer votre activité.",
+      stagger: ["Plus qu'une", "technologie,", "un système."],
+      backdrop: ["Medical", "System"],
+      corner: "Des technologies médico-esthétiques pensées comme un système : du choix de la machine à la performance de la clinique.",
+      cornerStrong: "Technology × Expertise × Academy × Support",
       subtitle:
         "Technologies, expertise clinique, formation et support réunis dans un même système, pensé pour la performance des professionnels de l'esthétique médicale.",
       ctaPrimary: "Parler de votre projet",
@@ -57,7 +61,7 @@ export const homeSystem = {
     technologies: {
       eyebrow: "02 — Technologies",
       title: "Les produits du système.",
-      intro: "Chaque technologie arrive avec son protocole, sa formation et son support.",
+      intro: "Cinq familles de technologies. Chacune arrive avec son protocole, sa formation et son support.",
       columns: { ref: "Réf.", name: "Technologie", category: "Domaine", indications: "Indications" },
       viewAll: "Toutes les technologies",
     },
@@ -107,6 +111,10 @@ export const homeSystem = {
       eyebrow: "Cellulift · Medical aesthetic systems · Africa",
       title: ["You're not", "buying a device."],
       titleAccent: "You're building a practice.",
+      stagger: ["More than", "a device,", "a system."],
+      backdrop: ["Medical", "System"],
+      corner: "Medical aesthetic technologies designed as a system: from choosing the device to the performance of the clinic.",
+      cornerStrong: "Technology × Expertise × Academy × Support",
       subtitle:
         "Technology, clinical expertise, training and support combined into one system, designed for the performance of medical aesthetic professionals.",
       ctaPrimary: "Discuss your project",
@@ -137,7 +145,7 @@ export const homeSystem = {
     technologies: {
       eyebrow: "02 — Technologies",
       title: "The products of the system.",
-      intro: "Every technology comes with its protocol, its training and its support.",
+      intro: "Five families of technologies. Each comes with its protocol, its training and its support.",
       columns: { ref: "Ref.", name: "Technology", category: "Field", indications: "Indications" },
       viewAll: "All technologies",
     },

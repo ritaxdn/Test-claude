@@ -5,17 +5,12 @@ import { ArrowLeft, Check } from "lucide-react";
 import { isLocale, locales } from "@/lib/i18n/config";
 import { localeAlternates } from "@/lib/alternates";
 import { getDictionary } from "@/lib/i18n/dictionaries";
-import { categories, getTechnologyBySlug, technologies } from "@/content/technologies";
-import { Container } from "@/components/ui/Container";
-import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
-import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
-import { TechnologyCard } from "@/components/technologies/TechnologyCard";
+import { categories, getTechnologyBySlug, technologies, technologiesIn } from "@/content/technologies";
+import { Reveal } from "@/components/ui/Reveal";
+import { Cta, Pill } from "@/components/system/Cta";
 
 export function generateStaticParams() {
-  return locales.flatMap((lang) =>
-    technologies.map((tech) => ({ lang, slug: tech.slug }))
-  );
+  return locales.flatMap((lang) => technologies.map((tech) => ({ lang, slug: tech.slug })));
 }
 
 export async function generateMetadata({
@@ -27,13 +22,36 @@ export async function generateMetadata({
   if (!isLocale(lang)) return {};
   const tech = getTechnologyBySlug(slug);
   if (!tech) return {};
-
+  const family = categories[tech.category][lang];
   return {
     title: tech.name,
-    description: tech.tagline[lang],
+    description:
+      tech.tagline?.[lang] ??
+      (lang === "fr"
+        ? `${tech.name} — ${family}. Technologie Cellulift livrée avec formation, protocoles et support.`
+        : `${tech.name} — ${family}. Cellulift technology delivered with training, protocols and support.`),
     alternates: localeAlternates(`/technologies/${slug}`),
   };
 }
+
+const t = {
+  fr: {
+    sheet: "Fiche technique sur demande",
+    sheetText:
+      "Caractéristiques, indications, protocoles et conditions d'installation : un expert Cellulift vous envoie la fiche complète et répond à vos questions.",
+    included: "Inclus avec la technologie",
+    includedItems: ["Installation et mise en service", "Formation Cellulift Academy", "Protocoles de traitement", "Support et maintenance"],
+    sameFamily: "Dans la même famille",
+  },
+  en: {
+    sheet: "Technical sheet on request",
+    sheetText:
+      "Specifications, indications, protocols and installation requirements: a Cellulift expert sends you the full sheet and answers your questions.",
+    included: "Included with the technology",
+    includedItems: ["Installation and commissioning", "Cellulift Academy training", "Treatment protocols", "Support and maintenance"],
+    sameFamily: "In the same family",
+  },
+} as const;
 
 export default async function TechnologyDetailPage({
   params,
@@ -42,131 +60,108 @@ export default async function TechnologyDetailPage({
 }) {
   const { lang, slug } = await params;
   if (!isLocale(lang)) notFound();
-
   const tech = getTechnologyBySlug(slug);
   if (!tech) notFound();
 
   const dict = getDictionary(lang);
-  const related = technologies.filter((t) => t.slug !== tech.slug).slice(0, 3);
+  const l = t[lang];
+  const family = technologiesIn(tech.category).filter((x) => x.slug !== tech.slug);
+  const hasSheet = !!(tech.description || tech.indications?.length || tech.benefits?.length);
 
   return (
-    <>
-      <section className="pt-16 pb-16 md:pt-24 md:pb-20">
-        <Container className="max-w-3xl">
-          <Reveal>
-            <Link
-              href={`/${lang}/technologies`}
-              className="inline-flex items-center gap-2 font-body text-sm text-ink-soft transition-colors hover:text-ink"
-            >
-              <ArrowLeft size={16} />
-              {dict.common.backTo} {dict.nav.technologies}
-            </Link>
-          </Reveal>
+    <div className="px-3 pb-24 pt-10 md:px-5 md:pt-14">
+      <div className="mx-auto max-w-7xl px-3 md:px-7">
+        <Link
+          href={`/${lang}/technologies`}
+          className="inline-flex items-center gap-2 font-sans text-sm text-deep-soft transition-colors hover:text-deep"
+        >
+          <ArrowLeft size={16} /> {dict.common.backTo} {dict.nav.technologies}
+        </Link>
 
-          <Reveal delay={0.08}>
-            <span
-              className="font-label mt-8 block text-muted"
-              style={{ fontSize: "11px", letterSpacing: "0.2em" }}
-            >
-              {categories[tech.category][lang].toUpperCase()}
-            </span>
-          </Reveal>
+        <Reveal className="mt-10 grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:items-end">
+          <div>
+            <Pill className="bg-white/60">{categories[tech.category][lang]}</Pill>
+            <h1 className="display mt-6 text-[clamp(2.4rem,6vw,5.6rem)] text-deep">{tech.name}</h1>
+            {tech.tagline && <p className="mt-6 max-w-xl font-sans text-lg text-deep-soft">{tech.tagline[lang]}</p>}
+            {tech.certifications && (
+              <div className="mt-6 flex flex-wrap gap-2">
+                {tech.certifications.map((c) => (
+                  <Pill key={c}>{c}</Pill>
+                ))}
+              </div>
+            )}
+          </div>
+          <div className="flex flex-col gap-3 sm:flex-row lg:justify-end">
+            <Cta href={`/${lang}/contact`}>{dict.common.requestDemo}</Cta>
+            <Cta href={`/${lang}/contact`} variant="line">{dict.common.speakToExpert}</Cta>
+          </div>
+        </Reveal>
 
-          <Reveal delay={0.14}>
-            <h1 className="font-heading mt-3 text-4xl font-light leading-[1.1] text-ink sm:text-5xl">
-              {tech.name}
-            </h1>
+        <div className="mt-14 grid gap-3 lg:grid-cols-[1.3fr_1fr]">
+          {hasSheet ? (
+            <Reveal className="glass rounded-[1.75rem] p-8 md:p-10">
+              {tech.description && <p className="font-sans text-lg leading-relaxed text-deep">{tech.description[lang]}</p>}
+              <div className="mt-8 grid gap-8 md:grid-cols-2">
+                {[
+                  { title: dict.common.indications, items: tech.indications },
+                  { title: dict.common.benefits, items: tech.benefits },
+                ]
+                  .filter((b) => b.items?.length)
+                  .map((b) => (
+                      <div key={b.title}>
+                        <p className="data-label text-deep-soft">{b.title}</p>
+                        <ul className="mt-4 space-y-2.5">
+                          {b.items!.map((x) => (
+                            <li key={x.fr} className="flex items-start gap-2.5 font-sans text-sm text-deep">
+                              <Check size={15} className="mt-0.5 shrink-0 text-[var(--rainbow-2)]" /> {x[lang]}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                  ))}
+              </div>
+            </Reveal>
+          ) : (
+            <Reveal className="glass rounded-[1.75rem] p-8 md:p-10">
+              <p className="data-label text-deep-soft">{tech.name}</p>
+              <h2 className="display mt-6 text-2xl text-deep md:text-3xl">{l.sheet}</h2>
+              <p className="mt-4 max-w-lg font-sans leading-relaxed text-deep-soft">{l.sheetText}</p>
+              <div className="mt-8">
+                <Cta href={`/${lang}/contact`}>{dict.common.speakToExpert}</Cta>
+              </div>
+            </Reveal>
+          )}
+          <Reveal className="glass rounded-[1.75rem] p-8 md:p-10">
+            <p className="data-label text-deep-soft">{l.included}</p>
+            <ul className="mt-6 border-t border-deep/10">
+              {l.includedItems.map((x, i) => (
+                <li key={x} className="flex items-center gap-4 border-b border-deep/10 py-4 font-sans text-deep">
+                  <span className="data-label text-deep-soft">0{i + 1}</span> {x}
+                </li>
+              ))}
+            </ul>
           </Reveal>
+        </div>
 
-          <Reveal delay={0.2}>
-            <p className="font-body mt-6 text-base font-light leading-relaxed text-ink-soft md:text-lg">
-              {tech.tagline[lang]}
+        {family.length > 0 && (
+          <Reveal className="mt-16">
+            <p className="data-label text-deep-soft">
+              {l.sameFamily} · {categories[tech.category][lang]}
             </p>
-          </Reveal>
-
-          <Reveal delay={0.26}>
-            <div className="mt-6 flex flex-wrap gap-2">
-              {tech.certifications.map((cert) => (
-                <Badge key={cert}>{cert}</Badge>
+            <div className="mt-5 flex flex-wrap gap-2">
+              {family.map((f) => (
+                <Link
+                  key={f.slug}
+                  href={`/${lang}/technologies/${f.slug}`}
+                  className="glass-soft rounded-full px-4 py-2 font-sans text-sm text-deep transition-colors hover:bg-white"
+                >
+                  {f.name}
+                </Link>
               ))}
             </div>
           </Reveal>
-
-          <Reveal delay={0.32}>
-            <div className="mt-9 flex flex-wrap gap-4">
-              <Button href={`/${lang}/contact`}>{dict.common.requestDemo}</Button>
-              <Button href={`/${lang}/contact`} variant="ghost">
-                {dict.common.speakToExpert}
-              </Button>
-            </div>
-          </Reveal>
-        </Container>
-      </section>
-
-      <section className="border-t border-hairline bg-ivory-2 py-20">
-        <Container className="grid grid-cols-1 gap-14 max-w-3xl lg:grid-cols-1">
-          <Reveal>
-            <p className="font-body text-base font-light leading-relaxed text-ink-soft md:text-lg">
-              {tech.description[lang]}
-            </p>
-          </Reveal>
-
-          <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
-            <div>
-              <h2
-                className="font-label text-muted"
-                style={{ fontSize: "11px", letterSpacing: "0.15em" }}
-              >
-                {dict.common.indications.toUpperCase()}
-              </h2>
-              <RevealGroup className="mt-5 flex flex-col gap-3">
-                {tech.indications.map((item, i) => (
-                  <RevealItem key={i} className="flex items-start gap-3">
-                    <Check size={16} className="mt-1 shrink-0 text-rainbow-1" />
-                    <span className="font-body text-sm font-light text-ink-soft">
-                      {item[lang]}
-                    </span>
-                  </RevealItem>
-                ))}
-              </RevealGroup>
-            </div>
-
-            <div>
-              <h2
-                className="font-label text-muted"
-                style={{ fontSize: "11px", letterSpacing: "0.15em" }}
-              >
-                {dict.common.benefits.toUpperCase()}
-              </h2>
-              <RevealGroup className="mt-5 flex flex-col gap-3">
-                {tech.benefits.map((item, i) => (
-                  <RevealItem key={i} className="flex items-start gap-3">
-                    <Check size={16} className="mt-1 shrink-0 text-rainbow-3" />
-                    <span className="font-body text-sm font-light text-ink-soft">
-                      {item[lang]}
-                    </span>
-                  </RevealItem>
-                ))}
-              </RevealGroup>
-            </div>
-          </div>
-        </Container>
-      </section>
-
-      <section className="py-20 md:py-28">
-        <Container>
-          <h2 className="font-heading text-2xl font-light text-ink md:text-3xl">
-            {lang === "fr" ? "Autres technologies" : "Other technologies"}
-          </h2>
-          <RevealGroup className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
-            {related.map((t) => (
-              <RevealItem key={t.slug}>
-                <TechnologyCard technology={t} locale={lang} readMoreLabel={dict.common.readMore} />
-              </RevealItem>
-            ))}
-          </RevealGroup>
-        </Container>
-      </section>
-    </>
+        )}
+      </div>
+    </div>
   );
 }

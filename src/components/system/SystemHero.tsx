@@ -1,69 +1,70 @@
-import { Signal } from "./Signal";
+import { Machine } from "./Machine";
 import { Cta } from "./Cta";
 import type { Locale } from "@/lib/i18n/config";
 import { homeSystem } from "@/content/home-system";
 
+/**
+ * Accueil façon « fiche produit med-tech » : la machine au centre, de grands mots blancs derrière,
+ * un titre en lignes décalées et des annotations discrètes dans les coins.
+ */
 export function SystemHero({ locale }: { locale: Locale }) {
   const c = homeSystem[locale].hero;
   const pillars = homeSystem[locale].system.pillars;
   return (
-    <section className="relative -mt-[73px] overflow-hidden bg-void pt-[73px] text-platinum">
-      {/* Trame + faisceau de balayage */}
-      <div className="hairline-grid pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_at_70%_40%,black,transparent_75%)]" />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-full">
-        <div className="scan-beam absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+    <section className="relative overflow-hidden px-6 pb-10 pt-10 md:px-12 lg:h-[calc(100svh-6.5rem)] lg:min-h-[44rem] lg:max-h-[58rem] lg:pb-0">
+      {/* Mots géants en arrière-plan */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 select-none">
+        <p className="display translate-x-[4%] text-[clamp(4.5rem,12.5vw,13rem)] leading-[0.82] text-white/90">{c.backdrop[0]}</p>
+        <p className="display pr-[3%] text-right text-[clamp(4.5rem,12.5vw,13rem)] leading-[0.82] text-white/90">{c.backdrop[1]}</p>
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-6 pb-20 pt-20 md:px-10 md:pt-28 lg:pb-28">
-        <p className="data-label animate-fade-rise text-silver opacity-0">{c.eyebrow}</p>
-        <h1 className="display mt-8 animate-fade-rise text-[clamp(2.1rem,7.2vw,7rem)] opacity-0 [animation-delay:120ms]">
-          <span className="block">{c.title[0]}</span>
-          <span className="block">{c.title[1]}</span>
-        </h1>
-        <div className="mt-10 grid gap-16 lg:grid-cols-[1.35fr_1fr] lg:items-start">
-        <div className="min-w-0">
-          <p className=" max-w-xl animate-fade-rise font-sans text-xl text-platinum/90 opacity-0 [animation-delay:240ms] md:text-2xl">
-            {c.titleAccent}
-          </p>
-          <p className="mt-6 max-w-lg animate-fade-rise font-sans text-[0.95rem] leading-relaxed text-silver opacity-0 [animation-delay:320ms]">
-            {c.subtitle}
-          </p>
-          <div className="mt-10 flex animate-fade-rise flex-col gap-3 opacity-0 [animation-delay:400ms] sm:flex-row">
+      <div className="relative mx-auto h-full max-w-7xl">
+        {/* Annotation en haut à droite */}
+        <div className="hidden text-right lg:ml-auto lg:block lg:max-w-sm">
+          <p className="font-sans text-sm leading-snug text-deep-soft">{c.corner}</p>
+          <p className="mt-2 font-sans text-base font-medium text-deep">{c.cornerStrong}</p>
+        </div>
+
+        <div className="relative lg:mt-10 lg:grid lg:grid-cols-[1fr_1.05fr_0.55fr]">
+          {/* Titre en lignes décalées */}
+          <h1 className="display relative z-20 animate-fade-rise pt-4 text-[clamp(2.2rem,4.3vw,4.4rem)] leading-[0.98] lg:whitespace-nowrap text-deep opacity-0 lg:pt-8">
+            <span className="block pl-[18%] lg:pl-[26%]">{c.stagger[0]}</span>
+            <span className="block">{c.stagger[1]}</span>
+            <span className="block pl-[10%] lg:pl-[16%]">
+              <span className="iridescent-text">{c.stagger[2]}</span>
+            </span>
+          </h1>
+
+          {/* La machine */}
+          <div className="relative mx-auto mt-6 w-[78%] max-w-md animate-fade-rise opacity-0 [animation-delay:200ms] lg:absolute lg:left-[46%] lg:top-[-4.5rem] lg:mt-0 lg:w-[30%] lg:max-w-none">
+            <Machine className="float h-auto w-full drop-shadow-[0_40px_60px_rgba(29,27,38,0.18)]" />
+          </div>
+
+          {/* Repères discrets à droite */}
+          <div className="hidden gap-10 pt-24 lg:col-start-3 lg:flex">
+            <ul className="space-y-1.5">
+              {pillars.slice(0, 2).map((p) => (
+                <li key={p.code} className="font-sans text-sm text-deep/30">{p.name}</li>
+              ))}
+            </ul>
+            <ul className="space-y-1.5">
+              {pillars.slice(2).map((p) => (
+                <li key={p.code} className="font-sans text-sm text-deep/30">{p.name}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* Texte et actions en bas à gauche */}
+        <div className="relative z-10 mt-8 max-w-sm animate-fade-rise opacity-0 [animation-delay:320ms] lg:absolute lg:bottom-12 lg:left-0 lg:mt-0">
+          <p className="font-sans text-[0.95rem] leading-relaxed text-deep">{c.titleAccent}</p>
+          <p className="mt-2 font-sans text-sm leading-relaxed text-deep-soft">{c.subtitle}</p>
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
             <Cta href={`/${locale}/contact`}>{c.ctaPrimary}</Cta>
             <Cta href="#systeme" variant="line">{c.ctaSecondary}</Cta>
           </div>
         </div>
-
-        {/* Lecture du système : une interface, pas une illustration */}
-        <div className="animate-fade-rise border border-white/10 bg-white/[0.03] p-6 opacity-0 backdrop-blur-xl [animation-delay:520ms] md:p-8">
-          <div className="flex items-center justify-between">
-            <p className="data-label whitespace-nowrap text-silver">{c.readout.label}</p>
-            <p className="data-label flex items-center gap-2 text-platinum">
-              <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-[var(--rainbow-1)]" />
-              {c.readout.status}
-            </p>
-          </div>
-          <ul className="mt-6 border-t border-white/10">
-            {pillars.map((p, i) => (
-              <li key={p.code} className="grid grid-cols-[3rem_1fr_auto] items-center gap-3 border-b border-white/10 py-3.5">
-                <span className="data-label text-silver">{p.code}</span>
-                <span className="font-sans text-[0.95rem]">{p.name}</span>
-                <span className="data-label text-silver">0{i + 1}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-6">
-            <div className="signal-line" />
-            <div className="mt-4 flex items-baseline justify-between gap-4">
-              <p className="data-label text-silver">Output</p>
-              <p className="font-sans text-[0.95rem] text-platinum">{c.readout.output}</p>
-            </div>
-          </div>
-        </div>
-        </div>
       </div>
-
-      <Signal className="relative h-12 w-full md:h-16" />
     </section>
   );
 }

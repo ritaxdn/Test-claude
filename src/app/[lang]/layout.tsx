@@ -55,7 +55,7 @@ export default async function LangLayout({
       lang={lang}
       className={`${cormorant.variable} ${raleway.variable} ${spaceMono.variable} ${archivo.variable} ${instrumentSans.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-ivory text-ink">
+      <body className="pearl-bg flex min-h-full flex-col text-ink">
         <Header locale={lang} dict={dict} />
         <main className="flex-1">{children}</main>
         <Footer locale={lang} dict={dict} />
