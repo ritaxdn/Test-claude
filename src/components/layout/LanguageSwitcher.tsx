@@ -17,13 +17,13 @@ export function LanguageSwitcher({ locale }: { locale: Locale }) {
             href={`/${l}${rest ? `/${rest}` : ""}`}
             className={cn(
               "px-1.5 py-1 tracking-wider transition-colors",
-              l === locale ? "text-ink" : "text-muted hover:text-ink"
+              l === locale ? "text-platinum" : "text-silver hover:text-platinum"
             )}
             aria-current={l === locale ? "true" : undefined}
           >
             {l.toUpperCase()}
           </Link>
-          {i < locales.length - 1 && <span className="text-light">/</span>}
+          {i < locales.length - 1 && <span className="text-silver/50">/</span>}
         </span>
       ))}
     </div>
