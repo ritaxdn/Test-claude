@@ -3,6 +3,7 @@
 import { useMemo, useState, useSyncExternalStore } from "react";
 import { Check, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { booking, practice } from "@/content/site";
+import { Reassurance } from "@/components/Reassurance";
 
 const WEEKDAYS = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
 
@@ -340,6 +341,7 @@ function Calendar() {
             {status === "sending" && <Loader2 size={16} className="animate-spin" />}
             Envoyer ma demande
           </button>
+          <Reassurance />
         </form>
       </div>
     </div>

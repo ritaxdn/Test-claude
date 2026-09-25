@@ -5,6 +5,8 @@ import { ArrowLeft, ArrowRight, CalendarDays, Check, Phone, ShieldCheck } from "
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { JsonLd } from "@/components/JsonLd";
+import { DoctorByline } from "@/components/DoctorByline";
+import { Reassurance } from "@/components/Reassurance";
 import { actPath, doctor, practice, universes } from "@/content/site";
 import { concernActs, concerns, getConcern } from "@/content/concerns";
 import { absolute, breadcrumb, clinicId, physicianId } from "@/lib/seo";
@@ -146,7 +148,11 @@ export default async function ConcernPage({ params }: Props) {
                   <Phone size={14} /> {practice.phone}
                 </a>
               </div>
+              <Reassurance tone="dark" />
             </div>
+          </div>
+          <div className="mt-3">
+            <DoctorByline />
           </div>
 
           {others.length > 0 && (

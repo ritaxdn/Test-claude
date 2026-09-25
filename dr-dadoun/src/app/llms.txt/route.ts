@@ -12,7 +12,7 @@ export function GET() {
     "",
     `> ${doctor.name} est médecin esthétique et lasériste à Casablanca (Maroc), avec plus de 35 ans d'expérience. Sa philosophie : « Améliorer sans dénaturer ». Il forme également des médecins depuis plus de 10 ans.`,
     "",
-    `Nom complet : ${doctor.fullName}. Reconnaissances :`,
+    `Nom complet : ${doctor.fullName}, ${doctor.role.toLowerCase()} (cabinet ${practice.addressLine1}, Casablanca). Page du médecin : ${absolute(doctor.path)}. Reconnaissances :`,
     ...about.affiliations.map((a) => `- ${a.role} — ${a.org}`),
     "",
     "## Cabinet",

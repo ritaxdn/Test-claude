@@ -80,7 +80,9 @@ export function siteGraph() {
           "Médecin esthétique et lasériste à Casablanca, spécialisé en gynécologie esthétique, plus de 35 ans d'expérience. Formateur de médecins depuis plus de 10 ans.",
         memberOf: about.affiliations.map((a) => ({ "@type": "Organization", name: a.org })),
         image: absolute("/images/docteur.jpg"),
-        url: absolute("/#docteur"),
+        url: absolute(doctor.path),
+        mainEntityOfPage: absolute(doctor.path),
+        sameAs: [...practice.sameAs, ...about.profiles],
         address,
         worksFor: { "@id": clinicId },
         knowsAbout: [
