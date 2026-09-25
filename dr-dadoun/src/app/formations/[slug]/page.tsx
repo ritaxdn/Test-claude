@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowRight, ArrowUpRight, CalendarDays, Mail } from "lucide-
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { JsonLd } from "@/components/JsonLd";
-import { getSessions, registrationEnabled } from "@/lib/sessions";
+import { getSessions, registrationEnabled, registrationHref } from "@/lib/sessions";
 import { MediaSlot } from "@/components/formations/MediaSlot";
 import { absolute, breadcrumb, physicianId } from "@/lib/seo";
 import { formationsPage as f, getCourse } from "@/content/formations";
@@ -110,10 +110,10 @@ export default async function CoursePage({ params }: Props) {
                     {s.status === "full" ? (
                       <p className="mt-2 text-xs font-medium uppercase tracking-wide text-muted">Complet</p>
                     ) : (
-                      online &&
-                      s.id && (
+                      (s.link || (online && s.id)) && (
                         <Link
-                          href={`/formations/inscription/${s.id}`}
+                          href={registrationHref(s, online)}
+                          {...(s.link ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                           className="mt-2 inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-accent-deep hover:text-ink"
                         >
                           S&apos;inscrire <ArrowRight size={13} />

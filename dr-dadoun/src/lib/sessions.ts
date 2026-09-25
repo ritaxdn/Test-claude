@@ -59,6 +59,7 @@ function fromCsv(text: string): Session[] {
     place: col("lieu"),
     format: col("modalites"),
     status: col("statut"),
+    link: col("lien"),
   };
   const get = (r: string[], i: number) => (i >= 0 ? (r[i] ?? "").trim() : "");
   // La colonne « formation » accepte le nom affiché (« Lasers médicaux ») ou l'adresse (« lasers-medicaux »).
@@ -78,6 +79,7 @@ function fromCsv(text: string): Session[] {
         place: get(r, idx.place),
         format: get(r, idx.format),
         status: norm(get(r, idx.status)).startsWith("complet") ? "full" : "open",
+        link: /^https?:\/\//.test(get(r, idx.link)) ? get(r, idx.link) : undefined,
       } satisfies Session;
     })
     .filter((s) => (s.course || s.title) && s.date);
@@ -94,6 +96,7 @@ type ScriptEvent = {
   places: number | null;
   inscrits: number;
   complet: boolean;
+  lien?: string;
 };
 
 /** Inscriptions en ligne : actives quand le script Google (docs/inscriptions-apps-script.js) est déployé. */
@@ -119,6 +122,7 @@ async function fromScript(): Promise<Session[] | null> {
       capacity: e.places ?? undefined,
       registered: e.inscrits,
       status: e.complet ? "full" : "open",
+      link: e.lien && /^https?:\/\//.test(e.lien) ? e.lien : undefined,
     }));
   } catch (e) {
     console.error("[formations] Script Google inaccessible :", e);
@@ -153,6 +157,13 @@ export async function getSession(id: string) {
 
 export const placesLeft = (s: Session) =>
   s.capacity !== undefined && s.registered !== undefined ? Math.max(0, s.capacity - s.registered) : undefined;
+
+/** Lien du bouton « S'inscrire » : lien externe, sinon inscription du site, sinon formulaire de demande. */
+export const registrationHref = (s: Session, online: boolean) =>
+  s.link ??
+  (online && s.id
+    ? `/formations/inscription/${s.id}`
+    : `/formations?demande=inscription${s.course ? `&formation=${s.course}` : ""}#demande`);
 
 export const sessionTitle = (s: Session) =>
   s.title ?? formationsPage.courses.find((c) => c.slug === s.course)?.title ?? "Formation";

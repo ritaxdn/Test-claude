@@ -3,7 +3,7 @@
  *
  * À coller dans le Google Sheet des formations : Extensions → Apps Script.
  * Le Sheet contient deux onglets :
- *   « Événements »   : id | debut | dates | formation | titre | lieu | modalites | places | statut
+ *   « Événements »   : id | debut | dates | formation | titre | lieu | modalites | places | statut | lien
  *   « Inscriptions » : rempli automatiquement par le site (une ligne par participant)
  *
  * 1. Remplacer CLE_SECRETE ci-dessous par un mot de passe long (le même que FORMATIONS_SCRIPT_KEY dans Vercel).
@@ -77,6 +77,7 @@ function listerEvenements() {
         places: places,
         inscrits: n,
         complet: String(r.statut || "").toLowerCase().indexOf("complet") === 0 || (places !== null && n >= places),
+        lien: String(r.lien || ""),
       };
     });
 }

@@ -77,6 +77,7 @@ Une ligne dans l'onglet Événements = une session sur le site.
 | `modalites` | Durée, format |
 | `places` | Nombre de places (vide = illimité) |
 | `statut` | `ouvert`, ou `complet` pour fermer les inscriptions à la main |
+| `lien` | Facultatif : lien d'inscription externe (formulaire, billetterie). S'il est rempli, le bouton « S'inscrire » y mène au lieu du formulaire du site |
 
 - Le site affiche les places restantes et passe la session en « Complet » automatiquement.
 - Chaque inscription arrive dans l'onglet Inscriptions, avec la date, le nom, la spécialité, l'e-mail, le téléphone, la ville et le n° d'Ordre. Le cabinet reçoit aussi un e-mail, et le médecin une confirmation.

@@ -24,6 +24,7 @@ export type Session = {
   place: string; // ex. "Casablanca"
   format: string; // modalités, ex. "2 jours · théorie + pratique · 8 participants max."
   status?: "open" | "full";
+  link?: string; // lien d'inscription externe (formulaire, billetterie…) : prioritaire sur l'inscription du site
 };
 
 export type CareerStep = {
@@ -128,7 +129,16 @@ export const formationsPage = {
     // coller ici son lien de publication, ou le définir dans la variable FORMATIONS_SHEET_CSV.
     sheetCsv: "",
     // Liste de secours, utilisée si aucun Google Sheet n'est configuré.
-    list: [] as Session[],
+    list: [
+      {
+        start: "2026-10-03",
+        date: "3 octobre 2026",
+        title: "Biofiller vs Acide hyaluronique : volumisation ou régénération tissulaire ?",
+        place: "", // À COMPLÉTER : lieu
+        format: "", // À COMPLÉTER : durée, format, nombre de places
+        link: "", // À COMPLÉTER : lien d'inscription
+      },
+    ] as Session[],
     empty: "Les prochaines dates seront annoncées prochainement.",
   },
 

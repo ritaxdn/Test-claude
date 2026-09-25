@@ -11,7 +11,7 @@ import { FormationRequestSection } from "@/components/formations/FormationReques
 import { NewsletterSignup } from "@/components/formations/NewsletterSignup";
 import { RevealOnScroll } from "@/components/formations/RevealOnScroll";
 import { JsonLd } from "@/components/JsonLd";
-import { getSessions, placesLeft, registrationEnabled, sessionTitle } from "@/lib/sessions";
+import { getSessions, placesLeft, registrationEnabled, registrationHref, sessionTitle } from "@/lib/sessions";
 import { absolute, breadcrumb, physicianId } from "@/lib/seo";
 import { formationsPage as f } from "@/content/formations";
 import { practice } from "@/content/site";
@@ -25,9 +25,6 @@ export const metadata: Metadata = {
 };
 
 const section = "mx-auto max-w-6xl px-5 md:px-8";
-// Liens vers le formulaire de demande, avec pré-sélection.
-const requestLink = (demande: string, formation?: string) =>
-  `/formations?demande=${demande}${formation ? `&formation=${formation}` : ""}#demande`;
 
 const pill =
   "inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-xs font-medium uppercase tracking-wide transition-colors";
@@ -256,8 +253,8 @@ export default async function Formations() {
                   >
                     <p className="font-display text-xl font-medium">{sessionTitle(s)}</p>
                     <p className="flex items-center gap-2 text-sm"><CalendarDays size={14} className="text-accent-deep" /> {s.date}</p>
-                    <p className="text-sm text-ink-soft">{s.place}</p>
-                    <p className="text-sm text-ink-soft">
+                    <p className="text-sm text-ink-soft max-md:empty:hidden">{s.place}</p>
+                    <p className="text-sm text-ink-soft max-md:empty:hidden">
                       {s.format}
                       {placesLeft(s) !== undefined && s.status !== "full" && (
                         <span className="mt-1 block text-xs font-medium text-accent-deep">
@@ -269,7 +266,8 @@ export default async function Formations() {
                       <span className="text-xs font-medium uppercase tracking-wide text-muted">Complet</span>
                     ) : (
                       <Link
-                        href={online && s.id ? `/formations/inscription/${s.id}` : requestLink("inscription", s.course)}
+                        href={registrationHref(s, online)}
+                        {...(s.link ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                         className="group inline-flex items-center gap-2 text-xs font-medium uppercase tracking-wide"
                       >
                         S&apos;inscrire <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
