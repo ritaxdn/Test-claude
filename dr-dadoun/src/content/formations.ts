@@ -134,8 +134,8 @@ export const formationsPage = {
         start: "2026-10-03",
         date: "3 octobre 2026",
         title: "Biofiller vs Acide hyaluronique : volumisation ou régénération tissulaire ?",
-        place: "", // À COMPLÉTER : lieu
-        format: "", // À COMPLÉTER : durée, format, nombre de places
+        place: "Cellulift, Casablanca",
+        format: "À partir de 14h · 20 places",
         link: "https://cal.com/biofiller-vs-acide-hyaluronique-volumisation-ou-regeneration-tissulaire", // Cal.com (partagé avec Cellulift Academy)
       },
     ] as Session[],
