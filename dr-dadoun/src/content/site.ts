@@ -4,7 +4,7 @@
 
 export const doctor = {
   name: "Dr Dadoun",
-  fullName: "Docteur Dadoun", // À COMPLÉTER : prénom + nom
+  fullName: "Dr Mohamed Dadoun",
   title: "Médecin esthétique · Lasériste",
   // À COMPLÉTER : numéro d'inscription à l'Ordre National des Médecins (laisser vide tant qu'il n'est pas fourni)
   ordreNumber: "",
@@ -109,6 +109,12 @@ export const about = {
   // Utilisé sur l'accueil (section « Le Dr Dadoun ») et sur /formations.
   // À COMPLÉTER — ex. { period: "1989", title: "Doctorat en médecine", place: "Faculté de médecine de …" }
   education: [] as { period?: string; title: string; place?: string }[],
+  // Reconnaissances et rôles de formateur (affichés sur l'accueil, /formations et pour Google).
+  affiliations: [
+    { role: "Expert & formateur agréé", org: "American Board of Cosmetic Dermatology and Gynecology" },
+    { role: "Expert & formateur agréé", org: "American Aesthetic Association (A.A.A)" },
+    { role: "Médecin formateur", org: "Académie européenne de médecine et gynéco-esthétique" },
+  ],
   quote: "Mon rôle n'est pas de transformer un visage, mais de l'améliorer sans le dénaturer.",
 };
 

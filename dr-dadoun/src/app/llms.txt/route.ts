@@ -1,4 +1,4 @@
-import { actPath, acts, doctor, faq, philosophy, practice, universes } from "@/content/site";
+import { about, actPath, acts, doctor, faq, philosophy, practice, universes } from "@/content/site";
 import { formationsPage } from "@/content/formations";
 import { concernActs, concerns } from "@/content/concerns";
 import { absolute } from "@/lib/seo";
@@ -11,6 +11,9 @@ export function GET() {
     `# ${doctor.name} — Médecin esthétique & lasériste à Casablanca`,
     "",
     `> ${doctor.name} est médecin esthétique et lasériste à Casablanca (Maroc), avec plus de 35 ans d'expérience. Sa philosophie : « Améliorer sans dénaturer ». Il forme également des médecins depuis plus de 10 ans.`,
+    "",
+    `Nom complet : ${doctor.fullName}. Reconnaissances :`,
+    ...about.affiliations.map((a) => `- ${a.role} — ${a.org}`),
     "",
     "## Cabinet",
     `- Adresse : ${practice.addressLine1}, ${practice.addressLine2}`,
