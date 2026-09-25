@@ -14,13 +14,13 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   if (!isLocale(lang)) notFound();
 
   return (
-    <>
+    <div className="pearl-bg">
       <SystemHero locale={lang} />
       <SystemPillars locale={lang} />
       <TechIndex locale={lang} />
       <PartnerJourney locale={lang} />
       <AcademySupport locale={lang} />
       <ProjectCta locale={lang} />
-    </>
+    </div>
   );
 }

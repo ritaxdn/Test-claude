@@ -2,37 +2,47 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-/** Boutons de la direction « système » : verre sombre ou ligne fine, jamais de couleur pleine. */
+/** Boutons en pilule : plein (encre), verre, ou ligne fine. */
 export function Cta({
   href,
   children,
   variant = "solid",
-  tone = "dark",
   className,
 }: {
   href: string;
   children: React.ReactNode;
-  variant?: "solid" | "line";
-  tone?: "dark" | "light";
+  variant?: "solid" | "glass" | "line";
   className?: string;
 }) {
-  const dark = tone === "dark";
   return (
     <Link
       href={href}
       className={cn(
-        "group inline-flex items-center justify-between gap-6 px-5 py-3.5 font-sans text-sm transition-colors duration-300",
-        variant === "solid" &&
-          (dark ? "bg-platinum text-void hover:bg-white" : "bg-void text-platinum hover:bg-steel"),
-        variant === "line" &&
-          (dark
-            ? "border border-white/15 text-platinum hover:border-white/40"
-            : "border border-void/15 text-void hover:border-void/40"),
+        "group inline-flex items-center justify-between gap-4 rounded-full py-2 pl-6 pr-2 font-sans text-sm transition-all duration-300",
+        variant === "solid" && "bg-deep text-white hover:bg-black",
+        variant === "glass" && "glass text-deep hover:bg-white",
+        variant === "line" && "border border-deep/20 text-deep hover:border-deep/50",
         className
       )}
     >
       {children}
-      <ArrowUpRight size={15} strokeWidth={1.5} className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+      <span
+        className={cn(
+          "flex h-9 w-9 items-center justify-center rounded-full transition-transform duration-300 group-hover:rotate-45",
+          variant === "solid" ? "bg-white text-deep" : "bg-deep text-white"
+        )}
+      >
+        <ArrowUpRight size={15} strokeWidth={1.75} />
+      </span>
     </Link>
+  );
+}
+
+/** Petite étiquette en pilule (catégories, étapes). */
+export function Pill({ children, className }: { children: React.ReactNode; className?: string }) {
+  return (
+    <span className={cn("inline-flex items-center rounded-full border border-deep/15 px-3 py-1 font-sans text-xs text-deep-soft", className)}>
+      {children}
+    </span>
   );
 }
