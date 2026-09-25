@@ -8,6 +8,7 @@ import { Positioning } from "@/components/sections/Positioning";
 import { AcademyCalendar } from "@/components/sections/AcademyCalendar";
 import { WhyCellulift } from "@/components/sections/WhyCellulift";
 import { FinalCta } from "@/components/sections/FinalCta";
+import { Faculty } from "@/components/sections/Faculty";
 
 export async function generateMetadata({
   params,
@@ -58,6 +59,12 @@ export default async function AcademyPage({
         eyebrow={content.expertise.eyebrow}
         title={content.expertise.title}
         items={content.expertise.items}
+      />
+
+      <Faculty
+        eyebrow={content.faculty.eyebrow}
+        title={content.faculty.title}
+        members={content.faculty.members}
       />
 
       <FinalCta

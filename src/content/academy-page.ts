@@ -40,6 +40,25 @@ export const academyPageContent = {
         },
       ],
     },
+    faculty: {
+      eyebrow: "Formateurs",
+      title: "Ils transmettent leur pratique",
+      members: [
+        {
+          name: "Dr Mohamed Dadoun",
+          role: "Médecin esthétique & lasériste · Casablanca",
+          bio: "Plus de 35 ans de pratique et plus de 10 ans à former des médecins : injections, lasers médicaux et endolifting.",
+          credentials: [
+            "Expert & formateur agréé — American Board of Cosmetic Dermatology and Gynecology",
+            "Expert & formateur agréé — American Aesthetic Association (A.A.A)",
+            "Médecin formateur — Académie européenne de médecine et gynéco-esthétique",
+          ],
+          url: "https://docteurdadoun.com",
+          linkLabel: "docteurdadoun.com",
+          sameAs: ["https://docteurdadoun.com/docteur-mohamed-dadoun", "https://www.instagram.com/dr_dadoun/"],
+        },
+      ],
+    },
     cta: {
       title: "Rejoignez la prochaine masterclass",
       description:
@@ -86,6 +105,25 @@ export const academyPageContent = {
           title: "Post-training follow-up",
           description:
             "Ongoing support after training to consolidate protocol mastery.",
+        },
+      ],
+    },
+    faculty: {
+      eyebrow: "Faculty",
+      title: "Sharing their clinical practice",
+      members: [
+        {
+          name: "Dr Mohamed Dadoun",
+          role: "Aesthetic physician & laser specialist · Casablanca",
+          bio: "Over 35 years of practice and more than 10 years training physicians: injectables, medical lasers and endolifting.",
+          credentials: [
+            "Certified expert & trainer — American Board of Cosmetic Dermatology and Gynecology",
+            "Certified expert & trainer — American Aesthetic Association (A.A.A)",
+            "Physician trainer — Académie européenne de médecine et gynéco-esthétique",
+          ],
+          url: "https://docteurdadoun.com",
+          linkLabel: "docteurdadoun.com",
+          sameAs: ["https://docteurdadoun.com/docteur-mohamed-dadoun", "https://www.instagram.com/dr_dadoun/"],
         },
       ],
     },

@@ -124,7 +124,7 @@ export default function Home() {
               <div className="flex flex-1 flex-col justify-between gap-12 lg:flex-row">
                 <div>
                   <h1 className={`rise text-xs font-medium uppercase tracking-wide ${heroVideo ? "text-accent-deep" : "text-white/90"}`}>
-                    {doctor.name} · Médecin esthétique & lasériste à {practice.city}
+                    {doctor.fullName} · Médecin esthétique & lasériste à {practice.city}
                   </h1>
                   <p className="rise rise-2 mt-4 font-display text-[2.5rem] font-medium uppercase leading-[0.95] min-[400px]:text-[2.8rem] sm:text-7xl sm:leading-[0.92] lg:text-[5.6rem]">
                     <span className="block">{hero.title[0]}</span>

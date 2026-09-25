@@ -93,8 +93,13 @@ Sans script configuré, le site peut aussi lire l'onglet publié en CSV (`FORMAT
   `FAQPage`, fil d'Ariane, formations (`Course`) — voir `src/lib/seo.ts`.
 - `/sitemap.xml`, `/robots.txt` (moteurs et assistants IA explicitement autorisés), `/llms.txt`
   (résumé du site pour les IA, généré depuis le contenu), image de partage `/opengraph-image`.
-- Adresse publique du site : variable `NEXT_PUBLIC_SITE_URL` (ex. `https://www.drdadoun.ma`) à définir
-  dans Vercel quand le nom de domaine sera branché.
+- Adresse publique du site : https://docteurdadoun.com par défaut (variable `NEXT_PUBLIC_SITE_URL` pour la changer).
+- Page « entité » du médecin : `/docteur-mohamed-dadoun` (`Person` + `Physician`, `sameAs`). Ajouter les conférences
+  dans `about.talks` et les autres profils officiels (Cellulift, fiche Google…) dans `about.profiles` (`site.ts`).
+- Google Search Console : méthode « Balise HTML », coller le code (la valeur de `content="…"`) dans la variable
+  `GOOGLE_SITE_VERIFICATION` de Vercel, redéployer, puis cliquer « Valider ».
+- Fiches détaillées des soins (`src/content/fiches.ts`) : publiées quand `validated: true` (+ `reviewed: "AAAA-MM-JJ"`).
+  Aperçu des brouillons : `FICHES_PREVIEW=1`, uniquement sur l'environnement Preview de Vercel.
 
 ## Déploiement (Vercel)
 
