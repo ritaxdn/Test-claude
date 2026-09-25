@@ -97,7 +97,7 @@ export function siteGraph() {
         ...contact,
       },
       {
-        // La personne (et non le cabinet) : aide Google à distinguer ce Dr Mohamed Dadoun de ses homonymes.
+        // La personne (et non le cabinet), présentée uniquement comme médecin esthétique & lasériste.
         "@type": "Person",
         "@id": absolute("/#personne"),
         name: doctor.fullName,
