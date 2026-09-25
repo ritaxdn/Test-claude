@@ -29,7 +29,7 @@ export function TechIndex({ locale }: { locale: Locale }) {
                 >
                   <span className="data-label text-deep-soft">CL-{String(i + 1).padStart(2, "0")}</span>
                   <span className="display text-lg text-deep md:text-xl">{t.name}</span>
-                  <span className="flex h-9 w-9 items-center justify-center justify-self-end rounded-full border border-deep/15 text-deep transition-all duration-300 group-hover:rotate-45 group-hover:bg-deep group-hover:text-white md:order-last">
+                  <span className="flex h-9 w-9 items-center justify-center justify-self-end glass-soft rounded-full text-deep transition-all duration-300 group-hover:rotate-45 group-hover:bg-white md:order-last">
                     <ArrowUpRight size={15} strokeWidth={1.75} />
                   </span>
                   <span className="col-start-2 md:col-start-auto">

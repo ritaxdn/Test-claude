@@ -29,12 +29,12 @@ export function SystemPillars({ locale }: { locale: Locale }) {
         </RevealGroup>
 
         <Reveal className="mt-3">
-          <div className="relative overflow-hidden rounded-[1.75rem] bg-deep px-7 py-10 text-white md:px-12 md:py-12">
+          <div className="glass relative overflow-hidden rounded-[1.75rem] px-7 py-10 text-deep md:px-12 md:py-12">
             <Orb size={240} className="pointer-events-none absolute -right-20 -top-24 opacity-80 md:right-8 md:top-1/2 md:-translate-y-1/2" />
             <div className="relative max-w-2xl">
-              <p className="data-label text-white/60">= {c.result.label}</p>
-              <p className="display mt-4 text-[clamp(1.8rem,3.6vw,3rem)]">{c.result.title}</p>
-              <p className="mt-4 max-w-md font-sans leading-relaxed text-white/75">{c.result.text}</p>
+              <p className="data-label text-deep-soft">= {c.result.label}</p>
+              <p className="display iridescent-text mt-4 text-[clamp(1.8rem,3.6vw,3rem)]">{c.result.title}</p>
+              <p className="mt-4 max-w-md font-sans leading-relaxed text-deep-soft">{c.result.text}</p>
             </div>
           </div>
         </Reveal>

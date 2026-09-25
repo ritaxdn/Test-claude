@@ -34,11 +34,11 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
     href === `/${locale}` ? pathname === href : pathname.startsWith(href);
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-deep/5 bg-pearl/70 backdrop-blur-xl backdrop-saturate-150">
-      <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4 md:px-10">
+    <header className="sticky top-0 z-40 w-full px-3 pt-3 md:px-5">
+      <div className="glass mx-auto flex w-full max-w-7xl items-center justify-between rounded-full py-2.5 pl-6 pr-2.5 md:pl-8">
         <Logo locale={locale} size="sm" />
 
-        <nav className="glass hidden items-center gap-1 rounded-full p-1 lg:flex">
+        <nav className="hidden items-center gap-1 lg:flex">
           {links.map((link) => (
             <Link
               key={link.href}
@@ -46,7 +46,7 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
               className={cn(
                 "rounded-full px-4 py-2 font-sans text-sm transition-colors",
                 isActive(link.href)
-                  ? "bg-deep text-white"
+                  ? "glass-strong text-deep"
                   : "text-deep-soft hover:text-deep"
               )}
             >
@@ -74,7 +74,7 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
       </div>
 
       {open && (
-        <div className="border-t border-deep/10 bg-pearl/95 px-6 pb-8 pt-4 backdrop-blur-xl lg:hidden">
+        <div className="glass mx-auto mt-2 max-w-7xl rounded-[1.75rem] px-6 pb-8 pt-4 lg:hidden">
           <nav className="flex flex-col gap-1">
             {links.map((link) => (
               <Link
