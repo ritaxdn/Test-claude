@@ -119,7 +119,10 @@ export const formationsPage = {
       { value: "Lasériste", label: "lasers médicaux" },
     ],
     // Parcours partagé avec l'accueil : à compléter dans site.ts (about.education).
-    steps: about.education.map((e) => ({ period: e.period, title: e.title, detail: e.place })) as CareerStep[],
+    steps: [
+      ...about.education.map((e) => ({ period: e.period, title: e.title, detail: e.place })),
+      ...about.affiliations.map((a) => ({ title: a.role, detail: a.org })),
+    ] as CareerStep[],
     media: { image: "docteur.jpg", label: "Portrait" },
   },
 

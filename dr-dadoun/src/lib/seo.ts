@@ -1,4 +1,4 @@
-import { doctor, practice, treatments } from "@/content/site";
+import { about, doctor, practice, treatments } from "@/content/site";
 
 /**
  * Adresse publique du site (sans / final). À définir quand le nom de domaine sera acheté :
@@ -75,7 +75,8 @@ export function siteGraph() {
         name: doctor.fullName,
         alternateName: doctor.name,
         description:
-          "Médecin esthétique et lasériste à Casablanca, plus de 35 ans d'expérience. Formateur de médecins depuis plus de 10 ans.",
+          "Médecin esthétique et lasériste à Casablanca, spécialisé en gynécologie esthétique, plus de 35 ans d'expérience. Formateur de médecins depuis plus de 10 ans.",
+        memberOf: about.affiliations.map((a) => ({ "@type": "Organization", name: a.org })),
         image: absolute("/images/docteur.jpg"),
         url: absolute("/#docteur"),
         address,

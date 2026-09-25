@@ -214,6 +214,21 @@ export default function Home() {
                   ))}
                 </ol>
 
+                {/* Reconnaissances */}
+                {about.affiliations.length > 0 && (
+                  <>
+                    <h3 className="mt-14 text-xs font-medium uppercase tracking-[0.14em] text-accent-deep">Reconnaissances</h3>
+                    <ul className="mt-4 border-t border-ink/10">
+                      {about.affiliations.map((a) => (
+                        <li key={a.org} className="border-b border-ink/10 py-4">
+                          <p className="font-display text-lg font-medium">{a.org}</p>
+                          <p className="text-sm text-ink-soft">{a.role}</p>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+
                 {/* Parcours & diplômes : affiché seulement une fois renseigné (site.ts → about.education) */}
                 {about.education.length > 0 && (
                   <>
