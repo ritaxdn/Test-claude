@@ -1,7 +1,6 @@
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
 import { Heading } from "./Heading";
 import { Pill } from "./Cta";
-import { Orb } from "./Orb";
 import type { Locale } from "@/lib/i18n/config";
 import { homeSystem } from "@/content/home-system";
 
@@ -30,7 +29,6 @@ export function SystemPillars({ locale }: { locale: Locale }) {
 
         <Reveal className="mt-3">
           <div className="glass relative overflow-hidden rounded-[1.75rem] px-7 py-10 text-deep md:px-12 md:py-12">
-            <Orb size={240} className="pointer-events-none absolute -right-20 -top-24 opacity-80 md:right-8 md:top-1/2 md:-translate-y-1/2" />
             <div className="relative max-w-2xl">
               <p className="data-label text-deep-soft">= {c.result.label}</p>
               <p className="display iridescent-text mt-4 text-[clamp(1.8rem,3.6vw,3rem)]">{c.result.title}</p>

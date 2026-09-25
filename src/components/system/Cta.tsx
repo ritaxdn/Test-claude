@@ -19,7 +19,7 @@ export function Cta({
     <Link
       href={href}
       className={cn(
-        "group inline-flex items-center justify-between gap-4 rounded-full py-2 pl-6 pr-2 font-sans text-sm text-deep transition-all duration-300 hover:-translate-y-0.5",
+        "group inline-flex items-center justify-between gap-4 whitespace-nowrap rounded-full py-2 pl-6 pr-2 font-sans text-sm text-deep transition-all duration-300 hover:-translate-y-0.5",
         variant === "solid" ? "glass-strong hover:bg-white" : "glass-soft hover:bg-white/60",
         className
       )}

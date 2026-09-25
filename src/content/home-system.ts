@@ -7,6 +7,10 @@ export const homeSystem = {
       eyebrow: "Cellulift · Medical aesthetic systems · Afrique",
       title: ["Plus qu'une", "technologie."],
       titleAccent: "Un système pour développer votre activité.",
+      stagger: ["Plus qu'une", "technologie,", "un système."],
+      backdrop: ["Medical", "System"],
+      corner: "Des technologies médico-esthétiques pensées comme un système : du choix de la machine à la performance de la clinique.",
+      cornerStrong: "Technology × Expertise × Academy × Support",
       subtitle:
         "Technologies, expertise clinique, formation et support réunis dans un même système, pensé pour la performance des professionnels de l'esthétique médicale.",
       ctaPrimary: "Parler de votre projet",
@@ -107,6 +111,10 @@ export const homeSystem = {
       eyebrow: "Cellulift · Medical aesthetic systems · Africa",
       title: ["You're not", "buying a device."],
       titleAccent: "You're building a practice.",
+      stagger: ["More than", "a device,", "a system."],
+      backdrop: ["Medical", "System"],
+      corner: "Medical aesthetic technologies designed as a system: from choosing the device to the performance of the clinic.",
+      cornerStrong: "Technology × Expertise × Academy × Support",
       subtitle:
         "Technology, clinical expertise, training and support combined into one system, designed for the performance of medical aesthetic professionals.",
       ctaPrimary: "Discuss your project",
