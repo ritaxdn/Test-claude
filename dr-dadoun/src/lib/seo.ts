@@ -7,7 +7,7 @@ import { about, doctor, practice, treatments } from "@/content/site";
 export const siteUrl = (
   process.env.NEXT_PUBLIC_SITE_URL ||
   (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "") ||
-  "https://drdadounwebsite.vercel.app"
+  "https://docteurdadoun.com"
 ).replace(/\/$/, "");
 
 export const absolute = (path = "/") => `${siteUrl}${path.startsWith("/") ? path : `/${path}`}`;
@@ -48,7 +48,8 @@ export function siteGraph() {
         "@type": "WebSite",
         "@id": absolute("/#site"),
         url: siteUrl,
-        name: `${doctor.name} — Médecin esthétique à Casablanca`,
+        name: "Docteur Dadoun",
+        alternateName: [doctor.name, doctor.fullName, "Docteur Mohamed Dadoun"],
         inLanguage: "fr-MA",
         publisher: { "@id": clinicId },
       },
@@ -56,6 +57,7 @@ export function siteGraph() {
         "@type": ["MedicalClinic", "MedicalBusiness"],
         "@id": clinicId,
         name: `Cabinet du ${doctor.name}`,
+        alternateName: "Cabinet du Docteur Dadoun",
         description:
           "Cabinet de médecine esthétique et de lasers médicaux à Casablanca : injections, laser CO₂, endolifting et gynécologie esthétique.",
         url: siteUrl,
@@ -73,7 +75,7 @@ export function siteGraph() {
         "@type": "Physician",
         "@id": physicianId,
         name: doctor.fullName,
-        alternateName: doctor.name,
+        alternateName: [doctor.name, "Docteur Dadoun", "Docteur Mohamed Dadoun"],
         description:
           "Médecin esthétique et lasériste à Casablanca, spécialisé en gynécologie esthétique, plus de 35 ans d'expérience. Formateur de médecins depuis plus de 10 ans.",
         memberOf: about.affiliations.map((a) => ({ "@type": "Organization", name: a.org })),

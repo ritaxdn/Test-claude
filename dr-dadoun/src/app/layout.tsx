@@ -5,9 +5,10 @@ import { siteGraph, siteUrl } from "@/lib/seo";
 import { JsonLd } from "@/components/JsonLd";
 import "./globals.css";
 
-const title = `${doctor.name} — Médecin esthétique & lasériste à Casablanca`;
+// « Docteur Dadoun » en tête : c'est ce que les patients tapent dans Google.
+const title = "Docteur Dadoun — Médecin esthétique & lasériste à Casablanca";
 const description =
-  "Dr Dadoun, médecin esthétique et lasériste à Casablanca depuis plus de 35 ans : toxine botulique, acide hyaluronique, laser CO₂, endolifting et gynécologie esthétique. Améliorer sans dénaturer.";
+  "Docteur Mohamed Dadoun, médecin esthétique et lasériste à Casablanca depuis plus de 35 ans : toxine botulique, acide hyaluronique, laser CO₂, endolifting et gynécologie esthétique. Cabinet Quartier des Hôpitaux, sur rendez-vous.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -25,6 +26,9 @@ export const metadata: Metadata = {
     "gynécologie esthétique Casablanca",
     "lasériste Casablanca",
     "Dr Dadoun",
+    "Docteur Dadoun",
+    "Docteur Mohamed Dadoun",
+    "Dr Mohamed Dadoun",
   ],
   alternates: { canonical: "/" },
   openGraph: {
