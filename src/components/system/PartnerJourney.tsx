@@ -11,7 +11,23 @@ export function PartnerJourney({ locale }: { locale: Locale }) {
       <div className="mx-auto max-w-7xl px-3 md:px-7">
         <Heading eyebrow={c.eyebrow} title={c.title} intro={c.intro} />
         <div className="signal-line mt-8 opacity-70" />
-        <RevealGroup className="m-rail mt-6 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
+
+        {/* Téléphone : liste numérotée compacte */}
+        <ol className="glass mt-5 grid grid-cols-2 gap-x-4 rounded-[1.5rem] px-4 py-2 sm:hidden">
+          {c.steps.map((s, i) => (
+            <li key={s.title} className="flex items-start gap-2 py-2">
+              <span
+                className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full"
+                style={{ background: `var(--rainbow-${Math.min(5, Math.floor((i * 5) / c.steps.length) + 1)})` }}
+              />
+              <span className="data-label mt-0.5 shrink-0 text-deep-soft">{String(i + 1).padStart(2, "0")}</span>
+              <span className="font-sans text-sm leading-snug text-deep">{s.title}</span>
+            </li>
+          ))}
+        </ol>
+
+        {/* Tablette et ordinateur : cartes */}
+        <RevealGroup className="mt-6 hidden gap-3 sm:grid sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
           {c.steps.map((s, i) => (
             <RevealItem key={s.title} className="glass flex flex-col rounded-[1.5rem] p-5">
               <div className="flex items-center gap-2">
