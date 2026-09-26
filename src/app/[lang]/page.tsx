@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/i18n/config";
 import { SystemHero } from "@/components/system/SystemHero";
 import { SystemPillars } from "@/components/system/SystemPillars";
+import { Ticker } from "@/components/system/Ticker";
 import { TechIndex } from "@/components/system/TechIndex";
 import { WhyCellulift } from "@/components/system/WhyCellulift";
 import { AcademySupport } from "@/components/system/AcademySupport";
@@ -17,6 +18,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   return (
     <div className="pearl-bg">
       <SystemHero locale={lang} />
+      <Ticker locale={lang} />
       <SystemPillars locale={lang} />
       <WhyCellulift locale={lang} />
       <TechIndex locale={lang} />

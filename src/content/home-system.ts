@@ -16,6 +16,15 @@ export const homeSystem = {
       ctaSecondary: "Nos {n} produits",
       readout: { label: "Cellulift", status: "", output: "" },
     },
+    // Bandeau défilant sous le hero.
+    ticker: [
+      "Toutes nos machines sont certifiées CE et FDA",
+      "Depuis 2002",
+      "Technologies • Installation • Formation • Accompagnement • Service après-vente",
+      "5 villes",
+      "5 pays",
+      "+1000 médecins équipés",
+    ],
     system: {
       eyebrow: "01 — Nos fonctionnalités uniques",
       title: "Nos fonctionnalités uniques.",
@@ -117,6 +126,14 @@ export const homeSystem = {
       ctaSecondary: "Our {n} products",
       readout: { label: "Cellulift", status: "", output: "" },
     },
+    ticker: [
+      "All our devices are CE and FDA certified",
+      "Since 2002",
+      "Technology • Installation • Training • Support • After-sales service",
+      "5 cities",
+      "5 countries",
+      "1,000+ physicians equipped",
+    ],
     system: {
       eyebrow: "01 — What makes us unique",
       title: "What makes us unique.",
