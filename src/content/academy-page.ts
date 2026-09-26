@@ -12,8 +12,8 @@ export const academyPageContent = {
       description:
         "La sécurité patient et la qualité des résultats dépendent d'abord de la maîtrise du praticien : sélection des indications, réglages, gestion des effets indésirables et suivi. C'est pourquoi chaque acquisition Cellulift s'accompagne d'un parcours de formation structuré.",
     },
-    programsEyebrow: "Nos programmes",
-    programsTitle: "Masterclasses et parcours certifiants",
+    programsEyebrow: "Calendrier",
+    programsTitle: "Prochaines formations",
     expertise: {
       eyebrow: "Expertise médicale",
       title: "Un corps enseignant issu du terrain clinique",
@@ -80,8 +80,8 @@ export const academyPageContent = {
       description:
         "Patient safety and result quality depend first on practitioner mastery: indication selection, settings, adverse-effect management and follow-up. That's why every Cellulift acquisition comes with a structured training path.",
     },
-    programsEyebrow: "Our programs",
-    programsTitle: "Masterclasses and certified pathways",
+    programsEyebrow: "Calendar",
+    programsTitle: "Upcoming training",
     expertise: {
       eyebrow: "Medical expertise",
       title: "A faculty rooted in clinical practice",
