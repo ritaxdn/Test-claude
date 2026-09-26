@@ -10,7 +10,7 @@ export const homeSystem = {
         "Cellulift équipe les médecins et les centres esthétiques en technologies médico-esthétiques, et reste à leurs côtés après la livraison.",
       stagger: ["Choisir.", "Maîtriser.", "Rentabiliser."],
       backdrop: ["Medical", "Aesthetic"],
-      corner: "Pourquoi certaines machines deviennent rentables… et d'autres restent au fond de la cabine ?",
+      corner: "Pourquoi certaines machines deviennent rentables… et d'autres restent au fond de la cabine ?",
       cornerStrong: "La réponse tient rarement à la machine.",
       subtitle:
         "Le bon choix de machine, l'installation, la formation par des médecins, les protocoles et le service après-vente.",
@@ -86,7 +86,7 @@ export const homeSystem = {
     },
     cta: {
       eyebrow: "07 — Votre projet",
-      title: "Quelle machine pour votre cabinet ?",
+      title: "Quelle machine pour votre cabinet ?",
       text: "Dites-nous quels soins vous voulez proposer. Un conseiller Cellulift vous répond avec une recommandation claire : la machine, la formation et l'accompagnement.",
       ctaPrimary: "Parler à un conseiller",
       ctaSecondary: "Demander une démo",

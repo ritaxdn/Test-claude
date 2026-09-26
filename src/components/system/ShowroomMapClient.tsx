@@ -49,7 +49,7 @@ export function ShowroomMapClient({
   };
 
   return (
-    <div className="glass mt-14 grid overflow-hidden rounded-[1.75rem] lg:grid-cols-[1.7fr_1fr]">
+    <div className="glass mt-8 grid overflow-hidden rounded-[1.75rem] lg:grid-cols-[1.7fr_1fr]">
       {/* Carte */}
       <div className="relative">
         <svg viewBox={`0 0 ${width} ${height}`} className="block h-auto w-full" role="img" aria-label={labels.list}>
@@ -118,13 +118,13 @@ export function ShowroomMapClient({
       </div>
 
       {/* Fiche + liste */}
-      <div className="flex flex-col border-t border-white/70 p-7 md:p-9 lg:border-l lg:border-t-0">
+      <div className="flex flex-col border-t border-white/70 p-6 md:p-7 lg:border-l lg:border-t-0">
         <div className="glass-strong rounded-[1.5rem] p-6">
           <p className="data-label flex items-center gap-2 text-deep-soft">
             <MapPin size={13} /> {current.country}
             {current.hq && <span className="rounded-full border border-deep/15 px-2 py-0.5 text-[10px]">{labels.hq}</span>}
           </p>
-          <p className="display mt-4 text-3xl text-deep">{current.city}</p>
+          <p className="display mt-3 text-2xl text-deep">{current.city}</p>
           <p className="mt-3 font-sans text-sm leading-relaxed text-deep-soft">{current.address || labels.onRequest}</p>
           <Link
             href={contactHref}

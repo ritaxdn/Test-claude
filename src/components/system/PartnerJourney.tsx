@@ -7,13 +7,13 @@ import { homeSystem } from "@/content/home-system";
 export function PartnerJourney({ locale }: { locale: Locale }) {
   const c = homeSystem[locale].journey;
   return (
-    <section className="px-3 pb-24 md:px-5 md:pb-32">
+    <section className="px-3 pb-12 md:px-5 md:pb-16">
       <div className="mx-auto max-w-7xl px-3 md:px-7">
         <Heading eyebrow={c.eyebrow} title={c.title} intro={c.intro} />
-        <div className="signal-line mt-14 opacity-70" />
+        <div className="signal-line mt-8 opacity-70" />
         <RevealGroup className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
           {c.steps.map((s, i) => (
-            <RevealItem key={s.title} className="glass flex flex-col rounded-[1.5rem] p-6">
+            <RevealItem key={s.title} className="glass flex flex-col rounded-[1.5rem] p-5">
               <div className="flex items-center gap-2">
                 <span
                   className="h-2.5 w-2.5 rounded-full"
@@ -21,7 +21,7 @@ export function PartnerJourney({ locale }: { locale: Locale }) {
                 />
                 <span className="data-label text-deep-soft">{String(i + 1).padStart(2, "0")}</span>
               </div>
-              <h3 className="mt-8 font-sans text-lg font-medium leading-snug text-deep">{s.title}</h3>
+              <h3 className="mt-5 font-sans text-base font-medium leading-snug text-deep">{s.title}</h3>
               <p className="mt-2 flex-1 font-sans text-sm leading-relaxed text-deep-soft">{s.text}</p>
               <p className="data-label mt-6 border-t border-deep/10 pt-3 text-deep">→ {s.output}</p>
             </RevealItem>

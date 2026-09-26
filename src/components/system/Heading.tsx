@@ -6,7 +6,7 @@ export function Heading({ eyebrow, title, intro }: { eyebrow: string; title: str
     <Reveal className="grid gap-6 lg:grid-cols-[1.5fr_1fr] lg:items-end">
       <div>
         <Pill>{eyebrow}</Pill>
-        <h2 className="display mt-6 text-[clamp(2rem,4.8vw,4.2rem)] text-deep">{title}</h2>
+        <h2 className="display mt-4 text-[clamp(1.7rem,3.3vw,2.9rem)] text-deep">{title}</h2>
       </div>
       {intro && <p className="max-w-md font-sans leading-relaxed text-deep-soft">{intro}</p>}
     </Reveal>
