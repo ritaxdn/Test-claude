@@ -1,125 +1,79 @@
+// Page À propos — textes repris de cellulift.ma.
 export const aboutContent = {
   fr: {
     hero: {
       eyebrow: "À propos de Cellulift",
-      title: "Élever la pratique médico-esthétique en Afrique.",
+      title: "Leader des équipements médico-esthétiques depuis 2002.",
       subtitle:
-        "Cellulift est né d'une conviction simple : les professionnels de santé africains méritent un accès aux mêmes standards technologiques, scientifiques et pédagogiques que partout ailleurs dans le monde.",
+        "Leader sur le marché des équipements médicaux et spécialisé dans les dispositifs médico-esthétiques, Cellulift réunit technologie et formation.",
     },
     story: {
-      eyebrow: "Notre histoire",
-      title: "Une ambition née du terrain",
+      eyebrow: "Notre expertise",
+      title: "Un concept qui unit technologie et formation",
       paragraphs: [
-        "Cellulift a été fondé pour combler un manque : celui d'un distributeur de technologies médico-esthétiques capable d'offrir, en Afrique, le même niveau d'exigence scientifique, de formation et de support que les marchés les plus matures.",
-        "Trop souvent, l'acquisition d'un équipement médico-esthétique s'arrête à la livraison. Nous avons construit Cellulift autour de l'inverse : la livraison n'est que le point de départ d'un partenariat.",
-        "Aujourd'hui, Cellulift accompagne des dermatologues, médecins esthétiques, gynécologues et kinésithérapeutes à travers le continent, avec une même exigence : la rigueur clinique au service de résultats mesurables.",
+        "Depuis 2002, une équipe de plus de 30 médecins, professionnels de santé, kinésithérapeutes et praticiens du marketing, issus d'écoles et d'universités marocaines et étrangères, travaille autour de valeurs communes : le partage scientifique et la valorisation.",
+        "Représentants de plusieurs marques de technologies modernes dans le domaine de la médecine esthétique, nous tenons à proposer à nos partenaires, clients et autres professionnels les meilleurs dispositifs de dernière génération disponibles chez nos marques partenaires. Tous nos produits sont certifiés CE Médical et FDA, et sont réputés pour leur fiabilité.",
+        "Outre le matériel médico-esthétique, Cellulift est à la tête de Cellulift Academy : un concept de formations, de workshops et de rencontres autour du corps et de sa pleine forme. Médecins, professionnels de la dermo-esthétique, de l'amincissement et de la nutrition y partagent leurs connaissances et leur expérience, en théorie comme en pratique.",
       ],
     },
     pillars: {
-      eyebrow: "Mission, vision, valeurs",
-      title: "Ce qui guide chacune de nos décisions",
+      eyebrow: "Notre belle promesse",
+      title: "Ce qui nous engage",
       mission: {
-        title: "Mission",
-        description:
-          "Donner aux professionnels de santé africains les moyens technologiques et scientifiques d'élever leur pratique médico-esthétique, en toute sécurité.",
+        title: "Accueillir",
+        description: "Vous accueillir amicalement et professionnellement, dans un cadre convivial et chaleureux.",
       },
       vision: {
-        title: "Vision",
-        description:
-          "Devenir le partenaire de référence des cliniques et cabinets d'Afrique en matière de technologies médico-esthétiques, de formation et d'accompagnement.",
+        title: "Écouter",
+        description: "Respecter vos demandes et être à l'écoute de vos attentes.",
       },
       values: {
-        title: "Valeurs",
-        description:
-          "Rigueur scientifique, transparence, exigence de sécurité patient et engagement de long terme envers chaque partenaire.",
+        title: "Accompagner",
+        description: "Accompagner nos partenaires aussi bien dans la formation que dans le conseil et la solution, parce que nous voulons la meilleure des réputations.",
       },
     },
     difference: {
-      eyebrow: "Ce qui nous distingue",
-      title: "Un partenaire, pas un intermédiaire",
+      eyebrow: "Pourquoi Cellulift ?",
+      title: "Complice de votre succès",
       items: [
-        {
-          title: "Sélection exigeante",
-          description:
-            "Chaque technologie est évaluée pour sa sécurité, son efficacité clinique et ses certifications avant d'intégrer notre catalogue.",
-        },
-        {
-          title: "Formation intégrée",
-          description:
-            "Aucune machine n'est livrée sans un programme de formation adapté, dispensé par Cellulift Academy.",
-        },
-        {
-          title: "Support qui dure",
-          description:
-            "Installation, maintenance préventive et assistance technique tout au long de la vie de l'équipement.",
-        },
-        {
-          title: "Compréhension du terrain",
-          description:
-            "Une équipe présente en Afrique, qui comprend les réalités logistiques, réglementaires et cliniques locales.",
-        },
+        { title: "Certifiées CE et FDA", description: "Toutes nos machines sont certifiées CE et FDA, avec une garantie de 24 mois pièces et main-d'œuvre." },
+        { title: "Marques en exclusivité", description: "Nous représentons plusieurs marques internationales en exclusivité." },
+        { title: "Les meilleurs formateurs", description: "Formateurs nationaux et internationaux, professeurs universitaires et experts du corps et de son bien-être." },
+        { title: "400 m² de showroom", description: "Au cœur du quartier des Hôpitaux, à Casablanca, pour découvrir les dernières nouveautés de la technologie médicale." },
       ],
     },
   },
   en: {
     hero: {
       eyebrow: "About Cellulift",
-      title: "Elevating medical aesthetic practice across Africa.",
+      title: "A leader in medical aesthetic equipment since 2002.",
       subtitle:
-        "Cellulift was founded on a simple conviction: African healthcare professionals deserve access to the same technological, scientific and educational standards found anywhere else in the world.",
+        "A leader in the medical equipment market, specialized in medical aesthetic devices, Cellulift brings technology and training together.",
     },
     story: {
-      eyebrow: "Our story",
-      title: "An ambition born from the field",
+      eyebrow: "Our expertise",
+      title: "A concept uniting technology and training",
       paragraphs: [
-        "Cellulift was founded to fill a gap: a medico-aesthetic technology distributor able to offer, in Africa, the same level of scientific rigor, training and support found in the most mature markets.",
-        "Too often, acquiring medical aesthetic equipment stops at delivery. We built Cellulift around the opposite principle: delivery is only the starting point of a partnership.",
-        "Today, Cellulift supports dermatologists, aesthetic physicians, gynecologists and physiotherapists across the continent, with one constant standard: clinical rigor in service of measurable results.",
+        "Since 2002, a team of more than 30 physicians, healthcare professionals, physiotherapists and marketing practitioners, trained in Moroccan and foreign schools and universities, has worked around shared values: scientific sharing and recognition.",
+        "Representing several brands of modern aesthetic medicine technology, we offer our partners, clients and other professionals the best latest-generation devices from our partner brands. All our products are CE Medical and FDA certified and known for their reliability.",
+        "Beyond medical aesthetic equipment, Cellulift leads Cellulift Academy: training, workshops and meetings around the body and well-being. Physicians and professionals in dermo-aesthetics, slimming and nutrition share their knowledge and experience, in theory and in practice.",
       ],
     },
     pillars: {
-      eyebrow: "Mission, vision, values",
-      title: "What guides every decision we make",
-      mission: {
-        title: "Mission",
-        description:
-          "Give African healthcare professionals the technological and scientific means to elevate their medical aesthetic practice, safely.",
-      },
-      vision: {
-        title: "Vision",
-        description:
-          "Become the reference partner for clinics and practices across Africa for medico-aesthetic technology, training and support.",
-      },
-      values: {
-        title: "Values",
-        description:
-          "Scientific rigor, transparency, an unwavering commitment to patient safety, and long-term dedication to every partner.",
-      },
+      eyebrow: "Our promise",
+      title: "What we commit to",
+      mission: { title: "Welcome", description: "Welcoming you warmly and professionally, in a friendly setting." },
+      vision: { title: "Listen", description: "Respecting your requests and listening to your expectations." },
+      values: { title: "Support", description: "Supporting our partners in training as well as in advice and solutions, because we want the best reputation." },
     },
     difference: {
-      eyebrow: "What sets us apart",
-      title: "A partner, not an intermediary",
+      eyebrow: "Why Cellulift?",
+      title: "Partner in your success",
       items: [
-        {
-          title: "Rigorous selection",
-          description:
-            "Every technology is assessed for safety, clinical efficacy and certification before joining our catalogue.",
-        },
-        {
-          title: "Built-in training",
-          description:
-            "No device ships without a tailored training program delivered by Cellulift Academy.",
-        },
-        {
-          title: "Support that lasts",
-          description:
-            "Installation, preventive maintenance and technical assistance throughout the equipment's lifetime.",
-        },
-        {
-          title: "On-the-ground understanding",
-          description:
-            "A team based in Africa that understands local logistics, regulatory and clinical realities.",
-        },
+        { title: "CE and FDA certified", description: "All our devices are CE and FDA certified, with a 24-month parts and labour warranty." },
+        { title: "Exclusive brands", description: "We exclusively represent several international brands." },
+        { title: "The best trainers", description: "National and international trainers, university professors and body and well-being experts." },
+        { title: "400 m² showroom", description: "In the heart of the Hospitals district in Casablanca, to discover the latest medical technology." },
       ],
     },
   },

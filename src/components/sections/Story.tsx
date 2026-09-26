@@ -1,44 +1,20 @@
-import { Container } from "@/components/ui/Container";
-import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
+import { Reveal } from "@/components/ui/Reveal";
+import { Pill } from "@/components/system/Cta";
 
-export function Story({
-  eyebrow,
-  title,
-  paragraphs,
-}: {
-  eyebrow: string;
-  title: string;
-  paragraphs: readonly string[];
-}) {
+export function Story({ eyebrow, title, paragraphs }: { eyebrow: string; title: string; paragraphs: readonly string[] }) {
   return (
-    <section className="py-20 md:py-28">
-      <Container className="grid grid-cols-1 gap-12 lg:grid-cols-[0.8fr_1.2fr]">
-        <div>
-          <Reveal>
-            <span
-              className="font-label text-muted"
-              style={{ fontSize: "11px", letterSpacing: "0.2em" }}
-            >
-              {eyebrow.toUpperCase()}
-            </span>
-          </Reveal>
-          <Reveal delay={0.08}>
-            <h2 className="font-heading mt-4 text-3xl font-light leading-tight text-ink md:text-4xl">
-              {title}
-            </h2>
-          </Reveal>
-        </div>
-
-        <RevealGroup className="flex flex-col gap-6">
+    <section className="px-3 pb-12 md:px-5 md:pb-16">
+      <div className="mx-auto grid max-w-7xl gap-8 px-3 md:px-7 lg:grid-cols-[0.9fr_1.1fr]">
+        <Reveal>
+          <Pill className="bg-white/60">{eyebrow}</Pill>
+          <h2 className="display mt-4 text-[clamp(1.7rem,3.3vw,2.9rem)] text-deep">{title}</h2>
+        </Reveal>
+        <Reveal className="glass space-y-4 rounded-[1.75rem] p-7 md:p-9">
           {paragraphs.map((p, i) => (
-            <RevealItem key={i}>
-              <p className="font-body text-base font-light leading-relaxed text-ink-soft md:text-lg">
-                {p}
-              </p>
-            </RevealItem>
+            <p key={i} className="font-sans leading-relaxed text-deep-soft">{p}</p>
           ))}
-        </RevealGroup>
-      </Container>
+        </Reveal>
+      </div>
     </section>
   );
 }

@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 import type { Metadata } from "next";
-import { cormorant, raleway, spaceMono } from "@/lib/fonts";
+import { archivo, cormorant, instrumentSans, jetbrainsMono, raleway, spaceMono } from "@/lib/fonts";
 import { defaultLocale, isLocale } from "@/lib/i18n/config";
 import "./globals.css";
 
@@ -41,22 +41,22 @@ export default async function GlobalNotFound() {
   return (
     <html
       lang={lang}
-      className={`${cormorant.variable} ${raleway.variable} ${spaceMono.variable} h-full antialiased`}
+      className={`${cormorant.variable} ${raleway.variable} ${spaceMono.variable} ${archivo.variable} ${instrumentSans.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col items-center justify-center bg-ivory px-6 text-center text-ink">
+      <body className="flex min-h-full flex-col items-center justify-center pearl-bg px-6 text-center text-deep">
         <span
-          className="font-label text-muted"
+          className="data-label text-deep-soft"
           style={{ fontSize: "11px", letterSpacing: "0.2em" }}
         >
           {t.eyebrow.toUpperCase()}
         </span>
-        <h1 className="font-heading mt-5 text-4xl font-light md:text-5xl">{t.title}</h1>
-        <p className="font-body mt-5 max-w-md text-base font-light leading-relaxed text-ink-soft">
+        <h1 className="display mt-5 text-[clamp(2rem,4vw,3rem)]">{t.title}</h1>
+        <p className="mt-5 max-w-md font-sans leading-relaxed text-deep-soft">
           {t.description}
         </p>
         <a
           href={`/${lang}`}
-          className="mt-9 inline-flex items-center justify-center rounded-full bg-ink px-6 py-3.5 font-body text-sm font-medium text-warm-white transition-colors hover:bg-ink-soft"
+          className="mt-9 inline-flex items-center justify-center glass-strong rounded-full px-6 py-3.5 font-sans text-sm text-deep transition-colors hover:bg-white"
         >
           {t.cta}
         </a>

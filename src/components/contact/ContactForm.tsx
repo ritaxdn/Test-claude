@@ -2,7 +2,6 @@
 
 import { useState, type FormEvent } from "react";
 import { Loader2, CheckCircle2, AlertCircle } from "lucide-react";
-import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
 type FieldErrors = Partial<Record<"name" | "email" | "message", string>>;
@@ -77,13 +76,13 @@ export function ContactForm({ text }: { text: ContactFormText }) {
   }
 
   const inputClasses =
-    "w-full border border-light bg-warm-white px-4 py-3 font-body text-sm text-ink placeholder:text-muted focus:border-ink focus:outline-none transition-colors";
+    "glass-soft w-full rounded-2xl px-4 py-3 font-sans text-sm text-deep placeholder:text-deep-soft/70 transition-colors focus:bg-white focus:outline-none";
 
   return (
     <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-6">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <div>
-          <label htmlFor="name" className="font-body text-sm text-ink-soft">
+          <label htmlFor="name" className="font-sans text-sm text-deep-soft">
             {text.name} <span className="text-rainbow-3">*</span>
           </label>
           <input
@@ -97,14 +96,14 @@ export function ContactForm({ text }: { text: ContactFormText }) {
             aria-describedby={errors.name ? "name-error" : undefined}
           />
           {errors.name && (
-            <p id="name-error" role="alert" className="mt-1.5 font-body text-xs text-rainbow-3">
+            <p id="name-error" role="alert" className="mt-1.5 font-sans text-xs text-rainbow-3">
               {errors.name}
             </p>
           )}
         </div>
 
         <div>
-          <label htmlFor="email" className="font-body text-sm text-ink-soft">
+          <label htmlFor="email" className="font-sans text-sm text-deep-soft">
             {text.email} <span className="text-rainbow-3">*</span>
           </label>
           <input
@@ -118,7 +117,7 @@ export function ContactForm({ text }: { text: ContactFormText }) {
             aria-describedby={errors.email ? "email-error" : undefined}
           />
           {errors.email && (
-            <p id="email-error" role="alert" className="mt-1.5 font-body text-xs text-rainbow-3">
+            <p id="email-error" role="alert" className="mt-1.5 font-sans text-xs text-rainbow-3">
               {errors.email}
             </p>
           )}
@@ -127,7 +126,7 @@ export function ContactForm({ text }: { text: ContactFormText }) {
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <div>
-          <label htmlFor="phone" className="font-body text-sm text-ink-soft">
+          <label htmlFor="phone" className="font-sans text-sm text-deep-soft">
             {text.phone}
           </label>
           <input
@@ -141,7 +140,7 @@ export function ContactForm({ text }: { text: ContactFormText }) {
         </div>
 
         <div>
-          <label htmlFor="organization" className="font-body text-sm text-ink-soft">
+          <label htmlFor="organization" className="font-sans text-sm text-deep-soft">
             {text.organization}
           </label>
           <input
@@ -156,7 +155,7 @@ export function ContactForm({ text }: { text: ContactFormText }) {
       </div>
 
       <div>
-        <label htmlFor="subject" className="font-body text-sm text-ink-soft">
+        <label htmlFor="subject" className="font-sans text-sm text-deep-soft">
           {text.subject}
         </label>
         <select id="subject" name="subject" className={cn(inputClasses, "mt-2 appearance-none")}>
@@ -169,7 +168,7 @@ export function ContactForm({ text }: { text: ContactFormText }) {
       </div>
 
       <div>
-        <label htmlFor="message" className="font-body text-sm text-ink-soft">
+        <label htmlFor="message" className="font-sans text-sm text-deep-soft">
           {text.message} <span className="text-rainbow-3">*</span>
         </label>
         <textarea
@@ -182,27 +181,31 @@ export function ContactForm({ text }: { text: ContactFormText }) {
           aria-describedby={errors.message ? "message-error" : undefined}
         />
         {errors.message && (
-          <p id="message-error" role="alert" className="mt-1.5 font-body text-xs text-rainbow-3">
+          <p id="message-error" role="alert" className="mt-1.5 font-sans text-xs text-rainbow-3">
             {errors.message}
           </p>
         )}
       </div>
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-        <Button type="submit" size="lg" disabled={status === "submitting"}>
+        <button
+          type="submit"
+          disabled={status === "submitting"}
+          className="glass-strong inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 font-sans text-sm text-deep transition-colors hover:bg-white disabled:opacity-50"
+        >
           {status === "submitting" && <Loader2 size={16} className="animate-spin" />}
           {status === "submitting" ? text.submitting : text.submit}
-        </Button>
+        </button>
 
-        <div aria-live="polite" className="font-body text-sm">
+        <div aria-live="polite" className="font-sans text-sm">
           {status === "success" && (
-            <span className="flex items-center gap-2 text-ink">
+            <span className="flex items-center gap-2 text-deep">
               <CheckCircle2 size={16} className="text-rainbow-1" />
               {text.success}
             </span>
           )}
           {status === "error" && (
-            <span className="flex items-center gap-2 text-ink">
+            <span className="flex items-center gap-2 text-deep">
               <AlertCircle size={16} className="text-rainbow-4" />
               {text.error}
             </span>

@@ -1,39 +1,22 @@
-import { Microscope, GraduationCap, LifeBuoy, Globe2 } from "lucide-react";
-import { Container } from "@/components/ui/Container";
-import { SectionHeading } from "@/components/ui/SectionHeading";
 import { RevealGroup, RevealItem } from "@/components/ui/Reveal";
+import { Heading } from "@/components/system/Heading";
+import { Pill } from "@/components/system/Cta";
 
-const icons = [Microscope, GraduationCap, LifeBuoy, Globe2];
-
-export function WhyCellulift({
-  eyebrow,
-  title,
-  items,
-}: {
-  eyebrow: string;
-  title: string;
-  items: readonly { title: string; description: string }[];
-}) {
+export function WhyCellulift({ eyebrow, title, items }: { eyebrow: string; title: string; items: readonly { title: string; description: string }[] }) {
   return (
-    <section className="py-20 md:py-28">
-      <Container>
-        <SectionHeading align="center" eyebrow={eyebrow} title={title} className="max-w-2xl" />
-
-        <RevealGroup className="mt-16 grid grid-cols-1 gap-px overflow-hidden border border-hairline bg-[rgba(26,24,20,0.08)] sm:grid-cols-2 lg:grid-cols-4">
-          {items.map((item, i) => {
-            const Icon = icons[i % icons.length];
-            return (
-              <RevealItem key={item.title} className="bg-warm-white p-8">
-                <Icon size={22} strokeWidth={1.5} className="text-rainbow-2" />
-                <h3 className="font-heading mt-5 text-xl font-light text-ink">{item.title}</h3>
-                <p className="font-body mt-3 text-sm font-light leading-relaxed text-ink-soft">
-                  {item.description}
-                </p>
-              </RevealItem>
-            );
-          })}
+    <section className="px-3 pb-12 md:px-5 md:pb-16">
+      <div className="mx-auto max-w-7xl px-3 md:px-7">
+        <Heading eyebrow={eyebrow} title={title} />
+        <RevealGroup className="m-rail mt-8 sm:grid-cols-2 lg:grid-cols-4">
+          {items.map((it, i) => (
+            <RevealItem key={it.title} className="glass flex min-h-[10rem] flex-col rounded-[1.5rem] p-6">
+              <Pill className="self-start bg-white/70">0{i + 1}</Pill>
+              <h3 className="mt-auto pt-5 font-sans text-base font-medium text-deep">{it.title}</h3>
+              <p className="mt-2 font-sans text-sm leading-relaxed text-deep-soft">{it.description}</p>
+            </RevealItem>
+          ))}
         </RevealGroup>
-      </Container>
+      </div>
     </section>
   );
 }

@@ -27,17 +27,17 @@ export function TechnologyGrid({
 
   return (
     <div>
-      <div className="flex flex-wrap gap-3">
+      <div className="no-scrollbar -mx-6 flex gap-2 overflow-x-auto px-6 sm:mx-0 sm:flex-wrap sm:px-0">
         <button
           type="button"
           onClick={() => setActive("all")}
           className={cn(
-            "font-label rounded-full border px-4 py-2 transition-colors",
-            active === "all"
-              ? "glass-strong border-white text-ink"
-              : "border-light text-ink-soft hover:border-ink hover:text-ink"
+            "shrink-0 whitespace-nowrap rounded-full px-4 py-2 font-sans text-sm transition-colors",
+              active === "all"
+                ? "glass-strong text-deep"
+                : "glass-soft text-deep-soft hover:text-deep"
           )}
-          style={{ fontSize: "11px", letterSpacing: "0.08em" }}
+          
         >
           {allLabel}
         </button>
@@ -47,19 +47,19 @@ export function TechnologyGrid({
             type="button"
             onClick={() => setActive(key)}
             className={cn(
-              "font-label rounded-full border px-4 py-2 transition-colors",
+              "shrink-0 whitespace-nowrap rounded-full px-4 py-2 font-sans text-sm transition-colors",
               active === key
-                ? "glass-strong border-white text-ink"
-                : "border-light text-ink-soft hover:border-ink hover:text-ink"
+                ? "glass-strong text-deep"
+                : "glass-soft text-deep-soft hover:text-deep"
             )}
-            style={{ fontSize: "11px", letterSpacing: "0.08em" }}
+            
           >
             {categories[key][locale]}
           </button>
         ))}
       </div>
 
-      <RevealGroup className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <RevealGroup className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {filtered.map((tech) => (
           <RevealItem key={tech.slug}>
             <TechnologyCard technology={tech} locale={locale} readMoreLabel={readMoreLabel} />

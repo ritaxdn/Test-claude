@@ -1,14 +1,12 @@
 import Link from "next/link";
 import { InstagramIcon, LinkedinIcon, FacebookIcon } from "@/components/icons/SocialIcons";
 import { Logo } from "@/components/brand/Logo";
-import { Container } from "@/components/ui/Container";
 import { company } from "@/content/company";
 import type { Locale } from "@/lib/i18n/config";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
 
 export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
   const year = new Date().getFullYear();
-
   const links = [
     { href: `/${locale}`, label: dict.nav.home },
     { href: `/${locale}/about`, label: dict.nav.about },
@@ -17,100 +15,78 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
     { href: `/${locale}/support`, label: dict.nav.support },
     { href: `/${locale}/contact`, label: dict.nav.contact },
   ];
+  const socials = [
+    { href: company.social.instagram, label: "Instagram", Icon: InstagramIcon },
+    { href: company.social.linkedin, label: "LinkedIn", Icon: LinkedinIcon },
+    { href: company.social.facebook, label: "Facebook", Icon: FacebookIcon },
+  ];
+  const offices = company.showrooms.filter((s) => s.address);
 
   return (
-    <footer className="border-t border-hairline bg-ivory-2">
-      <Container className="grid grid-cols-1 gap-12 py-16 md:grid-cols-4 md:py-20">
-        <div className="md:col-span-2">
-          <Logo locale={locale} size="md" tagline={dict.footer.tagline} />
-          <p className="font-body mt-6 max-w-sm text-sm font-light leading-relaxed text-ink-soft">
-            {dict.footer.description}
-          </p>
-          <div className="mt-6 flex items-center gap-4">
-            <a
-              href={company.social.instagram}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Instagram"
-              className="text-ink-soft transition-colors hover:text-ink"
-            >
-              <InstagramIcon />
-            </a>
-            <a
-              href={company.social.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="LinkedIn"
-              className="text-ink-soft transition-colors hover:text-ink"
-            >
-              <LinkedinIcon />
-            </a>
-            <a
-              href={company.social.facebook}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Facebook"
-              className="text-ink-soft transition-colors hover:text-ink"
-            >
-              <FacebookIcon />
-            </a>
+    <footer className="px-3 pb-3 pt-2 md:px-5 md:pb-5">
+      <div className="glass rounded-[2rem] px-6 py-10 md:rounded-[2.5rem] md:px-12 md:py-12">
+        <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-[1.4fr_1fr_1.2fr]">
+          <div>
+            <Logo locale={locale} size="md" tagline={dict.footer.tagline} />
+            <p className="mt-6 max-w-sm font-sans text-sm leading-relaxed text-deep-soft">{dict.footer.description}</p>
+            <div className="mt-6 flex gap-2">
+              {socials.map(({ href, label, Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="glass-soft flex h-10 w-10 items-center justify-center rounded-full text-deep transition-colors hover:bg-white"
+                >
+                  <Icon />
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <nav aria-label={dict.footer.pages}>
+            <p className="data-label text-deep-soft">{dict.footer.pages}</p>
+            <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2.5 md:grid-cols-1">
+              {links.map((l) => (
+                <li key={l.href}>
+                  <Link href={l.href} className="font-sans text-sm text-deep transition-colors hover:text-deep-soft">
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div>
+            <p className="data-label text-deep-soft">{dict.footer.contact}</p>
+            <ul className="mt-4 space-y-2.5 font-sans text-sm text-deep">
+              <li>
+                <a href={`tel:${company.phone.replace(/\s/g, "")}`} className="hover:text-deep-soft">{company.phone}</a>
+              </li>
+              <li>
+                <a href={`mailto:${company.email}`} className="hover:text-deep-soft">{company.email}</a>
+              </li>
+            </ul>
+            <ul className="mt-5 space-y-2 border-t border-deep/10 pt-5">
+              {offices.map((o) => (
+                <li key={o.id} className="font-sans text-sm text-deep-soft">
+                  <span className="text-deep">{o.city[locale]}</span> · {o.address}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 
-        <div>
-          <h3
-            className="font-label text-muted"
-            style={{ fontSize: "11px", letterSpacing: "0.15em" }}
-          >
-            {dict.footer.pages.toUpperCase()}
-          </h3>
-          <ul className="mt-5 flex flex-col gap-3">
-            {links.map((link) => (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  className="font-body text-sm text-ink-soft transition-colors hover:text-ink"
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div>
-          <h3
-            className="font-label text-muted"
-            style={{ fontSize: "11px", letterSpacing: "0.15em" }}
-          >
-            {dict.footer.contact.toUpperCase()}
-          </h3>
-          <ul className="mt-5 flex flex-col gap-3 font-body text-sm text-ink-soft">
-            <li>
-              <a href={`mailto:${company.email}`} className="hover:text-ink">
-                {company.email}
-              </a>
-            </li>
-            <li>
-              <a href={`tel:${company.phone.replace(/\s/g, "")}`} className="hover:text-ink">
-                {company.phone}
-              </a>
-            </li>
-            <li>{company.address[locale]}</li>
-          </ul>
-        </div>
-      </Container>
-
-      <div className="border-t border-hairline">
-        <Container className="flex flex-col items-center justify-between gap-3 py-6 md:flex-row">
-          <p className="font-label text-muted" style={{ fontSize: "10px" }}>
+        <div className="mx-auto mt-10 flex max-w-7xl flex-col justify-between gap-2 border-t border-deep/10 pt-5 md:flex-row">
+          <p className="data-label text-deep-soft">
             © {year} {company.legalName}. {dict.footer.rights}
           </p>
-          <div className="flex gap-6 font-label text-muted" style={{ fontSize: "10px" }}>
-            <span className="cursor-default">{dict.footer.legal}</span>
-            <span className="cursor-default">{dict.footer.privacy}</span>
-          </div>
-        </Container>
+          <p className="data-label flex gap-5 text-deep-soft">
+            <span>{dict.footer.legal}</span>
+            <span>{dict.footer.privacy}</span>
+          </p>
+        </div>
       </div>
     </footer>
   );

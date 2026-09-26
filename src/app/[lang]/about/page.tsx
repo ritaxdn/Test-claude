@@ -20,8 +20,8 @@ export async function generateMetadata({
   return {
     title: isFr ? "À propos" : "About",
     description: isFr
-      ? "Découvrez l'histoire, la mission et les valeurs de Cellulift, partenaire médico-esthétique de référence en Afrique."
-      : "Discover Cellulift's story, mission and values as the reference medical aesthetics partner across Africa.",
+      ? "Cellulift, leader des équipements médico-esthétiques au Maroc depuis 2002 : technologies certifiées CE et FDA, Cellulift Academy et service après-vente."
+      : "Cellulift, a leader in medical aesthetic equipment in Morocco since 2002: CE and FDA certified technologies, Cellulift Academy and after-sales service.",
     alternates: localeAlternates("/about"),
   };
 }

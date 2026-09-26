@@ -4,13 +4,12 @@ import { SystemHero } from "@/components/system/SystemHero";
 import { SystemPillars } from "@/components/system/SystemPillars";
 import { TechIndex } from "@/components/system/TechIndex";
 import { WhyCellulift } from "@/components/system/WhyCellulift";
-import { Testimonials } from "@/components/system/Testimonials";
 import { AcademySupport } from "@/components/system/AcademySupport";
 import { ProjectCta } from "@/components/system/ProjectCta";
 import { ShowroomMap } from "@/components/system/ShowroomMap";
 
-// Accueil : hero → fonctionnalités → pourquoi Cellulift → produits → Academy & SAV → témoignages
-// → showrooms → devis. Textes repris de cellulift.ma.
+// Accueil : hero → fonctionnalités → pourquoi Cellulift → produits → Academy & SAV → showrooms
+// → devis. Textes repris de cellulift.ma.
 export default async function HomePage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
@@ -22,7 +21,6 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       <WhyCellulift locale={lang} />
       <TechIndex locale={lang} />
       <AcademySupport locale={lang} />
-      <Testimonials locale={lang} />
       <ShowroomMap locale={lang} />
       <ProjectCta locale={lang} />
     </div>

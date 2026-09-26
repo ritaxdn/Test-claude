@@ -42,7 +42,7 @@ export default async function TechnologiesPage({
     <>
       <PageHero eyebrow={content.eyebrow} title={content.title} subtitle={content.subtitle} />
 
-      <section className="pb-24">
+      <section className="px-3 pb-12 md:px-5 md:pb-16">
         <Container>
           <TechnologyGrid
             locale={lang}

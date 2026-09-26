@@ -1,51 +1,25 @@
-import { Target, Eye, Heart } from "lucide-react";
-import { Container } from "@/components/ui/Container";
-import { SectionHeading } from "@/components/ui/SectionHeading";
 import { RevealGroup, RevealItem } from "@/components/ui/Reveal";
+import { Heading } from "@/components/system/Heading";
+import { Pill } from "@/components/system/Cta";
 
-export function Pillars({
-  eyebrow,
-  title,
-  mission,
-  vision,
-  values,
-}: {
-  eyebrow: string;
-  title: string;
-  mission: { title: string; description: string };
-  vision: { title: string; description: string };
-  values: { title: string; description: string };
-}) {
-  const items = [
-    { ...mission, icon: Target },
-    { ...vision, icon: Eye },
-    { ...values, icon: Heart },
-  ];
+type Item = { title: string; description: string };
 
+export function Pillars({ eyebrow, title, mission, vision, values }: { eyebrow: string; title: string; mission: Item; vision: Item; values: Item }) {
+  const items = [mission, vision, values];
   return (
-    <section className="bg-ivory-2 py-20 md:py-28">
-      <Container>
-        <SectionHeading align="center" eyebrow={eyebrow} title={title} className="max-w-2xl" />
-
-        <RevealGroup className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-3">
-          {items.map((item) => (
-            <RevealItem
-              key={item.title}
-              className="border border-hairline bg-warm-white p-8 text-center"
-            >
-              <item.icon
-                size={24}
-                strokeWidth={1.5}
-                className="mx-auto text-rainbow-3"
-              />
-              <h3 className="font-heading mt-5 text-xl font-light text-ink">{item.title}</h3>
-              <p className="font-body mt-3 text-sm font-light leading-relaxed text-ink-soft">
-                {item.description}
-              </p>
+    <section className="px-3 pb-12 md:px-5 md:pb-16">
+      <div className="mx-auto max-w-7xl px-3 md:px-7">
+        <Heading eyebrow={eyebrow} title={title} />
+        <RevealGroup className="m-rail mt-8 sm:grid-cols-3">
+          {items.map((it, i) => (
+            <RevealItem key={it.title} className="glass flex flex-col rounded-[1.75rem] p-6 sm:p-7">
+              <Pill className="self-start bg-white/70">0{i + 1}</Pill>
+              <h3 className="display mt-6 text-[1.3rem] text-deep">{it.title}</h3>
+              <p className="mt-3 font-sans text-[0.95rem] leading-relaxed text-deep-soft">{it.description}</p>
             </RevealItem>
           ))}
         </RevealGroup>
-      </Container>
+      </div>
     </section>
   );
 }

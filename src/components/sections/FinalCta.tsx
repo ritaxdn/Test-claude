@@ -1,7 +1,6 @@
-import { Container } from "@/components/ui/Container";
-import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
-import { SectionSeparator } from "@/components/ui/SectionSeparator";
+import { Cta } from "@/components/system/Cta";
+import { Signal } from "@/components/system/Signal";
 import type { Locale } from "@/lib/i18n/config";
 
 export function FinalCta({
@@ -18,32 +17,20 @@ export function FinalCta({
   ctaSecondary: string;
 }) {
   return (
-    <section className="py-24 md:py-32">
-      <Container className="text-center">
-        <Reveal>
-          <h2 className="font-heading mx-auto max-w-2xl text-3xl font-light leading-tight text-ink md:text-5xl">
-            {title}
+    <section className="px-3 pb-3 md:px-5 md:pb-5">
+      <Reveal className="glass relative overflow-hidden rounded-[2rem] md:rounded-[2.5rem]">
+        <Signal className="pointer-events-none absolute inset-x-0 top-1/2 h-14 opacity-50" animate={false} />
+        <div className="relative mx-auto max-w-7xl px-6 pb-10 pt-12 md:px-12 md:pb-12 md:pt-14">
+          <h2 className="display max-w-3xl text-[clamp(1.9rem,4.2vw,3.6rem)]">
+            <span className="iridescent-text">{title}</span>
           </h2>
-        </Reveal>
-        <Reveal delay={0.1}>
-          <p className="font-body mx-auto mt-6 max-w-lg text-base font-light leading-relaxed text-ink-soft">
-            {description}
-          </p>
-        </Reveal>
-        <Reveal delay={0.2}>
-          <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
-            <Button href={`/${locale}/contact`} size="lg">
-              {ctaPrimary}
-            </Button>
-            <Button href={`/${locale}/contact`} variant="ghost" size="lg">
-              {ctaSecondary}
-            </Button>
+          <p className="mt-6 max-w-lg font-sans leading-relaxed text-deep-soft">{description}</p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <Cta href={`/${locale}/contact`}>{ctaPrimary}</Cta>
+            <Cta href={`/${locale}/contact`} variant="line">{ctaSecondary}</Cta>
           </div>
-        </Reveal>
-        <Reveal delay={0.3}>
-          <SectionSeparator className="mx-auto mt-16 max-w-xs" />
-        </Reveal>
-      </Container>
+        </div>
+      </Reveal>
     </section>
   );
 }

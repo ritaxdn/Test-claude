@@ -1,16 +1,16 @@
 export const technologiesPageContent = {
   fr: {
     eyebrow: "Technologies",
-    title: "Des technologies au service de résultats mesurables.",
+    title: "Nos produits.",
     subtitle:
-      "Chaque technologie Cellulift est sélectionnée pour sa rigueur clinique, sa sécurité et sa pertinence pour la pratique médico-esthétique en Afrique.",
+      "Les meilleurs dispositifs de dernière génération de nos marques partenaires, tous certifiés CE Médical et FDA et réputés pour leur fiabilité.",
     allLabel: "Toutes",
   },
   en: {
     eyebrow: "Technologies",
-    title: "Technology in service of measurable results.",
+    title: "Our products.",
     subtitle:
-      "Every Cellulift technology is selected for its clinical rigor, safety, and relevance to medical aesthetic practice across Africa.",
+      "The latest-generation devices from our partner brands, all CE Medical and FDA certified and known for their reliability.",
     allLabel: "All",
   },
 } as const;
