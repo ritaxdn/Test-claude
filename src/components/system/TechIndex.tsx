@@ -1,51 +1,65 @@
 import Link from "next/link";
-import { Reveal } from "@/components/ui/Reveal";
-import { Heading } from "./Heading";
-import { Cta } from "./Cta";
+import { ArrowUpRight } from "lucide-react";
+import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
+import { Pill, Cta } from "./Cta";
+import { Machine } from "./Machine";
 import type { Locale } from "@/lib/i18n/config";
-import { categories, technologies, technologiesIn, type CategoryKey } from "@/content/technologies";
+import { categories, technologies, technologiesIn, universeLabels, type CategoryKey } from "@/content/technologies";
 import { homeSystem } from "@/content/home-system";
 
-/** Le catalogue par famille : un index, pas une vitrine de produits. */
+/** Les 5 univers en grandes cartes : au survol, la machine apparaît sous un faisceau de balayage. */
 export function TechIndex({ locale }: { locale: Locale }) {
   const c = homeSystem[locale].technologies;
   const keys = Object.keys(categories) as CategoryKey[];
   return (
     <section className="px-3 pb-12 md:px-5 md:pb-16">
       <div className="mx-auto max-w-7xl px-3 md:px-7">
-        <Heading eyebrow={c.eyebrow} title={c.title.replace("{n}", String(technologies.length))} intro={c.intro} />
-        <Reveal className="glass mt-8 rounded-[1.75rem] px-5 py-1 md:px-8 md:py-2">
-          <ul>
-            {keys.map((key, i) => {
-              const items = technologiesIn(key);
-              return (
-                <li
-                  key={key}
-                  className="grid gap-4 border-b border-deep/10 py-5 last:border-b-0 md:grid-cols-[4.5rem_1fr_2.2fr] md:gap-6 max-md:gap-3"
-                >
-                  <span className="data-label text-deep-soft">
-                    {String(i + 1).padStart(2, "0")} · {String(items.length).padStart(2, "0")}
-                  </span>
-                  <h3 className="display text-lg text-deep md:text-xl">{categories[key][locale]}</h3>
-                  <div className="no-scrollbar -mr-5 flex gap-2 overflow-x-auto pr-5 sm:mr-0 sm:flex-wrap sm:overflow-visible sm:pr-0">
-                    {items.map((t) => (
-                      <Link
-                        key={t.slug}
-                        href={`/${locale}/technologies/${t.slug}`}
-                        className="glass-soft shrink-0 whitespace-nowrap rounded-full px-3.5 py-1.5 font-sans text-xs text-deep transition-colors hover:bg-white"
-                      >
-                        {t.name}
-                      </Link>
-                    ))}
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
+        <Reveal className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+          <div>
+            <Pill>{c.eyebrow}</Pill>
+            <h2 className="display mt-4 text-[clamp(2rem,5vw,4.6rem)] text-deep">
+              <span className="block">{c.title.replace("{n}", String(technologies.length))}</span>
+              <span className="iridescent-text block">{c.titleAccent}</span>
+            </h2>
+          </div>
+          <Cta href={`/${locale}/technologies`}>{c.viewAll}</Cta>
         </Reveal>
-        <div className="mt-6">
-          <Cta href={`/${locale}/technologies`} variant="line">{c.viewAll}</Cta>
-        </div>
+
+        <RevealGroup className="m-rail mt-8 sm:grid-cols-3 lg:grid-cols-5">
+          {keys.map((key, i) => (
+            <RevealItem key={key}>
+              <Link
+                href={`/${locale}/technologies#${key}`}
+                className="glass group relative flex aspect-[3/4] flex-col overflow-hidden rounded-[1.75rem] p-5 md:p-6"
+              >
+                {/* Machine + balayage, révélés au survol (toujours visibles en léger sur téléphone) */}
+                <div className="pointer-events-none absolute inset-x-0 top-14 bottom-28 flex justify-center opacity-25 transition-all duration-700 ease-out md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100">
+                  <Machine className="h-full w-auto drop-shadow-[0_24px_30px_rgba(29,27,38,0.18)]" />
+                </div>
+                <div className="pointer-events-none absolute inset-x-0 top-0 h-full opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                  <div className="scan-beam absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-[var(--rainbow-2)] to-transparent shadow-[0_0_12px_rgba(123,97,255,0.6)]" />
+                </div>
+
+                <div className="relative flex items-center justify-between">
+                  <span className="data-label text-deep-soft">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="glass-strong flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-deep transition-transform duration-300 group-hover:rotate-45">
+                    <ArrowUpRight size={15} strokeWidth={1.75} />
+                  </span>
+                </div>
+
+                <div className="relative mt-auto">
+                  <p className="font-sans text-xs text-deep-soft opacity-100 transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-100">
+                    {categories[key][locale]}
+                  </p>
+                  <h3 className="display mt-1 text-[clamp(1.6rem,2.3vw,2.2rem)] text-deep">{universeLabels[key]}</h3>
+                  <p className="data-label mt-2 text-deep-soft">
+                    {technologiesIn(key).length} {c.machines}
+                  </p>
+                </div>
+              </Link>
+            </RevealItem>
+          ))}
+        </RevealGroup>
       </div>
     </section>
   );

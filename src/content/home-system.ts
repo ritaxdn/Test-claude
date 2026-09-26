@@ -16,6 +16,13 @@ export const homeSystem = {
       ctaSecondary: "Nos technologies",
       readout: { label: "Cellulift", status: "", output: "" },
     },
+    // Chiffres clés (très grand, sans paragraphe). « {n} » = technologies, « {s} » = showrooms.
+    stats: [
+      { value: "20+", label: "Ans d'expertise" },
+      { value: "{n}", label: "Technologies" },
+      { value: "24", unit: "mois", label: "De garantie" },
+      { value: "{s}", label: "Showrooms" },
+    ],
     // Bandeau défilant sous le hero.
     ticker: [
       "Toutes nos machines sont certifiées CE et FDA",
@@ -58,8 +65,8 @@ export const homeSystem = {
       ],
     },
     why: {
-      eyebrow: "02 — Pourquoi Cellulift ?",
-      title: "Pourquoi Cellulift ?",
+      eyebrow: "03 — Pourquoi Cellulift ?",
+      title: "Pourquoi Cellulift ?",
       intro: "Vous disposerez d'un service unique avec notre équipe d'experts. Accompagnement, conseils et solutions sont nos maîtres mots.",
       items: [
         { title: "Distributeur officiel LGL Expert", text: "Cellulift est le distributeur officiel de la marque LGL Expert en Afrique." },
@@ -70,11 +77,13 @@ export const homeSystem = {
       ],
     },
     technologies: {
-      eyebrow: "03 — Nos produits",
-      title: "Nos technologies.",
+      eyebrow: "02 — Technologies",
+      title: "{n} technologies.",
+      titleAccent: "5 univers.",
       intro: "Les dispositifs de dernière génération LGL Expert, dont Cellulift est le distributeur officiel en Afrique, tous certifiés CE Médical et FDA.",
       columns: { ref: "", name: "", category: "", indications: "" },
-      viewAll: "Voir tous nos produits",
+      viewAll: "Explorer les technologies",
+      machines: "machines",
     },
     academy: {
       eyebrow: "04 — Cellulift Academy",
@@ -126,6 +135,12 @@ export const homeSystem = {
       ctaSecondary: "Our technologies",
       readout: { label: "Cellulift", status: "", output: "" },
     },
+    stats: [
+      { value: "20+", label: "Years of expertise" },
+      { value: "{n}", label: "Technologies" },
+      { value: "24", unit: "months", label: "Warranty" },
+      { value: "{s}", label: "Showrooms" },
+    ],
     ticker: [
       "All our devices are CE and FDA certified",
       "Since 2002",
@@ -147,7 +162,7 @@ export const homeSystem = {
       ],
     },
     why: {
-      eyebrow: "02 — Why Cellulift?",
+      eyebrow: "03 — Why Cellulift?",
       title: "Why Cellulift?",
       intro: "You get a unique service with our team of experts. Support, advice and solutions are our watchwords.",
       items: [
@@ -159,11 +174,13 @@ export const homeSystem = {
       ],
     },
     technologies: {
-      eyebrow: "03 — Our products",
-      title: "Our technologies.",
+      eyebrow: "02 — Technologies",
+      title: "{n} technologies.",
+      titleAccent: "5 universes.",
       intro: "Latest-generation LGL Expert devices, of which Cellulift is the official distributor in Africa, all CE Medical and FDA certified.",
       columns: { ref: "", name: "", category: "", indications: "" },
-      viewAll: "See all our products",
+      viewAll: "Explore the technologies",
+      machines: "devices",
     },
     academy: {
       eyebrow: "04 — Cellulift Academy",
