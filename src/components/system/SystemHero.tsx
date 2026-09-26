@@ -2,7 +2,6 @@ import { Cta } from "./Cta";
 import { HeroVideo } from "./HeroVideo";
 import type { Locale } from "@/lib/i18n/config";
 import { homeSystem } from "@/content/home-system";
-import { technologies } from "@/content/technologies";
 
 /**
  * Accueil : vidéo en plein cadre derrière, de grands mots blancs, un titre en lignes décalées
@@ -65,7 +64,7 @@ export function SystemHero({ locale }: { locale: Locale }) {
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
             <Cta href={`/${locale}/contact`}>{c.ctaPrimary}</Cta>
             <Cta href={`/${locale}/technologies`} variant="line">
-              {c.ctaSecondary.replace("{n}", String(technologies.length))}
+              {c.ctaSecondary}
             </Cta>
           </div>
         </div>

@@ -5,10 +5,10 @@ import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
 import { Pill, Cta } from "./Cta";
 import { Machine } from "./Machine";
 import type { Locale } from "@/lib/i18n/config";
-import { categories, technologies, technologiesIn, universeCover, universeLabels, type CategoryKey } from "@/content/technologies";
+import { categories, technologiesIn, universeCover, type CategoryKey } from "@/content/technologies";
 import { homeSystem } from "@/content/home-system";
 
-/** Les 5 univers en grandes cartes : au survol, la machine apparaît sous un faisceau de balayage. */
+/** Les familles de technologies (par type de soin) en grandes cartes : au survol, la machine apparaît sous un faisceau de balayage. */
 export function TechIndex({ locale }: { locale: Locale }) {
   const c = homeSystem[locale].technologies;
   const keys = Object.keys(categories) as CategoryKey[];
@@ -19,14 +19,14 @@ export function TechIndex({ locale }: { locale: Locale }) {
           <div>
             <Pill>{c.eyebrow}</Pill>
             <h2 className="display mt-4 text-[clamp(2rem,5vw,4.6rem)] text-deep">
-              <span className="block">{c.title.replace("{n}", String(technologies.length))}</span>
+              <span className="block">{c.title}</span>
               <span className="iridescent-text block">{c.titleAccent}</span>
             </h2>
           </div>
           <Cta href={`/${locale}/technologies`}>{c.viewAll}</Cta>
         </Reveal>
 
-        <RevealGroup className="m-rail mt-8 sm:grid-cols-3 lg:grid-cols-5">
+        <RevealGroup className="m-rail mt-8 sm:grid-cols-3">
           {keys.map((key, i) => {
             const cover = universeCover(key);
             // Avec photo : texte clair quand la photo est visible (toujours sur téléphone, au survol sur ordinateur).
@@ -36,7 +36,7 @@ export function TechIndex({ locale }: { locale: Locale }) {
             <RevealItem key={key}>
               <Link
                 href={`/${locale}/technologies#${key}`}
-                className="glass group relative flex aspect-[3/4] flex-col overflow-hidden rounded-[1.75rem] p-5 md:p-6"
+                className="glass group relative flex aspect-[3/4] flex-col sm:aspect-[4/5] lg:aspect-[5/4] overflow-hidden rounded-[1.75rem] p-5 md:p-6"
               >
                 {cover ? (
                   /* Photo réelle en plein cadre, révélée au survol (toujours visible sur téléphone) */
@@ -62,12 +62,11 @@ export function TechIndex({ locale }: { locale: Locale }) {
                 </div>
 
                 <div className="relative mt-auto">
-                  <p className={`font-sans text-xs opacity-100 transition-all duration-300 md:opacity-0 md:group-hover:opacity-100 ${soft}`}>
+                  <h3 className={`display text-[clamp(1.15rem,1.9vw,1.9rem)] leading-[0.95] transition-colors duration-300 ${ink}`}>
                     {categories[key][locale]}
-                  </p>
-                  <h3 className={`display mt-1 text-[clamp(1.6rem,2.3vw,2.2rem)] transition-colors duration-300 ${ink}`}>{universeLabels[key]}</h3>
-                  <p className={`data-label mt-2 transition-colors duration-300 ${soft}`}>
-                    {technologiesIn(key).length} {c.machines}
+                  </h3>
+                  <p className={`mt-3 line-clamp-2 font-sans text-xs transition-colors duration-300 ${soft}`}>
+                    {technologiesIn(key).slice(0, 4).map((t) => t.name).join(" · ")}
                   </p>
                 </div>
               </Link>
