@@ -17,8 +17,18 @@ const esc = (s = "") =>
 /**
  * Demande de contact → e-mail à Cellulift (Resend).
  * Variables Vercel : RESEND_API_KEY (obligatoire pour l'envoi), CONTACT_EMAIL_TO (défaut cellulift@gmail.com),
+ * CONTACT_EMAIL_ACADEMY (demandes « Rejoindre une masterclass », défaut cellulift.academy1@gmail.com),
  * CONTACT_EMAIL_FROM (défaut « Cellulift <onboarding@resend.dev> », à remplacer par une adresse du domaine vérifié).
  */
+// « Rejoindre une masterclass » / « Join a masterclass » → Cellulift Academy ; le reste → Cellulift.
+function recipients(subject?: string) {
+  const academy = /masterclass/i.test(subject ?? "");
+  const list = academy
+    ? process.env.CONTACT_EMAIL_ACADEMY || "cellulift.academy1@gmail.com"
+    : process.env.CONTACT_EMAIL_TO || "cellulift@gmail.com";
+  return list.split(",").map((s) => s.trim());
+}
+
 async function sendToCellulift(body: ContactPayload) {
   const key = process.env.RESEND_API_KEY;
   if (!key) {
@@ -47,7 +57,7 @@ async function sendToCellulift(body: ContactPayload) {
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
     body: JSON.stringify({
       from: process.env.CONTACT_EMAIL_FROM || "Cellulift <onboarding@resend.dev>",
-      to: (process.env.CONTACT_EMAIL_TO || "cellulift@gmail.com").split(",").map((s) => s.trim()),
+      to: recipients(body.subject),
       reply_to: body.email,
       subject: `${body.subject || "Demande"} — ${body.name}${body.specialty ? ` (${body.specialty})` : ""}`,
       html,
