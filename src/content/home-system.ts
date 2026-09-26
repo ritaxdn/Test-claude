@@ -107,7 +107,7 @@ export const homeSystem = {
     showrooms: {
       eyebrow: "06 — Nos showrooms",
       title: "Venez découvrir nos machines.",
-      intro: "Six showrooms pour découvrir nos technologies avant de choisir. Cliquez sur une ville.",
+      intro: "Huit showrooms pour découvrir nos technologies avant de choisir. Cliquez sur une ville.",
       hq: "Siège",
       onRequest: "Adresse communiquée sur rendez-vous.",
       cta: "Prendre rendez-vous au showroom",
@@ -204,7 +204,7 @@ export const homeSystem = {
     showrooms: {
       eyebrow: "06 — Our showrooms",
       title: "Come and discover our devices.",
-      intro: "Six showrooms to discover our technologies before choosing. Click on a city.",
+      intro: "Eight showrooms to discover our technologies before choosing. Click on a city.",
       hq: "Head office",
       onRequest: "Address shared by appointment.",
       cta: "Book a showroom visit",
