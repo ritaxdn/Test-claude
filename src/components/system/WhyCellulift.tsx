@@ -12,13 +12,13 @@ export function WhyCellulift({ locale }: { locale: Locale }) {
       <div className="mx-auto max-w-7xl px-3 md:px-7">
         <Heading eyebrow={c.eyebrow} title={c.title} intro={c.intro} />
         <RevealGroup className="m-rail mt-8 sm:grid-cols-2 lg:grid-cols-3">
-          {c.items.map((it) => (
-            <RevealItem key={it.title} className="glass flex items-start gap-4 rounded-[1.5rem] p-6">
+          {c.items.map((it, i) => (
+            <RevealItem key={it.title} className={`glass flex items-start gap-4 rounded-[1.5rem] p-6 ${i === 0 ? "lg:col-span-2" : ""}`}>
               <span className="glass-strong flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-deep">
                 <Check size={16} strokeWidth={2} />
               </span>
               <div>
-                <h3 className="display text-lg text-deep">{it.title}</h3>
+                <h3 className={`display text-lg ${i === 0 ? "iridescent-text" : "text-deep"}`}>{it.title}</h3>
                 <p className="mt-1.5 font-sans text-sm leading-relaxed text-deep-soft">{it.text}</p>
               </div>
             </RevealItem>

@@ -29,8 +29,8 @@ export async function generateMetadata({
       template: "%s — Cellulift",
     },
     description: isFr
-      ? "Depuis 2002, Cellulift équipe les médecins et les centres esthétiques au Maroc en technologies médico-esthétiques certifiées CE Medical et FDA, avec formation Cellulift Academy et service après-vente. Casablanca, Marrakech, Tanger."
-      : "Since 2002, Cellulift has equipped physicians and aesthetic centers in Morocco with CE Medical and FDA certified medical aesthetic technologies, with Cellulift Academy training and after-sales service. Casablanca, Marrakech, Tangier.",
+      ? "Distributeur officiel LGL Expert en Afrique. Depuis 2002, Cellulift équipe les médecins et les centres esthétiques au Maroc en technologies médico-esthétiques certifiées CE Medical et FDA, avec formation Cellulift Academy et service après-vente. Casablanca, Marrakech, Tanger."
+      : "Official LGL Expert distributor in Africa. Since 2002, Cellulift has equipped physicians and aesthetic centers in Morocco with CE Medical and FDA certified medical aesthetic technologies, with Cellulift Academy training and after-sales service. Casablanca, Marrakech, Tangier.",
     alternates: {
       languages: { fr: "/fr", en: "/en" },
     },

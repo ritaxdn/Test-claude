@@ -56,7 +56,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
     footer: {
       tagline: "Metamorphosis Technology",
       description:
-        "Depuis 2002, technologies médico-esthétiques certifiées CE Medical et FDA, formation Cellulift Academy et service après-vente. Casablanca · Marrakech · Tanger.",
+        "Distributeur officiel LGL Expert en Afrique. Depuis 2002, technologies médico-esthétiques certifiées CE Medical et FDA, formation Cellulift Academy et service après-vente. Casablanca · Marrakech · Tanger.",
       pages: "Pages",
       contact: "Contact",
       followUs: "Suivez-nous",
@@ -98,7 +98,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
     footer: {
       tagline: "Metamorphosis Technology",
       description:
-        "Since 2002, CE Medical and FDA certified medical aesthetic technologies, Cellulift Academy training and after-sales service. Casablanca · Marrakech · Tangier.",
+        "Official LGL Expert distributor in Africa. Since 2002, CE Medical and FDA certified medical aesthetic technologies, Cellulift Academy training and after-sales service. Casablanca · Marrakech · Tangier.",
       pages: "Pages",
       contact: "Contact",
       followUs: "Follow us",
