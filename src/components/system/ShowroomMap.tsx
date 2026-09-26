@@ -60,7 +60,7 @@ export function ShowroomMap({ locale }: { locale: Locale }) {
     return { ...p, city: s.city[locale], country: s.country[locale] };
   });
   return (
-    <section className="px-3 pb-24 md:px-5 md:pb-32">
+    <section className="px-3 pb-12 md:px-5 md:pb-16">
       <div className="mx-auto max-w-7xl px-3 md:px-7">
         <Heading eyebrow={c.eyebrow} title={c.title} intro={c.intro} />
         <ShowroomMapClient

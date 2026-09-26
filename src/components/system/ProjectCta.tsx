@@ -10,10 +10,10 @@ export function ProjectCta({ locale }: { locale: Locale }) {
     <section className="px-3 pb-3 md:px-5 md:pb-5">
       <Reveal className="glass relative overflow-hidden rounded-[2rem] text-deep md:rounded-[2.5rem]">
         <Signal className="pointer-events-none absolute inset-x-0 top-1/2 h-14 opacity-60" animate={false} />
-        <div className="relative mx-auto max-w-7xl px-6 pb-12 pt-56 md:px-12 md:pb-16 lg:pt-28">
+        <div className="relative mx-auto max-w-7xl px-6 pb-10 pt-12 md:px-12 md:pb-12 md:pt-14">
           <div className="max-w-3xl">
             <p className="data-label text-deep-soft">{c.eyebrow}</p>
-            <h2 className="display mt-6 text-[clamp(2.2rem,6vw,5.4rem)]">
+            <h2 className="display mt-6 text-[clamp(1.9rem,4.2vw,3.6rem)]">
               <span className="iridescent-text">{c.title}</span>
             </h2>
           </div>

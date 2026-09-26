@@ -15,8 +15,8 @@ export function SystemHero({ locale }: { locale: Locale }) {
     <section className="relative overflow-hidden px-6 pb-10 pt-10 md:px-12 lg:h-[calc(100svh-6.5rem)] lg:min-h-[44rem] lg:max-h-[58rem] lg:pb-0">
       {/* Mots géants en arrière-plan */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 select-none">
-        <p className="display translate-x-[4%] text-[clamp(4.5rem,12.5vw,13rem)] leading-[0.82] text-white/90">{c.backdrop[0]}</p>
-        <p className="display pr-[3%] text-right text-[clamp(4.5rem,12.5vw,13rem)] leading-[0.82] text-white/90">{c.backdrop[1]}</p>
+        <p className="display translate-x-[4%] text-[clamp(3rem,12.5vw,13rem)] leading-[0.82] text-white/90">{c.backdrop[0]}</p>
+        <p className="display pr-[3%] text-right text-[clamp(3rem,12.5vw,13rem)] leading-[0.82] text-white/90">{c.backdrop[1]}</p>
       </div>
 
       <div className="relative mx-auto h-full max-w-7xl">
@@ -37,7 +37,7 @@ export function SystemHero({ locale }: { locale: Locale }) {
           </h1>
 
           {/* La machine */}
-          <div className="relative mx-auto mt-6 w-[78%] max-w-md animate-fade-rise opacity-0 [animation-delay:200ms] lg:absolute lg:left-[46%] lg:top-[-4.5rem] lg:mt-0 lg:w-[30%] lg:max-w-none">
+          <div className="relative mx-auto mt-4 w-[52%] max-w-md animate-fade-rise opacity-0 [animation-delay:200ms] lg:absolute lg:left-[46%] lg:top-[-4.5rem] lg:mt-0 lg:w-[30%] lg:max-w-none">
             <Machine className="float h-auto w-full drop-shadow-[0_40px_60px_rgba(29,27,38,0.18)]" />
           </div>
 
@@ -59,7 +59,7 @@ export function SystemHero({ locale }: { locale: Locale }) {
         {/* Texte et actions en bas à gauche */}
         <div className="relative z-10 mt-8 max-w-sm animate-fade-rise opacity-0 [animation-delay:320ms] lg:absolute lg:bottom-12 lg:left-0 lg:mt-0">
           <p className="font-sans text-[0.95rem] leading-relaxed text-deep">{c.titleAccent}</p>
-          <p className="mt-2 font-sans text-sm leading-relaxed text-deep-soft">{c.subtitle}</p>
+          <p className="mt-2 hidden font-sans text-sm leading-relaxed text-deep-soft sm:block">{c.subtitle}</p>
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
             <Cta href={`/${locale}/contact`}>{c.ctaPrimary}</Cta>
             <Cta href={`/${locale}/technologies`} variant="line">
