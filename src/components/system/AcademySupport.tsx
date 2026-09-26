@@ -14,11 +14,11 @@ export function AcademySupport({ locale }: { locale: Locale }) {
     <>
       <section className="px-3 pb-12 md:px-5 md:pb-16">
         <div className="mx-auto grid max-w-7xl gap-3 px-3 md:px-7 lg:grid-cols-[1.35fr_1fr]">
-          <Reveal className="glass relative overflow-hidden rounded-[1.75rem] p-7 md:p-9">
+          <Reveal className="glass relative overflow-hidden rounded-[1.5rem] p-5 sm:rounded-[1.75rem] sm:p-7 md:p-9">
             <div className="relative max-w-xl">
               <Pill className="bg-white/60">{a.eyebrow}</Pill>
               <h2 className="display mt-6 text-[clamp(1.6rem,2.8vw,2.5rem)] text-deep">{a.title}</h2>
-              <p className="mt-4 font-sans leading-relaxed text-deep-soft">{a.text}</p>
+              <p className="mt-4 hidden font-sans leading-relaxed text-deep-soft sm:block">{a.text}</p>
               <div className="mt-8">
                 <Cta href={`/${locale}/academy`}>{a.cta}</Cta>
               </div>
@@ -26,9 +26,9 @@ export function AcademySupport({ locale }: { locale: Locale }) {
           </Reveal>
           <RevealGroup className="grid gap-3">
             {faculty.map((m) => (
-              <RevealItem key={m.name} className="glass rounded-[1.75rem] p-7 md:p-8">
+              <RevealItem key={m.name} className="glass rounded-[1.25rem] p-4 sm:rounded-[1.75rem] sm:p-7 md:p-8">
                 <p className="data-label text-deep-soft">{a.facultyLabel}</p>
-                <p className="display mt-6 text-2xl text-deep">{m.name}</p>
+                <p className="display mt-3 text-2xl text-deep sm:mt-6">{m.name}</p>
                 <p className="mt-1 font-sans text-sm text-deep-soft">{m.role}</p>
                 <ul className="mt-6 hidden space-y-2 border-t border-deep/10 pt-5 sm:block">
                   {m.credentials.map((c) => (
@@ -44,12 +44,12 @@ export function AcademySupport({ locale }: { locale: Locale }) {
       <section className="px-3 pb-12 md:px-5 md:pb-16">
         <div className="mx-auto max-w-7xl px-3 md:px-7">
           <Heading eyebrow={s.eyebrow} title={s.title} intro={s.text} />
-          <RevealGroup className="m-rail mt-8 sm:grid-cols-2 lg:grid-cols-4">
+          <RevealGroup className="mt-6 grid grid-cols-2 gap-2.5 sm:mt-8 sm:gap-3 lg:grid-cols-4">
             {s.items.map((it) => (
-              <RevealItem key={it.code} className="glass flex min-h-[9rem] flex-col rounded-[1.5rem] p-7">
+              <RevealItem key={it.code} className="glass flex flex-col rounded-[1.25rem] p-4 sm:min-h-[9rem] sm:rounded-[1.5rem] sm:p-7">
                 <Pill className="self-start bg-white/60">{it.code}</Pill>
-                <h3 className="mt-auto pt-5 font-sans text-base font-medium text-deep">{it.title}</h3>
-                <p className="mt-2 font-sans text-sm leading-relaxed text-deep-soft">{it.text}</p>
+                <h3 className="mt-auto pt-4 font-sans text-sm font-medium text-deep sm:pt-5 sm:text-base">{it.title}</h3>
+                <p className="mt-1 font-sans text-xs leading-snug text-deep-soft sm:mt-2 sm:text-sm sm:leading-relaxed">{it.text}</p>
               </RevealItem>
             ))}
           </RevealGroup>

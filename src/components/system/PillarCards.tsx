@@ -10,7 +10,7 @@ type Pillar = { code: string; name: string; title: string; text: string };
 export function PillarCards({ pillars }: { pillars: readonly Pillar[] }) {
   const [open, setOpen] = useState<string | null>(null);
   return (
-    <div className="mt-8 grid items-start gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="mt-6 grid grid-cols-2 items-start gap-2.5 sm:mt-8 sm:gap-3 lg:grid-cols-4">
       {pillars.map((p, i) => {
         const on = open === p.code;
         return (
@@ -20,8 +20,8 @@ export function PillarCards({ pillars }: { pillars: readonly Pillar[] }) {
             aria-expanded={on}
             onClick={() => setOpen(on ? null : p.code)}
             className={cn(
-              "glass group flex w-full flex-col rounded-[1.5rem] px-5 py-4 text-left transition-shadow duration-300 sm:p-7",
-              on ? "glass-strong" : "hover:bg-white/60"
+              "glass group flex w-full flex-col rounded-[1.25rem] px-4 py-3.5 text-left sm:rounded-[1.75rem] sm:px-6 transition-shadow duration-300 sm:p-7",
+              on ? "glass-strong col-span-2 sm:col-span-1" : "hover:bg-white/60"
             )}
           >
             <span className="flex w-full items-center justify-between">
@@ -35,7 +35,7 @@ export function PillarCards({ pillars }: { pillars: readonly Pillar[] }) {
                 <Plus size={15} strokeWidth={1.75} />
               </span>
             </span>
-            <span className="display mt-2 block text-[1.3rem] leading-[1.05] text-deep sm:mt-8 sm:min-h-[2.1em] lg:flex lg:items-end">{p.name}</span>
+            <span className="display card-title mt-2 block text-[1.3rem] leading-[1.05] text-deep sm:mt-8 sm:min-h-[2.1em] lg:flex lg:items-end">{p.name}</span>
             {/* Détail, révélé au clic */}
             <span
               className={cn(

@@ -28,7 +28,7 @@ export function TechIndex({ locale }: { locale: Locale }) {
           <Cta href={`/${locale}/technologies`}>{c.viewAll}</Cta>
         </Reveal>
 
-        <RevealGroup className="m-rail mt-8 sm:grid-cols-2 lg:grid-cols-3">
+        <RevealGroup className="mt-6 grid grid-cols-2 gap-2.5 sm:mt-8 sm:gap-3 lg:grid-cols-3">
           {keys.map((key, i) => {
             const machines = technologiesIn(key);
             const cover = universeCover(key);
@@ -39,7 +39,7 @@ export function TechIndex({ locale }: { locale: Locale }) {
               <RevealItem key={key}>
                 <Link
                   href={`/${locale}/technologies#${key}`}
-                  className="glass group relative flex aspect-[16/10] flex-col overflow-hidden sm:aspect-[5/4] rounded-[1.75rem] p-5 md:p-6"
+                  className="glass group relative flex aspect-square flex-col overflow-hidden sm:aspect-[5/4] rounded-[1.25rem] p-3.5 sm:rounded-[1.75rem] sm:p-5 md:p-6"
                 >
                   {cover && (
                     <div className="pointer-events-none absolute inset-0 transition-all duration-700 ease-out md:scale-105 md:opacity-0 md:group-hover:scale-100 md:group-hover:opacity-100">
@@ -50,17 +50,17 @@ export function TechIndex({ locale }: { locale: Locale }) {
 
                   <div className="relative flex items-center justify-between">
                     <span className={`data-label transition-colors duration-300 ${soft}`}>{String(i + 1).padStart(2, "0")}</span>
-                    <span className="glass-strong flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-deep transition-transform duration-300 group-hover:rotate-45">
+                    <span className="glass-strong flex h-7 w-7 shrink-0 sm:h-9 sm:w-9 items-center justify-center rounded-full text-deep transition-transform duration-300 group-hover:rotate-45">
                       <ArrowUpRight size={15} strokeWidth={1.75} />
                     </span>
                   </div>
 
                   <div className="relative mt-auto">
-                    <h3 className={`display text-[clamp(1.3rem,1.95vw,1.9rem)] leading-[0.95] transition-colors duration-300 ${ink}`}>
+                    <h3 className={`display card-title text-[clamp(1.3rem,1.95vw,1.9rem)] leading-[0.95] transition-colors duration-300 ${ink}`}>
                       {categories[key][locale]}
                     </h3>
                     {categoryDetail[key] && (
-                      <p className={`data-label mt-2 transition-colors duration-300 ${soft}`}>{categoryDetail[key]![locale]}</p>
+                      <p className={`data-label mt-2 hidden transition-colors duration-300 sm:block ${soft}`}>{categoryDetail[key]![locale]}</p>
                     )}
                     {/* Technologies de la gamme : discrètes, révélées au survol (masquées sur téléphone, sans survol) */}
                     <ul className="mt-4 hidden flex-wrap gap-x-3 gap-y-1 transition-all duration-500 md:flex md:max-h-0 md:translate-y-2 md:overflow-hidden md:opacity-0 md:group-hover:max-h-40 md:group-hover:translate-y-0 md:group-hover:opacity-100">
