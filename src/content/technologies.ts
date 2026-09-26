@@ -15,6 +15,8 @@ export interface Technology {
   indications?: LocalizedText[];
   benefits?: LocalizedText[];
   certifications?: string[];
+  // Photos (dans public/images/technologies/<slug>/) : la première sert de couverture.
+  images?: string[];
 }
 
 export const categories: Record<CategoryKey, LocalizedText> = {
@@ -62,11 +64,23 @@ export const slugify = (s: string) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
 
+// Photos par machine (slug → fichiers).
+const photos: Record<string, string[]> = {
+  "dermabrasif-6g": ["00", "05", "01", "02", "03", "04"].map((n) => `/images/technologies/dermabrasif-6g/${n}.jpg`),
+};
+
 export const technologies: Technology[] = (Object.keys(catalog) as CategoryKey[]).flatMap((category) =>
-  catalog[category].map((name) => ({ slug: slugify(name), name, category }))
+  catalog[category].map((name) => {
+    const slug = slugify(name);
+    return { slug, name, category, images: photos[slug] };
+  })
 );
 
 export const technologiesIn = (category: CategoryKey) => technologies.filter((t) => t.category === category);
+
+// Photo de couverture d'un univers : celle de la première machine photographiée de la famille.
+export const universeCover = (category: CategoryKey) =>
+  technologiesIn(category).find((t) => t.images?.length)?.images?.[0];
 
 export function getTechnologyBySlug(slug: string) {
   return technologies.find((t) => t.slug === slug);
