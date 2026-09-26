@@ -47,7 +47,7 @@ export function AcademySupport({ locale }: { locale: Locale }) {
           <RevealGroup className="mt-14 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {s.items.map((it) => (
               <RevealItem key={it.code} className="glass flex min-h-[13rem] flex-col rounded-[1.5rem] p-7">
-                <Pill className="self-start bg-white/60">SUP-{it.code}</Pill>
+                <Pill className="self-start bg-white/60">{it.code}</Pill>
                 <h3 className="mt-auto pt-8 font-sans text-lg font-medium text-deep">{it.title}</h3>
                 <p className="mt-2 font-sans text-sm leading-relaxed text-deep-soft">{it.text}</p>
               </RevealItem>

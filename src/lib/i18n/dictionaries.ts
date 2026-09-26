@@ -56,7 +56,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
     footer: {
       tagline: "Metamorphosis Technology",
       description:
-        "Partenaire de référence des professionnels de l'esthétique médicale en Afrique — technologies, formation et accompagnement long terme.",
+        "Depuis 2002, technologies médico-esthétiques certifiées CE Medical et FDA, formation Cellulift Academy et service après-vente. Casablanca · Marrakech · Tanger.",
       pages: "Pages",
       contact: "Contact",
       followUs: "Suivez-nous",
@@ -98,7 +98,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
     footer: {
       tagline: "Metamorphosis Technology",
       description:
-        "The reference partner for medical aesthetics professionals across Africa — technology, education and long-term support.",
+        "Since 2002, CE Medical and FDA certified medical aesthetic technologies, Cellulift Academy training and after-sales service. Casablanca · Marrakech · Tangier.",
       pages: "Pages",
       contact: "Contact",
       followUs: "Follow us",

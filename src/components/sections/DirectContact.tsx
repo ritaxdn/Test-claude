@@ -32,7 +32,7 @@ export function DirectContact({
   labels: { whatsapp: string; call: string; email: string; address: string };
 }) {
   const items = [
-    {
+    company.whatsapp && {
       icon: WhatsAppIcon,
       label: labels.whatsapp,
       value: company.whatsapp,
@@ -50,7 +50,7 @@ export function DirectContact({
       value: company.email,
       href: `mailto:${company.email}`,
     },
-  ];
+  ].filter((x) => !!x);
 
   return (
     <Reveal className="border border-hairline bg-warm-white p-8">

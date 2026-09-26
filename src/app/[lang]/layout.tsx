@@ -29,8 +29,8 @@ export async function generateMetadata({
       template: "%s — Cellulift",
     },
     description: isFr
-      ? "Cellulift accompagne les professionnels de santé et de l'esthétique en Afrique avec des technologies médico-esthétiques avancées, une formation continue via Cellulift Academy et un support long terme."
-      : "Cellulift partners with medical and aesthetic professionals across Africa through advanced technologies, continuous education via Cellulift Academy, and long-term support.",
+      ? "Depuis 2002, Cellulift équipe les médecins et les centres esthétiques au Maroc en technologies médico-esthétiques certifiées CE Medical et FDA, avec formation Cellulift Academy et service après-vente. Casablanca, Marrakech, Tanger."
+      : "Since 2002, Cellulift has equipped physicians and aesthetic centers in Morocco with CE Medical and FDA certified medical aesthetic technologies, with Cellulift Academy training and after-sales service. Casablanca, Marrakech, Tangier.",
     alternates: {
       languages: { fr: "/fr", en: "/en" },
     },
