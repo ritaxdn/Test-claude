@@ -293,3 +293,24 @@ body {
   100% { r: 30; opacity: 0; }
 }
 .map-ping { animation: map-ping 1.8s ease-out infinite; }
+
+/* Carrousel horizontal sur téléphone, grille à partir de 640 px */
+.m-rail {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 1.5rem;
+  margin-inline: -1.5rem;
+  padding-inline: 1.5rem;
+  padding-bottom: 0.5rem;
+  scrollbar-width: none;
+}
+.m-rail::-webkit-scrollbar { display: none; }
+.m-rail > * { flex: 0 0 78%; scroll-snap-align: start; }
+@media (min-width: 640px) {
+  .m-rail { display: grid; overflow: visible; margin-inline: 0; padding-inline: 0; padding-bottom: 0; }
+  .m-rail > * { flex: initial; }
+}
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }

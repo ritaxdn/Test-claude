@@ -11,7 +11,7 @@ export function PartnerJourney({ locale }: { locale: Locale }) {
       <div className="mx-auto max-w-7xl px-3 md:px-7">
         <Heading eyebrow={c.eyebrow} title={c.title} intro={c.intro} />
         <div className="signal-line mt-8 opacity-70" />
-        <RevealGroup className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
+        <RevealGroup className="m-rail mt-6 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
           {c.steps.map((s, i) => (
             <RevealItem key={s.title} className="glass flex flex-col rounded-[1.5rem] p-5">
               <div className="flex items-center gap-2">

@@ -30,7 +30,7 @@ export function AcademySupport({ locale }: { locale: Locale }) {
                 <p className="data-label text-deep-soft">{a.facultyLabel}</p>
                 <p className="display mt-6 text-2xl text-deep">{m.name}</p>
                 <p className="mt-1 font-sans text-sm text-deep-soft">{m.role}</p>
-                <ul className="mt-6 space-y-2 border-t border-deep/10 pt-5">
+                <ul className="mt-6 hidden space-y-2 border-t border-deep/10 pt-5 sm:block">
                   {m.credentials.map((c) => (
                     <li key={c} className="font-sans text-sm leading-snug text-deep/80">{c}</li>
                   ))}
@@ -44,7 +44,7 @@ export function AcademySupport({ locale }: { locale: Locale }) {
       <section className="px-3 pb-12 md:px-5 md:pb-16">
         <div className="mx-auto max-w-7xl px-3 md:px-7">
           <Heading eyebrow={s.eyebrow} title={s.title} intro={s.text} />
-          <RevealGroup className="mt-14 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <RevealGroup className="m-rail mt-8 sm:grid-cols-2 lg:grid-cols-4">
             {s.items.map((it) => (
               <RevealItem key={it.code} className="glass flex min-h-[9rem] flex-col rounded-[1.5rem] p-7">
                 <Pill className="self-start bg-white/60">{it.code}</Pill>

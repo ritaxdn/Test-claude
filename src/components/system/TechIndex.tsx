@@ -21,18 +21,18 @@ export function TechIndex({ locale }: { locale: Locale }) {
               return (
                 <li
                   key={key}
-                  className="grid gap-4 border-b border-deep/10 py-5 last:border-b-0 md:grid-cols-[4.5rem_1fr_2.2fr] md:gap-6"
+                  className="grid gap-4 border-b border-deep/10 py-5 last:border-b-0 md:grid-cols-[4.5rem_1fr_2.2fr] md:gap-6 max-md:gap-3"
                 >
                   <span className="data-label text-deep-soft">
                     {String(i + 1).padStart(2, "0")} · {String(items.length).padStart(2, "0")}
                   </span>
                   <h3 className="display text-lg text-deep md:text-xl">{categories[key][locale]}</h3>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="no-scrollbar -mr-5 flex gap-2 overflow-x-auto pr-5 sm:mr-0 sm:flex-wrap sm:overflow-visible sm:pr-0">
                     {items.map((t) => (
                       <Link
                         key={t.slug}
                         href={`/${locale}/technologies/${t.slug}`}
-                        className="glass-soft rounded-full px-3.5 py-1.5 font-sans text-xs text-deep transition-colors hover:bg-white"
+                        className="glass-soft shrink-0 whitespace-nowrap rounded-full px-3.5 py-1.5 font-sans text-xs text-deep transition-colors hover:bg-white"
                       >
                         {t.name}
                       </Link>

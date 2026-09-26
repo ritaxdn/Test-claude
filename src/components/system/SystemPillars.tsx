@@ -11,9 +11,9 @@ export function SystemPillars({ locale }: { locale: Locale }) {
       <div className="mx-auto max-w-7xl px-3 md:px-7">
         <Heading eyebrow={c.eyebrow} title={c.title} intro={c.intro} />
 
-        <RevealGroup className="mt-14 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <RevealGroup className="m-rail mt-8 sm:grid-cols-2 lg:grid-cols-4">
           {c.pillars.map((p, i) => (
-            <RevealItem key={p.code} className="glass relative flex min-h-[12rem] flex-col rounded-[1.75rem] p-7">
+            <RevealItem key={p.code} className="glass relative flex min-h-[11rem] flex-col rounded-[1.75rem] p-6 sm:p-7">
               <div className="flex items-center justify-between">
                 <Pill className="bg-white/70">0{i + 1}</Pill>
                 {i < c.pillars.length - 1 && (
