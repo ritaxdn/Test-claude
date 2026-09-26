@@ -3,7 +3,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { Heading } from "./Heading";
 import { Cta } from "./Cta";
 import type { Locale } from "@/lib/i18n/config";
-import { categories, technologiesIn, type CategoryKey } from "@/content/technologies";
+import { categories, technologies, technologiesIn, type CategoryKey } from "@/content/technologies";
 import { homeSystem } from "@/content/home-system";
 
 /** Le catalogue par famille : un index, pas une vitrine de produits. */
@@ -13,7 +13,7 @@ export function TechIndex({ locale }: { locale: Locale }) {
   return (
     <section className="px-3 pb-24 md:px-5 md:pb-32">
       <div className="mx-auto max-w-7xl px-3 md:px-7">
-        <Heading eyebrow={c.eyebrow} title={c.title} intro={c.intro} />
+        <Heading eyebrow={c.eyebrow} title={c.title.replace("{n}", String(technologies.length))} intro={c.intro} />
         <Reveal className="glass mt-14 rounded-[1.75rem] px-5 py-2 md:px-9 md:py-4">
           <ul>
             {keys.map((key, i) => {

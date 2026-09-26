@@ -2,6 +2,7 @@ import { Machine } from "./Machine";
 import { Cta } from "./Cta";
 import type { Locale } from "@/lib/i18n/config";
 import { homeSystem } from "@/content/home-system";
+import { technologies } from "@/content/technologies";
 
 /**
  * Accueil façon « fiche produit med-tech » : la machine au centre, de grands mots blancs derrière,
@@ -61,7 +62,9 @@ export function SystemHero({ locale }: { locale: Locale }) {
           <p className="mt-2 font-sans text-sm leading-relaxed text-deep-soft">{c.subtitle}</p>
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
             <Cta href={`/${locale}/contact`}>{c.ctaPrimary}</Cta>
-            <Cta href="#systeme" variant="line">{c.ctaSecondary}</Cta>
+            <Cta href={`/${locale}/technologies`} variant="line">
+              {c.ctaSecondary.replace("{n}", String(technologies.length))}
+            </Cta>
           </div>
         </div>
       </div>
