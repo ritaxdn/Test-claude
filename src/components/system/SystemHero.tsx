@@ -4,64 +4,45 @@ import type { Locale } from "@/lib/i18n/config";
 import { homeSystem } from "@/content/home-system";
 
 /**
- * Accueil : vidéo en plein cadre derrière, de grands mots blancs, un titre en lignes décalées
- * et des annotations discrètes dans les coins.
+ * Accueil : vidéo en plein cadre, et une seule colonne de texte bien alignée
+ * (repères de confiance → titre → phrase → actions), lisible grâce à un voile nacré à gauche.
  */
 export function SystemHero({ locale }: { locale: Locale }) {
   const c = homeSystem[locale].hero;
-  const pillars = homeSystem[locale].system.pillars;
   return (
-    <section className="relative overflow-hidden px-6 pb-10 pt-10 md:px-12 lg:h-[calc(100svh-6.5rem)] lg:min-h-[44rem] lg:max-h-[58rem] lg:pb-0">
-      {/* Vidéo d'arrière-plan (muette, en boucle) + voile nacré pour la lisibilité du texte */}
+    <section className="relative flex overflow-hidden px-6 pb-16 pt-12 md:px-12 lg:h-[calc(100svh-6.5rem)] lg:min-h-[40rem] lg:max-h-[56rem] lg:items-center lg:py-0">
+      {/* Vidéo d'arrière-plan (muette, en boucle) + voiles pour la lisibilité */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         <HeroVideo className="h-full w-full" src="/videos/hero.mp4" webm="/videos/hero.webm" poster="/videos/hero-poster.jpg" />
-        <div className="absolute inset-0 bg-gradient-to-r from-pearl/85 via-pearl/35 to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-pearl to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-pearl/90 via-pearl/55 to-pearl/0 lg:via-pearl/40" />
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-pearl to-transparent" />
       </div>
 
-      {/* Mots géants en arrière-plan */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 select-none">
-        <p className="display translate-x-[4%] text-[clamp(3rem,12.5vw,13rem)] leading-[0.82] text-white/90">{c.backdrop[0]}</p>
-        <p className="display pr-[3%] text-right text-[clamp(3rem,12.5vw,13rem)] leading-[0.82] text-white/90">{c.backdrop[1]}</p>
-      </div>
+      <div className="relative mx-auto w-full max-w-7xl">
+        <div className="max-w-2xl">
+          {/* Repères de confiance */}
+          <ul className="flex animate-fade-rise flex-wrap gap-2 opacity-0">
+            {c.badges.map((b) => (
+              <li
+                key={b}
+                className="glass-strong flex items-center gap-2 rounded-full px-3.5 py-1.5 font-sans text-xs text-deep md:text-[0.8rem]"
+              >
+                <span className="h-1.5 w-1.5 rounded-full bg-[conic-gradient(#7fe3f0,#a797ff,#f29bd0,#ffc58f,#7fe3f0)]" />
+                {b}
+              </li>
+            ))}
+          </ul>
 
-      <div className="relative mx-auto h-full max-w-7xl">
-        {/* Annotation en haut à droite */}
-        <div className="hidden text-right lg:ml-auto lg:block lg:max-w-sm">
-          <p className="font-sans text-sm leading-snug text-deep/80">{c.corner}</p>
-          <p className="mt-2 font-sans text-base font-medium text-deep">{c.cornerStrong}</p>
-        </div>
-
-        <div className="relative lg:mt-10 lg:grid lg:grid-cols-[1fr_1.05fr_0.55fr]">
-          {/* Titre en lignes décalées */}
-          <h1 className="display relative z-20 animate-fade-rise pt-4 text-[clamp(2.2rem,4.3vw,4.4rem)] leading-[0.98] lg:whitespace-nowrap text-deep opacity-0 lg:pt-8">
-            <span className="block pl-[18%] lg:pl-[26%]">{c.stagger[0]}</span>
-            <span className="block">{c.stagger[1]}</span>
-            <span className="block pl-[10%] lg:pl-[16%]">
-              <span className="iridescent-text">{c.stagger[2]}</span>
-            </span>
+          <h1 className="display mt-7 animate-fade-rise text-[clamp(2.6rem,6vw,5.6rem)] leading-[0.95] text-deep opacity-0 [animation-delay:120ms]">
+            <span className="block">{c.title[0]}</span>
+            <span className="iridescent-text block">{c.title[1]}</span>
           </h1>
 
-          {/* Repères discrets à droite */}
-          <div className="hidden gap-10 pt-24 lg:col-start-3 lg:flex">
-            <ul className="space-y-1.5">
-              {pillars.slice(0, 2).map((p) => (
-                <li key={p.code} className="font-sans text-sm text-deep/60">{p.name}</li>
-              ))}
-            </ul>
-            <ul className="space-y-1.5">
-              {pillars.slice(2).map((p) => (
-                <li key={p.code} className="font-sans text-sm text-deep/60">{p.name}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
+          <p className="mt-6 max-w-md animate-fade-rise font-sans text-base leading-relaxed text-deep opacity-0 [animation-delay:240ms] md:text-lg">
+            {c.titleAccent}
+          </p>
 
-        {/* Texte et actions en bas à gauche */}
-        <div className="relative z-10 mt-8 max-w-sm animate-fade-rise opacity-0 [animation-delay:320ms] lg:absolute lg:bottom-12 lg:left-0 lg:mt-0">
-          <p className="font-sans text-[0.95rem] leading-relaxed text-deep">{c.titleAccent}</p>
-          <p className="mt-2 hidden font-sans text-sm leading-relaxed text-deep-soft sm:block">{c.subtitle}</p>
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-8 flex animate-fade-rise flex-col gap-3 opacity-0 [animation-delay:360ms] sm:flex-row">
             <Cta href={`/${locale}/contact`}>{c.ctaPrimary}</Cta>
             <Cta href={`/${locale}/technologies`} variant="line">
               {c.ctaSecondary}
