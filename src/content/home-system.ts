@@ -1,5 +1,5 @@
 // Accueil Cellulift — textes repris de cellulift.ma (légèrement resserrés pour les cartes).
-// « {n} » = nombre de technologies du catalogue.
+// Textes de l'accueil.
 
 export const homeSystem = {
   fr: {
@@ -13,7 +13,7 @@ export const homeSystem = {
       corner: "Toutes nos machines sont certifiées CE et FDA, avec une garantie de 24 mois pièces et main-d'œuvre.",
       cornerStrong: "Distributeur officiel LGL Expert en Afrique.",
       ctaPrimary: "Obtenez un devis gratuit",
-      ctaSecondary: "Nos {n} produits",
+      ctaSecondary: "Nos technologies",
       readout: { label: "Cellulift", status: "", output: "" },
     },
     // Bandeau défilant sous le hero.
@@ -71,7 +71,7 @@ export const homeSystem = {
     },
     technologies: {
       eyebrow: "03 — Nos produits",
-      title: "{n} technologies. Cinq familles.",
+      title: "Nos technologies.",
       intro: "Les dispositifs de dernière génération LGL Expert, dont Cellulift est le distributeur officiel en Afrique, tous certifiés CE Médical et FDA.",
       columns: { ref: "", name: "", category: "", indications: "" },
       viewAll: "Voir tous nos produits",
@@ -123,7 +123,7 @@ export const homeSystem = {
       corner: "All our devices are CE and FDA certified, with a 24-month parts and labour warranty.",
       cornerStrong: "Official LGL Expert distributor in Africa.",
       ctaPrimary: "Get a free quote",
-      ctaSecondary: "Our {n} products",
+      ctaSecondary: "Our technologies",
       readout: { label: "Cellulift", status: "", output: "" },
     },
     ticker: [
@@ -160,7 +160,7 @@ export const homeSystem = {
     },
     technologies: {
       eyebrow: "03 — Our products",
-      title: "{n} technologies. Five families.",
+      title: "Our technologies.",
       intro: "Latest-generation LGL Expert devices, of which Cellulift is the official distributor in Africa, all CE Medical and FDA certified.",
       columns: { ref: "", name: "", category: "", indications: "" },
       viewAll: "See all our products",
