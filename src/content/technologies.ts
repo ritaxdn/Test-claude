@@ -3,7 +3,7 @@ export type LocalizedText = {
   en: string;
 };
 
-export type CategoryKey = "lasers" | "face" | "body" | "aesthetic-gyneco" | "physio";
+export type CategoryKey = "rejuvenation" | "amincissement" | "lasers" | "hifu" | "photomodulation" | "therapie";
 
 export interface Technology {
   slug: string;
@@ -19,40 +19,33 @@ export interface Technology {
   images?: string[];
 }
 
+// Familles par type de technologie (même découpage que le dossier MACHINES du Drive).
 export const categories: Record<CategoryKey, LocalizedText> = {
-  lasers: { fr: "Lasers & technologies lumière", en: "Lasers & light technologies" },
-  face: { fr: "Visage & diagnostic", en: "Face & diagnostics" },
-  body: { fr: "Remodelage corporel & amincissement", en: "Body contouring & slimming" },
-  "aesthetic-gyneco": { fr: "Médecine esthétique & gynécologie", en: "Aesthetic medicine & gynecology" },
-  physio: { fr: "Physiothérapie & équipements", en: "Physiotherapy & equipment" },
-};
-
-// Nom court des univers (grandes cartes de l'accueil).
-export const universeLabels: Record<CategoryKey, string> = {
-  lasers: "Laser",
-  face: "Face",
-  body: "Body",
-  "aesthetic-gyneco": "Medical",
-  physio: "Physio",
+  rejuvenation: { fr: "Réjuvénation cutanée", en: "Skin rejuvenation" },
+  amincissement: { fr: "Amincissement", en: "Body slimming" },
+  lasers: { fr: "Lasers", en: "Lasers" },
+  hifu: { fr: "HIFU", en: "HIFU" },
+  photomodulation: { fr: "Photomodulation", en: "Photomodulation" },
+  therapie: { fr: "Thérapie avancée", en: "Advanced therapy" },
 };
 
 // Catalogue Cellulift, par famille.
 const catalog: Record<CategoryKey, string[]> = {
-  lasers: [
-    "ALEX YAG ULTRA", "FRAC’COV 4", "HANOVER 5G", "LA QUEEN", "LASER SHOCK", "MEGALIGHT", "SYNERGY+",
-    "NEW EPIL’LIGHT", "LED FOTOSKIN", "LED BIO-LIGHT", "LED FOTOSKIN ULTRA", "LONGIFLASH", "VAGILASE",
-    "SEVENWAVES", "FOTOKROM",
-  ],
-  face: [
+  rejuvenation: [
     "AQUA’PEEL", "BIOFILLER X7", "CENTRIFUGEL", "DERMABRASIF 6G", "DERMAPLEX", "FREQUENCIOUS",
     "MYM DERMAPEN", "PISTOR +34", "SKIN ANALYSER G7", "SKIN BRIGHT",
   ],
-  body: [
-    "BODYTECH 9", "BRASILIFT", "ELITECOLOMBIA", "HOT POWER", "LONGCHOC", "LONGISHAPE", "PANDASLIM",
-    "PRESSOLIGNE 5", "SHOCSTEEL", "SLIMAX LIPO 3", "SLIMAX LIPO 7", "TANITA", "STEEL MUSCLE",
+  amincissement: [
+    "BODYTECH 9", "BRASILIFT", "ELITECOLOMBIA", "HOT POWER", "LONGCHOC", "LONGISHAPE", "LONGILYSE", "PANDASLIM",
+    "PRESSOLIGNE 5", "SHOCSTEEL", "SLIMAX LIPO 3", "SLIMAX LIPO 7", "STEEL MUSCLE", "TANITA",
   ],
-  "aesthetic-gyneco": ["FREQUENTAZIA", "PERFECT’LIFT", "REJUVSKIN"],
-  physio: ["T-CARE 6G", "CRYOCOVER", "DREAMTECH PRO", "PHYSIOMEDIC A600", "UltraTrio Pro", "LONGILYSE"],
+  lasers: [
+    "ALEX YAG ULTRA", "FOTOKROM", "FRAC’COV 4", "HANOVER 5G", "LA QUEEN", "LASER SHOCK", "MEGALIGHT",
+    "NEW EPIL’LIGHT", "SEVENWAVES", "SYNERGY+",
+  ],
+  hifu: ["PERFECT’LIFT", "REJUVSKIN", "VAGILASE"],
+  photomodulation: ["LED BIO-LIGHT", "LED FOTOSKIN", "LED FOTOSKIN ULTRA", "LONGIFLASH"],
+  therapie: ["CRYOCOVER", "DREAMTECH PRO", "FREQUENTAZIA", "PHYSIOMEDIC A600", "T-CARE 6G", "UltraTrio Pro"],
 };
 
 export const slugify = (s: string) =>

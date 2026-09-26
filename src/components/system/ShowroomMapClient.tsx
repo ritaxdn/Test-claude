@@ -13,24 +13,22 @@ export type MapPoint = {
   country: string;
   address: string;
   hq: boolean;
+  arc: string; // grand cercle depuis le siège (vide pour le siège)
+  coords: string;
+  morocco: boolean;
 };
 
-// Décalage des étiquettes pour les villes proches (Maroc).
-// Décalage des noms (dx négatif = nom à gauche du point) pour les villes marocaines, très proches.
-const LABEL: Record<string, [number, number]> = {
-  tanger: [14, -8],
-  rabat: [-14, -6],
-  casablanca: [16, 6],
-  marrakech: [14, 20],
-  agadir: [-14, 10],
-};
+// Étiquettes : villes hors Maroc toujours nommées ; au Maroc (villes très proches), seule la ville active l'est.
+const LABEL: Record<string, [number, number]> = { paris: [14, -6], dakar: [-14, 5], jeddah: [14, 5] };
 
-/** Carte des showrooms : trame de points, liaisons depuis Casablanca, fiche au clic. */
+/** Globe des implantations : sphère de verre, trame de points, grands cercles depuis le siège, fiche au clic. */
 export function ShowroomMapClient({
   width,
   height,
   dots,
   highlight,
+  graticule,
+  sphere,
   points,
   labels,
   contactHref,
@@ -39,6 +37,8 @@ export function ShowroomMapClient({
   height: number;
   dots: string;
   highlight: string;
+  graticule: string;
+  sphere: { cx: number; cy: number; r: number };
   points: MapPoint[];
   labels: { hq: string; onRequest: string; cta: string; list: string };
   contactHref: string;
@@ -47,13 +47,6 @@ export function ShowroomMapClient({
   const hq = points.find((p) => p.hq) ?? points[0];
   const [active, setActive] = useState(hq.id);
   const current = points.find((p) => p.id === active) ?? hq;
-
-  // Arc entre le siège et un showroom (courbe vers le haut).
-  const arc = (p: MapPoint) => {
-    const mx = (hq.x + p.x) / 2;
-    const my = (hq.y + p.y) / 2 - Math.hypot(p.x - hq.x, p.y - hq.y) * 0.28;
-    return `M${hq.x} ${hq.y} Q${mx} ${my} ${p.x} ${p.y}`;
-  };
 
   return (
     <div className="glass mt-8 grid overflow-hidden rounded-[1.75rem] lg:grid-cols-[1.7fr_1fr]">
@@ -67,6 +60,16 @@ export function ShowroomMapClient({
               <stop offset=".65" stopColor="#e91e8c" />
               <stop offset="1" stopColor="#ff5722" />
             </linearGradient>
+            <radialGradient id={`s-${uid}`} cx=".35" cy=".25" r=".85">
+              <stop offset="0" stopColor="#ffffff" stopOpacity=".95" />
+              <stop offset=".55" stopColor="#eef0f6" stopOpacity=".55" />
+              <stop offset="1" stopColor="#c9cbe0" stopOpacity=".35" />
+            </radialGradient>
+            <linearGradient id={`rim-${uid}`} x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stopColor="#ffffff" />
+              <stop offset=".5" stopColor="#a797ff" stopOpacity=".5" />
+              <stop offset="1" stopColor="#7fe3f0" stopOpacity=".7" />
+            </linearGradient>
             <radialGradient id={`p-${uid}`}>
               <stop offset="0" stopColor="#ffffff" />
               <stop offset=".35" stopColor="#e91e8c" />
@@ -75,23 +78,40 @@ export function ShowroomMapClient({
             </radialGradient>
           </defs>
 
-          <path d={dots} stroke="#1d1b26" strokeOpacity=".16" strokeWidth="3.4" strokeLinecap="round" />
-          <path d={highlight} stroke={`url(#g-${uid})`} strokeOpacity=".75" strokeWidth="3.8" strokeLinecap="round" />
+          {/* Sphère de verre */}
+          <circle cx={sphere.cx} cy={sphere.cy} r={sphere.r} fill={`url(#s-${uid})`} />
+          <path d={graticule} fill="none" stroke="#1d1b26" strokeOpacity=".07" strokeWidth=".8" />
+          <path d={dots} stroke="#1d1b26" strokeOpacity=".2" strokeWidth="2.6" strokeLinecap="round" />
+          <path d={highlight} stroke={`url(#g-${uid})`} strokeOpacity=".9" strokeWidth="3" strokeLinecap="round" />
+          <circle cx={sphere.cx} cy={sphere.cy} r={sphere.r} fill="none" stroke={`url(#rim-${uid})`} strokeWidth="1.5" />
 
           {points
             .filter((p) => p.id !== hq.id)
             .map((p) => (
               <path
                 key={`arc-${p.id}`}
-                d={arc(p)}
+                d={p.arc}
                 fill="none"
                 stroke={`url(#g-${uid})`}
-                strokeWidth={p.id === active ? 2 : 1.1}
-                strokeOpacity={p.id === active ? 0.95 : 0.45}
-                strokeDasharray="4 6"
+                strokeWidth={p.id === active ? 1.8 : 1}
+                strokeOpacity={p.id === active ? 0.95 : 0.65}
+                strokeDasharray="3 5"
                 className="map-flow"
               />
             ))}
+
+          {/* Maroc : un seul libellé pour le groupe de villes */}
+          {(() => {
+            const ma = points.filter((p) => p.morocco);
+            if (!ma.length || ma.some((p) => p.id === active)) return null;
+            const x = Math.min(...ma.map((p) => p.x)) - 14;
+            const y = ma.reduce((t, p) => t + p.y, 0) / ma.length + 5;
+            return (
+              <text x={x} y={y} textAnchor="end" className="select-none fill-deep-soft font-sans" style={{ fontSize: 17 }}>
+                {ma[0].country}
+              </text>
+            );
+          })()}
 
           {points.map((p) => {
             const on = p.id === active;
@@ -106,19 +126,21 @@ export function ShowroomMapClient({
                 onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setActive(p.id)}
                 className="cursor-pointer outline-none"
               >
-                <circle cx={p.x} cy={p.y} r="22" fill="transparent" />
-                {on && <circle cx={p.x} cy={p.y} r="10" fill="none" stroke={`url(#g-${uid})`} strokeWidth="1.5" className="map-ping" />}
-                <circle cx={p.x} cy={p.y} r={on ? 11 : 8} fill={`url(#p-${uid})`} />
-                <circle cx={p.x} cy={p.y} r={on ? 4.5 : 3.5} fill="#ffffff" stroke="#1d1b26" strokeOpacity=".25" />
-                <text
-                  x={p.x + (LABEL[p.id]?.[0] ?? 14)}
-                  y={p.y + (LABEL[p.id]?.[1] ?? 5)}
-                  textAnchor={(LABEL[p.id]?.[0] ?? 14) < 0 ? "end" : "start"}
-                  className={cn("select-none font-sans", on ? "fill-deep" : "fill-deep-soft")}
-                  style={{ fontSize: on ? 20 : 16, fontWeight: on ? 600 : 400 }}
-                >
-                  {p.city}
-                </text>
+                <circle cx={p.x} cy={p.y} r="16" fill="transparent" />
+                {on && <circle cx={p.x} cy={p.y} r="8" fill="none" stroke={`url(#g-${uid})`} strokeWidth="1.2" className="map-ping" />}
+                <circle cx={p.x} cy={p.y} r={on ? 9 : 6} fill={`url(#p-${uid})`} />
+                <circle cx={p.x} cy={p.y} r={on ? 3.6 : 2.6} fill="#ffffff" stroke="#1d1b26" strokeOpacity=".3" />
+                {(on || !p.morocco) && (
+                  <text
+                    x={p.x + (on && p.morocco ? 16 : (LABEL[p.id]?.[0] ?? 14))}
+                    y={p.y + (on && p.morocco ? 5 : (LABEL[p.id]?.[1] ?? 5))}
+                    textAnchor={!on || !p.morocco ? ((LABEL[p.id]?.[0] ?? 14) < 0 ? "end" : "start") : "start"}
+                    className={cn("select-none font-sans", on ? "fill-deep" : "fill-deep-soft")}
+                    style={{ fontSize: on ? 22 : 17, fontWeight: on ? 600 : 400 }}
+                  >
+                    {p.city}
+                  </text>
+                )}
               </g>
             );
           })}
@@ -133,6 +155,7 @@ export function ShowroomMapClient({
             {current.hq && <span className="rounded-full border border-deep/15 px-2 py-0.5 text-[10px]">{labels.hq}</span>}
           </p>
           <p className="display mt-3 text-2xl text-deep">{current.city}</p>
+          <p className="data-label mt-2 text-deep-soft">{current.coords}</p>
           <p className="mt-3 font-sans text-sm leading-relaxed text-deep-soft">{current.address || labels.onRequest}</p>
           <Link
             href={contactHref}

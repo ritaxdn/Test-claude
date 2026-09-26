@@ -16,10 +16,10 @@ export const homeSystem = {
       ctaSecondary: "Nos technologies",
       readout: { label: "Cellulift", status: "", output: "" },
     },
-    // Chiffres clés (très grand, sans paragraphe). « {n} » = technologies, « {s} » = showrooms.
+    // Chiffres clés (très grand, sans paragraphe). « {s} » = nombre de showrooms. Ne jamais afficher le nombre de technologies.
     stats: [
       { value: "20+", label: "Ans d'expertise" },
-      { value: "{n}", label: "Technologies" },
+      { value: "1000+", label: "Médecins équipés" },
       { value: "24", unit: "mois", label: "De garantie" },
       { value: "{s}", label: "Showrooms" },
     ],
@@ -78,12 +78,11 @@ export const homeSystem = {
     },
     technologies: {
       eyebrow: "02 — Technologies",
-      title: "{n} technologies.",
-      titleAccent: "5 univers.",
+      title: "Nos technologies,",
+      titleAccent: "par type de soin.",
       intro: "Les dispositifs de dernière génération LGL Expert, dont Cellulift est le distributeur officiel en Afrique, tous certifiés CE Médical et FDA.",
       columns: { ref: "", name: "", category: "", indications: "" },
       viewAll: "Explorer les technologies",
-      machines: "machines",
     },
     academy: {
       eyebrow: "04 — Cellulift Academy",
@@ -105,9 +104,9 @@ export const homeSystem = {
       cta: "Réserver maintenant",
     },
     showrooms: {
-      eyebrow: "06 — Nos showrooms",
-      title: "Venez découvrir nos machines.",
-      intro: "Huit showrooms pour découvrir nos technologies avant de choisir. Cliquez sur une ville.",
+      eyebrow: "06 — Implantations",
+      title: ["One partner.", "Four markets."],
+      markets: ["Maroc", "France", "Sénégal", "Arabie saoudite"],
       hq: "Siège",
       onRequest: "Adresse communiquée sur rendez-vous.",
       cta: "Prendre rendez-vous au showroom",
@@ -137,7 +136,7 @@ export const homeSystem = {
     },
     stats: [
       { value: "20+", label: "Years of expertise" },
-      { value: "{n}", label: "Technologies" },
+      { value: "1000+", label: "Physicians equipped" },
       { value: "24", unit: "months", label: "Warranty" },
       { value: "{s}", label: "Showrooms" },
     ],
@@ -175,12 +174,11 @@ export const homeSystem = {
     },
     technologies: {
       eyebrow: "02 — Technologies",
-      title: "{n} technologies.",
-      titleAccent: "5 universes.",
+      title: "Our technologies,",
+      titleAccent: "by treatment type.",
       intro: "Latest-generation LGL Expert devices, of which Cellulift is the official distributor in Africa, all CE Medical and FDA certified.",
       columns: { ref: "", name: "", category: "", indications: "" },
       viewAll: "Explore the technologies",
-      machines: "devices",
     },
     academy: {
       eyebrow: "04 — Cellulift Academy",
@@ -202,9 +200,9 @@ export const homeSystem = {
       cta: "Book now",
     },
     showrooms: {
-      eyebrow: "06 — Our showrooms",
-      title: "Come and discover our devices.",
-      intro: "Eight showrooms to discover our technologies before choosing. Click on a city.",
+      eyebrow: "06 — Locations",
+      title: ["One partner.", "Four markets."],
+      markets: ["Morocco", "France", "Senegal", "Saudi Arabia"],
       hq: "Head office",
       onRequest: "Address shared by appointment.",
       cta: "Book a showroom visit",
