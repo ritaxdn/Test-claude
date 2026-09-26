@@ -6,6 +6,7 @@ import { TechIndex } from "@/components/system/TechIndex";
 import { PartnerJourney } from "@/components/system/PartnerJourney";
 import { AcademySupport } from "@/components/system/AcademySupport";
 import { ProjectCta } from "@/components/system/ProjectCta";
+import { ShowroomMap } from "@/components/system/ShowroomMap";
 
 // Accueil « Cellulift System » : proposition de valeur → système → technologies → parcours
 // partenaire → Academy → Support → projet.
@@ -20,6 +21,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       <TechIndex locale={lang} />
       <PartnerJourney locale={lang} />
       <AcademySupport locale={lang} />
+      <ShowroomMap locale={lang} />
       <ProjectCta locale={lang} />
     </div>
   );
