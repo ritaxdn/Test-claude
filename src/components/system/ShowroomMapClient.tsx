@@ -16,7 +16,14 @@ export type MapPoint = {
 };
 
 // Décalage des étiquettes pour les villes proches (Maroc).
-const LABEL: Record<string, [number, number]> = { tanger: [14, -8], marrakech: [14, 20], casablanca: [16, 6] };
+// Décalage des noms (dx négatif = nom à gauche du point) pour les villes marocaines, très proches.
+const LABEL: Record<string, [number, number]> = {
+  tanger: [14, -8],
+  rabat: [-14, -6],
+  casablanca: [16, 6],
+  marrakech: [14, 20],
+  agadir: [-14, 10],
+};
 
 /** Carte des showrooms : trame de points, liaisons depuis Casablanca, fiche au clic. */
 export function ShowroomMapClient({
@@ -106,6 +113,7 @@ export function ShowroomMapClient({
                 <text
                   x={p.x + (LABEL[p.id]?.[0] ?? 14)}
                   y={p.y + (LABEL[p.id]?.[1] ?? 5)}
+                  textAnchor={(LABEL[p.id]?.[0] ?? 14) < 0 ? "end" : "start"}
                   className={cn("select-none font-sans", on ? "fill-deep" : "fill-deep-soft")}
                   style={{ fontSize: on ? 20 : 16, fontWeight: on ? 600 : 400 }}
                 >
