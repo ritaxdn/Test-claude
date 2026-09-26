@@ -1,18 +1,33 @@
-import { Machine } from "./Machine";
 import { Cta } from "./Cta";
 import type { Locale } from "@/lib/i18n/config";
 import { homeSystem } from "@/content/home-system";
 import { technologies } from "@/content/technologies";
 
 /**
- * Accueil façon « fiche produit med-tech » : la machine au centre, de grands mots blancs derrière,
- * un titre en lignes décalées et des annotations discrètes dans les coins.
+ * Accueil : vidéo en plein cadre derrière, de grands mots blancs, un titre en lignes décalées
+ * et des annotations discrètes dans les coins.
  */
 export function SystemHero({ locale }: { locale: Locale }) {
   const c = homeSystem[locale].hero;
   const pillars = homeSystem[locale].system.pillars;
   return (
     <section className="relative overflow-hidden px-6 pb-10 pt-10 md:px-12 lg:h-[calc(100svh-6.5rem)] lg:min-h-[44rem] lg:max-h-[58rem] lg:pb-0">
+      {/* Vidéo d'arrière-plan (muette, en boucle) + voile nacré pour la lisibilité du texte */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+        <video
+          className="h-full w-full object-cover"
+          src="/videos/hero.mp4"
+          poster="/videos/hero-poster.jpg"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-pearl/85 via-pearl/35 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-pearl to-transparent" />
+      </div>
+
       {/* Mots géants en arrière-plan */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 select-none">
         <p className="display translate-x-[4%] text-[clamp(3rem,12.5vw,13rem)] leading-[0.82] text-white/90">{c.backdrop[0]}</p>
@@ -22,7 +37,7 @@ export function SystemHero({ locale }: { locale: Locale }) {
       <div className="relative mx-auto h-full max-w-7xl">
         {/* Annotation en haut à droite */}
         <div className="hidden text-right lg:ml-auto lg:block lg:max-w-sm">
-          <p className="font-sans text-sm leading-snug text-deep-soft">{c.corner}</p>
+          <p className="font-sans text-sm leading-snug text-deep/80">{c.corner}</p>
           <p className="mt-2 font-sans text-base font-medium text-deep">{c.cornerStrong}</p>
         </div>
 
@@ -36,21 +51,16 @@ export function SystemHero({ locale }: { locale: Locale }) {
             </span>
           </h1>
 
-          {/* La machine */}
-          <div className="relative mx-auto mt-4 w-[52%] max-w-md animate-fade-rise opacity-0 [animation-delay:200ms] lg:absolute lg:left-[46%] lg:top-[-4.5rem] lg:mt-0 lg:w-[30%] lg:max-w-none">
-            <Machine className="float h-auto w-full drop-shadow-[0_40px_60px_rgba(29,27,38,0.18)]" />
-          </div>
-
           {/* Repères discrets à droite */}
           <div className="hidden gap-10 pt-24 lg:col-start-3 lg:flex">
             <ul className="space-y-1.5">
               {pillars.slice(0, 2).map((p) => (
-                <li key={p.code} className="font-sans text-sm text-deep/30">{p.name}</li>
+                <li key={p.code} className="font-sans text-sm text-deep/60">{p.name}</li>
               ))}
             </ul>
             <ul className="space-y-1.5">
               {pillars.slice(2).map((p) => (
-                <li key={p.code} className="font-sans text-sm text-deep/30">{p.name}</li>
+                <li key={p.code} className="font-sans text-sm text-deep/60">{p.name}</li>
               ))}
             </ul>
           </div>
