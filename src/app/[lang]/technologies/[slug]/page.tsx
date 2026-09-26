@@ -99,12 +99,17 @@ export default async function TechnologyDetailPage({
         </Reveal>
 
         {tech.images?.length ? (
-          <Reveal className="mt-12 grid grid-cols-2 gap-3 md:grid-cols-4 md:grid-rows-2">
+          <Reveal className="mt-12 grid grid-cols-2 gap-3 md:grid-cols-3">
             {tech.images.map((src, i) => (
               <div
                 key={src}
                 className={`relative overflow-hidden rounded-[1.75rem] bg-[#0b0d14] ${
-                  i === 0 ? "col-span-2 aspect-[4/5] md:row-span-2 md:aspect-auto" : "aspect-square"
+                  i === 0
+                    ? "col-span-2 aspect-[4/5] md:row-span-2 md:aspect-auto"
+                    : // Sur téléphone, une vignette seule en fin de grille prend toute la largeur.
+                      i === tech.images!.length - 1 && tech.images!.length % 2 === 0
+                      ? "col-span-2 aspect-[2/1] md:col-span-1 md:aspect-square"
+                      : "aspect-square"
                 }`}
               >
                 <Image
@@ -112,7 +117,7 @@ export default async function TechnologyDetailPage({
                   alt={`${tech.name} — ${i + 1}`}
                   fill
                   priority={i === 0}
-                  sizes={i === 0 ? "(min-width:768px) 50vw, 100vw" : "(min-width:768px) 25vw, 50vw"}
+                  sizes={i === 0 ? "(min-width:768px) 66vw, 100vw" : "(min-width:768px) 33vw, 50vw"}
                   className="object-cover transition-transform duration-700 hover:scale-[1.03]"
                 />
               </div>

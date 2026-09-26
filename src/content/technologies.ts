@@ -66,7 +66,7 @@ export const slugify = (s: string) =>
 
 // Photos par machine (slug → fichiers).
 const photos: Record<string, string[]> = {
-  "dermabrasif-6g": ["05", "01", "02", "03", "04"].map((n) => `/images/technologies/dermabrasif-6g/${n}.jpg`),
+  "dermabrasif-6g": ["00", "05", "01", "02", "03", "04"].map((n) => `/images/technologies/dermabrasif-6g/${n}.jpg`),
 };
 
 export const technologies: Technology[] = (Object.keys(catalog) as CategoryKey[]).flatMap((category) =>
