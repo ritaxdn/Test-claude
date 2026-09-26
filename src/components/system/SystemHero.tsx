@@ -1,4 +1,5 @@
 import { Cta } from "./Cta";
+import { HeroVideo } from "./HeroVideo";
 import type { Locale } from "@/lib/i18n/config";
 import { homeSystem } from "@/content/home-system";
 import { technologies } from "@/content/technologies";
@@ -14,16 +15,7 @@ export function SystemHero({ locale }: { locale: Locale }) {
     <section className="relative overflow-hidden px-6 pb-10 pt-10 md:px-12 lg:h-[calc(100svh-6.5rem)] lg:min-h-[44rem] lg:max-h-[58rem] lg:pb-0">
       {/* Vidéo d'arrière-plan (muette, en boucle) + voile nacré pour la lisibilité du texte */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <video
-          className="h-full w-full object-cover"
-          src="/videos/hero.mp4"
-          poster="/videos/hero-poster.jpg"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-        />
+        <HeroVideo className="h-full w-full" src="/videos/hero.mp4" webm="/videos/hero.webm" poster="/videos/hero-poster.jpg" />
         <div className="absolute inset-0 bg-gradient-to-r from-pearl/85 via-pearl/35 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-pearl to-transparent" />
       </div>
