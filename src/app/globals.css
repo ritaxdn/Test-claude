@@ -318,3 +318,23 @@ body {
 /* Bandeau défilant */
 @keyframes ticker { to { transform: translateX(-50%); } }
 .ticker-track { animation: ticker 38s linear infinite; }
+
+/* Contour irisé qui tourne autour des boutons (CTA) */
+@property --cta-angle { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+@keyframes cta-spin { to { --cta-angle: 360deg; } }
+.cta-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  pointer-events: none;
+  background: conic-gradient(from var(--cta-angle), #7fe3f0, #a797ff, #f29bd0, #ffc58f, rgba(255,255,255,0) 55%, rgba(255,255,255,0) 80%, #7fe3f0);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  animation: cta-spin 4s linear infinite;
+  opacity: 0.9;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cta-ring { animation: none; }
+}
