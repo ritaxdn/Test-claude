@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { RevealGroup, RevealItem } from "@/components/ui/Reveal";
 import { TechnologyCard } from "@/components/technologies/TechnologyCard";
 import { categories, technologies, type CategoryKey } from "@/content/technologies";
@@ -17,6 +17,12 @@ export function TechnologyGrid({
   readMoreLabel: string;
 }) {
   const [active, setActive] = useState<CategoryKey | "all">("all");
+
+  // Arrivée depuis une carte « univers » de l'accueil : /technologies#lasers
+  useEffect(() => {
+    const hash = window.location.hash.slice(1);
+    if (hash && hash in categories) setActive(hash as CategoryKey); // eslint-disable-line react-hooks/set-state-in-effect
+  }, []);
 
   const filtered = useMemo(
     () => (active === "all" ? technologies : technologies.filter((t) => t.category === active)),

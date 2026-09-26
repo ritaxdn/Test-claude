@@ -5,10 +5,13 @@ import { localeAlternates } from "@/lib/alternates";
 import { academyPageContent } from "@/content/academy-page";
 import { PageHero } from "@/components/sections/PageHero";
 import { Positioning } from "@/components/sections/Positioning";
-import { AcademyCalendar } from "@/components/sections/AcademyCalendar";
+import { AcademySessions } from "@/components/sections/AcademySessions";
 import { WhyCellulift } from "@/components/sections/WhyCellulift";
 import { FinalCta } from "@/components/sections/FinalCta";
 import { Faculty } from "@/components/sections/Faculty";
+
+// Les sessions passées disparaissent : la page est régénérée chaque jour.
+export const revalidate = 86400;
 
 export async function generateMetadata({
   params,
@@ -50,10 +53,7 @@ export default async function AcademyPage({
         description={content.whyTraining.description}
       />
 
-    <AcademyCalendar
-  eyebrow={content.programsEyebrow}
-  title={content.programsTitle}
-/>
+      <AcademySessions locale={lang} eyebrow={content.programsEyebrow} title={content.programsTitle} />
 
       <WhyCellulift
         eyebrow={content.expertise.eyebrow}

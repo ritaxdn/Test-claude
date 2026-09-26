@@ -314,3 +314,7 @@ body {
 }
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Bandeau défilant */
+@keyframes ticker { to { transform: translateX(-50%); } }
+.ticker-track { animation: ticker 38s linear infinite; }

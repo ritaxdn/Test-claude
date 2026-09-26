@@ -25,6 +25,15 @@ export const categories: Record<CategoryKey, LocalizedText> = {
   physio: { fr: "Physiothérapie & équipements", en: "Physiotherapy & equipment" },
 };
 
+// Nom court des univers (grandes cartes de l'accueil).
+export const universeLabels: Record<CategoryKey, string> = {
+  lasers: "Laser",
+  face: "Face",
+  body: "Body",
+  "aesthetic-gyneco": "Medical",
+  physio: "Physio",
+};
+
 // Catalogue Cellulift, par famille.
 const catalog: Record<CategoryKey, string[]> = {
   lasers: [

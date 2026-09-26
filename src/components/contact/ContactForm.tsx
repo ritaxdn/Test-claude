@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import { Loader2, CheckCircle2, AlertCircle, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type FieldErrors = Partial<Record<"name" | "email" | "message", string>>;
@@ -14,8 +14,9 @@ interface ContactFormText {
   emailPlaceholder: string;
   phone: string;
   phonePlaceholder: string;
-  organization: string;
-  organizationPlaceholder: string;
+  specialty: string;
+  specialtyPlaceholder: string;
+  specialtyOptions: readonly string[];
   subject: string;
   subjectOptions: readonly string[];
   message: string;
@@ -140,17 +141,22 @@ export function ContactForm({ text }: { text: ContactFormText }) {
         </div>
 
         <div>
-          <label htmlFor="organization" className="font-sans text-sm text-deep-soft">
-            {text.organization}
+          <label htmlFor="specialty" className="font-sans text-sm text-deep-soft">
+            {text.specialty}
           </label>
-          <input
-            id="organization"
-            name="organization"
-            type="text"
-            autoComplete="organization"
-            placeholder={text.organizationPlaceholder}
-            className={cn(inputClasses, "mt-2")}
-          />
+          <div className="relative">
+            <select id="specialty" name="specialty" defaultValue="" className={cn(inputClasses, "mt-2 appearance-none pr-10")}>
+              <option value="" disabled>
+                {text.specialtyPlaceholder}
+              </option>
+              {text.specialtyOptions.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+            <ChevronDown size={16} className="pointer-events-none absolute right-4 top-1/2 mt-1 -translate-y-1/2 text-deep-soft" />
+          </div>
         </div>
       </div>
 
@@ -158,13 +164,16 @@ export function ContactForm({ text }: { text: ContactFormText }) {
         <label htmlFor="subject" className="font-sans text-sm text-deep-soft">
           {text.subject}
         </label>
-        <select id="subject" name="subject" className={cn(inputClasses, "mt-2 appearance-none")}>
-          {text.subjectOptions.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
+        <div className="relative">
+          <select id="subject" name="subject" className={cn(inputClasses, "mt-2 appearance-none pr-10")}>
+            {text.subjectOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+          <ChevronDown size={16} className="pointer-events-none absolute right-4 top-1/2 mt-1 -translate-y-1/2 text-deep-soft" />
+        </div>
       </div>
 
       <div>

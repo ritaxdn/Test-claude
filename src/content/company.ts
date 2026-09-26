@@ -22,8 +22,7 @@ export const company = {
     { id: "jeddah", city: { fr: "Djeddah", en: "Jeddah" }, country: { fr: "Arabie saoudite", en: "Saudi Arabia" }, address: "", lon: 39.1925, lat: 21.4858 },
   ] as { id: string; city: { fr: string; en: string }; country: { fr: string; en: string }; address: string; hq?: boolean; lon: number; lat: number }[],
   social: {
-    instagram: "https://instagram.com/cellulift",
-    linkedin: "https://linkedin.com/company/cellulift",
-    facebook: "https://facebook.com/cellulift",
+    instagram: { handle: "@cellulift.officiel", url: "https://www.instagram.com/cellulift.officiel/" },
+    instagramAcademy: { handle: "@cellulift.academy", url: "https://www.instagram.com/cellulift.academy/" },
   },
 } as const;

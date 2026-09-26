@@ -12,7 +12,7 @@ export const aboutContent = {
       title: "Un concept qui unit technologie et formation",
       paragraphs: [
         "Depuis 2002, une équipe de plus de 30 médecins, professionnels de santé, kinésithérapeutes et praticiens du marketing, issus d'écoles et d'universités marocaines et étrangères, travaille autour de valeurs communes : le partage scientifique et la valorisation.",
-        "Représentants de plusieurs marques de technologies modernes dans le domaine de la médecine esthétique, nous tenons à proposer à nos partenaires, clients et autres professionnels les meilleurs dispositifs de dernière génération disponibles chez nos marques partenaires. Tous nos produits sont certifiés CE Médical et FDA, et sont réputés pour leur fiabilité.",
+        "Distributeur officiel de la marque LGL Expert en Afrique, Cellulift propose à ses partenaires, clients et autres professionnels des dispositifs de dernière génération, tous certifiés CE Médical et FDA et réputés pour leur fiabilité.",
         "Outre le matériel médico-esthétique, Cellulift est à la tête de Cellulift Academy : un concept de formations, de workshops et de rencontres autour du corps et de sa pleine forme. Médecins, professionnels de la dermo-esthétique, de l'amincissement et de la nutrition y partagent leurs connaissances et leur expérience, en théorie comme en pratique.",
       ],
     },
@@ -37,9 +37,9 @@ export const aboutContent = {
       title: "Complice de votre succès",
       items: [
         { title: "Certifiées CE et FDA", description: "Toutes nos machines sont certifiées CE et FDA, avec une garantie de 24 mois pièces et main-d'œuvre." },
-        { title: "Marques en exclusivité", description: "Nous représentons plusieurs marques internationales en exclusivité." },
+        { title: "Distributeur officiel LGL Expert", description: "Cellulift est le distributeur officiel de la marque LGL Expert en Afrique." },
         { title: "Les meilleurs formateurs", description: "Formateurs nationaux et internationaux, professeurs universitaires et experts du corps et de son bien-être." },
-        { title: "400 m² de showroom", description: "Au cœur du quartier des Hôpitaux, à Casablanca, pour découvrir les dernières nouveautés de la technologie médicale." },
+        { title: "Installation partout au Maroc", description: "Transport adapté, montage et installation de vos machines par nos experts." },
       ],
     },
   },
@@ -55,7 +55,7 @@ export const aboutContent = {
       title: "A concept uniting technology and training",
       paragraphs: [
         "Since 2002, a team of more than 30 physicians, healthcare professionals, physiotherapists and marketing practitioners, trained in Moroccan and foreign schools and universities, has worked around shared values: scientific sharing and recognition.",
-        "Representing several brands of modern aesthetic medicine technology, we offer our partners, clients and other professionals the best latest-generation devices from our partner brands. All our products are CE Medical and FDA certified and known for their reliability.",
+        "As the official distributor of the LGL Expert brand in Africa, Cellulift offers its partners, clients and other professionals latest-generation devices, all CE Medical and FDA certified and known for their reliability.",
         "Beyond medical aesthetic equipment, Cellulift leads Cellulift Academy: training, workshops and meetings around the body and well-being. Physicians and professionals in dermo-aesthetics, slimming and nutrition share their knowledge and experience, in theory and in practice.",
       ],
     },
@@ -71,9 +71,9 @@ export const aboutContent = {
       title: "Partner in your success",
       items: [
         { title: "CE and FDA certified", description: "All our devices are CE and FDA certified, with a 24-month parts and labour warranty." },
-        { title: "Exclusive brands", description: "We exclusively represent several international brands." },
+        { title: "Official LGL Expert distributor", description: "Cellulift is the official distributor of the LGL Expert brand in Africa." },
         { title: "The best trainers", description: "National and international trainers, university professors and body and well-being experts." },
-        { title: "400 m² showroom", description: "In the heart of the Hospitals district in Casablanca, to discover the latest medical technology." },
+        { title: "Installation across Morocco", description: "Suitable transport, assembly and installation of your devices by our experts." },
       ],
     },
   },

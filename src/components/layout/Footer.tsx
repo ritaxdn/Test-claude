@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { InstagramIcon, LinkedinIcon, FacebookIcon } from "@/components/icons/SocialIcons";
+import { InstagramIcon } from "@/components/icons/SocialIcons";
 import { Logo } from "@/components/brand/Logo";
 import { company } from "@/content/company";
 import type { Locale } from "@/lib/i18n/config";
@@ -15,11 +15,7 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
     { href: `/${locale}/support`, label: dict.nav.support },
     { href: `/${locale}/contact`, label: dict.nav.contact },
   ];
-  const socials = [
-    { href: company.social.instagram, label: "Instagram", Icon: InstagramIcon },
-    { href: company.social.linkedin, label: "LinkedIn", Icon: LinkedinIcon },
-    { href: company.social.facebook, label: "Facebook", Icon: FacebookIcon },
-  ];
+  const socials = [company.social.instagram, company.social.instagramAcademy];
   const offices = company.showrooms.filter((s) => s.address);
 
   return (
@@ -29,17 +25,16 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
           <div>
             <Logo locale={locale} size="md" tagline={dict.footer.tagline} />
             <p className="mt-6 max-w-sm font-sans text-sm leading-relaxed text-deep-soft">{dict.footer.description}</p>
-            <div className="mt-6 flex gap-2">
-              {socials.map(({ href, label, Icon }) => (
+            <div className="mt-6 flex flex-wrap gap-2">
+              {socials.map((s) => (
                 <a
-                  key={label}
-                  href={href}
+                  key={s.url}
+                  href={s.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={label}
-                  className="glass-soft flex h-10 w-10 items-center justify-center rounded-full text-deep transition-colors hover:bg-white"
+                  className="glass-soft inline-flex items-center gap-2 rounded-full px-4 py-2 font-sans text-sm text-deep transition-colors hover:bg-white"
                 >
-                  <Icon />
+                  <InstagramIcon /> {s.handle}
                 </a>
               ))}
             </div>
