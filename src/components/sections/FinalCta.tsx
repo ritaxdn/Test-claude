@@ -25,7 +25,7 @@ export function FinalCta({
             <span className="iridescent-text">{title}</span>
           </h2>
           <p className="mt-6 max-w-lg font-sans leading-relaxed text-deep-soft">{description}</p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-8 flex flex-wrap gap-3">
             <Cta href={`/${locale}/contact`}>{ctaPrimary}</Cta>
             <Cta href={`/${locale}/contact`} variant="line">{ctaSecondary}</Cta>
           </div>

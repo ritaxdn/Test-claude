@@ -6,6 +6,7 @@ import { getDictionary } from "@/lib/i18n/dictionaries";
 import { SITE_URL } from "@/lib/site";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { MobileTabBar } from "@/components/layout/MobileTabBar";
 import "../globals.css";
 
 export function generateStaticParams() {
@@ -55,10 +56,11 @@ export default async function LangLayout({
       lang={lang}
       className={`${cormorant.variable} ${raleway.variable} ${spaceMono.variable} ${archivo.variable} ${instrumentSans.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <body className="pearl-bg flex min-h-full flex-col text-deep">
+      <body className="pearl-bg flex min-h-full flex-col pb-20 text-deep sm:pb-0">
         <Header locale={lang} dict={dict} />
         <main className="flex-1">{children}</main>
         <Footer locale={lang} dict={dict} />
+        <MobileTabBar locale={lang} dict={dict} />
       </body>
     </html>
   );

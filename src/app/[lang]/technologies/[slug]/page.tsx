@@ -92,7 +92,7 @@ export default async function TechnologyDetailPage({
               </div>
             )}
           </div>
-          <div className="flex flex-col gap-3 sm:flex-row lg:justify-end">
+          <div className="flex flex-wrap gap-3 lg:justify-end">
             <Cta href={`/${lang}/contact`}>{dict.common.requestDemo}</Cta>
             <Cta href={`/${lang}/contact`} variant="line">{dict.common.speakToExpert}</Cta>
           </div>

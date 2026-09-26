@@ -38,7 +38,7 @@ export function PartnersBand({ locale }: { locale: Locale }) {
     </ul>
   );
   return (
-    <section aria-label={label[locale]} className="px-3 py-6 md:px-5 md:py-10">
+    <section aria-label={label[locale]} className="px-3 py-2 md:px-5 md:py-10">
       <p className="data-label mx-auto mb-4 max-w-7xl px-3 text-deep-soft md:px-7">{label[locale]}</p>
       <div className="group relative overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_8%,black_92%,transparent)]">
         <div className="ticker-track flex w-max group-hover:[animation-play-state:paused]">

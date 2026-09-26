@@ -35,8 +35,10 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
 
   return (
     <header className="sticky top-0 z-40 w-full px-3 pt-3 md:px-5">
-      <div className="glass-strong mx-auto flex w-full max-w-7xl items-center justify-between rounded-full py-2.5 pl-6 pr-2.5 md:pl-8">
-        <Logo locale={locale} size="sm" />
+      <div className="glass-strong mx-auto flex w-full max-w-7xl items-center justify-between rounded-full py-1.5 pl-5 pr-1.5 md:py-2.5 md:pl-8 md:pr-2.5">
+        <div className="origin-left scale-[0.82] md:scale-100">
+          <Logo locale={locale} size="sm" />
+        </div>
 
         <nav className="hidden items-center gap-1 lg:flex">
           {links.map((link) => (
@@ -65,7 +67,7 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className="flex h-11 w-11 items-center justify-center text-deep lg:hidden"
+          className="flex h-10 w-10 items-center justify-center text-deep lg:hidden"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
         >
