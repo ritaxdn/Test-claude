@@ -1,14 +1,16 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
 import { Pill, Cta } from "./Cta";
-import { Machine } from "./Machine";
+import { TechVisual } from "./TechVisual";
 import type { Locale } from "@/lib/i18n/config";
-import { categories, universeCover, type CategoryKey } from "@/content/technologies";
+import { categories, categoryDetail, technologiesIn, type CategoryKey } from "@/content/technologies";
 import { homeSystem } from "@/content/home-system";
 
-/** Les familles de technologies (par indication) en grandes cartes : au survol, la machine apparaît sous un faisceau de balayage. */
+/**
+ * Les 6 gammes en grandes cartes immersives (besoin → technologie → machine) :
+ * un visuel propre à chaque indication ; au survol, les technologies de la gamme apparaissent.
+ */
 export function TechIndex({ locale }: { locale: Locale }) {
   const c = homeSystem[locale].technologies;
   const keys = Object.keys(categories) as CategoryKey[];
@@ -26,48 +28,44 @@ export function TechIndex({ locale }: { locale: Locale }) {
           <Cta href={`/${locale}/technologies`}>{c.viewAll}</Cta>
         </Reveal>
 
-        <RevealGroup className="m-rail mt-8 sm:grid-cols-3">
+        <RevealGroup className="m-rail mt-8 sm:grid-cols-2 lg:grid-cols-3">
           {keys.map((key, i) => {
-            const cover = universeCover(key);
-            // Avec photo : texte clair quand la photo est visible (toujours sur téléphone, au survol sur ordinateur).
-            const ink = cover ? "text-white md:text-deep md:group-hover:text-white" : "text-deep";
-            const soft = cover ? "text-white/70 md:text-deep-soft md:group-hover:text-white/70" : "text-deep-soft";
+            const machines = technologiesIn(key);
             return (
-            <RevealItem key={key}>
-              <Link
-                href={`/${locale}/technologies#${key}`}
-                className="glass group relative flex aspect-[3/4] flex-col sm:aspect-[4/5] lg:aspect-[5/4] overflow-hidden rounded-[1.75rem] p-5 md:p-6"
-              >
-                {cover ? (
-                  /* Photo réelle en plein cadre, révélée au survol (toujours visible sur téléphone) */
-                  <div className="pointer-events-none absolute inset-0 transition-all duration-700 ease-out md:scale-105 md:opacity-0 md:group-hover:scale-100 md:group-hover:opacity-100">
-                    <Image src={cover} alt="" fill sizes="(min-width:1024px) 20vw, (min-width:640px) 33vw, 75vw" className="object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0b0d14]/85 via-[#0b0d14]/10 to-[#0b0d14]/30" />
-                  </div>
-                ) : (
-                  /* Machine + balayage, révélés au survol (toujours visibles en léger sur téléphone) */
-                  <div className="pointer-events-none absolute inset-x-0 top-14 bottom-28 flex justify-center opacity-25 transition-all duration-700 ease-out md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100">
-                    <Machine className="h-full w-auto drop-shadow-[0_24px_30px_rgba(29,27,38,0.18)]" />
-                  </div>
-                )}
-                <div className="pointer-events-none absolute inset-x-0 top-0 h-full opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                  <div className="scan-beam absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-[var(--rainbow-2)] to-transparent shadow-[0_0_12px_rgba(123,97,255,0.6)]" />
-                </div>
+              <RevealItem key={key}>
+                <Link
+                  href={`/${locale}/technologies#${key}`}
+                  className="group relative flex aspect-[4/5] flex-col overflow-hidden rounded-[1.75rem] bg-[#0b0d14] p-5 text-white shadow-[0_30px_60px_-30px_rgba(29,27,38,0.55)] ring-1 ring-white/10 md:p-6"
+                >
+                  {/* Visuel immersif de la gamme */}
+                  <TechVisual
+                    kind={key}
+                    className="absolute inset-0 h-full w-full transition-transform duration-[1.2s] ease-out group-hover:scale-[1.05]"
+                  />
+                  {/* Voile bas pour la lisibilité, plus dense au survol quand la liste apparaît */}
+                  <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-[#0b0d14] via-[#0b0d14]/60 to-transparent transition-opacity duration-500 md:opacity-80 md:group-hover:opacity-100" />
 
-                <div className="relative flex items-center justify-between">
-                  <span className={`data-label transition-colors duration-300 ${soft}`}>{String(i + 1).padStart(2, "0")}</span>
-                  <span className="glass-strong flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-deep transition-transform duration-300 group-hover:rotate-45">
-                    <ArrowUpRight size={15} strokeWidth={1.75} />
-                  </span>
-                </div>
+                  <div className="relative flex items-center justify-between">
+                    <span className="data-label text-white/70">{String(i + 1).padStart(2, "0")}</span>
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/15 text-white ring-1 ring-white/30 backdrop-blur-md transition-transform duration-300 group-hover:rotate-45">
+                      <ArrowUpRight size={15} strokeWidth={1.75} />
+                    </span>
+                  </div>
 
-                <div className="relative mt-auto">
-                  <h3 className={`display text-[clamp(1.15rem,1.9vw,1.9rem)] leading-[0.95] transition-colors duration-300 ${ink}`}>
-                    {categories[key][locale]}
-                  </h3>
-                </div>
-              </Link>
-            </RevealItem>
+                  <div className="relative mt-auto">
+                    <h3 className="display text-[clamp(1.3rem,1.95vw,1.9rem)] leading-[0.95]">{categories[key][locale]}</h3>
+                    {categoryDetail[key] && <p className="data-label mt-2 text-white/70">{categoryDetail[key]![locale]}</p>}
+                    {/* Technologies de la gamme : discrètes, révélées au survol (masquées sur téléphone, sans survol) */}
+                    <ul className="mt-4 hidden flex-wrap gap-x-3 gap-y-1 transition-all md:flex duration-500 md:max-h-0 md:translate-y-2 md:overflow-hidden md:opacity-0 md:group-hover:max-h-40 md:group-hover:translate-y-0 md:group-hover:opacity-100">
+                      {machines.map((m) => (
+                        <li key={m.slug} className="font-sans text-xs text-white/75">
+                          {m.name}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </Link>
+              </RevealItem>
             );
           })}
         </RevealGroup>
