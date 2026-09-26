@@ -53,8 +53,8 @@ export function DirectContact({
   ].filter((x) => !!x);
 
   return (
-    <Reveal className="border border-hairline bg-warm-white p-8">
-      <h2 className="font-heading text-xl font-light text-ink">{title}</h2>
+    <Reveal className="glass rounded-[1.75rem] p-7 md:p-9">
+      <h2 className="display text-2xl text-deep">{title}</h2>
       <ul className="mt-6 flex flex-col gap-5">
         {items.map((item) => (
           <li key={item.label}>
@@ -62,13 +62,13 @@ export function DirectContact({
               href={item.href}
               target={item.href.startsWith("http") ? "_blank" : undefined}
               rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
-              className="group flex items-center gap-3 font-body text-sm text-ink-soft transition-colors hover:text-ink"
+              className="group flex items-center gap-3 font-sans text-sm text-deep-soft transition-colors hover:text-deep"
             >
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-hairline text-ink transition-colors group-hover:border-ink">
+              <span className="glass-soft flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-deep transition-colors group-hover:bg-white">
                 <item.icon size={18} />
               </span>
               <span>
-                <span className="block font-label text-muted" style={{ fontSize: "10px", letterSpacing: "0.1em" }}>
+                <span className="data-label block text-deep-soft">
                   {item.label.toUpperCase()}
                 </span>
                 <span className="block">{item.value}</span>
@@ -76,12 +76,12 @@ export function DirectContact({
             </a>
           </li>
         ))}
-        <li className="flex items-center gap-3 font-body text-sm text-ink-soft">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-hairline text-ink">
+        <li className="flex items-center gap-3 font-sans text-sm text-deep-soft">
+          <span className="glass-soft flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-deep">
             <MapPin size={18} />
           </span>
           <span>
-            <span className="block font-label text-muted" style={{ fontSize: "10px", letterSpacing: "0.1em" }}>
+            <span className="data-label block text-deep-soft">
               {labels.address.toUpperCase()}
             </span>
             <span className="block">{company.address[locale]}</span>

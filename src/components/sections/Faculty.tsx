@@ -1,6 +1,5 @@
 import { ArrowUpRight } from "lucide-react";
-import { Container } from "@/components/ui/Container";
-import { SectionHeading } from "@/components/ui/SectionHeading";
+import { Heading } from "@/components/system/Heading";
 import { RevealGroup, RevealItem } from "@/components/ui/Reveal";
 
 type Member = {
@@ -23,16 +22,16 @@ export function Faculty({ eyebrow, title, members }: { eyebrow: string; title: s
     sameAs: m.sameAs,
   }));
   return (
-    <section className="py-20 md:py-28">
-      <Container>
-        <SectionHeading eyebrow={eyebrow} title={title} />
-        <RevealGroup className="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-2">
+    <section className="px-3 pb-12 md:px-5 md:pb-16">
+      <div className="mx-auto max-w-7xl px-3 md:px-7">
+        <Heading eyebrow={eyebrow} title={title} />
+        <RevealGroup className="mt-8 grid grid-cols-1 gap-3 lg:grid-cols-2">
           {members.map((m) => (
-            <RevealItem key={m.name} className="border border-hairline bg-warm-white p-8 md:p-10">
-              <h3 className="font-heading text-2xl font-light text-ink">{m.name}</h3>
-              <p className="font-body mt-1 text-sm text-ink-soft">{m.role}</p>
-              <p className="font-body mt-5 text-sm font-light leading-relaxed text-ink-soft">{m.bio}</p>
-              <ul className="font-body mt-5 space-y-2 text-sm font-light text-ink-soft">
+            <RevealItem key={m.name} className="glass rounded-[1.75rem] p-7 md:p-9">
+              <h3 className="display text-2xl text-deep">{m.name}</h3>
+              <p className="mt-1 font-sans text-sm text-deep-soft">{m.role}</p>
+              <p className="mt-5 font-sans text-sm leading-relaxed text-deep-soft">{m.bio}</p>
+              <ul className="mt-5 space-y-2 border-t border-deep/10 pt-5 font-sans text-sm text-deep">
                 {m.credentials.map((c) => (
                   <li key={c}>{c}</li>
                 ))}
@@ -41,14 +40,14 @@ export function Faculty({ eyebrow, title, members }: { eyebrow: string; title: s
                 href={m.url}
                 target="_blank"
                 rel="noopener"
-                className="font-body mt-6 inline-flex items-center gap-1.5 text-sm text-ink underline-offset-4 hover:underline"
+                className="glass-soft mt-6 inline-flex items-center gap-1.5 rounded-full px-4 py-2 font-sans text-sm text-deep transition-colors hover:bg-white"
               >
                 {m.linkLabel} <ArrowUpRight size={14} />
               </a>
             </RevealItem>
           ))}
         </RevealGroup>
-      </Container>
+      </div>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
     </section>
   );

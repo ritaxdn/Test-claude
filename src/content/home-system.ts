@@ -87,21 +87,8 @@ export const homeSystem = {
       ],
       cta: "Réserver maintenant",
     },
-    testimonials: {
-      eyebrow: "06 — Témoignages",
-      title: "Ils nous font confiance.",
-      rating: "Excellent",
-      count: "Basé sur 12 avis Google",
-      quotes: [
-        {
-          text: "Je recommande la société Cellulift à toute personne désirant établir un vrai partenariat de long terme et pratiquer son métier d'une manière sereine, sans contrainte de service après-vente ni de disponibilité de pièces. Ce sont des gens de parole qui respectent leurs engagements. Je ne regrette pas mon choix.",
-          author: "Video Une variété",
-        },
-        { text: "Excellente équipe, excellent service. Bon courage.", author: "Joudia El" },
-      ],
-    },
     showrooms: {
-      eyebrow: "07 — Nos showrooms",
+      eyebrow: "06 — Nos showrooms",
       title: "Venez découvrir nos machines.",
       intro: "Six showrooms pour découvrir nos technologies avant de choisir. Cliquez sur une ville.",
       hq: "Siège · 400 m²",
@@ -110,7 +97,7 @@ export const homeSystem = {
       list: "Showrooms",
     },
     cta: {
-      eyebrow: "08 — Notre belle promesse",
+      eyebrow: "07 — Notre belle promesse",
       title: "Obtenez un devis gratuit.",
       text: "Nous nous engageons à vous accueillir amicalement et professionnellement, dans un cadre convivial et chaleureux, à respecter vos demandes et à être à l'écoute de vos attentes.",
       ctaPrimary: "Demander un devis",
@@ -182,21 +169,8 @@ export const homeSystem = {
       ],
       cta: "Book now",
     },
-    testimonials: {
-      eyebrow: "06 — Testimonials",
-      title: "They trust us.",
-      rating: "Excellent",
-      count: "Based on 12 Google reviews",
-      quotes: [
-        {
-          text: "I recommend Cellulift to anyone who wants a real long-term partnership and to practice with peace of mind, without worrying about after-sales service or parts availability. They keep their word and honor their commitments. I don't regret my choice.",
-          author: "Video Une variété",
-        },
-        { text: "Excellent team, excellent service. Keep it up.", author: "Joudia El" },
-      ],
-    },
     showrooms: {
-      eyebrow: "07 — Our showrooms",
+      eyebrow: "06 — Our showrooms",
       title: "Come and discover our devices.",
       intro: "Six showrooms to discover our technologies before choosing. Click on a city.",
       hq: "Head office · 400 m²",
@@ -205,7 +179,7 @@ export const homeSystem = {
       list: "Showrooms",
     },
     cta: {
-      eyebrow: "08 — Our promise",
+      eyebrow: "07 — Our promise",
       title: "Get a free quote.",
       text: "We are committed to welcoming you warmly and professionally, in a friendly setting, to respecting your requests and listening to your expectations.",
       ctaPrimary: "Request a quote",

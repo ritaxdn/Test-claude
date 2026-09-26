@@ -43,10 +43,10 @@ export default async function ContactPage({
         subtitle={content.hero.subtitle}
       />
 
-      <section className="pb-24 md:pb-32">
-        <Container className="grid grid-cols-1 gap-12 lg:grid-cols-[1.4fr_1fr]">
-          <Reveal className="border border-hairline bg-warm-white p-8 md:p-10">
-            <h2 className="font-heading text-2xl font-light text-ink">{content.form.title}</h2>
+      <section className="px-3 pb-12 md:px-5 md:pb-16">
+        <Container className="grid grid-cols-1 gap-3 lg:grid-cols-[1.4fr_1fr]">
+          <Reveal className="glass rounded-[1.75rem] p-7 md:p-9">
+            <h2 className="display text-2xl text-deep">{content.form.title}</h2>
             <div className="mt-8">
               <ContactForm text={content.form} />
             </div>

@@ -1,45 +1,21 @@
-import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
-import { Badge } from "@/components/ui/Badge";
+import { Pill } from "@/components/system/Cta";
+import { Signal } from "@/components/system/Signal";
 
-export function PageHero({
-  eyebrow,
-  title,
-  subtitle,
-}: {
-  eyebrow: string;
-  title: string;
-  subtitle?: string;
-}) {
+/** En-tête des pages intérieures, dans la direction « nacre & verre ». */
+export function PageHero({ eyebrow, title, subtitle }: { eyebrow: string; title: string; subtitle?: string }) {
   return (
-    <section className="relative overflow-hidden pt-16 pb-16 md:pt-24 md:pb-20">
-      <div className="pointer-events-none absolute inset-0 -z-10 opacity-[0.035]">
-        <div
-          className="h-full w-full"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(26,24,20,1) 1px, transparent 1px), linear-gradient(90deg, rgba(26,24,20,1) 1px, transparent 1px)",
-            backgroundSize: "56px 56px",
-          }}
-        />
+    <section className="relative overflow-hidden px-3 pb-10 pt-12 md:px-5 md:pb-14 md:pt-16">
+      <div className="mx-auto max-w-7xl px-3 md:px-7">
+        <Reveal className="grid gap-6 lg:grid-cols-[1.5fr_1fr] lg:items-end">
+          <div>
+            <Pill className="bg-white/60">{eyebrow}</Pill>
+            <h1 className="display mt-5 text-[clamp(2.2rem,5.2vw,4.6rem)] text-deep">{title}</h1>
+          </div>
+          {subtitle && <p className="max-w-md font-sans leading-relaxed text-deep-soft">{subtitle}</p>}
+        </Reveal>
       </div>
-      <Container className="max-w-3xl">
-        <Reveal>
-          <Badge>{eyebrow}</Badge>
-        </Reveal>
-        <Reveal delay={0.08}>
-          <h1 className="font-heading mt-6 text-4xl font-light leading-[1.1] text-ink sm:text-5xl md:text-6xl">
-            {title}
-          </h1>
-        </Reveal>
-        {subtitle && (
-          <Reveal delay={0.16}>
-            <p className="font-body mt-6 max-w-xl text-base font-light leading-relaxed text-ink-soft md:text-lg">
-              {subtitle}
-            </p>
-          </Reveal>
-        )}
-      </Container>
+      <Signal className="mt-8 h-10 w-full opacity-80" />
     </section>
   );
 }
