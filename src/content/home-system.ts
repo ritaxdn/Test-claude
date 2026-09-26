@@ -78,11 +78,11 @@ export const homeSystem = {
     },
     technologies: {
       eyebrow: "02 — Technologies",
-      title: "Nos technologies,",
-      titleAccent: "par type de soin.",
+      title: "Des technologies",
+      titleAccent: "pour chaque indication.",
       intro: "Les dispositifs de dernière génération LGL Expert, dont Cellulift est le distributeur officiel en Afrique, tous certifiés CE Médical et FDA.",
       columns: { ref: "", name: "", category: "", indications: "" },
-      viewAll: "Explorer les technologies",
+      viewAll: "Explorer nos technologies",
     },
     academy: {
       eyebrow: "04 — Cellulift Academy",
@@ -174,11 +174,11 @@ export const homeSystem = {
     },
     technologies: {
       eyebrow: "02 — Technologies",
-      title: "Our technologies,",
-      titleAccent: "by treatment type.",
+      title: "Technology",
+      titleAccent: "for every indication.",
       intro: "Latest-generation LGL Expert devices, of which Cellulift is the official distributor in Africa, all CE Medical and FDA certified.",
       columns: { ref: "", name: "", category: "", indications: "" },
-      viewAll: "Explore the technologies",
+      viewAll: "Explore our technologies",
     },
     academy: {
       eyebrow: "04 — Cellulift Academy",

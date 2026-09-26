@@ -5,20 +5,20 @@ import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
 import { Pill, Cta } from "./Cta";
 import { Machine } from "./Machine";
 import type { Locale } from "@/lib/i18n/config";
-import { categories, technologiesIn, universeCover, type CategoryKey } from "@/content/technologies";
+import { categories, universeCover, type CategoryKey } from "@/content/technologies";
 import { homeSystem } from "@/content/home-system";
 
-/** Les familles de technologies (par type de soin) en grandes cartes : au survol, la machine apparaît sous un faisceau de balayage. */
+/** Les familles de technologies (par indication) en grandes cartes : au survol, la machine apparaît sous un faisceau de balayage. */
 export function TechIndex({ locale }: { locale: Locale }) {
   const c = homeSystem[locale].technologies;
   const keys = Object.keys(categories) as CategoryKey[];
   return (
     <section className="px-3 pb-12 md:px-5 md:pb-16">
       <div className="mx-auto max-w-7xl px-3 md:px-7">
-        <Reveal className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+        <Reveal className="flex flex-col items-start gap-6">
           <div>
             <Pill>{c.eyebrow}</Pill>
-            <h2 className="display mt-4 text-[clamp(2rem,5vw,4.6rem)] text-deep">
+            <h2 className="display mt-4 text-[clamp(2rem,4.3vw,4.4rem)] text-deep">
               <span className="block">{c.title}</span>
               <span className="iridescent-text block">{c.titleAccent}</span>
             </h2>
@@ -65,9 +65,6 @@ export function TechIndex({ locale }: { locale: Locale }) {
                   <h3 className={`display text-[clamp(1.15rem,1.9vw,1.9rem)] leading-[0.95] transition-colors duration-300 ${ink}`}>
                     {categories[key][locale]}
                   </h3>
-                  <p className={`mt-3 line-clamp-2 font-sans text-xs transition-colors duration-300 ${soft}`}>
-                    {technologiesIn(key).slice(0, 4).map((t) => t.name).join(" · ")}
-                  </p>
                 </div>
               </Link>
             </RevealItem>
