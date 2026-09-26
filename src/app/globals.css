@@ -338,3 +338,13 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .cta-ring { animation: none; }
 }
+
+/* Téléphone : échelle plus fine et plus sobre (titres moins massifs, boutons compacts). */
+@media (max-width: 639px) {
+  html { font-size: 15px; }
+  .display { font-stretch: 108%; letter-spacing: -0.025em; }
+  h1.display { font-size: 2.35rem !important; line-height: 1 !important; }
+  h2.display { font-size: 1.7rem !important; line-height: 1.02 !important; }
+  h3.display { font-size: 1.12rem !important; }
+  .stat-num { font-size: 2.4rem !important; }
+}

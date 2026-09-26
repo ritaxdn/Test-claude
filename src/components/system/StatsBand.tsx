@@ -16,7 +16,7 @@ export function StatsBand({ locale }: { locale: Locale }) {
             className="relative border-t border-deep/15 pb-6 pt-4 pr-4 lg:border-l lg:border-t-0 lg:pl-6 lg:first:border-l-0 lg:first:pl-0"
           >
             <span className="data-label text-deep-soft">{String(i + 1).padStart(2, "0")}</span>
-            <p className="display mt-3 flex items-baseline gap-2 text-[clamp(2.6rem,5.4vw,6rem)] leading-[0.85] text-deep">
+            <p className="display stat-num mt-3 flex items-baseline gap-2 text-[clamp(2.6rem,5.4vw,6rem)] leading-[0.85] text-deep">
               <span className={i === 1 ? "iridescent-text" : undefined}>{fill(s.value)}</span>
               {"unit" in s && s.unit && (
                 <span className="text-[clamp(1rem,2vw,1.8rem)] tracking-normal">{s.unit}</span>

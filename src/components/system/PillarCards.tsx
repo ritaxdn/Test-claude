@@ -20,7 +20,7 @@ export function PillarCards({ pillars }: { pillars: readonly Pillar[] }) {
             aria-expanded={on}
             onClick={() => setOpen(on ? null : p.code)}
             className={cn(
-              "glass group flex w-full flex-col rounded-[1.75rem] p-5 text-left transition-shadow duration-300 sm:p-7",
+              "glass group flex w-full flex-col rounded-[1.5rem] px-5 py-4 text-left transition-shadow duration-300 sm:p-7",
               on ? "glass-strong" : "hover:bg-white/60"
             )}
           >
@@ -35,7 +35,7 @@ export function PillarCards({ pillars }: { pillars: readonly Pillar[] }) {
                 <Plus size={15} strokeWidth={1.75} />
               </span>
             </span>
-            <span className="display mt-4 block text-[1.3rem] leading-[1.05] text-deep sm:mt-8 sm:min-h-[2.1em] lg:flex lg:items-end">{p.name}</span>
+            <span className="display mt-2 block text-[1.3rem] leading-[1.05] text-deep sm:mt-8 sm:min-h-[2.1em] lg:flex lg:items-end">{p.name}</span>
             {/* Détail, révélé au clic */}
             <span
               className={cn(

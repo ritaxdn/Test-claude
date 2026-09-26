@@ -39,7 +39,7 @@ export function TechIndex({ locale }: { locale: Locale }) {
               <RevealItem key={key}>
                 <Link
                   href={`/${locale}/technologies#${key}`}
-                  className="glass group relative flex aspect-[5/4] flex-col overflow-hidden rounded-[1.75rem] p-5 md:p-6"
+                  className="glass group relative flex aspect-[16/10] flex-col overflow-hidden sm:aspect-[5/4] rounded-[1.75rem] p-5 md:p-6"
                 >
                   {cover && (
                     <div className="pointer-events-none absolute inset-0 transition-all duration-700 ease-out md:scale-105 md:opacity-0 md:group-hover:scale-100 md:group-hover:opacity-100">

@@ -42,7 +42,7 @@ export function SystemHero({ locale }: { locale: Locale }) {
             {c.titleAccent}
           </p>
 
-          <div className="mt-8 flex animate-fade-rise flex-col gap-3 opacity-0 [animation-delay:360ms] sm:flex-row">
+          <div className="mt-8 flex animate-fade-rise flex-wrap gap-3 opacity-0 [animation-delay:360ms]">
             <Cta href={`/${locale}/contact`}>{c.ctaPrimary}</Cta>
             <Cta href={`/${locale}/technologies`} variant="line">
               {c.ctaSecondary}

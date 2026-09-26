@@ -20,7 +20,7 @@ export function ProjectCta({ locale }: { locale: Locale }) {
           </div>
           <div className="mt-8 max-w-lg">
             <p className="font-sans leading-relaxed text-deep-soft">{c.text}</p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-8 flex flex-wrap gap-3">
               <Cta href={`/${locale}/contact`}>{c.ctaPrimary}</Cta>
               <Cta href={`tel:${company.phone.replace(/\s/g, "")}`} variant="line">
                 {c.ctaSecondary} · {company.phone}

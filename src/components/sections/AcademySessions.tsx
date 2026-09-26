@@ -94,7 +94,7 @@ export function AcademySessions({ locale, eyebrow, title }: { locale: Locale; ey
             })}
           </Reveal>
         )}
-        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="mt-6 flex flex-wrap items-center gap-3">
           <Cta href={academyCalendarUrl} variant="line">{l.calendar}</Cta>
           <a
             href={company.social.instagramAcademy.url}
