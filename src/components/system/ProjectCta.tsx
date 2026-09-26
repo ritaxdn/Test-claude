@@ -3,6 +3,7 @@ import { Signal } from "./Signal";
 import { Cta } from "./Cta";
 import type { Locale } from "@/lib/i18n/config";
 import { homeSystem } from "@/content/home-system";
+import { company } from "@/content/company";
 
 export function ProjectCta({ locale }: { locale: Locale }) {
   const c = homeSystem[locale].cta;
@@ -21,7 +22,9 @@ export function ProjectCta({ locale }: { locale: Locale }) {
             <p className="font-sans leading-relaxed text-deep-soft">{c.text}</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Cta href={`/${locale}/contact`}>{c.ctaPrimary}</Cta>
-              <Cta href={`/${locale}/contact`} variant="line">{c.ctaSecondary}</Cta>
+              <Cta href={`tel:${company.phone.replace(/\s/g, "")}`} variant="line">
+                {c.ctaSecondary} · {company.phone}
+              </Cta>
             </div>
           </div>
         </div>
