@@ -19,7 +19,7 @@ export function SystemHero({ locale }: { locale: Locale }) {
       </div>
 
       <div className="relative mx-auto w-full max-w-7xl">
-        <div className="max-w-2xl">
+        <div className="max-w-3xl">
           {/* Repères de confiance */}
           <ul className="flex animate-fade-rise flex-wrap gap-2 opacity-0">
             {c.badges.map((b) => (
@@ -33,12 +33,16 @@ export function SystemHero({ locale }: { locale: Locale }) {
             ))}
           </ul>
 
-          <h1 className="display mt-7 animate-fade-rise text-[clamp(2.6rem,6vw,5.6rem)] leading-[0.95] text-deep opacity-0 [animation-delay:120ms]">
-            <span className="block">{c.title[0]}</span>
-            <span className="iridescent-text block">{c.title[1]}</span>
+          {/* H1 : ligne de contexte (ce que fait Cellulift) + grand titre de marque */}
+          <h1 className="mt-7 animate-fade-rise text-deep opacity-0 [animation-delay:120ms]">
+            <span className="data-label block text-deep">{c.seo}</span>
+            <span className="display hero-title mt-4 block text-[clamp(2.3rem,4.1vw,4.1rem)] leading-[0.95]">
+              <span className="block">{c.title[0]}</span>
+              <span className="iridescent-text block">{c.title[1]}</span>
+            </span>
           </h1>
 
-          <p className="mt-6 max-w-md animate-fade-rise font-sans text-base leading-relaxed text-deep opacity-0 [animation-delay:240ms] md:text-lg">
+          <p className="mt-6 max-w-md animate-fade-rise font-sans text-sm font-medium tracking-wide text-deep opacity-0 [animation-delay:240ms] md:text-base">
             {c.titleAccent}
           </p>
 

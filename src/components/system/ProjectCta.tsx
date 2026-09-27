@@ -22,10 +22,13 @@ export function ProjectCta({ locale }: { locale: Locale }) {
             <p className="font-sans leading-relaxed text-deep-soft">{c.text}</p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Cta href={`/${locale}/contact`}>{c.ctaPrimary}</Cta>
-              <Cta href={`tel:${company.phone.replace(/\s/g, "")}`} variant="line">
-                {c.ctaSecondary} · {company.phone}
+              <Cta href={`/${locale}/contact`} variant="line">
+                {c.ctaSecondary}
               </Cta>
             </div>
+            <a href={`tel:${company.phone.replace(/\s/g, "")}`} className="data-label mt-6 inline-block text-deep-soft hover:text-deep">
+              {company.phone}
+            </a>
           </div>
         </div>
       </Reveal>

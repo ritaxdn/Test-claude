@@ -23,8 +23,8 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       <Ticker locale={lang} />
       <StatsBand locale={lang} />
       <PartnersBand locale={lang} />
-      <SystemPillars locale={lang} />
       <TechIndex locale={lang} />
+      <SystemPillars locale={lang} />
       <WhyCellulift locale={lang} />
       <AcademySupport locale={lang} />
       <ShowroomMap locale={lang} />

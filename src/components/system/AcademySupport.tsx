@@ -18,7 +18,7 @@ export function AcademySupport({ locale }: { locale: Locale }) {
             <div className="relative max-w-xl">
               <Pill className="bg-white/60">{a.eyebrow}</Pill>
               <h2 className="display mt-6 text-[clamp(1.6rem,2.8vw,2.5rem)] text-deep">{a.title}</h2>
-              <p className="mt-4 hidden font-sans leading-relaxed text-deep-soft sm:block">{a.text}</p>
+              <p className="data-label mt-4 text-deep-soft">{a.text}</p>
               <div className="mt-8">
                 <Cta href={`/${locale}/academy`}>{a.cta}</Cta>
               </div>
