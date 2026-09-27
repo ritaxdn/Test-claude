@@ -1,40 +1,34 @@
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
 import { Heading } from "./Heading";
-import { Cta, Pill } from "./Cta";
+import { Cta } from "./Cta";
 import type { Locale } from "@/lib/i18n/config";
 import { homeSystem } from "@/content/home-system";
 import { academyPageContent } from "@/content/academy-page";
 
-/** Academy et Support : des actifs de marque, en mosaïque de cartes. */
+/** Academy (éditorial) et Support (lecture technique) : deux rythmes différents, sans cartes. */
 export function AcademySupport({ locale }: { locale: Locale }) {
   const a = homeSystem[locale].academy;
   const s = homeSystem[locale].support;
   const faculty = academyPageContent[locale].faculty.members;
   return (
     <>
-      <section className="px-3 pb-12 md:px-5 md:pb-16">
-        <div className="mx-auto grid max-w-7xl gap-3 px-3 md:px-7 lg:grid-cols-[1.35fr_1fr]">
-          <Reveal className="glass relative overflow-hidden rounded-[1.5rem] p-5 sm:rounded-[1.75rem] sm:p-7 md:p-9">
-            <div className="relative max-w-xl">
-              <Pill className="bg-white/60">{a.eyebrow}</Pill>
-              <h2 className="display mt-6 text-[clamp(1.6rem,2.8vw,2.5rem)] text-deep">{a.title}</h2>
-              <p className="data-label mt-4 text-deep-soft">{a.text}</p>
-              <div className="mt-8">
-                <Cta href={`/${locale}/academy`}>{a.cta}</Cta>
-              </div>
+      {/* Academy : éditorial, grand espace, sans cartes (prévu pour une photo/vidéo plein cadre) */}
+      <section className="px-3 py-16 md:px-5 md:py-28">
+        <div className="mx-auto grid max-w-7xl gap-10 px-3 md:px-7 lg:grid-cols-[1.5fr_1fr] lg:items-end">
+          <Reveal>
+            <p className="data-label text-deep-soft">{a.eyebrow}</p>
+            <h2 className="display mt-5 text-[clamp(1.9rem,3.6vw,3.4rem)] leading-[0.98] text-deep">{a.title}</h2>
+            <p className="data-label mt-5 text-deep">{a.text}</p>
+            <div className="mt-8">
+              <Cta href={`/${locale}/academy`}>{a.cta}</Cta>
             </div>
           </Reveal>
-          <RevealGroup className="grid gap-3">
+          <RevealGroup className="border-t border-deep/15">
             {faculty.map((m) => (
-              <RevealItem key={m.name} className="glass rounded-[1.25rem] p-4 sm:rounded-[1.75rem] sm:p-7 md:p-8">
+              <RevealItem key={m.name} className="border-b border-deep/15 py-5">
                 <p className="data-label text-deep-soft">{a.facultyLabel}</p>
-                <p className="display mt-3 text-2xl text-deep sm:mt-6">{m.name}</p>
-                <p className="mt-1 font-sans text-sm text-deep-soft">{m.role}</p>
-                <ul className="mt-6 hidden space-y-2 border-t border-deep/10 pt-5 sm:block">
-                  {m.credentials.map((c) => (
-                    <li key={c} className="font-sans text-sm leading-snug text-deep/80">{c}</li>
-                  ))}
-                </ul>
+                <p className="mt-2 font-sans text-lg font-medium text-deep">{m.name}</p>
+                <p className="mt-0.5 font-sans text-sm text-deep-soft">{m.role}</p>
               </RevealItem>
             ))}
           </RevealGroup>
@@ -44,12 +38,13 @@ export function AcademySupport({ locale }: { locale: Locale }) {
       <section className="px-3 pb-12 md:px-5 md:pb-16">
         <div className="mx-auto max-w-7xl px-3 md:px-7">
           <Heading eyebrow={s.eyebrow} title={s.title} intro={s.text} />
-          <RevealGroup className="mt-6 grid grid-cols-2 gap-2.5 sm:mt-8 sm:gap-3 lg:grid-cols-4">
+          {/* Lecture technique : lignes fines façon fiche de diagnostic */}
+          <RevealGroup className="mt-8 border-t border-deep/15">
             {s.items.map((it) => (
-              <RevealItem key={it.code} className="glass flex flex-col rounded-[1.25rem] p-4 sm:min-h-[9rem] sm:rounded-[1.5rem] sm:p-7">
-                <Pill className="self-start bg-white/60">{it.code}</Pill>
-                <h3 className="mt-auto pt-4 font-sans text-sm font-medium text-deep sm:pt-5 sm:text-base">{it.title}</h3>
-                <p className="mt-1 font-sans text-xs leading-snug text-deep-soft sm:mt-2 sm:text-sm sm:leading-relaxed">{it.text}</p>
+              <RevealItem key={it.code} className="grid grid-cols-[2.5rem_1fr] items-baseline gap-x-4 border-b border-deep/15 py-4 sm:grid-cols-[3rem_1fr_1.2fr] sm:py-5">
+                <span className="data-label text-deep-soft">{it.code}</span>
+                <span className="font-sans text-base font-medium text-deep sm:text-lg">{it.title}</span>
+                <span className="col-start-2 font-sans text-sm text-deep-soft sm:col-start-3">{it.text}</span>
               </RevealItem>
             ))}
           </RevealGroup>

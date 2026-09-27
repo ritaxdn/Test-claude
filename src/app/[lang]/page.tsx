@@ -4,7 +4,6 @@ import { SystemHero } from "@/components/system/SystemHero";
 import { SystemPillars } from "@/components/system/SystemPillars";
 import { Ticker } from "@/components/system/Ticker";
 import { StatsBand } from "@/components/system/StatsBand";
-import { PartnersBand } from "@/components/system/PartnersBand";
 import { TechIndex } from "@/components/system/TechIndex";
 import { WhyCellulift } from "@/components/system/WhyCellulift";
 import { AcademySupport } from "@/components/system/AcademySupport";
@@ -22,7 +21,6 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       <SystemHero locale={lang} />
       <Ticker locale={lang} />
       <StatsBand locale={lang} />
-      <PartnersBand locale={lang} />
       <TechIndex locale={lang} />
       <SystemPillars locale={lang} />
       <WhyCellulift locale={lang} />

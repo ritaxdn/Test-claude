@@ -20,7 +20,7 @@ export function TechIndex({ locale }: { locale: Locale }) {
         <Reveal className="flex flex-col items-start gap-6">
           <div>
             <Pill>{c.eyebrow}</Pill>
-            <h2 className="display mt-4 text-[clamp(2rem,4.3vw,4.4rem)] text-deep">
+            <h2 className="display mt-4 text-[clamp(1.6rem,2.6vw,2.5rem)] text-deep">
               <span className="block">{c.title}</span>
               <span className="iridescent-text block">{c.titleAccent}</span>
             </h2>

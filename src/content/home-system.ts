@@ -17,7 +17,7 @@ export const homeSystem = {
       { value: "20+", label: "Ans d'expertise" },
       { value: "1000+", label: "Médecins équipés" },
       { value: "24", unit: "mois", label: "De garantie" },
-      { value: "{s}", label: "Showrooms" },
+      { value: "{s}", label: "Points de vente" },
     ],
     // Bandeau défilant sous le hero.
     ticker: [
@@ -43,12 +43,12 @@ export const homeSystem = {
       eyebrow: "03 — Pourquoi Cellulift",
       title: "Pourquoi Cellulift ?",
       intro: "",
+      // Preuves, présentées comme des données : la valeur domine, le libellé reste discret.
       items: [
-        { title: "Distributeur officiel LGL Expert", text: "Cellulift est le distributeur officiel de la marque LGL Expert en Afrique." },
-        { title: "Certifiées CE et FDA", text: "Toutes nos machines sont certifiées CE et FDA." },
-        { title: "Garantie 24 mois", text: "Pièces et main-d'œuvre, avec possibilité de déplacement du staff technique." },
-        { title: "Expertise médicale", text: "Médecins, formateurs et experts spécialisés." },
-        { title: "Depuis 2002", text: "Plus de 20 ans d'expertise dans les dispositifs médico-esthétiques." },
+        { value: "LGL Expert", title: "Distributeur officiel · Afrique", text: "" },
+        { value: "CE · FDA", title: "Machines certifiées", text: "" },
+        { value: "4 marchés", title: "Maroc · France · Sénégal · Arabie saoudite", text: "" },
+        { value: "Médical", title: "Médecins, formateurs et experts spécialisés", text: "" },
       ],
     },
     technologies: {
@@ -85,7 +85,7 @@ export const homeSystem = {
       hq: "Siège",
       onRequest: "Adresse communiquée sur rendez-vous.",
       cta: "Prendre rendez-vous au showroom",
-      list: "Showrooms",
+      list: "Points de vente",
     },
     cta: {
       eyebrow: "07 — Votre projet",
@@ -108,7 +108,7 @@ export const homeSystem = {
       { value: "20+", label: "Years of expertise" },
       { value: "1000+", label: "Physicians equipped" },
       { value: "24", unit: "months", label: "Warranty" },
-      { value: "{s}", label: "Showrooms" },
+      { value: "{s}", label: "Points of sale" },
     ],
     ticker: [
       "All our devices are CE and FDA certified",
@@ -134,11 +134,10 @@ export const homeSystem = {
       title: "Why Cellulift?",
       intro: "",
       items: [
-        { title: "Official LGL Expert distributor", text: "Cellulift is the official distributor of the LGL Expert brand in Africa." },
-        { title: "CE and FDA certified", text: "All our devices are CE and FDA certified." },
-        { title: "24-month warranty", text: "Parts and labour, with on-site visits by our technical staff." },
-        { title: "Medical expertise", text: "Physicians, trainers and specialist experts." },
-        { title: "Since 2002", text: "Over 20 years of expertise in medical aesthetic devices." },
+        { value: "LGL Expert", title: "Official distributor · Africa", text: "" },
+        { value: "CE · FDA", title: "Certified devices", text: "" },
+        { value: "4 markets", title: "Morocco · France · Senegal · Saudi Arabia", text: "" },
+        { value: "Medical", title: "Physicians, trainers and specialist experts", text: "" },
       ],
     },
     technologies: {
@@ -175,7 +174,7 @@ export const homeSystem = {
       hq: "Head office",
       onRequest: "Address shared by appointment.",
       cta: "Book a showroom visit",
-      list: "Showrooms",
+      list: "Points of sale",
     },
     cta: {
       eyebrow: "07 — Your project",

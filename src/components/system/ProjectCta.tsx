@@ -14,7 +14,7 @@ export function ProjectCta({ locale }: { locale: Locale }) {
         <div className="relative mx-auto max-w-7xl px-6 pb-10 pt-12 md:px-12 md:pb-12 md:pt-14">
           <div className="max-w-3xl">
             <p className="data-label text-deep-soft">{c.eyebrow}</p>
-            <h2 className="display mt-6 text-[clamp(1.9rem,4.2vw,3.6rem)]">
+            <h2 className="display statement mt-6 text-[clamp(2.4rem,5.6vw,5.4rem)] leading-[0.95]">
               <span className="iridescent-text">{c.title}</span>
             </h2>
           </div>
