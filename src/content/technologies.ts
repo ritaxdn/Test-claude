@@ -66,6 +66,7 @@ export const slugify = (s: string) =>
 const photos: Record<string, string[]> = {
   "dermabrasif-6g": ["00", "05", "01", "02", "03", "04"].map((n) => `/images/technologies/dermabrasif-6g/${n}.jpg`),
   brasilift: ["00", "01", "02", "03"].map((n) => `/images/technologies/brasilift/${n}.jpg`),
+  "slimax-lipo-7": ["00", "01"].map((n) => `/images/technologies/slimax-lipo-7/${n}.jpg`),
 };
 
 export const technologies: Technology[] = (Object.keys(catalog) as CategoryKey[]).flatMap((category) =>

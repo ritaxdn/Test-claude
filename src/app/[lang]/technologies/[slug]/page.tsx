@@ -67,6 +67,8 @@ export default async function TechnologyDetailPage({
   const dict = getDictionary(lang);
   const l = t[lang];
   const family = technologiesIn(tech.category).filter((x) => x.slug !== tech.slug);
+  // Deux photos : présentées côte à côte au format portrait, sans recadrage de la machine.
+  const pair = tech.images?.length === 2;
   const hasSheet = !!(tech.description || tech.indications?.length || tech.benefits?.length);
 
   return (
@@ -82,7 +84,7 @@ export default async function TechnologyDetailPage({
         <Reveal className="mt-10 grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:items-end">
           <div>
             <Pill className="bg-white/60">{categories[tech.category][lang]}</Pill>
-            <h1 className="display mt-6 text-[clamp(2.4rem,6vw,5.6rem)] text-deep">{tech.name}</h1>
+            <h1 className="display mt-6 text-balance text-[clamp(2.4rem,6vw,5.6rem)] text-deep">{tech.name}</h1>
             {tech.tagline && <p className="mt-6 max-w-xl font-sans text-lg text-deep-soft">{tech.tagline[lang]}</p>}
             {tech.certifications && (
               <div className="mt-6 flex flex-wrap gap-2">
@@ -99,12 +101,15 @@ export default async function TechnologyDetailPage({
         </Reveal>
 
         {tech.images?.length ? (
-          <Reveal className="mt-12 grid grid-cols-2 gap-3 md:grid-cols-3">
+          <Reveal className={`mt-12 grid grid-cols-2 gap-3 ${pair ? "" : "md:grid-cols-3"}`}>
             {tech.images.map((src, i) => (
               <div
                 key={src}
                 className={`relative overflow-hidden rounded-[1.75rem] bg-[#0b0d14] ${
-                  i === 0
+                  // Deux photos (portrait) : côte à côte, entières.
+                  pair
+                    ? "aspect-[2/3]"
+                    : i === 0
                     ? "col-span-2 aspect-[4/5] md:row-span-2 md:aspect-auto"
                     : // Sur téléphone, une vignette seule en fin de grille prend toute la largeur.
                       i === tech.images!.length - 1 && tech.images!.length % 2 === 0
@@ -117,7 +122,7 @@ export default async function TechnologyDetailPage({
                   alt={`${tech.name} — ${i + 1}`}
                   fill
                   priority={i === 0}
-                  sizes={i === 0 ? "(min-width:768px) 66vw, 100vw" : "(min-width:768px) 33vw, 50vw"}
+                  sizes={pair ? "50vw" : i === 0 ? "(min-width:768px) 66vw, 100vw" : "(min-width:768px) 33vw, 50vw"}
                   className="object-cover transition-transform duration-700 hover:scale-[1.03]"
                 />
               </div>
