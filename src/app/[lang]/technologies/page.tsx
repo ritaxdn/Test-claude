@@ -46,7 +46,6 @@ export default async function TechnologiesPage({
         <Container>
           <TechnologyGrid
             locale={lang}
-            allLabel={content.allLabel}
             readMoreLabel={dict.common.readMore}
           />
         </Container>
