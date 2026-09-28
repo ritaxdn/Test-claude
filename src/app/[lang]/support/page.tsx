@@ -5,6 +5,15 @@ import { localeAlternates } from "@/lib/alternates";
 import { supportPageContent } from "@/content/support-page";
 import { PageHero } from "@/components/sections/PageHero";
 import { ProcessSteps } from "@/components/sections/ProcessSteps";
+import { SystemStatus } from "@/components/sections/SystemStatus";
+import { ExplodedView } from "@/components/sections/ExplodedView";
+
+// Vue éclatée : photos réelles Brasilift et position de chaque pièce sur la scène (% ; centre 50/50).
+const explodedParts = [
+  { src: "/images/technologies/brasilift/01.jpg", x: 13, y: 25 },
+  { src: "/images/technologies/brasilift/02.jpg", x: 13, y: 75 },
+  { src: "/images/technologies/brasilift/03.jpg", x: 87, y: 50 },
+];
 import { WhyCellulift } from "@/components/sections/WhyCellulift";
 import { FinalCta } from "@/components/sections/FinalCta";
 import { company } from "@/content/company";
@@ -19,8 +28,8 @@ export async function generateMetadata({
   return {
     title: isFr ? "Support & Après-vente" : "Support & After-sales",
     description: isFr
-      ? "Installation, maintenance préventive et assistance technique : découvrez l'accompagnement long terme de Cellulift."
-      : "Installation, preventive maintenance and technical assistance: discover Cellulift's long-term support.",
+      ? "Garantie 24 mois, techniciens qui se déplacent, atelier intégré et ligne support directe : le SAV Cellulift."
+      : "24-month warranty, on-site technicians, in-house workshop and a direct support line: Cellulift after-sales.",
     alternates: localeAlternates("/support", lang),
   };
 }
@@ -41,6 +50,26 @@ export default async function SupportPage({
         eyebrow={content.hero.eyebrow}
         title={content.hero.title}
         subtitle={content.hero.subtitle}
+      />
+
+      <SystemStatus
+        eyebrow={content.status.eyebrow}
+        title={content.status.title}
+        live={content.status.live}
+        rows={content.status.rows.map((r) =>
+          r.value === "{phone}"
+            ? { ...r, value: company.supportPhone, href: `tel:${company.supportPhone.replace(/\s/g, "")}` }
+            : { ...r }
+        )}
+      />
+
+      <ExplodedView
+        eyebrow={content.exploded.eyebrow}
+        title={content.exploded.title}
+        intro={content.exploded.intro}
+        machine="/images/technologies/brasilift/00.jpg"
+        machineAlt={content.exploded.machineAlt}
+        parts={content.exploded.parts.map((part, i) => ({ ...part, ...explodedParts[i] }))}
       />
 
       <ProcessSteps

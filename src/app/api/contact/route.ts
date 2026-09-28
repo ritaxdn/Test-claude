@@ -50,8 +50,9 @@ function recipients(subject?: string) {
 async function sendToCellulift(body: ContactPayload) {
   const key = process.env.RESEND_API_KEY;
   if (!key) {
-    console.warn("[contact] RESEND_API_KEY manquante : demande non envoyée par e-mail", body);
-    return true;
+    // Pas de faux « Merci » : sans clé, la demande serait perdue sans que personne ne le sache.
+    console.error("[contact] RESEND_API_KEY manquante dans cet environnement Vercel : demande non envoyée.");
+    return false;
   }
   const rows: [string, string | undefined][] = [
     ["Nom", body.name],

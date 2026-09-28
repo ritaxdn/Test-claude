@@ -96,3 +96,31 @@ function Step({
     </motion.li>
   );
 }
+
+/** Petite impulsion ECG qui se trace sous un chiffre clé, à son apparition. */
+export function PulseMark({ delay = 0, className = "" }: { delay?: number; className?: string }) {
+  const reduce = useSafeReducedMotion();
+  return (
+    <svg viewBox="0 0 120 20" className={`h-4 w-24 overflow-visible ${className}`} aria-hidden>
+      <defs>
+        <linearGradient id="pulse-grad" x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0" stopColor="var(--rainbow-1)" />
+          <stop offset="0.5" stopColor="var(--rainbow-2)" />
+          <stop offset="1" stopColor="var(--rainbow-3)" />
+        </linearGradient>
+      </defs>
+      <motion.path
+        d="M0 12 H46 L52 4 L58 19 L64 1 L70 12 H120"
+        fill="none"
+        stroke="url(#pulse-grad)"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        initial={{ pathLength: reduce ? 1 : 0, opacity: reduce ? 1 : 0.3 }}
+        whileInView={{ pathLength: 1, opacity: 1 }}
+        viewport={{ once: true, margin: "-10% 0px" }}
+        transition={{ duration: 1.2, delay, ease: [0.45, 0, 0.2, 1] }}
+      />
+    </svg>
+  );
+}

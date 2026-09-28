@@ -2,15 +2,16 @@ export const academyPageContent = {
   fr: {
     hero: {
       eyebrow: "Cellulift Academy",
-      title: "La formation, condition d'une pratique sûre.",
+      title: "La technologie s'acquiert. La maîtrise se construit.",
       subtitle:
-        "Cellulift Academy forme les médecins, dermatologues et praticiens à la maîtrise scientifique et clinique des technologies médico-esthétiques — au-delà du simple mode d'emploi.",
+        "Cellulift Academy accompagne médecins et praticiens de l'installation à la maîtrise clinique : formation initiale, protocoles, workshops et perfectionnement.",
     },
     whyTraining: {
-      eyebrow: "Pourquoi la formation compte",
-      title: "Une machine n'est jamais une garantie de résultat",
+      eyebrow: "Le parcours Academy",
+      title: "Une machine n'est jamais une garantie de résultat.",
       description:
-        "La sécurité patient et la qualité des résultats dépendent d'abord de la maîtrise du praticien : sélection des indications, réglages, gestion des effets indésirables et suivi. C'est pourquoi chaque acquisition Cellulift s'accompagne d'un parcours de formation structuré.",
+        "Les résultats et la sécurité patient dépendent de la maîtrise du praticien. C'est pourquoi chaque acquisition Cellulift s'accompagne d'un parcours de formation.",
+      steps: ["Installation", "Formation initiale", "Protocoles", "Perfectionnement"],
     },
     programsEyebrow: "Calendrier",
     programsTitle: "Prochaines formations",
@@ -24,9 +25,9 @@ export const academyPageContent = {
             "Nos formations sont dispensées par des médecins et experts ayant une pratique clinique active.",
         },
         {
-          title: "Approche scientifique",
+          title: "Protocoles cliniques",
           description:
-            "Chaque protocole enseigné repose sur des données cliniques et des standards de sécurité reconnus.",
+            "Des protocoles de traitement transmis technologie par technologie, avec les réglages et les précautions d'usage.",
         },
         {
           title: "Pratique encadrée",
@@ -70,15 +71,16 @@ export const academyPageContent = {
   en: {
     hero: {
       eyebrow: "Cellulift Academy",
-      title: "Training as the foundation of safe practice.",
+      title: "Technology can be acquired. Mastery is built.",
       subtitle:
-        "Cellulift Academy trains physicians, dermatologists and practitioners in the scientific and clinical mastery of medical aesthetic technologies — well beyond a simple user manual.",
+        "Cellulift Academy supports physicians and practitioners from installation to clinical mastery: initial training, protocols, workshops and advanced courses.",
     },
     whyTraining: {
-      eyebrow: "Why training matters",
-      title: "A machine is never a guarantee of results",
+      eyebrow: "The Academy journey",
+      title: "A machine is never a guarantee of results.",
       description:
-        "Patient safety and result quality depend first on practitioner mastery: indication selection, settings, adverse-effect management and follow-up. That's why every Cellulift acquisition comes with a structured training path.",
+        "Results and patient safety depend on the practitioner's mastery. That is why every Cellulift acquisition comes with a training journey.",
+      steps: ["Installation", "Initial training", "Protocols", "Advanced courses"],
     },
     programsEyebrow: "Calendar",
     programsTitle: "Upcoming training",
@@ -92,9 +94,9 @@ export const academyPageContent = {
             "Our training is delivered by physicians and experts with active clinical practice.",
         },
         {
-          title: "Scientific approach",
+          title: "Clinical protocols",
           description:
-            "Every protocol taught is grounded in clinical data and recognized safety standards.",
+            "Treatment protocols passed on device by device, with settings and precautions for use.",
         },
         {
           title: "Supervised practice",

@@ -5,10 +5,10 @@ import { localeAlternates } from "@/lib/alternates";
 import { academyPageContent } from "@/content/academy-page";
 import { company } from "@/content/company";
 import { PageHero } from "@/components/sections/PageHero";
-import { Positioning } from "@/components/sections/Positioning";
 import { AcademySessions } from "@/components/sections/AcademySessions";
 import { WhyCellulift } from "@/components/sections/WhyCellulift";
 import { FinalCta } from "@/components/sections/FinalCta";
+import { ProtocolPath } from "@/components/system/SignalPath";
 import { Faculty } from "@/components/sections/Faculty";
 
 // Les sessions passées disparaissent : la page est régénérée chaque jour.
@@ -48,11 +48,17 @@ export default async function AcademyPage({
         subtitle={content.hero.subtitle}
       />
 
-      <Positioning
-        eyebrow={content.whyTraining.eyebrow}
-        title={content.whyTraining.title}
-        description={content.whyTraining.description}
-      />
+      {/* Le parcours de formation, visualisé : le tracé ECG progresse au défilement */}
+      <section className="px-3 pb-12 md:px-5 md:pb-20">
+        <div className="mx-auto max-w-7xl px-3 md:px-7">
+          <p className="data-label text-deep-soft">{content.whyTraining.eyebrow}</p>
+          <h2 className="display mt-4 max-w-3xl text-[clamp(1.6rem,3vw,2.6rem)] leading-[1] text-deep">{content.whyTraining.title}</h2>
+          <p className="mt-4 max-w-xl font-sans leading-relaxed text-deep-soft">{content.whyTraining.description}</p>
+          <div className="mt-10 md:mt-14">
+            <ProtocolPath steps={content.whyTraining.steps} />
+          </div>
+        </div>
+      </section>
 
       <AcademySessions locale={lang} eyebrow={content.programsEyebrow} title={content.programsTitle} />
 

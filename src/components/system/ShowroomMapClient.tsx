@@ -323,7 +323,7 @@ export function ShowroomMapClient({
           </p>
           <p className="display mt-3 text-2xl text-deep">{current.city}</p>
           <p className="data-label mt-2 text-deep-soft">{current.coords}</p>
-          <p className="mt-3 font-sans text-sm leading-relaxed text-deep-soft">{current.address || labels.onRequest}</p>
+          {current.address && <p className="mt-3 font-sans text-sm leading-relaxed text-deep-soft">{current.address}</p>}
           <Link
             href={contactHref}
             className="group mt-6 inline-flex items-center gap-2 font-sans text-sm text-deep hover:underline"

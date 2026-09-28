@@ -1,9 +1,10 @@
 import type { Locale } from "@/lib/i18n/config";
 import { homeSystem } from "@/content/home-system";
+import { company } from "@/content/company";
 
 /** Bandeau défilant en continu (se met en pause au survol, immobile si l'animation est réduite). */
 export function Ticker({ locale }: { locale: Locale }) {
-  const items = homeSystem[locale].ticker;
+  const items = homeSystem[locale].ticker.map((t) => t.replace("{s}", String(company.showrooms.length)));
   const row = (hidden: boolean) => (
     <ul className="flex shrink-0 items-center" aria-hidden={hidden || undefined}>
       {items.map((it) => (
