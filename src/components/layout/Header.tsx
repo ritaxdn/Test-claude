@@ -21,6 +21,15 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
     if (lastPathname !== null) setOpen(false);
   }
 
+  // Au défilement, le header se resserre et son signal s'active.
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   // Menu mobile : se ferme avec la touche Échap.
   useEffect(() => {
     if (!open) return;
@@ -45,7 +54,14 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
 
   return (
     <header className="sticky top-0 z-40 w-full px-3 pt-3 md:px-5">
-      <div className="glass-strong mx-auto flex w-full max-w-7xl items-center justify-between rounded-full py-1.5 pl-5 pr-1.5 md:py-2.5 md:pl-8 md:pr-2.5">
+      <div
+        data-scrolled={scrolled}
+        className={cn(
+          "header-glass mx-auto flex w-full max-w-7xl items-center justify-between rounded-full pl-5 pr-1.5 md:pl-8 md:pr-2.5",
+          scrolled ? "py-1 md:py-1.5" : "py-1.5 md:py-2.5"
+        )}
+      >
+        <span aria-hidden className="header-signal" />
         <div className="origin-left scale-[0.82] md:scale-100">
           <Logo locale={locale} size="sm" />
         </div>

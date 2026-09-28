@@ -45,10 +45,10 @@ export const homeSystem = {
       intro: "",
       // Preuves, présentées comme des données : la valeur domine, le libellé reste discret.
       items: [
-        { value: "LGL Expert", title: "Distributeur officiel · Afrique", text: "" },
-        { value: "CE · FDA", title: "Machines certifiées", text: "" },
-        { value: "3 marchés", title: "Maroc · France · Sénégal", text: "" },
-        { value: "Médical", title: "Médecins, formateurs et experts spécialisés", text: "" },
+        { label: "Distribution officielle", value: "LGL Expert", title: "Partenaire officiel en Afrique", text: "" },
+        { label: "Technologies certifiées", value: "CE · FDA", title: "Conformité précisée technologie par technologie", text: "" },
+        { label: "Présence internationale", value: "Maroc · France · Sénégal", title: "Accompagnement multi-marchés", text: "" },
+        { label: "Expertise médicale", value: "Médecins · Formateurs · Experts", title: "Protocoles et accompagnement clinique", text: "" },
       ],
     },
     technologies: {
@@ -62,7 +62,9 @@ export const homeSystem = {
     academy: {
       eyebrow: "04 — Cellulift Academy",
       title: "La technologie s'acquiert. La maîtrise se construit.",
-      text: "Formations · Protocoles · Workshops",
+      subtitle: "De l'installation à la maîtrise clinique.",
+      text: "Formation initiale · Protocoles · Workshops · Perfectionnement",
+      steps: ["Installation", "Formation", "Protocoles", "Maîtrise"],
       facultyLabel: "Formateur",
       cta: "Voir les prochaines formations",
     },
@@ -134,10 +136,10 @@ export const homeSystem = {
       title: "Why Cellulift?",
       intro: "",
       items: [
-        { value: "LGL Expert", title: "Official distributor · Africa", text: "" },
-        { value: "CE · FDA", title: "Certified devices", text: "" },
-        { value: "3 markets", title: "Morocco · France · Senegal", text: "" },
-        { value: "Medical", title: "Physicians, trainers and specialist experts", text: "" },
+        { label: "Official distribution", value: "LGL Expert", title: "Official partner in Africa", text: "" },
+        { label: "Certified technology", value: "CE · FDA", title: "Compliance detailed device by device", text: "" },
+        { label: "International presence", value: "Morocco · France · Senegal", title: "Multi-market support", text: "" },
+        { label: "Medical expertise", value: "Physicians · Trainers · Experts", title: "Protocols and clinical guidance", text: "" },
       ],
     },
     technologies: {
@@ -151,7 +153,9 @@ export const homeSystem = {
     academy: {
       eyebrow: "04 — Cellulift Academy",
       title: "Technology can be acquired. Mastery is built.",
-      text: "Training · Protocols · Workshops",
+      subtitle: "From installation to clinical mastery.",
+      text: "Initial training · Protocols · Workshops · Advanced courses",
+      steps: ["Installation", "Training", "Protocols", "Mastery"],
       facultyLabel: "Trainer",
       cta: "See upcoming training",
     },

@@ -351,3 +351,31 @@ body {
   /* Titres de cartes : sobres et lisibles, comme une appli (sans capitales étirées). */
   .card-title { font-family: var(--font-sans); font-stretch: normal; text-transform: none; font-weight: 600; letter-spacing: -0.01em; font-size: 0.95rem !important; line-height: 1.2 !important; }
 }
+
+/* Header : verre translucide, bordure technique fine ; au défilement il se resserre et son signal s'active. */
+.header-glass {
+  position: relative;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.34));
+  border: 1px solid rgba(29, 27, 38, 0.08);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.85) inset;
+  backdrop-filter: blur(24px) saturate(1.6);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  transition: background 0.5s ease, box-shadow 0.5s ease, padding 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.header-glass[data-scrolled="true"] {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.55));
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9) inset, 0 18px 40px -26px rgba(29, 27, 38, 0.35);
+}
+.header-signal {
+  position: absolute;
+  left: 2.5rem;
+  right: 2.5rem;
+  bottom: -1px;
+  height: 1px;
+  background: var(--gradient-rainbow);
+  transform: scaleX(0);
+  transform-origin: left;
+  opacity: 0;
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+}
+.header-glass[data-scrolled="true"] .header-signal { transform: scaleX(1); opacity: 0.8; }
