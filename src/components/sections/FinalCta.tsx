@@ -32,8 +32,7 @@ export function FinalCta({
   return (
     <section className="px-3 pb-3 md:px-5 md:pb-5">
       <Reveal className="glass relative overflow-hidden rounded-[2rem] md:rounded-[2.5rem]">
-        <Signal className="pointer-events-none absolute inset-x-0 bottom-3 h-14 opacity-40" animate={false} />
-        <div className="relative mx-auto max-w-7xl px-6 pb-10 pt-12 md:px-12 md:pb-12 md:pt-14">
+        <div className="relative mx-auto max-w-7xl px-6 pb-6 pt-12 md:px-12 md:pb-8 md:pt-14">
           <h2 className="display max-w-3xl text-[clamp(1.9rem,4.2vw,3.6rem)]">
             <span className="iridescent-text">{title}</span>
           </h2>
@@ -54,6 +53,8 @@ export function FinalCta({
             </a>
           )}
         </div>
+        {/* Ligne ECG dans le flux, sous le contenu : elle ne passe jamais sous le texte */}
+        <Signal className="pointer-events-none -mt-4 mb-4 h-12 w-full opacity-40 md:-mt-6" animate={false} />
       </Reveal>
     </section>
   );
