@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Loader2, CheckCircle2, AlertCircle, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { track } from "@/lib/analytics";
 
 type FieldErrors = Partial<Record<"name" | "email" | "message", string>>;
 type Status = "idle" | "submitting" | "success" | "error";
@@ -81,6 +82,11 @@ export function ContactForm({ text }: { text: ContactFormText }) {
       if (!res.ok) throw new Error("request_failed");
 
       setStatus("success");
+      // Demande reçue → événement « generate_lead » dans Google Analytics, avec l'objet et la spécialité.
+      track("generate_lead", {
+        sujet: String(formData.get("subject") ?? ""),
+        specialite: String(formData.get("specialty") ?? ""),
+      });
       form.reset();
     } catch {
       setStatus("error");
