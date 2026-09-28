@@ -26,7 +26,7 @@ const SPEED = 6; // rotation automatique, en degrés par seconde
 const PAUSE_MS = 6000; // pause de la rotation après un clic sur une ville
 
 // Étiquettes des villes hors Maroc (dx négatif = nom à gauche du point).
-const LABEL: Record<string, [number, number]> = { paris: [14, -6], dakar: [-14, 5], jeddah: [14, 5] };
+const LABEL: Record<string, [number, number]> = { paris: [14, -6], dakar: [-14, 5] };
 
 const rad = Math.PI / 180;
 const unit = (lon: number, lat: number) => [Math.cos(lat * rad) * Math.cos(lon * rad), Math.cos(lat * rad) * Math.sin(lon * rad), Math.sin(lat * rad)];
