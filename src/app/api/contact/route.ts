@@ -7,6 +7,20 @@ interface ContactPayload {
   specialty?: string;
   subject?: string;
   message?: string;
+  website?: string; // champ piège (doit rester vide)
+  elapsed?: number; // durée de remplissage, en ms
+}
+
+// Limite d'envois par adresse IP (mémoire de l'instance : suffisant contre les rafales de spam).
+const WINDOW_MS = 10 * 60 * 1000;
+const MAX_PER_WINDOW = 5;
+const hits = new Map<string, number[]>();
+function rateLimited(ip: string) {
+  const now = Date.now();
+  const recent = (hits.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
+  recent.push(now);
+  hits.set(ip, recent);
+  return recent.length > MAX_PER_WINDOW;
 }
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -76,9 +90,21 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "invalid_body" }, { status: 400 });
   }
 
-  const { name, email, message } = body;
+  // Robots : champ piège rempli, ou formulaire envoyé en moins de 3 secondes → réponse « ok » sans envoi.
+  if (body.website || (typeof body.elapsed === "number" && body.elapsed < 3000)) {
+    return NextResponse.json({ ok: true });
+  }
 
-  if (!name || !email || !message || !emailPattern.test(email)) {
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0].trim() || "unknown";
+  if (rateLimited(ip)) {
+    return NextResponse.json({ ok: false, error: "rate_limited" }, { status: 429 });
+  }
+
+  const { name, email, message } = body;
+  const tooLong =
+    String(name ?? "").length > 120 || String(email ?? "").length > 200 || String(message ?? "").length > 5000;
+
+  if (!name || !email || !message || !emailPattern.test(email) || tooLong) {
     return NextResponse.json({ ok: false, error: "validation" }, { status: 422 });
   }
 

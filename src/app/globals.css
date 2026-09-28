@@ -80,8 +80,8 @@
   --font-data: var(--font-jetbrains), ui-monospace, monospace;
 
   --font-heading: var(--font-cormorant), "Times New Roman", serif;
-  --font-body: var(--font-raleway), Arial, sans-serif;
-  --font-label: var(--font-space-mono), "Courier New", monospace;
+  --font-body: var(--font-instrument), system-ui, sans-serif;
+  --font-label: var(--font-jetbrains), ui-monospace, monospace;
 
   --animate-fade-rise: fade-rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

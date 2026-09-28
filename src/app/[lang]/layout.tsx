@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { archivo, cormorant, instrumentSans, jetbrainsMono, raleway, spaceMono } from "@/lib/fonts";
+import { archivo, cormorant, instrumentSans, jetbrainsMono } from "@/lib/fonts";
 import { locales, isLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { SITE_URL } from "@/lib/site";
@@ -62,7 +62,7 @@ export default async function LangLayout({
   return (
     <html
       lang={lang}
-      className={`${cormorant.variable} ${raleway.variable} ${spaceMono.variable} ${archivo.variable} ${instrumentSans.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${cormorant.variable} ${archivo.variable} ${instrumentSans.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="pearl-bg flex min-h-full flex-col pb-20 text-deep sm:pb-0">
         {/* Lien d'évitement pour la navigation au clavier */}

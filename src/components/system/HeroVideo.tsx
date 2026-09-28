@@ -15,7 +15,13 @@ export function HeroVideo({ src, webm, poster, className }: { src: string; webm?
     if (!video) return;
     video.muted = true;
     const play = () => video.play().catch(() => {});
-    play();
+    // La vidéo ne se télécharge qu'une fois la page affichée (l'image d'attente s'affiche d'abord).
+    const start = () => {
+      video.preload = "auto";
+      play();
+    };
+    if (document.readyState === "complete") start();
+    else window.addEventListener("load", start, { once: true });
     // Relance si le navigateur a mis la vidéo en pause (onglet en arrière-plan, économie d'énergie…).
     document.addEventListener("visibilitychange", play);
     return () => document.removeEventListener("visibilitychange", play);
@@ -26,7 +32,7 @@ export function HeroVideo({ src, webm, poster, className }: { src: string; webm?
       ref={ref}
       className={className}
       dangerouslySetInnerHTML={{
-        __html: `<video poster="${poster}" autoplay muted loop playsinline webkit-playsinline preload="auto" disablepictureinpicture style="width:100%;height:100%;object-fit:cover">${
+        __html: `<video poster="${poster}" autoplay muted loop playsinline webkit-playsinline preload="none" disablepictureinpicture style="width:100%;height:100%;object-fit:cover">${
           webm ? `<source src="${webm}" type="video/webm">` : ""
         }<source src="${src}" type="video/mp4"></video>`,
       }}

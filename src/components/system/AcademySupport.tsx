@@ -49,7 +49,7 @@ export function AcademySupport({ locale }: { locale: Locale }) {
             ))}
           </RevealGroup>
           <div className="mt-6">
-            <Cta href={`/${locale}/support`} variant="line">{s.cta}</Cta>
+            <Cta href={`/${locale}/contact?sujet=support`} variant="line">{s.cta}</Cta>
           </div>
         </div>
       </section>

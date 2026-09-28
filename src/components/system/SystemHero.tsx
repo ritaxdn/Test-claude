@@ -1,3 +1,4 @@
+import { preload } from "react-dom";
 import { Cta } from "./Cta";
 import { HeroVideo } from "./HeroVideo";
 import type { Locale } from "@/lib/i18n/config";
@@ -9,6 +10,8 @@ import { homeSystem } from "@/content/home-system";
  */
 export function SystemHero({ locale }: { locale: Locale }) {
   const c = homeSystem[locale].hero;
+  // L'image d'attente de la vidéo est le plus grand élément visible : on la charge en priorité.
+  preload("/videos/hero-poster.jpg", { as: "image", fetchPriority: "high" });
   return (
     <section className="relative flex overflow-hidden px-6 pb-16 pt-12 md:px-12 lg:h-[calc(100svh-6.5rem)] lg:min-h-[40rem] lg:max-h-[56rem] lg:items-center lg:py-0">
       {/* Vidéo d'arrière-plan (muette, en boucle) + voiles pour la lisibilité */}
@@ -47,7 +50,7 @@ export function SystemHero({ locale }: { locale: Locale }) {
           </p>
 
           <div className="mt-8 flex animate-fade-rise flex-wrap gap-3 opacity-0 [animation-delay:360ms]">
-            <Cta href={`/${locale}/contact`}>{c.ctaPrimary}</Cta>
+            <Cta href={`/${locale}/contact?sujet=demo`}>{c.ctaPrimary}</Cta>
             <Cta href={`/${locale}/technologies`} variant="line">
               {c.ctaSecondary}
             </Cta>

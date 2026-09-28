@@ -16,7 +16,17 @@ export function proxy(request: NextRequest) {
   }
 
   const url = request.nextUrl.clone();
-  url.pathname = `/${defaultLocale}${pathname}`;
+  // « /FR/contact » → « /fr/contact » (majuscules tapées à la main)
+  const first = pathname.split("/")[1] ?? "";
+  const lower = first.toLowerCase();
+  if (locales.some((l) => l === lower)) {
+    url.pathname = `/${lower}${pathname.slice(first.length + 1)}`;
+    return NextResponse.redirect(url, 308);
+  }
+  // Langue du navigateur : anglais si demandé en premier, sinon français.
+  const accept = request.headers.get("accept-language")?.toLowerCase() ?? "";
+  const lang = accept.startsWith("en") ? "en" : defaultLocale;
+  url.pathname = `/${lang}${pathname === "/" ? "" : pathname}`;
   return NextResponse.redirect(url);
 }
 
