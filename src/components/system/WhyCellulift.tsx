@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
 import { Pill } from "./Cta";
 import { SignalLine } from "./SignalPath";
@@ -21,7 +22,18 @@ export function WhyCellulift({ locale }: { locale: Locale }) {
             >
               <SignalLine delay={i * 0.12} className="absolute inset-x-0 top-[-1px]" />
               <p className="data-label text-deep-soft">{it.label}</p>
-              <p className="display mt-4 text-[clamp(1.05rem,1.7vw,1.6rem)] leading-[1.05] text-deep">{it.value}</p>
+              <p className="display mt-4 text-[clamp(1.05rem,1.7vw,1.6rem)] leading-[1.05] text-deep">
+                {/* Coupures uniquement entre les éléments, jamais après un « · » */}
+                {it.value.split(" · ").map((part, j, all) => (
+                  <Fragment key={part}>
+                    <span className="whitespace-nowrap">
+                      {part}
+                      {j < all.length - 1 && " ·"}
+                    </span>
+                    {j < all.length - 1 && " "}
+                  </Fragment>
+                ))}
+              </p>
               <p className="mt-3 font-sans text-sm leading-snug text-deep-soft">{it.title}</p>
             </RevealItem>
           ))}
