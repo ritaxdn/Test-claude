@@ -67,6 +67,7 @@ const photos: Record<string, string[]> = {
   "dermabrasif-6g": ["00", "05", "01", "02", "03", "04"].map((n) => `/images/technologies/dermabrasif-6g/${n}.jpg`),
   brasilift: ["00", "01", "02", "03"].map((n) => `/images/technologies/brasilift/${n}.jpg`),
   "slimax-lipo-7": ["00", "01"].map((n) => `/images/technologies/slimax-lipo-7/${n}.jpg`),
+  centrifugel: ["00", "01", "02", "03"].map((n) => `/images/technologies/centrifugel/${n}.jpg`),
 };
 
 export const technologies: Technology[] = (Object.keys(catalog) as CategoryKey[]).flatMap((category) =>
@@ -79,8 +80,13 @@ export const technologies: Technology[] = (Object.keys(catalog) as CategoryKey[]
 export const technologiesIn = (category: CategoryKey) => technologies.filter((t) => t.category === category);
 
 // Photo de couverture d'un univers : celle de la première machine photographiée de la famille.
+// Couvertures choisies explicitement (sinon : première machine photographiée de la famille).
+const covers: Partial<Record<CategoryKey, string>> = {
+  rejuvenation: "/images/technologies/dermabrasif-6g/00.jpg",
+};
+
 export const universeCover = (category: CategoryKey) =>
-  technologiesIn(category).find((t) => t.images?.length)?.images?.[0];
+  covers[category] ?? technologiesIn(category).find((t) => t.images?.length)?.images?.[0];
 
 export function getTechnologyBySlug(slug: string) {
   return technologies.find((t) => t.slug === slug);
