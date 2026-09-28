@@ -17,6 +17,17 @@ export const supportPageContent = {
         { label: "Atelier intégré", value: "Diagnostic et réparation", state: "Opérationnel" },
       ],
     },
+    exploded: {
+      eyebrow: "Atelier intégré",
+      title: "Chaque pièce, maîtrisée.",
+      intro: "Notre atelier diagnostique, répare et remplace chaque composant de vos machines.",
+      machineAlt: "Machine Brasilift, vue d'ensemble",
+      parts: [
+        { code: "01", title: "Panneau de contrôle", text: "Diagnostic électronique et calibrage des réglages." },
+        { code: "02", title: "Connectique", text: "Contrôle des câbles et connecteurs, remplacement si nécessaire." },
+        { code: "03", title: "Pièces à main", text: "Vérification et remplacement des pièces à main." },
+      ],
+    },
     processEyebrow: "Le parcours SAV",
     processTitle: "De la livraison au long terme",
     steps: [
@@ -71,6 +82,17 @@ export const supportPageContent = {
         { label: "Support line", value: "{phone}", state: "Online" },
         { label: "On-site visits", value: "Our technical staff comes to you", state: "Available" },
         { label: "In-house workshop", value: "Diagnosis and repair", state: "Operational" },
+      ],
+    },
+    exploded: {
+      eyebrow: "In-house workshop",
+      title: "Every part, mastered.",
+      intro: "Our workshop diagnoses, repairs and replaces every component of your devices.",
+      machineAlt: "Brasilift device, overview",
+      parts: [
+        { code: "01", title: "Control panel", text: "Electronic diagnosis and settings calibration." },
+        { code: "02", title: "Connectors", text: "Cable and connector checks, replaced when needed." },
+        { code: "03", title: "Hand pieces", text: "Inspection and replacement of hand pieces." },
       ],
     },
     processEyebrow: "The after-sales journey",

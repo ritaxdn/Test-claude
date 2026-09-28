@@ -6,6 +6,14 @@ import { supportPageContent } from "@/content/support-page";
 import { PageHero } from "@/components/sections/PageHero";
 import { ProcessSteps } from "@/components/sections/ProcessSteps";
 import { SystemStatus } from "@/components/sections/SystemStatus";
+import { ExplodedView } from "@/components/sections/ExplodedView";
+
+// Vue éclatée : photos réelles Brasilift et position de chaque pièce sur la scène (% ; centre 50/50).
+const explodedParts = [
+  { src: "/images/technologies/brasilift/01.jpg", x: 13, y: 25 },
+  { src: "/images/technologies/brasilift/02.jpg", x: 13, y: 75 },
+  { src: "/images/technologies/brasilift/03.jpg", x: 87, y: 50 },
+];
 import { WhyCellulift } from "@/components/sections/WhyCellulift";
 import { FinalCta } from "@/components/sections/FinalCta";
 import { company } from "@/content/company";
@@ -53,6 +61,15 @@ export default async function SupportPage({
             ? { ...r, value: company.supportPhone, href: `tel:${company.supportPhone.replace(/\s/g, "")}` }
             : { ...r }
         )}
+      />
+
+      <ExplodedView
+        eyebrow={content.exploded.eyebrow}
+        title={content.exploded.title}
+        intro={content.exploded.intro}
+        machine="/images/technologies/brasilift/00.jpg"
+        machineAlt={content.exploded.machineAlt}
+        parts={content.exploded.parts.map((part, i) => ({ ...part, ...explodedParts[i] }))}
       />
 
       <ProcessSteps
