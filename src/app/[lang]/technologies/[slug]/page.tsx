@@ -31,7 +31,7 @@ export async function generateMetadata({
       (lang === "fr"
         ? `${tech.name} — ${family}. Technologie Cellulift livrée avec formation, protocoles et support.`
         : `${tech.name} — ${family}. Cellulift technology delivered with training, protocols and support.`),
-    alternates: localeAlternates(`/technologies/${slug}`),
+    alternates: localeAlternates(`/technologies/${slug}`, lang),
   };
 }
 
@@ -93,8 +93,8 @@ export default async function TechnologyDetailPage({
             )}
           </div>
           <div className="flex flex-wrap gap-3 lg:justify-end">
-            <Cta href={`/${lang}/contact`}>{dict.common.requestDemo}</Cta>
-            <Cta href={`/${lang}/contact`} variant="line">{dict.common.speakToExpert}</Cta>
+            <Cta href={`/${lang}/contact?sujet=demo`}>{dict.common.requestDemo}</Cta>
+            <Cta href={`/${lang}/contact?sujet=expert`} variant="line">{dict.common.speakToExpert}</Cta>
           </div>
         </Reveal>
 
@@ -155,7 +155,7 @@ export default async function TechnologyDetailPage({
               <h2 className="display mt-6 text-2xl text-deep md:text-3xl">{l.sheet}</h2>
               <p className="mt-4 max-w-lg font-sans leading-relaxed text-deep-soft">{l.sheetText}</p>
               <div className="mt-8">
-                <Cta href={`/${lang}/contact`}>{dict.common.speakToExpert}</Cta>
+                <Cta href={`/${lang}/contact?sujet=expert`}>{dict.common.speakToExpert}</Cta>
               </div>
             </Reveal>
           )}

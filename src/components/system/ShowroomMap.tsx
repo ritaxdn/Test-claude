@@ -55,7 +55,7 @@ export function ShowroomMap({ locale }: { locale: Locale }) {
       <div className="mx-auto max-w-7xl px-3 md:px-7">
         <Reveal>
           <Pill>{c.eyebrow}</Pill>
-          <h2 className="display mt-4 text-[clamp(2rem,5vw,4.6rem)] text-deep">
+          <h2 className="display mt-4 text-[clamp(1.6rem,2.6vw,2.5rem)] text-deep">
             <span className="block">{c.title[0]}</span>
             <span className="iridescent-text block">{c.title[1]}</span>
           </h2>

@@ -22,7 +22,7 @@ export async function generateMetadata({
     description: isFr
       ? "Les technologies médico-esthétiques Cellulift : lasers et technologies lumière, visage et diagnostic, remodelage corporel, médecine esthétique et gynécologie, physiothérapie."
       : "Cellulift medical aesthetic technologies: lasers and light, face and diagnostics, body contouring, aesthetic medicine and gynecology, physiotherapy.",
-    alternates: localeAlternates("/technologies"),
+    alternates: localeAlternates("/technologies", lang),
   };
 }
 

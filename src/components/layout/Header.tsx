@@ -21,6 +21,16 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
     if (lastPathname !== null) setOpen(false);
   }
 
+  // Menu mobile : se ferme avec la touche Échap.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
+  const menuLabel = locale === "fr" ? (open ? "Fermer le menu" : "Ouvrir le menu") : open ? "Close menu" : "Open menu";
+
   const links = [
     { href: `/${locale}`, label: dict.nav.home },
     { href: `/${locale}/about`, label: dict.nav.about },
@@ -59,7 +69,7 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
 
         <div className="hidden items-center gap-5 lg:flex">
           <LanguageSwitcher locale={locale} />
-          <Cta href={`/${locale}/contact`} className="py-1.5 pl-4 pr-1.5 text-xs">
+          <Cta href={`/${locale}/contact?sujet=demo`} className="py-1.5 pl-4 pr-1.5 text-xs">
             {dict.nav.requestDemo}
           </Cta>
         </div>
@@ -68,15 +78,16 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
           type="button"
           onClick={() => setOpen((v) => !v)}
           className="flex h-10 w-10 items-center justify-center text-deep lg:hidden"
-          aria-label={open ? "Close menu" : "Open menu"}
+          aria-label={menuLabel}
           aria-expanded={open}
+          aria-controls="menu-mobile"
         >
           {open ? <X size={22} /> : <Menu size={22} />}
         </button>
       </div>
 
       {open && (
-        <div className="glass mx-auto mt-2 max-w-7xl rounded-[1.75rem] px-6 pb-8 pt-4 lg:hidden">
+        <div id="menu-mobile" className="glass mx-auto mt-2 max-w-7xl rounded-[1.75rem] px-6 pb-8 pt-4 lg:hidden">
           <nav className="flex flex-col gap-1">
             {links.map((link) => (
               <Link
@@ -93,7 +104,7 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
           </nav>
           <div className="mt-6 flex items-center justify-between">
             <LanguageSwitcher locale={locale} />
-            <Cta href={`/${locale}/contact`} className="py-1.5 pl-4 pr-1.5 text-xs">
+            <Cta href={`/${locale}/contact?sujet=demo`} className="py-1.5 pl-4 pr-1.5 text-xs">
               {dict.nav.requestDemo}
             </Cta>
           </div>

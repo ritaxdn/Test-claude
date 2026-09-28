@@ -1,0 +1,109 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import Script from "next/script";
+import type { Locale } from "@/lib/i18n/config";
+
+const KEY = "cellulift-consent"; // "accepted" | "refused"
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
+
+const t = {
+  fr: {
+    text: "Nous utilisons des cookies de mesure d'audience pour améliorer le site, uniquement avec votre accord.",
+    accept: "Accepter",
+    refuse: "Refuser",
+    more: "En savoir plus",
+  },
+  en: {
+    text: "We use analytics cookies to improve the website, only with your consent.",
+    accept: "Accept",
+    refuse: "Decline",
+    more: "Learn more",
+  },
+} as const;
+
+/** Lit le choix enregistré (le stockage peut être indisponible : navigation privée, etc.). */
+function readChoice() {
+  try {
+    return localStorage.getItem(KEY);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Bandeau de consentement aux cookies. Google Analytics (si NEXT_PUBLIC_GA_ID est défini) ne se charge
+ * qu'après acceptation. Le lien « Cookies » du pied de page rouvre le bandeau (événement « open-cookie-consent »).
+ */
+export function CookieConsent({ locale }: { locale: Locale }) {
+  const [choice, setChoice] = useState<string | null>("pending");
+
+  useEffect(() => {
+    setChoice(readChoice()); // eslint-disable-line react-hooks/set-state-in-effect
+    const reopen = () => setChoice(null);
+    window.addEventListener("open-cookie-consent", reopen);
+    return () => window.removeEventListener("open-cookie-consent", reopen);
+  }, []);
+
+  const decide = (value: "accepted" | "refused") => {
+    try {
+      localStorage.setItem(KEY, value);
+    } catch {}
+    setChoice(value);
+  };
+
+  const c = t[locale];
+  return (
+    <>
+      {GA_ID && choice === "accepted" && (
+        <>
+          <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
+          <Script id="ga" strategy="afterInteractive">
+            {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}',{anonymize_ip:true});`}
+          </Script>
+        </>
+      )}
+      {choice === null && (
+        <div
+          role="dialog"
+          aria-live="polite"
+          aria-label="Cookies"
+          className="glass-strong fixed inset-x-3 bottom-24 z-50 mx-auto max-w-xl rounded-[1.5rem] p-5 sm:bottom-5"
+        >
+          <p className="font-sans text-sm leading-relaxed text-deep">
+            {c.text}{" "}
+            <Link href={`/${locale}/privacy`} className="underline underline-offset-2">
+              {c.more}
+            </Link>
+          </p>
+          <div className="mt-4 flex gap-2">
+            <button
+              type="button"
+              onClick={() => decide("accepted")}
+              className="glass-strong relative rounded-full px-5 py-2 font-sans text-sm font-medium text-deep transition-colors hover:bg-white"
+            >
+              {c.accept}
+            </button>
+            <button
+              type="button"
+              onClick={() => decide("refused")}
+              className="rounded-full border border-deep/20 px-5 py-2 font-sans text-sm text-deep transition-colors hover:bg-white/70"
+            >
+              {c.refuse}
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+/** Lien du pied de page pour modifier son choix. */
+export function CookieSettingsLink({ label }: { label: string }) {
+  return (
+    <button type="button" onClick={() => window.dispatchEvent(new Event("open-cookie-consent"))} className="hover:text-deep">
+      {label}
+    </button>
+  );
+}

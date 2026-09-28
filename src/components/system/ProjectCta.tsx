@@ -14,18 +14,21 @@ export function ProjectCta({ locale }: { locale: Locale }) {
         <div className="relative mx-auto max-w-7xl px-6 pb-10 pt-12 md:px-12 md:pb-12 md:pt-14">
           <div className="max-w-3xl">
             <p className="data-label text-deep-soft">{c.eyebrow}</p>
-            <h2 className="display mt-6 text-[clamp(1.9rem,4.2vw,3.6rem)]">
+            <h2 className="display statement mt-6 text-[clamp(2.4rem,5.6vw,5.4rem)] leading-[0.95]">
               <span className="iridescent-text">{c.title}</span>
             </h2>
           </div>
           <div className="mt-8 max-w-lg">
             <p className="font-sans leading-relaxed text-deep-soft">{c.text}</p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Cta href={`/${locale}/contact`}>{c.ctaPrimary}</Cta>
-              <Cta href={`tel:${company.phone.replace(/\s/g, "")}`} variant="line">
-                {c.ctaSecondary} · {company.phone}
+              <Cta href={`/${locale}/contact?sujet=expert`}>{c.ctaPrimary}</Cta>
+              <Cta href={`/${locale}/contact?sujet=demo`} variant="line">
+                {c.ctaSecondary}
               </Cta>
             </div>
+            <a href={`tel:${company.phone.replace(/\s/g, "")}`} className="data-label mt-6 inline-block text-deep-soft hover:text-deep">
+              {company.phone}
+            </a>
           </div>
         </div>
       </Reveal>

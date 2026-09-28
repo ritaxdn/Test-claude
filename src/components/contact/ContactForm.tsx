@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Loader2, CheckCircle2, AlertCircle, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -34,6 +34,17 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export function ContactForm({ text }: { text: ContactFormText }) {
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<FieldErrors>({});
+  // Anti-spam : heure d'affichage du formulaire (un humain met plus de quelques secondes à le remplir).
+  const startedAt = useRef(0);
+  const subjectRef = useRef<HTMLSelectElement>(null);
+
+  useEffect(() => {
+    startedAt.current = Date.now();
+    // Objet présélectionné selon le bouton cliqué : /contact?sujet=demo | expert | masterclass | support
+    const sujet = new URLSearchParams(window.location.search).get("sujet");
+    const index = { demo: 0, expert: 1, masterclass: 2, support: 3 }[sujet ?? ""];
+    if (index !== undefined && subjectRef.current) subjectRef.current.selectedIndex = index;
+  }, []);
 
   function validate(formData: FormData): FieldErrors {
     const next: FieldErrors = {};
@@ -64,7 +75,7 @@ export function ContactForm({ text }: { text: ContactFormText }) {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(Object.fromEntries(formData)),
+        body: JSON.stringify({ ...Object.fromEntries(formData), elapsed: Date.now() - startedAt.current }),
       });
 
       if (!res.ok) throw new Error("request_failed");
@@ -81,6 +92,11 @@ export function ContactForm({ text }: { text: ContactFormText }) {
 
   return (
     <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-6">
+      {/* Piège à robots : champ invisible pour les humains, rempli par les robots de spam */}
+      <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+        <label htmlFor="website">Website</label>
+        <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+      </div>
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <div>
           <label htmlFor="name" className="font-sans text-sm text-deep-soft">
@@ -165,7 +181,7 @@ export function ContactForm({ text }: { text: ContactFormText }) {
           {text.subject}
         </label>
         <div className="relative">
-          <select id="subject" name="subject" className={cn(inputClasses, "mt-2 appearance-none pr-10")}>
+          <select ref={subjectRef} id="subject" name="subject" className={cn(inputClasses, "mt-2 appearance-none pr-10")}>
             {text.subjectOptions.map((option) => (
               <option key={option} value={option}>
                 {option}

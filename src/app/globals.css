@@ -80,8 +80,8 @@
   --font-data: var(--font-jetbrains), ui-monospace, monospace;
 
   --font-heading: var(--font-cormorant), "Times New Roman", serif;
-  --font-body: var(--font-raleway), Arial, sans-serif;
-  --font-label: var(--font-space-mono), "Courier New", monospace;
+  --font-body: var(--font-instrument), system-ui, sans-serif;
+  --font-label: var(--font-jetbrains), ui-monospace, monospace;
 
   --animate-fade-rise: fade-rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
@@ -343,7 +343,8 @@ body {
 @media (max-width: 639px) {
   html { font-size: 15px; }
   .display { font-stretch: 108%; letter-spacing: -0.025em; }
-  h1.display { font-size: 2.35rem !important; line-height: 1 !important; }
+  h1.display, .hero-title { font-size: 2.2rem !important; line-height: 1 !important; }
+  h2.display.statement { font-size: 2.35rem !important; line-height: 0.98 !important; }
   h2.display { font-size: 1.7rem !important; line-height: 1.02 !important; }
   h3.display { font-size: 1.12rem !important; }
   .stat-num { font-size: 2.4rem !important; }

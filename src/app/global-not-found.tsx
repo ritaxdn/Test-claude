@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 import type { Metadata } from "next";
-import { archivo, cormorant, instrumentSans, jetbrainsMono, raleway, spaceMono } from "@/lib/fonts";
+import { archivo, cormorant, instrumentSans, jetbrainsMono } from "@/lib/fonts";
 import { defaultLocale, isLocale } from "@/lib/i18n/config";
 import "./globals.css";
 
@@ -41,7 +41,7 @@ export default async function GlobalNotFound() {
   return (
     <html
       lang={lang}
-      className={`${cormorant.variable} ${raleway.variable} ${spaceMono.variable} ${archivo.variable} ${instrumentSans.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${cormorant.variable} ${archivo.variable} ${instrumentSans.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col items-center justify-center pearl-bg px-6 text-center text-deep">
         <span

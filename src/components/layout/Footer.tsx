@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CookieSettingsLink } from "@/components/layout/CookieConsent";
 import { InstagramIcon } from "@/components/icons/SocialIcons";
 import { Logo } from "@/components/brand/Logo";
 import { company } from "@/content/company";
@@ -77,9 +78,10 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
           <p className="data-label text-deep-soft">
             © {year} {company.legalName}. {dict.footer.rights}
           </p>
-          <p className="data-label flex gap-5 text-deep-soft">
-            <span>{dict.footer.legal}</span>
-            <span>{dict.footer.privacy}</span>
+          <p className="data-label flex flex-wrap gap-5 text-deep-soft">
+            <Link href={`/${locale}/terms`} className="hover:text-deep">{dict.footer.legal}</Link>
+            <Link href={`/${locale}/privacy`} className="hover:text-deep">{dict.footer.privacy}</Link>
+            <CookieSettingsLink label="Cookies" />
           </p>
         </div>
       </div>
