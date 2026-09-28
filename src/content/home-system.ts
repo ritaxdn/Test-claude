@@ -47,7 +47,7 @@ export const homeSystem = {
       items: [
         { value: "LGL Expert", title: "Distributeur officiel · Afrique", text: "" },
         { value: "CE · FDA", title: "Machines certifiées", text: "" },
-        { value: "4 marchés", title: "Maroc · France · Sénégal · Arabie saoudite", text: "" },
+        { value: "3 marchés", title: "Maroc · France · Sénégal", text: "" },
         { value: "Médical", title: "Médecins, formateurs et experts spécialisés", text: "" },
       ],
     },
@@ -80,8 +80,8 @@ export const homeSystem = {
     },
     showrooms: {
       eyebrow: "06 — Implantations",
-      title: ["One partner.", "Four markets."],
-      markets: ["Maroc", "France", "Sénégal", "Arabie saoudite"],
+      title: ["One partner.", "Three markets."],
+      markets: ["Maroc", "France", "Sénégal"],
       hq: "Siège",
       onRequest: "Adresse communiquée sur rendez-vous.",
       cta: "Prendre rendez-vous au showroom",
@@ -136,7 +136,7 @@ export const homeSystem = {
       items: [
         { value: "LGL Expert", title: "Official distributor · Africa", text: "" },
         { value: "CE · FDA", title: "Certified devices", text: "" },
-        { value: "4 markets", title: "Morocco · France · Senegal · Saudi Arabia", text: "" },
+        { value: "3 markets", title: "Morocco · France · Senegal", text: "" },
         { value: "Medical", title: "Physicians, trainers and specialist experts", text: "" },
       ],
     },
@@ -169,8 +169,8 @@ export const homeSystem = {
     },
     showrooms: {
       eyebrow: "06 — Locations",
-      title: ["One partner.", "Four markets."],
-      markets: ["Morocco", "France", "Senegal", "Saudi Arabia"],
+      title: ["One partner.", "Three markets."],
+      markets: ["Morocco", "France", "Senegal"],
       hq: "Head office",
       onRequest: "Address shared by appointment.",
       cta: "Book a showroom visit",
