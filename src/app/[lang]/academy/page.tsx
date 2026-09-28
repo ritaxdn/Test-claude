@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { isLocale } from "@/lib/i18n/config";
 import { localeAlternates } from "@/lib/alternates";
 import { academyPageContent } from "@/content/academy-page";
+import { company } from "@/content/company";
 import { PageHero } from "@/components/sections/PageHero";
 import { Positioning } from "@/components/sections/Positioning";
 import { AcademySessions } from "@/components/sections/AcademySessions";
@@ -75,6 +76,7 @@ export default async function AcademyPage({
         ctaSecondary={content.cta.ctaSecondary}
         primarySujet="masterclass"
         secondarySujet="expert"
+        email={{ label: "Cellulift Academy", address: company.academyEmail }}
       />
     </>
   );

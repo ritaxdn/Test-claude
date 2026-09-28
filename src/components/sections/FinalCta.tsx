@@ -18,6 +18,7 @@ export function FinalCta({
   primarySujet = "expert",
   secondarySujet = "devis",
   phone,
+  email,
 }: {
   locale: Locale;
   title: string;
@@ -28,6 +29,8 @@ export function FinalCta({
   secondarySujet?: string;
   /** Ligne directe affichée sous les actions (ex. support technique). */
   phone?: { label: string; number: string };
+  /** Adresse directe affichée sous les actions (ex. Cellulift Academy). */
+  email?: { label: string; address: string };
 }) {
   return (
     <section className="px-3 pb-3 md:px-5 md:pb-5">
@@ -50,6 +53,11 @@ export function FinalCta({
           {phone && (
             <a href={`tel:${phone.number.replace(/[\s-]/g, "")}`} className="data-label mt-8 inline-block text-deep-soft hover:text-deep">
               {phone.label} · {phone.number}
+            </a>
+          )}
+          {email && (
+            <a href={`mailto:${email.address}`} className="data-label mt-8 block text-deep-soft hover:text-deep">
+              {email.label} · {email.address}
             </a>
           )}
         </div>

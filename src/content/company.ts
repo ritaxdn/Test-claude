@@ -4,7 +4,9 @@ export const company = {
   legalName: "Cellulift",
   tagline: "Metamorphosis Technology",
   since: 2002,
-  email: "cellulift@gmail.com",
+  email: "admin@cellulift.ma",
+  academyEmail: "academy@cellulift.ma",
+  partnershipsEmail: "partenariats@cellulift.ma",
   phone: "+212 5 22 49 01 09",
   // Ligne directe du support technique / SAV
   supportPhone: "+212 660 815632",

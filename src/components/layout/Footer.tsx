@@ -69,6 +69,18 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
               <li>
                 <a href={`mailto:${company.email}`} className="hover:text-deep-soft">{company.email}</a>
               </li>
+              <li>
+                <a href={`mailto:${company.academyEmail}`} className="hover:text-deep-soft">
+                  <span className="text-deep-soft">Academy · </span>
+                  {company.academyEmail}
+                </a>
+              </li>
+              <li>
+                <a href={`mailto:${company.partnershipsEmail}`} className="hover:text-deep-soft">
+                  <span className="text-deep-soft">{locale === "fr" ? "Partenariats" : "Partnerships"} · </span>
+                  {company.partnershipsEmail}
+                </a>
+              </li>
             </ul>
             <ul className="mt-5 space-y-2 border-t border-deep/10 pt-5">
               {offices.map((o) => (
