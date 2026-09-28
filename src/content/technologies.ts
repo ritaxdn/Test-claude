@@ -17,6 +17,8 @@ export interface Technology {
   certifications?: string[];
   // Photos (dans public/images/technologies/<slug>/) : la première sert de couverture.
   images?: string[];
+  // « tall » : photos très verticales (machine sur pied), affichées en colonnes côte à côte, sans recadrage.
+  imageLayout?: "tall";
 }
 
 // Gammes de produits (même découpage que le dossier MACHINES du Drive).
@@ -68,12 +70,16 @@ const photos: Record<string, string[]> = {
   brasilift: ["00", "01", "02", "03"].map((n) => `/images/technologies/brasilift/${n}.jpg`),
   "slimax-lipo-7": ["00", "01"].map((n) => `/images/technologies/slimax-lipo-7/${n}.jpg`),
   centrifugel: ["00", "01", "02", "03"].map((n) => `/images/technologies/centrifugel/${n}.jpg`),
+  longishape: ["00", "01", "02"].map((n) => `/images/technologies/longishape/${n}.jpg`),
 };
+
+// Machines sur pied, photographiées en pied : colonnes verticales.
+const tallLayouts = new Set(["longishape"]);
 
 export const technologies: Technology[] = (Object.keys(catalog) as CategoryKey[]).flatMap((category) =>
   catalog[category].map((name) => {
     const slug = slugify(name);
-    return { slug, name, category, images: photos[slug] };
+    return { slug, name, category, images: photos[slug], imageLayout: tallLayouts.has(slug) ? ("tall" as const) : undefined };
   })
 );
 
