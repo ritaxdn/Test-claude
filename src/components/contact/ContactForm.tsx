@@ -41,9 +41,9 @@ export function ContactForm({ text }: { text: ContactFormText }) {
 
   useEffect(() => {
     startedAt.current = Date.now();
-    // Objet présélectionné selon le bouton cliqué : /contact?sujet=demo | expert | masterclass | support
+    // Objet présélectionné selon le bouton cliqué : /contact?sujet=demo | expert | masterclass | support | proposition
     const sujet = new URLSearchParams(window.location.search).get("sujet");
-    const index = { demo: 0, expert: 1, masterclass: 2, support: 3 }[sujet ?? ""];
+    const index = { demo: 0, expert: 1, masterclass: 2, support: 3, proposition: 4 }[sujet ?? ""];
     if (index !== undefined && subjectRef.current) subjectRef.current.selectedIndex = index;
   }, []);
 

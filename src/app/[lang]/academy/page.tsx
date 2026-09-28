@@ -73,6 +73,8 @@ export default async function AcademyPage({
         description={content.cta.description}
         ctaPrimary={content.cta.ctaPrimary}
         ctaSecondary={content.cta.ctaSecondary}
+        primarySujet="masterclass"
+        secondarySujet="expert"
       />
     </>
   );

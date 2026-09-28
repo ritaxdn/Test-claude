@@ -3,6 +3,7 @@ import { Heading } from "./Heading";
 import { Cta } from "./Cta";
 import type { Locale } from "@/lib/i18n/config";
 import { homeSystem } from "@/content/home-system";
+import { company } from "@/content/company";
 import { ProtocolPath } from "./SignalPath";
 
 /** Academy (éditorial) et Support (lecture technique) : deux rythmes différents, sans cartes. */
@@ -45,6 +46,9 @@ export function AcademySupport({ locale }: { locale: Locale }) {
           <div className="mt-6">
             <Cta href={`/${locale}/contact?sujet=support`} variant="line">{s.cta}</Cta>
           </div>
+          <a href={`tel:${company.supportPhone.replace(/\s/g, "")}`} className="data-label mt-5 inline-block text-deep-soft hover:text-deep">
+            {s.phoneLabel} · {company.supportPhone}
+          </a>
         </div>
       </section>
     </>

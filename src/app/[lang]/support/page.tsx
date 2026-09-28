@@ -7,6 +7,7 @@ import { PageHero } from "@/components/sections/PageHero";
 import { ProcessSteps } from "@/components/sections/ProcessSteps";
 import { WhyCellulift } from "@/components/sections/WhyCellulift";
 import { FinalCta } from "@/components/sections/FinalCta";
+import { company } from "@/content/company";
 
 export async function generateMetadata({
   params,
@@ -60,6 +61,9 @@ export default async function SupportPage({
         description={content.cta.description}
         ctaPrimary={content.cta.ctaPrimary}
         ctaSecondary={content.cta.ctaSecondary}
+        primarySujet="support"
+        secondarySujet="expert"
+        phone={{ label: lang === "fr" ? "Ligne support" : "Support line", number: company.supportPhone }}
       />
     </>
   );

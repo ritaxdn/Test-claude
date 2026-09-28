@@ -79,6 +79,7 @@ export const homeSystem = {
         { code: "04", title: "Assistance", text: "Une question technique ? Notre équipe vous répond." },
       ],
       cta: "Contacter le support",
+      phoneLabel: "Ligne support",
     },
     showrooms: {
       eyebrow: "06 — Implantations",
@@ -170,6 +171,7 @@ export const homeSystem = {
         { code: "04", title: "Assistance", text: "A technical question? Our team answers." },
       ],
       cta: "Contact support",
+      phoneLabel: "Support line",
     },
     showrooms: {
       eyebrow: "06 — Locations",

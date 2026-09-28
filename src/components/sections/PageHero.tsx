@@ -10,7 +10,14 @@ export function PageHero({ eyebrow, title, subtitle }: { eyebrow: string; title:
         <Reveal className="grid gap-6 lg:grid-cols-[1.5fr_1fr] lg:items-end">
           <div>
             <Pill className="bg-white/60">{eyebrow}</Pill>
-            <h1 className="display mt-5 text-[clamp(2.2rem,5.2vw,4.6rem)] text-deep">{title}</h1>
+            {/* Titres longs (phrases) : corps réduit pour rester sur 3-4 lignes */}
+            <h1
+              className={`display mt-5 text-balance text-deep ${
+                title.length > 48 ? "text-[clamp(1.9rem,3.6vw,3.3rem)] leading-[1]" : "text-[clamp(2.2rem,5.2vw,4.6rem)]"
+              }`}
+            >
+              {title}
+            </h1>
           </div>
           {subtitle && <p className="max-w-md font-sans leading-relaxed text-deep-soft">{subtitle}</p>}
         </Reveal>
