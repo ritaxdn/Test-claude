@@ -6,7 +6,8 @@ import Script from "next/script";
 import type { Locale } from "@/lib/i18n/config";
 
 const KEY = "cellulift-consent"; // "accepted" | "refused"
-const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
+// Identifiant Google Analytics 4 de Cellulift (surchargeable par la variable NEXT_PUBLIC_GA_ID).
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "G-0MVP9EQYZ4";
 
 // Clics suivis dans Google Analytics : appel, e-mail, WhatsApp, prise de rendez-vous, boutons vers le formulaire.
 const CLICK_TRACKING = `document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute('href')||'';var n=h.indexOf('tel:')===0?'clic_telephone':h.indexOf('mailto:')===0?'clic_email':/wa\\.me|whatsapp/.test(h)?'clic_whatsapp':/cal\\.com/.test(h)?'clic_rendez_vous':/[?&]sujet=/.test(h)?'clic_bouton_contact':null;if(n)gtag('event',n,{lien:h,page:location.pathname});},true);`;
