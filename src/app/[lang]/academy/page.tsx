@@ -25,7 +25,7 @@ export async function generateMetadata({
     description: isFr
       ? "Masterclasses, formations certifiantes et expertise médicale pour une pratique sûre des technologies médico-esthétiques."
       : "Masterclasses, certified training and medical expertise for a safe practice of medical aesthetic technologies.",
-    alternates: localeAlternates("/academy"),
+    alternates: localeAlternates("/academy", lang),
   };
 }
 

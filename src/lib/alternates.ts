@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
 
 /**
- * Builds the `alternates.languages` metadata field for a bilingual route.
- * @param path route path with no locale prefix, e.g. "/about" or "" for home
+ * `alternates` d'une page bilingue : URL canonique de la langue courante + versions FR/EN (hreflang).
+ * @param path chemin sans préfixe de langue, ex. "/about" ou "" pour l'accueil
+ * @param lang langue de la page affichée
  */
-export function localeAlternates(path: string = ""): Metadata["alternates"] {
+export function localeAlternates(path: string = "", lang: string = "fr"): Metadata["alternates"] {
   return {
+    canonical: `/${lang}${path}`,
     languages: {
       fr: `/fr${path}`,
       en: `/en${path}`,
+      "x-default": `/fr${path}`,
     },
   };
 }

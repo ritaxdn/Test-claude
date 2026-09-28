@@ -22,7 +22,7 @@ export async function generateMetadata({
     description: isFr
       ? "Cellulift, leader des équipements médico-esthétiques au Maroc depuis 2002 : technologies certifiées CE et FDA, Cellulift Academy et service après-vente."
       : "Cellulift, a leader in medical aesthetic equipment in Morocco since 2002: CE and FDA certified technologies, Cellulift Academy and after-sales service.",
-    alternates: localeAlternates("/about"),
+    alternates: localeAlternates("/about", lang),
   };
 }
 

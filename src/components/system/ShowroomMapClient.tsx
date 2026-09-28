@@ -246,7 +246,7 @@ export function ShowroomMapClient({
           <circle cx={W / 2} cy={H / 2 + 10} r={R} fill={`url(#s-${uid})`} />
         </svg>
         <canvas ref={canvasRef} className="relative block h-auto w-full" style={{ aspectRatio: `${W} / ${H}` }} />
-        <svg viewBox={`0 0 ${W} ${H}`} className="absolute inset-0 h-full w-full" role="img" aria-label={labels.list}>
+        <svg viewBox={`0 0 ${W} ${H}`} className="absolute inset-0 h-full w-full" role="group" aria-label={labels.list}>
           <defs>
             <linearGradient id={`g-${uid}`} x1="0" y1="0" x2="1" y2="1">
               <stop offset="0" stopColor="#00bcd4" />

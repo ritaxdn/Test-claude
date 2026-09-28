@@ -21,7 +21,7 @@ export async function generateMetadata({
     description: isFr
       ? "Contactez Cellulift pour demander une démonstration, parler à un expert ou rejoindre une masterclass."
       : "Contact Cellulift to request a demo, speak to an expert or join a masterclass.",
-    alternates: localeAlternates("/contact"),
+    alternates: localeAlternates("/contact", lang),
   };
 }
 

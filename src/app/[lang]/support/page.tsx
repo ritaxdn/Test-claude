@@ -20,7 +20,7 @@ export async function generateMetadata({
     description: isFr
       ? "Installation, maintenance préventive et assistance technique : découvrez l'accompagnement long terme de Cellulift."
       : "Installation, preventive maintenance and technical assistance: discover Cellulift's long-term support.",
-    alternates: localeAlternates("/support"),
+    alternates: localeAlternates("/support", lang),
   };
 }
 

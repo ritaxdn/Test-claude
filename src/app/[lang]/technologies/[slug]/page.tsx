@@ -31,7 +31,7 @@ export async function generateMetadata({
       (lang === "fr"
         ? `${tech.name} — ${family}. Technologie Cellulift livrée avec formation, protocoles et support.`
         : `${tech.name} — ${family}. Cellulift technology delivered with training, protocols and support.`),
-    alternates: localeAlternates(`/technologies/${slug}`),
+    alternates: localeAlternates(`/technologies/${slug}`, lang),
   };
 }
 
