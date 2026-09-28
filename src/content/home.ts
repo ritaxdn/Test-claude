@@ -2,19 +2,19 @@
 export const homeContent = {
   fr: {
     finalCta: {
-      title: "Obtenez un devis gratuit.",
+      title: "Parlons de votre projet.",
       description:
-        "Réactivité, écoute et conseil : notre équipe vous accompagne du début jusqu'à l'inauguration de votre projet.",
-      ctaPrimary: "Demander un devis",
-      ctaSecondary: "Parler à un expert",
+        "Vous développez ou équipez votre activité médico-esthétique ? Nos experts vous accompagnent dans le choix et l'intégration de la technologie adaptée.",
+      ctaPrimary: "Échanger avec un expert",
+      ctaSecondary: "Demander une proposition",
     },
   },
   en: {
     finalCta: {
-      title: "Get a free quote.",
-      description: "Responsiveness, listening and advice: our team supports you from the start to the opening of your project.",
-      ctaPrimary: "Request a quote",
-      ctaSecondary: "Talk to an expert",
+      title: "Let's talk about your project.",
+      description: "Developing or equipping your medical aesthetic practice? Our experts guide you in choosing and integrating the right technology.",
+      ctaPrimary: "Talk to an expert",
+      ctaSecondary: "Request a proposal",
     },
   },
 } as const;

@@ -4,9 +4,10 @@ import { isLocale } from "@/lib/i18n/config";
 import { localeAlternates } from "@/lib/alternates";
 import { aboutContent } from "@/content/about";
 import { PageHero } from "@/components/sections/PageHero";
-import { Story } from "@/components/sections/Story";
 import { Pillars } from "@/components/sections/Pillars";
-import { WhyCellulift } from "@/components/sections/WhyCellulift";
+import { CelluliftSystem } from "@/components/sections/CelluliftSystem";
+import { Heading } from "@/components/system/Heading";
+import { RevealGroup, RevealItem } from "@/components/ui/Reveal";
 import { FinalCta } from "@/components/sections/FinalCta";
 import { homeContent } from "@/content/home";
 
@@ -20,8 +21,8 @@ export async function generateMetadata({
   return {
     title: isFr ? "À propos" : "About",
     description: isFr
-      ? "Cellulift, leader des équipements médico-esthétiques au Maroc depuis 2002 : technologies certifiées CE et FDA, Cellulift Academy et service après-vente."
-      : "Cellulift, a leader in medical aesthetic equipment in Morocco since 2002: CE and FDA certified technologies, Cellulift Academy and after-sales service.",
+      ? "Depuis 2002, Cellulift accompagne médecins, cliniques et centres dans l'intégration de technologies médico-esthétiques : sélection, formation, installation, SAV et développement."
+      : "Since 2002, Cellulift has supported physicians, clinics and centres in integrating medical aesthetic technology: selection, training, installation, after-sales and growth.",
     alternates: localeAlternates("/about", lang),
   };
 }
@@ -45,25 +46,40 @@ export default async function AboutPage({
         subtitle={content.hero.subtitle}
       />
 
-      <Story
-        eyebrow={content.story.eyebrow}
-        title={content.story.title}
-        paragraphs={content.story.paragraphs}
+      <CelluliftSystem
+        eyebrow={content.system.eyebrow}
+        title={content.system.title}
+        intro={content.system.intro}
+        center={content.system.center}
+        poles={content.system.poles}
       />
 
       <Pillars
-        eyebrow={content.pillars.eyebrow}
-        title={content.pillars.title}
-        mission={content.pillars.mission}
-        vision={content.pillars.vision}
-        values={content.pillars.values}
+        eyebrow={content.commitment.eyebrow}
+        title={content.commitment.title}
+        mission={content.commitment.items[0]}
+        vision={content.commitment.items[1]}
+        values={content.commitment.items[2]}
       />
 
-      <WhyCellulift
-        eyebrow={content.difference.eyebrow}
-        title={content.difference.title}
-        items={content.difference.items}
-      />
+      {/* Preuves en lecture technique (lignes fines) : un autre rythme que les cartes */}
+      <section className="px-3 pb-12 md:px-5 md:pb-16">
+        <div className="mx-auto max-w-7xl px-3 md:px-7">
+          <Heading eyebrow={content.partner.eyebrow} title={content.partner.title} />
+          <RevealGroup className="mt-8 border-t border-deep/15">
+            {content.partner.items.map((it, i) => (
+              <RevealItem
+                key={it.title}
+                className="grid grid-cols-[2.5rem_1fr] items-baseline gap-x-4 border-b border-deep/15 py-4 sm:grid-cols-[3rem_1fr_1.4fr] sm:py-5"
+              >
+                <span className="data-label text-deep-soft">{String(i + 1).padStart(2, "0")}</span>
+                <span className="font-sans text-base font-medium text-deep sm:text-lg">{it.title}</span>
+                <span className="col-start-2 font-sans text-sm text-deep-soft sm:col-start-3">{it.description}</span>
+              </RevealItem>
+            ))}
+          </RevealGroup>
+        </div>
+      </section>
 
       <FinalCta
         locale={lang}

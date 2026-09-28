@@ -1,4 +1,4 @@
-import { Phone, Mail, MapPin } from "lucide-react";
+import { Phone, Mail, MapPin, Wrench } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
 import { company } from "@/content/company";
 import type { Locale } from "@/lib/i18n/config";
@@ -43,6 +43,12 @@ export function DirectContact({
       label: labels.call,
       value: company.phone,
       href: `tel:${company.phone.replace(/\s/g, "")}`,
+    },
+    {
+      icon: Wrench,
+      label: locale === "fr" ? "Support technique" : "Technical support",
+      value: company.supportPhone,
+      href: `tel:${company.supportPhone.replace(/\s/g, "")}`,
     },
     {
       icon: Mail,

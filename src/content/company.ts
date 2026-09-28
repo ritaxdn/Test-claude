@@ -6,6 +6,8 @@ export const company = {
   since: 2002,
   email: "cellulift@gmail.com",
   phone: "+212 5 22 49 01 09",
+  // Ligne directe du support technique / SAV
+  supportPhone: "+212 660 815632",
   // À COMPLÉTER : numéro WhatsApp (laissé vide, le bouton WhatsApp est alors masqué)
   whatsapp: "" as string,
   address: {

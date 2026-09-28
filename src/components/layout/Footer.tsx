@@ -61,6 +61,12 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
                 <a href={`tel:${company.phone.replace(/\s/g, "")}`} className="hover:text-deep-soft">{company.phone}</a>
               </li>
               <li>
+                <a href={`tel:${company.supportPhone.replace(/\s/g, "")}`} className="hover:text-deep-soft">
+                  <span className="text-deep-soft">Support · </span>
+                  {company.supportPhone}
+                </a>
+              </li>
+              <li>
                 <a href={`mailto:${company.email}`} className="hover:text-deep-soft">{company.email}</a>
               </li>
             </ul>
