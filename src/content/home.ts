@@ -6,7 +6,7 @@ export const homeContent = {
       description:
         "Vous développez ou équipez votre activité médico-esthétique ? Nos experts vous accompagnent dans le choix et l'intégration de la technologie adaptée.",
       ctaPrimary: "Échanger avec un expert",
-      ctaSecondary: "Demander une proposition",
+      ctaSecondary: "Obtenir un devis",
     },
   },
   en: {
@@ -14,7 +14,7 @@ export const homeContent = {
       title: "Let's talk about your project.",
       description: "Developing or equipping your medical aesthetic practice? Our experts guide you in choosing and integrating the right technology.",
       ctaPrimary: "Talk to an expert",
-      ctaSecondary: "Request a proposal",
+      ctaSecondary: "Get a quote",
     },
   },
 } as const;
