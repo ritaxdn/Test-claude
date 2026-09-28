@@ -18,7 +18,8 @@ export interface Technology {
   // Photos (dans public/images/technologies/<slug>/) : la première sert de couverture.
   images?: string[];
   // « tall » : photos très verticales (machine sur pied), affichées en colonnes côte à côte, sans recadrage.
-  imageLayout?: "tall";
+  // « portrait » : photos verticales 2/3, alignées en 4 colonnes (2 sur téléphone).
+  imageLayout?: "tall" | "portrait";
 }
 
 // Gammes de produits (même découpage que le dossier MACHINES du Drive).
@@ -71,15 +72,16 @@ const photos: Record<string, string[]> = {
   "slimax-lipo-7": ["00", "01"].map((n) => `/images/technologies/slimax-lipo-7/${n}.jpg`),
   centrifugel: ["00", "01", "02", "03"].map((n) => `/images/technologies/centrifugel/${n}.jpg`),
   longishape: ["00", "01", "02"].map((n) => `/images/technologies/longishape/${n}.jpg`),
+  "pressoligne-5": ["00", "01", "02", "03"].map((n) => `/images/technologies/pressoligne-5/${n}.jpg`),
 };
 
-// Machines sur pied, photographiées en pied : colonnes verticales.
-const tallLayouts = new Set(["longishape"]);
+// Mise en page des photos par machine (sinon : grande photo + vignettes).
+const layouts: Record<string, Technology["imageLayout"]> = { longishape: "tall", "pressoligne-5": "portrait" };
 
 export const technologies: Technology[] = (Object.keys(catalog) as CategoryKey[]).flatMap((category) =>
   catalog[category].map((name) => {
     const slug = slugify(name);
-    return { slug, name, category, images: photos[slug], imageLayout: tallLayouts.has(slug) ? ("tall" as const) : undefined };
+    return { slug, name, category, images: photos[slug], imageLayout: layouts[slug] };
   })
 );
 
