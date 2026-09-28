@@ -10,14 +10,13 @@ import { cn } from "@/lib/utils";
 
 export function TechnologyGrid({
   locale,
-  allLabel,
   readMoreLabel,
 }: {
   locale: Locale;
-  allLabel: string;
   readMoreLabel: string;
 }) {
-  const [active, setActive] = useState<CategoryKey | "all">("all");
+  // Pas de filtre « Toutes » : une gamme est toujours sélectionnée (la première par défaut).
+  const [active, setActive] = useState<CategoryKey>(Object.keys(categories)[0] as CategoryKey);
   const [query, setQuery] = useState("");
   const t = locale === "fr"
     ? { search: "Rechercher une technologie", clear: "Effacer", none: "Aucune technologie ne correspond à votre recherche.", results: "résultats" }
@@ -35,8 +34,8 @@ export function TechnologyGrid({
     const q = norm(query);
     return technologies.filter(
       (tech) =>
-        (active === "all" || tech.category === active) &&
-        (!q || norm(tech.name).includes(q) || norm(categories[tech.category][locale]).includes(q))
+        // Une recherche porte sur toutes les gammes ; sans recherche, on affiche la gamme sélectionnée.
+        q ? norm(tech.name).includes(q) || norm(categories[tech.category][locale]).includes(q) : tech.category === active
     );
   }, [active, query, locale]);
 
@@ -66,27 +65,17 @@ export function TechnologyGrid({
         )}
       </div>
       <div className="no-scrollbar -mx-6 flex gap-2 overflow-x-auto px-6 sm:mx-0 sm:flex-wrap sm:px-0">
-        <button
-          type="button"
-          onClick={() => setActive("all")}
-          className={cn(
-            "shrink-0 whitespace-nowrap rounded-full px-4 py-2 font-sans text-sm transition-colors",
-              active === "all"
-                ? "glass-strong text-deep"
-                : "glass-soft text-deep-soft hover:text-deep"
-          )}
-          
-        >
-          {allLabel}
-        </button>
         {categoryKeys.map((key) => (
           <button
             key={key}
             type="button"
-            onClick={() => setActive(key)}
+            onClick={() => {
+              setActive(key);
+              setQuery("");
+            }}
             className={cn(
               "shrink-0 whitespace-nowrap rounded-full px-4 py-2 font-sans text-sm transition-colors",
-              active === key
+              active === key && !query
                 ? "glass-strong text-deep"
                 : "glass-soft text-deep-soft hover:text-deep"
             )}
