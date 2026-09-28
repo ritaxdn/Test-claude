@@ -9,6 +9,7 @@ import { getDictionary } from "@/lib/i18n/dictionaries";
 import { categories, getTechnologyBySlug, technologies, technologiesIn } from "@/content/technologies";
 import { Reveal } from "@/components/ui/Reveal";
 import { Cta, Pill } from "@/components/system/Cta";
+import { SignalLine } from "@/components/system/SignalPath";
 
 export function generateStaticParams() {
   return locales.flatMap((lang) => technologies.map((tech) => ({ lang, slug: tech.slug })));
@@ -43,6 +44,12 @@ const t = {
     included: "Inclus avec la technologie",
     includedItems: ["Installation et mise en service", "Formation Cellulift Academy", "Protocoles de traitement", "Support et maintenance"],
     sameFamily: "Dans la même famille",
+    facts: [
+      ["Pour", "Médecins et centres médico-esthétiques"],
+      ["Inclus", "Installation · Formation · Protocoles"],
+      ["Garantie", "24 mois · pièces et main-d'œuvre"],
+      ["Après l'achat", "Support technique et atelier intégré"],
+    ],
   },
   en: {
     sheet: "Technical sheet on request",
@@ -51,6 +58,12 @@ const t = {
     included: "Included with the technology",
     includedItems: ["Installation and commissioning", "Cellulift Academy training", "Treatment protocols", "Support and maintenance"],
     sameFamily: "In the same family",
+    facts: [
+      ["For", "Physicians and medical aesthetic centres"],
+      ["Included", "Installation · Training · Protocols"],
+      ["Warranty", "24 months · parts and labour"],
+      ["After purchase", "Technical support and in-house workshop"],
+    ],
   },
 } as const;
 
@@ -100,8 +113,22 @@ export default async function TechnologyDetailPage({
           </div>
         </Reveal>
 
+        {/* Réponses immédiates : pour qui, ce qui est inclus, la garantie, l'après-vente */}
+        <Reveal className="mt-10 grid grid-cols-2 border-t border-deep/15 lg:grid-cols-4">
+          {l.facts.map(([k, v], i) => (
+            <div
+              key={k}
+              className="relative border-b border-deep/15 py-4 pr-4 odd:border-r lg:border-b-0 lg:border-r lg:px-5 lg:first:pl-0 lg:last:border-r-0 [&:nth-child(even)]:pl-4 lg:[&:nth-child(even)]:pl-5"
+            >
+              <SignalLine delay={i * 0.1} className="absolute inset-x-0 top-[-1px]" />
+              <p className="data-label text-deep-soft">{k}</p>
+              <p className="mt-2 font-sans text-sm font-medium text-deep">{v}</p>
+            </div>
+          ))}
+        </Reveal>
+
         {tech.images?.length ? (
-          <Reveal className={`mt-12 grid grid-cols-2 gap-3 ${pair ? "" : "md:grid-cols-3"}`}>
+          <Reveal className={`mt-8 grid grid-cols-2 gap-3 ${pair ? "" : "md:grid-cols-3"}`}>
             {tech.images.map((src, i) => (
               <div
                 key={src}

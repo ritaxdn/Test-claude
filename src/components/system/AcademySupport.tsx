@@ -3,35 +3,29 @@ import { Heading } from "./Heading";
 import { Cta } from "./Cta";
 import type { Locale } from "@/lib/i18n/config";
 import { homeSystem } from "@/content/home-system";
-import { academyPageContent } from "@/content/academy-page";
+import { ProtocolPath } from "./SignalPath";
 
 /** Academy (éditorial) et Support (lecture technique) : deux rythmes différents, sans cartes. */
 export function AcademySupport({ locale }: { locale: Locale }) {
   const a = homeSystem[locale].academy;
   const s = homeSystem[locale].support;
-  const faculty = academyPageContent[locale].faculty.members;
   return (
     <>
-      {/* Academy : éditorial, grand espace, sans cartes (prévu pour une photo/vidéo plein cadre) */}
-      <section className="px-3 py-16 md:px-5 md:py-28">
-        <div className="mx-auto grid max-w-7xl gap-10 px-3 md:px-7 lg:grid-cols-[1.5fr_1fr] lg:items-end">
+      {/* Academy : une des raisons d'acheter chez Cellulift — le parcours, de l'installation à la maîtrise */}
+      <section className="px-3 py-12 md:px-5 md:py-20">
+        <div className="mx-auto max-w-7xl px-3 md:px-7">
           <Reveal>
             <p className="data-label text-deep-soft">{a.eyebrow}</p>
-            <h2 className="display mt-5 text-[clamp(1.9rem,3.6vw,3.4rem)] leading-[0.98] text-deep">{a.title}</h2>
-            <p className="data-label mt-5 text-deep">{a.text}</p>
-            <div className="mt-8">
-              <Cta href={`/${locale}/academy`}>{a.cta}</Cta>
-            </div>
+            <h2 className="display mt-5 max-w-4xl text-[clamp(1.9rem,3.6vw,3.4rem)] leading-[0.98] text-deep">{a.title}</h2>
+            <p className="mt-5 font-sans text-lg text-deep">{a.subtitle}</p>
+            <p className="data-label mt-3 text-deep-soft">{a.text}</p>
           </Reveal>
-          <RevealGroup className="border-t border-deep/15">
-            {faculty.map((m) => (
-              <RevealItem key={m.name} className="border-b border-deep/15 py-5">
-                <p className="data-label text-deep-soft">{a.facultyLabel}</p>
-                <p className="mt-2 font-sans text-lg font-medium text-deep">{m.name}</p>
-                <p className="mt-0.5 font-sans text-sm text-deep-soft">{m.role}</p>
-              </RevealItem>
-            ))}
-          </RevealGroup>
+          <div className="mt-10 md:mt-14">
+            <ProtocolPath steps={a.steps} />
+          </div>
+          <Reveal className="mt-10">
+            <Cta href={`/${locale}/academy`}>{a.cta}</Cta>
+          </Reveal>
         </div>
       </section>
 
