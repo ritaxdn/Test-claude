@@ -30,7 +30,7 @@ export const faq = {
       },
       {
         q: "Quels sont vos prix ?",
-        a: "Chaque projet est chiffré sur devis, selon la technologie et la configuration choisies. L'installation, la mise en service, la formation Cellulift Academy, les protocoles et le support sont inclus avec la technologie. Le devis est gratuit ; notre équipe répond sous 24 à 48 h ouvrées.",
+        a: "Chaque projet est chiffré sur devis, selon la technologie et la configuration choisies. L'installation, la mise en service, la formation Cellulift Academy, les protocoles et le support sont inclus avec la technologie. Notre équipe vous répond sous 24 à 48 h ouvrées.",
       },
       {
         q: "Puis-je voir une machine avant d'acheter ?",
@@ -68,7 +68,7 @@ export const faq = {
       },
       {
         q: "What are your prices?",
-        a: "Each project is quoted individually, based on the technology and configuration chosen. Installation, commissioning, Cellulift Academy training, protocols and support are included with the technology. Quotes are free; our team replies within 24 to 48 business hours.",
+        a: "Each project is quoted individually, based on the technology and configuration chosen. Installation, commissioning, Cellulift Academy training, protocols and support are included with the technology. Our team replies within 24 to 48 business hours.",
       },
       {
         q: "Can I see a device before buying?",

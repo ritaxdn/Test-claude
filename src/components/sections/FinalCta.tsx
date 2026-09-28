@@ -16,7 +16,7 @@ export function FinalCta({
   ctaPrimary,
   ctaSecondary,
   primarySujet = "expert",
-  secondarySujet = "proposition",
+  secondarySujet = "devis",
   phone,
 }: {
   locale: Locale;
