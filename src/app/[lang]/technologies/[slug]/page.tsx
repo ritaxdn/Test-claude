@@ -83,6 +83,8 @@ export default async function TechnologyDetailPage({
   const family = technologiesIn(tech.category).filter((x) => x.slug !== tech.slug);
   // Deux photos : présentées côte à côte au format portrait, sans recadrage de la machine.
   const pair = tech.images?.length === 2;
+  // Photos très verticales : toutes côte à côte, au format de la machine.
+  const tall = tech.imageLayout === "tall";
   const hasSheet = !!(tech.description || tech.indications?.length || tech.benefits?.length);
 
   return (
@@ -129,13 +131,15 @@ export default async function TechnologyDetailPage({
         </Reveal>
 
         {tech.images?.length ? (
-          <Reveal className={`mt-8 grid grid-cols-2 gap-3 ${pair ? "" : "md:grid-cols-3"}`}>
+          <Reveal className={`mt-8 grid gap-2 sm:gap-3 ${tall ? "grid-cols-3" : pair ? "grid-cols-2" : "grid-cols-2 md:grid-cols-3"}`}>
             {tech.images.map((src, i) => (
               <ScanFrame
                 key={src}
                 className={`rounded-[1.75rem] bg-[#0b0d14] ${
-                  // Deux photos (portrait) : côte à côte, entières.
-                  pair
+                  tall
+                    ? "aspect-[2/5]"
+                    : // Deux photos (portrait) : côte à côte, entières.
+                      pair
                     ? "aspect-[2/3]"
                     : i === 0
                     ? "col-span-2 aspect-[4/5] md:row-span-2 md:aspect-auto"
@@ -150,7 +154,7 @@ export default async function TechnologyDetailPage({
                   alt={`${tech.name} — ${i + 1}`}
                   fill
                   priority={i === 0}
-                  sizes={pair ? "50vw" : i === 0 ? "(min-width:768px) 66vw, 100vw" : "(min-width:768px) 33vw, 50vw"}
+                  sizes={tall ? "33vw" : pair ? "50vw" : i === 0 ? "(min-width:768px) 66vw, 100vw" : "(min-width:768px) 33vw, 50vw"}
                   className="object-cover transition-transform duration-700 hover:scale-[1.03]"
                 />
               </ScanFrame>
