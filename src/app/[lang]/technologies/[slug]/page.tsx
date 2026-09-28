@@ -10,6 +10,7 @@ import { categories, getTechnologyBySlug, technologies, technologiesIn } from "@
 import { Reveal } from "@/components/ui/Reveal";
 import { Cta, Pill } from "@/components/system/Cta";
 import { SignalLine } from "@/components/system/SignalPath";
+import { ScanFrame } from "@/components/system/ScanFrame";
 
 export function generateStaticParams() {
   return locales.flatMap((lang) => technologies.map((tech) => ({ lang, slug: tech.slug })));
@@ -130,9 +131,9 @@ export default async function TechnologyDetailPage({
         {tech.images?.length ? (
           <Reveal className={`mt-8 grid grid-cols-2 gap-3 ${pair ? "" : "md:grid-cols-3"}`}>
             {tech.images.map((src, i) => (
-              <div
+              <ScanFrame
                 key={src}
-                className={`relative overflow-hidden rounded-[1.75rem] bg-[#0b0d14] ${
+                className={`rounded-[1.75rem] bg-[#0b0d14] ${
                   // Deux photos (portrait) : côte à côte, entières.
                   pair
                     ? "aspect-[2/3]"
@@ -152,7 +153,7 @@ export default async function TechnologyDetailPage({
                   sizes={pair ? "50vw" : i === 0 ? "(min-width:768px) 66vw, 100vw" : "(min-width:768px) 33vw, 50vw"}
                   className="object-cover transition-transform duration-700 hover:scale-[1.03]"
                 />
-              </div>
+              </ScanFrame>
             ))}
           </Reveal>
         ) : null}

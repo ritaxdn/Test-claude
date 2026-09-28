@@ -379,3 +379,41 @@ body {
   transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
 }
 .header-glass[data-scrolled="true"] .header-signal { transform: scaleX(1); opacity: 0.8; }
+
+/* SAV : le signal ECG défile en continu (statut « en ligne ») */
+@keyframes status-ecg-run {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -1200; }
+}
+.status-ecg {
+  stroke-dasharray: 380 220;
+  animation: status-ecg-run 6s linear infinite;
+}
+
+/* Scanner Cellulift : une ligne de lecture balaie la machine (entrée à l'écran, ou survol des cartes) */
+@keyframes scan-sweep {
+  0% { transform: translateY(-10%); opacity: 0; }
+  12% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { transform: translateY(110%); opacity: 0; }
+}
+/* .scan-frame ne fixe pas la position : le conteneur doit être relative ou absolute. */
+.scan-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 22%;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    linear-gradient(to bottom, transparent, rgba(123, 97, 255, 0.10) 70%, transparent),
+    linear-gradient(90deg, transparent, var(--rainbow-1), var(--rainbow-2), var(--rainbow-3), transparent) bottom / 100% 1.5px no-repeat;
+  z-index: 2;
+}
+.scan-frame[data-scan="on"]::after { animation: scan-sweep 1.6s cubic-bezier(0.45, 0, 0.2, 1) 0.2s 1 both; }
+@media (hover: hover) {
+  .scan-hover:hover .scan-frame::after, .scan-hover.scan-frame:hover::after { animation: scan-sweep 1.3s cubic-bezier(0.45, 0, 0.2, 1) 1 both; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scan-frame::after { display: none; }
+}

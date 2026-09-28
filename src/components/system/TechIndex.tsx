@@ -39,10 +39,10 @@ export function TechIndex({ locale }: { locale: Locale }) {
               <RevealItem key={key}>
                 <Link
                   href={`/${locale}/technologies#${key}`}
-                  className="glass group relative flex aspect-square flex-col overflow-hidden sm:aspect-[5/4] rounded-[1.25rem] p-3.5 sm:rounded-[1.75rem] sm:p-5 md:p-6"
+                  className="glass scan-hover group relative flex aspect-square flex-col overflow-hidden sm:aspect-[5/4] rounded-[1.25rem] p-3.5 sm:rounded-[1.75rem] sm:p-5 md:p-6"
                 >
                   {cover && (
-                    <div className="pointer-events-none absolute inset-0 transition-all duration-700 ease-out md:scale-105 md:opacity-0 md:group-hover:scale-100 md:group-hover:opacity-100">
+                    <div className="scan-frame pointer-events-none absolute inset-0 transition-all duration-700 ease-out md:scale-105 md:opacity-0 md:group-hover:scale-100 md:group-hover:opacity-100">
                       <Image src={cover} alt="" fill sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 80vw" className="object-cover" />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#0b0d14]/85 via-[#0b0d14]/20 to-[#0b0d14]/30" />
                     </div>

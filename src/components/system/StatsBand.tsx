@@ -2,6 +2,7 @@ import { RevealGroup, RevealItem } from "@/components/ui/Reveal";
 import type { Locale } from "@/lib/i18n/config";
 import { homeSystem } from "@/content/home-system";
 import { company } from "@/content/company";
+import { PulseMark } from "./SignalPath";
 
 /** Chiffres clés, très grands, sans paragraphe : une lecture d'instrument. */
 export function StatsBand({ locale }: { locale: Locale }) {
@@ -21,7 +22,8 @@ export function StatsBand({ locale }: { locale: Locale }) {
                 <span className="text-[clamp(1rem,2vw,1.8rem)] tracking-normal">{s.unit}</span>
               )}
             </p>
-            <p className="data-label mt-4 text-deep">{s.label}</p>
+            <PulseMark delay={0.3 + i * 0.15} className="mt-3" />
+            <p className="data-label mt-2 text-deep">{s.label}</p>
           </RevealItem>
         ))}
       </RevealGroup>

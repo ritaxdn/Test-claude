@@ -2,60 +2,55 @@ export const supportPageContent = {
   fr: {
     hero: {
       eyebrow: "Support & Après-vente",
-      title: "Un partenariat qui commence à la livraison.",
+      title: "Après l'installation, nous restons là.",
       subtitle:
-        "Installation, maintenance préventive, pièces détachées et assistance technique : Cellulift reste engagé auprès de vous sur toute la durée de vie de votre équipement.",
+        "Garantie 24 mois, techniciens qui se déplacent, atelier intégré et ligne support directe : votre technologie reste opérationnelle, et votre activité avec.",
     },
-    processEyebrow: "Notre accompagnement",
-    processTitle: "Un parcours structuré, de la livraison au long terme",
+    status: {
+      eyebrow: "Statut du service",
+      title: "Un SAV qui fonctionne comme un système.",
+      live: "En service",
+      rows: [
+        { label: "Garantie", value: "24 mois · pièces et main-d'œuvre", state: "Actif" },
+        { label: "Ligne support", value: "{phone}", state: "En ligne" },
+        { label: "Intervention sur site", value: "Notre staff technique se déplace", state: "Disponible" },
+        { label: "Atelier intégré", value: "Diagnostic et réparation", state: "Opérationnel" },
+      ],
+    },
+    processEyebrow: "Le parcours SAV",
+    processTitle: "De la livraison au long terme",
     steps: [
       {
-        title: "Installation certifiée",
-        description:
-          "Installation de votre équipement par un technicien Cellulift, avec vérification complète des paramètres de sécurité.",
+        title: "Installation & mise en service",
+        description: "Transport adapté, montage et mise en service de votre équipement par nos techniciens.",
       },
       {
         title: "Formation de vos équipes",
-        description:
-          "Prise en main accompagnée par Cellulift Academy avant la mise en service clinique de l'équipement.",
+        description: "Prise en main avec Cellulift Academy avant la première séance patient.",
       },
       {
-        title: "Maintenance préventive",
-        description:
-          "Contrôles réguliers programmés pour garantir la performance et la longévité de votre technologie.",
+        title: "Suivi & maintenance",
+        description: "Des contrôles pour garder votre technologie performante dans la durée.",
       },
       {
-        title: "Assistance technique réactive",
-        description:
-          "Une équipe support joignable pour tout incident, avec gestion des pièces détachées et interventions rapides.",
+        title: "Assistance & atelier",
+        description: "Une question ou une panne : la ligne support répond, l'atelier intégré diagnostique et répare.",
       },
     ],
     reliability: {
-      eyebrow: "Confiance & fiabilité",
-      title: "Pourquoi nos partenaires nous font confiance",
+      eyebrow: "Ce qui est inclus",
+      title: "Ce que vous obtenez avec chaque technologie",
       items: [
-        {
-          title: "Réactivité",
-          description: "Une équipe technique dédiée, joignable et réactive face à tout incident.",
-        },
-        {
-          title: "Pièces d'origine",
-          description: "Un approvisionnement garanti en pièces détachées certifiées.",
-        },
-        {
-          title: "Traçabilité",
-          description: "Un suivi documenté de chaque intervention et de chaque équipement.",
-        },
-        {
-          title: "Engagement durable",
-          description: "Un accompagnement qui se poursuit bien au-delà de la garantie initiale.",
-        },
+        { title: "Garantie 24 mois", description: "Pièces et main-d'œuvre, sur toutes nos machines." },
+        { title: "Déplacement du staff technique", description: "Nos techniciens interviennent directement chez vous." },
+        { title: "Atelier intégré", description: "Diagnostic et réparation de vos machines par notre équipe." },
+        { title: "Ligne support directe", description: "Un numéro dédié pour toute question technique." },
       ],
     },
     cta: {
       title: "Une question sur votre équipement ?",
       description:
-        "Notre équipe support est disponible pour toute demande d'installation, de maintenance ou d'assistance technique.",
+        "Installation, maintenance ou panne : notre équipe technique vous répond et intervient.",
       ctaPrimary: "Contacter le support",
       ctaSecondary: "Parler à un expert",
     },
@@ -63,62 +58,56 @@ export const supportPageContent = {
   en: {
     hero: {
       eyebrow: "Support & After-sales",
-      title: "A partnership that begins at delivery.",
+      title: "After installation, we stay with you.",
       subtitle:
-        "Installation, preventive maintenance, spare parts and technical assistance: Cellulift stays engaged with you throughout your equipment's entire lifetime.",
+        "24-month warranty, technicians who come to you, an in-house workshop and a direct support line: your technology stays operational, and so does your practice.",
     },
-    processEyebrow: "Our support model",
-    processTitle: "A structured journey, from delivery to the long term",
+    status: {
+      eyebrow: "Service status",
+      title: "After-sales that runs like a system.",
+      live: "In service",
+      rows: [
+        { label: "Warranty", value: "24 months · parts and labour", state: "Active" },
+        { label: "Support line", value: "{phone}", state: "Online" },
+        { label: "On-site visits", value: "Our technical staff comes to you", state: "Available" },
+        { label: "In-house workshop", value: "Diagnosis and repair", state: "Operational" },
+      ],
+    },
+    processEyebrow: "The after-sales journey",
+    processTitle: "From delivery to the long term",
     steps: [
       {
-        title: "Certified installation",
-        description:
-          "Your equipment is installed by a Cellulift technician, with full verification of safety parameters.",
+        title: "Installation & commissioning",
+        description: "Suitable transport, assembly and commissioning of your device by our technicians.",
       },
       {
         title: "Team training",
-        description:
-          "Guided onboarding via Cellulift Academy before the equipment enters clinical service.",
+        description: "Hands-on onboarding with Cellulift Academy before the first patient session.",
       },
       {
-        title: "Preventive maintenance",
-        description:
-          "Scheduled regular checks to guarantee your technology's performance and longevity.",
+        title: "Follow-up & maintenance",
+        description: "Checks to keep your technology performing over time.",
       },
       {
-        title: "Responsive technical assistance",
-        description:
-          "A support team reachable for any incident, with spare-parts management and fast interventions.",
+        title: "Assistance & workshop",
+        description: "A question or a breakdown: the support line answers, the in-house workshop diagnoses and repairs.",
       },
     ],
     reliability: {
-      eyebrow: "Trust & reliability",
-      title: "Why our partners trust us",
+      eyebrow: "What's included",
+      title: "What you get with every technology",
       items: [
-        {
-          title: "Responsiveness",
-          description: "A dedicated technical team, reachable and responsive to any incident.",
-        },
-        {
-          title: "Genuine parts",
-          description: "Guaranteed supply of certified spare parts.",
-        },
-        {
-          title: "Traceability",
-          description: "Documented tracking of every intervention and every piece of equipment.",
-        },
-        {
-          title: "Lasting commitment",
-          description: "Support that continues well beyond the initial warranty.",
-        },
+        { title: "24-month warranty", description: "Parts and labour, on all our devices." },
+        { title: "On-site technical staff", description: "Our technicians come directly to you." },
+        { title: "In-house workshop", description: "Diagnosis and repair of your devices by our team." },
+        { title: "Direct support line", description: "A dedicated number for any technical question." },
       ],
     },
     cta: {
       title: "A question about your equipment?",
-      description:
-        "Our support team is available for any installation, maintenance or technical assistance request.",
+      description: "Installation, maintenance or breakdown: our technical team answers and steps in.",
       ctaPrimary: "Contact support",
-      ctaSecondary: "Speak to an expert",
+      ctaSecondary: "Talk to an expert",
     },
   },
 } as const;

@@ -24,8 +24,8 @@ export const homeSystem = {
       "Toutes nos machines sont certifiées CE et FDA",
       "Depuis 2002",
       "Technologies • Installation • Formation • Accompagnement • Service après-vente",
-      "5 villes",
-      "5 pays",
+      "{s} points de vente",
+      "3 pays : Maroc · France · Sénégal",
       "+1000 médecins équipés",
     ],
     system: {
@@ -46,7 +46,7 @@ export const homeSystem = {
       // Preuves, présentées comme des données : la valeur domine, le libellé reste discret.
       items: [
         { label: "Distribution officielle", value: "LGL Expert", title: "Partenaire officiel en Afrique", text: "" },
-        { label: "Technologies certifiées", value: "CE · FDA", title: "Conformité précisée technologie par technologie", text: "" },
+        { label: "Technologies certifiées", value: "CE · FDA", title: "Toutes nos machines sont certifiées", text: "" },
         { label: "Présence internationale", value: "Maroc · France · Sénégal", title: "Accompagnement multi-marchés", text: "" },
         { label: "Expertise médicale", value: "Médecins · Formateurs · Experts", title: "Protocoles et accompagnement clinique", text: "" },
       ],
@@ -117,8 +117,8 @@ export const homeSystem = {
       "All our devices are CE and FDA certified",
       "Since 2002",
       "Technology • Installation • Training • Support • After-sales service",
-      "5 cities",
-      "5 countries",
+      "{s} points of sale",
+      "3 countries: Morocco · France · Senegal",
       "1,000+ physicians equipped",
     ],
     system: {
@@ -138,7 +138,7 @@ export const homeSystem = {
       intro: "",
       items: [
         { label: "Official distribution", value: "LGL Expert", title: "Official partner in Africa", text: "" },
-        { label: "Certified technology", value: "CE · FDA", title: "Compliance detailed device by device", text: "" },
+        { label: "Certified technology", value: "CE · FDA", title: "All our devices are certified", text: "" },
         { label: "International presence", value: "Morocco · France · Senegal", title: "Multi-market support", text: "" },
         { label: "Medical expertise", value: "Physicians · Trainers · Experts", title: "Protocols and clinical guidance", text: "" },
       ],

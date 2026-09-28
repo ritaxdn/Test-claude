@@ -3,12 +3,26 @@ export const technologiesPageContent = {
     eyebrow: "Technologies",
     title: "Nos technologies.",
     subtitle:
-      "Les dispositifs de dernière génération LGL Expert, dont Cellulift est le distributeur officiel en Afrique, tous certifiés CE Médical et FDA.",
+      "Choisissez par indication. Distributeur officiel LGL Expert en Afrique, Cellulift livre chaque technologie avec l'installation, la formation et le SAV.",
+    includedLabel: "Chaque technologie est livrée avec",
+    included: [
+      ["Certification", "CE · FDA"],
+      ["Installation", "Transport, montage, mise en service"],
+      ["Cellulift Academy", "Formation initiale et protocoles"],
+      ["Garantie & SAV", "24 mois · atelier intégré"],
+    ],
   },
   en: {
     eyebrow: "Technologies",
     title: "Our technologies.",
     subtitle:
-      "Latest-generation LGL Expert devices, of which Cellulift is the official distributor in Africa, all CE Medical and FDA certified.",
+      "Choose by indication. As the official LGL Expert distributor in Africa, Cellulift delivers every technology with installation, training and after-sales.",
+    includedLabel: "Every technology comes with",
+    included: [
+      ["Certification", "CE · FDA"],
+      ["Installation", "Transport, assembly, commissioning"],
+      ["Cellulift Academy", "Initial training and protocols"],
+      ["Warranty & after-sales", "24 months · in-house workshop"],
+    ],
   },
 } as const;

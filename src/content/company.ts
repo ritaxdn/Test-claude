@@ -16,7 +16,7 @@ export const company = {
     fr: "N°02 Rue Savoie, Quartier des Hôpitaux, Casablanca",
     en: "N°02 Rue Savoie, Quartier des Hôpitaux, Casablanca",
   },
-  // Showrooms (carte de l'accueil). À COMPLÉTER : adresses de Paris et Dakar.
+  // Points de vente (carte de l'accueil). Sans adresse publique pour Rabat, Agadir, Paris et Dakar : seule la ville est affichée.
   showrooms: [
     { id: "casablanca", city: { fr: "Casablanca", en: "Casablanca" }, country: { fr: "Maroc", en: "Morocco" }, address: "N°02 Rue Savoie, Quartier des Hôpitaux", hq: true, lon: -7.5898, lat: 33.5731 },
     { id: "marrakech", city: { fr: "Marrakech", en: "Marrakech" }, country: { fr: "Maroc", en: "Morocco" }, address: "Hay Al Massira III, C 624", lon: -7.9811, lat: 31.6295 },
