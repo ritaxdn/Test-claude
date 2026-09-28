@@ -28,7 +28,7 @@ export function TechnologyGrid({
     if (hash && hash in categories) setActive(hash as CategoryKey); // eslint-disable-line react-hooks/set-state-in-effect
   }, []);
 
-  // Recherche insensible aux accents, à la casse et aux apostrophes (« aquapeel » trouve « AQUA’PEEL »).
+  // Recherche insensible aux accents, à la casse et aux apostrophes (« frac cov » trouve « FRAC’COV 4 »).
   const norm = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9+]/g, "");
   const filtered = useMemo(() => {
     const q = norm(query);
