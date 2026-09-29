@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { resendKey, defaultFrom } from "@/lib/resend";
 
 interface ContactPayload {
   name?: string;
@@ -48,7 +49,7 @@ function recipients(subject?: string) {
 }
 
 async function sendToCellulift(body: ContactPayload) {
-  const key = process.env.RESEND_API_KEY;
+  const key = resendKey();
   if (!key) {
     // Pas de faux « Merci » : sans clé, la demande serait perdue sans que personne ne le sache.
     console.error("[contact] RESEND_API_KEY manquante dans cet environnement Vercel : demande non envoyée.");
@@ -75,7 +76,7 @@ async function sendToCellulift(body: ContactPayload) {
     method: "POST",
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
     body: JSON.stringify({
-      from: process.env.CONTACT_EMAIL_FROM || "Cellulift <onboarding@resend.dev>",
+      from: defaultFrom(),
       to: recipients(body.subject),
       reply_to: body.email,
       subject: `${body.subject || "Demande"} — ${body.name}${body.specialty ? ` (${body.specialty})` : ""}`,
