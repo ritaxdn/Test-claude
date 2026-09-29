@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { guard, oneLine } from "@/lib/guard";
 import { booking } from "@/content/site";
 
 // Reçoit les demandes du calendrier et les transmet au cabinet par e-mail.
@@ -15,6 +16,8 @@ const escape = (s: string) =>
 const allNeeds = new Set(booking.needs.flatMap((g) => g.options));
 
 export async function POST(request: Request) {
+  const refused = guard(request, "rdv");
+  if (refused) return refused;
   const body = await request.json().catch(() => null);
   if (!body || typeof body !== "object") {
     return NextResponse.json({ error: "Requête invalide." }, { status: 400 });
@@ -82,7 +85,7 @@ export async function POST(request: Request) {
       from: BOOKING_EMAIL_FROM,
       to: BOOKING_EMAIL_TO,
       ...(data.email ? { reply_to: data.email } : {}),
-      subject: `Demande de RDV — ${data.firstName} ${data.lastName} — ${when}`,
+      subject: oneLine(`Demande de RDV — ${data.firstName} ${data.lastName} — ${when}`),
       html: `<h2>Nouvelle demande de rendez-vous</h2><p><a href="tel:${escape(data.phone.replace(/[^\d+]/g, ""))}" style="display:inline-block;padding:12px 20px;border-radius:999px;background:#0a1b21;color:#fff;text-decoration:none;font:600 15px sans-serif">Appeler ${escape(data.firstName)} pour confirmer · ${escape(data.phone)}</a></p><table>${rows
         .map(([k, v]) => `<tr><td style="padding:4px 12px 4px 0;color:#8d7c72">${k}</td><td>${escape(v)}</td></tr>`)
         .join("")}</table><p>À confirmer par téléphone auprès du patient.</p>`,
