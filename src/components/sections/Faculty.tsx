@@ -48,7 +48,7 @@ export function Faculty({ eyebrow, title, members }: { eyebrow: string; title: s
           ))}
         </RevealGroup>
       </div>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
     </section>
   );
 }

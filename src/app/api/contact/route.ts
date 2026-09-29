@@ -5,6 +5,7 @@ import { sendToCrm, type CrmLead } from "@/lib/crm";
 import { addToBrevo } from "@/lib/brevo";
 import { contactPageContent } from "@/content/contact-page";
 import { contactRules, emailPattern, isParcours, isValidPhone, whatsappNumber, type ContactField, type Parcours } from "@/lib/contact-rules";
+import { guard, oneLine } from "@/lib/guard";
 
 type ContactPayload = Partial<Record<ContactField, string>> & {
   parcours?: string;
@@ -19,17 +20,6 @@ type ContactPayload = Partial<Record<ContactField, string>> & {
   lastName?: string;
 };
 
-// Limite d'envois par adresse IP (mémoire de l'instance : suffisant contre les rafales de spam).
-const WINDOW_MS = 10 * 60 * 1000;
-const MAX_PER_WINDOW = 5;
-const hits = new Map<string, number[]>();
-function rateLimited(ip: string) {
-  const now = Date.now();
-  const recent = (hits.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
-  recent.push(now);
-  hits.set(ip, recent);
-  return recent.length > MAX_PER_WINDOW;
-}
 
 const esc = (s = "") =>
   s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
@@ -111,7 +101,7 @@ async function sendToCellulift(
       from: defaultFrom(),
       to,
       reply_to: body.email,
-      subject,
+      subject: oneLine(subject).slice(0, 200),
       html,
     }),
   });
@@ -170,6 +160,9 @@ function invalid(parcours: Parcours, body: ContactPayload) {
 const newsletterSpecialties: readonly string[] = contactPageContent.fr.form.specialtyOptions;
 
 export async function POST(request: Request) {
+  const refused = guard(request, "contact");
+  if (refused) return refused;
+
   let body: ContactPayload;
 
   try {
@@ -183,10 +176,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true });
   }
 
-  const ip = request.headers.get("x-forwarded-for")?.split(",")[0].trim() || "unknown";
-  if (rateLimited(ip)) {
-    return NextResponse.json({ ok: false, error: "rate_limited" }, { status: 429 });
-  }
 
   const attr = attribution(body);
 
