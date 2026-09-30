@@ -73,6 +73,7 @@ const photos: Record<string, string[]> = {
   centrifugel: ["00", "01", "02", "03"].map((n) => `/images/technologies/centrifugel/${n}.jpg`),
   longishape: ["00", "01", "02"].map((n) => `/images/technologies/longishape/${n}.jpg`),
   "pressoligne-5": ["00", "01", "02", "03"].map((n) => `/images/technologies/pressoligne-5/${n}.jpg`),
+  elitecolombia: ["/images/technologies/elitecolombia/00.jpg"],
 };
 
 // Mise en page des photos par machine (sinon : grande photo + vignettes).
