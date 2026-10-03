@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { guard, oneLine } from "@/lib/guard";
 import { revalidatePath } from "next/cache";
 import { formationsPage as f } from "@/content/formations";
 import { clean, escapeHtml, sendEmail, sendToPractice } from "@/lib/mail";
@@ -15,6 +16,8 @@ const errors: Record<string, [string, number]> = {
 };
 
 export async function POST(request: Request) {
+  const refused = guard(request, "inscription");
+  if (refused) return refused;
   const body = await request.json().catch(() => null);
   if (!body || typeof body !== "object") return NextResponse.json({ error: "Requête invalide." }, { status: 400 });
   if (clean(body.website)) return NextResponse.json({ ok: true });
@@ -41,6 +44,9 @@ export async function POST(request: Request) {
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email) &&
     body.consent;
   if (!valid) return NextResponse.json({ error: "Merci de vérifier les informations saisies." }, { status: 422 });
+  // Une même adresse ne peut pas recevoir plus de 3 confirmations par heure.
+  const perEmail = guard(request, `inscription-mail:${data.email}`, 3, 60 * 60 * 1000);
+  if (perEmail) return perEmail;
 
   const session = await getSession(data.eventId);
   if (!session) return NextResponse.json({ error: errors.not_found[0] }, { status: 404 });
@@ -71,7 +77,7 @@ export async function POST(request: Request) {
 
   const title = sessionTitle(session);
   await sendToPractice({
-    subject: `Inscription formation — ${title} — ${data.firstName} ${data.lastName}`,
+    subject: oneLine(`Inscription formation — ${title} — ${data.firstName} ${data.lastName}`),
     heading: "Nouvelle inscription à une formation",
     rows: [
       ["Formation", title],
@@ -90,7 +96,7 @@ export async function POST(request: Request) {
   });
   await sendEmail({
     to: data.email,
-    subject: `Votre inscription — ${title}`,
+    subject: oneLine(`Votre inscription — ${title}`),
     html: `<p>Bonjour ${escapeHtml(data.firstName)},</p>
 <p>Votre inscription à <strong>${escapeHtml(title)}</strong> (${escapeHtml(session.date)}, ${escapeHtml(session.place)}) est bien enregistrée.</p>
 <p>Le cabinet vous contactera pour les modalités pratiques.</p>

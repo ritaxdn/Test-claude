@@ -10,8 +10,11 @@ let lastTest = 0;
  * Diagnostic de l'envoi des formulaires (Resend). N'affiche jamais la clé.
  * GET /api/contact/diagnostic          → état de la clé et réponse de Resend
  * GET /api/contact/diagnostic?test=1   → envoie en plus un e-mail de test et affiche la réponse exacte de Resend
+ * Accessible uniquement si la variable Vercel CONTACT_DIAGNOSTIC vaut « on » (à retirer après usage).
  */
 export async function GET(request: Request) {
+  // Page désactivée par défaut : l'activer temporairement avec la variable Vercel CONTACT_DIAGNOSTIC=on.
+  if (process.env.CONTACT_DIAGNOSTIC !== "on") return new NextResponse("Not found", { status: 404 });
   const info = resendKeyInfo();
   const key = resendKey();
   const to = (process.env.CONTACT_EMAIL_TO || "admin@cellulift.ma, cellulift@gmail.com").split(",").map((x) => x.trim());

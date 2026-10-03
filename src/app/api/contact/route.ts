@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { resendKey, defaultFrom } from "@/lib/resend";
+import { guard, oneLine } from "@/lib/guard";
 
 interface ContactPayload {
   name?: string;
@@ -10,18 +11,6 @@ interface ContactPayload {
   message?: string;
   website?: string; // champ piège (doit rester vide)
   elapsed?: number; // durée de remplissage, en ms
-}
-
-// Limite d'envois par adresse IP (mémoire de l'instance : suffisant contre les rafales de spam).
-const WINDOW_MS = 10 * 60 * 1000;
-const MAX_PER_WINDOW = 5;
-const hits = new Map<string, number[]>();
-function rateLimited(ip: string) {
-  const now = Date.now();
-  const recent = (hits.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
-  recent.push(now);
-  hits.set(ip, recent);
-  return recent.length > MAX_PER_WINDOW;
 }
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -79,7 +68,7 @@ async function sendToCellulift(body: ContactPayload) {
       from: defaultFrom(),
       to: recipients(body.subject),
       reply_to: body.email,
-      subject: `${body.subject || "Demande"} — ${body.name}${body.specialty ? ` (${body.specialty})` : ""}`,
+      subject: oneLine(`${body.subject || "Demande"} — ${body.name}${body.specialty ? ` (${body.specialty})` : ""}`).slice(0, 200),
       html,
     }),
   });
@@ -88,6 +77,9 @@ async function sendToCellulift(body: ContactPayload) {
 }
 
 export async function POST(request: Request) {
+  const refused = guard(request, "contact");
+  if (refused) return refused;
+
   let body: ContactPayload;
 
   try {
@@ -101,10 +93,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true });
   }
 
-  const ip = request.headers.get("x-forwarded-for")?.split(",")[0].trim() || "unknown";
-  if (rateLimited(ip)) {
-    return NextResponse.json({ ok: false, error: "rate_limited" }, { status: 429 });
-  }
 
   const { name, email, message } = body;
   const tooLong =

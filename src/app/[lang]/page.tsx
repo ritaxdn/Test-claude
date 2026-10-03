@@ -63,7 +63,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
             foundingDate: "2002",
             sameAs: [company.social.instagram.url, company.social.instagramAcademy.url],
             address: { "@type": "PostalAddress", streetAddress: company.showrooms[0].address, addressLocality: "Casablanca", addressCountry: "MA" },
-          }),
+          }).replace(/</g, "\\u003c"),
         }}
       />
     </div>
