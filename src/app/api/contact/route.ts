@@ -32,16 +32,16 @@ const esc = (s = "") =>
 /**
  * Demande de contact → e-mail à Cellulift (Resend).
  * Variables Vercel : RESEND_API_KEY (obligatoire pour l'envoi), CONTACT_EMAIL_TO (défaut cellulift@gmail.com),
- * CONTACT_EMAIL_ACADEMY (demandes « Rejoindre une masterclass », défaut cellulift@gmail.com : tant que cellulift.ma n'est pas vérifié dans Resend, seule l'adresse du compte Resend reçoit),
+ * CONTACT_EMAIL_ACADEMY (demandes « Rejoindre une masterclass », défaut cellulift.academy1@gmail.com + cellulift@gmail.com),
  * CONTACT_EMAIL_PARTNERSHIPS (demandes « Partenariat », défaut cellulift@gmail.com),
- * CONTACT_EMAIL_FROM (défaut « Cellulift <onboarding@resend.dev> », à remplacer par une adresse du domaine vérifié).
+ * CONTACT_EMAIL_FROM (défaut « Site Cellulift <contact@cellulift.ma> », domaine vérifié dans Resend).
  */
 // « Rejoindre une masterclass » / « Join a masterclass » → Cellulift Academy ; le reste → Cellulift.
 // « Partenariat » / « Partnership » → adresse partenariats. Boîtes Gmail tant que les adresses @cellulift.ma n'existent pas.
 function recipients(subject?: string) {
   const s = subject ?? "";
   const list = /masterclass/i.test(s)
-    ? process.env.CONTACT_EMAIL_ACADEMY || "cellulift@gmail.com"
+    ? process.env.CONTACT_EMAIL_ACADEMY || "cellulift.academy1@gmail.com, cellulift@gmail.com"
     : /partenariat|partnership/i.test(s)
       ? process.env.CONTACT_EMAIL_PARTNERSHIPS || "cellulift@gmail.com"
       : process.env.CONTACT_EMAIL_TO || "cellulift@gmail.com";

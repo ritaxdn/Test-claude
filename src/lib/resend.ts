@@ -21,4 +21,5 @@ export function resendKeyInfo() {
   };
 }
 
-export const defaultFrom = () => process.env.CONTACT_EMAIL_FROM || "Cellulift <onboarding@resend.dev>";
+// cellulift.ma est vérifié dans Resend (compte Cellulift) : les e-mails partent de contact@cellulift.ma.
+export const defaultFrom = () => process.env.CONTACT_EMAIL_FROM || "Site Cellulift <contact@cellulift.ma>";
