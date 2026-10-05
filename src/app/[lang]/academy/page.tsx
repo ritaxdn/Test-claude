@@ -49,7 +49,7 @@ export default async function AcademyPage({
       />
 
       {/* Le parcours de formation, visualisé : le tracé ECG progresse au défilement */}
-      <section className="px-3 pb-12 md:px-5 md:pb-20">
+      <section className="overflow-x-clip px-3 pb-12 md:px-5 md:pb-20">
         <div className="mx-auto max-w-7xl px-3 md:px-7">
           <p className="data-label text-deep-soft">{content.whyTraining.eyebrow}</p>
           <h2 className="display mt-4 max-w-3xl text-[clamp(1.6rem,3vw,2.6rem)] leading-[1] text-deep">{content.whyTraining.title}</h2>

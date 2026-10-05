@@ -2,7 +2,9 @@
 type Section = { h: string; p: string[] };
 type Doc = { title: string; updated: string; intro: string; sections: Section[] };
 
-const email = "admin@cellulift.ma";
+import { company } from "./company";
+
+const email = company.email;
 const address = "N°02 Rue Savoie, Quartier des Hôpitaux, Casablanca, Maroc";
 
 export const privacy: Record<"fr" | "en", Doc> = {

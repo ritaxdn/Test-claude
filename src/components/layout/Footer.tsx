@@ -43,10 +43,10 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
 
           <nav aria-label={dict.footer.pages}>
             <p className="data-label text-deep-soft">{dict.footer.pages}</p>
-            <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2.5 md:grid-cols-1">
+            <ul className="mt-3 grid grid-cols-2 gap-x-6 gap-y-0.5 md:grid-cols-1">
               {links.map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="font-sans text-sm text-deep transition-colors hover:text-deep-soft">
+                  <Link href={l.href} className="inline-block py-1.5 font-sans text-sm text-deep transition-colors hover:text-deep-soft">
                     {l.label}
                   </Link>
                 </li>
@@ -56,31 +56,31 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
 
           <div>
             <p className="data-label text-deep-soft">{dict.footer.contact}</p>
-            <ul className="mt-4 space-y-2.5 font-sans text-sm text-deep">
+            <ul className="mt-3 space-y-0.5 font-sans text-sm text-deep">
               <li>
-                <a href={`tel:${company.phone.replace(/\s/g, "")}`} className="hover:text-deep-soft">{company.phone}</a>
+                <a href={`tel:${company.phone.replace(/\s/g, "")}`} className="inline-block py-1.5 hover:text-deep-soft">{company.phone}</a>
               </li>
               <li>
-                <a href={`tel:${company.supportPhone.replace(/\s/g, "")}`} className="hover:text-deep-soft">
+                <a href={`tel:${company.supportPhone.replace(/\s/g, "")}`} className="inline-block py-1.5 hover:text-deep-soft">
                   <span className="text-deep-soft">Support · </span>
                   {company.supportPhone}
                 </a>
               </li>
               <li>
-                <a href={`mailto:${company.email}`} className="hover:text-deep-soft">{company.email}</a>
+                <a href={`mailto:${company.email}`} className="inline-block py-1.5 hover:text-deep-soft">{company.email}</a>
               </li>
               <li>
-                <a href={`mailto:${company.academyEmail}`} className="hover:text-deep-soft">
+                <a href={`mailto:${company.academyEmail}`} className="inline-block py-1.5 hover:text-deep-soft">
                   <span className="text-deep-soft">Academy · </span>
                   {company.academyEmail}
                 </a>
               </li>
-              <li>
-                <a href={`mailto:${company.partnershipsEmail}`} className="hover:text-deep-soft">
+              {company.partnershipsEmail && (<li>
+                <a href={`mailto:${company.partnershipsEmail}`} className="inline-block py-1.5 hover:text-deep-soft">
                   <span className="text-deep-soft">{locale === "fr" ? "Partenariats" : "Partnerships"} · </span>
                   {company.partnershipsEmail}
                 </a>
-              </li>
+              </li>)}
             </ul>
             <ul className="mt-5 space-y-2 border-t border-deep/10 pt-5">
               {offices.map((o) => (
@@ -97,8 +97,8 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
             © {year} {company.legalName}. {dict.footer.rights}
           </p>
           <p className="data-label flex flex-wrap gap-5 text-deep-soft">
-            <Link href={`/${locale}/terms`} className="hover:text-deep">{dict.footer.legal}</Link>
-            <Link href={`/${locale}/privacy`} className="hover:text-deep">{dict.footer.privacy}</Link>
+            <Link href={`/${locale}/terms`} className="inline-block py-2 hover:text-deep">{dict.footer.legal}</Link>
+            <Link href={`/${locale}/privacy`} className="inline-block py-2 hover:text-deep">{dict.footer.privacy}</Link>
             <CookieSettingsLink label="Cookies" />
           </p>
         </div>
