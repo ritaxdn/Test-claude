@@ -11,7 +11,7 @@ export function WhyCellulift({ eyebrow, title, items }: { eyebrow: string; title
           {items.map((it, i) => (
             <RevealItem key={it.title} className="glass flex min-h-[10rem] flex-col rounded-[1.5rem] p-6">
               <Pill className="self-start bg-white/70">0{i + 1}</Pill>
-              <h3 className="mt-auto pt-5 font-sans text-base font-medium text-deep">{it.title}</h3>
+              <h3 className="mt-6 font-sans text-base font-medium text-deep">{it.title}</h3>
               <p className="mt-2 font-sans text-sm leading-relaxed text-deep-soft">{it.description}</p>
             </RevealItem>
           ))}

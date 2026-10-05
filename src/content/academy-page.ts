@@ -65,7 +65,7 @@ export const academyPageContent = {
       description:
         "Places limitées pour garantir un encadrement pratique de qualité. Contactez notre équipe pour connaître le calendrier et les prérequis.",
       ctaPrimary: "Rejoindre une masterclass",
-      ctaSecondary: "Contacter Cellulift",
+      ctaSecondary: "Poser une question à l'équipe",
     },
   },
   en: {
@@ -134,7 +134,7 @@ export const academyPageContent = {
       description:
         "Limited seats to guarantee quality hands-on supervision. Contact our team for the calendar and prerequisites.",
       ctaPrimary: "Join a masterclass",
-      ctaSecondary: "Contact Cellulift",
+      ctaSecondary: "Ask our team a question",
     },
   },
 } as const;

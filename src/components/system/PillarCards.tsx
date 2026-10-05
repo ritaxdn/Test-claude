@@ -35,7 +35,7 @@ export function PillarCards({ pillars }: { pillars: readonly Pillar[] }) {
                 <Plus size={15} strokeWidth={1.75} />
               </span>
             </span>
-            <span className="display card-title mt-2 block text-[1.3rem] leading-[1.05] text-deep sm:mt-8 sm:min-h-[2.1em] lg:flex lg:items-end">{p.name}</span>
+            <span className="display card-title mt-2 block text-[1.3rem] leading-[1.05] text-deep sm:mt-8 sm:min-h-[2.1em]">{p.name}</span>
             {/* Détail, révélé au clic */}
             <span
               className={cn(

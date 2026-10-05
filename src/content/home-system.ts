@@ -9,8 +9,8 @@ export const homeSystem = {
       title: ["La technologie", "au service de votre développement."],
       titleAccent: "Expertise · Formation · Installation · Support",
       badges: ["Distributeur officiel LGL Expert · Afrique", "Certifiées CE & FDA · Garantie 24 mois"],
-      ctaPrimary: "Demander une démonstration",
-      ctaSecondary: "Découvrir nos technologies",
+      ctaPrimary: "Voir la technologie en action",
+      ctaSecondary: "Trouver la technologie adaptée",
     },
     // Chiffres clés (très grand, sans paragraphe). « {s} » = nombre de showrooms. Ne jamais afficher le nombre de technologies.
     stats: [
@@ -66,7 +66,7 @@ export const homeSystem = {
       text: "Formation initiale · Protocoles · Workshops · Perfectionnement",
       steps: ["Installation", "Formation", "Protocoles", "Maîtrise"],
       facultyLabel: "Formateur",
-      cta: "Voir les prochaines formations",
+      cta: "Choisir ma prochaine formation",
     },
     support: {
       eyebrow: "05 — Support",
@@ -78,7 +78,7 @@ export const homeSystem = {
         { code: "03", title: "Atelier intégré", text: "Diagnostic et réparation de vos machines." },
         { code: "04", title: "Assistance", text: "Une question technique ? Notre équipe vous répond." },
       ],
-      cta: "Contacter le support",
+      cta: "Obtenir de l'aide technique",
       phoneLabel: "Ligne support",
     },
     showrooms: {
@@ -87,7 +87,7 @@ export const homeSystem = {
       markets: ["Maroc", "France", "Sénégal"],
       hq: "Siège",
       onRequest: "Adresse communiquée sur rendez-vous.",
-      cta: "Prendre rendez-vous au showroom",
+      cta: "Voir les machines au showroom",
       list: "Points de vente",
     },
     cta: {
@@ -95,7 +95,7 @@ export const homeSystem = {
       title: "Votre prochaine technologie commence ici.",
       text: "Parlez de votre projet à un expert Cellulift.",
       ctaPrimary: "Parler à un expert",
-      ctaSecondary: "Demander une démonstration",
+      ctaSecondary: "Voir la technologie en action",
     },
   },
   en: {
@@ -104,8 +104,8 @@ export const homeSystem = {
       title: ["Medical aesthetic technology.", "Built for growth."],
       titleAccent: "Technology · Training · Installation · Support",
       badges: ["Official LGL Expert distributor · Africa", "CE & FDA certified · 24-month warranty"],
-      ctaPrimary: "Request a demonstration",
-      ctaSecondary: "Explore our technologies",
+      ctaPrimary: "See it in action",
+      ctaSecondary: "Find the right technology",
     },
     stats: [
       { value: "20+", label: "Years of expertise" },
@@ -158,7 +158,7 @@ export const homeSystem = {
       text: "Initial training · Protocols · Workshops · Advanced courses",
       steps: ["Installation", "Training", "Protocols", "Mastery"],
       facultyLabel: "Trainer",
-      cta: "See upcoming training",
+      cta: "Pick my next training",
     },
     support: {
       eyebrow: "05 — Support",
@@ -170,7 +170,7 @@ export const homeSystem = {
         { code: "03", title: "In-house workshop", text: "Diagnosis and repair of your devices." },
         { code: "04", title: "Assistance", text: "A technical question? Our team answers." },
       ],
-      cta: "Contact support",
+      cta: "Get technical help",
       phoneLabel: "Support line",
     },
     showrooms: {
@@ -179,7 +179,7 @@ export const homeSystem = {
       markets: ["Morocco", "France", "Senegal"],
       hq: "Head office",
       onRequest: "Address shared by appointment.",
-      cta: "Book a showroom visit",
+      cta: "See the devices at the showroom",
       list: "Points of sale",
     },
     cta: {
@@ -187,7 +187,7 @@ export const homeSystem = {
       title: "Your next technology starts here.",
       text: "Talk to a Cellulift expert about your project.",
       ctaPrimary: "Talk to an expert",
-      ctaSecondary: "Request a demonstration",
+      ctaSecondary: "See it in action",
     },
   },
 } as const;

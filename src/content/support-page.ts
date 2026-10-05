@@ -62,7 +62,7 @@ export const supportPageContent = {
       title: "Une question sur votre équipement ?",
       description:
         "Installation, maintenance ou panne : notre équipe technique vous répond et intervient.",
-      ctaPrimary: "Contacter le support",
+      ctaPrimary: "Obtenir de l'aide technique",
       ctaSecondary: "Parler à un expert",
     },
   },
@@ -128,7 +128,7 @@ export const supportPageContent = {
     cta: {
       title: "A question about your equipment?",
       description: "Installation, maintenance or breakdown: our technical team answers and steps in.",
-      ctaPrimary: "Contact support",
+      ctaPrimary: "Get technical help",
       ctaSecondary: "Talk to an expert",
     },
   },

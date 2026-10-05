@@ -1,3 +1,4 @@
+import { GuideBanner } from "@/components/guide/GuideBanner";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { isLocale } from "@/lib/i18n/config";
@@ -63,6 +64,7 @@ export default async function TechnologiesPage({
             locale={lang}
             readMoreLabel={dict.common.readMore}
           />
+          <GuideBanner locale={lang} className="mt-12" />
         </Container>
       </section>
 
