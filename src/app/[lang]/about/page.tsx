@@ -4,7 +4,9 @@ import { isLocale } from "@/lib/i18n/config";
 import { localeAlternates } from "@/lib/alternates";
 import { aboutContent } from "@/content/about";
 import { PageHero } from "@/components/sections/PageHero";
-import { Pillars } from "@/components/sections/Pillars";
+import { WhyCellulift } from "@/components/sections/WhyCellulift";
+import { Reveal } from "@/components/ui/Reveal";
+import { company } from "@/content/company";
 import { CelluliftSystem } from "@/components/sections/CelluliftSystem";
 import { Heading } from "@/components/system/Heading";
 import { RevealGroup, RevealItem } from "@/components/ui/Reveal";
@@ -46,6 +48,18 @@ export default async function AboutPage({
         subtitle={content.hero.subtitle}
       />
 
+      {/* Leur problème avant notre histoire */}
+      <WhyCellulift eyebrow={content.problem.eyebrow} title={content.problem.title} items={content.problem.items} />
+
+      {/* Le déclic : ce que nous avons compris */}
+      <section className="px-3 pb-12 md:px-5 md:pb-16">
+        <Reveal className="mx-auto max-w-7xl px-3 md:px-7">
+          <p className="data-label text-deep-soft">{content.shift.eyebrow}</p>
+          <p className="mt-5 max-w-4xl text-balance font-sans text-[clamp(1.3rem,2.3vw,2rem)] font-light leading-snug text-deep">{content.shift.text}</p>
+        </Reveal>
+      </section>
+
+      {/* La réponse : le système Cellulift */}
       <CelluliftSystem
         eyebrow={content.system.eyebrow}
         title={content.system.title}
@@ -54,27 +68,21 @@ export default async function AboutPage({
         poles={content.system.poles}
       />
 
-      <Pillars
-        eyebrow={content.commitment.eyebrow}
-        title={content.commitment.title}
-        mission={content.commitment.items[0]}
-        vision={content.commitment.items[1]}
-        values={content.commitment.items[2]}
-      />
-
       {/* Preuves en lecture technique (lignes fines) : un autre rythme que les cartes */}
       <section className="px-3 pb-12 md:px-5 md:pb-16">
         <div className="mx-auto max-w-7xl px-3 md:px-7">
-          <Heading eyebrow={content.partner.eyebrow} title={content.partner.title} />
+          <Heading eyebrow={content.proof.eyebrow} title={content.proof.title} />
           <RevealGroup className="mt-8 border-t border-deep/15">
-            {content.partner.items.map((it, i) => (
+            {content.proof.items.map((it) => (
               <RevealItem
                 key={it.title}
-                className="grid grid-cols-[2.5rem_1fr] items-baseline gap-x-4 border-b border-deep/15 py-4 sm:grid-cols-[3rem_1fr_1.4fr] sm:py-5"
+                className="grid grid-cols-[6.5rem_1fr] items-baseline gap-x-4 border-b border-deep/15 py-4 sm:grid-cols-[9rem_1fr_1.4fr] sm:py-5"
               >
-                <span className="data-label text-deep-soft">{String(i + 1).padStart(2, "0")}</span>
+                <span className="display text-lg text-deep sm:text-2xl">{it.value}</span>
                 <span className="font-sans text-base font-medium text-deep sm:text-lg">{it.title}</span>
-                <span className="col-start-2 font-sans text-sm text-deep-soft sm:col-start-3">{it.description}</span>
+                <span className="col-start-2 font-sans text-sm text-deep-soft sm:col-start-3">
+                  {it.description.replace("{s}", String(company.showrooms.length))}
+                </span>
               </RevealItem>
             ))}
           </RevealGroup>
