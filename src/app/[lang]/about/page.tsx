@@ -7,6 +7,7 @@ import { PageHero } from "@/components/sections/PageHero";
 import { WhyCellulift } from "@/components/sections/WhyCellulift";
 import { Reveal } from "@/components/ui/Reveal";
 import { company } from "@/content/company";
+import { MediaSection } from "@/components/media/MediaSection";
 import { CelluliftSystem } from "@/components/sections/CelluliftSystem";
 import { Heading } from "@/components/system/Heading";
 import { RevealGroup, RevealItem } from "@/components/ui/Reveal";
@@ -88,6 +89,8 @@ export default async function AboutPage({
           </RevealGroup>
         </div>
       </section>
+
+      <MediaSection locale={lang} />
 
       <FinalCta
         locale={lang}
