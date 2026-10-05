@@ -8,6 +8,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { MobileTabBar } from "@/components/layout/MobileTabBar";
 import { CookieConsent } from "@/components/layout/CookieConsent";
+import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "../globals.css";
@@ -75,6 +76,7 @@ export default async function LangLayout({
         <Header locale={lang} dict={dict} />
         <main id="contenu" className="flex-1">{children}</main>
         <Footer locale={lang} dict={dict} />
+        <WhatsAppButton locale={lang} />
         <MobileTabBar locale={lang} dict={dict} />
         <CookieConsent locale={lang} />
         {/* Mesure d'audience Vercel : anonyme et sans cookie */}
