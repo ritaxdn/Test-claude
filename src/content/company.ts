@@ -4,9 +4,11 @@ export const company = {
   legalName: "Cellulift",
   tagline: "Metamorphosis Technology",
   since: 2002,
-  email: "admin@cellulift.ma",
-  academyEmail: "academy@cellulift.ma",
-  partnershipsEmail: "partenariats@cellulift.ma",
+  // Boîtes Gmail en attendant Google Workspace (les adresses @cellulift.ma ne sont pas encore créées).
+  email: "cellulift@gmail.com",
+  academyEmail: "cellulift.academy1@gmail.com",
+  // Vide : pas de ligne « Partenariats » séparée dans le pied de page (les demandes arrivent sur l'adresse principale).
+  partnershipsEmail: "" as string,
   phone: "+212 5 22 49 01 09",
   // Ligne directe du support technique / SAV
   supportPhone: "+212 660 815632",

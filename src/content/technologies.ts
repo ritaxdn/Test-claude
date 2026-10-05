@@ -74,6 +74,15 @@ const photos: Record<string, string[]> = {
   longishape: ["00", "01", "02"].map((n) => `/images/technologies/longishape/${n}.jpg`),
   "pressoligne-5": ["00", "01", "02", "03"].map((n) => `/images/technologies/pressoligne-5/${n}.jpg`),
   elitecolombia: ["/images/technologies/elitecolombia/00.jpg"],
+  longilyse: ["00", "01", "02", "03", "04", "05", "06", "07"].map((n) => `/images/technologies/longilyse/${n}.jpg`),
+  sevenwaves: ["00", "01", "02", "03", "04", "05", "06"].map((n) => `/images/technologies/sevenwaves/${n}.jpg`),
+  "slimax-lipo-3": ["00", "01", "02", "03", "04", "05"].map((n) => `/images/technologies/slimax-lipo-3/${n}.jpg`),
+  "steel-muscle": ["00", "01", "02", "03", "04"].map((n) => `/images/technologies/steel-muscle/${n}.jpg`),
+  tanita: ["00", "01", "02", "03", "04"].map((n) => `/images/technologies/tanita/${n}.jpg`),
+  longchoc: ["/images/technologies/longchoc/00.jpg"],
+  "la-queen": ["/images/technologies/la-queen/00.jpg"],
+  "hanover-5g": ["/images/technologies/hanover-5g/00.jpg"],
+  frequentazia: ["/images/technologies/frequentazia/00.jpg"],
 };
 
 // Mise en page des photos par machine (sinon : grande photo + vignettes).

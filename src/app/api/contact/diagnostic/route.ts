@@ -14,7 +14,7 @@ let lastTest = 0;
 export async function GET(request: Request) {
   const info = resendKeyInfo();
   const key = resendKey();
-  const to = (process.env.CONTACT_EMAIL_TO || "admin@cellulift.ma, cellulift@gmail.com").split(",").map((x) => x.trim());
+  const to = (process.env.CONTACT_EMAIL_TO || "cellulift@gmail.com").split(",").map((x) => x.trim());
   const result: Record<string, unknown> = {
     environnement: process.env.VERCEL_ENV ?? "local",
     cle: {
