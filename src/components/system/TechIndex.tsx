@@ -56,12 +56,13 @@ export function TechIndex({ locale }: { locale: Locale }) {
                   </div>
 
                   <div className="relative mt-auto">
-                    <h3 className={`display card-title text-[clamp(1.3rem,1.95vw,1.9rem)] leading-[0.95] transition-colors duration-300 ${ink}`}>
+                    <h3 className={`display card-title text-[clamp(1.3rem,1.95vw,1.9rem)] leading-[0.95] transition-colors duration-300 sm:min-h-[1.9em] ${ink}`}>
                       {categories[key][locale]}
                     </h3>
-                    {categoryDetail[key] && (
-                      <p className={`data-label mt-2 hidden transition-colors duration-300 sm:block ${soft}`}>{categoryDetail[key]![locale]}</p>
-                    )}
+                    {/* Ligne de détail réservée sur toutes les cartes : les titres restent alignés */}
+                    <p className={`data-label mt-2 hidden transition-colors duration-300 sm:block ${soft}`}>
+                      {categoryDetail[key]?.[locale] ?? "\u00a0"}
+                    </p>
                     {/* Technologies de la gamme : discrètes, révélées au survol (masquées sur téléphone, sans survol) */}
                     <ul className="mt-4 hidden flex-wrap gap-x-3 gap-y-1 transition-all duration-500 md:flex md:max-h-0 md:translate-y-2 md:overflow-hidden md:opacity-0 md:group-hover:max-h-40 md:group-hover:translate-y-0 md:group-hover:opacity-100">
                       {machines.map((m) => (

@@ -1,3 +1,4 @@
+import { GuideBanner } from "@/components/guide/GuideBanner";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -181,7 +182,9 @@ export default async function TechnologyDetailPage({
           </Reveal>
         ) : null}
 
-        <div className="mt-14 grid gap-3 lg:grid-cols-[1.3fr_1fr]">
+        <GuideBanner locale={lang} className="mt-10" />
+
+        <div className="mt-6 grid gap-3 lg:grid-cols-[1.3fr_1fr]">
           {hasSheet ? (
             <Reveal className="glass rounded-[1.75rem] p-8 md:p-10">
               {tech.description && <p className="font-sans text-lg leading-relaxed text-deep">{tech.description[lang]}</p>}

@@ -10,6 +10,7 @@ import { AcademySupport } from "@/components/system/AcademySupport";
 import { ProjectCta } from "@/components/system/ProjectCta";
 import { ShowroomMap } from "@/components/system/ShowroomMap";
 import { Faq } from "@/components/system/Faq";
+import { GuideBanner } from "@/components/guide/GuideBanner";
 import type { Metadata } from "next";
 import { localeAlternates } from "@/lib/alternates";
 import { SITE_URL } from "@/lib/site";
@@ -46,6 +47,9 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       <WhyCellulift locale={lang} />
       <AcademySupport locale={lang} />
       <ShowroomMap locale={lang} />
+      <div className="px-3 pb-12 md:px-5 md:pb-16">
+        <GuideBanner locale={lang} className="mx-auto max-w-7xl" />
+      </div>
       <Faq locale={lang} />
       <ProjectCta locale={lang} />
       {/* Données structurées : l'entreprise (Google) */}
