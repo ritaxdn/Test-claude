@@ -83,6 +83,8 @@ export default async function TechnologyDetailPage({
   const family = technologiesIn(tech.category).filter((x) => x.slug !== tech.slug);
   // Deux photos : présentées côte à côte au format portrait, sans recadrage de la machine.
   const pair = tech.images?.length === 2;
+  // Une seule photo : affichée entière, à son format naturel, centrée.
+  const single = tech.images?.length === 1;
   // Photos très verticales : toutes côte à côte, au format de la machine.
   const tall = tech.imageLayout === "tall";
   const portrait = tech.imageLayout === "portrait";
@@ -131,7 +133,21 @@ export default async function TechnologyDetailPage({
           ))}
         </Reveal>
 
-        {tech.images?.length ? (
+        {single ? (
+          <Reveal className="mx-auto mt-8 max-w-xl">
+            <ScanFrame className="rounded-[1.75rem] bg-[#0b0d14]">
+              <Image
+                src={tech.images![0]}
+                alt={tech.name}
+                width={1100}
+                height={1400}
+                priority
+                sizes="(min-width:640px) 576px, 100vw"
+                className="block h-auto w-full"
+              />
+            </ScanFrame>
+          </Reveal>
+        ) : tech.images?.length ? (
           <Reveal className={`mt-8 grid gap-2 sm:gap-3 ${tall ? "grid-cols-3" : portrait ? "grid-cols-2 md:grid-cols-4" : pair ? "grid-cols-2" : "grid-cols-2 md:grid-cols-3"}`}>
             {tech.images.map((src, i) => (
               <ScanFrame
