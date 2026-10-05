@@ -10,6 +10,7 @@ import { AcademySupport } from "@/components/system/AcademySupport";
 import { ProjectCta } from "@/components/system/ProjectCta";
 import { ShowroomMap } from "@/components/system/ShowroomMap";
 import { Faq } from "@/components/system/Faq";
+import { MediaSection } from "@/components/media/MediaSection";
 import { GuideBanner } from "@/components/guide/GuideBanner";
 import type { Metadata } from "next";
 import { localeAlternates } from "@/lib/alternates";
@@ -45,6 +46,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       <TechIndex locale={lang} />
       <SystemPillars locale={lang} />
       <WhyCellulift locale={lang} />
+      <MediaSection locale={lang} />
       <AcademySupport locale={lang} />
       <ShowroomMap locale={lang} />
       <div className="px-3 pb-12 md:px-5 md:pb-16">
