@@ -32,7 +32,7 @@ const esc = (s = "") =>
 /**
  * Demande de contact → e-mail à Cellulift (Resend).
  * Variables Vercel : RESEND_API_KEY (obligatoire pour l'envoi), CONTACT_EMAIL_TO (défaut cellulift@gmail.com),
- * CONTACT_EMAIL_ACADEMY (demandes « Rejoindre une masterclass », défaut cellulift.academy1@gmail.com),
+ * CONTACT_EMAIL_ACADEMY (demandes « Rejoindre une masterclass », défaut cellulift@gmail.com : tant que cellulift.ma n'est pas vérifié dans Resend, seule l'adresse du compte Resend reçoit),
  * CONTACT_EMAIL_PARTNERSHIPS (demandes « Partenariat », défaut cellulift@gmail.com),
  * CONTACT_EMAIL_FROM (défaut « Cellulift <onboarding@resend.dev> », à remplacer par une adresse du domaine vérifié).
  */
@@ -41,7 +41,7 @@ const esc = (s = "") =>
 function recipients(subject?: string) {
   const s = subject ?? "";
   const list = /masterclass/i.test(s)
-    ? process.env.CONTACT_EMAIL_ACADEMY || "cellulift.academy1@gmail.com"
+    ? process.env.CONTACT_EMAIL_ACADEMY || "cellulift@gmail.com"
     : /partenariat|partnership/i.test(s)
       ? process.env.CONTACT_EMAIL_PARTNERSHIPS || "cellulift@gmail.com"
       : process.env.CONTACT_EMAIL_TO || "cellulift@gmail.com";

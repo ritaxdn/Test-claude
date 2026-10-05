@@ -2,7 +2,7 @@ import Link from "next/link";
 import { CookieSettingsLink } from "@/components/layout/CookieConsent";
 import { InstagramIcon } from "@/components/icons/SocialIcons";
 import { Logo } from "@/components/brand/Logo";
-import { company } from "@/content/company";
+import { company, whatsappHref } from "@/content/company";
 import type { Locale } from "@/lib/i18n/config";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
 
@@ -67,6 +67,14 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
                   {company.supportPhone}
                 </a>
               </li>
+              {company.whatsapp && (
+                <li>
+                  <a href={whatsappHref(locale)} target="_blank" rel="noopener noreferrer" className="inline-block py-1.5 hover:text-deep-soft">
+                    <span className="text-deep-soft">WhatsApp · </span>
+                    {company.whatsapp}
+                  </a>
+                </li>
+              )}
               <li>
                 <a href={`mailto:${company.email}`} className="inline-block py-1.5 hover:text-deep-soft">{company.email}</a>
               </li>

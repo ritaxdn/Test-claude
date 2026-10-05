@@ -1,26 +1,9 @@
 import { Phone, Mail, MapPin, Wrench } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
-import { company } from "@/content/company";
+import { company, whatsappHref } from "@/content/company";
 import type { Locale } from "@/lib/i18n/config";
+import { WhatsAppIcon } from "@/components/icons/SocialIcons";
 
-function WhatsAppIcon({ size = 18, ...props }: { size?: number } & React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      width={size}
-      height={size}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      {...props}
-    >
-      <path d="M6.5 17.5 5 21l3.6-1.4A8 8 0 1 0 6.5 17.5Z" />
-      <path d="M9 9.8c0 3 2.7 5.6 5.6 5.6.5 0 1-.2 1-.7v-1c0-.3-.3-.6-.6-.6h-1.2c-.3 0-.5-.1-.6-.4L12.6 11c-.1-.3 0-.6.2-.8l.5-.5c.2-.2.2-.5 0-.8L12 7.4c-.2-.3-.5-.3-.8-.2-1.7.8-2.2 1.7-2.2 2.6Z" />
-    </svg>
-  );
-}
 
 export function DirectContact({
   locale,
@@ -36,7 +19,7 @@ export function DirectContact({
       icon: WhatsAppIcon,
       label: labels.whatsapp,
       value: company.whatsapp,
-      href: `https://wa.me/${company.whatsapp.replace(/\D/g, "")}`,
+      href: whatsappHref(locale),
     },
     {
       icon: Phone,

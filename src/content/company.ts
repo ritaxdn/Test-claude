@@ -12,7 +12,8 @@ export const company = {
   phone: "+212 5 22 49 01 09",
   // Ligne directe du support technique / SAV
   supportPhone: "+212 660 815632",
-  // À COMPLÉTER : numéro WhatsApp (laissé vide, le bouton WhatsApp est alors masqué)
+  // À COMPLÉTER : numéro WhatsApp au format international, ex. "+212 6 00 00 00 00"
+  // (laissé vide, tous les boutons WhatsApp sont masqués)
   whatsapp: "" as string,
   address: {
     fr: "N°02 Rue Savoie, Quartier des Hôpitaux, Casablanca",
@@ -33,3 +34,12 @@ export const company = {
     instagramAcademy: { handle: "@cellulift.academy", url: "https://www.instagram.com/cellulift.academy/" },
   },
 } as const;
+
+/** Lien WhatsApp avec un premier message déjà écrit (le visiteur n'a plus qu'à appuyer sur Envoyer). */
+export function whatsappHref(locale: "fr" | "en") {
+  const text =
+    locale === "fr"
+      ? "Bonjour Cellulift, je souhaite des informations sur vos technologies."
+      : "Hello Cellulift, I would like information about your technologies.";
+  return `https://wa.me/${company.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(text)}`;
+}
