@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { legacyRedirects } from "./src/lib/legacy-redirects";
 
 // En-têtes de sécurité appliqués à toutes les pages (HTTPS forcé via HSTS, anti-clickjacking, etc.).
 const securityHeaders = [
@@ -15,6 +16,10 @@ const nextConfig: NextConfig = {
   },
   images: {
     formats: ["image/avif", "image/webp"],
+  },
+  // Anciennes adresses du site WordPress → nouvelles pages (redirections permanentes).
+  async redirects() {
+    return legacyRedirects();
   },
   async headers() {
     return [
