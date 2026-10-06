@@ -1,18 +1,18 @@
 import { GuideBanner } from "@/components/guide/GuideBanner";
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ArrowLeft, Check } from "lucide-react";
 import { isLocale, locales } from "@/lib/i18n/config";
-import { localeAlternates } from "@/lib/alternates";
+import { pageMetadata } from "@/lib/alternates";
+import { Breadcrumbs } from "@/components/seo/JsonLd";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { categories, getTechnologyBySlug, technologies, technologiesIn } from "@/content/technologies";
 import { Reveal } from "@/components/ui/Reveal";
 import { Cta, Pill } from "@/components/system/Cta";
 import { SignalLine } from "@/components/system/SignalPath";
-import { ScanFrame } from "@/components/system/ScanFrame";
 import photoSizes from "@/content/photo-sizes.json";
+import { PhotoCarousel } from "@/components/technologies/PhotoCarousel";
 
 export function generateStaticParams() {
   return locales.flatMap((lang) => technologies.map((tech) => ({ lang, slug: tech.slug })));
@@ -28,15 +28,22 @@ export async function generateMetadata({
   const tech = getTechnologyBySlug(slug);
   if (!tech) return {};
   const family = categories[tech.category][lang];
-  return {
-    title: tech.name,
-    description:
-      tech.tagline?.[lang] ??
-      (lang === "fr"
+  const cover = tech.images?.[0];
+  const size = cover ? ((photoSizes as Record<string, number[]>)[cover] ?? [1100, 1100]) : null;
+  return pageMetadata({
+    lang,
+    path: `/technologies/${slug}`,
+    title: `${tech.name} — ${family}`,
+    description: tech.tagline
+      ? lang === "fr"
+        ? `${tech.name} : ${tech.tagline.fr} Installation, formation Cellulift Academy et SAV inclus.`
+        : `${tech.name}: ${tech.tagline.en} Installation, Cellulift Academy training and after-sales included.`
+      : lang === "fr"
         ? `${tech.name} — ${family}. Technologie Cellulift livrée avec formation, protocoles et support.`
-        : `${tech.name} — ${family}. Cellulift technology delivered with training, protocols and support.`),
-    alternates: localeAlternates(`/technologies/${slug}`, lang),
-  };
+        : `${tech.name} — ${family}. Cellulift technology delivered with training, protocols and support.`,
+    // Partage : photo de la machine plutôt que l'image générique
+    image: cover && size ? { url: cover, width: size[0], height: size[1], alt: tech.name } : undefined,
+  });
 }
 
 const t = {
@@ -87,6 +94,13 @@ export default async function TechnologyDetailPage({
 
   return (
     <div className="px-3 pb-24 pt-10 md:px-5 md:pt-14">
+      <Breadcrumbs
+        lang={lang}
+        items={[
+          ["Technologies", "/technologies"],
+          [tech.name, `/technologies/${tech.slug}`],
+        ]}
+      />
       <div className="mx-auto max-w-7xl px-3 md:px-7">
         <Link
           href={`/${lang}/technologies`}
@@ -129,33 +143,15 @@ export default async function TechnologyDetailPage({
         </Reveal>
 
         {tech.images?.length ? (
-          // Toutes les photos entières, à leur format d'origine : jamais recadrées.
-          <Reveal
-            className={
-              tech.images.length === 1
-                ? "mx-auto mt-8 max-w-xl"
-                : tech.images.length === 2
-                  ? "mt-8 columns-2 gap-2 sm:gap-3"
-                  : "mt-8 columns-2 gap-2 sm:gap-3 lg:columns-3"
+          <PhotoCarousel
+            images={tech.images}
+            name={tech.name}
+            labels={
+              lang === "fr"
+                ? { prev: "Photo précédente", next: "Photo suivante", photo: "Photo" }
+                : { prev: "Previous photo", next: "Next photo", photo: "Photo" }
             }
-          >
-            {tech.images.map((src, i) => {
-              const [w, h] = ((photoSizes as Record<string, number[]>)[src] ?? [1100, 1100]) as [number, number];
-              return (
-                <ScanFrame key={src} className="mb-2 break-inside-avoid rounded-[1.5rem] bg-[#0b0d14] sm:mb-3">
-                  <Image
-                    src={src}
-                    alt={`${tech.name} — ${i + 1}`}
-                    width={w}
-                    height={h}
-                    priority={i === 0}
-                    sizes={tech.images!.length === 1 ? "(min-width:640px) 576px, 100vw" : "(min-width:1024px) 33vw, 50vw"}
-                    className="block h-auto w-full"
-                  />
-                </ScanFrame>
-              );
-            })}
-          </Reveal>
+          />
         ) : null}
 
         <GuideBanner locale={lang} className="mt-10" />

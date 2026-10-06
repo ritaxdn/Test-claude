@@ -29,17 +29,18 @@ export async function generateMetadata({
     metadataBase: new URL(SITE_URL),
     title: {
       default: isFr
-        ? "Cellulift — Technologies médico-esthétiques professionnelles"
-        : "Cellulift — Professional medical aesthetic technology",
-      template: "%s — Cellulift",
+        ? "CELLULIFT | Technologies médico-esthétiques pour professionnels"
+        : "CELLULIFT | Medical aesthetic technology for professionals",
+      template: "%s | CELLULIFT",
     },
     description: isFr
-      ? "Distributeur officiel LGL Expert en Afrique depuis 2002 : technologies médico-esthétiques, installation, formation Cellulift Academy et support."
-      : "Official LGL Expert distributor in Africa since 2002: medical aesthetic technology, installation, Cellulift Academy training and support.",
-    // Partage sur les réseaux (l'image vient de opengraph-image.tsx)
+      ? "Partenaire des médecins, cliniques et centres depuis 2002 : technologies médico-esthétiques, formation, installation, SAV et accompagnement de votre activité."
+      : "Partner to physicians, clinics and centres since 2002: medical aesthetic technology, training, installation, after-sales and support for your practice.",
+    applicationName: "CELLULIFT",
+    // Partage sur les réseaux (image : opengraph-image.tsx ; titre, description et URL : pageMetadata de chaque page)
     openGraph: {
       type: "website",
-      siteName: "Cellulift",
+      siteName: "CELLULIFT",
       locale: isFr ? "fr_MA" : "en_US",
       alternateLocale: isFr ? ["en_US"] : ["fr_MA"],
     },

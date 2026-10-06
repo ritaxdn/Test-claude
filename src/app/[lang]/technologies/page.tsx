@@ -2,7 +2,8 @@ import { GuideBanner } from "@/components/guide/GuideBanner";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { isLocale } from "@/lib/i18n/config";
-import { localeAlternates } from "@/lib/alternates";
+import { pageMetadata } from "@/lib/alternates";
+import { Breadcrumbs } from "@/components/seo/JsonLd";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { technologiesPageContent } from "@/content/technologies-page";
 import { homeContent } from "@/content/home";
@@ -19,13 +20,14 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { lang } = await params;
   const isFr = lang === "fr";
-  return {
-    title: isFr ? "Technologies" : "Technologies",
+  return pageMetadata({
+    lang,
+    path: "/technologies",
+    title: isFr ? "Technologies médico-esthétiques professionnelles" : "Professional medical aesthetic technology",
     description: isFr
-      ? "Les technologies médico-esthétiques Cellulift : lasers et technologies lumière, visage et diagnostic, remodelage corporel, médecine esthétique et gynécologie, physiothérapie."
-      : "Cellulift medical aesthetic technologies: lasers and light, face and diagnostics, body contouring, aesthetic medicine and gynecology, physiotherapy.",
-    alternates: localeAlternates("/technologies", lang),
-  };
+      ? "Le catalogue Cellulift : amincissement, lasers, réjuvénation cutanée, photomodulation, HIFU et thérapie avancée. Chaque technologie est livrée avec installation, formation et SAV."
+      : "The Cellulift catalogue: body contouring, lasers, skin rejuvenation, photomodulation, HIFU and advanced therapy. Every technology comes with installation, training and after-sales.",
+  });
 }
 
 export default async function TechnologiesPage({
@@ -42,6 +44,7 @@ export default async function TechnologiesPage({
 
   return (
     <>
+      <Breadcrumbs lang={lang} items={[["Technologies", "/technologies"]]} />
       <PageHero eyebrow={content.eyebrow} title={content.title} subtitle={content.subtitle} />
 
       <section className="px-3 pb-12 md:px-5 md:pb-16">

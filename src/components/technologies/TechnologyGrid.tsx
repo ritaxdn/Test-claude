@@ -89,8 +89,9 @@ export function TechnologyGrid({
       <p className="sr-only" aria-live="polite">{filtered.length} {t.results}</p>
       {filtered.length === 0 && <p className="mt-8 font-sans text-sm text-deep-soft">{t.none}</p>}
       <RevealGroup key={active + query} className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {filtered.map((tech) => (
-          <RevealItem key={tech.slug}>
+        {/* Toutes les fiches restent dans la page (liens lisibles par Google) ; seules celles de la gamme ou de la recherche sont visibles, comme des onglets. */}
+        {technologies.map((tech) => (
+          <RevealItem key={tech.slug} className={filtered.includes(tech) ? undefined : "hidden"}>
             <TechnologyCard technology={tech} locale={locale} readMoreLabel={readMoreLabel} />
           </RevealItem>
         ))}

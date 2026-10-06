@@ -1,89 +1,32 @@
-import { technologies, type CategoryKey } from "../content/technologies";
-
 /**
- * Redirections permanentes de l'ancien site WordPress (cellulift.ma) vers les nouvelles pages.
- * Google transfère ainsi le référencement des anciennes adresses et remplace ses anciens résultats.
+ * Migration SEO : anciennes adresses du site WordPress cellulift.ma → nouvelles pages (redirection 301, un seul saut).
+ *
+ * RÈGLE : n'ajouter ici que des adresses RÉELLEMENT constatées (résultats Google, Search Console, export de l'ancien site).
+ * Ne jamais deviner une ancienne adresse. Les clés sont écrites en minuscules, sans barre finale.
+ * Une ancienne adresse absente de cette liste aboutit à une page 404 (visible dans Search Console → à ajouter ici).
+ *
+ * Pour ajouter une ligne :  "/ancienne-adresse": "/fr/nouvelle-page",
  */
-type Redirect = { source: string; destination: string; permanent: true };
-
-const pages: Record<string, string> = {
-  "/accueil": "/fr",
-  "/home": "/fr",
-  "/a-propos": "/fr/about",
-  "/qui-sommes-nous": "/fr/about",
+export const legacyRedirects: Record<string, string> = {
+  // Constatées dans les résultats Google (recherche « site:cellulift.ma », octobre 2026)
   "/academy": "/fr/academy",
-  "/cellulift-academy": "/fr/academy",
-  "/formations": "/fr/academy",
-  "/contact": "/fr/contact",
-  "/contactez-nous": "/fr/contact",
-  "/support": "/fr/support",
-  "/sav": "/fr/support",
-  "/service-apres-vente": "/fr/support",
-  "/actualites": "/fr",
-  "/blog": "/fr",
-  "/produits": "/fr/technologies",
-  "/nos-produits": "/fr/technologies",
-  "/shop": "/fr/technologies",
-  "/boutique": "/fr/technologies",
-  "/machines": "/fr/technologies",
-  "/technologies": "/fr/technologies",
-  // Machines retirées du catalogue
-  "/aquapeel": "/fr/technologies",
-  "/mentions-legales": "/fr/terms",
-  "/politique-de-confidentialite": "/fr/privacy",
+  "/a-propos": "/fr/about",
+  "/brasilift": "/fr/technologies/brasilift",
+  "/perfectlift": "/fr/technologies/perfect-lift",
+  "/product/longilyse": "/fr/technologies/longilyse",
+  // Anciens articles de blog : pas de page équivalente sur le nouveau site → gamme la plus proche (à valider).
+  "/une-nouvelle-technique-dans-le-traitement-de-la-cellulite": "/fr/technologies#amincissement",
+  "/photomodulation-optimisez-les-soins-de-vos-patients-avec-cellulift": "/fr/technologies#photomodulation",
+
+  // Constatée mais SANS équivalent (machine absente du catalogue actuel) : volontairement non redirigée → 404.
+  // "/aquapeel": "",
+
+  // À compléter quand les adresses exactes seront connues (intitulés vus dans Google) :
+  // Contact, Actualités, Solutions Lasers, Service après-vente.
 };
 
-// Anciennes pages de gammes (plusieurs orthographes possibles) → page Technologies, gamme ouverte.
-const categoryAliases: Record<CategoryKey, string[]> = {
-  amincissement: ["amincissement", "amincissement-avance", "solutions-amincissement"],
-  lasers: ["lasers", "laser", "solutions-lasers", "solutions-laser"],
-  rejuvenation: ["rejuvenation", "rejuvenation-cutanee", "soins-visage"],
-  photomodulation: ["photomodulation"],
-  hifu: ["hifu"],
-  therapie: ["therapie", "therapie-avancee", "physiotherapie"],
-};
-
-// Anciens articles de blog connus → page la plus proche.
-const articles: Record<string, string> = {
-  "/une-nouvelle-technique-dans-le-traitement-de-la-cellulite": "/fr/technologies",
-  "/photomodulation-optimisez-les-soins-de-vos-patients-avec-cellulift": "/fr/technologies",
-};
-
-/** Variantes d'adresse d'une machine sur l'ancien site : « perfectlift », « perfect-lift », « new-epillight »… */
-function oldSlugs(name: string, slug: string) {
-  const base = name
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .toLowerCase()
-    .replace(/[’'`]/g, "")
-    .replace(/\+/g, "");
-  const dashed = base.replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-  const compact = base.replace(/[^a-z0-9]+/g, "");
-  return [...new Set([slug, dashed, compact])];
-}
-
-export function legacyRedirects(): Redirect[] {
-  const out = new Map<string, string>();
-  const add = (source: string, destination: string) => {
-    if (!out.has(source)) out.set(source, destination);
-  };
-
-  for (const [from, to] of Object.entries(pages)) add(from, to);
-  for (const [from, to] of Object.entries(articles)) add(from, to);
-  for (const [cat, aliases] of Object.entries(categoryAliases)) {
-    for (const a of aliases) add(`/${a}`, `/fr/technologies#${cat}`);
-  }
-  // Fiches machines : « /brasilift », « /product/longilyse », « /produit/… »
-  for (const t of technologies) {
-    for (const s of oldSlugs(t.name, t.slug)) {
-      for (const prefix of ["", "/product", "/produit", "/produits"]) add(`${prefix}/${s}`, `/fr/technologies/${t.slug}`);
-    }
-  }
-  // Autres anciennes fiches produit inconnues → catalogue
-  add("/product/:slug", "/fr/technologies");
-  add("/produit/:slug", "/fr/technologies");
-  add("/category/:path*", "/fr/technologies");
-  add("/product-category/:path*", "/fr/technologies");
-
-  return [...out].map(([source, destination]) => ({ source, destination, permanent: true }));
+/** Normalise une adresse pour la recherche dans la table : minuscules, sans barre finale. */
+export function legacyTarget(pathname: string): string | undefined {
+  const key = pathname.toLowerCase().replace(/\/+$/, "") || "/";
+  return legacyRedirects[key];
 }
