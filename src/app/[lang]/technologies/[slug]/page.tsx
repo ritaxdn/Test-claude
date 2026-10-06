@@ -12,6 +12,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { Cta, Pill } from "@/components/system/Cta";
 import { SignalLine } from "@/components/system/SignalPath";
 import { ScanFrame } from "@/components/system/ScanFrame";
+import photoSizes from "@/content/photo-sizes.json";
 
 export function generateStaticParams() {
   return locales.flatMap((lang) => technologies.map((tech) => ({ lang, slug: tech.slug })));
@@ -82,13 +83,6 @@ export default async function TechnologyDetailPage({
   const dict = getDictionary(lang);
   const l = t[lang];
   const family = technologiesIn(tech.category).filter((x) => x.slug !== tech.slug);
-  // Deux photos : présentées côte à côte au format portrait, sans recadrage de la machine.
-  const pair = tech.images?.length === 2;
-  // Une seule photo : affichée entière, à son format naturel, centrée.
-  const single = tech.images?.length === 1;
-  // Photos très verticales : toutes côte à côte, au format de la machine.
-  const tall = tech.imageLayout === "tall";
-  const portrait = tech.imageLayout === "portrait";
   const hasSheet = !!(tech.description || tech.indications?.length || tech.benefits?.length);
 
   return (
@@ -134,51 +128,33 @@ export default async function TechnologyDetailPage({
           ))}
         </Reveal>
 
-        {single ? (
-          <Reveal className="mx-auto mt-8 max-w-xl">
-            <ScanFrame className="rounded-[1.75rem] bg-[#0b0d14]">
-              <Image
-                src={tech.images![0]}
-                alt={tech.name}
-                width={1100}
-                height={1400}
-                priority
-                sizes="(min-width:640px) 576px, 100vw"
-                className="block h-auto w-full"
-              />
-            </ScanFrame>
-          </Reveal>
-        ) : tech.images?.length ? (
-          <Reveal className={`mt-8 grid gap-2 sm:gap-3 ${tall ? "grid-cols-3" : portrait ? "grid-cols-2 md:grid-cols-4" : pair ? "grid-cols-2" : "grid-cols-2 md:grid-cols-3"}`}>
-            {tech.images.map((src, i) => (
-              <ScanFrame
-                key={src}
-                className={`rounded-[1.75rem] bg-[#0b0d14] ${
-                  tall
-                    ? "aspect-[2/5]"
-                    : portrait
-                    ? "aspect-[2/3]"
-                    : // Deux photos (portrait) : côte à côte, entières.
-                      pair
-                    ? "aspect-[2/3]"
-                    : i === 0
-                    ? "col-span-2 aspect-[4/5] md:row-span-2 md:aspect-auto"
-                    : // Sur téléphone, une vignette seule en fin de grille prend toute la largeur.
-                      i === tech.images!.length - 1 && tech.images!.length % 2 === 0
-                      ? "col-span-2 aspect-[2/1] md:col-span-1 md:aspect-square"
-                      : "aspect-square"
-                }`}
-              >
-                <Image
-                  src={src}
-                  alt={`${tech.name} — ${i + 1}`}
-                  fill
-                  priority={i === 0}
-                  sizes={tall ? "33vw" : portrait ? "(min-width:768px) 25vw, 50vw" : pair ? "50vw" : i === 0 ? "(min-width:768px) 66vw, 100vw" : "(min-width:768px) 33vw, 50vw"}
-                  className="object-cover transition-transform duration-700 hover:scale-[1.03]"
-                />
-              </ScanFrame>
-            ))}
+        {tech.images?.length ? (
+          // Toutes les photos entières, à leur format d'origine : jamais recadrées.
+          <Reveal
+            className={
+              tech.images.length === 1
+                ? "mx-auto mt-8 max-w-xl"
+                : tech.images.length === 2
+                  ? "mt-8 columns-2 gap-2 sm:gap-3"
+                  : "mt-8 columns-2 gap-2 sm:gap-3 lg:columns-3"
+            }
+          >
+            {tech.images.map((src, i) => {
+              const [w, h] = ((photoSizes as Record<string, number[]>)[src] ?? [1100, 1100]) as [number, number];
+              return (
+                <ScanFrame key={src} className="mb-2 break-inside-avoid rounded-[1.5rem] bg-[#0b0d14] sm:mb-3">
+                  <Image
+                    src={src}
+                    alt={`${tech.name} — ${i + 1}`}
+                    width={w}
+                    height={h}
+                    priority={i === 0}
+                    sizes={tech.images!.length === 1 ? "(min-width:640px) 576px, 100vw" : "(min-width:1024px) 33vw, 50vw"}
+                    className="block h-auto w-full"
+                  />
+                </ScanFrame>
+              );
+            })}
           </Reveal>
         ) : null}
 

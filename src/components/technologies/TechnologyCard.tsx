@@ -11,8 +11,8 @@ export function TechnologyCard({ technology, locale }: { technology: Technology;
       className="glass group flex h-full items-center justify-between gap-4 rounded-[1.5rem] p-5 transition-transform duration-300 hover:-translate-y-0.5"
     >
       {technology.images?.[0] && (
-        <span className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl">
-          <Image src={technology.images[0]} alt="" fill sizes="56px" className="object-cover" />
+        <span className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl bg-[#0b0d14]">
+          <Image src={technology.images[0]} alt="" fill sizes="56px" className="object-contain" />
         </span>
       )}
       <span className="mr-auto">

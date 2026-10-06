@@ -18,10 +18,8 @@ export interface Technology {
   benefits?: LocalizedText[];
   certifications?: string[];
   // Photos (dans public/images/technologies/<slug>/) : la première sert de couverture.
+  // Affichées entières à leur format d'origine (dimensions : scripts/photo-sizes.mjs → photo-sizes.json).
   images?: string[];
-  // « tall » : photos très verticales (machine sur pied), affichées en colonnes côte à côte, sans recadrage.
-  // « portrait » : photos verticales 2/3, alignées en 4 colonnes (2 sur téléphone).
-  imageLayout?: "tall" | "portrait";
 }
 
 // Gammes de produits (même découpage que le dossier MACHINES du Drive).
@@ -90,13 +88,11 @@ const photos: Record<string, string[]> = {
   "synergy-plus": ["00", "01", "02"].map((n) => `/images/technologies/synergy-plus/${n}.jpg`),
 };
 
-// Mise en page des photos par machine (sinon : grande photo + vignettes).
-const layouts: Record<string, Technology["imageLayout"]> = { longishape: "tall", "pressoligne-5": "portrait" };
 
 export const technologies: Technology[] = (Object.keys(catalog) as CategoryKey[]).flatMap((category) =>
   catalog[category].map((name) => {
     const slug = slugify(name);
-    return { slug, name, category, ...sheets[slug], images: photos[slug], imageLayout: layouts[slug] };
+    return { slug, name, category, ...sheets[slug], images: photos[slug] };
   })
 );
 
