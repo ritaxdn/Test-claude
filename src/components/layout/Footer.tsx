@@ -67,6 +67,12 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
                   {company.supportPhone}
                 </a>
               </li>
+              <li>
+                <a href={`tel:${company.academyPhone.replace(/\s/g, "")}`} className="inline-block py-1.5 hover:text-deep-soft">
+                  <span className="text-deep-soft">Academy · </span>
+                  {company.academyPhone}
+                </a>
+              </li>
               {company.whatsapp && (
                 <li>
                   <a href={whatsappHref(locale)} target="_blank" rel="noopener noreferrer" className="inline-block py-1.5 hover:text-deep-soft">

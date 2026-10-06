@@ -87,6 +87,7 @@ export default async function AcademyPage({
         ctaSecondary={content.cta.ctaSecondary}
         primarySujet="masterclass"
         secondarySujet="expert"
+        phone={{ label: "Cellulift Academy", number: company.academyPhone }}
         email={{ label: "Cellulift Academy", address: company.academyEmail }}
       />
     </>
