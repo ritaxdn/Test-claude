@@ -1,5 +1,4 @@
 import type { NextConfig } from "next";
-import { legacyRedirects } from "./src/lib/legacy-redirects";
 
 // En-têtes de sécurité appliqués à toutes les pages (HTTPS forcé via HSTS, anti-clickjacking, etc.).
 const securityHeaders = [
@@ -11,15 +10,13 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // Barre finale gérée dans src/proxy.ts, en même temps que les anciennes adresses : un seul saut de redirection.
+  skipTrailingSlashRedirect: true,
   experimental: {
     globalNotFound: true,
   },
   images: {
     formats: ["image/avif", "image/webp"],
-  },
-  // Anciennes adresses du site WordPress → nouvelles pages (redirections permanentes).
-  async redirects() {
-    return legacyRedirects();
   },
   async headers() {
     return [

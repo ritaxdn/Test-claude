@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { isLocale } from "@/lib/i18n/config";
-import { localeAlternates } from "@/lib/alternates";
+import { pageMetadata } from "@/lib/alternates";
+import { Breadcrumbs } from "@/components/seo/JsonLd";
 import { aboutContent } from "@/content/about";
 import { PageHero } from "@/components/sections/PageHero";
 import { WhyCellulift } from "@/components/sections/WhyCellulift";
@@ -21,13 +22,14 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { lang } = await params;
   const isFr = lang === "fr";
-  return {
-    title: isFr ? "À propos" : "About",
+  return pageMetadata({
+    lang,
+    path: "/about",
+    title: isFr ? "À propos : votre partenaire depuis 2002" : "About: your partner since 2002",
     description: isFr
       ? "Depuis 2002, Cellulift accompagne médecins, cliniques et centres dans l'intégration de technologies médico-esthétiques : sélection, formation, installation, SAV et développement."
       : "Since 2002, Cellulift has supported physicians, clinics and centres in integrating medical aesthetic technology: selection, training, installation, after-sales and growth.",
-    alternates: localeAlternates("/about", lang),
-  };
+  });
 }
 
 export default async function AboutPage({
@@ -43,6 +45,7 @@ export default async function AboutPage({
 
   return (
     <>
+      <Breadcrumbs lang={lang} items={[[lang === "fr" ? "À propos" : "About", "/about"]]} />
       <PageHero
         eyebrow={content.hero.eyebrow}
         title={content.hero.title}

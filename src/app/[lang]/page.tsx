@@ -10,24 +10,23 @@ import { Faq } from "@/components/system/Faq";
 import { MediaSection } from "@/components/media/MediaSection";
 import { GuideBanner } from "@/components/guide/GuideBanner";
 import type { Metadata } from "next";
-import { localeAlternates } from "@/lib/alternates";
+import { pageMetadata } from "@/lib/alternates";
 import { SITE_URL } from "@/lib/site";
 import { company } from "@/content/company";
+import { JsonLd } from "@/components/seo/JsonLd";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
   const isFr = lang === "fr";
-  return {
-    title: {
-      absolute: isFr
-        ? "Cellulift — Technologies médico-esthétiques professionnelles"
-        : "Cellulift — Professional medical aesthetic technology",
-    },
+  return pageMetadata({
+    lang,
+    absoluteTitle: isFr
+      ? "CELLULIFT | Technologies médico-esthétiques pour professionnels"
+      : "CELLULIFT | Medical aesthetic technology for professionals",
     description: isFr
-      ? "Distributeur officiel LGL Expert en Afrique. Technologies médico-esthétiques pour médecins, cliniques et centres : conseil, installation, formation Cellulift Academy et support."
-      : "Official LGL Expert distributor in Africa. Medical aesthetic technology for physicians, clinics and centers: advice, installation, Cellulift Academy training and support.",
-    alternates: localeAlternates("", lang),
-  };
+      ? "Partenaire des médecins, cliniques et centres depuis 2002 : technologies médico-esthétiques, formation, installation, SAV et accompagnement de votre activité."
+      : "Partner to physicians, clinics and centres since 2002: medical aesthetic technology, training, installation, after-sales and support for your practice.",
+  });
 }
 
 // Accueil allégé (9 sections) : hero → chiffres → technologies → vidéos → Academy & Support → implantations → guide → FAQ → contact.
@@ -48,23 +47,37 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       </div>
       <Faq locale={lang} />
       <ProjectCta locale={lang} />
-      {/* Données structurées : l'entreprise (Google) */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+      {/* Données structurées : l'entreprise et le site (informations réelles du site uniquement) */}
+      <JsonLd
+        data={[
+          {
             "@context": "https://schema.org",
             "@type": "Organization",
-            name: "Cellulift",
+            "@id": `${SITE_URL}/#organization`,
+            name: "CELLULIFT",
             url: SITE_URL,
-            logo: `${SITE_URL}/icon.svg`,
+            logo: `${SITE_URL}/apple-icon`,
             email: company.email,
             telephone: company.phone,
             foundingDate: "2002",
             sameAs: [company.social.instagram.url, company.social.instagramAcademy.url],
-            address: { "@type": "PostalAddress", streetAddress: company.showrooms[0].address, addressLocality: "Casablanca", addressCountry: "MA" },
-          }),
-        }}
+            address: {
+              "@type": "PostalAddress",
+              streetAddress: company.showrooms[0].address,
+              addressLocality: "Casablanca",
+              addressCountry: "MA",
+            },
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "@id": `${SITE_URL}/#website`,
+            name: "CELLULIFT",
+            url: SITE_URL,
+            inLanguage: ["fr", "en"],
+            publisher: { "@id": `${SITE_URL}/#organization` },
+          },
+        ]}
       />
     </div>
   );

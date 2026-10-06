@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { isLocale } from "@/lib/i18n/config";
-import { localeAlternates } from "@/lib/alternates";
+import { pageMetadata } from "@/lib/alternates";
+import { Breadcrumbs } from "@/components/seo/JsonLd";
 import { contactPageContent } from "@/content/contact-page";
 import { PageHero } from "@/components/sections/PageHero";
 import { Container } from "@/components/ui/Container";
@@ -16,13 +17,14 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { lang } = await params;
   const isFr = lang === "fr";
-  return {
-    title: "Contact",
+  return pageMetadata({
+    lang,
+    path: "/contact",
+    title: isFr ? "Contact : parler à un expert" : "Contact: talk to an expert",
     description: isFr
-      ? "Contactez Cellulift pour demander une démonstration, parler à un expert ou rejoindre une masterclass."
-      : "Contact Cellulift to request a demo, speak to an expert or join a masterclass.",
-    alternates: localeAlternates("/contact", lang),
-  };
+      ? "Contactez Cellulift pour demander une démonstration, parler à un expert ou rejoindre une masterclass. Showrooms à Casablanca, Marrakech et Tanger."
+      : "Contact Cellulift to request a demo, speak to an expert or join a masterclass. Showrooms in Casablanca, Marrakech and Tangier.",
+  });
 }
 
 export default async function ContactPage({
@@ -37,6 +39,7 @@ export default async function ContactPage({
 
   return (
     <>
+      <Breadcrumbs lang={lang} items={[["Contact", "/contact"]]} />
       <PageHero
         eyebrow={content.hero.eyebrow}
         title={content.hero.title}

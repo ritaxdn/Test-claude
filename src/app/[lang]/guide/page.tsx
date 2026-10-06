@@ -3,7 +3,8 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { Check } from "lucide-react";
 import { isLocale } from "@/lib/i18n/config";
-import { localeAlternates } from "@/lib/alternates";
+import { pageMetadata } from "@/lib/alternates";
+import { Breadcrumbs } from "@/components/seo/JsonLd";
 import { Pill } from "@/components/system/Cta";
 import { Reveal } from "@/components/ui/Reveal";
 import { GuideForm } from "@/components/guide/GuideForm";
@@ -14,7 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   const { lang } = await params;
   if (!isLocale(lang)) return {};
   const m = guideContent[lang].meta;
-  return { title: m.title, description: m.description, alternates: localeAlternates("/guide", lang) };
+  return pageMetadata({ lang, path: "/guide", title: m.title, description: m.description });
 }
 
 // Guide gratuit : promesse + contenu à gauche, formulaire à droite (au-dessus sur téléphone).
@@ -25,6 +26,7 @@ export default async function GuidePage({ params }: { params: Promise<{ lang: st
 
   return (
     <section className="px-3 pb-20 pt-10 md:px-5 md:pt-14">
+      <Breadcrumbs lang={lang} items={[[lang === "fr" ? "Guide gratuit" : "Free guide", "/guide"]]} />
       {/* Téléphone : titre → formulaire → contenu du guide. Grand écran : titre et contenu à gauche, formulaire à droite. */}
       <div className="mx-auto grid max-w-7xl gap-10 px-3 md:px-7 lg:grid-cols-[1.2fr_1fr] lg:gap-x-16 lg:gap-y-0">
         <Reveal className="lg:col-start-1 lg:row-start-1">

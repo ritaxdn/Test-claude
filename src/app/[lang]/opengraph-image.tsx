@@ -3,7 +3,7 @@ import { ImageResponse } from "next/og";
 // Image de partage (Facebook, LinkedIn, WhatsApp, X…), générée au moment de la construction.
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "Cellulift — Technologies médico-esthétiques professionnelles";
+export const alt = "CELLULIFT";
 
 export function generateStaticParams() {
   return [{ lang: "fr" }, { lang: "en" }];

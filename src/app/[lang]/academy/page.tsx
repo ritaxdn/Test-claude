@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { isLocale } from "@/lib/i18n/config";
-import { localeAlternates } from "@/lib/alternates";
+import { pageMetadata } from "@/lib/alternates";
+import { Breadcrumbs } from "@/components/seo/JsonLd";
 import { academyPageContent } from "@/content/academy-page";
 import { company } from "@/content/company";
 import { PageHero } from "@/components/sections/PageHero";
@@ -21,13 +22,16 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { lang } = await params;
   const isFr = lang === "fr";
-  return {
-    title: "Cellulift Academy",
+  return pageMetadata({
+    lang,
+    path: "/academy",
+    absoluteTitle: isFr
+      ? "Cellulift Academy | Formations et masterclasses en médecine esthétique"
+      : "Cellulift Academy | Aesthetic medicine training and masterclasses",
     description: isFr
       ? "Masterclasses, formations certifiantes et expertise médicale pour une pratique sûre des technologies médico-esthétiques."
       : "Masterclasses, certified training and medical expertise for a safe practice of medical aesthetic technologies.",
-    alternates: localeAlternates("/academy", lang),
-  };
+  });
 }
 
 export default async function AcademyPage({
@@ -42,6 +46,7 @@ export default async function AcademyPage({
 
   return (
     <>
+      <Breadcrumbs lang={lang} items={[["Cellulift Academy", "/academy"]]} />
       <PageHero
         eyebrow={content.hero.eyebrow}
         title={content.hero.title}

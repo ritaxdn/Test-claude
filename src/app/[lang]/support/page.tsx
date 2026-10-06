@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { isLocale } from "@/lib/i18n/config";
-import { localeAlternates } from "@/lib/alternates";
+import { pageMetadata } from "@/lib/alternates";
+import { Breadcrumbs } from "@/components/seo/JsonLd";
 import { supportPageContent } from "@/content/support-page";
 import { PageHero } from "@/components/sections/PageHero";
 import { ProcessSteps } from "@/components/sections/ProcessSteps";
@@ -25,13 +26,14 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { lang } = await params;
   const isFr = lang === "fr";
-  return {
-    title: isFr ? "Support & Après-vente" : "Support & After-sales",
+  return pageMetadata({
+    lang,
+    path: "/support",
+    title: isFr ? "Support et service après-vente" : "Support and after-sales service",
     description: isFr
       ? "Garantie 24 mois, techniciens qui se déplacent, atelier intégré et ligne support directe : le SAV Cellulift."
       : "24-month warranty, on-site technicians, in-house workshop and a direct support line: Cellulift after-sales.",
-    alternates: localeAlternates("/support", lang),
-  };
+  });
 }
 
 export default async function SupportPage({
@@ -46,6 +48,7 @@ export default async function SupportPage({
 
   return (
     <>
+      <Breadcrumbs lang={lang} items={[[lang === "fr" ? "Support et SAV" : "Support", "/support"]]} />
       <PageHero
         eyebrow={content.hero.eyebrow}
         title={content.hero.title}
