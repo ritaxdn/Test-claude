@@ -18,15 +18,25 @@ export const legacyRedirects: Record<string, string> = {
   "/une-nouvelle-technique-dans-le-traitement-de-la-cellulite": "/fr/technologies#amincissement",
   "/photomodulation-optimisez-les-soins-de-vos-patients-avec-cellulift": "/fr/technologies#photomodulation",
 
-  // Constatée mais SANS équivalent (machine absente du catalogue actuel) : volontairement non redirigée → 404.
-  // "/aquapeel": "",
-
   // À compléter quand les adresses exactes seront connues (intitulés vus dans Google) :
   // Contact, Actualités, Solutions Lasers, Service après-vente.
 };
 
+/**
+ * Anciennes pages supprimées définitivement (sans équivalent sur le nouveau site) : réponse 410 « supprimée »,
+ * pour que Google les retire rapidement de son index.
+ */
+export const legacyGone = new Set<string>([
+  "/aquapeel", // machine retirée du catalogue (constatée dans Google)
+]);
+
 /** Normalise une adresse pour la recherche dans la table : minuscules, sans barre finale. */
+const legacyKey = (pathname: string) => pathname.toLowerCase().replace(/\/+$/, "") || "/";
+
 export function legacyTarget(pathname: string): string | undefined {
-  const key = pathname.toLowerCase().replace(/\/+$/, "") || "/";
-  return legacyRedirects[key];
+  return legacyRedirects[legacyKey(pathname)];
+}
+
+export function isLegacyGone(pathname: string): boolean {
+  return legacyGone.has(legacyKey(pathname));
 }
