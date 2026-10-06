@@ -60,7 +60,7 @@ export const homeSystem = {
       viewAll: "Explorer nos technologies",
     },
     academy: {
-      eyebrow: "04 — Cellulift Academy",
+      eyebrow: "02 — Cellulift Academy",
       title: "La technologie s'acquiert. La maîtrise se construit.",
       subtitle: "De l'installation à la maîtrise clinique.",
       text: "Formation initiale · Protocoles · Workshops · Perfectionnement",
@@ -69,7 +69,7 @@ export const homeSystem = {
       cta: "Choisir ma prochaine formation",
     },
     support: {
-      eyebrow: "05 — Support",
+      eyebrow: "03 — Support",
       title: "Après l'installation, nous restons là.",
       text: "",
       items: [
@@ -82,7 +82,7 @@ export const homeSystem = {
       phoneLabel: "Ligne support",
     },
     showrooms: {
-      eyebrow: "06 — Implantations",
+      eyebrow: "04 — Implantations",
       title: ["One partner.", "Three markets."],
       markets: ["Maroc", "France", "Sénégal"],
       hq: "Siège",
@@ -91,7 +91,7 @@ export const homeSystem = {
       list: "Points de vente",
     },
     cta: {
-      eyebrow: "07 — Votre projet",
+      eyebrow: "05 — Votre projet",
       title: "Votre prochaine technologie commence ici.",
       text: "Parlez de votre projet à un expert Cellulift.",
       ctaPrimary: "Parler à un expert",
@@ -152,7 +152,7 @@ export const homeSystem = {
       viewAll: "Explore our technologies",
     },
     academy: {
-      eyebrow: "04 — Cellulift Academy",
+      eyebrow: "02 — Cellulift Academy",
       title: "Technology can be acquired. Mastery is built.",
       subtitle: "From installation to clinical mastery.",
       text: "Initial training · Protocols · Workshops · Advanced courses",
@@ -161,7 +161,7 @@ export const homeSystem = {
       cta: "Pick my next training",
     },
     support: {
-      eyebrow: "05 — Support",
+      eyebrow: "03 — Support",
       title: "After installation, we stay with you.",
       text: "",
       items: [
@@ -174,7 +174,7 @@ export const homeSystem = {
       phoneLabel: "Support line",
     },
     showrooms: {
-      eyebrow: "06 — Locations",
+      eyebrow: "04 — Locations",
       title: ["One partner.", "Three markets."],
       markets: ["Morocco", "France", "Senegal"],
       hq: "Head office",
@@ -183,7 +183,7 @@ export const homeSystem = {
       list: "Points of sale",
     },
     cta: {
-      eyebrow: "07 — Your project",
+      eyebrow: "05 — Your project",
       title: "Your next technology starts here.",
       text: "Talk to a Cellulift expert about your project.",
       ctaPrimary: "Talk to an expert",

@@ -1,11 +1,8 @@
 import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/i18n/config";
 import { SystemHero } from "@/components/system/SystemHero";
-import { SystemPillars } from "@/components/system/SystemPillars";
-import { Ticker } from "@/components/system/Ticker";
 import { StatsBand } from "@/components/system/StatsBand";
 import { TechIndex } from "@/components/system/TechIndex";
-import { WhyCellulift } from "@/components/system/WhyCellulift";
 import { AcademySupport } from "@/components/system/AcademySupport";
 import { ProjectCta } from "@/components/system/ProjectCta";
 import { ShowroomMap } from "@/components/system/ShowroomMap";
@@ -33,7 +30,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   };
 }
 
-// Accueil : hero → chiffres → technologies → écosystème → preuves → Academy & Support → implantations → FAQ → contact.
+// Accueil allégé (9 sections) : hero → chiffres → technologies → vidéos → Academy & Support → implantations → guide → FAQ → contact.
 export default async function HomePage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
@@ -41,11 +38,8 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   return (
     <div className="pearl-bg">
       <SystemHero locale={lang} />
-      <Ticker locale={lang} />
       <StatsBand locale={lang} />
       <TechIndex locale={lang} />
-      <SystemPillars locale={lang} />
-      <WhyCellulift locale={lang} />
       <MediaSection locale={lang} />
       <AcademySupport locale={lang} />
       <ShowroomMap locale={lang} />
