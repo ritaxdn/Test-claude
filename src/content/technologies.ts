@@ -1,3 +1,5 @@
+import { sheets } from "./technology-sheets";
+
 export type LocalizedText = {
   fr: string;
   en: string;
@@ -80,9 +82,12 @@ const photos: Record<string, string[]> = {
   "steel-muscle": ["00", "01", "02", "03", "04"].map((n) => `/images/technologies/steel-muscle/${n}.jpg`),
   tanita: ["00", "01", "02", "03", "04"].map((n) => `/images/technologies/tanita/${n}.jpg`),
   longchoc: ["/images/technologies/longchoc/00.jpg"],
-  "la-queen": ["/images/technologies/la-queen/00.jpg"],
-  "hanover-5g": ["/images/technologies/hanover-5g/00.jpg"],
-  frequentazia: ["/images/technologies/frequentazia/00.jpg"],
+  "la-queen": ["00", "01", "02", "03", "04"].map((n) => `/images/technologies/la-queen/${n}.jpg`),
+  "hanover-5g": ["00", "01", "02", "03", "04"].map((n) => `/images/technologies/hanover-5g/${n}.jpg`),
+  frequentazia: ["00", "01", "02", "03"].map((n) => `/images/technologies/frequentazia/${n}.jpg`),
+  "led-bio-light": ["00", "01", "02", "03"].map((n) => `/images/technologies/led-bio-light/${n}.jpg`),
+  longiflash: ["00", "01", "02", "03", "04", "05"].map((n) => `/images/technologies/longiflash/${n}.jpg`),
+  "synergy-plus": ["00", "01", "02"].map((n) => `/images/technologies/synergy-plus/${n}.jpg`),
 };
 
 // Mise en page des photos par machine (sinon : grande photo + vignettes).
@@ -91,7 +96,7 @@ const layouts: Record<string, Technology["imageLayout"]> = { longishape: "tall",
 export const technologies: Technology[] = (Object.keys(catalog) as CategoryKey[]).flatMap((category) =>
   catalog[category].map((name) => {
     const slug = slugify(name);
-    return { slug, name, category, images: photos[slug], imageLayout: layouts[slug] };
+    return { slug, name, category, ...sheets[slug], images: photos[slug], imageLayout: layouts[slug] };
   })
 );
 
