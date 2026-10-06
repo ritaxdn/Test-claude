@@ -146,6 +146,7 @@ export default async function TechnologyDetailPage({
           <PhotoCarousel
             images={tech.images}
             name={tech.name}
+            family={categories[tech.category][lang]}
             labels={
               lang === "fr"
                 ? { prev: "Photo précédente", next: "Photo suivante", photo: "Photo" }
