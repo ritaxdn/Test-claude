@@ -12,8 +12,8 @@ import { ShowroomMapClient, type MapPoint } from "./ShowroomMapClient";
 
 const STEP = 1.5; // espacement des points de la trame, en degrés
 
-// Pays qui accueillent un point de vente (codes ISO numériques) : Maroc, France, Sénégal.
-const HIGHLIGHT = new Set(["504", "250", "686"]);
+// Pays qui accueillent un point de vente (codes ISO numériques) : Maroc (Sahara compris), France, Sénégal.
+const HIGHLIGHT = new Set(["504", "732", "250", "686"]);
 
 /**
  * Trame des terres émergées, calculée une fois au moment de la construction du site.
