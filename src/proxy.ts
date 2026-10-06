@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { locales, defaultLocale } from "@/lib/i18n/config";
-import { legacyTarget } from "@/lib/legacy-redirects";
+import { isLegacyGone, legacyTarget } from "@/lib/legacy-redirects";
 import { knownSections } from "@/lib/sections";
 
 /**
  * Langue et redirections, toujours en UN SEUL saut (pas de chaîne de redirections) :
- * 1. anciennes adresses connues de l'ancien site → 301 vers la nouvelle page ;
+ * 1. anciennes adresses connues de l'ancien site → 301 vers la nouvelle page (ou 410 si supprimée) ;
  * 2. barre finale ou majuscules dans la langue (« /FR/contact/ ») → 308 vers l'adresse propre ;
  * 3. page sans langue (« /about ») → langue du navigateur (français par défaut).
  * Une adresse inconnue n'est jamais envoyée vers l'accueil : elle aboutit à une vraie page 404.
@@ -21,6 +21,12 @@ export function proxy(request: NextRequest) {
   const legacy = legacyTarget(clean);
   if (legacy) {
     return NextResponse.redirect(to(legacy, false), 301);
+  }
+  if (isLegacyGone(clean)) {
+    return new NextResponse(
+      '<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Page supprimée | CELLULIFT</title></head><body style="font-family:system-ui,sans-serif;max-width:32rem;margin:15vh auto;padding:0 1.5rem;color:#1d1b26"><h1 style="font-weight:500">Cette page n\u2019existe plus.</h1><p>Cette technologie ne fait plus partie du catalogue Cellulift.</p><p><a href="/fr/technologies" style="color:#1d1b26">Voir nos technologies</a></p></body></html>',
+      { status: 410, headers: { "Content-Type": "text/html; charset=utf-8" } }
+    );
   }
 
   const first = clean.split("/")[1] ?? "";
