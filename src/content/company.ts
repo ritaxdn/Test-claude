@@ -14,9 +14,8 @@ export const company = {
   supportPhone: "+212 660 815632",
   // Ligne de Cellulift Academy (formations, masterclasses)
   academyPhone: "+212 665 614049",
-  // À COMPLÉTER : numéro WhatsApp au format international, ex. "+212 6 00 00 00 00"
-  // (laissé vide, tous les boutons WhatsApp sont masqués)
-  whatsapp: "" as string,
+  // Numéro professionnel (WhatsApp). Vide = tous les boutons WhatsApp masqués.
+  whatsapp: "+212 670 842795" as string,
   address: {
     fr: "N°02 Rue Savoie, Quartier des Hôpitaux, Casablanca",
     en: "N°02 Rue Savoie, Quartier des Hôpitaux, Casablanca",
