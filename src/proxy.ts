@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { locales, defaultLocale } from "@/lib/i18n/config";
+import { knownSections } from "@/lib/sections";
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -22,6 +23,12 @@ export function proxy(request: NextRequest) {
   if (locales.some((l) => l === lower)) {
     url.pathname = `/${lower}${pathname.slice(first.length + 1)}`;
     return NextResponse.redirect(url, 308);
+  }
+  // Adresse de l'ancien site sans équivalent connu → accueil, en redirection permanente (pas de page introuvable).
+  if (!knownSections.has(lower)) {
+    url.pathname = `/${defaultLocale}`;
+    url.search = "";
+    return NextResponse.redirect(url, 301);
   }
   // Langue du navigateur : anglais si demandé en premier, sinon français.
   const accept = request.headers.get("accept-language")?.toLowerCase() ?? "";
