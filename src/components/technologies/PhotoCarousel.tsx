@@ -8,7 +8,17 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
  * Carrousel façon Instagram : on fait glisser les photos au doigt (ou flèches / points sur ordinateur).
  * Format 4:5, photo entière (jamais recadrée) sur fond sombre. Toutes les photos sont dans la page (lisibles par Google).
  */
-export function PhotoCarousel({ images, name, labels }: { images: string[]; name: string; labels: { prev: string; next: string; photo: string } }) {
+export function PhotoCarousel({
+  images,
+  name,
+  family,
+  labels,
+}: {
+  images: string[];
+  name: string;
+  family: string;
+  labels: { prev: string; next: string; photo: string };
+}) {
   const track = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
 
@@ -50,7 +60,7 @@ export function PhotoCarousel({ images, name, labels }: { images: string[]; name
           >
             <Image
               src={src}
-              alt={`${name} — ${i + 1}`}
+              alt={`${name}, ${family.toLowerCase()} — ${labels.photo.toLowerCase()} ${i + 1}`}
               fill
               priority={i === 0}
               sizes="(min-width:640px) 576px, 100vw"
