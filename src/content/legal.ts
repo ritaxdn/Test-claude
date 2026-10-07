@@ -20,7 +20,7 @@ export const privacy: Record<"fr" | "en", Doc> = {
         p: [
           "Formulaire de contact : nom, adresse e-mail, téléphone, activité, objet et contenu de votre message.",
           "Mesure d'audience : statistiques de visite anonymes (pages vues, type d'appareil, pays), sans cookie publicitaire.",
-          "Cookies de mesure d'audience détaillée : uniquement si vous les acceptez dans le bandeau cookies.",
+          "Cookies de mesure d'audience détaillée (Google Analytics, Microsoft Clarity) : uniquement si vous les acceptez dans le bandeau cookies. Clarity enregistre de façon anonyme la navigation (clics, défilement) pour améliorer le site ; les champs des formulaires sont masqués.",
         ],
       },
       {
@@ -71,7 +71,7 @@ export const privacy: Record<"fr" | "en", Doc> = {
         p: [
           "Contact form: name, email address, phone, activity, subject and message.",
           "Audience measurement: anonymous visit statistics (pages viewed, device type, country), without advertising cookies.",
-          "Detailed analytics cookies: only if you accept them in the cookie banner.",
+          "Detailed analytics cookies (Google Analytics, Microsoft Clarity): only if you accept them in the cookie banner. Clarity anonymously records browsing (clicks, scrolling) to improve the website; form fields are masked.",
         ],
       },
       {

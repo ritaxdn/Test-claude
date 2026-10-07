@@ -8,6 +8,8 @@ import type { Locale } from "@/lib/i18n/config";
 const KEY = "cellulift-consent"; // "accepted" | "refused"
 // Identifiant Google Analytics 4 de Cellulift (surchargeable par la variable NEXT_PUBLIC_GA_ID).
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "G-0MVP9EQYZ4";
+// Identifiant Microsoft Clarity (enregistrements anonymes des visites, cartes de clics).
+const CLARITY_ID = process.env.NEXT_PUBLIC_CLARITY_ID || "ytopy1tfoy";
 
 // Clics suivis dans Google Analytics : appel, e-mail, WhatsApp, prise de rendez-vous, boutons vers le formulaire.
 const CLICK_TRACKING = `document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute('href')||'';var n=h.indexOf('tel:')===0?'clic_telephone':h.indexOf('mailto:')===0?'clic_email':/wa\\.me|whatsapp/.test(h)?'clic_whatsapp':/cal\\.com/.test(h)?'clic_rendez_vous':/[?&]sujet=/.test(h)?'clic_bouton_contact':null;if(n)gtag('event',n,{lien:h,page:location.pathname});},true);`;
@@ -67,6 +69,11 @@ export function CookieConsent({ locale }: { locale: Locale }) {
             {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}',{anonymize_ip:true});${CLICK_TRACKING}`}
           </Script>
         </>
+      )}
+      {CLARITY_ID && choice === "accepted" && (
+        <Script id="clarity" strategy="afterInteractive">
+          {`(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","${CLARITY_ID}");`}
+        </Script>
       )}
       {choice === null && (
         <div
