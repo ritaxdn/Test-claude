@@ -66,7 +66,7 @@ export default async function RangePage({ params }: { params: Promise<{ lang: st
           })),
         }}
       />
-      <PageHero eyebrow={t.eyebrow} title={l.h1[lang]} subtitle={l.intro[lang] || undefined} />
+      <PageHero eyebrow={t.eyebrow} title={l.h1[lang]} subtitle={l.intro[lang] || undefined} compact />
 
       <section className="px-3 pb-12 md:px-5 md:pb-16">
         <Container>
