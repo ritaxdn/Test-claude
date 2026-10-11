@@ -27,9 +27,9 @@ export function GuideBanner({ locale, className = "" }: { locale: Locale; classN
     >
       <Image src={guideCover} alt="" width={640} height={905} sizes="80px" className="w-14 shrink-0 rounded-md shadow-[0_12px_30px_-14px_rgba(29,27,38,.5)] md:w-20" />
       <span className="min-w-0 flex-1">
-        <span className="data-label block text-deep-soft">{t.eyebrow}</span>
+        <span className="data-label block text-deep-soft">{t.eyebrow}</span>{" "}
         <span className="mt-1.5 block font-sans text-base font-medium text-deep md:text-lg">{t.title}</span>
-      </span>
+      </span>{" "}
       <span className="hidden shrink-0 items-center gap-2 rounded-full bg-deep px-5 py-3 font-sans text-sm text-white sm:inline-flex">
         {t.cta} <ArrowUpRight size={15} className="transition-transform group-hover:rotate-45" />
       </span>

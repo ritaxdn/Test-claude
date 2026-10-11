@@ -83,7 +83,7 @@ export const homeSystem = {
     },
     showrooms: {
       eyebrow: "04 — Implantations",
-      title: ["One partner.", "Three markets."],
+      title: ["Un partenaire.", "Trois marchés."],
       markets: ["Maroc", "France", "Sénégal"],
       hq: "Siège",
       onRequest: "Adresse communiquée sur rendez-vous.",

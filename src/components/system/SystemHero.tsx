@@ -35,7 +35,7 @@ export function SystemHero({ locale }: { locale: Locale }) {
           <h1 className="mt-7 animate-fade-rise text-deep opacity-0 [animation-delay:120ms]">
             <span className="data-label block text-deep">{c.seo}</span>
             <span className="display hero-title mt-4 block text-[clamp(2.3rem,4.1vw,4.1rem)] leading-[0.95]">
-              <span className="block">{c.title[0]}</span>
+              <span className="block">{c.title[0]}</span>{" "}
               <span className="iridescent-text block">{c.title[1]}</span>
             </span>
           </h1>
