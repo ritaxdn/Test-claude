@@ -36,12 +36,11 @@ export const legacyRedirects: Record<string, string> = {
   // Anciennes pages de gamme recréées en pages de gamme (validé par Cellulift)
   "/solutions-lasers": "/fr/technologies/gammes/lasers",
   "/amincissement-avance": "/fr/technologies/gammes/amincissement",
-  // Anciens articles de blog : pas de page équivalente sur le nouveau site → gamme la plus proche (à valider).
-  "/une-nouvelle-technique-dans-le-traitement-de-la-cellulite": "/fr/technologies#amincissement",
-  "/photomodulation-optimisez-les-soins-de-vos-patients-avec-cellulift": "/fr/technologies#photomodulation",
+  // Ancien article de blog sur la cellulite → page de gamme Amincissement (validé par Cellulift)
+  "/une-nouvelle-technique-dans-le-traitement-de-la-cellulite": "/fr/technologies/gammes/amincissement",
 
-  // En attente de décision Cellulift (laissées en 404) : autres anciennes pages de gamme, FRACOV 3, PRESSOLIGNE 6, SYNERGY,
-  // machines absentes du catalogue, Actualités, Portfolio.
+  // Laissées en 404 volontairement : /photomodulation, /rejuvenation-cutanee, /hifu-haut-intensite-focalise-ultrason
+  // (gammes pouvant avoir une page plus tard). En attente de décision Cellulift : /fracov3, /pressoligne-6, /synergy, /new-synergy.
 };
 
 /**
@@ -50,6 +49,18 @@ export const legacyRedirects: Record<string, string> = {
  */
 export const legacyGone = new Set<string>([
   "/aquapeel", // machine retirée du catalogue (constatée dans Google)
+  // Machines retirées du catalogue, sans équivalent (validé par Cellulift)
+  "/sculptface",
+  "/hightlift",
+  "/rejuvteck-7",
+  "/gatecare",
+  "/megacryo",
+  "/perfect-cool",
+  "/integrall-hifu",
+  // Ancien article, ancien blog et ancien portfolio : pas de retour prévu (validé par Cellulift)
+  "/photomodulation-optimisez-les-soins-de-vos-patients-avec-cellulift",
+  "/actualites",
+  "/portfolio",
 ]);
 
 /** Normalise une adresse pour la recherche dans la table : minuscules, sans barre finale. */
