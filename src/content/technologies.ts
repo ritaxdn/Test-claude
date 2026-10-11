@@ -51,8 +51,9 @@ const catalog: Record<CategoryKey, string[]> = {
     "BIOFILLER X7", "CENTRIFUGEL", "DERMABRASIF 6G", "DERMAPLEX", "FREQUENCIOUS",
     "MYM DERMAPEN", "PISTOR +34", "SKIN ANALYSER G7", "SKIN BRIGHT",
   ],
-  photomodulation: ["LED BIO-LIGHT", "LED FOTOSKIN", "LED FOTOSKIN ULTRA", "LONGIFLASH"],
-  hifu: ["PERFECT’LIFT", "REJUVSKIN", "VAGILASE"],
+  // VAGILASE : technologie LED (validé par Cellulift), donc photomodulation et non HIFU.
+  photomodulation: ["LED BIO-LIGHT", "LED FOTOSKIN", "LED FOTOSKIN ULTRA", "LONGIFLASH", "VAGILASE"],
+  hifu: ["PERFECT’LIFT", "REJUVSKIN"],
   therapie: ["CRYOCOVER", "DREAMTECH PRO", "FREQUENTAZIA", "PHYSIOMEDIC A600", "T-CARE 6G", "UltraTrio Pro"],
 };
 
