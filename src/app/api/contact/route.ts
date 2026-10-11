@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { resendKey, defaultFrom } from "@/lib/resend";
+import { SITE_URL } from "@/lib/site";
 
 interface ContactPayload {
   name?: string;
@@ -8,6 +9,8 @@ interface ContactPayload {
   specialty?: string;
   subject?: string;
   message?: string;
+  machine?: string; // technologie d'origine (nom affiché)
+  machineSlug?: string; // technologie d'origine (identifiant de la fiche)
   website?: string; // champ piège (doit rester vide)
   elapsed?: number; // durée de remplissage, en ms
 }
@@ -61,6 +64,8 @@ async function sendToCellulift(body: ContactPayload) {
     ["Téléphone", body.phone],
     ["Activité", body.specialty],
     ["Objet", body.subject],
+    ["Technologie", body.machine],
+    ["Fiche", body.machineSlug ? `${SITE_URL}/fr/technologies/${body.machineSlug}` : undefined],
   ];
   const html = `
     <h2 style="font-family:Arial,sans-serif">Nouvelle demande — site Cellulift</h2>
@@ -79,7 +84,7 @@ async function sendToCellulift(body: ContactPayload) {
       from: defaultFrom(),
       to: recipients(body.subject),
       reply_to: body.email,
-      subject: `${body.subject || "Demande"} — ${body.name}${body.specialty ? ` (${body.specialty})` : ""}`,
+      subject: `${body.subject || "Demande"}${body.machine ? ` — ${body.machine}` : ""} — ${body.name}${body.specialty ? ` (${body.specialty})` : ""}`,
       html,
     }),
   });
@@ -108,7 +113,11 @@ export async function POST(request: Request) {
 
   const { name, email, message } = body;
   const tooLong =
-    String(name ?? "").length > 120 || String(email ?? "").length > 200 || String(message ?? "").length > 5000;
+    String(name ?? "").length > 120 ||
+    String(email ?? "").length > 200 ||
+    String(message ?? "").length > 5000 ||
+    String(body.machine ?? "").length > 120 ||
+    !/^[a-z0-9-]{0,80}$/.test(String(body.machineSlug ?? ""));
 
   if (!name || !email || !message || !emailPattern.test(email) || tooLong) {
     return NextResponse.json({ ok: false, error: "validation" }, { status: 422 });

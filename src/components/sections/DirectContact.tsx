@@ -1,6 +1,8 @@
 import { Phone, Mail, MapPin, Wrench } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
-import { company, whatsappHref } from "@/content/company";
+import { company } from "@/content/company";
+import { machineNames } from "@/content/technologies";
+import { WhatsAppLink } from "@/components/layout/WhatsAppLink";
 import type { Locale } from "@/lib/i18n/config";
 import { WhatsAppIcon } from "@/components/icons/SocialIcons";
 
@@ -19,7 +21,8 @@ export function DirectContact({
       icon: WhatsAppIcon,
       label: labels.whatsapp,
       value: company.whatsapp,
-      href: whatsappHref(locale),
+      href: "",
+      whatsapp: true,
     },
     {
       icon: Phone,
@@ -45,14 +48,10 @@ export function DirectContact({
     <Reveal className="glass rounded-[1.75rem] p-7 md:p-9">
       <h2 className="display text-2xl text-deep">{title}</h2>
       <ul className="mt-6 flex flex-col gap-5">
-        {items.map((item) => (
-          <li key={item.label}>
-            <a
-              href={item.href}
-              target={item.href.startsWith("http") ? "_blank" : undefined}
-              rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
-              className="group flex items-center gap-3 font-sans text-sm text-deep-soft transition-colors hover:text-deep"
-            >
+        {items.map((item) => {
+          const className = "group flex items-center gap-3 font-sans text-sm text-deep-soft transition-colors hover:text-deep";
+          const content = (
+            <>
               <span className="glass-soft flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-deep transition-colors group-hover:bg-white">
                 <item.icon size={18} />
               </span>
@@ -62,9 +61,23 @@ export function DirectContact({
                 </span>
                 <span className="block">{item.value}</span>
               </span>
-            </a>
-          </li>
-        ))}
+            </>
+          );
+          return (
+            <li key={item.label}>
+              {"whatsapp" in item ? (
+                // Arrivée depuis une fiche (?machine=…) : le message WhatsApp cite la machine.
+                <WhatsAppLink locale={locale} machines={machineNames} className={className}>
+                  {content}
+                </WhatsAppLink>
+              ) : (
+                <a href={item.href} className={className}>
+                  {content}
+                </a>
+              )}
+            </li>
+          );
+        })}
         <li className="flex items-center gap-3 font-sans text-sm text-deep-soft">
           <span className="glass-soft flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-deep">
             <MapPin size={18} />

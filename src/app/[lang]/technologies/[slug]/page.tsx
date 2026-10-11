@@ -123,8 +123,8 @@ export default async function TechnologyDetailPage({
             )}
           </div>
           <div className="flex flex-wrap gap-3 lg:justify-end">
-            <Cta href={`/${lang}/contact?sujet=demo`}>{dict.common.requestDemo}</Cta>
-            <Cta href={`/${lang}/contact?sujet=expert`} variant="line">{dict.common.speakToExpert}</Cta>
+            <Cta href={`/${lang}/contact?sujet=demo&machine=${tech.slug}`}>{dict.common.requestDemo}</Cta>
+            <Cta href={`/${lang}/contact?sujet=expert&machine=${tech.slug}`} variant="line">{dict.common.speakToExpert}</Cta>
           </div>
         </Reveal>
 
@@ -187,7 +187,7 @@ export default async function TechnologyDetailPage({
               <h2 className="display mt-6 text-2xl text-deep md:text-3xl">{l.sheet}</h2>
               <p className="mt-4 max-w-lg font-sans leading-relaxed text-deep-soft">{l.sheetText}</p>
               <div className="mt-8">
-                <Cta href={`/${lang}/contact?sujet=expert`}>{dict.common.speakToExpert}</Cta>
+                <Cta href={`/${lang}/contact?sujet=expert&machine=${tech.slug}`}>{dict.common.speakToExpert}</Cta>
               </div>
             </Reveal>
           )}
