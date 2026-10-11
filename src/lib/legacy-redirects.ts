@@ -36,12 +36,17 @@ export const legacyRedirects: Record<string, string> = {
   // Anciennes pages de gamme recréées en pages de gamme (validé par Cellulift)
   "/solutions-lasers": "/fr/technologies/gammes/lasers",
   "/amincissement-avance": "/fr/technologies/gammes/amincissement",
-  // Anciens articles de blog : pas de page équivalente sur le nouveau site → gamme la plus proche (à valider).
-  "/une-nouvelle-technique-dans-le-traitement-de-la-cellulite": "/fr/technologies#amincissement",
-  "/photomodulation-optimisez-les-soins-de-vos-patients-avec-cellulift": "/fr/technologies#photomodulation",
+  // Anciens modèles remplacés par le modèle actuel (validé par Cellulift)
+  "/fracov3": "/fr/technologies/frac-cov-4",
+  "/pressoligne-6": "/fr/technologies/pressoligne-5",
+  "/synergy": "/fr/technologies/synergy-plus",
+  "/new-synergy": "/fr/technologies/synergy-plus",
+  // Anciens articles de blog
+  "/une-nouvelle-technique-dans-le-traitement-de-la-cellulite": "/fr/technologies/gammes/amincissement", // validé par Cellulift
+  "/photomodulation-optimisez-les-soins-de-vos-patients-avec-cellulift": "/fr/technologies#photomodulation", // provisoire
 
-  // En attente de décision Cellulift (laissées en 404) : autres anciennes pages de gamme, FRACOV 3, PRESSOLIGNE 6, SYNERGY,
-  // machines absentes du catalogue, Actualités, Portfolio.
+  // Laissées en 404 (décision Cellulift) : /photomodulation, /rejuvenation-cutanee, /hifu-haut-intensite-focalise-ultrason,
+  // /sculptface, /gatecare, /perfect-cool, /hightlift, /rejuvteck-7, /megacryo, /integrall-hifu, /actualites, /portfolio.
 };
 
 /**
