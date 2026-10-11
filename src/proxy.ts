@@ -24,7 +24,7 @@ export function proxy(request: NextRequest) {
   }
   if (isLegacyGone(clean)) {
     return new NextResponse(
-      '<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Page supprimée | CELLULIFT</title></head><body style="font-family:system-ui,sans-serif;max-width:32rem;margin:15vh auto;padding:0 1.5rem;color:#1d1b26"><h1 style="font-weight:500">Cette page n\u2019existe plus.</h1><p>Ce contenu ne fait plus partie du site Cellulift.</p><p><a href="/fr/technologies" style="color:#1d1b26">Voir nos technologies</a></p></body></html>',
+      '<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Page supprimée | CELLULIFT</title></head><body style="font-family:system-ui,sans-serif;max-width:32rem;margin:15vh auto;padding:0 1.5rem;color:#1d1b26"><h1 style="font-weight:500">Cette page n\u2019existe plus.</h1><p>Cette technologie ne fait plus partie du catalogue Cellulift.</p><p><a href="/fr/technologies" style="color:#1d1b26">Voir nos technologies</a></p></body></html>',
       { status: 410, headers: { "Content-Type": "text/html; charset=utf-8" } }
     );
   }
