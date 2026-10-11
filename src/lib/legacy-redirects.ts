@@ -14,12 +14,31 @@ export const legacyRedirects: Record<string, string> = {
   "/brasilift": "/fr/technologies/brasilift",
   "/perfectlift": "/fr/technologies/perfect-lift",
   "/product/longilyse": "/fr/technologies/longilyse",
+  // Plan de migration SEO (Search Console, validé par Cellulift) : ancienne page → page réellement équivalente.
+  "/contact": "/fr/contact",
+  "/service-apres-vente": "/fr/support",
+  "/la-queen-new": "/fr/technologies/la-queen",
+  "/laser-shock": "/fr/technologies/laser-shock",
+  "/steel-muscle": "/fr/technologies/steel-muscle",
+  "/led-bio-light": "/fr/technologies/led-bio-light",
+  "/longilyse": "/fr/technologies/longilyse",
+  "/dermabrasif": "/fr/technologies/dermabrasif-6g",
+  "/new-epillight": "/fr/technologies/new-epil-light",
+  "/slimax-lipo-7": "/fr/technologies/slimax-lipo-7",
+  "/dermaplex": "/fr/technologies/dermaplex",
+  "/pressoligne-5": "/fr/technologies/pressoligne-5",
+  "/alex-yag-ultras": "/fr/technologies/alex-yag-ultra",
+  "/frequentazia": "/fr/technologies/frequentazia",
+  "/longchoc": "/fr/technologies/longchoc",
+  "/skin-bright": "/fr/technologies/skin-bright",
+  "/tanita-bc-1000": "/fr/technologies/tanita", // fiche TANITA = destination commerciale pertinente
+  "/my-pen": "/fr/technologies/mym-dermapen", // « My Pen » = MYM DERMAPEN (fiche)
   // Anciens articles de blog : pas de page équivalente sur le nouveau site → gamme la plus proche (à valider).
   "/une-nouvelle-technique-dans-le-traitement-de-la-cellulite": "/fr/technologies#amincissement",
   "/photomodulation-optimisez-les-soins-de-vos-patients-avec-cellulift": "/fr/technologies#photomodulation",
 
-  // À compléter quand les adresses exactes seront connues (intitulés vus dans Google) :
-  // Contact, Actualités, Solutions Lasers, Service après-vente.
+  // En attente de décision Cellulift (laissées en 404) : anciennes pages de gamme, FRACOV 3, PRESSOLIGNE 6, SYNERGY,
+  // machines absentes du catalogue, Actualités, Portfolio.
 };
 
 /**
