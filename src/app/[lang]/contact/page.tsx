@@ -8,6 +8,7 @@ import { PageHero } from "@/components/sections/PageHero";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { ContactForm } from "@/components/contact/ContactForm";
+import { machineNames } from "@/content/technologies";
 import { DirectContact } from "@/components/sections/DirectContact";
 
 export async function generateMetadata({
@@ -51,7 +52,7 @@ export default async function ContactPage({
           <Reveal className="glass rounded-[1.75rem] p-7 md:p-9">
             <h2 className="display text-2xl text-deep">{content.form.title}</h2>
             <div className="mt-8">
-              <ContactForm text={content.form} />
+              <ContactForm text={content.form} machines={machineNames} />
             </div>
           </Reveal>
 

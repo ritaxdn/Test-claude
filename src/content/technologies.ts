@@ -96,6 +96,9 @@ export const technologies: Technology[] = (Object.keys(catalog) as CategoryKey[]
   })
 );
 
+/** Nom de chaque machine par slug (léger, transmis aux composants client : formulaire, liens WhatsApp). */
+export const machineNames: Record<string, string> = Object.fromEntries(technologies.map((t) => [t.slug, t.name]));
+
 export const technologiesIn = (category: CategoryKey) => technologies.filter((t) => t.category === category);
 
 // Photo de couverture d'un univers : celle de la première machine photographiée de la famille.

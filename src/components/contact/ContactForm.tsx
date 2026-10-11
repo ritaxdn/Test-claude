@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Loader2, CheckCircle2, AlertCircle, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { track } from "@/lib/analytics";
+import { machineFromLocation } from "@/lib/machine";
 
 type FieldErrors = Partial<Record<"name" | "email" | "message", string>>;
 type Status = "idle" | "submitting" | "success" | "error";
@@ -19,7 +20,10 @@ interface ContactFormText {
   specialtyPlaceholder: string;
   specialtyOptions: readonly string[];
   subject: string;
-  subjectOptions: readonly string[];
+  subjectOptions: readonly { key: string; label: string }[];
+  machine: string;
+  machineMessageDemo: string;
+  machineMessage: string;
   message: string;
   messagePlaceholder: string;
   submit: string;
@@ -32,20 +36,30 @@ interface ContactFormText {
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export function ContactForm({ text }: { text: ContactFormText }) {
+export function ContactForm({ text, machines }: { text: ContactFormText; machines: Record<string, string> }) {
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<FieldErrors>({});
   // Anti-spam : heure d'affichage du formulaire (un humain met plus de quelques secondes à le remplir).
   const startedAt = useRef(0);
   const subjectRef = useRef<HTMLSelectElement>(null);
+  const messageRef = useRef<HTMLTextAreaElement>(null);
+  // Machine d'origine (bouton « Demander une démo » d'une fiche : ?machine=frac-cov-4)
+  const [machine, setMachine] = useState<{ slug: string; name: string } | null>(null);
 
   useEffect(() => {
     startedAt.current = Date.now();
-    // Objet présélectionné selon le bouton cliqué : /contact?sujet=demo | expert | masterclass | support | devis | partenariat
-    const sujet = new URLSearchParams(window.location.search).get("sujet");
-    const index = { demo: 0, expert: 1, masterclass: 2, support: 3, devis: 4, partenariat: 5 }[sujet ?? ""];
-    if (index !== undefined && subjectRef.current) subjectRef.current.selectedIndex = index;
-  }, []);
+    const params = new URLSearchParams(window.location.search);
+    // Objet présélectionné selon le bouton cliqué, par sa clé : ?sujet=demo | expert | masterclass | support | devis | partenariat
+    const sujet = params.get("sujet") ?? "";
+    const option = text.subjectOptions.find((o) => o.key === sujet);
+    if (option && subjectRef.current) subjectRef.current.value = option.label;
+    const m = machineFromLocation(window.location.pathname, window.location.search, machines);
+    if (m) {
+      setMachine(m); // eslint-disable-line react-hooks/set-state-in-effect -- paramètres d'adresse lus après le rendu serveur
+      const template = sujet === "demo" ? text.machineMessageDemo : text.machineMessage;
+      if (messageRef.current && !messageRef.current.value) messageRef.current.value = template.replace("{machine}", m.name);
+    }
+  }, [text, machines]);
 
   function validate(formData: FormData): FieldErrors {
     const next: FieldErrors = {};
@@ -82,10 +96,11 @@ export function ContactForm({ text }: { text: ContactFormText }) {
       if (!res.ok) throw new Error("request_failed");
 
       setStatus("success");
-      // Demande reçue → événement « generate_lead » dans Google Analytics, avec l'objet et la spécialité.
+      // Demande reçue → événement « generate_lead » dans Google Analytics : objet, spécialité et machine d'origine.
       track("generate_lead", {
         sujet: String(formData.get("subject") ?? ""),
         specialite: String(formData.get("specialty") ?? ""),
+        ...(machine ? { machine: machine.slug } : {}),
       });
       form.reset();
     } catch {
@@ -189,8 +204,8 @@ export function ContactForm({ text }: { text: ContactFormText }) {
         <div className="relative">
           <select ref={subjectRef} id="subject" name="subject" className={cn(inputClasses, "mt-2 appearance-none pr-10")}>
             {text.subjectOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}
+              <option key={option.key} value={option.label}>
+                {option.label}
               </option>
             ))}
           </select>
@@ -198,11 +213,23 @@ export function ContactForm({ text }: { text: ContactFormText }) {
         </div>
       </div>
 
+      {/* Machine d'origine : affichée seulement quand le visiteur vient d'une fiche machine */}
+      {machine && (
+        <div>
+          <label htmlFor="machine" className="font-sans text-sm text-deep-soft">
+            {text.machine}
+          </label>
+          <input id="machine" name="machine" type="text" defaultValue={machine.name} className={cn(inputClasses, "mt-2")} />
+          <input type="hidden" name="machineSlug" value={machine.slug} />
+        </div>
+      )}
+
       <div>
         <label htmlFor="message" className="font-sans text-sm text-deep-soft">
           {text.message} <span className="text-rainbow-3">*</span>
         </label>
         <textarea
+          ref={messageRef}
           id="message"
           name="message"
           rows={5}

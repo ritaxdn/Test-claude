@@ -12,7 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     for (const path of staticPaths) {
       entries.push({
         url: `${SITE_URL}/${locale}${path}`,
-        alternates: { languages: { fr: `${SITE_URL}/fr${path}`, en: `${SITE_URL}/en${path}` } },
+        alternates: { languages: { fr: `${SITE_URL}/fr${path}`, en: `${SITE_URL}/en${path}`, "x-default": `${SITE_URL}/fr${path}` } },
         changeFrequency: path === "" ? "monthly" : "yearly",
         priority: path === "" ? 1 : 0.7,
       });
@@ -20,7 +20,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     for (const tech of technologies) {
       entries.push({
         url: `${SITE_URL}/${locale}/technologies/${tech.slug}`,
-        alternates: { languages: { fr: `${SITE_URL}/fr/technologies/${tech.slug}`, en: `${SITE_URL}/en/technologies/${tech.slug}` } },
+        alternates: {
+          languages: {
+            fr: `${SITE_URL}/fr/technologies/${tech.slug}`,
+            en: `${SITE_URL}/en/technologies/${tech.slug}`,
+            "x-default": `${SITE_URL}/fr/technologies/${tech.slug}`,
+          },
+        },
         changeFrequency: "yearly",
         priority: 0.6,
       });

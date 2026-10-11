@@ -20,7 +20,7 @@ export function localeAlternates(path: string = "", lang: string = "fr"): Metada
 /**
  * Métadonnées complètes d'une page : titre, description, canonique, hreflang et partage (Open Graph / X).
  * `title` passe par le modèle « … | CELLULIFT » sauf si `absoluteTitle` est fourni.
- * L'image de partage par défaut vient de app/[lang]/opengraph-image.tsx ; `image` la remplace (ex. photo de la machine).
+ * Image de partage : celle de app/[lang]/opengraph-image.tsx par défaut ; `image` la remplace (ex. photo de la machine).
  */
 export function pageMetadata({
   lang,
@@ -39,6 +39,13 @@ export function pageMetadata({
 }): Metadata {
   const fullTitle = absoluteTitle ?? `${title} | CELLULIFT`;
   const isFr = lang !== "en";
+  // Image de partage par défaut : celle de app/[lang]/opengraph-image.tsx (sinon les pages intérieures n'en ont aucune).
+  const shareImage = image ?? {
+    url: `${SITE_URL}/${lang}/opengraph-image`,
+    width: 1200,
+    height: 630,
+    alt: isFr ? "CELLULIFT — Technologies médico-esthétiques pour professionnels" : "CELLULIFT — Medical aesthetic technology for professionals",
+  };
   return {
     title: absoluteTitle ? { absolute: absoluteTitle } : title,
     description,
@@ -51,13 +58,13 @@ export function pageMetadata({
       description,
       locale: isFr ? "fr_MA" : "en_US",
       alternateLocale: isFr ? ["en_US"] : ["fr_MA"],
-      ...(image ? { images: [image] } : {}),
+      images: [shareImage],
     },
     twitter: {
       card: "summary_large_image",
       title: fullTitle,
       description,
-      ...(image ? { images: [image.url] } : {}),
+      images: [shareImage.url],
     },
   };
 }

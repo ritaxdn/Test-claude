@@ -36,10 +36,16 @@ export const company = {
   },
 } as const;
 
-/** Lien WhatsApp avec un premier message déjà écrit (le visiteur n'a plus qu'à appuyer sur Envoyer). */
-export function whatsappHref(locale: "fr" | "en") {
-  const text =
-    locale === "fr"
+/**
+ * Lien WhatsApp avec un premier message déjà écrit (le visiteur n'a plus qu'à appuyer sur Envoyer).
+ * `machine` : nom de la technologie consultée, cité dans le message.
+ */
+export function whatsappHref(locale: "fr" | "en", machine?: string) {
+  const text = machine
+    ? locale === "fr"
+      ? `Bonjour Cellulift, je souhaite des informations sur ${machine}.`
+      : `Hello Cellulift, I would like information about ${machine}.`
+    : locale === "fr"
       ? "Bonjour Cellulift, je souhaite des informations sur vos technologies."
       : "Hello Cellulift, I would like information about your technologies.";
   return `https://wa.me/${company.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(text)}`;
