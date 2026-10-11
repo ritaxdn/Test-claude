@@ -56,7 +56,7 @@ export function ShowroomMap({ locale }: { locale: Locale }) {
         <Reveal>
           <Pill>{c.eyebrow}</Pill>
           <h2 className="display mt-4 text-[clamp(1.6rem,2.6vw,2.5rem)] text-deep">
-            <span className="block">{c.title[0]}</span>
+            <span className="block">{c.title[0]}</span>{" "}
             <span className="iridescent-text block">{c.title[1]}</span>
           </h2>
           <p className="data-label mt-5 text-deep">{c.markets.join("  ·  ")}</p>
