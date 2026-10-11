@@ -1,9 +1,12 @@
 import type { MetadataRoute } from "next";
 import { locales } from "@/lib/i18n/config";
 import { technologies } from "@/content/technologies";
+import { landingKeys, landingPath } from "@/content/category-landings";
 import { SITE_URL } from "@/lib/site";
 
 const staticPaths = ["", "/about", "/technologies", "/guide", "/academy", "/support", "/contact", "/privacy", "/terms"];
+// Pages de gamme (Solutions lasers, Amincissement)
+const rangePaths = landingKeys.map(landingPath);
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const entries: MetadataRoute.Sitemap = [];
@@ -15,6 +18,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
         alternates: { languages: { fr: `${SITE_URL}/fr${path}`, en: `${SITE_URL}/en${path}`, "x-default": `${SITE_URL}/fr${path}` } },
         changeFrequency: path === "" ? "monthly" : "yearly",
         priority: path === "" ? 1 : 0.7,
+      });
+    }
+    for (const path of rangePaths) {
+      entries.push({
+        url: `${SITE_URL}/${locale}${path}`,
+        alternates: { languages: { fr: `${SITE_URL}/fr${path}`, en: `${SITE_URL}/en${path}`, "x-default": `${SITE_URL}/fr${path}` } },
+        changeFrequency: "monthly",
+        priority: 0.7,
       });
     }
     for (const tech of technologies) {

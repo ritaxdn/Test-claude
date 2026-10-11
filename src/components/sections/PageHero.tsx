@@ -3,7 +3,18 @@ import { Pill } from "@/components/system/Cta";
 import { Signal } from "@/components/system/Signal";
 
 /** En-tête des pages intérieures, dans la direction « nacre & verre ». */
-export function PageHero({ eyebrow, title, subtitle }: { eyebrow: string; title: string; subtitle?: string }) {
+export function PageHero({
+  eyebrow,
+  title,
+  subtitle,
+  compact = false,
+}: {
+  eyebrow: string;
+  title: string;
+  subtitle?: string;
+  /** Corps de titre réduit (titres courts mais longs mots, ex. pages de gamme) */
+  compact?: boolean;
+}) {
   return (
     <section className="relative overflow-hidden px-3 pb-10 pt-12 md:px-5 md:pb-14 md:pt-16">
       <div className="mx-auto max-w-7xl px-3 md:px-7">
@@ -13,7 +24,7 @@ export function PageHero({ eyebrow, title, subtitle }: { eyebrow: string; title:
             {/* Titres longs (phrases) : corps réduit pour rester sur 3-4 lignes */}
             <h1
               className={`display mt-5 text-balance text-deep ${
-                title.length > 48 ? "text-[clamp(1.9rem,3.6vw,3.3rem)] leading-[1]" : "text-[clamp(2.2rem,5.2vw,4.6rem)]"
+                compact || title.length > 48 ? "text-[clamp(1.9rem,3.6vw,3.3rem)] leading-[1]" : "text-[clamp(2.2rem,5.2vw,4.6rem)]"
               }`}
             >
               {title}

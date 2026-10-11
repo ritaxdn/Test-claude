@@ -4,7 +4,10 @@ import { useEffect, useMemo, useState } from "react";
 import { Search, X } from "lucide-react";
 import { RevealGroup, RevealItem } from "@/components/ui/Reveal";
 import { TechnologyCard } from "@/components/technologies/TechnologyCard";
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import { categories, technologies, type CategoryKey } from "@/content/technologies";
+import { landingForCategory, landingLabels, landingPath } from "@/content/category-landings";
 import type { Locale } from "@/lib/i18n/config";
 import { cn } from "@/lib/utils";
 
@@ -85,6 +88,25 @@ export function TechnologyGrid({
           </button>
         ))}
       </div>
+
+      {/* Lien vers la page de la gamme quand elle existe (toujours dans la page pour Google, visible pour la gamme ouverte) */}
+      {categoryKeys.map((key) => {
+        const landing = landingForCategory[key];
+        if (!landing) return null;
+        return (
+          <Link
+            key={key}
+            href={`/${locale}${landingPath(landing)}`}
+            className={cn(
+              "group mt-4 items-center gap-2 font-sans text-sm text-deep hover:underline",
+              active === key && !query ? "inline-flex" : "hidden"
+            )}
+          >
+            {landingLabels[locale].seeRange} {categories[key][locale]}
+            <ArrowUpRight size={14} className="transition-transform group-hover:rotate-45" />
+          </Link>
+        );
+      })}
 
       <p className="sr-only" aria-live="polite">{filtered.length} {t.results}</p>
       {filtered.length === 0 && <p className="mt-8 font-sans text-sm text-deep-soft">{t.none}</p>}

@@ -33,11 +33,14 @@ export const legacyRedirects: Record<string, string> = {
   "/skin-bright": "/fr/technologies/skin-bright",
   "/tanita-bc-1000": "/fr/technologies/tanita", // fiche TANITA = destination commerciale pertinente
   "/my-pen": "/fr/technologies/mym-dermapen", // « My Pen » = MYM DERMAPEN (fiche)
+  // Anciennes pages de gamme recréées en pages de gamme (validé par Cellulift)
+  "/solutions-lasers": "/fr/technologies/gammes/lasers",
+  "/amincissement-avance": "/fr/technologies/gammes/amincissement",
   // Anciens articles de blog : pas de page équivalente sur le nouveau site → gamme la plus proche (à valider).
   "/une-nouvelle-technique-dans-le-traitement-de-la-cellulite": "/fr/technologies#amincissement",
   "/photomodulation-optimisez-les-soins-de-vos-patients-avec-cellulift": "/fr/technologies#photomodulation",
 
-  // En attente de décision Cellulift (laissées en 404) : anciennes pages de gamme, FRACOV 3, PRESSOLIGNE 6, SYNERGY,
+  // En attente de décision Cellulift (laissées en 404) : autres anciennes pages de gamme, FRACOV 3, PRESSOLIGNE 6, SYNERGY,
   // machines absentes du catalogue, Actualités, Portfolio.
 };
 
