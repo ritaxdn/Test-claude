@@ -1,5 +1,4 @@
 import { Cta } from "./Cta";
-import { Orb } from "./Orb";
 import type { Locale } from "@/lib/i18n/config";
 import { homeSystem } from "@/content/home-system";
 
@@ -11,11 +10,6 @@ export function SystemHero({ locale }: { locale: Locale }) {
   const c = homeSystem[locale].hero;
   return (
     <section className="relative flex overflow-hidden px-6 pb-16 pt-12 md:px-12 lg:h-[calc(100svh-6.5rem)] lg:min-h-[40rem] lg:max-h-[56rem] lg:items-center lg:py-0">
-      {/* Sphère irisée décorative (grand écran uniquement) */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden lg:block">
-        <Orb className="absolute right-[6%] top-1/2 -translate-y-1/2" size={440} />
-      </div>
-
       <div className="relative mx-auto w-full max-w-7xl">
         <div className="max-w-3xl">
           {/* Repères de confiance */}
