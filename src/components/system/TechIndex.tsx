@@ -6,6 +6,7 @@ import { Pill, Cta } from "./Cta";
 import type { Locale } from "@/lib/i18n/config";
 import { categories, categoryDetail, technologiesIn, universeCover, type CategoryKey } from "@/content/technologies";
 import { homeSystem } from "@/content/home-system";
+import { landingForCategory, landingPath } from "@/content/category-landings";
 
 /**
  * Les 6 gammes en grandes cartes de verre (besoin → technologie → machine) :
@@ -38,7 +39,7 @@ export function TechIndex({ locale }: { locale: Locale }) {
             return (
               <RevealItem key={key}>
                 <Link
-                  href={`/${locale}/technologies#${key}`}
+                  href={landingForCategory[key] ? `/${locale}${landingPath(landingForCategory[key])}` : `/${locale}/technologies#${key}`}
                   className="glass scan-hover group relative flex aspect-square flex-col overflow-hidden sm:aspect-[5/4] rounded-[1.25rem] p-3.5 sm:rounded-[1.75rem] sm:p-5 md:p-6"
                 >
                   {cover && (
