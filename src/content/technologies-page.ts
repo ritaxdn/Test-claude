@@ -1,7 +1,7 @@
 export const technologiesPageContent = {
   fr: {
     eyebrow: "Technologies",
-    title: "Nos technologies.",
+    title: "Technologies et équipements médico-esthétiques professionnels",
     subtitle:
       "Choisissez par indication. Distributeur officiel LGL Expert en Afrique, Cellulift livre chaque technologie avec l'installation, la formation et le SAV.",
     includedLabel: "Chaque technologie est livrée avec",
@@ -14,7 +14,7 @@ export const technologiesPageContent = {
   },
   en: {
     eyebrow: "Technologies",
-    title: "Our technologies.",
+    title: "Professional medical aesthetic technology and equipment",
     subtitle:
       "Choose by indication. As the official LGL Expert distributor in Africa, Cellulift delivers every technology with installation, training and after-sales.",
     includedLabel: "Every technology comes with",

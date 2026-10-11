@@ -19,6 +19,11 @@ export const homeSystem = {
       { value: "24", unit: "mois", label: "De garantie" },
       { value: "{s}", label: "Points de vente" },
     ],
+    // Bloc de positionnement sous les chiffres (validé par Cellulift)
+    positioning: {
+      title: "Votre fournisseur d'équipements médico-esthétiques au Maroc.",
+      text: "CELLULIFT sélectionne et distribue des équipements médico-esthétiques professionnels pour les médecins, cliniques et centres au Maroc : lasers, appareils d'amincissement et de remodelage corporel, technologies de réjuvénation cutanée. Chaque équipement est accompagné par nos équipes pour l'installation, la formation CELLULIFT Academy et le service après-vente.",
+    },
     // Bandeau défilant sous le hero.
     ticker: [
       "Toutes nos machines sont certifiées CE et FDA",
@@ -113,6 +118,10 @@ export const homeSystem = {
       { value: "24", unit: "months", label: "Warranty" },
       { value: "{s}", label: "Points of sale" },
     ],
+    positioning: {
+      title: "Your medical aesthetic equipment supplier in Morocco.",
+      text: "CELLULIFT selects and distributes professional medical aesthetic equipment for physicians, clinics and centres in Morocco: lasers, body contouring devices and skin rejuvenation technology. Every device is supported by our teams through installation, CELLULIFT Academy training and after-sales service.",
+    },
     ticker: [
       "All our devices are CE and FDA certified",
       "Since 2002",

@@ -23,10 +23,10 @@ export async function generateMetadata({
   return pageMetadata({
     lang,
     path: "/technologies",
-    title: isFr ? "Technologies médico-esthétiques professionnelles" : "Professional medical aesthetic technology",
+    title: isFr ? "Technologies et équipements médico-esthétiques" : "Medical aesthetic technology and equipment",
     description: isFr
-      ? "Le catalogue Cellulift : amincissement, lasers, réjuvénation cutanée, photomodulation, HIFU et thérapie avancée. Chaque technologie est livrée avec installation, formation et SAV."
-      : "The Cellulift catalogue: body contouring, lasers, skin rejuvenation, photomodulation, HIFU and advanced therapy. Every technology comes with installation, training and after-sales.",
+      ? "Découvrez les équipements médico-esthétiques professionnels CELLULIFT : lasers, amincissement, réjuvénation, photomodulation et HIFU."
+      : "Discover CELLULIFT's professional medical aesthetic equipment: lasers, body contouring, rejuvenation, photomodulation and HIFU.",
   });
 }
 
