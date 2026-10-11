@@ -45,7 +45,7 @@ export default async function TechnologiesPage({
   return (
     <>
       <Breadcrumbs lang={lang} items={[["Technologies", "/technologies"]]} />
-      <PageHero eyebrow={content.eyebrow} title={content.title} subtitle={content.subtitle} />
+      <PageHero eyebrow={content.eyebrow} title={content.title} subtitle={content.subtitle} compact />
 
       <section className="px-3 pb-12 md:px-5 md:pb-16">
         <Container>
