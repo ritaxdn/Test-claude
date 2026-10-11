@@ -9,7 +9,11 @@ import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { ContactForm } from "@/components/contact/ContactForm";
 import { machineNames } from "@/content/technologies";
+import { upcomingSessions } from "@/content/academy-sessions";
 import { DirectContact } from "@/components/sections/DirectContact";
+
+// Les sessions Academy proposées dans le formulaire sont recalculées chaque jour (une session passée disparaît).
+export const revalidate = 86400;
 
 export async function generateMetadata({
   params,
@@ -52,7 +56,11 @@ export default async function ContactPage({
           <Reveal className="glass rounded-[1.75rem] p-7 md:p-9">
             <h2 className="display text-2xl text-deep">{content.form.title}</h2>
             <div className="mt-8">
-              <ContactForm text={content.form} machines={machineNames} />
+              <ContactForm
+                text={content.form}
+                machines={machineNames}
+                sessions={upcomingSessions().map((x) => ({ value: x.start, label: `${x.date[lang]} — ${x.title}` }))}
+              />
             </div>
           </Reveal>
 
