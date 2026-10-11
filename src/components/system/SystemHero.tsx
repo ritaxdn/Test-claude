@@ -3,8 +3,7 @@ import type { Locale } from "@/lib/i18n/config";
 import { homeSystem } from "@/content/home-system";
 
 /**
- * Accueil : fond nacré avec une sphère irisée à droite, et une seule colonne de texte bien alignée
- * (repères de confiance → titre → phrase → actions).
+ * Accueil : hero nacré avec une seule colonne de texte, repères de confiance, titre, description et actions.
  */
 export function SystemHero({ locale }: { locale: Locale }) {
   const c = homeSystem[locale].hero;
