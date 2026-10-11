@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { ArrowLeft, Check } from "lucide-react";
 import { isLocale, locales } from "@/lib/i18n/config";
+import { technologySeo } from "@/content/technology-seo";
 import { pageMetadata } from "@/lib/alternates";
 import { Breadcrumbs } from "@/components/seo/JsonLd";
 import { getDictionary } from "@/lib/i18n/dictionaries";
@@ -30,17 +31,20 @@ export async function generateMetadata({
   const family = categories[tech.category][lang];
   const cover = tech.images?.[0];
   const size = cover ? ((photoSizes as Record<string, number[]>)[cover] ?? [1100, 1100]) : null;
+  const seo = technologySeo[slug];
   return pageMetadata({
     lang,
     path: `/technologies/${slug}`,
-    title: `${tech.name} — ${family}`,
-    description: tech.tagline
-      ? lang === "fr"
-        ? `${tech.name} : ${tech.tagline.fr} Installation, formation Cellulift Academy et SAV inclus.`
-        : `${tech.name}: ${tech.tagline.en} Installation, Cellulift Academy training and after-sales included.`
-      : lang === "fr"
-        ? `${tech.name} — ${family}. Technologie Cellulift livrée avec formation, protocoles et support.`
-        : `${tech.name} — ${family}. Cellulift technology delivered with training, protocols and support.`,
+    title: seo ? seo.title[lang] : `${tech.name} — ${family}`,
+    description: seo
+      ? seo.description[lang]
+      : tech.tagline
+        ? lang === "fr"
+          ? `${tech.name} : ${tech.tagline.fr} Installation, formation Cellulift Academy et SAV inclus.`
+          : `${tech.name}: ${tech.tagline.en} Installation, Cellulift Academy training and after-sales included.`
+        : lang === "fr"
+          ? `${tech.name} — ${family}. Technologie Cellulift livrée avec formation, protocoles et support.`
+          : `${tech.name} — ${family}. Cellulift technology delivered with training, protocols and support.`,
     // Partage : photo de la machine plutôt que l'image générique
     image: cover && size ? { url: cover, width: size[0], height: size[1], alt: tech.name } : undefined,
   });

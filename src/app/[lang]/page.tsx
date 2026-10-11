@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/i18n/config";
 import { SystemHero } from "@/components/system/SystemHero";
 import { StatsBand } from "@/components/system/StatsBand";
+import { Positioning } from "@/components/system/Positioning";
 import { TechIndex } from "@/components/system/TechIndex";
 import { AcademySupport } from "@/components/system/AcademySupport";
 import { ProjectCta } from "@/components/system/ProjectCta";
@@ -21,15 +22,15 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   return pageMetadata({
     lang,
     absoluteTitle: isFr
-      ? "CELLULIFT | Technologies médico-esthétiques pour professionnels"
-      : "CELLULIFT | Medical aesthetic technology for professionals",
+      ? "Distributeur d'équipements médico-esthétiques au Maroc | CELLULIFT"
+      : "Medical aesthetic equipment distributor in Morocco | CELLULIFT",
     description: isFr
-      ? "Partenaire des médecins, cliniques et centres depuis 2002 : technologies médico-esthétiques, formation, installation, SAV et accompagnement de votre activité."
-      : "Partner to physicians, clinics and centres since 2002: medical aesthetic technology, training, installation, after-sales and support for your practice.",
+      ? "Cellulift distribue au Maroc des équipements médico-esthétiques professionnels pour médecins, cliniques et centres, avec installation, formation et SAV."
+      : "Cellulift supplies professional medical aesthetic equipment in Morocco to physicians, clinics and centres, with installation, training and after-sales.",
   });
 }
 
-// Accueil allégé (9 sections) : hero → chiffres → technologies → vidéos → Academy & Support → implantations → guide → FAQ → contact.
+// Accueil allégé (10 sections) : hero → chiffres → positionnement → technologies → vidéos → Academy & Support → implantations → guide → FAQ → contact.
 export default async function HomePage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
@@ -38,6 +39,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     <div className="pearl-bg">
       <SystemHero locale={lang} />
       <StatsBand locale={lang} />
+      <Positioning locale={lang} />
       <TechIndex locale={lang} />
       <MediaSection locale={lang} />
       <AcademySupport locale={lang} />

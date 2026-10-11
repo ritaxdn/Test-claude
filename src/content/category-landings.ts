@@ -23,13 +23,13 @@ export const categoryLandings: Record<LandingKey, Landing> = {
     category: "lasers",
     exclude: [],
     title: {
-      fr: "Solutions lasers médico-esthétiques professionnelles",
-      en: "Professional medical aesthetic laser solutions",
+      fr: "Lasers médicaux et esthétiques professionnels au Maroc",
+      en: "Professional medical and aesthetic lasers in Morocco",
     },
     h1: { fr: "Solutions lasers professionnelles", en: "Professional laser solutions" },
     description: {
-      fr: "Les solutions lasers distribuées par Cellulift : épilation, pigments, détatouage, resurfaçage et endolift. Chaque technologie est livrée avec installation, formation Cellulift Academy et SAV.",
-      en: "Laser solutions distributed by Cellulift: hair removal, pigmentation, tattoo removal, resurfacing and endolift. Every technology comes with installation, Cellulift Academy training and after-sales.",
+      fr: "Découvrez les lasers médicaux et esthétiques distribués par CELLULIFT au Maroc : épilation, pigments, détatouage, resurfaçage CO2 et endolift.",
+      en: "Discover the medical and aesthetic lasers distributed by CELLULIFT in Morocco: hair removal, pigmentation, tattoo removal, CO2 resurfacing and endolift.",
     },
     // Introduction validée par Cellulift
     intro: {
