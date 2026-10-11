@@ -4,7 +4,7 @@ export const contactPageContent = {
       eyebrow: "Contact",
       title: "Parlons de votre pratique.",
       subtitle:
-        "Que vous souhaitiez découvrir une technologie, planifier une démonstration ou rejoindre une masterclass, notre équipe vous répond sous 24 à 48h ouvrées.",
+        "Notre équipe étudie votre demande et vous accompagne vers la solution adaptée à votre projet.",
     },
     form: {
       title: "Envoyez-nous un message",
@@ -82,7 +82,7 @@ export const contactPageContent = {
       eyebrow: "Contact",
       title: "Let's talk about your practice.",
       subtitle:
-        "Whether you'd like to discover a technology, schedule a demonstration or join a masterclass, our team replies within 24 to 48 business hours.",
+        "Our team reviews your request and helps you identify the solution best suited to your project.",
     },
     form: {
       title: "Send us a message",
