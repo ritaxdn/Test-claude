@@ -1,11 +1,12 @@
 import { Cormorant_Garamond } from "next/font/google";
 import { Archivo, Instrument_Sans, JetBrains_Mono } from "next/font/google";
 
+// Cormorant : réservée au wordmark du logo (seule face affichée : 400 normal).
 export const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
   subsets: ["latin"],
-  weight: ["300", "400", "500"],
-  style: ["normal", "italic"],
+  weight: ["400"],
+  style: ["normal"],
   display: "swap",
 });
 
