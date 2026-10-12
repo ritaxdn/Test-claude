@@ -1,0 +1,948 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Adjugé Immo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout : un catalogue de vente aux enchères — chaque bien est un « lot » numéroté ;
+   la fiche du lot met face à face le bien et la salle de vente (bougie, prix, offres). */
+:root {
+  --bg: #f4f6f3;
+  --surface: #ffffff;
+  --ink: #13201b;
+  --muted: #5a6a62;
+  --line: #dde3dd;
+  --accent: #1d5a44;      /* vert « étude notariale » */
+  --accent-ink: #ffffff;
+  --accent-soft: #e2eee7;
+  --brass: #a8761c;       /* la bougie, le temps qui passe */
+  --brass-soft: #f6ecd8;
+  --danger: #b33a2b;
+  --danger-soft: #f8e3df;
+  --shadow: 0 1px 2px rgb(19 32 27 / .06), 0 8px 24px rgb(19 32 27 / .06);
+  --font-display: "Gloock", "Didot", "Bodoni 72", Georgia, serif;
+  --font-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1512; --surface: #151f1a; --ink: #e6ece8; --muted: #98a79f; --line: #26342d;
+    --accent: #6cc49b; --accent-ink: #0b1712; --accent-soft: #1a3328;
+    --brass: #e0b155; --brass-soft: #33291a; --danger: #ef8b7c; --danger-soft: #3a1f1b;
+    --shadow: 0 1px 2px rgb(0 0 0 / .3), 0 8px 24px rgb(0 0 0 / .25);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1512; --surface: #151f1a; --ink: #e6ece8; --muted: #98a79f; --line: #26342d;
+  --accent: #6cc49b; --accent-ink: #0b1712; --accent-soft: #1a3328;
+  --brass: #e0b155; --brass-soft: #33291a; --danger: #ef8b7c; --danger-soft: #3a1f1b;
+  --shadow: 0 1px 2px rgb(0 0 0 / .3), 0 8px 24px rgb(0 0 0 / .25);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { background: var(--bg); color: var(--ink); font: 400 15px/1.55 var(--font-body); -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 400; line-height: 1.1; margin: 0; text-wrap: balance; letter-spacing: -.005em; }
+h1 { font-size: clamp(2rem, 1.4rem + 2.6vw, 3.1rem); }
+h2 { font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2rem); }
+h3 { font-size: 1.25rem; }
+p { margin: 0; }
+a { color: inherit; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.num { font-variant-numeric: tabular-nums; }
+.mono { font-family: var(--font-mono); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; }
+.muted { color: var(--muted); }
+.wrap { max-width: 1180px; margin-inline: auto; padding-inline: 20px; }
+
+/* En-tête */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.top .wrap { display: flex; align-items: center; gap: 24px; min-height: 64px; flex-wrap: wrap; padding-block: 8px; }
+.brand { display: flex; align-items: baseline; gap: 8px; text-decoration: none; }
+.brand b { font-family: var(--font-display); font-weight: 400; font-size: 1.6rem; }
+.brand span { color: var(--muted); font-size: .8rem; }
+.gavel { width: 22px; height: 22px; color: var(--accent); align-self: center; }
+nav.main { display: flex; gap: 4px; flex-wrap: wrap; flex: 1; }
+nav.main a { text-decoration: none; padding: 8px 12px; border-radius: 999px; color: var(--muted); font-weight: 500; }
+nav.main a:hover { color: var(--ink); background: var(--accent-soft); }
+nav.main a[aria-current="page"] { color: var(--accent); background: var(--accent-soft); }
+.who { display: flex; align-items: center; gap: 8px; font-size: .85rem; color: var(--muted); }
+.who strong { color: var(--ink); font-weight: 600; }
+.linkbtn { background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+
+main { padding-block: 32px 64px; }
+.view { display: grid; gap: 28px; }
+
+/* Boutons et champs */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid transparent; border-radius: 999px; padding: 11px 20px; font-weight: 600; cursor: pointer; text-decoration: none; transition: transform .12s, background .2s; }
+.btn:active { transform: translateY(1px); }
+.btn-primary { background: var(--accent); color: var(--accent-ink); }
+.btn-primary:hover { background: color-mix(in srgb, var(--accent) 88%, var(--ink)); }
+.btn-ghost { background: transparent; border-color: var(--line); color: var(--ink); }
+.btn-ghost:hover { border-color: var(--accent); }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+label.field { display: grid; gap: 6px; font-weight: 500; font-size: .9rem; min-width: 0; }
+label.field small { font-weight: 400; color: var(--muted); }
+input, select, textarea { width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+input:focus, select:focus, textarea:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px var(--accent-soft); }
+.error { color: var(--danger); font-size: .82rem; font-weight: 500; }
+.field.invalid input, .field.invalid select, .field.invalid textarea { border-color: var(--danger); }
+
+/* Pastilles de statut */
+.pill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; font-size: .75rem; font-weight: 600; white-space: nowrap; }
+.pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.pill.live { background: var(--brass-soft); color: var(--brass); }
+.pill.live::before { animation: pulse 1.6s infinite; }
+.pill.upcoming { background: var(--accent-soft); color: var(--accent); }
+.pill.sold { background: var(--accent); color: var(--accent-ink); }
+.pill.unsold, .pill.ended { background: var(--line); color: var(--muted); }
+.pill.lead { background: var(--accent-soft); color: var(--accent); }
+.pill.outbid { background: var(--danger-soft); color: var(--danger); }
+@keyframes pulse { 50% { opacity: .3; } }
+
+/* Catalogue */
+.intro { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 32px; align-items: end; }
+.intro p.lede { margin-top: 12px; color: var(--muted); max-width: 56ch; font-size: 1.05rem; }
+.tally { display: flex; gap: 28px; flex-wrap: wrap; justify-content: flex-end; }
+.tally div { display: grid; }
+.tally b { font-family: var(--font-display); font-weight: 400; font-size: 2.2rem; line-height: 1; }
+.tally span { color: var(--muted); font-size: .82rem; }
+.filters { display: grid; grid-template-columns: 1.4fr repeat(4, minmax(0, 1fr)); gap: 12px; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.filters label { font-size: .78rem; color: var(--muted); }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 20px; }
+.lot { display: grid; grid-template-rows: auto 1fr; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; text-decoration: none; transition: border-color .2s, transform .2s, box-shadow .2s; }
+.lot:hover { border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); transform: translateY(-2px); box-shadow: var(--shadow); }
+.lot .pic { position: relative; aspect-ratio: 16 / 10; max-width: 100%; }
+.lot .pic svg, .hero-pic svg { display: block; width: 100%; height: 100%; }
+.lot .pic .pill { position: absolute; top: 12px; left: 12px; box-shadow: var(--shadow); }
+.lot .pic .lotno { position: absolute; top: 12px; right: 12px; background: var(--surface); color: var(--ink); padding: 3px 8px; border-radius: 6px; }
+.lot .body { display: grid; gap: 10px; padding: 16px 18px 18px; align-content: start; }
+.lot .where { color: var(--muted); font-size: .85rem; }
+.lot h3 { font-size: 1.2rem; }
+.lot .specs { display: flex; gap: 14px; color: var(--muted); font-size: .85rem; flex-wrap: wrap; }
+.lot .foot { display: flex; justify-content: space-between; align-items: end; gap: 12px; padding-top: 12px; border-top: 1px solid var(--line); margin-top: 4px; }
+.lot .foot small { display: block; color: var(--muted); font-size: .75rem; }
+.lot .foot .price { font-weight: 700; font-size: 1.15rem; }
+.lot .foot .time { text-align: right; font-weight: 600; }
+.lot .foot .time.hot { color: var(--brass); }
+.empty { padding: 48px 24px; text-align: center; border: 1px dashed var(--line); border-radius: var(--radius); color: var(--muted); display: grid; gap: 12px; justify-items: center; }
+
+/* Fiche lot */
+.crumbs { font-size: .85rem; color: var(--muted); }
+.crumbs a { color: var(--muted); }
+.lot-layout { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(320px, 1fr); gap: 32px; align-items: start; }
+.hero-pic { aspect-ratio: 16 / 9; max-width: 100%; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); }
+.lot-head { display: grid; gap: 10px; }
+.facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+.facts div { padding: 14px 16px; display: grid; gap: 2px; }
+.facts div + div { border-left: 1px solid var(--line); }
+.facts b { font-size: 1.15rem; }
+.facts span { color: var(--muted); font-size: .8rem; }
+.prose { display: grid; gap: 14px; max-width: 66ch; }
+.tags { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 0; }
+.tags li { padding: 5px 12px; border-radius: 999px; border: 1px solid var(--line); font-size: .85rem; background: var(--surface); }
+.terms { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 20px; margin: 0; font-size: .9rem; }
+.terms dt { color: var(--muted); }
+.terms dd { margin: 0; font-weight: 500; }
+
+.room { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 84px); display: grid; gap: 18px; padding: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); }
+.room-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.clock { display: grid; grid-template-columns: 44px 1fr; gap: 16px; align-items: end; }
+.candle { position: relative; height: 96px; display: grid; align-content: end; justify-items: center; }
+.candle .wax { width: 18px; border-radius: 3px 3px 2px 2px; background: linear-gradient(90deg, color-mix(in srgb, var(--brass-soft) 60%, var(--surface)), var(--brass-soft)); border: 1px solid color-mix(in srgb, var(--brass) 35%, transparent); transition: height 1s linear; }
+.candle .flame { width: 10px; height: 16px; border-radius: 50% 50% 45% 45% / 65% 65% 35% 35%; background: radial-gradient(circle at 50% 70%, #fff6d6 0 25%, #f5b941 55%, #d9741c 100%); margin-bottom: 1px; transform-origin: 50% 100%; animation: flicker 1.8s ease-in-out infinite; }
+.candle .base { width: 40px; height: 6px; border-radius: 3px; background: var(--line); }
+.candle.out .flame { visibility: hidden; }
+@keyframes flicker { 0%,100% { transform: scale(1) rotate(-1deg); } 35% { transform: scale(1.08, .94) rotate(2deg); } 70% { transform: scale(.95, 1.06) rotate(-2deg); } }
+.clock .label { color: var(--muted); font-size: .82rem; }
+.clock .big { font-family: var(--font-display); font-size: 2.4rem; line-height: 1; }
+.clock .big.hot { color: var(--brass); }
+.price-block { display: grid; gap: 4px; padding-block: 14px; border-block: 1px solid var(--line); }
+.price-block .now { font-family: var(--font-display); font-size: 2.5rem; line-height: 1.05; transition: color .4s; }
+.price-block .now.flash { color: var(--brass); }
+.price-meta { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: .85rem; color: var(--muted); }
+.reserve { font-weight: 600; }
+.reserve.ok { color: var(--accent); }
+.notice { padding: 10px 12px; border-radius: 8px; font-size: .85rem; background: var(--brass-soft); color: var(--ink); }
+.notice.good { background: var(--accent-soft); }
+.notice.bad { background: var(--danger-soft); }
+.bid-form { display: grid; gap: 10px; }
+.bid-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+.bid-row input { font-size: 1.1rem; font-weight: 600; }
+.quick { display: flex; gap: 6px; flex-wrap: wrap; }
+.quick button { flex: 1; padding: 7px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); cursor: pointer; font-size: .82rem; font-weight: 600; }
+.quick button:hover { border-color: var(--accent); }
+.confirm { display: grid; gap: 10px; padding: 14px; border-radius: 10px; background: var(--accent-soft); }
+.confirm .row { display: flex; gap: 8px; flex-wrap: wrap; }
+.check { display: flex; gap: 10px; align-items: flex-start; font-size: .82rem; color: var(--muted); }
+.check input { width: auto; margin-top: 3px; }
+.history { display: grid; gap: 0; list-style: none; padding: 0; margin: 0; max-height: 280px; overflow: auto; }
+.history li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; padding: 9px 0; border-top: 1px solid var(--line); font-size: .88rem; }
+.history li:first-child { border-top: 0; }
+.history li b { text-align: right; }
+.history li small { color: var(--muted); grid-column: 1 / -1; font-size: .75rem; }
+.history li.me span { color: var(--accent); font-weight: 600; }
+.history li.new { animation: arrive 1.2s ease-out; }
+@keyframes arrive { from { background: var(--brass-soft); } to { background: transparent; } }
+.stamp { justify-self: start; font-family: var(--font-display); font-size: 1.6rem; padding: 4px 14px; border: 3px double currentColor; border-radius: 6px; transform: rotate(-3deg); color: var(--accent); }
+.stamp.unsold { color: var(--muted); }
+
+/* Vendre */
+.sell { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 32px; align-items: start; }
+.sell form { display: grid; gap: 22px; }
+fieldset { border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; margin: 0; display: grid; gap: 14px; background: var(--surface); min-width: 0; }
+legend { padding-inline: 6px; font-family: var(--font-display); font-size: 1.15rem; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; }
+.aside { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 84px); display: grid; gap: 14px; padding: 20px; border-radius: var(--radius); background: var(--accent-soft); font-size: .9rem; }
+.aside ol { margin: 0; padding-left: 18px; display: grid; gap: 8px; }
+
+/* Comment ça marche */
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; list-style: none; padding: 0; margin: 0; counter-reset: s; }
+.steps li { counter-increment: s; display: grid; gap: 8px; align-content: start; padding: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.steps li::before { content: "Étape " counter(s); font-family: var(--font-mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--brass); }
+.glossary { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px 32px; margin: 0; }
+.glossary div { padding-block: 12px; border-top: 1px solid var(--line); }
+.glossary dt { font-weight: 700; }
+.glossary dd { margin: 4px 0 0; color: var(--muted); font-size: .92rem; }
+
+/* Mes enchères */
+.mine { display: grid; gap: 10px; }
+.mine a { display: grid; grid-template-columns: 96px minmax(0, 1fr) auto; gap: 16px; align-items: center; padding: 10px; padding-right: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); text-decoration: none; }
+.mine a:hover { border-color: var(--accent); }
+.mine .thumb { aspect-ratio: 4 / 3; border-radius: 6px; overflow: hidden; }
+.mine .thumb svg { width: 100%; height: 100%; display: block; }
+.mine .r { text-align: right; display: grid; gap: 4px; justify-items: end; }
+
+/* Fenêtre d'identification */
+.modal { position: fixed; inset: 0; z-index: 30; display: grid; place-items: center; padding: 16px; background: rgb(8 14 11 / .55); }
+.modal .card { width: min(420px, 100%); background: var(--surface); border-radius: 14px; padding: 24px; display: grid; gap: 14px; box-shadow: var(--shadow); }
+.toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 20px); transform: translateX(-50%); z-index: 40; background: var(--ink); color: var(--bg); padding: 12px 18px; border-radius: 10px; font-weight: 500; font-size: .9rem; max-width: calc(100% - 32px); box-shadow: var(--shadow); }
+
+footer { border-top: 1px solid var(--line); padding-block: 24px; color: var(--muted); font-size: .82rem; }
+
+@media (max-width: 900px) {
+  .intro, .lot-layout, .sell { grid-template-columns: minmax(0, 1fr); }
+  .tally { justify-content: flex-start; }
+  .filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .filters .search { grid-column: 1 / -1; }
+  .room, .aside { position: static; }
+}
+@media (max-width: 560px) {
+  .wrap { padding-inline: 16px; }
+  .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .facts div:nth-child(3) { border-left: 0; }
+  .facts div:nth-child(n+3) { border-top: 1px solid var(--line); }
+  .mine a { grid-template-columns: 72px minmax(0, 1fr); }
+  .mine .r { grid-column: 2; justify-items: start; text-align: left; }
+  .who { width: 100%; }
+  .top { position: static; }
+  .top .wrap { gap: 10px; }
+  nav.main { flex-wrap: nowrap; overflow-x: auto; width: 100%; scrollbar-width: none; }
+  nav.main a { white-space: nowrap; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#ventes">
+      <svg class="gavel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m14 4 6 6M11 7l6 6M12.5 5.5l5 5-3 3-5-5zM11 11 4 18M3 21h9"/></svg>
+      <b>Adjugé</b><span>enchères immobilières</span>
+    </a>
+    <nav class="main" aria-label="Navigation principale">
+      <a href="#ventes" data-nav="ventes">Ventes</a>
+      <a href="#mes-encheres" data-nav="mes-encheres">Mes enchères</a>
+      <a href="#vendre" data-nav="vendre">Vendre un bien</a>
+      <a href="#fonctionnement" data-nav="fonctionnement">Comment ça marche</a>
+    </nav>
+    <div class="who" id="who"></div>
+  </div>
+</header>
+
+<main class="wrap" id="app"></main>
+
+<footer>
+  <div class="wrap">Prototype de démonstration. Les annonces, les autres enchérisseurs et leurs offres sont simulés ; vos offres et vos annonces sont enregistrées dans ce navigateur uniquement. <button class="linkbtn" id="reset" type="button">Réinitialiser la démo</button></div>
+</footer>
+
+<div class="modal" id="login" hidden>
+  <form class="card" id="login-form" novalidate>
+    <h3>Votre identité d'enchérisseur</h3>
+    <p class="muted">Les autres participants ne voient qu'un numéro (« Enchérisseur n°3 »), jamais votre nom.</p>
+    <label class="field">Nom et prénom<input id="login-name" autocomplete="name" required minlength="2" placeholder="Camille Martin"></label>
+    <label class="field">E-mail<input id="login-email" type="email" autocomplete="email" required placeholder="camille@exemple.fr"></label>
+    <p class="error" id="login-error" hidden></p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-primary" type="submit">Continuer</button>
+      <button class="btn btn-ghost" type="button" id="login-cancel">Annuler</button>
+    </div>
+  </form>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+(() => {
+"use strict";
+
+/* ---------- Règles de la vente ---------- */
+const MIN = 60_000, HOUR = 60 * MIN, DAY = 24 * HOUR;
+const SNIPE_WINDOW = 2 * MIN;     // une offre dans les 2 dernières minutes…
+const SNIPE_EXTEND = 2 * MIN;     // …prolonge la vente de 2 minutes
+const DEPOSIT_RATE = 0.10;        // consignation : 10 % de la mise à prix
+const ME = "me";
+
+const statusOf = (lot, now) => now < lot.startsAt ? "upcoming" : now >= lot.endsAt ? "ended" : "live";
+const topBid = (lot) => lot.bids.reduce((t, b) => (!t || b.amount > t.amount ? b : t), null);
+const currentPrice = (lot) => topBid(lot)?.amount ?? lot.startingPrice;
+const minBid = (lot) => { const t = topBid(lot); return t ? t.amount + lot.increment : lot.startingPrice; };
+const reserveMet = (lot) => { const t = topBid(lot); return !!t && t.amount >= lot.reservePrice; };
+const deposit = (lot) => Math.round(lot.startingPrice * DEPOSIT_RATE / 100) * 100;
+
+function checkBid(lot, bidder, amount, now) {
+  const s = statusOf(lot, now);
+  if (s === "upcoming") return "La vente n'a pas encore commencé.";
+  if (s === "ended") return "La vente est terminée.";
+  if (!Number.isInteger(amount)) return "Saisissez un montant en euros, sans centimes.";
+  if (amount < minBid(lot)) return `L'offre minimum est de ${eur(minBid(lot))}.`;
+  if (topBid(lot)?.bidder === bidder) return "Vous êtes déjà le meilleur enchérisseur.";
+  return null;
+}
+function applyBid(lot, bidder, amount, now) {
+  lot.bids.push({ id: Math.random().toString(36).slice(2, 10), bidder, amount, at: now });
+  const extended = lot.endsAt - now <= SNIPE_WINDOW;
+  if (extended) lot.endsAt = Math.max(lot.endsAt, now + SNIPE_EXTEND);
+  return extended;
+}
+
+/* ---------- Formats ---------- */
+const eurFmt = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
+const eur = (n) => eurFmt.format(n);
+const numFmt = new Intl.NumberFormat("fr-FR");
+const dateFmt = new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" });
+const timeFmt = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", second: "2-digit" });
+const pad = (n) => String(n).padStart(2, "0");
+function remaining(ms) {
+  const s = Math.max(0, Math.floor(ms / 1000));
+  const d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60);
+  if (d > 0) return `${d} j ${pad(h)} h`;
+  if (h > 0) return `${h} h ${pad(m)} min`;
+  return `${pad(m)}:${pad(s % 60)}`;
+}
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const TYPES = { appartement: "Appartement", maison: "Maison", villa: "Villa", terrain: "Terrain", local: "Local commercial" };
+
+/* ---------- Données de démonstration ---------- */
+function seed(now) {
+  const L = (id, d, bids) => ({
+    id, ...d, sellerName: "Étude démo", createdAt: now - 10 * DAY,
+    rivalMax: Math.round(d.reservePrice * (0.97 + Math.random() * 0.12) / d.increment) * d.increment,
+    bids: bids.map(([off, who, amount], i) => ({ id: `${id}-${i}`, bidder: who, amount, at: now + off })),
+  });
+  return [
+    L("haussmannien-paris-17", { lotNo: 1, title: "Haussmannien lumineux avec balcon filant", type: "appartement", city: "Paris", district: "17e, Batignolles", surface: 92, rooms: 4, bedrooms: 2, hue: 205,
+      description: "Au 4e étage avec ascenseur d'un immeuble en pierre de taille, appartement traversant : séjour double ouvrant sur un balcon filant, cuisine séparée, deux chambres sur cour. Parquet en point de Hongrie, moulures et cheminées d'origine.",
+      features: ["Balcon filant", "Ascenseur", "Gardien", "Cave", "DPE D"], startingPrice: 690000, reservePrice: 780000, increment: 5000,
+      startsAt: now - 2 * DAY, endsAt: now + 7 * MIN, visits: "Visites terminées" },
+      [[-40 * HOUR, "r1", 690000], [-30 * HOUR, "r2", 700000], [-6 * HOUR, "r1", 720000], [-50 * MIN, "r3", 745000], [-12 * MIN, "r2", 760000]]),
+    L("echoppe-bordeaux-cauderan", { lotNo: 2, title: "Échoppe rénovée avec jardin", type: "maison", city: "Bordeaux", district: "Caudéran", surface: 128, rooms: 5, bedrooms: 3, hue: 140,
+      description: "Échoppe double entièrement rénovée en 2022 : pièce de vie de 55 m² ouverte sur un jardin arboré de 220 m², suite parentale, deux chambres et un bureau. Tram et commerces à 5 minutes à pied.",
+      features: ["Jardin 220 m²", "Rénovée en 2022", "Pompe à chaleur", "DPE C"], startingPrice: 520000, reservePrice: 560000, increment: 2500,
+      startsAt: now - DAY, endsAt: now + 5 * HOUR + 12 * MIN, visits: "Visites terminées" },
+      [[-20 * HOUR, "r4", 520000], [-3 * HOUR, "r5", 532500]]),
+    L("villa-nice-mont-boron", { lotNo: 3, title: "Villa contemporaine vue mer", type: "villa", city: "Nice", district: "Mont Boron", surface: 245, rooms: 7, bedrooms: 4, hue: 195,
+      description: "Sur un terrain paysager de 1 400 m², villa d'architecte tournée vers la baie des Anges : piscine à débordement, terrasses en restanques, quatre suites. Au calme, à 10 minutes du port.",
+      features: ["Piscine", "Vue mer", "Terrain 1 400 m²", "Garage double", "DPE B"], startingPrice: 2450000, reservePrice: 2700000, increment: 25000,
+      startsAt: now - 6 * HOUR, endsAt: now + 2 * DAY + 3 * HOUR, visits: "Samedi 10 h – 12 h, sur rendez-vous" },
+      [[-4 * HOUR, "r6", 2450000]]),
+    L("loft-lyon-confluence", { lotNo: 4, title: "Loft dans une ancienne manufacture", type: "appartement", city: "Lyon", district: "Confluence", surface: 110, rooms: 3, bedrooms: 2, hue: 25,
+      description: "Loft de 4 m sous plafond dans une ancienne manufacture réhabilitée : grandes verrières, mezzanine, terrasse de 18 m² plein sud et place de parking en sous-sol.",
+      features: ["Terrasse 18 m²", "Verrières", "Parking", "DPE C"], startingPrice: 455000, reservePrice: 470000, increment: 2000,
+      startsAt: now - 3 * DAY, endsAt: now + 22 * HOUR, visits: "Visites terminées" },
+      [[-60 * HOUR, "r7", 455000], [-20 * HOUR, "r8", 461000], [-2 * HOUR, "r7", 475000]]),
+    L("terrain-annecy-talloires", { lotNo: 5, title: "Terrain constructible proche du lac", type: "terrain", city: "Annecy", district: "Talloires", surface: 1850, rooms: 0, bedrooms: 0, hue: 110,
+      description: "Parcelle viabilisée de 1 850 m² en légère pente, exposée ouest, avec échappée sur le lac. Certificat d'urbanisme positif pour une maison individuelle de 220 m² de surface de plancher.",
+      features: ["Viabilisé", "CU positif", "Vue lac partielle"], startingPrice: 380000, reservePrice: 420000, increment: 2000,
+      startsAt: now + 2 * DAY, endsAt: now + 9 * DAY, visits: "Mardi et jeudi, 14 h – 17 h" }, []),
+    L("local-lille-vieux-lille", { lotNo: 6, title: "Boutique sur rue piétonne", type: "local", city: "Lille", district: "Vieux-Lille", surface: 74, rooms: 2, bedrooms: 0, hue: 350,
+      description: "Boutique de 74 m² avec une vitrine de 6 m sur une rue piétonne très passante, réserve et sanitaires. Libre de toute occupation ; tous commerces sauf restauration.",
+      features: ["Vitrine 6 m", "Rue piétonne", "Libre d'occupation"], startingPrice: 240000, reservePrice: 250000, increment: 1000,
+      startsAt: now + 5 * HOUR, endsAt: now + 4 * DAY, visits: "Mercredi 9 h – 12 h" }, []),
+    L("maison-nantes-erdre", { lotNo: 7, title: "Maison de maître en bord d'Erdre", type: "maison", city: "Nantes", district: "Bords d'Erdre", surface: 210, rooms: 8, bedrooms: 5, hue: 40,
+      description: "Maison de maître de 1890 sur un parc de 900 m² avec accès privatif à l'Erdre. Beaux volumes ; travaux de rafraîchissement à prévoir.",
+      features: ["Parc 900 m²", "Accès à la rivière", "Dépendance", "DPE E"], startingPrice: 790000, reservePrice: 850000, increment: 5000,
+      startsAt: now - 9 * DAY, endsAt: now - 2 * DAY, visits: "Vente terminée" },
+      [[-8 * DAY, "r1", 790000], [-5 * DAY, "r2", 810000], [-3 * DAY, "r1", 845000], [-2 * DAY - HOUR, "r3", 870000]]),
+    L("studio-marseille-vieux-port", { lotNo: 8, title: "Studio avec vue sur le Vieux-Port", type: "appartement", city: "Marseille", district: "Vieux-Port", surface: 28, rooms: 1, bedrooms: 0, hue: 220,
+      description: "Studio refait à neuf au 5e étage, fenêtres sur le Vieux-Port et Notre-Dame-de-la-Garde. Vendu meublé, idéal pour un investissement locatif.",
+      features: ["Vue sur le port", "Refait à neuf", "Meublé"], startingPrice: 145000, reservePrice: 175000, increment: 1000,
+      startsAt: now - 6 * DAY, endsAt: now - DAY, visits: "Vente terminée" },
+      [[-5 * DAY, "r4", 145000], [-2 * DAY, "r5", 152000]]),
+  ];
+}
+
+/* ---------- État (enregistré dans ce navigateur) ---------- */
+const KEY = "adjuge-immo-v1";
+let state;
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {} }
+function load() {
+  let s = null;
+  try { s = JSON.parse(localStorage.getItem(KEY) || "null"); } catch {}
+  const now = Date.now();
+  if (!s || !Array.isArray(s.lots)) return { epoch: now, user: null, lots: seed(now) };
+  // Démo trop ancienne : on remet les ventes types à l'heure, en gardant les annonces déposées.
+  if (now - s.epoch > 36 * HOUR) {
+    const own = s.lots.filter((l) => l.sellerName !== "Étude démo");
+    return { epoch: now, user: s.user, lots: [...seed(now), ...own] };
+  }
+  return s;
+}
+state = load();
+save();
+const lotById = (id) => state.lots.find((l) => l.id === id);
+
+/* ---------- Illustrations des biens ---------- */
+function picture(lot) {
+  const h = lot.hue ?? 200;
+  const sky = `hsl(${h} 45% 82%)`, sky2 = `hsl(${h} 40% 93%)`, wall = `hsl(${(h + 30) % 360} 22% 88%)`, wall2 = `hsl(${(h + 30) % 360} 18% 74%)`;
+  const dark = `hsl(${h} 25% 22%)`, roof = `hsl(${(h + 180) % 360} 28% 42%)`, green = `hsl(115 30% 52%)`, green2 = `hsl(120 28% 40%)`;
+  const win = (x, y, w = 22, hh = 30) => `<rect x="${x}" y="${y}" width="${w}" height="${hh}" rx="2" fill="${dark}" opacity=".85"/><rect x="${x}" y="${y}" width="${w}" height="${hh / 2.2}" rx="2" fill="${sky2}" opacity=".35"/>`;
+  let scene = "";
+  if (lot.type === "appartement") {
+    scene = `<rect x="110" y="40" width="180" height="170" fill="${wall}"/><rect x="104" y="34" width="192" height="12" fill="${wall2}"/>`;
+    for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) scene += win(124 + c * 42, 58 + r * 36);
+    scene += `<rect x="112" y="${58 + 36 + 32}" width="176" height="4" fill="${dark}" opacity=".6"/><rect x="186" y="186" width="28" height="24" fill="${roof}"/>`;
+    scene += `<rect x="20" y="90" width="80" height="120" fill="${wall2}" opacity=".7"/><rect x="300" y="70" width="80" height="140" fill="${wall2}" opacity=".7"/>`;
+  } else if (lot.type === "maison") {
+    scene = `<rect x="0" y="182" width="400" height="28" fill="${green}"/><polygon points="110,100 200,46 290,100" fill="${roof}"/><rect x="122" y="100" width="156" height="90" fill="${wall}"/>`;
+    scene += win(140, 118) + win(238, 118) + `<rect x="186" y="140" width="28" height="50" rx="2" fill="${dark}"/>`;
+    scene += `<circle cx="64" cy="150" r="34" fill="${green2}"/><rect x="61" y="170" width="6" height="22" fill="${dark}"/><circle cx="340" cy="160" r="24" fill="${green2}"/>`;
+  } else if (lot.type === "villa") {
+    scene = `<rect x="0" y="150" width="400" height="60" fill="hsl(${h} 55% 60%)"/><rect x="0" y="150" width="400" height="6" fill="hsl(${h} 50% 75%)"/>`;
+    scene += `<rect x="70" y="80" width="200" height="70" fill="${wall}"/><rect x="160" y="50" width="150" height="34" fill="${wall}"/><rect x="60" y="76" width="220" height="6" fill="${wall2}"/><rect x="152" y="46" width="166" height="6" fill="${wall2}"/>`;
+    scene += `<rect x="86" y="96" width="70" height="44" fill="${dark}" opacity=".8"/><rect x="170" y="96" width="84" height="44" fill="${dark}" opacity=".8"/><rect x="178" y="58" width="114" height="20" fill="${dark}" opacity=".7"/>`;
+    scene += `<rect x="70" y="160" width="190" height="22" rx="3" fill="hsl(${h} 70% 70%)"/><circle cx="340" cy="112" r="26" fill="${green2}"/><rect x="337" y="130" width="6" height="22" fill="${dark}"/>`;
+  } else if (lot.type === "terrain") {
+    scene = `<polygon points="0,120 90,70 170,110 260,60 400,115 400,210 0,210" fill="hsl(${h} 20% 70%)"/><rect x="0" y="140" width="400" height="70" fill="${green}"/>`;
+    for (let i = 0; i < 9; i++) scene += `<line x1="${i * 50 - 20}" y1="210" x2="${i * 50 + 30}" y2="140" stroke="${green2}" stroke-width="2" opacity=".5"/>`;
+    scene += `<rect x="130" y="128" width="2" height="40" fill="${dark}"/><rect x="132" y="128" width="26" height="16" fill="hsl(10 70% 55%)"/><ellipse cx="300" cy="134" rx="70" ry="8" fill="hsl(${h} 50% 70%)"/>`;
+  } else {
+    scene = `<rect x="60" y="40" width="280" height="170" fill="${wall}"/><rect x="60" y="40" width="280" height="40" fill="${wall2}"/>`;
+    for (let c = 0; c < 4; c++) scene += win(84 + c * 66, 50, 34, 22);
+    scene += `<rect x="60" y="100" width="280" height="22" fill="${roof}"/>`;
+    for (let i = 0; i < 10; i++) scene += `<rect x="${60 + i * 28}" y="100" width="14" height="22" fill="${wall}" opacity=".5"/>`;
+    scene += `<rect x="80" y="132" width="180" height="78" fill="${dark}" opacity=".85"/><rect x="80" y="132" width="180" height="20" fill="${sky2}" opacity=".25"/><rect x="276" y="140" width="44" height="70" fill="${dark}"/>`;
+  }
+  return `<svg viewBox="0 0 400 210" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Illustration : ${esc(TYPES[lot.type])} à ${esc(lot.city)}"><defs><linearGradient id="g${esc(lot.id)}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sky}"/><stop offset="1" stop-color="${sky2}"/></linearGradient></defs><rect width="400" height="210" fill="url(#g${esc(lot.id)})"/><circle cx="340" cy="44" r="18" fill="hsl(45 90% 75%)" opacity=".8"/>${scene}<rect y="206" width="400" height="4" fill="${dark}" opacity=".25"/></svg>`;
+}
+
+/* ---------- Petits composants ---------- */
+function statusPill(lot, now) {
+  const s = statusOf(lot, now);
+  if (s === "live") return `<span class="pill live">En cours</span>`;
+  if (s === "upcoming") return `<span class="pill upcoming">À venir</span>`;
+  return reserveMet(lot) ? `<span class="pill sold">Adjugé</span>` : `<span class="pill unsold">Non adjugé</span>`;
+}
+const lotNo = (lot) => `Lot ${pad(lot.lotNo)}`;
+const paddleOf = (lot, bidder) => {
+  if (bidder === ME) return "Vous";
+  const order = [...new Set([...lot.bids].sort((a, b) => a.at - b.at).map((b) => b.bidder))];
+  return `Enchérisseur n°${order.indexOf(bidder) + 1}`;
+};
+function specs(lot) {
+  if (lot.type === "terrain") return `<span>${numFmt.format(lot.surface)} m² de terrain</span>`;
+  return `<span>${numFmt.format(lot.surface)} m²</span><span>${lot.rooms} pièce${lot.rooms > 1 ? "s" : ""}</span>${lot.bedrooms ? `<span>${lot.bedrooms} ch.</span>` : ""}`;
+}
+function timeLabel(lot, now) {
+  const s = statusOf(lot, now);
+  if (s === "live") return { k: "Se termine dans", v: remaining(lot.endsAt - now), hot: lot.endsAt - now < HOUR };
+  if (s === "upcoming") return { k: "Ouvre dans", v: remaining(lot.startsAt - now), hot: false };
+  return { k: "Clôturée le", v: new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short" }).format(lot.endsAt), hot: false };
+}
+let toastTimer;
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.hidden = false;
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => (t.hidden = true), 3200);
+}
+
+/* ---------- Vue : catalogue ---------- */
+const filters = { q: "", status: "active", type: "", max: "", sort: "ending" };
+function viewCatalogue(app) {
+  const now = Date.now();
+  const live = state.lots.filter((l) => statusOf(l, now) === "live");
+  const today = live.filter((l) => l.endsAt - now < DAY).length;
+  app.innerHTML = `
+    <section class="intro">
+      <div>
+        <p class="mono" style="color:var(--brass)">Salle de vente en ligne</p>
+        <h1>Achetez un bien au prix que fixe la salle.</h1>
+        <p class="lede">Chaque bien part d'une mise à prix publique. Les offres sont visibles en direct, et la vente se clôt à l'heure dite, sauf si une offre arrive dans les deux dernières minutes.</p>
+      </div>
+      <div class="tally">
+        <div><b class="num">${live.length}</b><span>ventes en cours</span></div>
+        <div><b class="num">${today}</b><span>se terminent aujourd'hui</span></div>
+        <div><b class="num">${state.lots.filter((l) => statusOf(l, now) === "upcoming").length}</b><span>à venir</span></div>
+      </div>
+    </section>
+    <form class="filters" id="filters" role="search">
+      <label class="field search">Ville ou quartier<input id="f-q" type="search" placeholder="Paris, Confluence…" value="${esc(filters.q)}"></label>
+      <label class="field">Statut<select id="f-status">
+        <option value="active">En cours et à venir</option><option value="live">En cours</option><option value="upcoming">À venir</option><option value="ended">Terminées</option><option value="all">Toutes</option>
+      </select></label>
+      <label class="field">Type de bien<select id="f-type"><option value="">Tous</option>${Object.entries(TYPES).map(([k, v]) => `<option value="${k}">${v}</option>`).join("")}</select></label>
+      <label class="field">Prix actuel max.<select id="f-max"><option value="">Sans limite</option><option value="300000">300 000 €</option><option value="600000">600 000 €</option><option value="1000000">1 000 000 €</option></select></label>
+      <label class="field">Trier par<select id="f-sort"><option value="ending">Fin la plus proche</option><option value="price-asc">Prix croissant</option><option value="price-desc">Prix décroissant</option><option value="bids">Nombre d'offres</option></select></label>
+    </form>
+    <div class="grid" id="lots"></div>`;
+  for (const [id, key] of [["f-status", "status"], ["f-type", "type"], ["f-max", "max"], ["f-sort", "sort"]]) {
+    const el = document.getElementById(id); el.value = filters[key];
+    el.addEventListener("change", () => { filters[key] = el.value; renderLots(); });
+  }
+  document.getElementById("f-q").addEventListener("input", (e) => { filters.q = e.target.value; renderLots(); });
+  document.getElementById("filters").addEventListener("submit", (e) => e.preventDefault());
+  renderLots();
+}
+function renderLots() {
+  const now = Date.now();
+  const q = filters.q.trim().toLowerCase();
+  const order = { live: 0, upcoming: 1, ended: 2 };
+  let list = state.lots.filter((l) => {
+    const s = statusOf(l, now);
+    if (filters.status === "active" && s === "ended") return false;
+    if (!["active", "all"].includes(filters.status) && s !== filters.status) return false;
+    if (filters.type && l.type !== filters.type) return false;
+    if (filters.max && currentPrice(l) > Number(filters.max)) return false;
+    return !q || `${l.city} ${l.district} ${l.title}`.toLowerCase().includes(q);
+  });
+  const key = (l) => statusOf(l, now) === "upcoming" ? l.startsAt : l.endsAt;
+  list.sort({
+    ending: (a, b) => order[statusOf(a, now)] - order[statusOf(b, now)] || (statusOf(a, now) === "ended" ? key(b) - key(a) : key(a) - key(b)),
+    "price-asc": (a, b) => currentPrice(a) - currentPrice(b),
+    "price-desc": (a, b) => currentPrice(b) - currentPrice(a),
+    bids: (a, b) => b.bids.length - a.bids.length,
+  }[filters.sort]);
+  const el = document.getElementById("lots");
+  if (!list.length) {
+    el.innerHTML = `<div class="empty" style="grid-column:1/-1"><p>Aucune vente ne correspond à ces critères.</p><button class="btn btn-ghost" type="button" id="clear">Effacer les filtres</button></div>`;
+    document.getElementById("clear").onclick = () => { Object.assign(filters, { q: "", status: "all", type: "", max: "" }); viewCatalogue(document.getElementById("app")); };
+    return;
+  }
+  el.innerHTML = list.map((l) => {
+    const t = timeLabel(l, now), s = statusOf(l, now);
+    const priceLabel = s === "upcoming" ? "Mise à prix" : s === "ended" ? (reserveMet(l) ? "Adjugé à" : "Dernière offre") : l.bids.length ? "Offre actuelle" : "Mise à prix";
+    return `<a class="lot" href="#lot-${esc(l.id)}">
+      <div class="pic">${picture(l)}${statusPill(l, now)}<span class="lotno mono">${lotNo(l)}</span></div>
+      <div class="body">
+        <span class="where">${esc(l.city)} · ${esc(l.district)}</span>
+        <h3>${esc(l.title)}</h3>
+        <div class="specs">${specs(l)}</div>
+        <div class="foot">
+          <div><small>${priceLabel} · ${l.bids.length} offre${l.bids.length > 1 ? "s" : ""}</small><span class="price num" data-price="${esc(l.id)}">${eur(currentPrice(l))}</span></div>
+          <div class="time num ${t.hot ? "hot" : ""}" data-time="${esc(l.id)}"><small>${t.k}</small>${t.v}</div>
+        </div>
+      </div></a>`;
+  }).join("");
+}
+
+/* ---------- Vue : fiche d'un lot ---------- */
+let pendingBid = null;
+function viewLot(app, id) {
+  const lot = lotById(id);
+  if (!lot) { app.innerHTML = `<div class="empty"><h2>Lot introuvable</h2><p>Cette vente a peut-être été retirée.</p><a class="btn btn-primary" href="#ventes">Voir les ventes</a></div>`; return; }
+  pendingBid = null;
+  app.innerHTML = `
+    <p class="crumbs"><a href="#ventes">Ventes</a> / ${esc(lot.city)} / <span class="mono">${lotNo(lot)}</span></p>
+    <div class="lot-layout">
+      <div class="view">
+        <div class="hero-pic">${picture(lot)}</div>
+        <div class="lot-head">
+          <span class="muted">${esc(TYPES[lot.type])} · ${esc(lot.city)}, ${esc(lot.district)}</span>
+          <h1>${esc(lot.title)}</h1>
+        </div>
+        <div class="facts num">
+          <div><b>${numFmt.format(lot.surface)} m²</b><span>${lot.type === "terrain" ? "Terrain" : "Surface habitable"}</span></div>
+          <div><b>${lot.rooms || "—"}</b><span>Pièces</span></div>
+          <div><b>${lot.bedrooms || "—"}</b><span>Chambres</span></div>
+          <div><b>${lot.type === "terrain" ? "—" : eur(Math.round(lot.startingPrice / lot.surface))}</b><span>Mise à prix au m²</span></div>
+        </div>
+        <section class="prose">
+          <h2>Le bien</h2>
+          <p>${esc(lot.description)}</p>
+          ${lot.features.length ? `<ul class="tags">${lot.features.map((f) => `<li>${esc(f)}</li>`).join("")}</ul>` : ""}
+        </section>
+        <section class="prose">
+          <h2>Conditions de la vente</h2>
+          <dl class="terms num">
+            <dt>Mise à prix</dt><dd>${eur(lot.startingPrice)}</dd>
+            <dt>Pas d'enchère</dt><dd>${eur(lot.increment)}</dd>
+            <dt>Consignation</dt><dd>${eur(deposit(lot))} (10 % de la mise à prix), restituée si vous n'êtes pas adjudicataire</dd>
+            <dt>Ouverture</dt><dd>${dateFmt.format(lot.startsAt)}</dd>
+            <dt>Clôture prévue</dt><dd id="close-date">${dateFmt.format(lot.endsAt)}</dd>
+            <dt>Visites</dt><dd>${esc(lot.visits || "Sur rendez-vous")}</dd>
+            <dt>Vendeur</dt><dd>${esc(lot.sellerName)}</dd>
+          </dl>
+          <p class="muted">Le vendeur a fixé un prix de réserve confidentiel. Si la dernière offre ne l'atteint pas, le bien n'est pas adjugé.</p>
+        </section>
+      </div>
+      <aside class="room" id="room" aria-label="Salle de vente"></aside>
+    </div>`;
+  renderRoom(lot);
+}
+
+function renderRoom(lot, { flash = false } = {}) {
+  const room = document.getElementById("room");
+  if (!room) return;
+  const now = Date.now(), s = statusOf(lot, now), top = topBid(lot);
+  const keep = document.getElementById("bid-amount")?.value;
+  const mine = lot.bids.some((b) => b.bidder === ME);
+  let state_ = "";
+  if (s === "live" && mine) state_ = top?.bidder === ME ? `<span class="pill lead">Vous menez</span>` : `<span class="pill outbid">Surenchéri</span>`;
+
+  let action = "";
+  if (s === "live") {
+    action = pendingBid ? `
+      <div class="confirm" id="confirm">
+        <p>Confirmez-vous une offre de <strong class="num">${eur(pendingBid)}</strong> ? Une offre est ferme et ne peut pas être retirée.</p>
+        <label class="check"><input type="checkbox" id="cgv"> J'accepte les conditions de vente et je m'engage à verser la consignation de ${eur(deposit(lot))}.</label>
+        <p class="error" id="confirm-error" hidden></p>
+        <div class="row"><button class="btn btn-primary" type="button" id="confirm-yes">Confirmer l'offre</button><button class="btn btn-ghost" type="button" id="confirm-no">Modifier</button></div>
+      </div>` : `
+      <form class="bid-form" id="bid-form" novalidate>
+        <label class="field" for="bid-amount">Votre offre <small>minimum ${eur(minBid(lot))}</small></label>
+        <div class="bid-row"><input id="bid-amount" class="num" inputmode="numeric" autocomplete="off" value="${esc(keep ?? minBid(lot))}" aria-describedby="bid-error"><button class="btn btn-primary" type="submit">Enchérir</button></div>
+        <div class="quick">${[1, 2, 5].map((k) => `<button type="button" data-inc="${k}">+${numFmt.format(k * lot.increment)} €</button>`).join("")}</div>
+        <p class="error" id="bid-error" hidden></p>
+      </form>`;
+  } else if (s === "upcoming") {
+    action = `<div class="notice good">Les offres ouvrent le ${dateFmt.format(lot.startsAt)}. Préparez votre consignation de ${eur(deposit(lot))}.</div>`;
+  } else {
+    action = reserveMet(lot)
+      ? `<p class="stamp">Adjugé</p><p>${top.bidder === ME ? "Félicitations, vous remportez ce bien. Le vendeur vous contactera pour la signature de l'acte." : `Adjugé à ${esc(paddleOf(lot, top.bidder))} pour ${eur(top.amount)}.`}</p>`
+      : `<p class="stamp unsold">Non adjugé</p><p class="muted">La dernière offre n'a pas atteint le prix de réserve du vendeur.</p>`;
+  }
+
+  const t = timeLabel(lot, now);
+  const total = Math.max(1, lot.endsAt - lot.startsAt);
+  const frac = s === "upcoming" ? 1 : s === "ended" ? 0 : Math.max(0.04, (lot.endsAt - now) / total);
+  const finalMinutes = s === "live" && lot.endsAt - now <= SNIPE_WINDOW;
+
+  room.innerHTML = `
+    <div class="room-top">${statusPill(lot, now)}${state_}<span class="mono muted">${lotNo(lot)}</span></div>
+    <div class="clock">
+      <div class="candle ${s === "live" ? "" : "out"}" aria-hidden="true"><div class="flame"></div><div class="wax" id="wax" style="height:${Math.round(frac * 70) + 4}px"></div><div class="base"></div></div>
+      <div><div class="label" id="clock-label">${t.k}</div><div class="big num ${t.hot ? "hot" : ""}" id="clock">${t.v}</div></div>
+    </div>
+    ${finalMinutes ? `<div class="notice">Dernières minutes : chaque nouvelle offre prolonge la vente de 2 minutes.</div>` : ""}
+    <div class="price-block">
+      <span class="muted">${s === "ended" ? (reserveMet(lot) ? "Prix d'adjudication" : "Dernière offre") : top ? "Offre actuelle" : "Mise à prix"}</span>
+      <span class="now num ${flash ? "flash" : ""}" id="now-price">${eur(currentPrice(lot))}</span>
+      <div class="price-meta num"><span>${lot.bids.length} offre${lot.bids.length > 1 ? "s" : ""} · ${new Set(lot.bids.map((b) => b.bidder)).size} participant${new Set(lot.bids.map((b) => b.bidder)).size > 1 ? "s" : ""}</span><span class="reserve ${reserveMet(lot) ? "ok" : ""}">${reserveMet(lot) ? "Réserve atteinte" : "Réserve non atteinte"}</span></div>
+    </div>
+    ${action}
+    <div>
+      <h3 style="font-size:1.05rem;margin-bottom:6px">Historique des offres</h3>
+      ${lot.bids.length ? `<ol class="history num">${[...lot.bids].sort((a, b) => b.at - a.at).map((b, i) => `<li class="${b.bidder === ME ? "me" : ""} ${i === 0 && flash ? "new" : ""}"><span>${esc(paddleOf(lot, b.bidder))}</span><b>${eur(b.amount)}</b><small>${timeFmt.format(b.at)}</small></li>`).join("")}</ol>` : `<p class="muted">Aucune offre pour l'instant. ${s === "live" ? "La première offre doit atteindre la mise à prix." : ""}</p>`}
+    </div>`;
+  if (flash) setTimeout(() => document.getElementById("now-price")?.classList.remove("flash"), 1200);
+  wireRoom(lot);
+}
+
+function wireRoom(lot) {
+  const form = document.getElementById("bid-form");
+  if (form) {
+    const input = document.getElementById("bid-amount");
+    const err = document.getElementById("bid-error");
+    form.querySelectorAll("[data-inc]").forEach((b) => b.addEventListener("click", () => {
+      input.value = currentPrice(lot) + (lot.bids.length ? 0 : -lot.increment) + Number(b.dataset.inc) * lot.increment;
+      err.hidden = true; input.focus();
+    }));
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const amount = Number(String(input.value).replace(/[\s €.]/g, "").replace(",", "."));
+      const problem = checkBid(lot, ME, amount, Date.now());
+      if (problem) { err.textContent = problem; err.hidden = false; return; }
+      requireUser(() => { pendingBid = amount; renderRoom(lot); document.getElementById("cgv")?.focus(); });
+    });
+  }
+  const yes = document.getElementById("confirm-yes");
+  if (yes) {
+    yes.addEventListener("click", () => {
+      const err = document.getElementById("confirm-error");
+      if (!document.getElementById("cgv").checked) { err.textContent = "Cochez la case pour accepter les conditions de vente."; err.hidden = false; return; }
+      const now = Date.now();
+      const problem = checkBid(lot, ME, pendingBid, now);
+      if (problem) { pendingBid = null; renderRoom(lot); const e2 = document.getElementById("bid-error"); if (e2) { e2.textContent = problem; e2.hidden = false; } return; }
+      const extended = applyBid(lot, ME, pendingBid, now);
+      pendingBid = null; save();
+      renderRoom(lot, { flash: true });
+      toast(extended ? "Offre enregistrée. La vente est prolongée de 2 minutes." : "Offre enregistrée. Vous êtes le meilleur enchérisseur.");
+      scheduleRival(lot);
+    });
+    document.getElementById("confirm-no").addEventListener("click", () => { pendingBid = null; renderRoom(lot); });
+  }
+}
+
+/* ---------- Vue : mes enchères ---------- */
+function viewMine(app) {
+  const now = Date.now();
+  const mine = state.lots.filter((l) => l.bids.some((b) => b.bidder === ME)).sort((a, b) => a.endsAt - b.endsAt);
+  const own = state.lots.filter((l) => l.sellerName !== "Étude démo");
+  const row = (l) => {
+    const s = statusOf(l, now), top = topBid(l), myBest = Math.max(0, ...l.bids.filter((b) => b.bidder === ME).map((b) => b.amount));
+    let pill;
+    if (s === "live") pill = top?.bidder === ME ? `<span class="pill lead">Vous menez</span>` : `<span class="pill outbid">Surenchéri</span>`;
+    else if (s === "ended") pill = top?.bidder === ME && reserveMet(l) ? `<span class="pill sold">Remporté</span>` : `<span class="pill ended">Perdu</span>`;
+    else pill = statusPill(l, now);
+    return `<a href="#lot-${esc(l.id)}"><div class="thumb">${picture(l)}</div><div style="min-width:0"><span class="mono muted">${lotNo(l)} · ${esc(l.city)}</span><h3 style="font-size:1.1rem">${esc(l.title)}</h3><span class="muted num">${myBest ? `Votre meilleure offre : ${eur(myBest)}` : `Mise à prix : ${eur(l.startingPrice)}`}</span></div><div class="r num">${pill}<b>${eur(currentPrice(l))}</b><small class="muted" data-time="${esc(l.id)}">${timeLabel(l, now).k} ${timeLabel(l, now).v}</small></div></a>`;
+  };
+  app.innerHTML = `
+    <section class="lot-head"><h1>Mes enchères</h1><p class="muted">${state.user ? `Connecté en tant que ${esc(state.user.name)}.` : "Vous n'êtes pas encore identifié."}</p></section>
+    <section class="view" style="gap:14px"><h2>Mes offres</h2>
+      ${mine.length ? `<div class="mine">${mine.map(row).join("")}</div>` : `<div class="empty"><p>Vous n'avez encore fait aucune offre.</p><a class="btn btn-primary" href="#ventes">Parcourir les ventes</a></div>`}
+    </section>
+    <section class="view" style="gap:14px"><h2>Mes biens en vente</h2>
+      ${own.length ? `<div class="mine">${own.map(row).join("")}</div>` : `<div class="empty"><p>Vous n'avez mis aucun bien en vente.</p><a class="btn btn-ghost" href="#vendre">Vendre un bien</a></div>`}
+    </section>`;
+}
+
+/* ---------- Vue : vendre ---------- */
+function localInput(ms) { const d = new Date(ms - new Date(ms).getTimezoneOffset() * MIN); return d.toISOString().slice(0, 16); }
+function viewSell(app) {
+  const start = Date.now() + 10 * MIN;
+  app.innerHTML = `
+    <section class="lot-head"><p class="mono" style="color:var(--brass)">Vendeurs</p><h1>Mettre un bien aux enchères</h1><p class="muted" style="max-width:60ch">Décrivez le bien, fixez la mise à prix et le prix de réserve, puis choisissez la période de vente. L'annonce est publiée dès l'envoi du formulaire.</p></section>
+    <div class="sell">
+      <form id="sell" novalidate>
+        <fieldset><legend>Le bien</legend>
+          <label class="field" data-f="title">Titre de l'annonce<input id="s-title" maxlength="120" placeholder="Appartement familial avec terrasse"></label>
+          <div class="cols">
+            <label class="field" data-f="type">Type<select id="s-type">${Object.entries(TYPES).map(([k, v]) => `<option value="${k}">${v}</option>`).join("")}</select></label>
+            <label class="field" data-f="city">Ville<input id="s-city" placeholder="Toulouse"></label>
+            <label class="field" data-f="district">Quartier <small>facultatif</small><input id="s-district" placeholder="Carmes"></label>
+          </div>
+          <div class="cols">
+            <label class="field" data-f="surface">Surface (m²)<input id="s-surface" inputmode="numeric" placeholder="85"></label>
+            <label class="field" data-f="rooms">Pièces<input id="s-rooms" inputmode="numeric" placeholder="4"></label>
+            <label class="field" data-f="bedrooms">Chambres<input id="s-bedrooms" inputmode="numeric" placeholder="2"></label>
+          </div>
+          <label class="field" data-f="description">Description<textarea id="s-description" rows="5" placeholder="Étage, exposition, état, travaux récents, charges…"></textarea></label>
+          <label class="field" data-f="features">Points forts <small>séparés par des virgules</small><input id="s-features" placeholder="Terrasse, Parking, DPE C"></label>
+        </fieldset>
+        <fieldset><legend>La vente</legend>
+          <div class="cols">
+            <label class="field" data-f="startingPrice">Mise à prix (€)<input id="s-startingPrice" inputmode="numeric" placeholder="300000"></label>
+            <label class="field" data-f="reservePrice">Prix de réserve (€) <small>confidentiel</small><input id="s-reservePrice" inputmode="numeric" placeholder="330000"></label>
+            <label class="field" data-f="increment">Pas d'enchère (€)<input id="s-increment" inputmode="numeric" value="1000"></label>
+          </div>
+          <div class="cols">
+            <label class="field" data-f="startsAt">Début de la vente<input id="s-startsAt" type="datetime-local" value="${localInput(start)}"></label>
+            <label class="field" data-f="duration">Durée<select id="s-duration"><option value="1">24 heures</option><option value="3">3 jours</option><option value="7" selected>7 jours</option><option value="14">14 jours</option></select></label>
+          </div>
+        </fieldset>
+        <fieldset><legend>Vous</legend>
+          <div class="cols">
+            <label class="field" data-f="sellerName">Nom ou étude<input id="s-sellerName" autocomplete="name" placeholder="Maître Durand"></label>
+            <label class="field" data-f="sellerEmail">E-mail<input id="s-sellerEmail" type="email" autocomplete="email" placeholder="contact@etude-durand.fr"></label>
+          </div>
+        </fieldset>
+        <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-primary" type="submit">Publier l'annonce</button><button class="btn btn-ghost" type="button" id="example">Remplir avec un exemple</button></div>
+      </form>
+      <aside class="aside">
+        <h3>Bien fixer ses prix</h3>
+        <ol>
+          <li><strong>Mise à prix</strong> : le point de départ public, souvent 15 à 25 % sous la valeur estimée pour attirer les participants.</li>
+          <li><strong>Prix de réserve</strong> : le minimum que vous acceptez. Il reste confidentiel ; seul « réserve atteinte » est affiché.</li>
+          <li><strong>Pas d'enchère</strong> : l'écart minimum entre deux offres, autour de 0,5 % de la mise à prix.</li>
+        </ol>
+        <p class="muted">Les acheteurs versent une consignation de 10 % de la mise à prix avant d'enchérir.</p>
+      </aside>
+    </div>`;
+  const $ = (k) => document.getElementById(`s-${k}`);
+  document.getElementById("example").onclick = () => {
+    Object.entries({ title: "Appartement familial avec terrasse", type: "appartement", city: "Toulouse", district: "Carmes", surface: 85, rooms: 4, bedrooms: 2,
+      description: "Au 3e et dernier étage d'une résidence de 2008, appartement de 85 m² avec terrasse de 20 m² sans vis-à-vis : séjour exposé sud, cuisine ouverte équipée, deux chambres, salle d'eau et cellier. Place de parking en sous-sol.",
+      features: "Terrasse 20 m², Dernier étage, Parking, DPE C", startingPrice: 310000, reservePrice: 345000, increment: 1500, sellerName: "Maître Durand", sellerEmail: "contact@etude-durand.fr" })
+      .forEach(([k, v]) => ($(k).value = v));
+  };
+  document.getElementById("sell").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const v = (k) => $(k).value.trim();
+    const n = (k) => Number(v(k).replace(/[\s €]/g, ""));
+    const errs = {};
+    const startsAt = new Date(v("startsAt")).getTime();
+    if (v("title").length < 5) errs.title = "Donnez un titre d'au moins 5 caractères.";
+    if (!v("city")) errs.city = "Indiquez la ville.";
+    if (!(Number.isInteger(n("surface")) && n("surface") > 0)) errs.surface = "Indiquez la surface en m².";
+    if (v("type") !== "terrain" && !(Number.isInteger(n("rooms")) && n("rooms") > 0)) errs.rooms = "Indiquez le nombre de pièces.";
+    if (n("bedrooms") > n("rooms")) errs.bedrooms = "Plus de chambres que de pièces.";
+    if (v("description").length < 30) errs.description = "Décrivez le bien en 30 caractères au moins.";
+    if (!(Number.isInteger(n("startingPrice")) && n("startingPrice") >= 1000)) errs.startingPrice = "Mise à prix de 1 000 € minimum.";
+    const reserve = v("reservePrice") ? n("reservePrice") : n("startingPrice");
+    if (!(Number.isInteger(reserve) && reserve >= n("startingPrice"))) errs.reservePrice = "La réserve doit être au moins égale à la mise à prix.";
+    if (!(Number.isInteger(n("increment")) && n("increment") >= 100)) errs.increment = "Pas d'enchère de 100 € minimum.";
+    if (!(startsAt > Date.now() - 5 * MIN)) errs.startsAt = "Choisissez une date à venir.";
+    if (v("sellerName").length < 2) errs.sellerName = "Indiquez votre nom.";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v("sellerEmail"))) errs.sellerEmail = "Saisissez une adresse e-mail valide.";
+    document.querySelectorAll("#sell .field").forEach((f) => { f.classList.remove("invalid"); f.querySelector(".error")?.remove(); });
+    const keys = Object.keys(errs);
+    if (keys.length) {
+      keys.forEach((k) => { const f = document.querySelector(`#sell [data-f="${k}"]`); f.classList.add("invalid"); f.insertAdjacentHTML("beforeend", `<span class="error">${errs[k]}</span>`); });
+      document.querySelector(`#sell [data-f="${keys[0]}"] input, #sell [data-f="${keys[0]}"] textarea, #sell [data-f="${keys[0]}"] select`)?.focus();
+      return;
+    }
+    const slug = `${v("title")} ${v("city")}`.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40);
+    const lot = {
+      id: `${slug}-${Math.random().toString(36).slice(2, 6)}`, lotNo: Math.max(...state.lots.map((l) => l.lotNo)) + 1,
+      title: v("title"), type: v("type"), city: v("city"), district: v("district") || "Centre", surface: n("surface"), rooms: n("rooms") || 0, bedrooms: n("bedrooms") || 0,
+      hue: Math.floor(Math.random() * 360), description: v("description"), features: v("features").split(",").map((s) => s.trim()).filter(Boolean).slice(0, 10),
+      startingPrice: n("startingPrice"), reservePrice: reserve, increment: n("increment"), startsAt, endsAt: startsAt + Number(v("duration")) * DAY,
+      visits: "Sur rendez-vous auprès du vendeur", sellerName: v("sellerName"), createdAt: Date.now(), rivalMax: 0, bids: [],
+    };
+    state.lots.push(lot); save();
+    toast("Annonce publiée.");
+    location.hash = `lot-${lot.id}`;
+  });
+}
+
+/* ---------- Vue : comment ça marche ---------- */
+function viewHow(app) {
+  app.innerHTML = `
+    <section class="lot-head"><p class="mono" style="color:var(--brass)">Guide</p><h1>Comment se déroule une vente</h1></section>
+    <ol class="steps">
+      <li><h3>Visiter et s'informer</h3><p class="muted">Consultez la fiche, les conditions de vente et visitez le bien aux créneaux indiqués.</p></li>
+      <li><h3>Consigner</h3><p class="muted">Versez une consignation de 10 % de la mise à prix. Elle vous est restituée si vous ne remportez pas la vente.</p></li>
+      <li><h3>Enchérir</h3><p class="muted">Chaque offre doit dépasser la précédente d'au moins le pas d'enchère. Une offre confirmée est ferme.</p></li>
+      <li><h3>Clôture et adjudication</h3><p class="muted">À l'heure de clôture, la meilleure offre l'emporte si elle atteint le prix de réserve. Le vendeur vous contacte pour l'acte.</p></li>
+    </ol>
+    <section class="view" style="gap:14px"><h2>Vocabulaire de la salle</h2>
+      <dl class="glossary">
+        <div><dt>Mise à prix</dt><dd>Le prix de départ, public. La première offre doit au moins l'atteindre.</dd></div>
+        <div><dt>Prix de réserve</dt><dd>Le minimum fixé par le vendeur, confidentiel. En dessous, le bien n'est pas adjugé.</dd></div>
+        <div><dt>Pas d'enchère</dt><dd>L'écart minimum entre deux offres successives.</dd></div>
+        <div><dt>Consignation</dt><dd>La garantie versée avant d'enchérir, pour s'assurer du sérieux des participants.</dd></div>
+        <div><dt>Prolongation</dt><dd>Une offre dans les 2 dernières minutes repousse la clôture de 2 minutes, comme la bougie qu'on rallume en salle.</dd></div>
+        <div><dt>Adjudication</dt><dd>L'attribution du bien au meilleur enchérisseur. « Adjugé ! »</dd></div>
+      </dl>
+    </section>`;
+}
+
+/* ---------- Identification ---------- */
+let afterLogin = null;
+function renderWho() {
+  const el = document.getElementById("who");
+  el.innerHTML = state.user
+    ? `<span>Enchérisseur : <strong>${esc(state.user.name)}</strong></span> <button class="linkbtn" type="button" id="logout">Changer</button>`
+    : `<button class="btn btn-ghost" type="button" id="login-open" style="padding:8px 16px">S'identifier</button>`;
+  document.getElementById("logout")?.addEventListener("click", () => { state.user = null; save(); renderWho(); openLogin(); });
+  document.getElementById("login-open")?.addEventListener("click", () => openLogin());
+}
+function openLogin(then) {
+  afterLogin = then || null;
+  document.getElementById("login").hidden = false;
+  document.getElementById("login-error").hidden = true;
+  document.getElementById("login-name").focus();
+}
+function requireUser(then) { state.user ? then() : openLogin(then); }
+document.getElementById("login-form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const name = document.getElementById("login-name").value.trim();
+  const email = document.getElementById("login-email").value.trim();
+  const err = document.getElementById("login-error");
+  if (name.length < 2) { err.textContent = "Indiquez votre nom."; err.hidden = false; return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { err.textContent = "Saisissez une adresse e-mail valide."; err.hidden = false; return; }
+  state.user = { name, email }; save();
+  document.getElementById("login").hidden = true;
+  renderWho();
+  const fn = afterLogin; afterLogin = null; fn?.();
+});
+document.getElementById("login-cancel").addEventListener("click", () => { document.getElementById("login").hidden = true; afterLogin = null; });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") document.getElementById("login").hidden = true; });
+document.getElementById("reset").addEventListener("click", () => {
+  const now = Date.now();
+  state = { epoch: now, user: state.user, lots: seed(now) }; save();
+  toast("Démo réinitialisée."); route();
+});
+
+/* ---------- Autres enchérisseurs (simulés) ---------- */
+const RIVALS = ["r1", "r2", "r3", "r4", "r5", "r6", "r7", "r8", "r9"];
+function rivalBid(lot) {
+  const now = Date.now();
+  if (statusOf(lot, now) !== "live" || !lot.rivalMax) return false;
+  const amount = minBid(lot);
+  if (amount > lot.rivalMax) return false;
+  const top = topBid(lot);
+  const who = RIVALS.filter((r) => r !== top?.bidder)[Math.floor(Math.random() * (RIVALS.length - 1))];
+  const extended = applyBid(lot, who, amount, now);
+  save();
+  if (current.lotId === lot.id) { renderRoom(lot, { flash: true }); toast(extended ? `Nouvelle offre : ${eur(amount)}. Vente prolongée de 2 minutes.` : `Nouvelle offre : ${eur(amount)}.`); }
+  else if (lot.bids.some((b) => b.bidder === ME) && top?.bidder === ME) toast(`Vous avez été surenchéri sur le ${lotNo(lot)} (${eur(amount)}).`);
+  return true;
+}
+const rivalTimers = new Map();
+function scheduleRival(lot) {
+  clearTimeout(rivalTimers.get(lot.id));
+  rivalTimers.set(lot.id, setTimeout(() => { if (Math.random() < 0.75) rivalBid(lot); }, 6000 + Math.random() * 9000));
+}
+setInterval(() => {
+  const live = state.lots.filter((l) => statusOf(l, Date.now()) === "live" && l.rivalMax);
+  if (live.length && Math.random() < 0.35) rivalBid(live[Math.floor(Math.random() * live.length)]);
+}, 20000);
+
+/* ---------- Horloge ---------- */
+let lastStatus = new Map();
+setInterval(() => {
+  const now = Date.now();
+  document.querySelectorAll("[data-time]").forEach((el) => {
+    const lot = lotById(el.dataset.time); if (!lot) return;
+    const t = timeLabel(lot, now);
+    if (el.tagName === "SMALL") el.textContent = `${t.k} ${t.v}`;
+    else { el.innerHTML = `<small>${t.k}</small>${t.v}`; el.classList.toggle("hot", t.hot); }
+  });
+  document.querySelectorAll("[data-price]").forEach((el) => { const l = lotById(el.dataset.price); if (l) el.textContent = eur(currentPrice(l)); });
+  if (current.lotId) {
+    const lot = lotById(current.lotId);
+    if (lot) {
+      const s = statusOf(lot, now);
+      if (lastStatus.get(lot.id) && lastStatus.get(lot.id) !== s) renderRoom(lot);
+      lastStatus.set(lot.id, s);
+      const t = timeLabel(lot, now), c = document.getElementById("clock");
+      if (c) { c.textContent = t.v; c.classList.toggle("hot", t.hot); document.getElementById("clock-label").textContent = t.k; }
+      const wax = document.getElementById("wax");
+      if (wax && s === "live") wax.style.height = `${Math.round(Math.max(0.04, (lot.endsAt - now) / (lot.endsAt - lot.startsAt)) * 70) + 4}px`;
+      const cd = document.getElementById("close-date"); if (cd) cd.textContent = dateFmt.format(lot.endsAt);
+      // Bandeau « dernières minutes » quand on y entre.
+      if (s === "live" && lot.endsAt - now <= SNIPE_WINDOW && !document.querySelector("#room .notice") && !pendingBid) renderRoom(lot);
+    }
+  }
+}, 1000);
+
+/* ---------- Navigation ---------- */
+const current = { lotId: null };
+function route() {
+  const h = location.hash.slice(1) || "ventes";
+  const app = document.getElementById("app");
+  current.lotId = null;
+  let nav = h;
+  if (h.startsWith("lot-")) { current.lotId = h.slice(4); nav = "ventes"; viewLot(app, current.lotId); }
+  else if (h === "vendre") viewSell(app);
+  else if (h === "mes-encheres") viewMine(app);
+  else if (h === "fonctionnement") viewHow(app);
+  else { nav = "ventes"; viewCatalogue(app); }
+  document.querySelectorAll("[data-nav]").forEach((a) => { if (a.dataset.nav === nav) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", route);
+renderWho();
+route();
+})();
+</script>
+</html>
