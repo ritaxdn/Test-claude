@@ -4,52 +4,74 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Adjugé Immo</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
-/* Layout : un catalogue de vente aux enchères — chaque bien est un « lot » numéroté ;
-   la fiche du lot met face à face le bien et la salle de vente (bougie, prix, offres). */
+/* Layout : un catalogue de vente aux enchères en verre dépoli. Chaque bien est un « lot » numéroté ;
+   des panneaux translucides flottent sur un fond aux couleurs du Maroc (bleu Majorelle, safran, terre cuite, zellige). */
 :root {
-  --bg: #f4f6f3;
-  --surface: #ffffff;
-  --ink: #13201b;
-  --muted: #5a6a62;
-  --line: #dde3dd;
-  --accent: #1d5a44;      /* vert « étude notariale » */
+  --bg: #e9ecf7;
+  --blob-1: #6f83ff;
+  --blob-2: #ffc46b;
+  --blob-3: #ff8f7a;
+  --blob-4: #6fd6c5;
+  --surface: rgb(255 255 255 / .55);
+  --surface-strong: rgb(255 255 255 / .8);
+  --glass-border: rgb(255 255 255 / .75);
+  --ink: #141a3a;
+  --muted: #4e5578;
+  --line: rgb(20 26 58 / .12);
+  --accent: #2c3fd1;
   --accent-ink: #ffffff;
-  --accent-soft: #e2eee7;
-  --brass: #a8761c;       /* la bougie, le temps qui passe */
-  --brass-soft: #f6ecd8;
-  --danger: #b33a2b;
-  --danger-soft: #f8e3df;
-  --shadow: 0 1px 2px rgb(19 32 27 / .06), 0 8px 24px rgb(19 32 27 / .06);
-  --font-display: "Gloock", "Didot", "Bodoni 72", Georgia, serif;
-  --font-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
-  --radius: 10px;
+  --accent-soft: rgb(44 63 209 / .12);
+  --brass: #a35f00;
+  --brass-soft: rgb(255 176 64 / .28);
+  --danger: #c0392b;
+  --danger-soft: rgb(192 57 43 / .12);
+  --shadow: 0 8px 32px rgb(31 38 100 / .12);
+  --blur: 18px;
+  --font-display: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  --font-body: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  --font-mono: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  --radius: 18px;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0e1512; --surface: #151f1a; --ink: #e6ece8; --muted: #98a79f; --line: #26342d;
-    --accent: #6cc49b; --accent-ink: #0b1712; --accent-soft: #1a3328;
-    --brass: #e0b155; --brass-soft: #33291a; --danger: #ef8b7c; --danger-soft: #3a1f1b;
-    --shadow: 0 1px 2px rgb(0 0 0 / .3), 0 8px 24px rgb(0 0 0 / .25);
+    --bg: #0b0f26; --blob-1: #3346d6; --blob-2: #b8741a; --blob-3: #a2384a; --blob-4: #1d8a7c;
+    --surface: rgb(255 255 255 / .07); --surface-strong: rgb(22 27 58 / .82); --glass-border: rgb(255 255 255 / .16);
+    --ink: #eef0ff; --muted: #a9afd4; --line: rgb(255 255 255 / .12);
+    --accent: #9aa8ff; --accent-ink: #0b0f26; --accent-soft: rgb(154 168 255 / .16);
+    --brass: #ffc46b; --brass-soft: rgb(255 196 107 / .16); --danger: #ff8f80; --danger-soft: rgb(255 143 128 / .14);
+    --shadow: 0 8px 32px rgb(0 0 0 / .35);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0e1512; --surface: #151f1a; --ink: #e6ece8; --muted: #98a79f; --line: #26342d;
-  --accent: #6cc49b; --accent-ink: #0b1712; --accent-soft: #1a3328;
-  --brass: #e0b155; --brass-soft: #33291a; --danger: #ef8b7c; --danger-soft: #3a1f1b;
-  --shadow: 0 1px 2px rgb(0 0 0 / .3), 0 8px 24px rgb(0 0 0 / .25);
+  --bg: #0b0f26; --blob-1: #3346d6; --blob-2: #b8741a; --blob-3: #a2384a; --blob-4: #1d8a7c;
+  --surface: rgb(255 255 255 / .07); --surface-strong: rgb(22 27 58 / .82); --glass-border: rgb(255 255 255 / .16);
+  --ink: #eef0ff; --muted: #a9afd4; --line: rgb(255 255 255 / .12);
+  --accent: #9aa8ff; --accent-ink: #0b0f26; --accent-soft: rgb(154 168 255 / .16);
+  --brass: #ffc46b; --brass-soft: rgb(255 196 107 / .16); --danger: #ff8f80; --danger-soft: rgb(255 143 128 / .14);
+  --shadow: 0 8px 32px rgb(0 0 0 / .35);
   color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
+body::before { content: ""; position: fixed; inset: -10vmax; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(38vmax 38vmax at 12% 8%, var(--blob-1), transparent 70%),
+    radial-gradient(34vmax 34vmax at 92% 18%, var(--blob-2), transparent 70%),
+    radial-gradient(40vmax 40vmax at 78% 92%, var(--blob-3), transparent 70%),
+    radial-gradient(30vmax 30vmax at 8% 82%, var(--blob-4), transparent 70%);
+  opacity: .75; filter: blur(30px); }
+.top, .filters, .lot, .facts, .tags li, .room, fieldset, .aside, .steps li, .mine a, .modal .card, .empty, .lot .pic .lotno, .quick button, input, select, textarea {
+  background: var(--surface);
+  -webkit-backdrop-filter: blur(var(--blur)) saturate(160%);
+  backdrop-filter: blur(var(--blur)) saturate(160%);
+  border: 1px solid var(--glass-border);
+}
+.room, .modal .card { background: var(--surface-strong); }
 body { background: var(--bg); color: var(--ink); font: 400 15px/1.55 var(--font-body); -webkit-font-smoothing: antialiased; }
-h1, h2, h3 { font-family: var(--font-display); font-weight: 400; line-height: 1.1; margin: 0; text-wrap: balance; letter-spacing: -.005em; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.1; margin: 0; text-wrap: balance; letter-spacing: -.02em; }
 h1 { font-size: clamp(2rem, 1.4rem + 2.6vw, 3.1rem); }
 h2 { font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2rem); }
 h3 { font-size: 1.25rem; }
@@ -58,12 +80,12 @@ a { color: inherit; }
 button, input, select, textarea { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .num { font-variant-numeric: tabular-nums; }
-.mono { font-family: var(--font-mono); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; }
+.mono { font-family: var(--font-mono); font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
 .muted { color: var(--muted); }
 .wrap { max-width: 1180px; margin-inline: auto; padding-inline: 20px; }
 
 /* En-tête */
-.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; border-width: 0 0 1px; }
 .top .wrap { display: flex; align-items: center; gap: 24px; min-height: 64px; flex-wrap: wrap; padding-block: 8px; }
 .brand { display: flex; align-items: baseline; gap: 8px; text-decoration: none; }
 .brand b { font-family: var(--font-display); font-weight: 400; font-size: 1.6rem; }
@@ -90,8 +112,8 @@ main { padding-block: 32px 64px; }
 .btn:disabled { opacity: .5; cursor: not-allowed; }
 label.field { display: grid; gap: 6px; font-weight: 500; font-size: .9rem; min-width: 0; }
 label.field small { font-weight: 400; color: var(--muted); }
-input, select, textarea { width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
-input:focus, select:focus, textarea:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px var(--accent-soft); }
+input, select, textarea { width: 100%; border-radius: 10px; padding: 10px 12px; }
+input:focus, select:focus, textarea:focus { border-color: var(--accent); background: var(--surface-strong); outline: none; box-shadow: 0 0 0 3px var(--accent-soft); }
 .error { color: var(--danger); font-size: .82rem; font-weight: 500; }
 .field.invalid input, .field.invalid select, .field.invalid textarea { border-color: var(--danger); }
 
@@ -114,15 +136,15 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); outline
 .tally div { display: grid; }
 .tally b { font-family: var(--font-display); font-weight: 400; font-size: 2.2rem; line-height: 1; }
 .tally span { color: var(--muted); font-size: .82rem; }
-.filters { display: grid; grid-template-columns: 1.4fr repeat(4, minmax(0, 1fr)); gap: 12px; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.filters { display: grid; grid-template-columns: 1.4fr repeat(4, minmax(0, 1fr)); gap: 12px; padding: 16px; border-radius: var(--radius); }
 .filters label { font-size: .78rem; color: var(--muted); }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 20px; }
-.lot { display: grid; grid-template-rows: auto 1fr; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; text-decoration: none; transition: border-color .2s, transform .2s, box-shadow .2s; }
-.lot:hover { border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); transform: translateY(-2px); box-shadow: var(--shadow); }
+.lot { display: grid; grid-template-rows: auto 1fr; border-radius: var(--radius); overflow: hidden; text-decoration: none; transition: border-color .2s, transform .2s, box-shadow .2s; }
+.lot:hover { border-color: color-mix(in srgb, var(--accent) 45%, var(--glass-border)); transform: translateY(-2px); box-shadow: var(--shadow); }
 .lot .pic { position: relative; aspect-ratio: 16 / 10; max-width: 100%; }
 .lot .pic svg, .hero-pic svg { display: block; width: 100%; height: 100%; }
 .lot .pic .pill { position: absolute; top: 12px; left: 12px; box-shadow: var(--shadow); }
-.lot .pic .lotno { position: absolute; top: 12px; right: 12px; background: var(--surface); color: var(--ink); padding: 3px 8px; border-radius: 6px; }
+.lot .pic .lotno { position: absolute; top: 12px; right: 12px; color: var(--ink); padding: 3px 8px; border-radius: 8px; }
 .lot .body { display: grid; gap: 10px; padding: 16px 18px 18px; align-content: start; }
 .lot .where { color: var(--muted); font-size: .85rem; }
 .lot h3 { font-size: 1.2rem; }
@@ -132,27 +154,27 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); outline
 .lot .foot .price { font-weight: 700; font-size: 1.15rem; }
 .lot .foot .time { text-align: right; font-weight: 600; }
 .lot .foot .time.hot { color: var(--brass); }
-.empty { padding: 48px 24px; text-align: center; border: 1px dashed var(--line); border-radius: var(--radius); color: var(--muted); display: grid; gap: 12px; justify-items: center; }
+.empty { padding: 48px 24px; text-align: center; border-radius: var(--radius); color: var(--muted); display: grid; gap: 12px; justify-items: center; }
 
 /* Fiche lot */
 .crumbs { font-size: .85rem; color: var(--muted); }
 .crumbs a { color: var(--muted); }
 .lot-layout { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(320px, 1fr); gap: 32px; align-items: start; }
-.hero-pic { aspect-ratio: 16 / 9; max-width: 100%; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); }
+.hero-pic { aspect-ratio: 16 / 9; max-width: 100%; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--glass-border); box-shadow: var(--shadow); }
 .lot-head { display: grid; gap: 10px; }
-.facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+.facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-radius: var(--radius); }
 .facts div { padding: 14px 16px; display: grid; gap: 2px; }
 .facts div + div { border-left: 1px solid var(--line); }
 .facts b { font-size: 1.15rem; }
 .facts span { color: var(--muted); font-size: .8rem; }
 .prose { display: grid; gap: 14px; max-width: 66ch; }
 .tags { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 0; }
-.tags li { padding: 5px 12px; border-radius: 999px; border: 1px solid var(--line); font-size: .85rem; background: var(--surface); }
+.tags li { padding: 5px 12px; border-radius: 999px; font-size: .85rem; }
 .terms { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 20px; margin: 0; font-size: .9rem; }
 .terms dt { color: var(--muted); }
 .terms dd { margin: 0; font-weight: 500; }
 
-.room { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 84px); display: grid; gap: 18px; padding: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); }
+.room { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 84px); display: grid; gap: 18px; padding: 22px; border-radius: 22px; box-shadow: var(--shadow); }
 .room-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 .clock { display: grid; grid-template-columns: 44px 1fr; gap: 16px; align-items: end; }
 .candle { position: relative; height: 96px; display: grid; align-content: end; justify-items: center; }
@@ -177,7 +199,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); outline
 .bid-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
 .bid-row input { font-size: 1.1rem; font-weight: 600; }
 .quick { display: flex; gap: 6px; flex-wrap: wrap; }
-.quick button { flex: 1; padding: 7px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); cursor: pointer; font-size: .82rem; font-weight: 600; }
+.quick button { flex: 1; padding: 7px 8px; border-radius: 10px; cursor: pointer; font-size: .82rem; font-weight: 600; }
 .quick button:hover { border-color: var(--accent); }
 .confirm { display: grid; gap: 10px; padding: 14px; border-radius: 10px; background: var(--accent-soft); }
 .confirm .row { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -197,15 +219,15 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); outline
 /* Vendre */
 .sell { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 32px; align-items: start; }
 .sell form { display: grid; gap: 22px; }
-fieldset { border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; margin: 0; display: grid; gap: 14px; background: var(--surface); min-width: 0; }
+fieldset { border-radius: var(--radius); padding: 18px; margin: 0; display: grid; gap: 14px; min-width: 0; }
 legend { padding-inline: 6px; font-family: var(--font-display); font-size: 1.15rem; }
 .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; }
-.aside { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 84px); display: grid; gap: 14px; padding: 20px; border-radius: var(--radius); background: var(--accent-soft); font-size: .9rem; }
+.aside { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 84px); display: grid; gap: 14px; padding: 20px; border-radius: var(--radius); font-size: .9rem; }
 .aside ol { margin: 0; padding-left: 18px; display: grid; gap: 8px; }
 
 /* Comment ça marche */
 .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; list-style: none; padding: 0; margin: 0; counter-reset: s; }
-.steps li { counter-increment: s; display: grid; gap: 8px; align-content: start; padding: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.steps li { counter-increment: s; display: grid; gap: 8px; align-content: start; padding: 20px; border-radius: var(--radius); }
 .steps li::before { content: "Étape " counter(s); font-family: var(--font-mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--brass); }
 .glossary { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px 32px; margin: 0; }
 .glossary div { padding-block: 12px; border-top: 1px solid var(--line); }
@@ -214,18 +236,19 @@ legend { padding-inline: 6px; font-family: var(--font-display); font-size: 1.15r
 
 /* Mes enchères */
 .mine { display: grid; gap: 10px; }
-.mine a { display: grid; grid-template-columns: 96px minmax(0, 1fr) auto; gap: 16px; align-items: center; padding: 10px; padding-right: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); text-decoration: none; }
+.mine a { display: grid; grid-template-columns: 96px minmax(0, 1fr) auto; gap: 16px; align-items: center; padding: 10px; padding-right: 18px; border-radius: var(--radius); text-decoration: none; }
 .mine a:hover { border-color: var(--accent); }
 .mine .thumb { aspect-ratio: 4 / 3; border-radius: 6px; overflow: hidden; }
 .mine .thumb svg { width: 100%; height: 100%; display: block; }
 .mine .r { text-align: right; display: grid; gap: 4px; justify-items: end; }
 
 /* Fenêtre d'identification */
-.modal { position: fixed; inset: 0; z-index: 30; display: grid; place-items: center; padding: 16px; background: rgb(8 14 11 / .55); }
-.modal .card { width: min(420px, 100%); background: var(--surface); border-radius: 14px; padding: 24px; display: grid; gap: 14px; box-shadow: var(--shadow); }
+.modal { position: fixed; inset: 0; z-index: 30; display: grid; place-items: center; padding: 16px; background: rgb(11 15 38 / .35); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.modal .card { width: min(420px, 100%); border-radius: 22px; padding: 24px; display: grid; gap: 14px; box-shadow: var(--shadow); }
 .toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 20px); transform: translateX(-50%); z-index: 40; background: var(--ink); color: var(--bg); padding: 12px 18px; border-radius: 10px; font-weight: 500; font-size: .9rem; max-width: calc(100% - 32px); box-shadow: var(--shadow); }
 
-footer { border-top: 1px solid var(--line); padding-block: 24px; color: var(--muted); font-size: .82rem; }
+.brand b, .tally b, .clock .big, .price-block .now, .stamp, legend { font-weight: 700; letter-spacing: -.02em; }
+footer { border-top: 1px solid var(--glass-border); padding-block: 24px; color: var(--muted); font-size: .82rem; }
 
 @media (max-width: 900px) {
   .intro, .lot-layout, .sell { grid-template-columns: minmax(0, 1fr); }
@@ -278,8 +301,8 @@ footer { border-top: 1px solid var(--line); padding-block: 24px; color: var(--mu
   <form class="card" id="login-form" novalidate>
     <h3>Votre identité d'enchérisseur</h3>
     <p class="muted">Les autres participants ne voient qu'un numéro (« Enchérisseur n°3 »), jamais votre nom.</p>
-    <label class="field">Nom et prénom<input id="login-name" autocomplete="name" required minlength="2" placeholder="Camille Martin"></label>
-    <label class="field">E-mail<input id="login-email" type="email" autocomplete="email" required placeholder="camille@exemple.fr"></label>
+    <label class="field">Nom et prénom<input id="login-name" autocomplete="name" required minlength="2" placeholder="Salma El Idrissi"></label>
+    <label class="field">E-mail<input id="login-email" type="email" autocomplete="email" required placeholder="salma@exemple.ma"></label>
     <p class="error" id="login-error" hidden></p>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn btn-primary" type="submit">Continuer</button>
@@ -311,7 +334,7 @@ function checkBid(lot, bidder, amount, now) {
   const s = statusOf(lot, now);
   if (s === "upcoming") return "La vente n'a pas encore commencé.";
   if (s === "ended") return "La vente est terminée.";
-  if (!Number.isInteger(amount)) return "Saisissez un montant en euros, sans centimes.";
+  if (!Number.isInteger(amount)) return "Saisissez un montant en dirhams, sans centimes.";
   if (amount < minBid(lot)) return `L'offre minimum est de ${eur(minBid(lot))}.`;
   if (topBid(lot)?.bidder === bidder) return "Vous êtes déjà le meilleur enchérisseur.";
   return null;
@@ -324,9 +347,8 @@ function applyBid(lot, bidder, amount, now) {
 }
 
 /* ---------- Formats ---------- */
-const eurFmt = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
-const eur = (n) => eurFmt.format(n);
-const numFmt = new Intl.NumberFormat("fr-FR");
+const numFmt = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 });
+const eur = (n) => `${numFmt.format(n)}\u00a0DH`;
 const dateFmt = new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" });
 const timeFmt = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", second: "2-digit" });
 const pad = (n) => String(n).padStart(2, "0");
@@ -338,7 +360,7 @@ function remaining(ms) {
   return `${pad(m)}:${pad(s % 60)}`;
 }
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-const TYPES = { appartement: "Appartement", maison: "Maison", villa: "Villa", terrain: "Terrain", local: "Local commercial" };
+const TYPES = { appartement: "Appartement", maison: "Maison", villa: "Villa", riad: "Riad", terrain: "Terrain", local: "Local commercial" };
 
 /* ---------- Données de démonstration ---------- */
 function seed(now) {
@@ -348,49 +370,49 @@ function seed(now) {
     bids: bids.map(([off, who, amount], i) => ({ id: `${id}-${i}`, bidder: who, amount, at: now + off })),
   });
   return [
-    L("haussmannien-paris-17", { lotNo: 1, title: "Haussmannien lumineux avec balcon filant", type: "appartement", city: "Paris", district: "17e, Batignolles", surface: 92, rooms: 4, bedrooms: 2, hue: 205,
-      description: "Au 4e étage avec ascenseur d'un immeuble en pierre de taille, appartement traversant : séjour double ouvrant sur un balcon filant, cuisine séparée, deux chambres sur cour. Parquet en point de Hongrie, moulures et cheminées d'origine.",
-      features: ["Balcon filant", "Ascenseur", "Gardien", "Cave", "DPE D"], startingPrice: 690000, reservePrice: 780000, increment: 5000,
+    L("art-deco-casablanca-gauthier", { lotNo: 1, title: "Appartement Art déco rénové avec balcon", type: "appartement", city: "Casablanca", district: "Gauthier", surface: 135, rooms: 5, bedrooms: 3, hue: 215,
+      description: "Au 3e étage avec ascenseur d'un immeuble Art déco des années 1930, appartement traversant entièrement rénové : double salon ouvrant sur un balcon filant, cuisine équipée, trois chambres dont une suite. Hauteur sous plafond de 3,40 m, carreaux de ciment d'origine.",
+      features: ["Titre foncier", "Ascenseur", "Concierge", "Balcon filant", "Carreaux de ciment"], startingPrice: 2900000, reservePrice: 3250000, increment: 20000,
       startsAt: now - 2 * DAY, endsAt: now + 7 * MIN, visits: "Visites terminées" },
-      [[-40 * HOUR, "r1", 690000], [-30 * HOUR, "r2", 700000], [-6 * HOUR, "r1", 720000], [-50 * MIN, "r3", 745000], [-12 * MIN, "r2", 760000]]),
-    L("echoppe-bordeaux-cauderan", { lotNo: 2, title: "Échoppe rénovée avec jardin", type: "maison", city: "Bordeaux", district: "Caudéran", surface: 128, rooms: 5, bedrooms: 3, hue: 140,
-      description: "Échoppe double entièrement rénovée en 2022 : pièce de vie de 55 m² ouverte sur un jardin arboré de 220 m², suite parentale, deux chambres et un bureau. Tram et commerces à 5 minutes à pied.",
-      features: ["Jardin 220 m²", "Rénovée en 2022", "Pompe à chaleur", "DPE C"], startingPrice: 520000, reservePrice: 560000, increment: 2500,
+      [[-40 * HOUR, "r1", 2900000], [-30 * HOUR, "r2", 2960000], [-6 * HOUR, "r1", 3020000], [-50 * MIN, "r3", 3100000], [-12 * MIN, "r2", 3160000]]),
+    L("riad-marrakech-mouassine", { lotNo: 2, title: "Riad restauré avec patio et terrasse", type: "riad", city: "Marrakech", district: "Médina, Mouassine", surface: 220, rooms: 7, bedrooms: 5, hue: 10,
+      description: "À deux minutes de la place Mouassine, riad restauré par des artisans en 2021 : patio planté d'orangers autour d'une fontaine en zellige, cinq chambres avec salle d'eau en tadelakt, salon marocain et terrasse panoramique sur l'Atlas. Exploitable en maison d'hôtes.",
+      features: ["Titre foncier", "Patio en zellige", "Terrasse panoramique", "Hammam", "Accès voiture à 50 m"], startingPrice: 3800000, reservePrice: 4100000, increment: 25000,
       startsAt: now - DAY, endsAt: now + 5 * HOUR + 12 * MIN, visits: "Visites terminées" },
-      [[-20 * HOUR, "r4", 520000], [-3 * HOUR, "r5", 532500]]),
-    L("villa-nice-mont-boron", { lotNo: 3, title: "Villa contemporaine vue mer", type: "villa", city: "Nice", district: "Mont Boron", surface: 245, rooms: 7, bedrooms: 4, hue: 195,
-      description: "Sur un terrain paysager de 1 400 m², villa d'architecte tournée vers la baie des Anges : piscine à débordement, terrasses en restanques, quatre suites. Au calme, à 10 minutes du port.",
-      features: ["Piscine", "Vue mer", "Terrain 1 400 m²", "Garage double", "DPE B"], startingPrice: 2450000, reservePrice: 2700000, increment: 25000,
+      [[-20 * HOUR, "r4", 3800000], [-3 * HOUR, "r5", 3875000]]),
+    L("villa-marrakech-palmeraie", { lotNo: 3, title: "Villa contemporaine avec piscine", type: "villa", city: "Marrakech", district: "Palmeraie", surface: 450, rooms: 9, bedrooms: 5, hue: 190,
+      description: "Sur un terrain arboré de 5 000 m² au cœur de la Palmeraie, villa d'architecte de plain-pied : vastes réceptions ouvertes sur une piscine chauffée de 15 m, cinq suites, pool house et logement du gardien. À 15 minutes de la médina.",
+      features: ["Titre foncier", "Piscine chauffée", "Terrain 5 000 m²", "Pool house", "Logement gardien"], startingPrice: 9500000, reservePrice: 10500000, increment: 50000,
       startsAt: now - 6 * HOUR, endsAt: now + 2 * DAY + 3 * HOUR, visits: "Samedi 10 h – 12 h, sur rendez-vous" },
-      [[-4 * HOUR, "r6", 2450000]]),
-    L("loft-lyon-confluence", { lotNo: 4, title: "Loft dans une ancienne manufacture", type: "appartement", city: "Lyon", district: "Confluence", surface: 110, rooms: 3, bedrooms: 2, hue: 25,
-      description: "Loft de 4 m sous plafond dans une ancienne manufacture réhabilitée : grandes verrières, mezzanine, terrasse de 18 m² plein sud et place de parking en sous-sol.",
-      features: ["Terrasse 18 m²", "Verrières", "Parking", "DPE C"], startingPrice: 455000, reservePrice: 470000, increment: 2000,
+      [[-4 * HOUR, "r6", 9500000]]),
+    L("maison-rabat-souissi", { lotNo: 4, title: "Maison familiale avec jardin à Souissi", type: "maison", city: "Rabat", district: "Souissi", surface: 280, rooms: 7, bedrooms: 4, hue: 140,
+      description: "Dans une rue calme proche des ambassades, maison familiale sur un terrain de 800 m² : salon et salle à manger sur jardin, bureau, quatre chambres, garage pour deux voitures et chambre de service.",
+      features: ["Titre foncier", "Jardin 800 m²", "Garage double", "Chambre de service"], startingPrice: 6200000, reservePrice: 6400000, increment: 25000,
       startsAt: now - 3 * DAY, endsAt: now + 22 * HOUR, visits: "Visites terminées" },
-      [[-60 * HOUR, "r7", 455000], [-20 * HOUR, "r8", 461000], [-2 * HOUR, "r7", 475000]]),
-    L("terrain-annecy-talloires", { lotNo: 5, title: "Terrain constructible proche du lac", type: "terrain", city: "Annecy", district: "Talloires", surface: 1850, rooms: 0, bedrooms: 0, hue: 110,
-      description: "Parcelle viabilisée de 1 850 m² en légère pente, exposée ouest, avec échappée sur le lac. Certificat d'urbanisme positif pour une maison individuelle de 220 m² de surface de plancher.",
-      features: ["Viabilisé", "CU positif", "Vue lac partielle"], startingPrice: 380000, reservePrice: 420000, increment: 2000,
+      [[-60 * HOUR, "r7", 6200000], [-20 * HOUR, "r8", 6275000], [-2 * HOUR, "r7", 6450000]]),
+    L("terrain-tanger-malabata", { lotNo: 5, title: "Terrain avec vue sur le détroit", type: "terrain", city: "Tanger", district: "Malabata", surface: 1200, rooms: 0, bedrooms: 0, hue: 200,
+      description: "Terrain titré de 1 200 m² en zone villas, en légère pente, avec vue dégagée sur le détroit de Gibraltar. Note de renseignement favorable pour une villa R+1. Réseaux en limite de propriété.",
+      features: ["Titre foncier", "Zone villas", "Vue mer", "Réseaux en limite"], startingPrice: 2400000, reservePrice: 2700000, increment: 10000,
       startsAt: now + 2 * DAY, endsAt: now + 9 * DAY, visits: "Mardi et jeudi, 14 h – 17 h" }, []),
-    L("local-lille-vieux-lille", { lotNo: 6, title: "Boutique sur rue piétonne", type: "local", city: "Lille", district: "Vieux-Lille", surface: 74, rooms: 2, bedrooms: 0, hue: 350,
-      description: "Boutique de 74 m² avec une vitrine de 6 m sur une rue piétonne très passante, réserve et sanitaires. Libre de toute occupation ; tous commerces sauf restauration.",
-      features: ["Vitrine 6 m", "Rue piétonne", "Libre d'occupation"], startingPrice: 240000, reservePrice: 250000, increment: 1000,
+    L("local-casablanca-maarif", { lotNo: 6, title: "Local commercial sur boulevard", type: "local", city: "Casablanca", district: "Maârif", surface: 95, rooms: 2, bedrooms: 0, hue: 350,
+      description: "Local de 95 m² en rez-de-chaussée avec 7 m de vitrine sur un boulevard très passant du Maârif, mezzanine de stockage et sanitaires. Libre de tout occupant, toutes activités.",
+      features: ["Titre foncier", "Vitrine 7 m", "Mezzanine", "Libre d'occupation"], startingPrice: 1900000, reservePrice: 2000000, increment: 10000,
       startsAt: now + 5 * HOUR, endsAt: now + 4 * DAY, visits: "Mercredi 9 h – 12 h" }, []),
-    L("maison-nantes-erdre", { lotNo: 7, title: "Maison de maître en bord d'Erdre", type: "maison", city: "Nantes", district: "Bords d'Erdre", surface: 210, rooms: 8, bedrooms: 5, hue: 40,
-      description: "Maison de maître de 1890 sur un parc de 900 m² avec accès privatif à l'Erdre. Beaux volumes ; travaux de rafraîchissement à prévoir.",
-      features: ["Parc 900 m²", "Accès à la rivière", "Dépendance", "DPE E"], startingPrice: 790000, reservePrice: 850000, increment: 5000,
+    L("appartement-agadir-founty", { lotNo: 7, title: "Appartement vue mer avec terrasse", type: "appartement", city: "Agadir", district: "Founty", surface: 110, rooms: 4, bedrooms: 2, hue: 195,
+      description: "Dans une résidence sécurisée avec piscine, à 200 m de la plage, appartement de 110 m² avec terrasse de 30 m² face à l'océan. Vendu meublé.",
+      features: ["Titre foncier", "Vue océan", "Résidence avec piscine", "Meublé"], startingPrice: 1650000, reservePrice: 1750000, increment: 10000,
       startsAt: now - 9 * DAY, endsAt: now - 2 * DAY, visits: "Vente terminée" },
-      [[-8 * DAY, "r1", 790000], [-5 * DAY, "r2", 810000], [-3 * DAY, "r1", 845000], [-2 * DAY - HOUR, "r3", 870000]]),
-    L("studio-marseille-vieux-port", { lotNo: 8, title: "Studio avec vue sur le Vieux-Port", type: "appartement", city: "Marseille", district: "Vieux-Port", surface: 28, rooms: 1, bedrooms: 0, hue: 220,
-      description: "Studio refait à neuf au 5e étage, fenêtres sur le Vieux-Port et Notre-Dame-de-la-Garde. Vendu meublé, idéal pour un investissement locatif.",
-      features: ["Vue sur le port", "Refait à neuf", "Meublé"], startingPrice: 145000, reservePrice: 175000, increment: 1000,
+      [[-8 * DAY, "r1", 1650000], [-5 * DAY, "r2", 1700000], [-3 * DAY, "r1", 1740000], [-2 * DAY - HOUR, "r3", 1790000]]),
+    L("dar-fes-batha", { lotNo: 8, title: "Dar traditionnel à rénover", type: "riad", city: "Fès", district: "Médina, Batha", surface: 160, rooms: 6, bedrooms: 4, hue: 30,
+      description: "Dar du XIXe siècle sur trois niveaux autour d'un patio, avec plafonds en cèdre sculpté et plâtres ciselés d'origine. Gros travaux à prévoir ; idéal pour un projet de maison d'hôtes près de Bab Boujloud.",
+      features: ["Titre foncier", "Cèdre sculpté", "Patio", "Travaux à prévoir"], startingPrice: 950000, reservePrice: 1200000, increment: 5000,
       startsAt: now - 6 * DAY, endsAt: now - DAY, visits: "Vente terminée" },
-      [[-5 * DAY, "r4", 145000], [-2 * DAY, "r5", 152000]]),
+      [[-5 * DAY, "r4", 950000], [-2 * DAY, "r5", 1010000]]),
   ];
 }
 
 /* ---------- État (enregistré dans ce navigateur) ---------- */
-const KEY = "adjuge-immo-v1";
+const KEY = "adjuge-immo-ma-v1";
 let state;
 function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {} }
 function load() {
@@ -430,6 +452,15 @@ function picture(lot) {
     scene += `<rect x="70" y="80" width="200" height="70" fill="${wall}"/><rect x="160" y="50" width="150" height="34" fill="${wall}"/><rect x="60" y="76" width="220" height="6" fill="${wall2}"/><rect x="152" y="46" width="166" height="6" fill="${wall2}"/>`;
     scene += `<rect x="86" y="96" width="70" height="44" fill="${dark}" opacity=".8"/><rect x="170" y="96" width="84" height="44" fill="${dark}" opacity=".8"/><rect x="178" y="58" width="114" height="20" fill="${dark}" opacity=".7"/>`;
     scene += `<rect x="70" y="160" width="190" height="22" rx="3" fill="hsl(${h} 70% 70%)"/><circle cx="340" cy="112" r="26" fill="${green2}"/><rect x="337" y="130" width="6" height="22" fill="${dark}"/>`;
+  } else if (lot.type === "riad") {
+    const ochre = `hsl(${(h % 40) + 15} 55% 64%)`, ochre2 = `hsl(${(h % 40) + 15} 45% 52%)`;
+    scene = `<rect x="70" y="62" width="260" height="148" fill="${ochre}"/>`;
+    for (let i = 0; i < 13; i++) scene += `<rect x="${70 + i * 20}" y="52" width="12" height="12" fill="${ochre}"/>`;
+    scene += `<rect x="70" y="78" width="260" height="5" fill="${ochre2}"/>`;
+    for (const x of [100, 150, 230, 280]) scene += `<path d="M${x} 130 v-18 a10 10 0 0 1 20 0 v18z" fill="${dark}" opacity=".85"/>`;
+    scene += `<path d="M180 210 v-46 a20 20 0 0 1 40 0 v46z" fill="hsl(200 45% 30%)"/><path d="M172 210 v-46 a28 28 0 0 1 56 0 v46" fill="none" stroke="hsl(195 45% 55%)" stroke-width="4"/>`;
+    scene += `<rect x="355" y="110" width="6" height="100" fill="hsl(25 35% 35%)"/>`;
+    for (const r of [-150, -110, -70, -30, 10]) scene += `<ellipse cx="376" cy="110" rx="20" ry="6" fill="${green2}" transform="rotate(${r} 358 110)"/>`;
   } else if (lot.type === "terrain") {
     scene = `<polygon points="0,120 90,70 170,110 260,60 400,115 400,210 0,210" fill="hsl(${h} 20% 70%)"/><rect x="0" y="140" width="400" height="70" fill="${green}"/>`;
     for (let i = 0; i < 9; i++) scene += `<line x1="${i * 50 - 20}" y1="210" x2="${i * 50 + 30}" y2="140" stroke="${green2}" stroke-width="2" opacity=".5"/>`;
@@ -494,12 +525,12 @@ function viewCatalogue(app) {
       </div>
     </section>
     <form class="filters" id="filters" role="search">
-      <label class="field search">Ville ou quartier<input id="f-q" type="search" placeholder="Paris, Confluence…" value="${esc(filters.q)}"></label>
+      <label class="field search">Ville ou quartier<input id="f-q" type="search" placeholder="Casablanca, Gauthier…" value="${esc(filters.q)}"></label>
       <label class="field">Statut<select id="f-status">
         <option value="active">En cours et à venir</option><option value="live">En cours</option><option value="upcoming">À venir</option><option value="ended">Terminées</option><option value="all">Toutes</option>
       </select></label>
       <label class="field">Type de bien<select id="f-type"><option value="">Tous</option>${Object.entries(TYPES).map(([k, v]) => `<option value="${k}">${v}</option>`).join("")}</select></label>
-      <label class="field">Prix actuel max.<select id="f-max"><option value="">Sans limite</option><option value="300000">300 000 €</option><option value="600000">600 000 €</option><option value="1000000">1 000 000 €</option></select></label>
+      <label class="field">Prix actuel max.<select id="f-max"><option value="">Sans limite</option><option value="2000000">2 000 000 DH</option><option value="4000000">4 000 000 DH</option><option value="8000000">8 000 000 DH</option></select></label>
       <label class="field">Trier par<select id="f-sort"><option value="ending">Fin la plus proche</option><option value="price-asc">Prix croissant</option><option value="price-desc">Prix décroissant</option><option value="bids">Nombre d'offres</option></select></label>
     </form>
     <div class="grid" id="lots"></div>`;
@@ -619,7 +650,7 @@ function renderRoom(lot, { flash = false } = {}) {
       <form class="bid-form" id="bid-form" novalidate>
         <label class="field" for="bid-amount">Votre offre <small>minimum ${eur(minBid(lot))}</small></label>
         <div class="bid-row"><input id="bid-amount" class="num" inputmode="numeric" autocomplete="off" value="${esc(keep ?? minBid(lot))}" aria-describedby="bid-error"><button class="btn btn-primary" type="submit">Enchérir</button></div>
-        <div class="quick">${[1, 2, 5].map((k) => `<button type="button" data-inc="${k}">+${numFmt.format(k * lot.increment)} €</button>`).join("")}</div>
+        <div class="quick">${[1, 2, 5].map((k) => `<button type="button" data-inc="${k}">+${eur(k * lot.increment)}</button>`).join("")}</div>
         <p class="error" id="bid-error" hidden></p>
       </form>`;
   } else if (s === "upcoming") {
@@ -667,7 +698,7 @@ function wireRoom(lot) {
     }));
     form.addEventListener("submit", (e) => {
       e.preventDefault();
-      const amount = Number(String(input.value).replace(/[\s €.]/g, "").replace(",", "."));
+      const amount = Number(String(input.value).replace(/dh|mad|€/gi, "").replace(/[\s\u202f\u00a0.]/g, "").replace(",", "."));
       const problem = checkBid(lot, ME, amount, Date.now());
       if (problem) { err.textContent = problem; err.hidden = false; return; }
       requireUser(() => { pendingBid = amount; renderRoom(lot); document.getElementById("cgv")?.focus(); });
@@ -726,8 +757,8 @@ function viewSell(app) {
           <label class="field" data-f="title">Titre de l'annonce<input id="s-title" maxlength="120" placeholder="Appartement familial avec terrasse"></label>
           <div class="cols">
             <label class="field" data-f="type">Type<select id="s-type">${Object.entries(TYPES).map(([k, v]) => `<option value="${k}">${v}</option>`).join("")}</select></label>
-            <label class="field" data-f="city">Ville<input id="s-city" placeholder="Toulouse"></label>
-            <label class="field" data-f="district">Quartier <small>facultatif</small><input id="s-district" placeholder="Carmes"></label>
+            <label class="field" data-f="city">Ville<input id="s-city" placeholder="Rabat"></label>
+            <label class="field" data-f="district">Quartier <small>facultatif</small><input id="s-district" placeholder="Agdal"></label>
           </div>
           <div class="cols">
             <label class="field" data-f="surface">Surface (m²)<input id="s-surface" inputmode="numeric" placeholder="85"></label>
@@ -735,13 +766,13 @@ function viewSell(app) {
             <label class="field" data-f="bedrooms">Chambres<input id="s-bedrooms" inputmode="numeric" placeholder="2"></label>
           </div>
           <label class="field" data-f="description">Description<textarea id="s-description" rows="5" placeholder="Étage, exposition, état, travaux récents, charges…"></textarea></label>
-          <label class="field" data-f="features">Points forts <small>séparés par des virgules</small><input id="s-features" placeholder="Terrasse, Parking, DPE C"></label>
+          <label class="field" data-f="features">Points forts <small>séparés par des virgules</small><input id="s-features" placeholder="Titre foncier, Terrasse, Parking"></label>
         </fieldset>
         <fieldset><legend>La vente</legend>
           <div class="cols">
-            <label class="field" data-f="startingPrice">Mise à prix (€)<input id="s-startingPrice" inputmode="numeric" placeholder="300000"></label>
-            <label class="field" data-f="reservePrice">Prix de réserve (€) <small>confidentiel</small><input id="s-reservePrice" inputmode="numeric" placeholder="330000"></label>
-            <label class="field" data-f="increment">Pas d'enchère (€)<input id="s-increment" inputmode="numeric" value="1000"></label>
+            <label class="field" data-f="startingPrice">Mise à prix (DH)<input id="s-startingPrice" inputmode="numeric" placeholder="1500000"></label>
+            <label class="field" data-f="reservePrice">Prix de réserve (DH) <small>confidentiel</small><input id="s-reservePrice" inputmode="numeric" placeholder="1650000"></label>
+            <label class="field" data-f="increment">Pas d'enchère (DH)<input id="s-increment" inputmode="numeric" value="10000"></label>
           </div>
           <div class="cols">
             <label class="field" data-f="startsAt">Début de la vente<input id="s-startsAt" type="datetime-local" value="${localInput(start)}"></label>
@@ -750,8 +781,8 @@ function viewSell(app) {
         </fieldset>
         <fieldset><legend>Vous</legend>
           <div class="cols">
-            <label class="field" data-f="sellerName">Nom ou étude<input id="s-sellerName" autocomplete="name" placeholder="Maître Durand"></label>
-            <label class="field" data-f="sellerEmail">E-mail<input id="s-sellerEmail" type="email" autocomplete="email" placeholder="contact@etude-durand.fr"></label>
+            <label class="field" data-f="sellerName">Nom ou étude<input id="s-sellerName" autocomplete="name" placeholder="Maître Bennani"></label>
+            <label class="field" data-f="sellerEmail">E-mail<input id="s-sellerEmail" type="email" autocomplete="email" placeholder="contact@etude-bennani.ma"></label>
           </div>
         </fieldset>
         <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-primary" type="submit">Publier l'annonce</button><button class="btn btn-ghost" type="button" id="example">Remplir avec un exemple</button></div>
@@ -768,15 +799,15 @@ function viewSell(app) {
     </div>`;
   const $ = (k) => document.getElementById(`s-${k}`);
   document.getElementById("example").onclick = () => {
-    Object.entries({ title: "Appartement familial avec terrasse", type: "appartement", city: "Toulouse", district: "Carmes", surface: 85, rooms: 4, bedrooms: 2,
-      description: "Au 3e et dernier étage d'une résidence de 2008, appartement de 85 m² avec terrasse de 20 m² sans vis-à-vis : séjour exposé sud, cuisine ouverte équipée, deux chambres, salle d'eau et cellier. Place de parking en sous-sol.",
-      features: "Terrasse 20 m², Dernier étage, Parking, DPE C", startingPrice: 310000, reservePrice: 345000, increment: 1500, sellerName: "Maître Durand", sellerEmail: "contact@etude-durand.fr" })
+    Object.entries({ title: "Appartement familial avec terrasse", type: "appartement", city: "Rabat", district: "Agdal", surface: 120, rooms: 5, bedrooms: 3,
+      description: "Au 4e et dernier étage d'une résidence de standing avec ascenseur, appartement de 120 m² avec terrasse de 25 m² : double salon exposé sud, cuisine équipée, trois chambres dont une suite, deux salles de bain. Place de parking en sous-sol. Titre foncier individuel.",
+      features: "Titre foncier, Terrasse 25 m², Dernier étage, Parking", startingPrice: 1600000, reservePrice: 1750000, increment: 10000, sellerName: "Maître Bennani", sellerEmail: "contact@etude-bennani.ma" })
       .forEach(([k, v]) => ($(k).value = v));
   };
   document.getElementById("sell").addEventListener("submit", (e) => {
     e.preventDefault();
     const v = (k) => $(k).value.trim();
-    const n = (k) => Number(v(k).replace(/[\s €]/g, ""));
+    const n = (k) => Number(v(k).replace(/dh|mad/gi, "").replace(/[\s\u202f\u00a0.]/g, ""));
     const errs = {};
     const startsAt = new Date(v("startsAt")).getTime();
     if (v("title").length < 5) errs.title = "Donnez un titre d'au moins 5 caractères.";
@@ -785,10 +816,10 @@ function viewSell(app) {
     if (v("type") !== "terrain" && !(Number.isInteger(n("rooms")) && n("rooms") > 0)) errs.rooms = "Indiquez le nombre de pièces.";
     if (n("bedrooms") > n("rooms")) errs.bedrooms = "Plus de chambres que de pièces.";
     if (v("description").length < 30) errs.description = "Décrivez le bien en 30 caractères au moins.";
-    if (!(Number.isInteger(n("startingPrice")) && n("startingPrice") >= 1000)) errs.startingPrice = "Mise à prix de 1 000 € minimum.";
+    if (!(Number.isInteger(n("startingPrice")) && n("startingPrice") >= 10000)) errs.startingPrice = "Mise à prix de 10 000 DH minimum.";
     const reserve = v("reservePrice") ? n("reservePrice") : n("startingPrice");
     if (!(Number.isInteger(reserve) && reserve >= n("startingPrice"))) errs.reservePrice = "La réserve doit être au moins égale à la mise à prix.";
-    if (!(Number.isInteger(n("increment")) && n("increment") >= 100)) errs.increment = "Pas d'enchère de 100 € minimum.";
+    if (!(Number.isInteger(n("increment")) && n("increment") >= 1000)) errs.increment = "Pas d'enchère de 1 000 DH minimum.";
     if (!(startsAt > Date.now() - 5 * MIN)) errs.startsAt = "Choisissez une date à venir.";
     if (v("sellerName").length < 2) errs.sellerName = "Indiquez votre nom.";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v("sellerEmail"))) errs.sellerEmail = "Saisissez une adresse e-mail valide.";

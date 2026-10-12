@@ -1,6 +1,7 @@
 # Adjugé — enchères immobilières (prototype HTML)
 
-Prototype d'une plateforme de ventes immobilières aux enchères en ligne.
+Prototype d'une plateforme de ventes immobilières aux enchères en ligne au Maroc (prix en dirhams,
+biens à Casablanca, Marrakech, Rabat, Tanger, Agadir et Fès). Design en verre dépoli (glassmorphism), police Arial.
 Un seul fichier, sans dépendance ni serveur : ouvrez `index.html` dans un navigateur.
 
 ## Ce que fait le prototype
