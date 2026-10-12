@@ -18,7 +18,7 @@ Un seul fichier, sans dépendance ni serveur : ouvrez `index.html` dans un navig
 
 ## Adjugé Live (`live.html`) — ventes en direct
 
-Expérience façon live shopping (Whatnot), reliée au catalogue par le menu. Bilingue **français / arabe** (bouton « ع / FR », affichage de droite à gauche).
+Expérience façon live shopping (Whatnot), reliée au catalogue par le menu. Design « désert » : sable et taupe, verre dépoli doux, accent jaune beurre, pilules anthracite, chiffres en trio, pastilles de visite sur la photo et barre flottante en bas sur mobile. Bilingue **français / arabe** (bouton « ع / FR », affichage de droite à gauche).
 
 - **Fil des lives** : lives en cours, prochains lives avec rappel, filtres par catégorie.
 - **Salle de live** : visite « filmée » du bien commentée par l'agent, chat avec réponses de l'hôte,
