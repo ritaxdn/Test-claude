@@ -34,6 +34,17 @@ Expérience façon live shopping (Whatnot), reliée au catalogue par le menu. Bi
   (ouvrir les enchères, +15 s, adjuger, lot suivant, meilleurs enchérisseurs).
 - **Notifications** : surenchère, victoire, enchère auto dépassée, rappels, live lancé (option WhatsApp simulée).
 
+### Cadre juridique intégré au prototype
+
+- **Offre retenue ≠ vente** : l'écran final affiche « Offre retenue » (engagement d'achat). Le transfert de propriété
+  se fait par acte authentique chez le notaire (art. 4 de la loi 39-08), puis inscription à la conservation foncière.
+- **Consignation chez le notaire** : versée sur le compte de l'étude à la CDG, jamais à l'appli.
+- **Notaire dans chaque vente** : nommé sur chaque live, il vérifie le dossier (« Vérifié par Maître … »).
+  Dans le studio, un live ne peut être lancé qu'avec un notaire mandaté.
+- **Conditions de participation et données personnelles** : trois accords séparés à la première offre
+  (conditions, consignation, traitement des données au titre de la loi 09-08). Le numéro de déclaration CNDP
+  est à compléter avant lancement.
+
 À valider avant un lancement réel : le cadre juridique des ventes immobilières aux enchères au Maroc
 (rôle du notaire, statut de la consignation) avec un notaire ou un avocat, et la conformité à la loi 09-08 (CNDP)
 pour les données personnelles (CIN, justificatifs).
