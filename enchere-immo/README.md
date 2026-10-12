@@ -18,22 +18,32 @@ Un seul fichier, sans dépendance ni serveur : ouvrez `index.html` dans un navig
 
 ## Adjugé Live (`live.html`) — ventes en direct
 
-Une seconde expérience inspirée du live shopping (façon Whatnot), reliée au catalogue par le menu :
+Expérience façon live shopping (Whatnot), reliée au catalogue par le menu. Bilingue **français / arabe** (bouton « ع / FR », affichage de droite à gauche).
 
-- **Fil des lives** : lives en cours (spectateurs, hôte, prix de départ), prochains lives avec rappel, filtres par catégorie.
-- **Salle de live** : visite « filmée » du bien (façade, patio, salon, chambre, terrasse) commentée par l'agent,
-  puis enchère éclair de 30 s ; toute offre dans les 10 dernières secondes relance le chrono à 10 s.
-- **Glisser pour enchérir** au palier suivant (ou Entrée au clavier), offre personnalisée, cœurs,
-  chat avec réponses de l'hôte aux questions courantes (titre foncier, charges, crédit, consignation…).
-- **Adjugé !** : écran de résultat (réserve atteinte ou non), puis lot suivant ; récapitulatif en fin de live.
-- Pseudo public et autorisation de consignation demandés à la première offre ; suivi des hôtes et rappels enregistrés localement.
+- **Fil des lives** : lives en cours, prochains lives avec rappel, filtres par catégorie.
+- **Salle de live** : visite « filmée » du bien commentée par l'agent, chat avec réponses de l'hôte,
+  enchère éclair de 30 s (toute offre dans les 10 dernières secondes relance le chrono à 10 s),
+  **glisser pour enchérir**, offre personnalisée, **enchère automatique** jusqu'à un maximum secret.
+- **Dossier du bien** : visite pièce par pièce, plan schématique, documents vérifiés (titre foncier,
+  note de renseignement, expertise, charges) et **calculateur coût total + crédit** (droits d'enregistrement 4 %,
+  conservation foncière 1,5 % + 200 DH, notaire 1 % + TVA 10 %, mensualité selon apport, durée et taux ; estimation indicative).
+- **Vérification d'identité** à la première offre (pseudo, CIN, preuve de fonds facultative, accord de consignation).
+- **Mes victoires** : suivi de chaque bien remporté jusqu'aux clés (consignation via CMI, identité, compromis,
+  acte chez le notaire à J+30, remise des clés), avec un exemple de démonstration.
+- **Studio agent** : créer un live, ajouter ses biens, le lancer puis le piloter en **mode hôte**
+  (ouvrir les enchères, +15 s, adjuger, lot suivant, meilleurs enchérisseurs).
+- **Notifications** : surenchère, victoire, enchère auto dépassée, rappels, live lancé (option WhatsApp simulée).
+
+À valider avant un lancement réel : le cadre juridique des ventes immobilières aux enchères au Maroc
+(rôle du notaire, statut de la consignation) avec un notaire ou un avocat, et la conformité à la loi 09-08 (CNDP)
+pour les données personnelles (CIN, justificatifs).
 
 ## Limites (démo)
 
 - Les autres enchérisseurs sont **simulés** dans la page pour donner vie à la salle ; en live, la vidéo,
   les spectateurs et le chat le sont aussi.
 - Les données sont stockées dans le `localStorage` du navigateur : rien n'est partagé entre utilisateurs.
-- Pas de vraie authentification ni de paiement de la consignation.
+- Pas de vraie authentification, vérification d'identité ni paiement de la consignation (CMI simulé).
 
 Pour passer en production il faudra un back-end (API + base de données avec transaction sur chaque offre),
 une authentification, du temps réel (WebSocket/SSE), de la vidéo en direct (WebRTC/HLS) et un prestataire de paiement pour les consignations.

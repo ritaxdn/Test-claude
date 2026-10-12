@@ -6,7 +6,8 @@
 <title>Adjugé Live</title>
 <style>
 /* Layout : une appli de ventes en direct façon live shopping. Un fil de lives, puis une salle :
-   la scène verticale au centre (visite filmée + carte du lot), les lots à gauche, le chat à droite. */
+   la scène verticale au centre (visite filmée + carte du lot), les lots à gauche, le chat à droite.
+   Autour : studio de l'agent, suivi « Mes victoires », dossier du bien et calculateur en feuilles. */
 :root {
   --bg: #e9ecf7;
   --blob-1: #6f83ff;
@@ -14,7 +15,7 @@
   --blob-3: #ff8f7a;
   --blob-4: #6fd6c5;
   --surface: rgb(255 255 255 / .55);
-  --surface-strong: rgb(255 255 255 / .82);
+  --surface-strong: rgb(255 255 255 / .86);
   --glass-border: rgb(255 255 255 / .75);
   --ink: #141a3a;
   --muted: #4e5578;
@@ -25,9 +26,9 @@
   --live: #ff3b5c;
   --saffron: #ffc46b;
   --good: #1f9d6b;
+  --good-soft: rgb(31 157 107 / .14);
   --danger: #c0392b;
   --on-media: #ffffff;
-  --media-scrim: rgb(9 12 32 / .55);
   --media-glass: rgb(16 20 48 / .45);
   --shadow: 0 8px 32px rgb(31 38 100 / .12);
   --blur: 18px;
@@ -37,20 +38,20 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0b0f26; --blob-1: #3346d6; --blob-2: #b8741a; --blob-3: #a2384a; --blob-4: #1d8a7c;
-    --surface: rgb(255 255 255 / .07); --surface-strong: rgb(22 27 58 / .86); --glass-border: rgb(255 255 255 / .16);
+    --surface: rgb(255 255 255 / .07); --surface-strong: rgb(22 27 58 / .92); --glass-border: rgb(255 255 255 / .16);
     --ink: #eef0ff; --muted: #a9afd4; --line: rgb(255 255 255 / .12);
     --accent: #9aa8ff; --accent-ink: #0b0f26; --accent-soft: rgb(154 168 255 / .16);
-    --good: #4fd39b; --danger: #ff8f80;
+    --good: #4fd39b; --good-soft: rgb(79 211 155 / .14); --danger: #ff8f80;
     --shadow: 0 8px 32px rgb(0 0 0 / .35);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0b0f26; --blob-1: #3346d6; --blob-2: #b8741a; --blob-3: #a2384a; --blob-4: #1d8a7c;
-  --surface: rgb(255 255 255 / .07); --surface-strong: rgb(22 27 58 / .86); --glass-border: rgb(255 255 255 / .16);
+  --surface: rgb(255 255 255 / .07); --surface-strong: rgb(22 27 58 / .92); --glass-border: rgb(255 255 255 / .16);
   --ink: #eef0ff; --muted: #a9afd4; --line: rgb(255 255 255 / .12);
   --accent: #9aa8ff; --accent-ink: #0b0f26; --accent-soft: rgb(154 168 255 / .16);
-  --good: #4fd39b; --danger: #ff8f80;
+  --good: #4fd39b; --good-soft: rgb(79 211 155 / .14); --danger: #ff8f80;
   --shadow: 0 8px 32px rgb(0 0 0 / .35);
   color-scheme: dark;
 }
@@ -65,54 +66,74 @@ body::before { content: ""; position: fixed; inset: -10vmax; z-index: -1; pointe
     radial-gradient(40vmax 40vmax at 78% 92%, var(--blob-3), transparent 70%),
     radial-gradient(30vmax 30vmax at 8% 82%, var(--blob-4), transparent 70%);
   opacity: .75; filter: blur(30px); }
-h1, h2, h3 { margin: 0; font-weight: 700; letter-spacing: -.02em; line-height: 1.1; text-wrap: balance; }
+h1, h2, h3 { margin: 0; font-weight: 700; letter-spacing: -.02em; line-height: 1.15; text-wrap: balance; }
+[dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3, [dir="rtl"] .big { letter-spacing: 0; }
 h1 { font-size: clamp(1.8rem, 1.3rem + 2vw, 2.6rem); }
 h2 { font-size: 1.3rem; }
 p { margin: 0; }
 a { color: inherit; }
-button, input { font: inherit; color: inherit; }
+button, input, select, textarea { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .num { font-variant-numeric: tabular-nums; }
 .muted { color: var(--muted); }
 .label { font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+[dir="rtl"] .label { letter-spacing: 0; }
 .wrap { max-width: 1240px; margin-inline: auto; padding-inline: 20px; }
+[dir="rtl"] .flip { transform: scaleX(-1); }
 
 .glass { background: var(--surface); -webkit-backdrop-filter: blur(var(--blur)) saturate(160%); backdrop-filter: blur(var(--blur)) saturate(160%); border: 1px solid var(--glass-border); }
 .media-glass { background: var(--media-glass); -webkit-backdrop-filter: blur(14px) saturate(150%); backdrop-filter: blur(14px) saturate(150%); border: 1px solid rgb(255 255 255 / .18); color: var(--on-media); }
 
 /* En-tête */
 .top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; border-width: 0 0 1px; }
-.top .wrap { display: flex; align-items: center; gap: 20px; min-height: 60px; flex-wrap: wrap; padding-block: 6px; }
+.top .wrap { display: flex; align-items: center; gap: 16px; min-height: 60px; flex-wrap: wrap; padding-block: 6px; }
 .brand { display: flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 700; font-size: 1.35rem; letter-spacing: -.02em; }
 .brand .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--live); box-shadow: 0 0 0 4px rgb(255 59 92 / .2); }
 .brand small { font-weight: 400; font-size: .8rem; color: var(--muted); letter-spacing: 0; }
 nav.main { display: flex; gap: 4px; flex: 1; flex-wrap: wrap; }
-nav.main a { text-decoration: none; padding: 7px 12px; border-radius: 999px; color: var(--muted); font-weight: 700; font-size: .92rem; }
+nav.main a { text-decoration: none; padding: 7px 12px; border-radius: 999px; color: var(--muted); font-weight: 700; font-size: .92rem; white-space: nowrap; }
 nav.main a:hover { color: var(--ink); background: var(--accent-soft); }
 nav.main a[aria-current="page"] { color: var(--accent); background: var(--accent-soft); }
-.who { font-size: .85rem; color: var(--muted); display: flex; gap: 8px; align-items: center; }
+.tools { display: flex; gap: 8px; align-items: center; }
+.who { font-size: .85rem; color: var(--muted); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .who b { color: var(--ink); }
+.kyc-ok { color: var(--good); font-weight: 700; font-size: .78rem; }
+.round { position: relative; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; font-weight: 700; font-size: .85rem; }
+.badge-count { position: absolute; top: -4px; inset-inline-end: -4px; min-width: 18px; height: 18px; padding-inline: 4px; border-radius: 999px; background: var(--live); color: #fff; font-size: .68rem; display: grid; place-items: center; }
 
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid transparent; border-radius: 999px; padding: 10px 18px; font-weight: 700; cursor: pointer; text-decoration: none; transition: transform .12s, background .2s; }
 .btn:active { transform: translateY(1px); }
 .btn-primary { background: var(--accent); color: var(--accent-ink); }
 .btn-ghost { background: var(--surface); border-color: var(--glass-border); color: var(--ink); }
+.btn-danger { background: transparent; border-color: var(--danger); color: var(--danger); }
 .btn-small { padding: 6px 12px; font-size: .82rem; }
-.linkbtn { background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.linkbtn { background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; font-weight: 700; }
 
 main { padding-block: 28px 56px; }
 main.room-mode { padding-block: 16px; }
+.page { display: grid; gap: 28px; }
+.page-head p { color: var(--muted); max-width: 60ch; margin-top: 8px; }
+
+/* Formulaires */
+.field { display: grid; gap: 6px; font-weight: 700; font-size: .86rem; min-width: 0; }
+.field input, .field select, .field textarea, .inp { width: 100%; border-radius: 12px; border: 1px solid var(--glass-border); background: var(--surface); padding: 10px 12px; font-weight: 400; min-width: 0; }
+.field input:focus, .field select:focus, .field textarea:focus, .inp:focus { outline: none; border-color: var(--accent); background: var(--surface-strong); }
+.field .err, .err { color: var(--danger); font-size: .8rem; font-weight: 700; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.card { border-radius: var(--radius); padding: 20px; display: grid; gap: 14px; }
+.check { display: flex; gap: 10px; align-items: flex-start; color: var(--muted); font-size: .84rem; }
+.check input { margin-top: 3px; }
 
 /* Badges */
 .live-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--live); color: #fff; font-weight: 700; font-size: .72rem; letter-spacing: .08em; padding: 4px 8px; border-radius: 6px; }
 .live-badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #fff; animation: pulse 1.4s infinite; }
 .viewers { display: inline-flex; align-items: center; gap: 5px; font-size: .78rem; font-weight: 700; padding: 4px 8px; border-radius: 6px; background: rgb(0 0 0 / .4); color: var(--on-media); }
+.tag { display: inline-flex; padding: 3px 9px; border-radius: 999px; font-size: .74rem; font-weight: 700; background: var(--accent-soft); color: var(--accent); }
+.tag.mine { background: var(--saffron); color: #2a1a00; }
 @keyframes pulse { 50% { opacity: .3; } }
 
 /* Fil des lives */
-.feed { display: grid; gap: 32px; }
-.feed-head { display: flex; justify-content: space-between; align-items: end; gap: 20px; flex-wrap: wrap; }
-.feed-head p { color: var(--muted); max-width: 52ch; margin-top: 8px; }
 .chips { display: flex; gap: 8px; flex-wrap: wrap; }
 .chip { padding: 8px 14px; border-radius: 999px; font-weight: 700; font-size: .85rem; cursor: pointer; }
 .chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
@@ -122,8 +143,8 @@ main.room-mode { padding-block: 16px; }
 .show:hover { transform: translateY(-3px); }
 .show > svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 .show .shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgb(0 0 0 / .35), transparent 30%, transparent 45%, rgb(9 12 32 / .88)); }
-.show .tl { position: absolute; top: 12px; left: 12px; display: flex; gap: 6px; }
-.show .info { position: absolute; left: 14px; right: 14px; bottom: 14px; display: grid; gap: 8px; }
+.show .tl { position: absolute; top: 12px; inset-inline: 12px; display: flex; gap: 6px; flex-wrap: wrap; }
+.show .info { position: absolute; inset-inline: 14px; bottom: 14px; display: grid; gap: 8px; }
 .show .info h3 { font-size: 1.1rem; }
 .host { display: flex; align-items: center; gap: 8px; font-size: .82rem; min-width: 0; }
 .host b { display: block; }
@@ -132,26 +153,25 @@ main.room-mode { padding-block: 16px; }
 .show .now b { display: block; font-size: .95rem; }
 .upcoming { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
 .up { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 14px; padding: 12px; border-radius: var(--radius); align-items: center; }
-.up .thumb { position: relative; aspect-ratio: 3 / 4; border-radius: 12px; overflow: hidden; }
-.up .thumb > svg { width: 100%; height: 100%; display: block; }
+.thumb { position: relative; aspect-ratio: 3 / 4; border-radius: 12px; overflow: hidden; }
+.thumb > svg { width: 100%; height: 100%; display: block; }
 .up .body { display: grid; gap: 6px; min-width: 0; }
 .up .when { color: var(--accent); font-weight: 700; font-size: .82rem; }
-.up .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.up .row { display: flex; justify-content: flex-end; }
 .remind[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 .how { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; list-style: none; padding: 0; margin: 0; }
-.how li { padding: 18px; border-radius: var(--radius); display: grid; gap: 6px; }
-.how b { font-size: 1rem; }
-.empty { padding: 32px; border-radius: var(--radius); text-align: center; color: var(--muted); }
+.how li { padding: 18px; border-radius: var(--radius); display: grid; gap: 6px; align-content: start; }
+.empty { padding: 32px; border-radius: var(--radius); text-align: center; color: var(--muted); display: grid; gap: 14px; justify-items: center; }
 
 /* Salle */
-.room { position: relative; display: grid; grid-template-columns: 270px minmax(0, 440px) 330px; justify-content: center; gap: 18px; height: min(860px, calc(100dvh - 110px)); min-height: 560px; }
+.room { position: relative; display: grid; grid-template-columns: 270px minmax(0, 440px) 330px; justify-content: center; gap: 18px; height: min(860px, calc(100dvh - 110px)); min-height: 580px; }
 .panel { border-radius: var(--radius); display: grid; grid-template-rows: auto minmax(0, 1fr) auto; overflow: hidden; min-width: 0; }
-.panel-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 14px 16px; border-bottom: 1px solid var(--line); }
 .lots { list-style: none; margin: 0; padding: 8px; overflow: auto; display: grid; gap: 6px; align-content: start; }
 .lots li { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 10px; padding: 8px; border-radius: 12px; align-items: center; }
 .lots li.current { background: var(--accent-soft); }
-.lots .mini { aspect-ratio: 1; border-radius: 8px; overflow: hidden; }
-.lots .mini > svg { width: 100%; height: 100%; display: block; }
+.mini { aspect-ratio: 1; border-radius: 8px; overflow: hidden; }
+.mini > svg { width: 100%; height: 100%; display: block; }
 .lots strong { display: block; font-size: .86rem; line-height: 1.25; }
 .lots small { font-size: .76rem; color: var(--muted); font-weight: 700; }
 .lots small.sold { color: var(--good); }
@@ -165,57 +185,66 @@ main.room-mode { padding-block: 16px; }
 @keyframes kenburns { from { transform: scale(1.02); } to { transform: scale(1.14) translate(-2%, -1%); } }
 @keyframes fadein { from { opacity: 0; filter: blur(6px); } }
 .stage::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgb(0 0 0 / .45), transparent 22%, transparent 40%, rgb(9 12 32 / .92) 78%); pointer-events: none; }
-.stage-top { position: absolute; top: 12px; left: 12px; right: 12px; display: flex; gap: 8px; align-items: center; }
+.stage-top { position: absolute; top: 12px; inset-inline: 12px; display: flex; gap: 8px; align-items: center; }
 .stage-top .host { flex: 1; padding: 4px 10px 4px 4px; border-radius: 999px; }
-.stage-top .host span { font-size: .72rem; opacity: .8; }
-.follow { margin-left: auto; padding: 5px 10px; border-radius: 999px; border: 0; background: var(--on-media); color: #10142e; font-weight: 700; font-size: .75rem; cursor: pointer; }
+[dir="rtl"] .stage-top .host { padding: 4px 4px 4px 10px; }
+.stage-top .host span span { font-size: .72rem; opacity: .8; }
+.follow { margin-inline-start: auto; padding: 5px 10px; border-radius: 999px; border: 0; background: var(--on-media); color: #10142e; font-weight: 700; font-size: .75rem; cursor: pointer; }
 .follow[aria-pressed="true"] { background: rgb(255 255 255 / .25); color: var(--on-media); }
 .iconbtn { flex: none; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; }
-.stage-meta { position: absolute; top: 60px; left: 12px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
-.tour { padding: 4px 10px; border-radius: 999px; font-size: .78rem; font-weight: 700; }
+.stage-meta { position: absolute; top: 60px; inset-inline: 12px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.tour { padding: 4px 10px; border-radius: 999px; font-size: .78rem; font-weight: 700; cursor: pointer; }
 .lots-toggle { display: none; }
-.hearts { position: absolute; right: 18px; bottom: 210px; width: 60px; height: 260px; pointer-events: none; }
-.heart { position: absolute; bottom: 0; left: 18px; width: 26px; height: 26px; color: var(--live); animation: floatup 2.6s ease-out forwards; }
+.hostbar { position: absolute; top: 96px; inset-inline: 12px; display: flex; gap: 6px; flex-wrap: wrap; padding: 8px; border-radius: 14px; align-items: center; z-index: 4; }
+.hostbar b { font-size: .78rem; margin-inline-end: auto; }
+.hostbar button { padding: 7px 12px; border-radius: 10px; border: 0; font-weight: 700; font-size: .8rem; cursor: pointer; background: var(--saffron); color: #2a1a00; }
+.hostbar button.sec { background: rgb(255 255 255 / .18); color: var(--on-media); }
+.hearts { position: absolute; inset-inline-end: 18px; bottom: 240px; width: 60px; height: 260px; pointer-events: none; }
+.heart { position: absolute; bottom: 0; inset-inline-start: 18px; width: 26px; height: 26px; animation: floatup 2.6s ease-out forwards; }
 @keyframes floatup { 0% { transform: translate(0, 0) scale(.6); opacity: 0; } 15% { opacity: 1; } 100% { transform: translate(var(--dx, 0px), -240px) scale(1.1); opacity: 0; } }
 
-.lotcard { position: absolute; left: 12px; right: 12px; bottom: 12px; border-radius: 20px; padding: 14px; display: grid; gap: 12px; }
+.lotcard { position: absolute; inset-inline: 12px; bottom: 12px; border-radius: 20px; padding: 14px; display: grid; gap: 10px; }
 .lotcard .row1 { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: start; }
-.lotcard h2 { font-size: 1.12rem; }
+.lotcard h2 { font-size: 1.1rem; }
 .lotcard .where { font-size: .8rem; opacity: .8; margin-top: 3px; }
 .ring { position: relative; width: 56px; height: 56px; }
 .ring svg { width: 56px; height: 56px; transform: rotate(-90deg); }
 .ring circle { fill: none; stroke-width: 4; }
 .ring .track { stroke: rgb(255 255 255 / .2); }
-.ring .bar { stroke: var(--saffron); stroke-linecap: round; transition: stroke-dashoffset 1s linear, stroke .3s; }
+.ring .bar { stroke: var(--saffron); stroke-linecap: round; transition: stroke-dashoffset .3s linear, stroke .3s; }
 .ring.hot .bar { stroke: var(--live); }
 .ring b { position: absolute; inset: 0; display: grid; place-items: center; font-size: .95rem; }
 .pricebar { display: flex; justify-content: space-between; align-items: end; gap: 10px; }
 .pricebar .big { font-size: 1.7rem; font-weight: 700; letter-spacing: -.02em; line-height: 1; transition: color .3s, transform .3s; display: inline-block; }
 .pricebar .big.bump { color: var(--saffron); transform: scale(1.06); }
 .pricebar small { display: block; font-size: .75rem; opacity: .8; margin-bottom: 4px; }
-.pricebar .topb { text-align: right; font-size: .82rem; }
-.pricebar .topb b { display: block; font-size: .95rem; }
+.pricebar .topb { text-align: end; font-size: .82rem; display: grid; gap: 3px; justify-items: end; }
+.pricebar .topb b { font-size: .95rem; }
 .reserve { font-size: .72rem; font-weight: 700; padding: 3px 8px; border-radius: 999px; background: rgb(255 255 255 / .14); }
-.reserve.ok { background: var(--good); }
+.reserve.ok { background: var(--good); color: #fff; }
+.autochip { justify-self: start; font-size: .75rem; font-weight: 700; padding: 4px 10px; border-radius: 999px; background: rgb(255 196 107 / .25); color: var(--saffron); }
 .slide { position: relative; height: 56px; border-radius: 999px; background: rgb(255 255 255 / .16); border: 1px solid rgb(255 255 255 / .25); overflow: hidden; user-select: none; touch-action: none; }
-.slide .fill { position: absolute; inset: 0 auto 0 0; width: 0; background: linear-gradient(90deg, var(--saffron), #ff9a4d); opacity: .9; }
-.slide .txt { position: absolute; inset: 0; display: grid; place-items: center; font-weight: 700; font-size: .95rem; padding-left: 52px; padding-right: 12px; text-align: center; line-height: 1.15; }
-.slide .knob { position: absolute; top: 4px; left: 4px; width: 48px; height: 46px; border-radius: 999px; border: 0; background: var(--saffron); color: #2a1a00; display: grid; place-items: center; cursor: grab; box-shadow: 0 4px 14px rgb(0 0 0 / .3); }
-.slide.disabled { opacity: .55; }
+.slide .fill { position: absolute; inset-block: 0; inset-inline-start: 0; width: 0; background: linear-gradient(90deg, var(--saffron), #ff9a4d); opacity: .9; }
+.slide .txt { position: absolute; inset: 0; display: grid; place-items: center; font-weight: 700; font-size: .95rem; padding-inline: 56px 12px; text-align: center; line-height: 1.15; }
+.slide .knob { position: absolute; top: 4px; inset-inline-start: 4px; width: 48px; height: 46px; border-radius: 999px; border: 0; background: var(--saffron); color: #2a1a00; display: grid; place-items: center; cursor: grab; box-shadow: 0 4px 14px rgb(0 0 0 / .3); }
+.slide.disabled { opacity: .7; }
 .slide.disabled .knob { cursor: not-allowed; background: rgb(255 255 255 / .4); }
 .slide.lead { background: rgb(31 157 107 / .5); border-color: rgb(79 211 155 / .6); }
-.actions { display: flex; gap: 8px; }
-.actions button { flex: 1; padding: 9px 10px; border-radius: 12px; border: 1px solid rgb(255 255 255 / .22); background: rgb(255 255 255 / .1); color: var(--on-media); font-weight: 700; font-size: .82rem; cursor: pointer; }
+.actions { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.actions button { padding: 8px 6px; border-radius: 12px; border: 1px solid rgb(255 255 255 / .22); background: rgb(255 255 255 / .1); color: var(--on-media); font-weight: 700; font-size: .78rem; cursor: pointer; line-height: 1.2; }
 .actions button:hover { background: rgb(255 255 255 / .18); }
+.actions button[aria-pressed="true"] { background: rgb(255 196 107 / .3); border-color: var(--saffron); }
 .custom { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
 .custom input { border-radius: 12px; border: 1px solid rgb(255 255 255 / .3); background: rgb(255 255 255 / .12); color: var(--on-media); padding: 10px 12px; min-width: 0; }
 .custom input::placeholder { color: rgb(255 255 255 / .6); }
 .custom-err { font-size: .78rem; color: #ffd0c8; }
 .phase-note { font-size: .85rem; padding: 10px 12px; border-radius: 12px; background: rgb(255 255 255 / .12); }
+.bidders { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: .84rem; }
+.bidders li { display: flex; justify-content: space-between; gap: 8px; padding: 6px 10px; border-radius: 10px; background: rgb(255 255 255 / .08); }
 
 .overlay { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; text-align: center; background: rgb(9 12 32 / .55); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); z-index: 3; }
 .overlay .box { display: grid; gap: 10px; justify-items: center; max-width: 320px; }
-.stamp { font-size: 2.6rem; font-weight: 700; letter-spacing: -.03em; padding: 6px 18px; border: 4px solid var(--saffron); color: var(--saffron); border-radius: 12px; transform: rotate(-4deg); animation: stamp .5s cubic-bezier(.2, 1.6, .4, 1); }
+.stamp { font-size: 2.6rem; font-weight: 700; padding: 6px 18px; border: 4px solid var(--saffron); color: var(--saffron); border-radius: 12px; transform: rotate(-4deg); animation: stamp .5s cubic-bezier(.2, 1.6, .4, 1); }
 .stamp.no { border-color: rgb(255 255 255 / .6); color: rgb(255 255 255 / .85); font-size: 1.8rem; }
 .stamp.win { border-color: var(--good); color: #7ff0bd; }
 @keyframes stamp { from { transform: rotate(-4deg) scale(2); opacity: 0; } }
@@ -226,41 +255,104 @@ main.room-mode { padding-block: 16px; }
 .chat { border-radius: var(--radius); }
 .msgs { list-style: none; margin: 0; padding: 10px 14px; overflow: auto; display: flex; flex-direction: column; gap: 8px; font-size: .88rem; }
 .msgs li { line-height: 1.35; overflow-wrap: anywhere; animation: msgin .25s ease-out; }
-.msgs li b { margin-right: 5px; }
+.msgs li b { margin-inline-end: 5px; }
 .msgs li.sys { font-size: .8rem; color: var(--muted); }
 .msgs li.bid { font-weight: 700; color: var(--accent); }
-.msgs li.from-host b::after { content: "Hôte"; margin-left: 6px; font-size: .62rem; letter-spacing: .06em; text-transform: uppercase; padding: 1px 5px; border-radius: 4px; background: var(--live); color: #fff; vertical-align: 2px; }
+.msgs li.from-host b::after { content: attr(data-host); margin-inline-start: 6px; font-size: .62rem; letter-spacing: .06em; text-transform: uppercase; padding: 1px 5px; border-radius: 4px; background: var(--live); color: #fff; vertical-align: 2px; }
 .msgs li.me b { color: var(--accent); }
 @keyframes msgin { from { opacity: 0; transform: translateY(6px); } }
 .chat form { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; padding: 10px; border-top: 1px solid var(--line); }
 .chat input { border-radius: 999px; border: 1px solid var(--glass-border); background: var(--surface); padding: 9px 14px; min-width: 0; }
 .chat input:focus { outline: none; border-color: var(--accent); }
 
-/* Feuilles (identification) */
+/* Feuilles modales */
 .sheet-back { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; padding: 16px; background: rgb(11 15 38 / .4); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
-.sheet { width: min(420px, 100%); border-radius: 22px; padding: 22px; display: grid; gap: 12px; background: var(--surface-strong); }
-.sheet label { display: grid; gap: 6px; font-weight: 700; font-size: .88rem; }
-.sheet input[type="text"] { border-radius: 12px; border: 1px solid var(--glass-border); background: var(--surface); padding: 10px 12px; }
-.check { display: flex; gap: 10px; align-items: flex-start; font-weight: 400 !important; color: var(--muted); font-size: .84rem !important; display: flex !important; }
-.check input { margin-top: 3px; }
-.err { color: var(--danger); font-size: .82rem; font-weight: 700; }
+.sheet { width: min(460px, 100%); max-height: calc(100dvh - 32px); overflow: auto; border-radius: 22px; padding: 22px; display: grid; gap: 14px; background: var(--surface-strong); align-content: start; }
+.sheet.wide { width: min(720px, 100%); }
+.sheet-head { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; border-bottom: 1px solid var(--line); padding-bottom: 10px; }
+.tabs button { padding: 7px 12px; border-radius: 999px; border: 1px solid transparent; background: none; font-weight: 700; font-size: .86rem; cursor: pointer; color: var(--muted); }
+.tabs button[aria-selected="true"] { background: var(--accent-soft); color: var(--accent); }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; }
+.facts div { padding: 10px 12px; border-radius: 12px; background: var(--surface); border: 1px solid var(--glass-border); display: grid; gap: 2px; }
+.facts span { font-size: .75rem; color: var(--muted); }
+.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
+.gallery figure { margin: 0; display: grid; gap: 4px; font-size: .8rem; font-weight: 700; text-align: center; }
+.gallery .ph { aspect-ratio: 3 / 4; border-radius: 12px; overflow: hidden; }
+.gallery .ph > svg { width: 100%; height: 100%; display: block; }
+.plan { width: 100%; max-width: 100%; height: auto; color: var(--ink); }
+.docs { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.docs li { border-radius: 14px; padding: 12px 14px; background: var(--surface); border: 1px solid var(--glass-border); display: grid; gap: 8px; }
+.docs .dh { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.ok-pill { font-size: .72rem; font-weight: 700; color: var(--good); background: var(--good-soft); padding: 3px 8px; border-radius: 999px; }
+.docview { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 16px; margin: 0; font-size: .86rem; padding: 12px; border-radius: 10px; background: var(--bg); border: 1px dashed var(--line); }
+.docview dt { color: var(--muted); }
+.docview dd { margin: 0; font-weight: 700; }
+.calc { display: grid; gap: 14px; }
+.costs { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 16px; margin: 0; font-size: .9rem; }
+.costs dd { margin: 0; text-align: end; font-weight: 700; }
+.costs .total { padding-top: 8px; border-top: 1px solid var(--line); font-size: 1.05rem; }
+.loan { display: grid; gap: 10px; padding: 14px; border-radius: 14px; background: var(--surface); border: 1px solid var(--glass-border); }
+.loan input[type="range"] { width: 100%; accent-color: var(--accent); }
+.monthly { font-size: 1.8rem; font-weight: 700; }
+
+/* Notifications */
+.notifs { position: fixed; z-index: 35; top: calc(env(safe-area-inset-top, 0px) + 66px); inset-inline-end: 16px; width: min(360px, calc(100% - 32px)); max-height: 70dvh; overflow: auto; border-radius: 18px; padding: 12px; display: grid; gap: 8px; background: var(--surface-strong); box-shadow: var(--shadow); }
+.notifs ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.notifs li { padding: 10px 12px; border-radius: 12px; font-size: .86rem; display: grid; gap: 2px; }
+.notifs li.unread { background: var(--accent-soft); }
+.notifs li small { color: var(--muted); font-size: .74rem; }
+
+/* Mes victoires */
+.wins { display: grid; gap: 16px; }
+.win { border-radius: var(--radius); padding: 16px; display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 18px; }
+.win .thumb { aspect-ratio: 3 / 4; }
+.win-body { display: grid; gap: 12px; min-width: 0; align-content: start; }
+.win-top { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; align-items: start; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.steps li { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; padding-bottom: 12px; position: relative; }
+.steps li::before { content: ""; position: absolute; inset-inline-start: 12px; top: 26px; bottom: 0; width: 2px; background: var(--line); }
+.steps li:last-child::before { display: none; }
+.steps .dot { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-size: .78rem; font-weight: 700; border: 2px solid var(--line); background: var(--surface); }
+.steps li.done .dot { background: var(--good); border-color: var(--good); color: #fff; }
+.steps li.now .dot { border-color: var(--accent); color: var(--accent); }
+.steps li.done::before { background: var(--good); }
+.steps b { display: block; font-size: .92rem; }
+.steps p { font-size: .84rem; color: var(--muted); }
+.steps .btn { margin-top: 8px; }
+
+/* Studio */
+.studio { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 20px; align-items: start; }
+.mylives { display: grid; gap: 10px; }
+.mylive { border-radius: 14px; padding: 14px; display: grid; gap: 10px; }
+.mylive .row { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; align-items: center; }
+.lotlist { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.lotlist li { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px; border-radius: 12px; background: var(--surface); border: 1px solid var(--glass-border); }
+.lotlist small { color: var(--muted); }
+
 .toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 20px); transform: translateX(-50%); z-index: 50; background: var(--ink); color: var(--bg); padding: 11px 16px; border-radius: 12px; font-weight: 700; font-size: .88rem; max-width: calc(100% - 32px); box-shadow: var(--shadow); }
 footer { border-top: 1px solid var(--glass-border); padding-block: 20px; color: var(--muted); font-size: .8rem; }
 
 @media (max-width: 1100px) {
   .room { grid-template-columns: minmax(0, 440px) 320px; }
   .room > .lots-panel { display: none; }
-  .room > .lots-panel.open { display: grid; }
+  .room > .lots-panel.open { display: grid; position: fixed; z-index: 30; inset-inline: 16px; bottom: calc(env(safe-area-inset-bottom, 0px) + 16px); max-height: 70dvh; background: var(--surface-strong); box-shadow: var(--shadow); }
+  .lots-panel .close-sheet { display: inline-flex; }
   .lots-toggle { display: inline-flex; }
 }
-@media (max-width: 1100px) {
-  .lots-panel.open { position: fixed; z-index: 30; left: 16px; right: 16px; bottom: calc(env(safe-area-inset-bottom, 0px) + 16px); max-height: 70dvh; background: var(--surface-strong); box-shadow: var(--shadow); }
-  .lots-panel .close-sheet { display: inline-flex; }
+@media (max-width: 900px) {
+  .studio { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 760px) {
   main.room-mode { padding-block: 10px; }
-  .room { grid-template-columns: minmax(0, 1fr); height: calc(100dvh - 140px); min-height: 520px; }
-  .room > .chat { position: absolute; left: 10px; right: 76px; bottom: var(--chat-bottom, 250px); max-height: 32%; background: none; border: 0; -webkit-backdrop-filter: none; backdrop-filter: none; grid-template-rows: minmax(0, 1fr) auto; z-index: 2; pointer-events: none; }
+  .wrap { padding-inline: 16px; }
+  .top { position: static; }
+  .top .wrap { gap: 4px 12px; min-height: 0; }
+  .brand small { display: none; }
+  nav.main { order: 3; width: 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .tools { margin-inline-start: auto; }
+  .room { grid-template-columns: minmax(0, 1fr); height: calc(100dvh - 130px); min-height: 560px; }
+  .room > .chat { position: absolute; inset-inline: 10px 76px; bottom: var(--chat-bottom, 250px); max-height: 22%; background: none; border: 0; -webkit-backdrop-filter: none; backdrop-filter: none; grid-template-rows: minmax(0, 1fr) auto; z-index: 2; pointer-events: none; }
   .room > .chat .panel-head { display: none; }
   .room > .chat .msgs { padding: 0 4px; color: var(--on-media); font-size: .84rem; text-shadow: 0 1px 3px rgb(0 0 0 / .7); mask-image: linear-gradient(transparent, #000 30%); -webkit-mask-image: linear-gradient(transparent, #000 30%); pointer-events: auto; }
   .room > .chat .msgs li.sys { color: rgb(255 255 255 / .75); }
@@ -269,21 +361,14 @@ footer { border-top: 1px solid var(--glass-border); padding-block: 20px; color: 
   .room > .chat input { background: rgb(0 0 0 / .35); border-color: rgb(255 255 255 / .25); color: var(--on-media); }
   .room > .chat input::placeholder { color: rgb(255 255 255 / .65); }
   .room > .chat .btn { display: none; }
-  .wrap { padding-inline: 16px; }
-  .top { position: static; }
-  .top .wrap { gap: 4px 12px; min-height: 0; }
-  .brand small { display: none; }
-  .who { width: 100%; }
-  .room { height: calc(100dvh - 120px); }
-  .room > .chat { max-height: 24%; }
-  .lotcard { padding: 12px; gap: 8px; left: 8px; right: 8px; bottom: 8px; }
+  .lotcard { padding: 12px; gap: 8px; inset-inline: 8px; bottom: 8px; }
   .lotcard h2 { font-size: 1rem; }
   .lotcard .where { display: none; }
   .ring, .ring svg { width: 48px; height: 48px; }
   .pricebar .big { font-size: 1.4rem; }
   .slide { height: 52px; }
   .slide .knob { height: 42px; width: 46px; }
-  .actions button { padding: 7px 8px; }
+  .win { grid-template-columns: 72px minmax(0, 1fr); gap: 12px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -292,98 +377,331 @@ footer { border-top: 1px solid var(--glass-border); padding-block: 20px; color: 
 
 <header class="top glass">
   <div class="wrap">
-    <a class="brand" href="#lives"><span class="dot" aria-hidden="true"></span>Adjugé Live <small>l'immobilier aux enchères, en direct</small></a>
-    <nav class="main" aria-label="Navigation principale">
-      <a href="#lives" aria-current="page">Lives</a>
-      <a href="index.html">Catalogue</a>
+    <a class="brand" href="#lives"><span class="dot" aria-hidden="true"></span>Adjugé Live <small data-i18n="brandTag"></small></a>
+    <nav class="main" aria-label="Navigation">
+      <a href="#lives" data-nav="lives" data-i18n="navLives"></a>
+      <a href="#studio" data-nav="studio" data-i18n="navStudio"></a>
+      <a href="#victoires" data-nav="victoires" data-i18n="navWins"></a>
+      <a href="index.html" data-i18n="navCatalogue">Catalogue</a>
     </nav>
-    <div class="who" id="who"></div>
+    <div class="tools">
+      <div class="who" id="who"></div>
+      <button class="round glass" type="button" id="bell" aria-haspopup="true" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10 21a2 2 0 0 0 4 0"/></svg><span class="badge-count" id="bell-count" hidden></span></button>
+      <button class="round glass" type="button" id="lang" aria-label="Langue / اللغة"></button>
+    </div>
   </div>
 </header>
 
 <main class="wrap" id="app"></main>
 
-<footer id="footer"><div class="wrap">Prototype de démonstration : la vidéo, les spectateurs, le chat et les autres enchérisseurs sont simulés dans la page. Votre pseudo et vos rappels restent dans ce navigateur.</div></footer>
+<footer id="footer"><div class="wrap" data-i18n="footer"></div></footer>
 
-<div class="sheet-back" id="onboard" hidden>
-  <form class="sheet" id="onboard-form" novalidate>
-    <h2>Avant d'enchérir</h2>
-    <p class="muted">En live, les autres participants voient votre pseudo à chaque offre.</p>
-    <label for="ob-handle">Pseudo<input type="text" id="ob-handle" maxlength="24" autocomplete="nickname" placeholder="salma.invest"></label>
-    <label class="check" for="ob-deposit"><input type="checkbox" id="ob-deposit"> J'autorise une consignation de 10 % du prix de départ du lot, prélevée uniquement si je remporte la vente et remboursée sinon.</label>
-    <p class="err" id="ob-err" hidden></p>
-    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary" type="submit">C'est parti</button><button class="btn btn-ghost" type="button" id="ob-cancel">Annuler</button></div>
-  </form>
-</div>
+<div class="notifs" id="notifs" hidden></div>
+<div class="sheet-back" id="modal" hidden></div>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
 <script>
 (() => {
 "use strict";
 
+/* ====================================================================
+   Traductions (français / arabe). Les valeurs peuvent être des fonctions
+   pour gérer le pluriel. {x} est remplacé par vars.x.
+   ==================================================================== */
+const I18N = {
+  fr: {
+    brandTag: "l'immobilier aux enchères, en direct", navLives: "Lives", navStudio: "Studio agent", navWins: "Mes victoires", navCatalogue: "Catalogue",
+    pickHandle: "S'identifier", verified: "Identité vérifiée", notifs: "Notifications", markRead: "Tout marquer comme lu", noNotifs: "Aucune notification pour l'instant.",
+    whatsapp: "Recevoir aussi sur WhatsApp (simulation)", langBtn: "ع",
+    footer: "Prototype de démonstration : la vidéo, les spectateurs, le chat, les autres enchérisseurs, la vérification d'identité et les paiements sont simulés. Vos données restent dans ce navigateur.",
+    feedEyebrow: "En direct", feedTitle: "Les biens passent un par un. Glissez pour enchérir.",
+    feedLede: "Un agent présente chaque bien en visite filmée et répond au chat. Ouvrez le dossier, calculez le coût total, puis enchérissez ou laissez l'enchère auto le faire pour vous.",
+    catAll: "Tous", catriad: "Riads", catvilla: "Villas", catappartement: "Appartements", catterrain: "Terrains", catlocal: "Commerces", catmaison: "Maisons",
+    nowLive: "En ce moment", noLive: "Aucun live dans cette catégorie en ce moment.", upcoming: "Prochains lives", noUpcoming: "Aucun live programmé dans cette catégorie.",
+    viewers: "{n} spectateurs", lotsCount: (v) => `${v.n} lot${v.n > 1 ? "s" : ""}`, fromPrice: "À partir de {p}", remind: "Me rappeler", reminded: "Rappel activé",
+    remindToast: "Nous vous préviendrons au début du live.", remindOff: "Rappel retiré.", yourLive: "Votre live", inT: "Dans {t}", live: "LIVE",
+    howTitle: "Comment ça marche", how1t: "Regardez et vérifiez", how1: "Visite filmée, dossier du bien (titre foncier, plan, expertise) et calcul du coût total.",
+    how2t: "Glissez ou programmez", how2: "Glissez pour l'offre suivante, saisissez un montant, ou fixez une enchère auto maximale.",
+    how3t: "Adjugé, puis le notaire", how3: "Suivez chaque étape dans Mes victoires : consignation, identité, compromis, acte, clés.",
+    leave: "Quitter le live", follow: "Suivre", following: "Suivi", followToast: "Vous suivez {n}.", tour: "Visite · {r}", lotsBtn: "Lots ({n})", lotsTitle: "Lots du live", close: "Fermer",
+    chat: "Chat", online: "{n} en ligne", chatPh: "Posez une question à l'hôte…", hostChatPh: "Parlez à votre audience…", send: "Envoyer", hostTag: "Hôte",
+    welcome: "Bienvenue dans le live de {n}. Soyez courtois dans le chat.", lotN: "Lot {i}/{n}", lotAnnounce: "Lot {i} sur {n} : {t}",
+    openMsg: "Ouverture à {p}, pas de {s}. C'est parti !", lastSec: "Dernières secondes… qui dit mieux ?", soldTo: "Adjugé à @{h} pour {p} ! Bravo.",
+    notMet: "Réserve non atteinte à {p} : le lot n'est pas adjugé ce soir.", noBids: "Pas d'offre sur ce lot, il repassera dans un prochain live.", bidLine: "enchérit {p}",
+    current: "Offre actuelle", startP: "Prix de départ", bidsN: (v) => `${v.n} offre${v.n > 1 ? "s" : ""}`, resOk: "Réserve atteinte", resNo: "Réserve non atteinte",
+    introNote: "Présentation en cours. Les enchères ouvrent dans {s} à {p}.", introHost: "Présentation en cours. Ouvrez les enchères quand vous voulez.",
+    slide: "Glisser pour enchérir {p}", lead: "Vous menez à {p}", slideHint: "Glissez le bouton jusqu'au bout", aCustom: "Montant", aAuto: "Auto", aDossier: "Dossier", aLove: "Envoyer des cœurs",
+    validate: "Valider", minErr: "Saisissez au moins {p}, sans centimes.", leadAlready: "Vous menez déjà l'enchère.", minBidToast: "L'offre minimum est de {p}.",
+    bidOk: "Offre enregistrée. Vous menez !", bidOkRes: "Offre enregistrée. Réserve atteinte !",
+    autoTitle: "Enchère automatique", autoHelp: "L'appli enchérit pour vous au palier suivant chaque fois qu'on vous dépasse, sans jamais dépasser votre maximum. Votre maximum reste secret.",
+    autoPh: "Votre maximum, ex. {p}", autoSet: "Activer", autoStop: "Arrêter l'enchère auto", autoOn: "Auto jusqu'à {p}", autoToast: "Enchère auto activée jusqu'à {p}.", autoOff: "Enchère auto arrêtée.",
+    autoDone: "Votre enchère auto à {p} a été dépassée.", autoMinErr: "Votre maximum doit être d'au moins {p}.",
+    stampSold: "Adjugé !", stampNo: "Non adjugé", wonBy: "<b>@{h}</b> remporte le lot pour <b>{p}</b>", lastOffer: "Dernière offre : {p}. La réserve du vendeur n'est pas atteinte.",
+    noOffer: "Aucune offre sur ce lot.", youWon: "Félicitations ! Suivez la suite (consignation, identité, notaire) dans Mes victoires.", seeWins: "Voir mes victoires",
+    nextSoon: "Lot suivant dans quelques secondes…", lastLot: "C'était le dernier lot.", phaseSold: "Lot adjugé.", phaseUnsold: "Lot non adjugé.", getReady: "Préparez-vous pour le lot suivant.",
+    ended: "Le live est terminé.", endBadge: "LIVE TERMINÉ", thanks: "Merci d'avoir suivi {n}",
+    summary: (v) => `${v.s} lot${v.s > 1 ? "s" : ""} adjugé${v.s > 1 ? "s" : ""} sur ${v.n}, pour ${v.p} au total.`, replay: "Revoir le live", otherLives: "Autres lives", backStudio: "Retour au studio",
+    notLive: "Ce live n'est pas en cours", notLiveP: "Il est peut-être terminé ou pas encore commencé.", seeLives: "Voir les lives",
+    hostMode: "Mode hôte", hOpen: "Ouvrir les enchères", hClose: "Adjuger maintenant", hNext: "Lot suivant", hExtended: "Chrono prolongé de 15 secondes.", hBidders: "Meilleurs enchérisseurs", hNoBidders: "Pas encore d'offre.",
+    rooms: { facade: "Façade", salon: "Salon", chambre: "Chambre", patio: "Patio", terrasse: "Terrasse", vue: "Vue" },
+    types: { appartement: "Appartement", maison: "Maison", villa: "Villa", riad: "Riad", terrain: "Terrain", local: "Local commercial" },
+    dTitle: "Dossier du bien", tVisit: "Visite", tPlan: "Plan", tDocs: "Documents", tCost: "Coût & crédit",
+    fSurface: "Surface", fRooms: "Pièces", fBeds: "Chambres", fYear: "Construction", fFloor: "Étage", fCharges: "Charges", perMonth: "{p} / mois", fTF: "Titre foncier",
+    dTF: "Certificat de propriété (titre foncier)", dNR: "Note de renseignement urbanistique", dEX: "Rapport d'expertise", dCO: "Règlement de copropriété et charges",
+    checked: "Vérifié par l'étude", view: "Aperçu", hide: "Masquer", kNumber: "Numéro", kOwner: "Propriétaire", vOwner: "Particulier (identité masquée)", kArea: "Superficie titrée",
+    kMortgage: "Hypothèques et charges", vNone: "Néant", kZone: "Zonage", zhab: "Zone d'habitat, construction conforme", zvilla: "Zone villas, R+1, COS 0,4", zcom: "Zone mixte, commerce autorisé",
+    kValue: "Valeur estimée", kState: "État général", sgood: "Bon, rénové récemment", sworks: "Travaux importants à prévoir", kSyndic: "Charges de copropriété", kDate: "Date",
+    docsNote: "Documents simulés pour la démonstration.",
+    pSalon: "Salon", pChambre: "Chambre", pCuisine: "Cuisine", pSdb: "Salle d'eau", pPatio: "Patio", pPlateau: "Plateau", pReserve: "Réserve", pWc: "WC", pTerrain: "Terrain", planNote: "Plan schématique, surfaces approximatives.",
+    cPrice: "Prix d'adjudication (DH)", cUseCurrent: "Utiliser l'offre actuelle", cReg: "Droits d'enregistrement (4 %)", cCons: "Conservation foncière (1,5 % + 200 DH)",
+    cNot: "Honoraires du notaire (1 % + TVA 10 %)", cMisc: "Frais divers (timbres, copies)", cTotal: "Coût total estimé", cLoan: "Crédit immobilier",
+    cDown: "Apport : {x} %", cYears: "Durée : {x} ans", cRate: "Taux annuel (%)", cMonthly: "Mensualité estimée", cBorrow: "Montant emprunté", cCash: "Apport à prévoir (apport + frais)",
+    cNote: "Estimation indicative, hors assurance. Les taux et frais exacts sont à confirmer avec votre notaire et votre banque.",
+    obTitle: "Avant d'enchérir", obLede: "Pour enchérir sur un bien, nous vérifions votre identité. En live, les autres participants ne voient que votre pseudo.",
+    obHandle: "Pseudo", obCin: "Numéro de CIN", obFunds: "Preuve de fonds ou accord de crédit (facultatif)",
+    obDeposit: "J'autorise une consignation de 10 % du prix de départ du lot, prélevée uniquement si je remporte la vente et remboursée sinon.",
+    obGo: "Vérifier et continuer", cancel: "Annuler", errHandle: "Choisissez un pseudo de 3 à 24 caractères : lettres latines, chiffres, point ou tiret bas.",
+    errCin: "Saisissez un numéro de CIN valide, par exemple BE123456.", errDep: "Cochez la case pour autoriser la consignation.", obVerifying: "Vérification en cours…",
+    obDone: "Identité vérifiée. Bonne vente !", kycNote: "Simulation : aucune donnée n'est envoyée.",
+    wTitle: "Mes victoires", wLede: "Chaque bien remporté suit les mêmes étapes jusqu'à la remise des clés.", wEmpty: "Vous n'avez encore remporté aucun bien.",
+    wDemo: "Voir un exemple", wGoLive: "Rejoindre un live", wPrice: "Adjugé {p}", wTotal: "Coût total estimé : {p}", wDossier: "Dossier du bien", demoFlag: "Exemple",
+    s0: "Consignation", s0d: "10 % du prix de départ, soit {p}.", s0a: "Payer via CMI (simulation)", s0wait: "Paiement en cours…",
+    s1: "Identité et fonds", s1d: "Vérification de la CIN et de la preuve de fonds.", s1a: "Confirmer mes documents",
+    s2: "Compromis de vente", s2d: "Signature électronique du compromis préparé par l'étude.", s2a: "Signer le compromis",
+    s3: "Acte chez le notaire", s3d: "Rendez-vous le {d} : versement du solde et signature de l'acte.", s3a: "Confirmer le rendez-vous",
+    s4: "Remise des clés", s4d: "Inscription à la conservation foncière, puis remise des clés.", s4a: "Clés reçues",
+    doneAll: "Félicitations, vous êtes propriétaire !", stepDone: "Étape validée.",
+    sTitle: "Studio agent", sLede: "Préparez votre live : ajoutez vos biens, puis lancez la vente et pilotez-la en direct depuis le mode hôte.",
+    sNew: "Nouveau live", sShowTitle: "Titre du live", sCities: "Villes", sCat: "Catégorie", sAgency: "Agence", sHostName: "Votre nom", sCreate: "Créer le live", sExample: "Remplir avec un exemple",
+    sMyLives: "Mes lives", sNone: "Vous n'avez pas encore créé de live.", sLots: "Biens du live", sNoLots: "Ajoutez au moins un bien pour lancer le live.", sAddLot: "Ajouter le bien", sAddTitle: "Ajouter un bien",
+    lTitle: "Titre", lType: "Type", lCity: "Ville", lDistrict: "Quartier", lSurface: "Surface (m²)", lRooms: "Pièces", lBeds: "Chambres", lStart: "Prix de départ (DH)", lReserve: "Prix de réserve (DH)",
+    lInc: "Pas d'enchère (DH)", lTF: "N° de titre foncier", lPitch: "Votre présentation (une phrase par ligne)",
+    sLaunch: "Lancer le live", sResume: "Mode hôte", sViewer: "Voir comme spectateur", sDelete: "Supprimer", sConfirmDel: "Confirmer la suppression", sRemoveLot: "Retirer",
+    sDraft: "Brouillon", sLiveNow: "En direct", errRequired: "Champ obligatoire.", errInt: "Nombre entier attendu.", errReserve: "La réserve doit être au moins égale au prix de départ.", errMin: "Minimum {p}.",
+    sCreated: "Live créé. Ajoutez vos biens.", sLotAdded: "Bien ajouté.", sLaunched: "Votre live est en ligne !", sDeleted: "Live supprimé.",
+    nOutbid: "Vous avez été surenchéri sur « {t} » ({p}).", nWon: "Vous avez remporté « {t} » pour {p} !", nRemind: "Rappel : « {t} » commence {w}.",
+    nLaunched: "Votre live « {t} » est en ligne.", nWelcome: "Bienvenue sur Adjugé Live ! Activez des rappels pour ne rater aucune vente.",
+    ago0: "à l'instant", agoM: "il y a {n} min", agoH: "il y a {n} h", agoD: "il y a {n} j",
+  },
+  ar: {
+    brandTag: "العقار بالمزاد، مباشرة", navLives: "البث المباشر", navStudio: "استوديو الوكيل", navWins: "مشترياتي", navCatalogue: "الكتالوج",
+    pickHandle: "تسجيل الدخول", verified: "هوية موثّقة", notifs: "الإشعارات", markRead: "تعليم الكل كمقروء", noNotifs: "لا توجد إشعارات حالياً.",
+    whatsapp: "توصل بها أيضاً على واتساب (محاكاة)", langBtn: "FR",
+    footer: "نموذج تجريبي: الفيديو والمشاهدون والدردشة والمزايدون الآخرون والتحقق من الهوية والأداءات كلها محاكاة. تبقى بياناتك في هذا المتصفح.",
+    feedEyebrow: "مباشر", feedTitle: "العقارات تُعرض واحداً تلو الآخر. اسحب للمزايدة.",
+    feedLede: "يقدّم الوكيل كل عقار في زيارة مصوّرة ويجيب في الدردشة. افتح الملف واحسب التكلفة الإجمالية، ثم زايد أو دع المزايدة التلقائية تقوم بذلك عنك.",
+    catAll: "الكل", catriad: "رياضات", catvilla: "فيلات", catappartement: "شقق", catterrain: "أراضٍ", catlocal: "محلات تجارية", catmaison: "منازل",
+    nowLive: "الآن", noLive: "لا يوجد بث في هذه الفئة حالياً.", upcoming: "البث القادم", noUpcoming: "لا يوجد بث مبرمج في هذه الفئة.",
+    viewers: "{n} مشاهد", lotsCount: "{n} عقارات", fromPrice: "ابتداءً من {p}", remind: "ذكّرني", reminded: "التذكير مفعّل",
+    remindToast: "سنُعلمك عند بداية البث.", remindOff: "تم إلغاء التذكير.", yourLive: "بثّك", inT: "بعد {t}", live: "مباشر",
+    howTitle: "كيف يعمل", how1t: "شاهد وتحقّق", how1: "زيارة مصوّرة، ملف العقار (الرسم العقاري، التصميم، الخبرة) وحساب التكلفة الإجمالية.",
+    how2t: "اسحب أو برمج", how2: "اسحب للعرض التالي، أو أدخل مبلغاً، أو حدّد مزايدة تلقائية قصوى.",
+    how3t: "رسا المزاد، ثم الموثق", how3: "تابع كل مرحلة في مشترياتي: الضمان، الهوية، الوعد بالبيع، العقد، المفاتيح.",
+    leave: "مغادرة البث", follow: "متابعة", following: "متابَع", followToast: "أنت تتابع {n}.", tour: "زيارة · {r}", lotsBtn: "العقارات ({n})", lotsTitle: "عقارات البث", close: "إغلاق",
+    chat: "الدردشة", online: "{n} متصل", chatPh: "اطرح سؤالاً على المضيف…", hostChatPh: "تحدث إلى جمهورك…", send: "إرسال", hostTag: "المضيف",
+    welcome: "مرحباً بك في بث {n}. يرجى الاحترام في الدردشة.", lotN: "العقار {i}/{n}", lotAnnounce: "العقار {i} من {n}: {t}",
+    openMsg: "الافتتاح بـ {p}، بخطوة {s}. هيا بنا!", lastSec: "الثواني الأخيرة… من يزيد؟", soldTo: "رسا المزاد على @{h} بـ {p}! مبروك.",
+    notMet: "لم يُبلغ الثمن الأدنى عند {p}: لن يُباع العقار الليلة.", noBids: "لا عروض على هذا العقار، سيُعرض في بث قادم.", bidLine: "يزايد بـ {p}",
+    current: "العرض الحالي", startP: "ثمن الانطلاق", bidsN: "{n} عروض", resOk: "تم بلوغ الثمن الأدنى", resNo: "الثمن الأدنى غير مبلوغ",
+    introNote: "التقديم جارٍ. تُفتح المزايدة بعد {s} بـ {p}.", introHost: "التقديم جارٍ. افتح المزايدة متى شئت.",
+    slide: "اسحب للمزايدة بـ {p}", lead: "أنت في المقدمة بـ {p}", slideHint: "اسحب الزر حتى النهاية", aCustom: "مبلغ", aAuto: "تلقائي", aDossier: "الملف", aLove: "إرسال قلوب",
+    validate: "تأكيد", minErr: "أدخل على الأقل {p}، بدون سنتيمات.", leadAlready: "أنت في المقدمة بالفعل.", minBidToast: "أدنى عرض هو {p}.",
+    bidOk: "تم تسجيل عرضك. أنت في المقدمة!", bidOkRes: "تم تسجيل عرضك. تم بلوغ الثمن الأدنى!",
+    autoTitle: "المزايدة التلقائية", autoHelp: "يزايد التطبيق عنك بالخطوة التالية كلما تجاوزك أحد، دون أن يتخطى حدّك الأقصى أبداً. يبقى حدّك سرياً.",
+    autoPh: "حدّك الأقصى، مثلاً {p}", autoSet: "تفعيل", autoStop: "إيقاف المزايدة التلقائية", autoOn: "تلقائي حتى {p}", autoToast: "تم تفعيل المزايدة التلقائية حتى {p}.", autoOff: "تم إيقاف المزايدة التلقائية.",
+    autoDone: "تم تجاوز مزايدتك التلقائية عند {p}.", autoMinErr: "يجب أن يكون حدّك الأقصى {p} على الأقل.",
+    stampSold: "رسا المزاد!", stampNo: "لم يُبع", wonBy: "<b>@{h}</b> يفوز بالعقار بـ <b>{p}</b>", lastOffer: "آخر عرض: {p}. لم يُبلغ الثمن الأدنى للبائع.",
+    noOffer: "لا عروض على هذا العقار.", youWon: "مبروك! تابع الخطوات (الضمان، الهوية، الموثق) في مشترياتي.", seeWins: "عرض مشترياتي",
+    nextSoon: "العقار التالي بعد ثوانٍ…", lastLot: "كان هذا آخر عقار.", phaseSold: "تم البيع.", phaseUnsold: "لم يتم البيع.", getReady: "استعد للعقار التالي.",
+    ended: "انتهى البث.", endBadge: "انتهى البث", thanks: "شكراً لمتابعتك {n}", summary: "بيع {s} من {n}، بمجموع {p}.", replay: "إعادة المشاهدة", otherLives: "بث آخر", backStudio: "العودة إلى الاستوديو",
+    notLive: "هذا البث غير متاح الآن", notLiveP: "ربما انتهى أو لم يبدأ بعد.", seeLives: "عرض البث",
+    hostMode: "وضع المضيف", hOpen: "افتح المزايدة", hClose: "أرسِ المزاد الآن", hNext: "العقار التالي", hExtended: "تم تمديد الوقت 15 ثانية.", hBidders: "أفضل المزايدين", hNoBidders: "لا عروض بعد.",
+    rooms: { facade: "الواجهة", salon: "الصالون", chambre: "غرفة النوم", patio: "الفناء", terrasse: "السطح", vue: "الإطلالة" },
+    types: { appartement: "شقة", maison: "منزل", villa: "فيلا", riad: "رياض", terrain: "أرض", local: "محل تجاري" },
+    dTitle: "ملف العقار", tVisit: "الزيارة", tPlan: "التصميم", tDocs: "الوثائق", tCost: "التكلفة والقرض",
+    fSurface: "المساحة", fRooms: "الغرف", fBeds: "غرف النوم", fYear: "سنة البناء", fFloor: "الطابق", fCharges: "مصاريف السانديك", perMonth: "{p} / شهر", fTF: "الرسم العقاري",
+    dTF: "شهادة الملكية (الرسم العقاري)", dNR: "مذكرة المعلومات التعميرية", dEX: "تقرير الخبرة", dCO: "نظام الملكية المشتركة والمصاريف",
+    checked: "تم التحقق من طرف المكتب", view: "معاينة", hide: "إخفاء", kNumber: "الرقم", kOwner: "المالك", vOwner: "شخص ذاتي (هوية محجوبة)", kArea: "المساحة المحفّظة",
+    kMortgage: "الرهون والتحملات", vNone: "لا شيء", kZone: "التنطيق", zhab: "منطقة سكنية، بناء مطابق", zvilla: "منطقة فيلات، طابق علوي، معامل 0,4", zcom: "منطقة مختلطة، التجارة مسموحة",
+    kValue: "القيمة المقدّرة", kState: "الحالة العامة", sgood: "جيدة، مرممة حديثاً", sworks: "أشغال مهمة متوقعة", kSyndic: "مصاريف الملكية المشتركة", kDate: "التاريخ",
+    docsNote: "وثائق محاكاة لأغراض العرض.",
+    pSalon: "صالون", pChambre: "غرفة", pCuisine: "مطبخ", pSdb: "حمام", pPatio: "فناء", pPlateau: "فضاء المحل", pReserve: "مخزن", pWc: "مرحاض", pTerrain: "قطعة أرضية", planNote: "تصميم تقريبي، المساحات تقديرية.",
+    cPrice: "ثمن الرسو (درهم)", cUseCurrent: "استعمل العرض الحالي", cReg: "رسوم التسجيل (4٪)", cCons: "المحافظة العقارية (1,5٪ + 200 درهم)",
+    cNot: "أتعاب الموثق (1٪ + ض.ق.م 10٪)", cMisc: "مصاريف مختلفة (طوابع، نسخ)", cTotal: "التكلفة الإجمالية المقدّرة", cLoan: "القرض العقاري",
+    cDown: "المساهمة الذاتية: {x}٪", cYears: "المدة: {x} سنة", cRate: "النسبة السنوية (٪)", cMonthly: "القسط الشهري المقدّر", cBorrow: "مبلغ القرض", cCash: "المبلغ الواجب توفيره (المساهمة + المصاريف)",
+    cNote: "تقدير إرشادي دون احتساب التأمين. يجب تأكيد النسب والمصاريف مع الموثق والبنك.",
+    obTitle: "قبل المزايدة", obLede: "للمزايدة على عقار، نتحقق من هويتك. في البث، لا يرى المشاركون الآخرون سوى اسمك المستعار.",
+    obHandle: "الاسم المستعار", obCin: "رقم البطاقة الوطنية", obFunds: "إثبات الأموال أو موافقة القرض (اختياري)",
+    obDeposit: "أوافق على ضمان بنسبة 10٪ من ثمن انطلاق العقار، يُقتطع فقط إذا فزت بالبيع ويُسترجع في غير ذلك.",
+    obGo: "تحقّق وتابع", cancel: "إلغاء", errHandle: "اختر اسماً مستعاراً من 3 إلى 24 حرفاً: حروف لاتينية أو أرقام أو نقطة أو شرطة سفلية.",
+    errCin: "أدخل رقم بطاقة وطنية صحيحاً، مثلاً BE123456.", errDep: "ضع علامة لقبول الضمان.", obVerifying: "جارٍ التحقق…",
+    obDone: "تم التحقق من الهوية. بالتوفيق!", kycNote: "محاكاة: لا تُرسل أي بيانات.",
+    wTitle: "مشترياتي", wLede: "كل عقار تفوز به يمر بنفس المراحل حتى تسلّم المفاتيح.", wEmpty: "لم تفز بأي عقار بعد.",
+    wDemo: "عرض مثال", wGoLive: "انضم إلى بث", wPrice: "رسا بـ {p}", wTotal: "التكلفة الإجمالية المقدّرة: {p}", wDossier: "ملف العقار", demoFlag: "مثال",
+    s0: "الضمان", s0d: "10٪ من ثمن الانطلاق، أي {p}.", s0a: "الأداء عبر CMI (محاكاة)", s0wait: "جارٍ الأداء…",
+    s1: "الهوية والأموال", s1d: "التحقق من البطاقة الوطنية وإثبات الأموال.", s1a: "تأكيد وثائقي",
+    s2: "الوعد بالبيع", s2d: "توقيع إلكتروني للوعد بالبيع الذي أعده المكتب.", s2a: "توقيع الوعد بالبيع",
+    s3: "العقد عند الموثق", s3d: "موعد يوم {d}: أداء الباقي وتوقيع العقد.", s3a: "تأكيد الموعد",
+    s4: "تسليم المفاتيح", s4d: "التقييد في المحافظة العقارية ثم تسليم المفاتيح.", s4a: "تم استلام المفاتيح",
+    doneAll: "مبروك، أصبحت مالكاً!", stepDone: "تم تأكيد المرحلة.",
+    sTitle: "استوديو الوكيل", sLede: "حضّر بثك: أضف عقاراتك، ثم أطلق البيع وأدِره مباشرة من وضع المضيف.",
+    sNew: "بث جديد", sShowTitle: "عنوان البث", sCities: "المدن", sCat: "الفئة", sAgency: "الوكالة", sHostName: "اسمك", sCreate: "إنشاء البث", sExample: "ملء بمثال",
+    sMyLives: "بثوثي", sNone: "لم تنشئ أي بث بعد.", sLots: "عقارات البث", sNoLots: "أضف عقاراً واحداً على الأقل لإطلاق البث.", sAddLot: "إضافة العقار", sAddTitle: "إضافة عقار",
+    lTitle: "العنوان", lType: "النوع", lCity: "المدينة", lDistrict: "الحي", lSurface: "المساحة (م²)", lRooms: "الغرف", lBeds: "غرف النوم", lStart: "ثمن الانطلاق (درهم)", lReserve: "الثمن الأدنى (درهم)",
+    lInc: "خطوة المزايدة (درهم)", lTF: "رقم الرسم العقاري", lPitch: "تقديمك (جملة في كل سطر)",
+    sLaunch: "إطلاق البث", sResume: "وضع المضيف", sViewer: "المشاهدة كمتفرج", sDelete: "حذف", sConfirmDel: "تأكيد الحذف", sRemoveLot: "إزالة",
+    sDraft: "مسودة", sLiveNow: "مباشر", errRequired: "حقل إلزامي.", errInt: "يجب إدخال عدد صحيح.", errReserve: "يجب أن يكون الثمن الأدنى مساوياً على الأقل لثمن الانطلاق.", errMin: "الحد الأدنى {p}.",
+    sCreated: "تم إنشاء البث. أضف عقاراتك.", sLotAdded: "تمت إضافة العقار.", sLaunched: "بثّك على الهواء!", sDeleted: "تم حذف البث.",
+    nOutbid: "تمت المزايدة عليك في « {t} » ({p}).", nWon: "فزت بـ « {t} » مقابل {p}!", nRemind: "تذكير: « {t} » يبدأ {w}.",
+    nLaunched: "بثّك « {t} » على الهواء.", nWelcome: "مرحباً بك في Adjugé Live! فعّل التذكيرات حتى لا تفوتك أي عملية بيع.",
+    ago0: "الآن", agoM: "منذ {n} د", agoH: "منذ {n} س", agoD: "منذ {n} ي",
+  },
+};
+const PLACES_AR = { Casablanca: "الدار البيضاء", Marrakech: "مراكش", "Fès": "فاس", Essaouira: "الصويرة", Tanger: "طنجة", Rabat: "الرباط", Agadir: "أكادير", Asilah: "أصيلة", Bouskoura: "بوسكورة", Taghazout: "تغازوت",
+  Gauthier: "غوتييه", Anfa: "أنفا", "Maârif": "المعاريف", "Médina, Mouassine": "المدينة العتيقة، المواسين", "Médina, Batha": "المدينة العتيقة، البطحاء", "Médina": "المدينة العتيقة", Agdal: "أكدال" };
+
 /* ---------- Outils ---------- */
 const SEC = 1000, MIN = 60 * SEC, HOUR = 60 * MIN, DAY = 24 * HOUR;
-const numFmt = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 });
-const dh = (n) => `${numFmt.format(n)} DH`;
-const short = (n) => n >= 1e6 ? `${String(+(n / 1e6).toFixed(2)).replace(".", ",")} M DH` : dh(n);
-const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-const pick = (a) => a[Math.floor(Math.random() * a.length)];
-const rand = (a, b) => a + Math.random() * (b - a);
 const $ = (id) => document.getElementById(id);
 const store = {
   get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
 };
+let lang = store.get("adjuge-live-lang", "fr") === "ar" ? "ar" : "fr";
+const resolve = (x) => Array.isArray(x) ? (lang === "ar" && x[1] ? x[1] : x[0]) : x;
+function t(key, vars = {}) {
+  const v = I18N[lang][key] ?? I18N.fr[key] ?? key;
+  if (typeof v === "function") return v(vars);
+  if (typeof v !== "string") return v;
+  return v.replace(/\{(\w+)\}/g, (_, k) => resolve(vars[k]) ?? "");
+}
+const numFmt = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 });
+const dh = (n) => `${numFmt.format(n)} ${lang === "ar" ? "درهم" : "DH"}`;
+const short = (n) => n >= 1e6 ? `${String(+(n / 1e6).toFixed(2)).replace(".", ",")} ${lang === "ar" ? "مليون درهم" : "M DH"}` : dh(n);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const pick = (a) => a[Math.floor(Math.random() * a.length)];
+const rand = (a, b) => a + Math.random() * (b - a);
+const place = (s) => lang === "ar" ? String(s).split(" · ").map((p) => PLACES_AR[p] || p).join(" · ") : s;
+const lt = (o, k) => (lang === "ar" && o[k + "_ar"]) || o[k];
+const dateFmt = (ms, opts) => new Intl.DateTimeFormat(lang === "ar" ? "ar-MA" : "fr-FR", opts).format(ms);
+const parseAmount = (s) => Number(String(s).replace(/dh|mad|درهم|€/gi, "").replace(/[\s  .]/g, ""));
 let toastTimer;
-function toast(msg) { const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => (t.hidden = true), 3000); }
+function toast(msg) { const el = $("toast"); el.textContent = msg; el.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => (el.hidden = true), 3200); }
 function untilLabel(ms) {
   const m = Math.max(0, Math.round(ms / MIN));
-  if (m < 60) return `Dans ${m} min`;
+  if (m < 60) return t("inT", { t: lang === "ar" ? `${m} دقيقة` : `${m} min` });
   const h = Math.floor(m / 60);
-  if (h < 24) return `Dans ${h} h ${String(m % 60).padStart(2, "0")}`;
-  return new Intl.DateTimeFormat("fr-FR", { weekday: "long", hour: "2-digit", minute: "2-digit" }).format(Date.now() + ms);
+  if (h < 24) return t("inT", { t: lang === "ar" ? `${h} س ${String(m % 60).padStart(2, "0")} د` : `${h} h ${String(m % 60).padStart(2, "0")}` });
+  return dateFmt(Date.now() + ms, { weekday: "long", hour: "2-digit", minute: "2-digit" });
+}
+function ago(ts) {
+  const m = Math.floor((Date.now() - ts) / MIN);
+  if (m < 1) return t("ago0"); if (m < 60) return t("agoM", { n: m });
+  const h = Math.floor(m / 60); if (h < 24) return t("agoH", { n: h });
+  return t("agoD", { n: Math.floor(h / 24) });
+}
+
+/* ---------- Règles de coût (Maroc, estimation) ---------- */
+function costEstimate(price) {
+  const reg = Math.round(price * 0.04), cons = Math.round(price * 0.015 + 200), notary = Math.round(price * 0.01 * 1.1), misc = 1500;
+  const fees = reg + cons + notary + misc;
+  return { reg, cons, notary, misc, fees, total: price + fees };
+}
+function loanEstimate(price, downPct, years, ratePct) {
+  const borrow = Math.max(0, Math.round(price * (1 - downPct / 100)));
+  const r = ratePct / 100 / 12, n = years * 12;
+  const monthly = borrow === 0 ? 0 : r > 0 ? borrow * r / (1 - Math.pow(1 + r, -n)) : borrow / n;
+  return { borrow, monthly: Math.round(monthly), cash: Math.round(price * downPct / 100) + costEstimate(price).fees };
 }
 
 /* ---------- Données de démonstration ---------- */
 const now0 = Date.now();
 const at = (days, h, m) => { const d = new Date(now0); d.setDate(d.getDate() + days); d.setHours(h, m, 0, 0); return d.getTime(); };
 const HANDLES = ["karim_casa", "salma.invest", "youssef.mrk", "ines_rabat", "hamza.immo", "leila.tanger", "amine_agadir", "sofia.dh", "reda.patrimoine", "nora.fes", "mehdi_212", "kenza.home"];
-const T = { facade: "Façade", salon: "Salon", chambre: "Chambre", patio: "Patio", terrasse: "Terrasse", vue: "Vue" };
+const TOURS = { riad: ["facade", "patio", "salon", "chambre", "terrasse"], villa: ["facade", "salon", "terrasse", "chambre"], appartement: ["facade", "salon", "chambre", "terrasse"],
+  maison: ["facade", "salon", "chambre", "terrasse"], terrain: ["facade", "vue"], local: ["facade", "salon"] };
 const SHOWS = [
-  { id: "riads-et-dars", title: "Riads & dars d'exception", live: true, viewers: 1240, tags: ["riad"], city: "Marrakech · Fès · Essaouira",
+  { id: "riads-et-dars", title: "Riads & dars d'exception", title_ar: "رياضات ودور استثنائية", live: true, viewers: 1240, tags: ["riad"], city: "Marrakech · Fès · Essaouira",
     host: { name: "Yasmine Alaoui", handle: "yasmine.medinaimmo", agency: "Médina Immobilier", hue: 18 },
     lots: [
-      { id: "riad-mouassine", title: "Riad restauré avec patio et terrasse", type: "riad", city: "Marrakech", district: "Médina, Mouassine", surface: 220, rooms: 7, bedrooms: 5, hue: 10,
-        start: 3800000, reserve: 4000000, inc: 25000, tour: ["facade", "patio", "salon", "chambre", "terrasse"],
-        pitch: ["On commence fort : riad de 220 m² à deux minutes de la place Mouassine.", "Patio en zellige avec fontaine, cinq chambres en tadelakt, terrasse avec vue sur l'Atlas.", "Titre foncier, restauré en 2021, prêt à exploiter en maison d'hôtes."] },
-      { id: "dar-batha", title: "Dar du XIXe à rénover", type: "riad", city: "Fès", district: "Médina, Batha", surface: 160, rooms: 6, bedrooms: 4, hue: 32,
-        start: 950000, reserve: 1100000, inc: 10000, tour: ["facade", "patio", "salon", "terrasse"],
-        pitch: ["Lot 2 pour les amoureux d'authenticité : un dar de 160 m² près de Bab Boujloud.", "Plafonds en cèdre sculpté et plâtres ciselés d'origine. Gros travaux à prévoir.", "Prix de départ sous le million, c'est le moment."] },
-      { id: "riad-essaouira", title: "Riad face aux remparts", type: "riad", city: "Essaouira", district: "Médina", surface: 180, rooms: 6, bedrooms: 4, hue: 200,
-        start: 2600000, reserve: 2800000, inc: 20000, tour: ["facade", "patio", "chambre", "terrasse"],
-        pitch: ["Direction Essaouira : riad blanc et bleu adossé aux remparts.", "Quatre suites, terrasse avec vue sur l'océan, déjà loué en saisonnier.", "Rentabilité locale autour de 7 % brut d'après le vendeur."] },
+      { id: "riad-mouassine", title: "Riad restauré avec patio et terrasse", title_ar: "رياض مرمم مع فناء وسطح", type: "riad", city: "Marrakech", district: "Médina, Mouassine",
+        surface: 220, rooms: 7, bedrooms: 5, hue: 10, start: 3800000, reserve: 4000000, inc: 25000, tf: "TF 18452/M", year: 1890, floor: "R+2", charges: 0, zone: "hab", state: "good",
+        pitch: ["On commence fort : riad de 220 m² à deux minutes de la place Mouassine.", "Patio en zellige avec fontaine, cinq chambres en tadelakt, terrasse avec vue sur l'Atlas.", "Titre foncier, restauré en 2021, prêt à exploiter en maison d'hôtes."],
+        pitch_ar: ["نبدأ بقوة: رياض بمساحة 220 م² على بعد دقيقتين من ساحة المواسين.", "فناء بالزليج ونافورة، خمس غرف بالتادلاكت، وسطح يطل على الأطلس.", "رسم عقاري، مرمم سنة 2021، جاهز للاستغلال كدار ضيافة."] },
+      { id: "dar-batha", title: "Dar du XIXe à rénover", title_ar: "دار من القرن 19 للترميم", type: "riad", city: "Fès", district: "Médina, Batha",
+        surface: 160, rooms: 6, bedrooms: 4, hue: 32, start: 950000, reserve: 1100000, inc: 10000, tf: "TF 7731/F", year: 1870, floor: "R+2", charges: 0, zone: "hab", state: "works",
+        pitch: ["Lot 2 pour les amoureux d'authenticité : un dar de 160 m² près de Bab Boujloud.", "Plafonds en cèdre sculpté et plâtres ciselés d'origine. Gros travaux à prévoir.", "Prix de départ sous le million, c'est le moment."],
+        pitch_ar: ["العقار الثاني لعشاق الأصالة: دار بمساحة 160 م² قرب باب بوجلود.", "أسقف من خشب الأرز المنقوش وجبس منقوش أصلي. أشغال كبيرة متوقعة.", "ثمن انطلاق أقل من مليون، إنها الفرصة."] },
+      { id: "riad-essaouira", title: "Riad face aux remparts", title_ar: "رياض قبالة الأسوار", type: "riad", city: "Essaouira", district: "Médina",
+        surface: 180, rooms: 6, bedrooms: 4, hue: 200, start: 2600000, reserve: 2800000, inc: 20000, tf: "TF 3390/E", year: 1910, floor: "R+2", charges: 0, zone: "hab", state: "good",
+        pitch: ["Direction Essaouira : riad blanc et bleu adossé aux remparts.", "Quatre suites, terrasse avec vue sur l'océan, déjà loué en saisonnier.", "Rentabilité locale autour de 7 % brut d'après le vendeur."],
+        pitch_ar: ["نتجه إلى الصويرة: رياض أبيض وأزرق ملاصق للأسوار.", "أربع أجنحة، سطح يطل على المحيط، ومؤجر موسمياً.", "مردودية خام تقارب 7٪ حسب البائع."] },
     ] },
-  { id: "casa-prestige", title: "Casablanca Prestige", live: true, viewers: 860, tags: ["appartement", "local"], city: "Casablanca",
+  { id: "casa-prestige", title: "Casablanca Prestige", title_ar: "الدار البيضاء بريستيج", live: true, viewers: 860, tags: ["appartement", "local"], city: "Casablanca",
     host: { name: "Mehdi Benjelloun", handle: "mehdi.casaprestige", agency: "Casa Prestige", hue: 228 },
     lots: [
-      { id: "art-deco-gauthier", title: "Appartement Art déco avec balcon", type: "appartement", city: "Casablanca", district: "Gauthier", surface: 135, rooms: 5, bedrooms: 3, hue: 215,
-        start: 2900000, reserve: 3100000, inc: 20000, tour: ["facade", "salon", "chambre", "terrasse"],
-        pitch: ["Bonsoir Casa ! Premier lot : 135 m² dans un immeuble Art déco de 1932.", "Double salon sur balcon filant, 3,40 m sous plafond, carreaux de ciment d'origine.", "Ascenseur, concierge, titre foncier. On ouvre dans quelques secondes."] },
-      { id: "penthouse-anfa", title: "Penthouse avec terrasse panoramique", type: "appartement", city: "Casablanca", district: "Anfa", surface: 240, rooms: 6, bedrooms: 4, hue: 205,
-        start: 7500000, reserve: 7900000, inc: 50000, tour: ["facade", "salon", "terrasse", "vue", "chambre"],
-        pitch: ["Le lot de la soirée : penthouse de 240 m² à Anfa.", "120 m² de terrasse avec vue sur l'océan et la mosquée Hassan II.", "Deux parkings, résidence gardée, livraison immédiate."] },
-      { id: "local-maarif", title: "Local commercial sur boulevard", type: "local", city: "Casablanca", district: "Maârif", surface: 95, rooms: 2, bedrooms: 0, hue: 350,
-        start: 1900000, reserve: 1950000, inc: 10000, tour: ["facade", "salon"],
-        pitch: ["On termine avec de l'investissement : 95 m² commerciaux au Maârif.", "Sept mètres de vitrine, mezzanine, libre de tout occupant."] },
+      { id: "art-deco-gauthier", title: "Appartement Art déco avec balcon", title_ar: "شقة آرت ديكو مع شرفة", type: "appartement", city: "Casablanca", district: "Gauthier",
+        surface: 135, rooms: 5, bedrooms: 3, hue: 215, start: 2900000, reserve: 3100000, inc: 20000, tf: "TF 25118/C", year: 1932, floor: "3", charges: 900, zone: "hab", state: "good",
+        pitch: ["Bonsoir Casa ! Premier lot : 135 m² dans un immeuble Art déco de 1932.", "Double salon sur balcon filant, 3,40 m sous plafond, carreaux de ciment d'origine.", "Ascenseur, concierge, titre foncier. On ouvre dans quelques secondes."],
+        pitch_ar: ["مساء الخير يا كازا! العقار الأول: 135 م² في عمارة آرت ديكو من سنة 1932.", "صالون مزدوج على شرفة ممتدة، علو 3,40 م، وزليج إسمنتي أصلي.", "مصعد، حارس، رسم عقاري. نفتح المزايدة بعد ثوانٍ."] },
+      { id: "penthouse-anfa", title: "Penthouse avec terrasse panoramique", title_ar: "بنتهاوس مع سطح بإطلالة بانورامية", type: "appartement", city: "Casablanca", district: "Anfa",
+        surface: 240, rooms: 6, bedrooms: 4, hue: 205, start: 7500000, reserve: 7900000, inc: 50000, tf: "TF 60277/C", year: 2019, floor: "9", charges: 2400, zone: "hab", state: "good",
+        pitch: ["Le lot de la soirée : penthouse de 240 m² à Anfa.", "120 m² de terrasse avec vue sur l'océan et la mosquée Hassan II.", "Deux parkings, résidence gardée, livraison immédiate."],
+        pitch_ar: ["عقار السهرة: بنتهاوس بمساحة 240 م² في أنفا.", "سطح بمساحة 120 م² يطل على المحيط ومسجد الحسن الثاني.", "موقفان للسيارات، إقامة محروسة، تسليم فوري."] },
+      { id: "local-maarif", title: "Local commercial sur boulevard", title_ar: "محل تجاري على شارع رئيسي", type: "local", city: "Casablanca", district: "Maârif",
+        surface: 95, rooms: 2, bedrooms: 0, hue: 350, start: 1900000, reserve: 1950000, inc: 10000, tf: "TF 41906/C", year: 1998, floor: "RDC", charges: 600, zone: "com", state: "good",
+        pitch: ["On termine avec de l'investissement : 95 m² commerciaux au Maârif.", "Sept mètres de vitrine, mezzanine, libre de tout occupant."],
+        pitch_ar: ["نختم بالاستثمار: 95 م² تجارية في المعاريف.", "واجهة بسبعة أمتار، طابق ميزانين، فارغ من أي شاغل."] },
     ] },
-  { id: "villas-nord", title: "Villas Tanger & Asilah", live: false, startsAt: now0 + 2 * HOUR + 14 * MIN, tags: ["villa"], city: "Tanger · Asilah",
+  { id: "villas-nord", title: "Villas Tanger & Asilah", title_ar: "فيلات طنجة وأصيلة", live: false, startsAt: now0 + 2 * HOUR + 14 * MIN, tags: ["villa"], city: "Tanger · Asilah",
     host: { name: "Nadia Tazi", handle: "nadia.nordimmo", agency: "Nord Immo", hue: 160 }, preview: { type: "villa", hue: 190 }, count: 4 },
-  { id: "investir-agadir", title: "Investir à Agadir", live: false, startsAt: at(1, 20, 0), tags: ["appartement"], city: "Agadir · Taghazout",
+  { id: "investir-agadir", title: "Investir à Agadir", title_ar: "الاستثمار في أكادير", live: false, startsAt: at(1, 20, 0), tags: ["appartement"], city: "Agadir · Taghazout",
     host: { name: "Omar El Fassi", handle: "omar.souss", agency: "Souss Invest", hue: 40 }, preview: { type: "appartement", hue: 195 }, count: 6 },
-  { id: "terrains-rabat", title: "Terrains Rabat & Bouskoura", live: false, startsAt: at(3, 19, 30), tags: ["terrain"], city: "Rabat · Bouskoura",
+  { id: "terrains-rabat", title: "Terrains Rabat & Bouskoura", title_ar: "أراضٍ بالرباط وبوسكورة", live: false, startsAt: at(3, 19, 30), tags: ["terrain"], city: "Rabat · Bouskoura",
     host: { name: "Salma Berrada", handle: "salma.terrains", agency: "Berrada Foncier", hue: 120 }, preview: { type: "terrain", hue: 110 }, count: 5 },
 ];
-const CATS = [["", "Tous"], ["riad", "Riads"], ["villa", "Villas"], ["appartement", "Appartements"], ["terrain", "Terrains"], ["local", "Commerces"]];
+const CATS = ["", "riad", "villa", "appartement", "terrain", "local"];
+const CHAT_POOL = {
+  fr: ["Bonsoir de Rabat 👋", "Magnifique", "Le patio est sublime", "On peut revoir la terrasse ?", "Ça part vite ce soir", "Superbe rénovation", "Je suis là pour le lot suivant", "Titre foncier ok ?", "Les charges sont de combien ?", "Bravo pour la présentation", "Prix de départ raisonnable", "Il y a un parking ?"],
+  ar: ["مساء الخير من الرباط 👋", "زوين بزاف", "الفناء واعر", "بغيت نشوف السطح عافاك", "غادي يطير الليلة 🔥", "ترميم نقي", "أنا هنا للعقار الجاي", "واش كاين التيتر؟", "شحال ديال السانديك؟", "تبارك الله على التقديم", "الثمن معقول", "واش كاين باركينغ؟"],
+};
+const HOST_ANSWERS = [
+  [/titre|foncier|تيتر|رسم/i, "Oui, titre foncier individuel : il est dans l'onglet Dossier.", "إيه، رسم عقاري فردي، كاين فالملف."],
+  [/visite|visiter|زيارة|نشوف/i, "Une visite physique est possible avant la signature, sur rendez-vous.", "الزيارة ممكنة قبل التوقيع، بموعد."],
+  [/charge|syndic|سانديك|مصاريف/i, "Les charges sont indiquées dans le dossier, onglet Documents.", "مصاريف السانديك مكتوبة فالملف، فخانة الوثائق."],
+  [/travaux|rénov|ترميم|أشغال/i, "Tout est dans le rapport d'expertise : ouvrez le Dossier.", "كلشي فتقرير الخبرة، حل الملف."],
+  [/crédit|banque|financ|قرض|كريدي|بنك/i, "Utilisez l'onglet Coût & crédit du dossier pour estimer votre mensualité.", "استعمل خانة التكلفة والقرض فالملف باش تحسب القسط."],
+  [/consignation|caution|ضمان/i, "10 % du prix de départ, prélevés seulement si vous gagnez.", "10٪ من ثمن الانطلاق، كتتقتطع غير إلا ربحتي."],
+  [/parking|garage|باركينغ|مرآب/i, "Oui, le stationnement est inclus dans la vente.", "إيه، الباركينغ داخل فالبيع."],
+];
+
+/* ---------- Préférences enregistrées ---------- */
+const prefs = {
+  user: store.get("adjuge-live-user", null),
+  reminders: store.get("adjuge-live-reminders", []),
+  follows: store.get("adjuge-live-follows", []),
+  wins: store.get("adjuge-live-wins", []),
+  myShows: store.get("adjuge-live-myshows", []),
+  notifs: store.get("adjuge-live-notifs", []),
+  whatsapp: store.get("adjuge-live-whatsapp", false),
+};
+const save = (k) => store.set(`adjuge-live-${k === "myShows" ? "myshows" : k}`, prefs[k]);
+const allShows = () => [...prefs.myShows, ...SHOWS];
+const me = () => prefs.user?.handle;
+
+function notify(key, vars = {}) {
+  prefs.notifs.unshift({ id: Math.random().toString(36).slice(2), key, vars, at: Date.now(), read: false });
+  prefs.notifs = prefs.notifs.slice(0, 40); save("notifs"); renderBell();
+}
+if (!store.get("adjuge-live-seen", false)) { store.set("adjuge-live-seen", true); notify("nWelcome"); }
+// Rappels proches : une notification par live, une seule fois.
+(() => {
+  const done = store.get("adjuge-live-reminded-sent", []);
+  SHOWS.filter((s) => !s.live && prefs.reminders.includes(s.id) && s.startsAt - Date.now() < 3 * HOUR && !done.includes(s.id)).forEach((s) => {
+    notify("nRemind", { t: [s.title, s.title_ar], w: { at: s.startsAt } }); done.push(s.id);
+  });
+  store.set("adjuge-live-reminded-sent", done);
+})();
 
 /* ---------- Illustrations (format portrait 360 × 640) ---------- */
 function palette(hue) {
@@ -393,6 +711,7 @@ function palette(hue) {
     ochre: `hsl(${(hue % 40) + 15} 55% 64%)`, ochre2: `hsl(${(hue % 40) + 15} 45% 50%)`, sea: `hsl(${hue < 150 || hue > 260 ? 200 : hue} 55% 55%)`,
   };
 }
+let GID = "sky", gidN = 0;
 function exterior(type, hue) {
   const c = palette(hue);
   const win = (x, y, w = 22, h = 30) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2" fill="${c.dark}" opacity=".85"/><rect x="${x}" y="${y}" width="${w}" height="${h / 2.2}" rx="2" fill="${c.sky2}" opacity=".3"/>`;
@@ -401,6 +720,9 @@ function exterior(type, hue) {
     s = `<rect x="20" y="90" width="80" height="120" fill="${c.wall2}" opacity=".7"/><rect x="300" y="70" width="80" height="140" fill="${c.wall2}" opacity=".7"/><rect x="110" y="40" width="180" height="170" fill="${c.wall}"/><rect x="104" y="34" width="192" height="12" fill="${c.wall2}"/>`;
     for (let r = 0; r < 4; r++) for (let k = 0; k < 4; k++) s += win(124 + k * 42, 58 + r * 36);
     s += `<rect x="112" y="126" width="176" height="4" fill="${c.dark}" opacity=".6"/><rect x="186" y="186" width="28" height="24" fill="${c.roof}"/>`;
+  } else if (type === "maison") {
+    s = `<rect x="0" y="182" width="400" height="28" fill="${c.green}"/><polygon points="110,100 200,46 290,100" fill="${c.roof}"/><rect x="122" y="100" width="156" height="90" fill="${c.wall}"/>`;
+    s += win(140, 118) + win(238, 118) + `<rect x="186" y="140" width="28" height="50" rx="2" fill="${c.dark}"/><circle cx="64" cy="150" r="34" fill="${c.green2}"/><rect x="61" y="170" width="6" height="22" fill="${c.dark}"/><circle cx="340" cy="160" r="24" fill="${c.green2}"/>`;
   } else if (type === "villa") {
     s = `<rect x="0" y="150" width="400" height="60" fill="${c.sea}"/><rect x="70" y="80" width="200" height="70" fill="${c.wall}"/><rect x="160" y="50" width="150" height="34" fill="${c.wall}"/><rect x="60" y="76" width="220" height="6" fill="${c.wall2}"/><rect x="152" y="46" width="166" height="6" fill="${c.wall2}"/>`;
     s += `<rect x="86" y="96" width="70" height="44" fill="${c.dark}" opacity=".8"/><rect x="170" y="96" width="84" height="44" fill="${c.dark}" opacity=".8"/><rect x="178" y="58" width="114" height="20" fill="${c.dark}" opacity=".7"/><rect x="70" y="160" width="190" height="22" rx="3" fill="hsl(195 70% 70%)"/><circle cx="340" cy="112" r="26" fill="${c.green2}"/><rect x="337" y="130" width="6" height="22" fill="${c.dark}"/>`;
@@ -420,7 +742,8 @@ function exterior(type, hue) {
     for (let k = 0; k < 4; k++) s += win(84 + k * 66, 50, 34, 22);
     s += `<rect x="60" y="100" width="280" height="22" fill="${c.roof}"/><rect x="80" y="132" width="180" height="78" fill="${c.dark}" opacity=".85"/><rect x="80" y="132" width="180" height="20" fill="${c.sky2}" opacity=".25"/><rect x="276" y="140" width="44" height="70" fill="${c.dark}"/>`;
   }
-  return `<rect width="360" height="640" fill="url(#${GID})"/><circle cx="292" cy="96" r="24" fill="hsl(45 90% 75%)" opacity=".8"/><svg x="-160" y="80" width="680" height="357" viewBox="0 0 400 210" preserveAspectRatio="none">${s}</svg><rect y="435" width="360" height="205" fill="${type === "villa" ? c.sea : type === "terrain" ? c.green : c.wall2}"/>`;
+  const ground = type === "villa" ? c.sea : type === "terrain" || type === "maison" ? c.green : c.wall2;
+  return `<rect width="360" height="640" fill="url(#${GID})"/><circle cx="292" cy="96" r="24" fill="hsl(45 90% 75%)" opacity=".8"/><svg x="-160" y="80" width="680" height="357" viewBox="0 0 400 210" preserveAspectRatio="none">${s}</svg><rect y="435" width="360" height="205" fill="${ground}"/>`;
 }
 function interior(kind, lot) {
   const c = palette(lot.hue);
@@ -432,10 +755,11 @@ function interior(kind, lot) {
     ? `<path d="M${x} ${y + h} V${y + w / 2} a${w / 2} ${w / 2} 0 0 1 ${w} 0 V${y + h}z" fill="${c.sky}"/><path d="M${x} ${y + h} V${y + w / 2} a${w / 2} ${w / 2} 0 0 1 ${w} 0 V${y + h}" fill="none" stroke="${c.dark}" stroke-width="6"/>`
     : `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${c.sky}"/><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="${c.dark}" stroke-width="6"/><line x1="${x + w / 2}" y1="${y}" x2="${x + w / 2}" y2="${y + h}" stroke="${c.dark}" stroke-width="4"/>`;
   if (kind === "salon") {
+    if (lot.type === "local") return `<rect width="360" height="420" fill="${c.wall}"/>${floor}<rect x="20" y="120" width="320" height="220" fill="${c.sky}"/><rect x="20" y="120" width="320" height="220" fill="none" stroke="${c.dark}" stroke-width="8"/><line x1="180" y1="120" x2="180" y2="340" stroke="${c.dark}" stroke-width="6"/><rect x="60" y="460" width="240" height="60" rx="6" fill="hsl(${lot.hue} 20% 40%)"/>`;
     return `<rect width="360" height="420" fill="${wallC}"/>${floor}${windowSky(110, 120, 140, 200, riad)}
       <ellipse cx="180" cy="560" rx="150" ry="34" fill="hsl(${(lot.hue + 160) % 360} 45% 45%)" opacity=".75"/>
       <rect x="40" y="430" width="280" height="70" rx="14" fill="hsl(${(lot.hue + 200) % 360} 30% 40%)"/><rect x="40" y="395" width="280" height="50" rx="14" fill="hsl(${(lot.hue + 200) % 360} 30% 48%)"/>
-      <rect x="70" y="410" width="60" height="40" rx="10" fill="${c.saffron || "hsl(40 85% 65%)"}"/><rect x="230" y="410" width="60" height="40" rx="10" fill="hsl(40 85% 65%)"/>
+      <rect x="70" y="410" width="60" height="40" rx="10" fill="hsl(40 85% 65%)"/><rect x="230" y="410" width="60" height="40" rx="10" fill="hsl(40 85% 65%)"/>
       <rect x="320" y="300" width="4" height="200" fill="${c.dark}"/><path d="M300 300 h44 l-10 -40 h-24z" fill="hsl(45 80% 75%)"/>
       <circle cx="40" cy="360" r="34" fill="${c.green2}"/><rect x="26" y="380" width="28" height="40" rx="4" fill="hsl(20 40% 45%)"/>`;
   }
@@ -449,322 +773,422 @@ function interior(kind, lot) {
   if (kind === "patio") {
     let tiles = "";
     for (let r = 0; r < 7; r++) for (let k = 0; k < 7; k++) tiles += `<rect x="${k * 60 - (r % 2) * 30}" y="${430 + r * 32}" width="22" height="22" transform="rotate(45 ${k * 60 - (r % 2) * 30 + 11} ${441 + r * 32})" fill="hsl(${(r + k) % 2 ? 190 : 150} 45% 45%)" opacity=".8"/>`;
+    const tree = (x) => `<circle cx="${x}" cy="430" r="40" fill="${c.green2}"/><circle cx="${x - 12}" cy="420" r="5" fill="hsl(30 90% 55%)"/><circle cx="${x + 12}" cy="440" r="5" fill="hsl(30 90% 55%)"/><rect x="${x - 20}" y="460" width="40" height="40" rx="4" fill="hsl(15 50% 45%)"/>`;
     return `<rect width="360" height="430" fill="${c.ochre}"/>${[30, 135, 240].map((x) => `<path d="M${x} 430 V250 a45 45 0 0 1 90 0 V430z" fill="${c.dark}" opacity=".55"/><path d="M${x} 430 V250 a45 45 0 0 1 90 0 V430" fill="none" stroke="${c.ochre2}" stroke-width="8"/>`).join("")}
       <rect x="0" y="80" width="360" height="14" fill="${c.ochre2}"/><rect y="430" width="360" height="210" fill="hsl(40 40% 88%)"/>${tiles}
-      <ellipse cx="180" cy="540" rx="90" ry="26" fill="hsl(190 50% 40%)"/><ellipse cx="180" cy="534" rx="78" ry="20" fill="hsl(190 60% 62%)"/><rect x="172" y="470" width="16" height="60" fill="hsl(190 45% 40%)"/><ellipse cx="180" cy="470" rx="26" ry="8" fill="hsl(190 60% 62%)"/>
-      <circle cx="40" cy="430" r="40" fill="${c.green2}"/><circle cx="28" cy="420" r="5" fill="hsl(30 90% 55%)"/><circle cx="52" cy="440" r="5" fill="hsl(30 90% 55%)"/><rect x="20" y="460" width="40" height="40" rx="4" fill="hsl(15 50% 45%)"/>
-      <circle cx="320" cy="430" r="40" fill="${c.green2}"/><circle cx="310" cy="420" r="5" fill="hsl(30 90% 55%)"/><circle cx="332" cy="440" r="5" fill="hsl(30 90% 55%)"/><rect x="300" y="460" width="40" height="40" rx="4" fill="hsl(15 50% 45%)"/>`;
+      <ellipse cx="180" cy="540" rx="90" ry="26" fill="hsl(190 50% 40%)"/><ellipse cx="180" cy="534" rx="78" ry="20" fill="hsl(190 60% 62%)"/><rect x="172" y="470" width="16" height="60" fill="hsl(190 45% 40%)"/><ellipse cx="180" cy="470" rx="26" ry="8" fill="hsl(190 60% 62%)"/>${tree(40)}${tree(320)}`;
   }
-  // terrasse et vue
   const horizon = lot.type === "riad" && lot.city !== "Essaouira"
     ? `<polygon points="0,330 70,250 130,300 200,220 270,290 360,240 360,360 0,360" fill="hsl(${lot.hue} 15% 70%)"/><polygon points="190,232 200,220 212,234" fill="#fff"/><rect y="340" width="360" height="40" fill="${c.ochre2}" opacity=".7"/>`
-    : lot.type === "local" ? `${Array.from({ length: 9 }, (_, i) => `<rect x="${i * 42}" y="${250 + (i * 37) % 80}" width="36" height="${130 - (i * 37) % 80}" fill="hsl(${lot.hue} 12% ${55 + (i % 3) * 8}%)"/>`).join("")}`
+    : lot.type === "local" || lot.type === "terrain" ? `${Array.from({ length: 9 }, (_, i) => `<rect x="${i * 42}" y="${250 + (i * 37) % 80}" width="36" height="${130 - (i * 37) % 80}" fill="hsl(${lot.hue} 12% ${55 + (i % 3) * 8}%)"/>`).join("")}`
     : `<rect y="300" width="360" height="80" fill="${c.sea}"/><rect y="300" width="360" height="4" fill="#fff" opacity=".5"/>${lot.id === "penthouse-anfa" ? `<rect x="250" y="190" width="14" height="110" fill="hsl(40 30% 85%)"/><rect x="246" y="180" width="22" height="14" fill="hsl(150 40% 40%)"/>` : ""}`;
-  const pool = lot.type === "villa" || kind === "terrasse" && lot.id === "penthouse-anfa" ? `<rect x="40" y="470" width="280" height="70" rx="8" fill="hsl(190 70% 62%)"/>` : "";
+  if (lot.type === "terrain") return `<rect width="360" height="380" fill="url(#${GID})"/>${horizon}<rect y="370" width="360" height="270" fill="${c.green}"/>${Array.from({ length: 8 }, (_, i) => `<line x1="${i * 60 - 60}" y1="640" x2="${i * 45}" y2="370" stroke="${c.green2}" stroke-width="2" opacity=".5"/>`).join("")}`;
+  const pool = lot.type === "villa" || lot.id === "penthouse-anfa" ? `<rect x="40" y="470" width="280" height="70" rx="8" fill="hsl(190 70% 62%)"/>` : "";
   return `<rect width="360" height="380" fill="url(#${GID})"/><circle cx="270" cy="120" r="34" fill="hsl(40 95% 72%)" opacity=".9"/>${horizon}
     <rect y="380" width="360" height="260" fill="${riad ? c.ochre : "hsl(30 25% 80%)"}"/>${pool}
     <rect y="370" width="360" height="10" fill="${c.dark}" opacity=".7"/>${Array.from({ length: 13 }, (_, i) => `<rect x="${i * 30}" y="372" width="5" height="70" fill="${c.dark}" opacity=".6"/>`).join("")}<rect y="440" width="360" height="6" fill="${c.dark}" opacity=".6"/>
-    ${kind === "terrasse" ? `<rect x="60" y="540" width="110" height="20" rx="6" fill="hsl(0 0% 96%)"/><rect x="190" y="540" width="110" height="20" rx="6" fill="hsl(0 0% 96%)"/><rect x="148" y="480" width="64" height="8" fill="hsl(${(lot.hue + 160) % 360} 50% 55%)"/><rect x="178" y="486" width="4" height="60" fill="${c.dark}"/>` : ""}`;
+    ${kind === "terrasse" ? `<rect x="60" y="560" width="110" height="20" rx="6" fill="hsl(0 0% 96%)"/><rect x="190" y="560" width="110" height="20" rx="6" fill="hsl(0 0% 96%)"/>` : ""}`;
 }
-let GID = "sky", gidN = 0;
 function sceneSVG(kind, lot) {
   const c = palette(lot.hue);
   GID = `sky${++gidN}`;
   const body = kind === "facade" ? exterior(lot.type, lot.hue) : interior(kind, lot);
-  return `<svg viewBox="0 0 360 640" preserveAspectRatio="xMidYMid slice" role="img" aria-label="${esc(T[kind])} : ${esc(lot.title)}"><defs><linearGradient id="${GID}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c.sky}"/><stop offset="1" stop-color="${c.sky2}"/></linearGradient></defs>${body}</svg>`;
+  return `<svg viewBox="0 0 360 640" preserveAspectRatio="xMidYMid slice" role="img" aria-label="${esc(t("rooms")[kind])} · ${esc(lt(lot, "title") || "")}"><defs><linearGradient id="${GID}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c.sky}"/><stop offset="1" stop-color="${c.sky2}"/></linearGradient></defs>${body}</svg>`;
 }
-const avatar = (h) => `<span class="avatar" style="background:hsl(${h.hue} 55% 45%)" aria-hidden="true">${esc(h.name.split(" ").map((w) => w[0]).join(""))}</span>`;
+const avatar = (h) => `<span class="avatar" style="background:hsl(${h.hue} 55% 45%)" aria-hidden="true">${esc(h.name.split(" ").map((w) => w[0]).join("").slice(0, 2))}</span>`;
 
-/* ---------- État utilisateur ---------- */
-const user = store.get("adjuge-live-user", null);
-const prefs = { user, reminders: store.get("adjuge-live-reminders", []), follows: store.get("adjuge-live-follows", []) };
+/* ---------- Plan schématique ---------- */
+function planSVG(lot) {
+  const S = lot.surface, room = (x, y, w, h, label, share) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="var(--accent-soft)" stroke="currentColor" stroke-width="2"/><text x="${x + w / 2}" y="${y + h / 2 - 2}" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor">${esc(label)}</text>${share ? `<text x="${x + w / 2}" y="${y + h / 2 + 14}" text-anchor="middle" font-size="11" fill="currentColor" opacity=".7">≈ ${Math.round(S * share)} m²</text>` : ""}`;
+  let g = "";
+  if (lot.type === "terrain") {
+    const side = Math.round(Math.sqrt(S));
+    g = `<polygon points="40,30 300,20 320,200 30,210" fill="var(--accent-soft)" stroke="currentColor" stroke-width="2" stroke-dasharray="6 4"/><text x="170" y="118" text-anchor="middle" font-size="14" font-weight="700" fill="currentColor">${esc(t("pTerrain"))} · ${numFmt.format(S)} m²</text><text x="170" y="16" text-anchor="middle" font-size="11" fill="currentColor">≈ ${side} m</text><text x="12" y="120" font-size="11" fill="currentColor" transform="rotate(-90 12 120)">≈ ${side} m</text>`;
+  } else if (lot.type === "local") {
+    g = room(10, 10, 230, 210, t("pPlateau"), 0.75) + room(240, 10, 90, 130, t("pReserve"), 0.17) + room(240, 140, 90, 80, t("pWc"), 0.08);
+  } else if (lot.type === "riad") {
+    const beds = Math.max(1, lot.bedrooms);
+    g = room(10, 10, 200, 60, t("pSalon"), 0.18) + room(210, 10, 120, 60, t("pCuisine"), 0.08) + room(10, 70, 100, 100, `${t("pChambre")} 1`, 0.1) + room(230, 70, 100, 100, t("pSdb"), 0.06) + room(110, 70, 120, 100, t("pPatio"), 0.2);
+    const rest = beds - 1, w = rest ? 320 / rest : 320;
+    for (let i = 0; i < rest; i++) g += room(10 + i * w, 170, w, 50, `${t("pChambre")} ${i + 2}`, 0.38 / Math.max(1, rest));
+  } else {
+    const beds = Math.max(1, lot.bedrooms), cols = beds <= 2 ? 1 : 2, rows = Math.ceil(beds / cols), cw = 170 / cols, ch = 210 / rows;
+    g = room(10, 10, 150, 130, t("pSalon"), 0.3) + room(10, 140, 80, 80, t("pCuisine"), 0.1) + room(90, 140, 70, 80, t("pSdb"), 0.08);
+    for (let i = 0; i < beds; i++) g += room(160 + (i % cols) * cw, 10 + Math.floor(i / cols) * ch, cw, ch, `${t("pChambre")} ${i + 1}`, 0.52 / beds);
+  }
+  return `<svg class="plan" viewBox="0 0 340 230" role="img" aria-label="${esc(t("tPlan"))}">${g}</svg>`;
+}
+
+/* ---------- Feuilles modales ---------- */
+let modalClose = null;
+function openModal(html, { wide = false, onClose } = {}) {
+  const m = $("modal");
+  m.innerHTML = `<div class="sheet glass ${wide ? "wide" : ""}" role="dialog" aria-modal="true">${html}</div>`;
+  m.hidden = false; modalClose = onClose || null;
+  m.querySelector("[data-close]")?.addEventListener("click", closeModal);
+  setTimeout(() => m.querySelector("input, button")?.focus(), 30);
+  return m.firstElementChild;
+}
+function closeModal() { $("modal").hidden = true; $("modal").innerHTML = ""; const fn = modalClose; modalClose = null; fn?.(); }
+$("modal").addEventListener("click", (e) => { if (e.target === $("modal")) closeModal(); });
+document.addEventListener("keydown", (e) => {
+  if (e.key !== "Escape") return;
+  if (!$("modal").hidden) closeModal();
+  $("notifs").hidden = true; $("bell").setAttribute("aria-expanded", "false");
+  document.querySelector(".lots-panel")?.classList.remove("open");
+});
+const closeBtn = () => `<button class="btn btn-ghost btn-small" type="button" data-close>${esc(t("close"))}</button>`;
+
+/* Identification + vérification d'identité (simulée) */
+function onboard(then) {
+  const el = openModal(`
+    <div class="sheet-head"><h2>${esc(t("obTitle"))}</h2>${closeBtn()}</div>
+    <p class="muted">${esc(t("obLede"))}</p>
+    <form id="ob" class="page" style="gap:12px" novalidate>
+      <label class="field">${esc(t("obHandle"))}<input id="ob-handle" maxlength="24" autocomplete="nickname" placeholder="salma.invest" value="${esc(prefs.user?.handle || "")}" dir="ltr"></label>
+      <label class="field">${esc(t("obCin"))}<input id="ob-cin" maxlength="10" placeholder="BE123456" dir="ltr" autocomplete="off"></label>
+      <label class="field">${esc(t("obFunds"))}<input id="ob-funds" type="file" accept=".pdf,image/*"></label>
+      <label class="check"><input type="checkbox" id="ob-dep"> ${esc(t("obDeposit"))}</label>
+      <p class="err" id="ob-err" hidden></p>
+      <p class="muted" style="font-size:.78rem">${esc(t("kycNote"))}</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary" type="submit" id="ob-go">${esc(t("obGo"))}</button><button class="btn btn-ghost" type="button" data-close2>${esc(t("cancel"))}</button></div>
+    </form>`);
+  el.querySelector("[data-close2]").addEventListener("click", closeModal);
+  el.querySelector("#ob").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const handle = $("ob-handle").value.trim().replace(/^@/, ""), cin = $("ob-cin").value.trim().toUpperCase(), err = $("ob-err");
+    const fail = (k) => { err.textContent = t(k); err.hidden = false; };
+    if (!/^[a-z0-9._]{3,24}$/i.test(handle)) return fail("errHandle");
+    if (!/^[A-Z]{1,2}\d{4,8}$/.test(cin)) return fail("errCin");
+    if (!$("ob-dep").checked) return fail("errDep");
+    const btn = $("ob-go"); btn.disabled = true; btn.textContent = t("obVerifying");
+    const funds = !!$("ob-funds").files?.length;
+    setTimeout(() => {
+      prefs.user = { handle, kyc: { cin: cin.slice(0, 2) + "••••" + cin.slice(-2), funds, verified: true } }; save("user");
+      closeModal(); renderWho(); toast(t("obDone")); then?.();
+    }, 900);
+  });
+}
+
+/* ---------- En-tête : identité, notifications, langue ---------- */
 function renderWho() {
-  $("who").innerHTML = prefs.user ? `<span>Connecté : <b>@${esc(prefs.user.handle)}</b></span>` : `<button class="btn btn-ghost btn-small" type="button" id="who-login">Choisir un pseudo</button>`;
+  $("who").innerHTML = prefs.user
+    ? `<span dir="ltr"><b>@${esc(prefs.user.handle)}</b></span>${prefs.user.kyc?.verified ? `<span class="kyc-ok">✓ ${esc(t("verified"))}</span>` : ""}`
+    : `<button class="btn btn-ghost btn-small" type="button" id="who-login">${esc(t("pickHandle"))}</button>`;
   $("who-login")?.addEventListener("click", () => onboard());
 }
-let onboardThen = null;
-function onboard(then) { onboardThen = then || null; $("onboard").hidden = false; $("ob-err").hidden = true; $("ob-handle").focus(); }
-$("onboard-form").addEventListener("submit", (e) => {
-  e.preventDefault();
-  const handle = $("ob-handle").value.trim().replace(/^@/, "");
-  const err = $("ob-err");
-  if (!/^[a-z0-9._]{3,24}$/i.test(handle)) { err.textContent = "Choisissez un pseudo de 3 à 24 caractères : lettres, chiffres, point ou tiret bas."; err.hidden = false; return; }
-  if (!$("ob-deposit").checked) { err.textContent = "Cochez la case pour autoriser la consignation."; err.hidden = false; return; }
-  prefs.user = { handle }; store.set("adjuge-live-user", prefs.user);
-  $("onboard").hidden = true; renderWho();
-  const fn = onboardThen; onboardThen = null; fn?.();
+function renderBell() {
+  const n = prefs.notifs.filter((x) => !x.read).length;
+  $("bell-count").hidden = !n; $("bell-count").textContent = n > 9 ? "9+" : n;
+  $("bell").setAttribute("aria-label", `${t("notifs")}${n ? ` (${n})` : ""}`);
+  if (!$("notifs").hidden) renderNotifs();
+}
+function renderNotifs() {
+  const p = $("notifs");
+  const text = (x) => {
+    const vars = { ...x.vars };
+    if (vars.w && typeof vars.w === "object") vars.w = untilLabel(vars.w.at - Date.now()).toLowerCase();
+    if (vars.amount) vars.p = dh(vars.amount);
+    return t(x.key, vars);
+  };
+  p.innerHTML = `<div class="panel-head" style="padding:4px 4px 8px"><b>${esc(t("notifs"))}</b><button class="linkbtn" type="button" id="mark-read" style="font-size:.8rem">${esc(t("markRead"))}</button></div>
+    ${prefs.notifs.length ? `<ul>${prefs.notifs.map((x) => `<li class="${x.read ? "" : "unread"}">${esc(text(x))}<small>${esc(ago(x.at))}</small></li>`).join("")}</ul>` : `<p class="muted" style="padding:8px">${esc(t("noNotifs"))}</p>`}
+    <label class="check" style="padding:4px"><input type="checkbox" id="wa" ${prefs.whatsapp ? "checked" : ""}> ${esc(t("whatsapp"))}</label>`;
+  $("mark-read").addEventListener("click", () => { prefs.notifs.forEach((x) => (x.read = true)); save("notifs"); renderBell(); });
+  $("wa").addEventListener("change", (e) => { prefs.whatsapp = e.target.checked; save("whatsapp"); });
+}
+$("bell").addEventListener("click", (e) => {
+  e.stopPropagation();
+  const p = $("notifs"); p.hidden = !p.hidden; $("bell").setAttribute("aria-expanded", String(!p.hidden));
+  if (!p.hidden) renderNotifs();
 });
-$("ob-cancel").addEventListener("click", () => { $("onboard").hidden = true; onboardThen = null; });
-document.addEventListener("keydown", (e) => { if (e.key === "Escape") { $("onboard").hidden = true; document.querySelector(".lots-panel")?.classList.remove("open"); } });
+document.addEventListener("click", (e) => { if (!$("notifs").hidden && !$("notifs").contains(e.target)) { $("notifs").hidden = true; $("bell").setAttribute("aria-expanded", "false"); } });
+$("lang").addEventListener("click", () => { lang = lang === "ar" ? "fr" : "ar"; store.set("adjuge-live-lang", lang); applyLang(); route({ keepRoom: true }); });
+function applyLang() {
+  document.documentElement.lang = lang; document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+  document.querySelectorAll("[data-i18n]").forEach((el) => (el.textContent = t(el.dataset.i18n)));
+  $("lang").textContent = t("langBtn");
+  renderWho(); renderBell();
+}
 
-/* ---------- Fil des lives ---------- */
+/* ====================================================================
+   Fil des lives
+   ==================================================================== */
 let cat = "";
 function viewFeed(app) {
   const match = (s) => !cat || s.tags.includes(cat);
-  const live = SHOWS.filter((s) => s.live && match(s));
+  const live = allShows().filter((s) => s.live && match(s));
   const next = SHOWS.filter((s) => !s.live && match(s)).sort((a, b) => a.startsAt - b.startsAt);
   app.innerHTML = `
-    <div class="feed">
-      <div class="feed-head">
-        <div><p class="label" style="color:var(--live)">En direct</p><h1>Les biens passent un par un. Glissez pour enchérir.</h1>
-        <p>Un agent présente chaque bien en visite filmée, répond au chat, puis ouvre une enchère éclair. Chaque offre dans les 10 dernières secondes relance le chrono.</p></div>
-      </div>
-      <div class="chips" role="group" aria-label="Catégories">${CATS.map(([k, v]) => `<button class="chip glass" type="button" data-cat="${k}" aria-pressed="${cat === k}">${v}</button>`).join("")}</div>
-      <section><div class="section-title"><span class="live-badge">LIVE</span><h2>En ce moment</h2></div>
-        ${live.length ? `<div class="lives">${live.map(showCard).join("")}</div>` : `<p class="empty glass">Aucun live dans cette catégorie en ce moment. Activez un rappel ci-dessous.</p>`}
-      </section>
-      <section><div class="section-title"><h2>Prochains lives</h2></div>
-        ${next.length ? `<div class="upcoming">${next.map(upCard).join("")}</div>` : `<p class="empty glass">Aucun live programmé dans cette catégorie.</p>`}
-      </section>
-      <section><div class="section-title"><h2>Comment ça marche</h2></div>
-        <ol class="how">
-          <li class="glass"><b>Regardez la visite</b><span class="muted">L'agent fait le tour du bien en direct et répond à vos questions dans le chat.</span></li>
-          <li class="glass"><b>Glissez pour enchérir</b><span class="muted">Le bouton propose toujours l'offre minimum suivante. Pour viser plus haut, saisissez votre propre montant.</span></li>
-          <li class="glass"><b>Adjugé, puis le notaire</b><span class="muted">Si la réserve est atteinte, le bien est à vous : la consignation est prélevée et la signature a lieu sous 30 jours.</span></li>
-        </ol>
-      </section>
+    <div class="page">
+      <div class="page-head"><p class="label" style="color:var(--live)">${esc(t("feedEyebrow"))}</p><h1>${esc(t("feedTitle"))}</h1><p>${esc(t("feedLede"))}</p></div>
+      <div class="chips" role="group">${CATS.map((k) => `<button class="chip glass" type="button" data-cat="${k}" aria-pressed="${cat === k}">${esc(t(k ? "cat" + k : "catAll"))}</button>`).join("")}</div>
+      <section><div class="section-title"><span class="live-badge">${esc(t("live"))}</span><h2>${esc(t("nowLive"))}</h2></div>
+        ${live.length ? `<div class="lives">${live.map(showCard).join("")}</div>` : `<p class="empty glass">${esc(t("noLive"))}</p>`}</section>
+      <section><div class="section-title"><h2>${esc(t("upcoming"))}</h2></div>
+        ${next.length ? `<div class="upcoming">${next.map(upCard).join("")}</div>` : `<p class="empty glass">${esc(t("noUpcoming"))}</p>`}</section>
+      <section><div class="section-title"><h2>${esc(t("howTitle"))}</h2></div>
+        <ol class="how">${[1, 2, 3].map((i) => `<li class="glass"><b>${esc(t(`how${i}t`))}</b><span class="muted">${esc(t(`how${i}`))}</span></li>`).join("")}</ol></section>
     </div>`;
   app.querySelectorAll("[data-cat]").forEach((b) => b.addEventListener("click", () => { cat = b.dataset.cat; viewFeed(app); }));
   app.querySelectorAll("[data-remind]").forEach((b) => b.addEventListener("click", () => {
     const id = b.dataset.remind, on = !prefs.reminders.includes(id);
-    prefs.reminders = on ? [...prefs.reminders, id] : prefs.reminders.filter((x) => x !== id);
-    store.set("adjuge-live-reminders", prefs.reminders);
-    b.setAttribute("aria-pressed", on); b.textContent = on ? "Rappel activé" : "Me rappeler";
-    toast(on ? "Nous vous préviendrons au début du live." : "Rappel retiré.");
+    prefs.reminders = on ? [...prefs.reminders, id] : prefs.reminders.filter((x) => x !== id); save("reminders");
+    b.setAttribute("aria-pressed", on); b.textContent = t(on ? "reminded" : "remind");
+    toast(t(on ? "remindToast" : "remindOff"));
   }));
 }
 function showCard(s) {
-  const lot = s.lots[0];
+  const lot = s.lots[0], mine = prefs.myShows.includes(s);
   return `<a class="show" href="#live-${s.id}">${sceneSVG("facade", lot)}<span class="shade"></span>
-    <span class="tl"><span class="live-badge">LIVE</span><span class="viewers num">${numFmt.format(s.viewers)} spectateurs</span></span>
+    <span class="tl"><span class="live-badge">${esc(t("live"))}</span><span class="viewers num">${esc(t("viewers", { n: numFmt.format(s.viewers) }))}</span>${mine ? `<span class="tag mine">${esc(t("yourLive"))}</span>` : ""}</span>
     <span class="info"><span class="host">${avatar(s.host)}<span><b>${esc(s.host.name)}</b>${esc(s.host.agency)}</span></span>
-      <h3>${esc(s.title)}</h3>
-      <span class="now media-glass"><span>${s.lots.length} lots · ${esc(s.city)}</span><b class="num">À partir de ${short(Math.min(...s.lots.map((l) => l.start)))}</b></span></span></a>`;
+      <h3>${esc(lt(s, "title"))}</h3>
+      <span class="now media-glass"><span>${esc(t("lotsCount", { n: s.lots.length }))} · ${esc(place(s.city))}</span><b class="num">${esc(t("fromPrice", { p: short(Math.min(...s.lots.map((l) => l.start))) }))}</b></span></span></a>`;
 }
 function upCard(s) {
   const on = prefs.reminders.includes(s.id);
   return `<article class="up glass"><div class="thumb">${sceneSVG("facade", { type: s.preview.type, hue: s.preview.hue, title: s.title, id: s.id })}</div>
-    <div class="body"><span class="when">${untilLabel(s.startsAt - Date.now())}</span><h3 style="font-size:1.02rem">${esc(s.title)}</h3>
-    <span class="muted" style="font-size:.84rem">${esc(s.host.name)} · ${s.count} lots · ${esc(s.city)}</span>
-    <div class="row"><span></span><button class="btn btn-ghost btn-small remind" type="button" data-remind="${s.id}" aria-pressed="${on}">${on ? "Rappel activé" : "Me rappeler"}</button></div></div></article>`;
+    <div class="body"><span class="when">${esc(untilLabel(s.startsAt - Date.now()))}</span><h3 style="font-size:1.02rem">${esc(lt(s, "title"))}</h3>
+    <span class="muted" style="font-size:.84rem">${esc(s.host.name)} · ${esc(t("lotsCount", { n: s.count }))} · ${esc(place(s.city))}</span>
+    <div class="row"><button class="btn btn-ghost btn-small remind" type="button" data-remind="${s.id}" aria-pressed="${on}">${esc(t(on ? "reminded" : "remind"))}</button></div></div></article>`;
 }
 
-/* ---------- Salle de live ---------- */
+/* ====================================================================
+   Salle de live (spectateur ou hôte)
+   ==================================================================== */
 const INTRO = 12 * SEC, BIDDING = 30 * SEC, RESET = 10 * SEC, RESULT = 6 * SEC;
-let R = null; // état de la salle courante
-const CHAT_POOL = ["Bonsoir de Rabat 👋", "Magnifique", "Le patio est sublime", "On peut revoir la terrasse ?", "Ça part vite ce soir", "Superbe rénovation", "Je suis là pour le lot suivant", "Quelle surface pour la terrasse ?", "Titre foncier ok ?", "Les charges sont de combien ?", "Trop beau 😍", "Bravo pour la présentation", "Prix de départ raisonnable", "Il y a un parking ?"];
-const HOST_ANSWERS = [
-  [/titre|foncier/i, "Oui, titre foncier individuel, prêt pour la signature."],
-  [/visite|visiter/i, "Une visite physique est possible avant la signature, sur rendez-vous."],
-  [/charge|syndic/i, "Les charges tournent autour de 800 DH par mois."],
-  [/travaux|rénov/i, "Le rapport d'expertise détaille l'état du bien ; je le partage en privé après le lot."],
-  [/crédit|banque|financ/i, "La signature a lieu sous 30 jours : c'est compatible avec un crédit déjà accordé."],
-  [/consignation|caution/i, "10 % du prix de départ, prélevés seulement si vous gagnez."],
-  [/parking|garage/i, "Oui, stationnement inclus dans la vente."],
-];
-
-function viewRoom(app, id) {
-  const show = SHOWS.find((s) => s.id === id && s.live);
-  if (!show) { app.innerHTML = `<div class="empty glass"><h2>Ce live n'est pas en cours</h2><p style="margin:10px 0 16px">Il est peut-être terminé ou pas encore commencé.</p><a class="btn btn-primary" href="#lives">Voir les lives</a></div>`; return; }
-  app.classList.add("room-mode");
-  R = { show, idx: 0, phase: "intro", phaseEnd: 0, bids: [], results: [], tour: 0, viewers: show.viewers, timers: [], lastHost: 0, warned: false, rivalMax: 0 };
-  const following = prefs.follows.includes(show.host.handle);
-  app.innerHTML = `
-    <div class="room">
-      <aside class="panel glass lots-panel" id="lots-panel" aria-label="Lots du live">
-        <div class="panel-head"><b>Lots du live</b><button class="btn btn-ghost btn-small close-sheet" type="button" id="close-lots">Fermer</button></div>
-        <ol class="lots" id="lots"></ol>
-      </aside>
-      <section class="stage" id="stage" aria-label="Live vidéo">
-        <div class="scene" id="scene"></div>
-        <div class="stage-top">
-          <a class="iconbtn media-glass" href="#lives" aria-label="Quitter le live"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg></a>
-          <div class="host media-glass">${avatar(show.host)}<span><b>${esc(show.host.name)}</b><span>@${esc(show.host.handle)}</span></span><button class="follow" type="button" id="follow" aria-pressed="${following}">${following ? "Suivi" : "Suivre"}</button></div>
-        </div>
-        <div class="stage-meta"><span class="live-badge">LIVE</span><span class="viewers num" id="viewers"></span><span class="tour media-glass" id="tour"></span><button class="tour media-glass lots-toggle" type="button" id="open-lots">Lots (${show.lots.length})</button></div>
-        <div class="hearts" id="hearts" aria-hidden="true"></div>
-        <div class="lotcard media-glass" id="lotcard"></div>
-        <div id="overlay"></div>
-      </section>
-      <aside class="panel glass chat" aria-label="Chat du live">
-        <div class="panel-head"><b>Chat</b><span class="muted num" id="chat-count" style="font-size:.8rem"></span></div>
-        <ul class="msgs" id="msgs" aria-live="off"></ul>
-        <form id="chat-form" autocomplete="off"><input id="chat-input" maxlength="140" placeholder="Posez une question à l'hôte…" aria-label="Message"><button class="btn btn-primary btn-small" type="submit">Envoyer</button></form>
-      </aside>
-    </div>`;
-  $("follow").addEventListener("click", (e) => {
-    const on = !prefs.follows.includes(show.host.handle);
-    prefs.follows = on ? [...prefs.follows, show.host.handle] : prefs.follows.filter((h) => h !== show.host.handle);
-    store.set("adjuge-live-follows", prefs.follows);
-    e.currentTarget.setAttribute("aria-pressed", on); e.currentTarget.textContent = on ? "Suivi" : "Suivre";
-    if (on) toast(`Vous suivez ${show.host.name}.`);
-  });
-  $("open-lots").addEventListener("click", () => $("lots-panel").classList.add("open"));
-  $("close-lots").addEventListener("click", () => $("lots-panel").classList.remove("open"));
-  $("chat-form").addEventListener("submit", (e) => {
-    e.preventDefault();
-    const text = $("chat-input").value.trim(); if (!text) return;
-    if (!prefs.user) { onboard(() => $("chat-form").requestSubmit()); return; }
-    chat(`@${prefs.user.handle}`, text, "me"); $("chat-input").value = "";
-    const ans = HOST_ANSWERS.find(([re]) => re.test(text));
-    if (ans || text.includes("?")) later(() => chat(R.show.host.name, `@${prefs.user.handle} ${ans ? ans[1] : "Bonne question, je vous réponds en privé juste après ce lot."}`, "from-host"), rand(1800, 3500));
-  });
-  chat("", `Bienvenue dans le live de ${show.host.name}. Soyez courtois dans le chat.`, "sys");
-  for (let i = 0; i < 3; i++) chat(`@${pick(HANDLES)}`, pick(CHAT_POOL));
-  startLot();
-  R.timers.push(setInterval(tick, 250));
-  R.timers.push(setInterval(ambient, 2600));
-  window.addEventListener("resize", placeChat);
-}
-function later(fn, ms) { if (!R) return; const t = setTimeout(() => R && fn(), ms); R.timers.push(t); }
-function leaveRoom() { if (!R) return; R.timers.forEach((t) => { clearInterval(t); clearTimeout(t); }); R = null; window.removeEventListener("resize", placeChat); }
+let R = null;
 const lot = () => R.show.lots[R.idx];
 const top = () => R.bids[R.bids.length - 1];
 const minBid = () => top() ? top().amount + lot().inc : lot().start;
 const reserveMet = () => !!top() && top().amount >= lot().reserve;
 
+function viewRoom(app, id, host, keep) {
+  const show = allShows().find((s) => s.id === id && s.live);
+  if (!show || (host && !prefs.myShows.includes(show))) {
+    app.innerHTML = `<div class="empty glass"><h2>${esc(t("notLive"))}</h2><p>${esc(t("notLiveP"))}</p><a class="btn btn-primary" href="#lives">${esc(t("seeLives"))}</a></div>`; return;
+  }
+  app.classList.add("room-mode");
+  const reuse = keep && R && R.show.id === id && R.host === host;
+  const oldMsgs = reuse ? $("msgs")?.innerHTML : "";
+  if (!reuse) { leaveRoom(); R = { show, host, idx: 0, phase: "intro", phaseEnd: 0, bids: [], results: [], tour: 0, viewers: show.viewers, timers: [], warned: false, rivalMax: 0, auto: null, custom: false }; }
+  buildRoomShell(app);
+  if (reuse) { $("msgs").innerHTML = oldMsgs; showScene(); renderLots(); renderCard(); renderOverlay(); return; }
+  chat("", t("welcome", { n: show.host.name }), "sys");
+  for (let i = 0; i < 3; i++) chat(`@${pick(HANDLES)}`, pick(CHAT_POOL[lang]));
+  startLot();
+  R.timers.push(setInterval(tick, 250));
+  R.timers.push(setInterval(ambient, 2600));
+  window.addEventListener("resize", placeChat);
+}
+function buildRoomShell(app) {
+  const show = R.show, following = prefs.follows.includes(show.host.handle);
+  app.innerHTML = `
+    <div class="room">
+      <aside class="panel glass lots-panel" id="lots-panel" aria-label="${esc(t("lotsTitle"))}">
+        <div class="panel-head"><b>${esc(t("lotsTitle"))}</b><button class="btn btn-ghost btn-small close-sheet" type="button" id="close-lots">${esc(t("close"))}</button></div>
+        <ol class="lots" id="lots"></ol>
+      </aside>
+      <section class="stage" id="stage">
+        <div class="scene" id="scene"></div>
+        <div class="stage-top">
+          <a class="iconbtn media-glass" href="${R.host ? "#studio" : "#lives"}" aria-label="${esc(t("leave"))}"><svg class="flip" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg></a>
+          <div class="host media-glass">${avatar(show.host)}<span><b>${esc(show.host.name)}</b><span dir="ltr">@${esc(show.host.handle)}</span></span>${R.host ? "" : `<button class="follow" type="button" id="follow" aria-pressed="${following}">${esc(t(following ? "following" : "follow"))}</button>`}</div>
+        </div>
+        <div class="stage-meta"><span class="live-badge">${esc(t("live"))}</span><span class="viewers num" id="viewers"></span><button class="tour media-glass" type="button" id="tour"></button><button class="tour media-glass lots-toggle" type="button" id="open-lots">${esc(t("lotsBtn", { n: show.lots.length }))}</button></div>
+        ${R.host ? `<div class="hostbar media-glass" id="hostbar"></div>` : ""}
+        <div class="hearts" id="hearts" aria-hidden="true"></div>
+        <div class="lotcard media-glass" id="lotcard"></div>
+        <div id="overlay"></div>
+      </section>
+      <aside class="panel glass chat" aria-label="${esc(t("chat"))}">
+        <div class="panel-head"><b>${esc(t("chat"))}</b><span class="muted num" id="chat-count" style="font-size:.8rem"></span></div>
+        <ul class="msgs" id="msgs" aria-live="off"></ul>
+        <form id="chat-form" autocomplete="off"><input id="chat-input" maxlength="140" placeholder="${esc(t(R.host ? "hostChatPh" : "chatPh"))}" aria-label="${esc(t("chat"))}"><button class="btn btn-primary btn-small" type="submit">${esc(t("send"))}</button></form>
+      </aside>
+    </div>`;
+  $("follow")?.addEventListener("click", (e) => {
+    const on = !prefs.follows.includes(show.host.handle);
+    prefs.follows = on ? [...prefs.follows, show.host.handle] : prefs.follows.filter((h) => h !== show.host.handle); save("follows");
+    e.currentTarget.setAttribute("aria-pressed", on); e.currentTarget.textContent = t(on ? "following" : "follow");
+    if (on) toast(t("followToast", { n: show.host.name }));
+  });
+  $("tour").addEventListener("click", () => openDossier(lot(), "visit"));
+  $("open-lots").addEventListener("click", () => $("lots-panel").classList.add("open"));
+  $("close-lots").addEventListener("click", () => $("lots-panel").classList.remove("open"));
+  $("chat-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const text = $("chat-input").value.trim(); if (!text) return;
+    if (R.host) { chat(R.show.host.name, text, "from-host"); $("chat-input").value = ""; return; }
+    if (!prefs.user) { onboard(() => $("chat-form")?.requestSubmit()); return; }
+    chat(`@${me()}`, text, "me"); $("chat-input").value = "";
+    const ans = HOST_ANSWERS.find(([re]) => re.test(text));
+    if (ans || /[?؟]/.test(text)) later(() => chat(R.show.host.name, `@${me()} ${ans ? (lang === "ar" ? ans[2] : ans[1]) : lang === "ar" ? "سؤال مزيان، غادي نجاوبك فالخاص من بعد هاد العقار." : "Bonne question, je vous réponds en privé juste après ce lot."}`, "from-host"), rand(1800, 3500));
+  });
+}
+function later(fn, ms) { if (!R) return; const tm = setTimeout(() => R && fn(), ms); R.timers.push(tm); }
+function leaveRoom() { if (!R) return; R.timers.forEach((x) => { clearInterval(x); clearTimeout(x); }); R = null; window.removeEventListener("resize", placeChat); }
+
 function startLot() {
   const l = lot();
-  R.phase = "intro"; R.phaseEnd = Date.now() + INTRO; R.bids = []; R.tour = 0; R.warned = false; R.custom = false;
+  Object.assign(R, { phase: "intro", phaseEnd: R.host ? Infinity : Date.now() + INTRO, bids: [], tour: 0, warned: false, custom: false, auto: null, autoWait: false });
   R.rivalMax = Math.round(l.reserve * rand(0.96, 1.12) / l.inc) * l.inc;
-  showScene(true); renderLots(); renderCard(); $("overlay").innerHTML = "";
-  chat("", `Lot ${R.idx + 1} sur ${R.show.lots.length} : ${l.title}`, "sys");
-  l.pitch.forEach((line, i) => later(() => chat(R.show.host.name, line, "from-host"), 600 + i * 3400));
+  showScene(); renderLots(); renderCard(); renderOverlay();
+  chat("", t("lotAnnounce", { i: R.idx + 1, n: R.show.lots.length, t: lt(l, "title") }), "sys");
+  (lt(l, "pitch") || []).forEach((line, i) => later(() => chat(R.show.host.name, line, "from-host"), 600 + i * 3400));
 }
 function openBidding() {
   R.phase = "bidding"; R.phaseEnd = Date.now() + BIDDING;
-  chat(R.show.host.name, `Ouverture à ${dh(lot().start)}, pas de ${dh(lot().inc)}. C'est parti !`, "from-host");
+  chat(R.show.host.name, t("openMsg", { p: dh(lot().start), s: dh(lot().inc) }), "from-host");
   renderCard();
 }
 function closeLot() {
-  const l = lot(), t = top(), sold = reserveMet();
-  R.phase = "result"; R.phaseEnd = Date.now() + RESULT;
-  R.results[R.idx] = { sold, amount: t?.amount, by: t?.by };
-  const mine = sold && t.by === prefs.user?.handle;
-  if (sold) chat(R.show.host.name, `Adjugé à @${t.by} pour ${dh(t.amount)} ! Bravo.`, "from-host");
-  else chat(R.show.host.name, t ? `Réserve non atteinte à ${dh(t.amount)} : le lot n'est pas adjugé ce soir.` : "Pas d'offre sur ce lot, il repassera dans un prochain live.", "from-host");
-  $("overlay").innerHTML = `<div class="overlay">${mine ? confetti() : ""}<div class="box">
-    <div class="stamp ${sold ? (mine ? "win" : "") : "no"}">${sold ? "Adjugé !" : "Non adjugé"}</div>
-    ${sold ? `<p style="font-size:1.1rem"><b>@${esc(t.by)}</b> remporte le lot pour <b class="num">${dh(t.amount)}</b></p>` : `<p>${t ? `Dernière offre : <b class="num">${dh(t.amount)}</b>. La réserve du vendeur n'est pas atteinte.` : "Aucune offre sur ce lot."}</p>`}
-    ${mine ? `<p style="opacity:.85;font-size:.9rem">Félicitations ! La consignation de ${dh(Math.round(l.start * 0.1))} est prélevée. L'étude vous contacte pour la signature chez le notaire sous 30 jours.</p>` : ""}
-    <p style="opacity:.7;font-size:.82rem">${R.idx + 1 < R.show.lots.length ? "Lot suivant dans quelques secondes…" : "C'était le dernier lot."}</p></div></div>`;
-  renderLots(); renderCard();
+  const l = lot(), tp = top(), sold = reserveMet();
+  R.phase = "result"; R.phaseEnd = R.host ? Infinity : Date.now() + RESULT;
+  R.results[R.idx] = { sold, amount: tp?.amount, by: tp?.by };
+  if (sold) chat(R.show.host.name, t("soldTo", { h: tp.by, p: dh(tp.amount) }), "from-host");
+  else chat(R.show.host.name, tp ? t("notMet", { p: dh(tp.amount) }) : t("noBids"), "from-host");
+  if (sold && tp.by === me() && !R.host) {
+    prefs.wins.unshift({ id: `${l.id}-${Date.now()}`, lot: { ...l }, showTitle: [R.show.title, R.show.title_ar], amount: tp.amount, at: Date.now(), step: 0 }); save("wins");
+    notify("nWon", { t: [l.title, l.title_ar], amount: tp.amount });
+  }
+  renderOverlay(); renderLots(); renderCard();
 }
-function endShow() {
-  R.phase = "ended";
-  const sold = R.results.filter((r) => r?.sold);
-  $("overlay").innerHTML = `<div class="overlay"><div class="box"><span class="live-badge" style="background:rgb(255 255 255 / .2)">LIVE TERMINÉ</span>
-    <h2 style="font-size:1.6rem">Merci d'avoir suivi ${esc(R.show.host.name)}</h2>
-    <p class="num">${sold.length} lot${sold.length > 1 ? "s" : ""} adjugé${sold.length > 1 ? "s" : ""} sur ${R.show.lots.length}, pour ${dh(sold.reduce((a, r) => a + r.amount, 0))} au total.</p>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"><button class="btn btn-primary" type="button" id="replay">Revoir le live</button><a class="btn btn-ghost" href="#lives">Autres lives</a></div></div></div>`;
-  $("replay").addEventListener("click", () => { R.idx = 0; R.results = []; startLot(); });
-  renderCard();
+function nextLot() { if (R.idx + 1 < R.show.lots.length) { R.idx++; startLot(); } else endShow(); }
+function endShow() { R.phase = "ended"; renderOverlay(); renderCard(); renderLots(); }
+function renderOverlay() {
+  const ov = $("overlay"); if (!ov) return;
+  if (R.phase === "result") {
+    const res = R.results[R.idx], mine = res.sold && res.by === me() && !R.host;
+    ov.innerHTML = `<div class="overlay">${mine ? confetti() : ""}<div class="box">
+      <div class="stamp ${res.sold ? (mine ? "win" : "") : "no"}">${esc(t(res.sold ? "stampSold" : "stampNo"))}</div>
+      <p style="font-size:1.05rem">${res.sold ? t("wonBy", { h: esc(res.by), p: dh(res.amount) }) : esc(res.amount ? t("lastOffer", { p: dh(res.amount) }) : t("noOffer"))}</p>
+      ${mine ? `<p style="opacity:.85;font-size:.9rem">${esc(t("youWon"))}</p><a class="btn btn-primary btn-small" href="#victoires">${esc(t("seeWins"))}</a>` : ""}
+      <p style="opacity:.7;font-size:.82rem">${esc(t(R.idx + 1 < R.show.lots.length ? (R.host ? "getReady" : "nextSoon") : "lastLot"))}</p></div></div>`;
+  } else if (R.phase === "ended") {
+    const sold = R.results.filter((r) => r?.sold);
+    ov.innerHTML = `<div class="overlay"><div class="box"><span class="live-badge" style="background:rgb(255 255 255 / .2)">${esc(t("endBadge"))}</span>
+      <h2 style="font-size:1.5rem">${esc(t("thanks", { n: R.show.host.name }))}</h2>
+      <p class="num">${esc(t("summary", { s: sold.length, n: R.show.lots.length, p: dh(sold.reduce((a, r) => a + r.amount, 0)) }))}</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"><button class="btn btn-primary" type="button" id="replay">${esc(t("replay"))}</button><a class="btn btn-ghost" href="${R.host ? "#studio" : "#lives"}">${esc(t(R.host ? "backStudio" : "otherLives"))}</a></div></div></div>`;
+    $("replay").addEventListener("click", () => { R.idx = 0; R.results = []; startLot(); });
+  } else ov.innerHTML = "";
 }
 
 function placeBid(by, amount, isMe = false) {
-  const t = Date.now();
-  R.bids.push({ by, amount, at: t });
-  if (R.phaseEnd - t < RESET) R.phaseEnd = t + RESET;
-  chat(`@${by}`, `enchérit ${dh(amount)}`, isMe ? "bid me" : "bid");
+  const tm = Date.now(), prev = top();
+  R.bids.push({ by, amount, at: tm });
+  if (R.phaseEnd - tm < RESET) R.phaseEnd = tm + RESET;
+  chat(`@${by}`, t("bidLine", { p: dh(amount) }), isMe ? "bid me" : "bid");
+  if (prev?.by === me() && by !== me() && !R.host && !(R.auto && minBid() <= R.auto)) notify("nOutbid", { t: [lot().title, lot().title_ar], amount });
   renderCard(true);
 }
-function myBid(amount) {
-  if (!prefs.user) { onboard(() => myBid(amount)); return; }
+function myBid(amount, auto = false) {
+  if (R.host) return;
+  if (!prefs.user) { onboard(() => R && myBid(Math.max(amount, minBid()))); return; }
   if (R.phase !== "bidding") return;
-  if (top()?.by === prefs.user.handle) { toast("Vous menez déjà l'enchère."); return; }
-  if (!(amount >= minBid())) { toast(`L'offre minimum est de ${dh(minBid())}.`); return; }
-  placeBid(prefs.user.handle, amount, true);
+  if (top()?.by === me()) { if (!auto) toast(t("leadAlready")); return; }
+  if (!(amount >= minBid())) { toast(t("minBidToast", { p: dh(minBid()) })); return; }
+  placeBid(me(), amount, true);
   R.custom = false;
-  hearts(3);
-  toast(reserveMet() ? "Offre enregistrée. Réserve atteinte !" : "Offre enregistrée. Vous menez !");
+  if (!auto) { hearts(3); toast(t(reserveMet() ? "bidOkRes" : "bidOk")); }
 }
 
 function tick() {
   if (!R) return;
-  const t = Date.now();
-  if (R.phase === "intro") { if (t >= R.phaseEnd) openBidding(); else updateClock(); }
+  const tm = Date.now();
+  if (R.phase === "intro") { if (tm >= R.phaseEnd) openBidding(); else updateClock(); }
   else if (R.phase === "bidding") {
-    const left = R.phaseEnd - t;
+    const left = R.phaseEnd - tm;
     if (left <= 0) { closeLot(); return; }
-    // Enchérisseurs simulés : plus nerveux quand le chrono baisse.
     const tp = top();
     if (minBid() <= R.rivalMax && Math.random() < (left < 5 * SEC ? 0.09 : 0.035)) {
       const by = pick(HANDLES.filter((h) => h !== tp?.by));
-      const jump = Math.random() < 0.2 ? 2 : 1;
-      const amount = Math.min(R.rivalMax, minBid() + (jump - 1) * lot().inc);
+      const amount = Math.min(R.rivalMax, minBid() + (Math.random() < 0.2 ? lot().inc : 0));
       if (amount >= minBid()) placeBid(by, amount);
     }
-    if (left < 6 * SEC && !R.warned) { R.warned = true; chat(R.show.host.name, "Dernières secondes… qui dit mieux ?", "from-host"); }
+    // Enchère automatique : on relance au palier suivant tant que le maximum le permet.
+    if (R.auto && prefs.user && top()?.by !== me() && !R.autoWait) {
+      if (minBid() <= R.auto) { R.autoWait = true; later(() => { R.autoWait = false; if (R.phase === "bidding" && R.auto && top()?.by !== me() && minBid() <= R.auto) myBid(minBid(), true); }, 700); }
+      else { notify("autoDone", { amount: R.auto }); toast(t("autoDone", { p: dh(R.auto) })); R.auto = null; renderCard(); }
+    }
+    if (left < 6 * SEC && !R.warned) { R.warned = true; chat(R.show.host.name, t("lastSec"), "from-host"); }
     if (left > 6 * SEC) R.warned = false;
     updateClock();
-  } else if (R.phase === "result" && t >= R.phaseEnd) {
-    if (R.idx + 1 < R.show.lots.length) { R.idx++; startLot(); } else endShow();
-  }
+  } else if (R.phase === "result" && tm >= R.phaseEnd) nextLot();
 }
 function ambient() {
   if (!R) return;
   R.viewers = Math.max(50, R.viewers + Math.round(rand(-12, 18)));
-  $("viewers").textContent = `${numFmt.format(R.viewers)} spectateurs`;
-  $("chat-count").textContent = `${numFmt.format(R.viewers)} en ligne`;
+  $("viewers").textContent = t("viewers", { n: numFmt.format(R.viewers) });
+  $("chat-count").textContent = t("online", { n: numFmt.format(R.viewers) });
   const r = Math.random();
-  if (r < 0.45) chat(`@${pick(HANDLES)}`, pick(CHAT_POOL));
-  else if (r < 0.6) chat("", `@${pick(HANDLES)} a rejoint le live`, "sys");
+  if (r < 0.45) chat(`@${pick(HANDLES)}`, pick(CHAT_POOL[lang]));
   if (Math.random() < 0.5) hearts(1 + Math.floor(Math.random() * 3));
-  // La caméra avance dans la visite.
-  if (R.phase === "intro" || R.phase === "bidding") { R.tourTick = (R.tourTick || 0) + 1; if (R.tourTick % 2 === 0) { R.tour = (R.tour + 1) % lot().tour.length; showScene(false); } }
+  if (R.phase === "intro" || R.phase === "bidding") { R.tourTick = (R.tourTick || 0) + 1; if (R.tourTick % 2 === 0) { R.tour = (R.tour + 1) % (lot().tour || TOURS[lot().type]).length; showScene(); } }
 }
 
-/* ---------- Rendu de la salle ---------- */
 function showScene() {
-  const kind = lot().tour[R.tour];
-  const sc = $("scene");
+  const tour = lot().tour || TOURS[lot().type], kind = tour[R.tour % tour.length], sc = $("scene");
   sc.classList.remove("swap"); void sc.offsetWidth; sc.classList.add("swap");
   sc.style.setProperty("--ox", `${Math.round(rand(30, 70))}%`); sc.style.setProperty("--oy", `${Math.round(rand(40, 70))}%`);
   sc.innerHTML = sceneSVG(kind, lot());
-  $("tour").textContent = `Visite · ${T[kind]}`;
-  $("viewers").textContent = `${numFmt.format(R.viewers)} spectateurs`;
+  $("tour").textContent = t("tour", { r: t("rooms")[kind] });
+  $("viewers").textContent = t("viewers", { n: numFmt.format(R.viewers) });
 }
 function renderLots() {
   $("lots").innerHTML = R.show.lots.map((l, i) => {
     const res = R.results[i];
-    const st = i === R.idx && R.phase !== "ended" ? `<small class="on">En cours</small>` : res ? (res.sold ? `<small class="sold num">Adjugé ${short(res.amount)}</small>` : `<small>Non adjugé</small>`) : `<small class="num">Départ ${short(l.start)}</small>`;
-    return `<li class="${i === R.idx ? "current" : ""}"><div class="mini">${sceneSVG("facade", l)}</div><div><strong>${esc(l.title)}</strong><span class="muted" style="font-size:.76rem">${esc(l.city)} · ${l.surface} m²</span><br>${st}</div></li>`;
+    const st = i === R.idx && R.phase !== "ended" ? `<small class="on">${esc(t("sLiveNow"))}</small>` : res ? (res.sold ? `<small class="sold num">${esc(t("wPrice", { p: short(res.amount) }))}</small>` : `<small>${esc(t("stampNo"))}</small>`) : `<small class="num">${esc(t("startP"))} ${esc(short(l.start))}</small>`;
+    return `<li class="${i === R.idx ? "current" : ""}"><div class="mini">${sceneSVG("facade", l)}</div><div><strong>${esc(lt(l, "title"))}</strong><span class="muted" style="font-size:.76rem">${esc(place(l.city))} · ${l.surface} m²</span><br>${st}</div></li>`;
   }).join("");
 }
 let sliding = false, pendingRender = false;
 function renderCard(bump = false) {
   if (sliding) { pendingRender = true; return; }
-  const l = lot(), t = top(), me = prefs.user?.handle, lead = t && t.by === me;
-  const head = `<div class="row1"><div><span class="label" style="opacity:.75">Lot ${R.idx + 1}/${R.show.lots.length}</span><h2>${esc(l.title)}</h2><p class="where">${esc(l.city)} · ${esc(l.district)} · ${l.surface} m²${l.bedrooms ? ` · ${l.bedrooms} ch.` : ""}</p></div>
+  const l = lot(), tp = top(), lead = tp && tp.by === me();
+  const head = `<div class="row1"><div><span class="label" style="opacity:.75">${esc(t("lotN", { i: R.idx + 1, n: R.show.lots.length }))}</span><h2>${esc(lt(l, "title"))}</h2><p class="where">${esc(place(l.city))} · ${esc(place(l.district))} · ${l.surface} m²${l.bedrooms ? ` · ${l.bedrooms} ${esc(t("fBeds").toLowerCase())}` : ""}</p></div>
     <div class="ring" id="ring"><svg viewBox="0 0 56 56"><circle class="track" cx="28" cy="28" r="24"/><circle class="bar" id="ring-bar" cx="28" cy="28" r="24" stroke-dasharray="150.8" stroke-dashoffset="0"/></svg><b class="num" id="ring-t"></b></div></div>`;
-  const price = `<div class="pricebar"><div><small>${t ? "Offre actuelle" : "Prix de départ"}</small><span class="big num ${bump ? "bump" : ""}" id="big">${dh(t ? t.amount : l.start)}</span></div>
-    <div class="topb">${t ? `<small style="opacity:.8">${R.bids.length} offre${R.bids.length > 1 ? "s" : ""}</small><b>@${esc(t.by)}</b>` : ""}<span class="reserve ${reserveMet() ? "ok" : ""}">${reserveMet() ? "Réserve atteinte" : "Réserve non atteinte"}</span></div></div>`;
+  const price = `<div class="pricebar"><div><small>${esc(t(tp ? "current" : "startP"))}</small><span class="big num ${bump ? "bump" : ""}" id="big">${dh(tp ? tp.amount : l.start)}</span></div>
+    <div class="topb">${tp ? `<small style="opacity:.8">${esc(t("bidsN", { n: R.bids.length }))}</small><b dir="ltr">@${esc(tp.by)}</b>` : ""}<span class="reserve ${reserveMet() ? "ok" : ""}">${esc(t(reserveMet() ? "resOk" : "resNo"))}</span></div></div>`;
   let action = "";
-  if (R.phase === "intro") action = `<p class="phase-note">Présentation en cours. Les enchères ouvrent dans <b class="num" id="intro-t"></b> à ${dh(l.start)}.</p>`;
+  if (R.host) {
+    const best = [...new Map(R.bids.slice().reverse().map((b) => [b.by, b])).values()].slice(0, 3);
+    action = R.phase === "intro" ? `<p class="phase-note">${esc(t("introHost"))}</p>`
+      : `<div><span class="label" style="opacity:.75">${esc(t("hBidders"))}</span>${best.length ? `<ol class="bidders num">${best.map((b) => `<li><span dir="ltr">@${esc(b.by)}</span><b>${dh(b.amount)}</b></li>`).join("")}</ol>` : `<p class="phase-note">${esc(t("hNoBidders"))}</p>`}</div>`;
+  } else if (R.phase === "intro") action = `<p class="phase-note">${esc(t("introNote", { s: "…", p: dh(l.start) })).replace("…", '<b class="num" id="intro-t"></b>')}</p><div class="actions" style="grid-template-columns:1fr"><button type="button" id="dossier-btn">${esc(t("aDossier"))}</button></div>`;
   else if (R.phase === "bidding") {
-    action = `<div class="slide ${lead ? "lead disabled" : ""}" id="slide"><span class="fill" id="fill"></span><span class="txt" id="slide-txt">${lead ? `Vous menez à ${dh(t.amount)}` : `Glisser pour enchérir ${dh(minBid())}`}</span>
-      <button class="knob" id="knob" type="button" aria-label="${lead ? "Vous menez l'enchère" : `Enchérir ${dh(minBid())}`}" ${lead ? "disabled" : ""}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg></button></div>
-      ${R.custom ? `<form class="custom" id="custom"><input id="custom-amt" inputmode="numeric" placeholder="Minimum ${dh(minBid())}" aria-label="Montant de votre offre"><button class="btn btn-primary btn-small" type="submit">Valider</button></form><p class="custom-err" id="custom-err" hidden></p>` : ""}
-      <div class="actions"><button type="button" id="toggle-custom">${R.custom ? "Fermer" : "Offre personnalisée"}</button><button type="button" id="love" aria-label="Envoyer des cœurs">♥ J'adore</button></div>`;
-  } else if (R.phase === "result") action = `<p class="phase-note">${R.results[R.idx]?.sold ? "Lot adjugé." : "Lot non adjugé."} ${R.idx + 1 < R.show.lots.length ? "Préparez-vous pour le lot suivant." : ""}</p>`;
-  else action = `<p class="phase-note">Le live est terminé.</p>`;
+    action = `${R.auto ? `<span class="autochip">${esc(t("autoOn", { p: dh(R.auto) }))}</span>` : ""}
+      <div class="slide ${lead ? "lead disabled" : ""}" id="slide"><span class="fill" id="fill"></span><span class="txt" id="slide-txt">${esc(lead ? t("lead", { p: dh(tp.amount) }) : t("slide", { p: dh(minBid()) }))}</span>
+      <button class="knob" id="knob" type="button" aria-label="${esc(lead ? t("lead", { p: dh(tp.amount) }) : t("slide", { p: dh(minBid()) }))}" ${lead ? "disabled" : ""}><svg class="flip" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg></button></div>
+      ${R.custom ? `<form class="custom" id="custom"><input id="custom-amt" inputmode="numeric" placeholder="${esc(dh(minBid()))}" aria-label="${esc(t("aCustom"))}"><button class="btn btn-primary btn-small" type="submit">${esc(t("validate"))}</button></form><p class="custom-err" id="custom-err" hidden></p>` : ""}
+      <div class="actions"><button type="button" id="toggle-custom" aria-pressed="${R.custom}">${esc(t("aCustom"))}</button><button type="button" id="auto-btn" aria-pressed="${!!R.auto}">${esc(t("aAuto"))}</button><button type="button" id="dossier-btn">${esc(t("aDossier"))}</button><button type="button" id="love" aria-label="${esc(t("aLove"))}">♥</button></div>`;
+  } else if (R.phase === "result") action = `<p class="phase-note">${esc(t(R.results[R.idx]?.sold ? "phaseSold" : "phaseUnsold"))} ${R.idx + 1 < R.show.lots.length ? esc(t("getReady")) : ""}</p>`;
+  else action = `<p class="phase-note">${esc(t("ended"))}</p>`;
   $("lotcard").innerHTML = head + price + action;
-  updateClock();
-  wireCard();
-  placeChat();
+  renderHostbar(); updateClock(); wireCard(); placeChat();
   if (bump) setTimeout(() => $("big")?.classList.remove("bump"), 500);
+}
+function renderHostbar() {
+  const hb = $("hostbar"); if (!hb) return;
+  const b = (id, k, sec) => `<button type="button" id="${id}" class="${sec ? "sec" : ""}">${esc(t(k))}</button>`;
+  hb.innerHTML = `<b>${esc(t("hostMode"))}</b>` + (R.phase === "intro" ? b("h-open", "hOpen") : R.phase === "bidding" ? `<button type="button" id="h-plus" class="sec">+15 s</button>${b("h-close", "hClose")}` : R.phase === "result" ? b("h-next", "hNext") : "");
+  $("h-open")?.addEventListener("click", openBidding);
+  $("h-plus")?.addEventListener("click", () => { R.phaseEnd += 15 * SEC; chat("", t("hExtended"), "sys"); updateClock(); });
+  $("h-close")?.addEventListener("click", closeLot);
+  $("h-next")?.addEventListener("click", nextLot);
 }
 function updateClock() {
   if (!R) return;
-  const left = Math.max(0, R.phaseEnd - Date.now());
-  const s = Math.ceil(left / SEC);
+  const left = Math.max(0, R.phaseEnd - Date.now()), s = Math.ceil(left / SEC);
   const ring = $("ring"), bar = $("ring-bar"), tt = $("ring-t");
   if (!ring) return;
   if (R.phase === "bidding") {
     ring.hidden = false; tt.textContent = `${s}s`;
     bar.style.strokeDashoffset = String(150.8 * (1 - Math.min(1, left / BIDDING)));
     ring.classList.toggle("hot", left <= RESET);
-  } else if (R.phase === "intro") {
+  } else if (R.phase === "intro" && isFinite(R.phaseEnd)) {
     ring.hidden = false; tt.textContent = `${s}s`; bar.style.strokeDashoffset = String(150.8 * (1 - left / INTRO)); ring.classList.remove("hot");
     const it = $("intro-t"); if (it) it.textContent = `${s} s`;
   } else ring.hidden = true;
@@ -772,36 +1196,58 @@ function updateClock() {
 function wireCard() {
   const knob = $("knob"), slide = $("slide");
   if (knob && !knob.disabled) {
+    const sign = lang === "ar" ? -1 : 1;
     let startX = 0, x = 0, max = 0, dragging = false;
-    const set = (v) => { x = v; knob.style.transform = `translateX(${v}px)`; $("fill").style.width = `${v + 48}px`; };
-    knob.addEventListener("pointerdown", (e) => { dragging = true; sliding = true; startX = e.clientX - x; max = slide.clientWidth - 56; knob.setPointerCapture(e.pointerId); knob.style.transition = "none"; });
-    knob.addEventListener("pointermove", (e) => { if (dragging) set(Math.max(0, Math.min(max, e.clientX - startX))); });
+    const set = (v) => { x = v; knob.style.transform = `translateX(${sign * v}px)`; $("fill").style.width = `${v + 48}px`; };
+    knob.addEventListener("pointerdown", (e) => { dragging = true; sliding = true; startX = e.clientX; max = slide.clientWidth - 56; knob.setPointerCapture(e.pointerId); knob.style.transition = "none"; });
+    knob.addEventListener("pointermove", (e) => { if (dragging) set(Math.max(0, Math.min(max, (e.clientX - startX) * sign))); });
     const end = () => {
       if (!dragging) return; dragging = false; sliding = false;
       const done = x >= max * 0.85;
       knob.style.transition = "transform .25s"; set(0); $("fill").style.width = "0";
       if (pendingRender) { pendingRender = false; renderCard(true); }
-      // L'offre part au prochain palier au moment où l'on relâche, même si un autre enchérisseur vient de passer.
+      // L'offre part au palier en vigueur au moment où l'on relâche.
       if (done) myBid(minBid());
     };
     knob.addEventListener("pointerup", end); knob.addEventListener("pointercancel", end);
     knob.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); myBid(minBid()); } });
-    knob.addEventListener("click", (e) => { if (e.detail === 0) return; if (x === 0 && !dragging) $("slide-txt").textContent = "Glissez le bouton jusqu'au bout →"; });
+    knob.addEventListener("click", (e) => { if (e.detail !== 0 && x === 0) $("slide-txt").textContent = t("slideHint"); });
   }
   $("toggle-custom")?.addEventListener("click", () => { R.custom = !R.custom; renderCard(); $("custom-amt")?.focus(); });
+  $("auto-btn")?.addEventListener("click", openAuto);
+  $("dossier-btn")?.addEventListener("click", () => openDossier(lot(), "docs"));
   $("love")?.addEventListener("click", () => hearts(4));
   $("custom")?.addEventListener("submit", (e) => {
     e.preventDefault();
-    const v = Number($("custom-amt").value.replace(/dh|mad/gi, "").replace(/[\s  .]/g, ""));
-    const err = $("custom-err");
-    if (!Number.isInteger(v) || v < minBid()) { err.textContent = `Saisissez au moins ${dh(minBid())}, sans centimes.`; err.hidden = false; return; }
+    const v = parseAmount($("custom-amt").value), err = $("custom-err");
+    if (!Number.isInteger(v) || v < minBid()) { err.textContent = t("minErr", { p: dh(minBid()) }); err.hidden = false; return; }
     myBid(v);
+  });
+}
+function openAuto() {
+  if (!prefs.user) { onboard(openAuto); return; }
+  const suggestion = Math.round((minBid() + 5 * lot().inc) / lot().inc) * lot().inc;
+  const el = openModal(`
+    <div class="sheet-head"><h2>${esc(t("autoTitle"))}</h2>${closeBtn()}</div>
+    <p class="muted">${esc(t("autoHelp"))}</p>
+    <p><b>${esc(lt(lot(), "title"))}</b> · ${esc(t("current"))} <b class="num">${dh(top()?.amount ?? lot().start)}</b></p>
+    ${R.auto ? `<p class="autochip" style="color:var(--accent);background:var(--accent-soft)">${esc(t("autoOn", { p: dh(R.auto) }))}</p><button class="btn btn-danger" type="button" id="auto-stop">${esc(t("autoStop"))}</button>` : ""}
+    <form id="auto-form" class="custom" novalidate><input class="inp" id="auto-amt" inputmode="numeric" placeholder="${esc(t("autoPh", { p: numFmt.format(suggestion) }))}" aria-label="${esc(t("autoTitle"))}"><button class="btn btn-primary" type="submit">${esc(t("autoSet"))}</button></form>
+    <p class="err" id="auto-err" hidden></p>`);
+  el.querySelector("#auto-stop")?.addEventListener("click", () => { R.auto = null; closeModal(); toast(t("autoOff")); renderCard(); });
+  el.querySelector("#auto-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const v = parseAmount($("auto-amt").value);
+    if (!Number.isInteger(v) || v < minBid()) { $("auto-err").textContent = t("autoMinErr", { p: dh(minBid()) }); $("auto-err").hidden = false; return; }
+    R.auto = v; closeModal(); toast(t("autoToast", { p: dh(v) })); renderCard();
+    if (R.phase === "bidding" && top()?.by !== me()) myBid(minBid(), true);
   });
 }
 function chat(who, text, cls = "") {
   const ul = $("msgs"); if (!ul) return;
   const li = document.createElement("li");
   li.className = cls;
+  if (cls.includes("from-host")) li.dataset.host = t("hostTag");
   li.innerHTML = who ? `<b>${esc(who)}</b>${esc(text)}` : esc(text);
   ul.appendChild(li);
   while (ul.children.length > 80) ul.firstChild.remove();
@@ -811,9 +1257,8 @@ function hearts(n) {
   if (!R || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   for (let i = 0; i < n; i++) later(() => {
     const h = document.createElement("span");
-    h.className = "heart"; h.style.setProperty("--dx", `${Math.round(rand(-30, 20))}px`);
+    h.className = "heart"; h.style.setProperty("--dx", `${Math.round(rand(-30, 20))}px`); h.style.color = pick(["var(--live)", "var(--saffron)", "#fff", "#9aa8ff"]);
     h.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor" width="26" height="26"><path d="M12 21s-7.5-4.6-9.6-9.2C1 8.6 3 5 6.4 5c2 0 3.6 1.1 4.6 2.6C12 6.1 13.6 5 15.6 5 19 5 21 8.6 19.6 11.8 17.5 16.4 12 21 12 21z"/></svg>`;
-    h.style.color = pick(["var(--live)", "var(--saffron)", "#fff", "#9aa8ff"]);
     $("hearts")?.appendChild(h); setTimeout(() => h.remove(), 2700);
   }, i * 180);
 }
@@ -821,23 +1266,245 @@ function confetti() {
   const colors = ["#ffc46b", "#ff3b5c", "#6fd6c5", "#9aa8ff", "#fff"];
   return `<div class="confetti">${Array.from({ length: 40 }, () => `<i style="left:${rand(0, 100)}%;background:${pick(colors)};animation-delay:${rand(0, .8).toFixed(2)}s;animation-duration:${rand(1.8, 3).toFixed(2)}s"></i>`).join("")}</div>`;
 }
-function placeChat() {
-  const room = document.querySelector(".room"), card = $("lotcard");
-  if (room && card) room.style.setProperty("--chat-bottom", `${card.offsetHeight + 30}px`);
+function placeChat() { const room = document.querySelector(".room"), card = $("lotcard"); if (room && card) room.style.setProperty("--chat-bottom", `${card.offsetHeight + 30}px`); }
+
+/* ====================================================================
+   Dossier du bien (visite, plan, documents, coût & crédit)
+   ==================================================================== */
+function openDossier(l, tab = "docs", priceHint) {
+  const price0 = priceHint ?? (R && R.show.lots.includes(l) && top() ? top().amount : l.start);
+  const tabs = [["visit", "tVisit"], ["plan", "tPlan"], ["docs", "tDocs"], ["cost", "tCost"]];
+  const el = openModal(`
+    <div class="sheet-head"><div><p class="label muted">${esc(t("dTitle"))}</p><h2>${esc(lt(l, "title"))}</h2><p class="muted" style="font-size:.86rem">${esc(t("types")[l.type])} · ${esc(place(l.city))}, ${esc(place(l.district))}</p></div>${closeBtn()}</div>
+    <div class="facts num">
+      <div><b>${numFmt.format(l.surface)} m²</b><span>${esc(t("fSurface"))}</span></div>
+      ${l.type === "terrain" ? "" : `<div><b>${l.rooms}</b><span>${esc(t("fRooms"))}</span></div><div><b>${l.bedrooms || "—"}</b><span>${esc(t("fBeds"))}</span></div><div><b>${esc(l.year || "—")}</b><span>${esc(t("fYear"))}</span></div>`}
+      <div><b>${l.charges ? esc(t("perMonth", { p: dh(l.charges) })) : "—"}</b><span>${esc(t("fCharges"))}</span></div>
+      <div><b dir="ltr">${esc(l.tf || "—")}</b><span>${esc(t("fTF"))}</span></div>
+    </div>
+    <div class="tabs" role="tablist">${tabs.map(([k, label]) => `<button type="button" role="tab" data-tab="${k}" aria-selected="${k === tab}">${esc(t(label))}</button>`).join("")}</div>
+    <div id="tabbody"></div>`, { wide: true });
+  const show = (k) => {
+    el.querySelectorAll("[data-tab]").forEach((b) => b.setAttribute("aria-selected", b.dataset.tab === k));
+    const body = el.querySelector("#tabbody");
+    if (k === "visit") body.innerHTML = `<div class="gallery">${(l.tour || TOURS[l.type]).map((r) => `<figure><div class="ph">${sceneSVG(r, l)}</div><figcaption>${esc(t("rooms")[r])}</figcaption></figure>`).join("")}</div>`;
+    else if (k === "plan") body.innerHTML = `${planSVG(l)}<p class="muted" style="font-size:.8rem;margin-top:6px">${esc(t("planNote"))}</p>`;
+    else if (k === "docs") { body.innerHTML = docsHTML(l); wireDocs(body); }
+    else { body.innerHTML = costHTML(l, price0); wireCost(body, l); }
+  };
+  el.querySelectorAll("[data-tab]").forEach((b) => b.addEventListener("click", () => show(b.dataset.tab)));
+  show(tab);
+}
+function docsHTML(l) {
+  const valLo = Math.round(l.reserve * 1.02 / 10000) * 10000, valHi = Math.round(l.reserve * 1.15 / 10000) * 10000;
+  const d = (key, rows) => `<li><div class="dh"><b>${esc(t(key))}</b><span style="display:flex;gap:8px;align-items:center"><span class="ok-pill">✓ ${esc(t("checked"))}</span><button class="linkbtn" type="button" data-doc>${esc(t("view"))}</button></span></div>
+    <dl class="docview" hidden>${rows.map(([k, v]) => `<dt>${esc(t(k))}</dt><dd>${v}</dd>`).join("")}</dl></li>`;
+  const docs = [
+    d("dTF", [["kNumber", `<span dir="ltr">${esc(l.tf || "—")}</span>`], ["kOwner", esc(t("vOwner"))], ["kArea", `${numFmt.format(l.surface)} m²`], ["kMortgage", esc(t("vNone"))]]),
+    d("dNR", [["kZone", esc(t("z" + (l.zone || (l.type === "terrain" ? "villa" : l.type === "local" ? "com" : "hab"))))], ["kDate", esc(dateFmt(now0 - 20 * DAY, { dateStyle: "long" }))]]),
+    d("dEX", [["kValue", `<span class="num">${dh(valLo)} – ${dh(valHi)}</span>`], ["kState", esc(t("s" + (l.state || "good")))], ["kDate", esc(dateFmt(now0 - 12 * DAY, { dateStyle: "long" }))]]),
+  ];
+  if (l.charges) docs.push(d("dCO", [["kSyndic", esc(t("perMonth", { p: dh(l.charges) }))]]));
+  return `<ul class="docs">${docs.join("")}</ul><p class="muted" style="font-size:.78rem;margin-top:8px">${esc(t("docsNote"))}</p>`;
+}
+function wireDocs(body) {
+  body.querySelectorAll("[data-doc]").forEach((b) => b.addEventListener("click", () => {
+    const dl = b.closest("li").querySelector("dl"); dl.hidden = !dl.hidden; b.textContent = t(dl.hidden ? "view" : "hide");
+  }));
+}
+function costHTML(l, price) {
+  return `<div class="calc">
+    <label class="field">${esc(t("cPrice"))}<input class="num" id="c-price" inputmode="numeric" value="${price}" dir="ltr"></label>
+    ${R && R.show.lots.includes(l) ? `<button class="linkbtn" type="button" id="c-cur" style="justify-self:start">${esc(t("cUseCurrent"))}</button>` : ""}
+    <dl class="costs num" id="c-costs"></dl>
+    <div class="loan"><b>${esc(t("cLoan"))}</b>
+      <label class="field"><span id="c-down-l"></span><input type="range" id="c-down" min="10" max="100" step="5" value="30"></label>
+      <label class="field"><span id="c-years-l"></span><input type="range" id="c-years" min="5" max="25" step="1" value="20"></label>
+      <label class="field">${esc(t("cRate"))}<input class="num" id="c-rate" inputmode="decimal" value="4,5" dir="ltr"></label>
+      <dl class="costs num" id="c-loan"></dl>
+    </div>
+    <p class="muted" style="font-size:.78rem">${esc(t("cNote"))}</p></div>`;
+}
+function wireCost(body, l) {
+  const upd = () => {
+    const p = Math.max(0, parseAmount(body.querySelector("#c-price").value) || 0);
+    const c = costEstimate(p), down = +body.querySelector("#c-down").value, years = +body.querySelector("#c-years").value;
+    const rate = Math.max(0, parseFloat(body.querySelector("#c-rate").value.replace(",", ".")) || 0);
+    const loan = loanEstimate(p, down, years, rate);
+    body.querySelector("#c-costs").innerHTML = [["cReg", c.reg], ["cCons", c.cons], ["cNot", c.notary], ["cMisc", c.misc]].map(([k, v]) => `<dt>${esc(t(k))}</dt><dd>${dh(v)}</dd>`).join("") + `<dt class="total"><b>${esc(t("cTotal"))}</b></dt><dd class="total">${dh(c.total)}</dd>`;
+    body.querySelector("#c-down-l").textContent = t("cDown", { x: down });
+    body.querySelector("#c-years-l").textContent = t("cYears", { x: years });
+    body.querySelector("#c-loan").innerHTML = `<dt>${esc(t("cBorrow"))}</dt><dd>${dh(loan.borrow)}</dd><dt>${esc(t("cCash"))}</dt><dd>${dh(loan.cash)}</dd><dt class="total"><b>${esc(t("cMonthly"))}</b></dt><dd class="total monthly">${dh(loan.monthly)}</dd>`;
+  };
+  body.querySelectorAll("input").forEach((i) => i.addEventListener("input", upd));
+  body.querySelector("#c-cur")?.addEventListener("click", () => { body.querySelector("#c-price").value = top()?.amount ?? l.start; upd(); });
+  upd();
 }
 
-/* ---------- Navigation ---------- */
-function route() {
-  leaveRoom();
-  const app = $("app"); app.classList.remove("room-mode");
-  const h = location.hash.slice(1);
-  $("footer").hidden = h.startsWith("live-");
-  if (h.startsWith("live-")) viewRoom(app, h.slice(5));
-  else viewFeed(app);
-  window.scrollTo(0, 0);
+/* ====================================================================
+   Mes victoires : suivi jusqu'à la remise des clés
+   ==================================================================== */
+function viewWins(app) {
+  const steps = (w) => [0, 1, 2, 3, 4].map((i) => {
+    const state = i < w.step ? "done" : i === w.step ? "now" : "";
+    const desc = t(`s${i}d`, { p: dh(Math.round(w.lot.start * 0.1)), d: dateFmt(w.at + 30 * DAY, { weekday: "long", day: "numeric", month: "long" }) });
+    return `<li class="${state}"><span class="dot">${i < w.step ? "✓" : i + 1}</span><div><b>${esc(t(`s${i}`))}</b><p>${esc(desc)}</p>${i === w.step ? `<button class="btn btn-primary btn-small" type="button" data-step="${w.id}">${esc(t(`s${i}a`))}</button>` : ""}</div></li>`;
+  }).join("");
+  app.innerHTML = `<div class="page">
+    <div class="page-head"><h1>${esc(t("wTitle"))}</h1><p>${esc(t("wLede"))}</p></div>
+    ${prefs.wins.length ? `<div class="wins">${prefs.wins.map((w) => `
+      <article class="win glass"><div class="thumb">${sceneSVG("facade", w.lot)}</div>
+        <div class="win-body">
+          <div class="win-top"><div><h2 style="font-size:1.15rem">${esc(lt(w.lot, "title"))}</h2><p class="muted" style="font-size:.86rem">${esc(place(w.lot.city))} · ${esc(resolve(w.showTitle))} ${w.demo ? `<span class="tag">${esc(t("demoFlag"))}</span>` : ""}</p></div>
+            <div style="text-align:end"><b class="num" style="font-size:1.2rem">${esc(t("wPrice", { p: dh(w.amount) }))}</b><p class="muted num" style="font-size:.82rem">${esc(t("wTotal", { p: dh(costEstimate(w.amount).total) }))}</p></div></div>
+          ${w.step >= 5 ? `<p class="ok-pill" style="justify-self:start;font-size:.9rem">🔑 ${esc(t("doneAll"))}</p>` : ""}
+          <ol class="steps">${steps(w)}</ol>
+          <button class="linkbtn" type="button" data-dossier="${w.id}" style="justify-self:start">${esc(t("wDossier"))}</button>
+        </div></article>`).join("")}</div>`
+    : `<div class="empty glass"><p>${esc(t("wEmpty"))}</p><div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"><a class="btn btn-primary" href="#lives">${esc(t("wGoLive"))}</a><button class="btn btn-ghost" type="button" id="demo-win">${esc(t("wDemo"))}</button></div></div>`}
+  </div>`;
+  $("demo-win")?.addEventListener("click", () => {
+    const l = SHOWS[1].lots[0];
+    prefs.wins.unshift({ id: `demo-${Date.now()}`, lot: { ...l }, showTitle: [SHOWS[1].title, SHOWS[1].title_ar], amount: 3160000, at: Date.now() - 2 * DAY, step: 1, demo: true }); save("wins");
+    viewWins(app);
+  });
+  app.querySelectorAll("[data-dossier]").forEach((b) => b.addEventListener("click", () => { const w = prefs.wins.find((x) => x.id === b.dataset.dossier); openDossier(w.lot, "cost", w.amount); }));
+  app.querySelectorAll("[data-step]").forEach((b) => b.addEventListener("click", () => {
+    const w = prefs.wins.find((x) => x.id === b.dataset.step);
+    const advance = () => { w.step++; save("wins"); toast(t("stepDone")); viewWins(app); };
+    if (w.step === 0) { b.disabled = true; b.textContent = t("s0wait"); setTimeout(advance, 1200); }
+    else if (w.step === 1 && !prefs.user?.kyc?.verified) onboard(advance);
+    else advance();
+  }));
 }
-window.addEventListener("hashchange", route);
-renderWho();
+
+/* ====================================================================
+   Studio de l'agent
+   ==================================================================== */
+let draftId = null;
+function viewStudio(app) {
+  const draft = prefs.myShows.find((s) => s.id === draftId && !s.live);
+  app.innerHTML = `<div class="page">
+    <div class="page-head"><p class="label" style="color:var(--accent)">${esc(t("hostMode"))}</p><h1>${esc(t("sTitle"))}</h1><p>${esc(t("sLede"))}</p></div>
+    <div class="studio">
+      <section class="card glass"><h2>${esc(t("sMyLives"))}</h2>
+        ${prefs.myShows.length ? `<div class="mylives">${prefs.myShows.map((s) => `
+          <div class="mylive glass"><div class="row"><b>${esc(s.title)}</b><span class="tag ${s.live ? "mine" : ""}">${esc(t(s.live ? "sLiveNow" : "sDraft"))}</span></div>
+            <span class="muted" style="font-size:.84rem">${esc(t("lotsCount", { n: s.lots.length }))} · ${esc(s.city)}</span>
+            <div class="row" style="justify-content:flex-start">
+              ${s.live ? `<a class="btn btn-primary btn-small" href="#host-${s.id}">${esc(t("sResume"))}</a><a class="btn btn-ghost btn-small" href="#live-${s.id}">${esc(t("sViewer"))}</a>` : `<button class="btn btn-ghost btn-small" type="button" data-edit="${s.id}">${esc(t("sLots"))}</button>`}
+              <button class="btn btn-danger btn-small" type="button" data-del="${s.id}">${esc(t("sDelete"))}</button>
+            </div></div>`).join("")}</div>` : `<p class="muted">${esc(t("sNone"))}</p>`}
+      </section>
+      <section class="card glass" id="editor">${draft ? lotsEditorHTML(draft) : newShowHTML()}</section>
+    </div></div>`;
+  app.querySelectorAll("[data-edit]").forEach((b) => b.addEventListener("click", () => { draftId = b.dataset.edit; viewStudio(app); }));
+  app.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", () => {
+    if (b.dataset.armed) { prefs.myShows = prefs.myShows.filter((s) => s.id !== b.dataset.del); save("myShows"); if (draftId === b.dataset.del) draftId = null; toast(t("sDeleted")); viewStudio(app); }
+    else { b.dataset.armed = "1"; b.textContent = t("sConfirmDel"); }
+  }));
+  if (draft) wireLotsEditor(app, draft); else wireNewShow(app);
+}
+function newShowHTML() {
+  return `<h2>${esc(t("sNew"))}</h2><form id="new-show" class="page" style="gap:12px" novalidate>
+    <label class="field" data-f="title">${esc(t("sShowTitle"))}<input id="ns-title" maxlength="60"></label>
+    <div class="cols">
+      <label class="field" data-f="city">${esc(t("sCities"))}<input id="ns-city" maxlength="60" placeholder="Rabat · Salé"></label>
+      <label class="field">${esc(t("sCat"))}<select id="ns-cat">${CATS.filter(Boolean).map((k) => `<option value="${k}">${esc(t("cat" + k))}</option>`).join("")}</select></label>
+    </div>
+    <div class="cols">
+      <label class="field" data-f="name">${esc(t("sHostName"))}<input id="ns-name" maxlength="40"></label>
+      <label class="field" data-f="agency">${esc(t("sAgency"))}<input id="ns-agency" maxlength="40"></label>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary" type="submit">${esc(t("sCreate"))}</button><button class="btn btn-ghost" type="button" id="ns-ex">${esc(t("sExample"))}</button></div></form>`;
+}
+function fieldErrors(form, errs) {
+  form.querySelectorAll(".field .err").forEach((e) => e.remove());
+  Object.entries(errs).forEach(([k, msg]) => form.querySelector(`[data-f="${k}"]`)?.insertAdjacentHTML("beforeend", `<span class="err">${esc(msg)}</span>`));
+  const first = Object.keys(errs)[0]; if (first) form.querySelector(`[data-f="${first}"] input, [data-f="${first}"] textarea`)?.focus();
+  return !Object.keys(errs).length;
+}
+function wireNewShow(app) {
+  const f = $("new-show");
+  $("ns-ex").addEventListener("click", () => { $("ns-title").value = "Appartements neufs à Rabat"; $("ns-city").value = "Rabat · Agdal"; $("ns-cat").value = "appartement"; $("ns-name").value = "Ghita Lahlou"; $("ns-agency").value = "Agdal Immo"; });
+  f.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const v = (id) => $(id).value.trim(), errs = {};
+    if (v("ns-title").length < 4) errs.title = t("errRequired");
+    if (!v("ns-city")) errs.city = t("errRequired");
+    if (v("ns-name").length < 2) errs.name = t("errRequired");
+    if (!v("ns-agency")) errs.agency = t("errRequired");
+    if (!fieldErrors(f, errs)) return;
+    const s = { id: `mon-live-${Math.random().toString(36).slice(2, 7)}`, title: v("ns-title"), city: v("ns-city"), tags: [v("ns-cat")], live: false, viewers: Math.round(rand(150, 400)),
+      host: { name: v("ns-name"), handle: me() || "agent.demo", agency: v("ns-agency"), hue: Math.floor(rand(0, 360)) }, lots: [] };
+    prefs.myShows.unshift(s); save("myShows"); draftId = s.id; toast(t("sCreated")); viewStudio(app);
+  });
+}
+function lotsEditorHTML(s) {
+  const opt = Object.entries(t("types")).map(([k, v]) => `<option value="${k}">${esc(v)}</option>`).join("");
+  const fld = (f, id, label, attrs = "") => `<label class="field" data-f="${f}">${esc(t(label))}<input id="${id}" ${attrs}></label>`;
+  return `<div class="row" style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center"><h2>${esc(s.title)}</h2><button class="btn btn-primary" type="button" id="launch" ${s.lots.length ? "" : "disabled"}>${esc(t("sLaunch"))}</button></div>
+    ${s.lots.length ? `<ul class="lotlist">${s.lots.map((l) => `<li><div class="mini">${sceneSVG("facade", l)}</div><div><b>${esc(l.title)}</b><br><small class="num">${esc(t("types")[l.type])} · ${esc(l.city)} · ${esc(t("startP"))} ${dh(l.start)}</small></div><button class="btn btn-ghost btn-small" type="button" data-rm="${l.id}">${esc(t("sRemoveLot"))}</button></li>`).join("")}</ul>` : `<p class="muted">${esc(t("sNoLots"))}</p>`}
+    <form id="add-lot" class="page" style="gap:12px;border-top:1px solid var(--line);padding-top:14px" novalidate>
+      <h3>${esc(t("sAddTitle"))}</h3>
+      ${fld("title", "al-title", "lTitle", 'maxlength="70"')}
+      <div class="cols"><label class="field">${esc(t("lType"))}<select id="al-type">${opt}</select></label>${fld("city", "al-city", "lCity", 'maxlength="40"')}${fld("district", "al-district", "lDistrict", 'maxlength="40"')}</div>
+      <div class="cols">${fld("surface", "al-surface", "lSurface", 'inputmode="numeric"')}${fld("rooms", "al-rooms", "lRooms", 'inputmode="numeric"')}${fld("beds", "al-beds", "lBeds", 'inputmode="numeric"')}</div>
+      <div class="cols">${fld("start", "al-start", "lStart", 'inputmode="numeric"')}${fld("reserve", "al-reserve", "lReserve", 'inputmode="numeric"')}${fld("inc", "al-inc", "lInc", 'inputmode="numeric" value="10000"')}</div>
+      ${fld("tf", "al-tf", "lTF", 'maxlength="20" dir="ltr" placeholder="TF 12345/R"')}
+      <label class="field" data-f="pitch">${esc(t("lPitch"))}<textarea id="al-pitch" rows="3"></textarea></label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary" type="submit">${esc(t("sAddLot"))}</button><button class="btn btn-ghost" type="button" id="al-ex">${esc(t("sExample"))}</button></div>
+    </form>`;
+}
+function wireLotsEditor(app, s) {
+  const f = $("add-lot");
+  $("al-ex").addEventListener("click", () => {
+    Object.entries({ title: "Appartement neuf avec terrasse", type: "appartement", city: "Rabat", district: "Agdal", surface: 120, rooms: 5, beds: 3, start: 1600000, reserve: 1750000, inc: 10000, tf: "TF 88412/R",
+      pitch: "Appartement neuf de 120 m² au cœur de l'Agdal.\nTerrasse de 25 m², double salon, trois chambres.\nTitre foncier individuel, livraison immédiate." }).forEach(([k, v]) => ($(`al-${k}`).value = v));
+  });
+  app.querySelectorAll("[data-rm]").forEach((b) => b.addEventListener("click", () => { s.lots = s.lots.filter((l) => l.id !== b.dataset.rm); save("myShows"); viewStudio(app); }));
+  $("launch").addEventListener("click", () => { s.live = true; save("myShows"); notify("nLaunched", { t: s.title }); toast(t("sLaunched")); location.hash = `host-${s.id}`; });
+  f.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const v = (k) => $(`al-${k}`).value.trim(), n = (k) => parseAmount(v(k)), errs = {}, type = v("type");
+    if (v("title").length < 4) errs.title = t("errRequired");
+    if (!v("city")) errs.city = t("errRequired");
+    for (const k of ["surface", "start", "inc"]) if (!(Number.isInteger(n(k)) && n(k) > 0)) errs[k] = t("errInt");
+    if (type !== "terrain" && !(Number.isInteger(n("rooms")) && n("rooms") > 0)) errs.rooms = t("errInt");
+    if (v("beds") && !Number.isInteger(n("beds"))) errs.beds = t("errInt");
+    if (!errs.start && n("start") < 10000) errs.start = t("errMin", { p: dh(10000) });
+    const reserve = v("reserve") ? n("reserve") : n("start");
+    if (!(Number.isInteger(reserve) && reserve >= n("start"))) errs.reserve = t("errReserve");
+    if (!errs.inc && n("inc") < 1000) errs.inc = t("errMin", { p: dh(1000) });
+    if (!fieldErrors(f, errs)) return;
+    s.lots.push({ id: `lot-${Math.random().toString(36).slice(2, 8)}`, title: v("title"), type, city: v("city"), district: v("district") || "—", surface: n("surface"),
+      rooms: type === "terrain" ? 0 : n("rooms"), bedrooms: n("beds") || 0, hue: Math.floor(rand(0, 360)), start: n("start"), reserve, inc: n("inc"), tf: v("tf") || "—",
+      year: "—", floor: "—", charges: 0, zone: type === "terrain" ? "villa" : type === "local" ? "com" : "hab", state: "good", tour: TOURS[type],
+      pitch: v("pitch").split("\n").map((x) => x.trim()).filter(Boolean).slice(0, 5) });
+    if (!s.tags.includes(type)) s.tags.push(type);
+    save("myShows"); toast(t("sLotAdded")); viewStudio(app);
+  });
+}
+
+/* ====================================================================
+   Navigation
+   ==================================================================== */
+function route({ keepRoom = false } = {}) {
+  const app = $("app"), h = location.hash.slice(1) || "lives";
+  const roomMatch = h.match(/^(live|host)-(.+)$/);
+  if (!(keepRoom && roomMatch)) leaveRoom();
+  app.classList.remove("room-mode");
+  $("footer").hidden = !!roomMatch;
+  let nav = "lives";
+  if (roomMatch) viewRoom(app, roomMatch[2], roomMatch[1] === "host", keepRoom);
+  else if (h === "studio") { nav = "studio"; viewStudio(app); }
+  else if (h === "victoires") { nav = "victoires"; viewWins(app); }
+  else viewFeed(app);
+  document.querySelectorAll("[data-nav]").forEach((a) => { if (a.dataset.nav === nav && !roomMatch) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
+  if (!keepRoom) window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", () => { closeModal(); route(); });
+applyLang();
 route();
 })();
 </script>
