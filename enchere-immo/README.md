@@ -34,16 +34,24 @@ Expérience façon live shopping (Whatnot), reliée au catalogue par le menu. De
   (ouvrir les enchères, +15 s, adjuger, lot suivant, meilleurs enchérisseurs).
 - **Notifications** : surenchère, victoire, enchère auto dépassée, rappels, live lancé (option WhatsApp simulée).
 
-### Cadre juridique intégré au prototype
+### Architecture de confiance (simulée)
 
-- **Offre retenue ≠ vente** : l'écran final affiche « Offre retenue » (engagement d'achat). Le transfert de propriété
-  se fait par acte authentique chez le notaire (art. 4 de la loi 39-08), puis inscription à la conservation foncière.
-- **Consignation chez le notaire** : versée sur le compte de l'étude à la CDG, jamais à l'appli.
-- **Notaire dans chaque vente** : nommé sur chaque live, il vérifie le dossier (« Vérifié par Maître … »).
-  Dans le studio, un live ne peut être lancé qu'avec un notaire mandaté.
-- **Conditions de participation et données personnelles** : trois accords séparés à la première offre
-  (conditions, consignation, traitement des données au titre de la loi 09-08). Le numéro de déclaration CNDP
-  est à compléter avant lancement.
+- **Offre retenue** : jamais présentée comme une vente conclue. Ses conséquences dépendent des conditions de vente
+  du lot. Parcours affiché : Offre retenue → Revue du dossier → Étape contractuelle → Acte de vente →
+  Inscription foncière → Transaction finalisée (« Mes offres retenues »).
+- **Garantie de participation** configurable par lot (montant, dépositaire, conditions) dans les conditions
+  particulières ; certains lots n'en exigent pas. L'appli ne détient aucun fonds.
+- **Qualification en trois niveaux** : identité vérifiée, capacité financière vérifiée, garantie constituée si requise.
+  Le bouton d'enchère n'est actif que si toutes les conditions du lot sont remplies.
+- **Capacité maximale d'enchère** (« Vérifié pour enchérir jusqu'à … ») : impossible d'enchérir au-delà,
+  bouton « Augmenter ma capacité d'enchère ».
+- **Identifiants anonymisés** pendant les enchères (« Enchérisseur vérifié #1847 ✓ ») et compteur
+  d'**enchérisseurs vérifiés** distinct du nombre de spectateurs.
+- **Dossier du bien** : onglet « Conditions & intégrité » (conditions particulières, réserve confidentielle,
+  intégrité des enchères). Badges « Vendeur vérifié ✓ » et « Documents du bien examinés ✓ ».
+- **Comptes vendeurs** : ne peuvent pas enchérir sur leurs propres lots.
+- **Studio agent** : Brouillon → Revue du bien → Documents → Vérification vendeur → Conditions de vente →
+  Approuvé → Programmation du live (simulation visuelle, aucun contrôle réel).
 
 À valider avant un lancement réel : le cadre juridique des ventes immobilières aux enchères au Maroc
 (rôle du notaire, statut de la consignation) avec un notaire ou un avocat, et la conformité à la loi 09-08 (CNDP)

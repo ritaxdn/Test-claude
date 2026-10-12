@@ -283,6 +283,31 @@ main.room-mode { padding-block: 16px; }
 .bar { height: 14px; border-radius: 999px; background: var(--chip); overflow: hidden; }
 .bar span { display: block; height: 100%; background: var(--butter); border-radius: inherit; transition: width .4s; }
 
+/* Confiance : badges, qualification, capacité, intégrité, circuit de validation */
+.trust { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+.trust span { font-size: .68rem; padding: 3px 8px; border-radius: 999px; background: var(--good-soft); color: var(--good); white-space: nowrap; }
+.viewers.vb { background: var(--butter); color: #2a2826; text-transform: uppercase; letter-spacing: .03em; font-size: .68rem; }
+.qual { display: grid; gap: 6px; padding: 10px 12px; border-radius: 18px; background: var(--chip); font-size: .8rem; }
+.qual ul, .qual-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.qual li, .qual-list li { display: flex; gap: 8px; align-items: center; color: var(--muted); }
+.qual li.ok, .qual-list li.ok { color: var(--good); }
+.qual .btn { justify-self: start; }
+.qual-sum { display: none; font-weight: 400; color: var(--muted); margin-inline-start: 6px; }
+@media (max-width: 760px) { .qual-sum { display: inline; } }
+.qual-list { gap: 10px; }
+.qual-list li { padding: 12px 14px; border-radius: 16px; background: var(--chip); flex-wrap: wrap; }
+.capchip { justify-self: start; font-size: .74rem; padding: 4px 11px; border-radius: 999px; border: 1px solid var(--good); color: var(--good); }
+.integrity { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: .88rem; }
+.integrity li { display: flex; gap: 10px; }
+.integrity li::before { content: "✓"; color: var(--good); font-weight: 700; }
+.path { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; font-size: .72rem; }
+.path span { padding: 3px 8px; border-radius: 999px; background: rgb(255 255 255 / .16); }
+.path span:first-child { background: var(--butter); color: #2a2826; }
+.flow { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; padding: 0; margin: 0; }
+.flow li { padding: 6px 12px; border-radius: 999px; font-size: .78rem; background: var(--chip); color: var(--muted); }
+.flow li.done { background: var(--good-soft); color: var(--good); }
+.flow li.now { background: var(--butter); color: #2a2826; }
+
 /* Barre flottante en bas (mobile) */
 .dock { display: none; }
 .dock-title { flex: 1; font-size: .98rem; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -424,6 +449,14 @@ footer { border-top: 1px solid var(--glass-border); padding-block: 20px; color: 
   .lotcard .where { display: none; }
   .ring, .ring svg { width: 48px; height: 48px; }
   .trio { font-size: .8rem; }
+  .tourdots { top: 132px; gap: 6px; }
+  .tourdots button { width: 34px; height: 34px; font-size: .78rem; }
+  .stage.has-hostbar .tourdots { top: 190px; }
+  .lotcard .trust { margin-top: 4px; flex-wrap: nowrap; }
+  .lotcard .trust span { font-size: .62rem; padding: 2px 7px; }
+  .qual ul { display: none; }
+  .qual { grid-template-columns: minmax(0, 1fr); }
+  .room.chat-squeezed > .chat .msgs { display: none; }
   .donut-row { grid-template-columns: minmax(0, 1fr); justify-items: center; }
   nav.main, #bell { display: none; }
   .dock { position: fixed; z-index: 25; inset-inline: 16px; bottom: calc(env(safe-area-inset-bottom, 0px) + 14px); display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 999px; background: var(--dock); color: #fff; -webkit-backdrop-filter: blur(18px) saturate(140%); backdrop-filter: blur(18px) saturate(140%); box-shadow: var(--shadow); }
@@ -481,7 +514,7 @@ footer { border-top: 1px solid var(--glass-border); padding-block: 20px; color: 
    ==================================================================== */
 const I18N = {
   fr: {
-    brandTag: "l'immobilier aux enchères, en direct", navLives: "Lives", navStudio: "Studio agent", navWins: "Mes engagements", navCatalogue: "Catalogue",
+    brandTag: "l'immobilier aux enchères, en direct", navLives: "Lives", navStudio: "Studio agent", navWins: "Mes offres retenues", navCatalogue: "Catalogue",
     pickHandle: "S'identifier", verified: "Identité vérifiée", notifs: "Notifications", markRead: "Tout marquer comme lu", noNotifs: "Aucune notification pour l'instant.",
     whatsapp: "Recevoir aussi sur WhatsApp (simulation)", langBtn: "ع",
     footer: "Prototype de démonstration : la vidéo, les spectateurs, le chat, les autres enchérisseurs, la vérification d'identité et les paiements sont simulés. Vos données restent dans ce navigateur.",
@@ -492,14 +525,14 @@ const I18N = {
     viewers: "{n} spectateurs", lotsCount: (v) => `${v.n} lot${v.n > 1 ? "s" : ""}`, fromPrice: "À partir de {p}", remind: "Me rappeler", reminded: "Rappel activé",
     remindToast: "Nous vous préviendrons au début du live.", remindOff: "Rappel retiré.", yourLive: "Votre live", inT: "Dans {t}", live: "LIVE",
     howTitle: "Comment ça marche", how1t: "Regardez et vérifiez", how1: "Visite filmée, dossier du bien (titre foncier, plan, expertise) et calcul du coût total.",
-    how2t: "Glissez ou programmez", how2: "Glissez pour l'offre suivante, saisissez un montant, ou fixez une enchère auto maximale.",
-    how3t: "Offre retenue, puis le notaire", how3: "Une offre retenue vous engage à acheter. La vente est signée chez le notaire (acte authentique), puis inscrite à la conservation foncière.",
+    how2t: "Glissez ou programmez", how2: "Une fois qualifié, glissez pour l'offre suivante, saisissez un montant dans votre capacité vérifiée, ou fixez une enchère auto.",
+    how3t: "Offre retenue, puis les étapes du dossier", how3: "Une offre retenue ouvre la suite du dossier : revue, étape contractuelle, acte de vente, inscription. Ses conséquences dépendent des conditions de vente du lot.",
     leave: "Quitter le live", follow: "Suivre", following: "Suivi", followToast: "Vous suivez {n}.", tour: "Visite · {r}", lotsBtn: "Lots ({n})", lotsTitle: "Lots du live", close: "Fermer",
     chat: "Chat", online: "{n} en ligne", chatPh: "Posez une question à l'hôte…", hostChatPh: "Parlez à votre audience…", send: "Envoyer", hostTag: "Hôte",
     welcome: "Bienvenue dans le live de {n}. Soyez courtois dans le chat.", lotN: "Lot {i}/{n}", lotAnnounce: "Lot {i} sur {n} : {t}",
-    openMsg: "Ouverture à {p}, pas de {s}. C'est parti !", lastSec: "Dernières secondes… qui dit mieux ?", soldTo: "Offre retenue : @{h} à {p}. Signature chez le notaire sous 30 jours.",
-    notMet: "Réserve non atteinte à {p} : le lot n'est pas adjugé ce soir.", noBids: "Pas d'offre sur ce lot, il repassera dans un prochain live.", bidLine: "enchérit {p}",
-    current: "Offre actuelle", startP: "Prix de départ", bidsN: (v) => `${v.n} offre${v.n > 1 ? "s" : ""}`, resOk: "Réserve atteinte", resNo: "Réserve non atteinte",
+    openMsg: "Ouverture à {p}, pas de {s}. C'est parti !", lastSec: "Dernières secondes… qui dit mieux ?", soldTo: "Offre retenue : {h} à {p}. Les suites dépendent des conditions de vente du lot.",
+    notMet: "Réserve non atteinte à {p} : aucune offre n'est retenue sur ce lot.", noBids: "Pas d'offre sur ce lot, il repassera dans un prochain live.", bidLine: "enchérit {p}",
+    current: "Offre actuelle", startP: "Prix de départ", bidsN: (v) => `${v.n} offre${v.n > 1 ? "s" : ""}`, resOk: "Réserve atteinte ✓", resNo: "Réserve non atteinte",
     introNote: "Présentation en cours. Les enchères ouvrent dans {s} à {p}.", introHost: "Présentation en cours. Ouvrez les enchères quand vous voulez.",
     slide: "Glisser pour enchérir {p}", lead: "Vous menez à {p}", slideHint: "Glissez le bouton jusqu'au bout", aCustom: "Montant", aAuto: "Auto", aDossier: "Dossier", aLove: "Envoyer des cœurs",
     validate: "Valider", minErr: "Saisissez au moins {p}, sans centimes.", leadAlready: "Vous menez déjà l'enchère.", minBidToast: "L'offre minimum est de {p}.",
@@ -507,13 +540,13 @@ const I18N = {
     autoTitle: "Enchère automatique", autoHelp: "L'appli enchérit pour vous au palier suivant chaque fois qu'on vous dépasse, sans jamais dépasser votre maximum. Votre maximum reste secret.",
     autoPh: "Votre maximum, ex. {p}", autoSet: "Activer", autoStop: "Arrêter l'enchère auto", autoOn: "Auto jusqu'à {p}", autoToast: "Enchère auto activée jusqu'à {p}.", autoOff: "Enchère auto arrêtée.",
     autoDone: "Votre enchère auto à {p} a été dépassée.", autoMinErr: "Votre maximum doit être d'au moins {p}.",
-    stampSold: "Offre retenue", stampNo: "Non retenu", wonBy: "L'offre de <b>@{h}</b> est retenue à <b>{p}</b>", lastOffer: "Dernière offre : {p}. La réserve du vendeur n'est pas atteinte.",
-    noOffer: "Aucune offre sur ce lot.", youWon: "Votre engagement d'achat est enregistré. La vente sera signée chez {n} sous 30 jours.", seeWins: "Voir mes engagements",
+    stampSold: "Offre retenue", stampNo: "Non retenu", wonBy: "L'offre de <b>{h}</b> est retenue à <b>{p}</b>", lastOffer: "Dernière offre : {p}. La réserve du vendeur n'est pas atteinte.",
+    noOffer: "Aucune offre sur ce lot.", youWon: "Votre offre est retenue. Prochaine étape : la revue du dossier. Ses conséquences dépendent des conditions de vente du lot.", seeWins: "Voir mes offres retenues",
     nextSoon: "Lot suivant dans quelques secondes…", lastLot: "C'était le dernier lot.", phaseSold: "Offre retenue.", phaseUnsold: "Offre non retenue.", getReady: "Préparez-vous pour le lot suivant.",
     ended: "Le live est terminé.", endBadge: "LIVE TERMINÉ", thanks: "Merci d'avoir suivi {n}",
     summary: (v) => `${v.s} offre${v.s > 1 ? "s" : ""} retenue${v.s > 1 ? "s" : ""} sur ${v.n} lots, pour ${v.p} au total.`, replay: "Revoir le live", otherLives: "Autres lives", backStudio: "Retour au studio",
     notLive: "Ce live n'est pas en cours", notLiveP: "Il est peut-être terminé ou pas encore commencé.", seeLives: "Voir les lives",
-    hostMode: "Mode hôte", hOpen: "Ouvrir les enchères", hClose: "Adjuger maintenant", hNext: "Lot suivant", hExtended: "Chrono prolongé de 15 secondes.", hBidders: "Meilleurs enchérisseurs", hNoBidders: "Pas encore d'offre.",
+    hostMode: "Mode hôte", hOpen: "Ouvrir les enchères", hClose: "Clôturer les enchères", hNext: "Lot suivant", hExtended: "Chrono prolongé de 15 secondes.", hBidders: "Meilleurs enchérisseurs", hNoBidders: "Pas encore d'offre.",
     rooms: { facade: "Façade", salon: "Salon", chambre: "Chambre", patio: "Patio", terrasse: "Terrasse", vue: "Vue" },
     types: { appartement: "Appartement", maison: "Maison", villa: "Villa", riad: "Riad", terrain: "Terrain", local: "Local commercial" },
     dTitle: "Dossier du bien", tVisit: "Visite", tPlan: "Plan", tDocs: "Documents", tCost: "Coût & crédit",
@@ -524,42 +557,35 @@ const I18N = {
     kValue: "Valeur estimée", kState: "État général", sgood: "Bon, rénové récemment", sworks: "Travaux importants à prévoir", kSyndic: "Charges de copropriété", kDate: "Date",
     docsNote: "Documents simulés pour la démonstration.",
     pSalon: "Salon", pChambre: "Chambre", pCuisine: "Cuisine", pSdb: "Salle d'eau", pPatio: "Patio", pPlateau: "Plateau", pReserve: "Réserve", pWc: "WC", pTerrain: "Terrain", planNote: "Plan schématique, surfaces approximatives.",
-    cPrice: "Prix d'adjudication (DH)", cUseCurrent: "Utiliser l'offre actuelle", cReg: "Droits d'enregistrement (4 %)", cCons: "Conservation foncière (1,5 % + 200 DH)",
+    cPrice: "Montant de l'offre (DH)", cUseCurrent: "Utiliser l'offre actuelle", cReg: "Droits d'enregistrement (4 %)", cCons: "Conservation foncière (1,5 % + 200 DH)",
     cNot: "Honoraires du notaire (1 % + TVA 10 %)", cMisc: "Frais divers (timbres, copies)", cTotal: "Coût total estimé", cLoan: "Crédit immobilier",
     cDown: "Apport : {x} %", cYears: "Durée : {x} ans", cRate: "Taux annuel (%)", cMonthly: "Mensualité estimée", cBorrow: "Montant emprunté", cCash: "Apport à prévoir (apport + frais)",
     cNote: "Estimation indicative, hors assurance. Les taux et frais exacts sont à confirmer avec votre notaire et votre banque.",
-    obTitle: "Avant d'enchérir", obLede: "Pour enchérir, nous vérifions votre identité pour le compte du notaire de la vente. En live, les autres participants ne voient que votre pseudo.",
-    obHandle: "Pseudo", obCin: "Numéro de CIN", obFunds: "Preuve de fonds ou accord de crédit (facultatif, transmis au notaire uniquement)",
-    obDeposit: "Si mon offre est retenue, je verse une consignation de 10 % du prix de départ sur le compte de l'étude notariale à la CDG. Elle est imputée sur le prix, ou restituée si la vente ne se fait pas pour une raison qui ne m'est pas imputable.",
-    obGo: "Vérifier et continuer", cancel: "Annuler", errHandle: "Choisissez un pseudo de 3 à 24 caractères : lettres latines, chiffres, point ou tiret bas.",
-    errCin: "Saisissez un numéro de CIN valide, par exemple BE123456.", errDep: "Cochez la case pour autoriser la consignation.", obVerifying: "Vérification en cours…",
-    obDone: "Identité vérifiée. Bonne vente !", kycNote: "Simulation : aucune donnée n'est envoyée. L'appli ne conserve que votre pseudo et un numéro de CIN masqué.",
-    wTitle: "Mes engagements d'achat", wLede: "Une offre retenue est un engagement d'achat, pas encore une vente. La propriété vous est transférée à la signature de l'acte authentique chez le notaire, puis à son inscription à la conservation foncière.", wEmpty: "Vous n'avez encore aucune offre retenue.",
-    wDemo: "Voir un exemple", wGoLive: "Rejoindre un live", wPrice: "Retenu à {p}", wTotal: "Coût total estimé : {p}", wDossier: "Dossier du bien", demoFlag: "Exemple",
-    s0: "Consignation chez le notaire", s0d: "{p}, versés sur le compte de l'étude de {n} à la CDG (Caisse de dépôt et de gestion). Aucune somme ne transite par l'appli.", s0a: "Virer sur le compte CDG de l'étude (simulation)", s0wait: "Virement en cours…",
-    s1: "Identité et fonds", s1d: "Vérification de la CIN et de la preuve de fonds par l'étude notariale (loi 43-05).", s1a: "Confirmer mes documents",
-    s2: "Promesse de vente à l'étude", s2d: "Signature de la promesse de vente préparée par {n}.", s2a: "Confirmer la signature",
-    s3: "Acte authentique chez le notaire", s3d: "Rendez-vous le {d} chez {n} : versement du solde et signature de l'acte authentique.", s3a: "Confirmer le rendez-vous",
-    s4: "Inscription et remise des clés", s4d: "Le notaire inscrit la vente à la conservation foncière : vous devenez propriétaire, puis vous recevez les clés.", s4a: "Clés reçues",
-    doneAll: "Félicitations, vous êtes propriétaire !", stepDone: "Étape validée.",
-    sTitle: "Studio agent", sLede: "Préparez votre live : ajoutez vos biens, puis lancez la vente et pilotez-la en direct depuis le mode hôte.",
+    obTitle: "Vérification d'identité", obLede: "Niveau 1 sur 3. Votre identité est vérifiée avant toute enchère. Pendant les enchères, vous apparaissez sous un identifiant anonymisé.",
+    obHandle: "Pseudo (chat)", obCin: "Numéro de CIN",    obGo: "Vérifier et continuer", cancel: "Annuler", errHandle: "Choisissez un pseudo de 3 à 24 caractères : lettres latines, chiffres, point ou tiret bas.",
+    errCin: "Saisissez un numéro de CIN valide, par exemple BE123456.",obVerifying: "Vérification en cours…",
+    obDone: "Identité vérifiée.", kycNote: "Simulation : aucune donnée n'est envoyée. L'appli ne conserve que votre pseudo et un numéro de CIN masqué.",
+    wTitle: "Mes offres retenues", wLede: "Une offre retenue n'est pas une vente conclue. Elle ouvre un parcours : revue du dossier, étape contractuelle, acte de vente, inscription foncière. Ses effets dépendent des conditions de vente du lot.", wEmpty: "Vous n'avez encore aucune offre retenue.",
+    wDemo: "Voir un exemple", wGoLive: "Rejoindre un live", wPrice: "Offre retenue : {p}", wTotal: "Coût total estimé : {p}", wDossier: "Dossier du bien", demoFlag: "Exemple",
+    doneAll: "Transaction finalisée ✓", stepDone: "Étape validée.",
+    sTitle: "Studio agent", sLede: "Préparez votre live, faites-le valider étape par étape, puis programmez-le.",
     sNew: "Nouveau live", sShowTitle: "Titre du live", sCities: "Villes", sCat: "Catégorie", sAgency: "Agence", sHostName: "Votre nom", sCreate: "Créer le live", sExample: "Remplir avec un exemple",
-    sMyLives: "Mes lives", sNone: "Vous n'avez pas encore créé de live.", sLots: "Biens du live", sNoLots: "Ajoutez au moins un bien pour lancer le live.", sAddLot: "Ajouter le bien", sAddTitle: "Ajouter un bien",
+    sMyLives: "Mes lives", sNone: "Vous n'avez pas encore créé de live.", sLots: "Biens du live", sNoLots: "Ajoutez au moins un bien avant de soumettre le live.", sAddLot: "Ajouter le bien", sAddTitle: "Ajouter un bien",
     lTitle: "Titre", lType: "Type", lCity: "Ville", lDistrict: "Quartier", lSurface: "Surface (m²)", lRooms: "Pièces", lBeds: "Chambres", lStart: "Prix de départ (DH)", lReserve: "Prix de réserve (DH)",
     lInc: "Pas d'enchère (DH)", lTF: "N° de titre foncier", lPitch: "Votre présentation (une phrase par ligne)",
-    sLaunch: "Lancer le live", sResume: "Mode hôte", sViewer: "Voir comme spectateur", sDelete: "Supprimer", sConfirmDel: "Confirmer la suppression", sRemoveLot: "Retirer",
+sResume: "Mode hôte", sViewer: "Voir comme spectateur", sDelete: "Supprimer", sConfirmDel: "Confirmer la suppression", sRemoveLot: "Retirer",
     sDraft: "Brouillon", sLiveNow: "En direct", errRequired: "Champ obligatoire.", errInt: "Nombre entier attendu.", errReserve: "La réserve doit être au moins égale au prix de départ.", errMin: "Minimum {p}.",
     sCreated: "Live créé. Ajoutez vos biens.", sLotAdded: "Bien ajouté.", sLaunched: "Votre live est en ligne !", sDeleted: "Live supprimé.",
-    nOutbid: "Vous avez été surenchéri sur « {t} » ({p}).", nWon: "Votre offre sur « {t} » est retenue ({p}). Prochaine étape : la consignation chez le notaire.", nRemind: "Rappel : « {t} » commence {w}.",
+    nOutbid: "Vous avez été surenchéri sur « {t} » ({p}).", nWon: "Votre offre sur « {t} » est retenue ({p}). Prochaine étape : la revue du dossier.", nRemind: "Rappel : « {t} » commence {w}.",
     nLaunched: "Votre live « {t} » est en ligne.", nWelcome: "Bienvenue sur Adjugé Live ! Activez des rappels pour ne rater aucune vente.",
     ago0: "à l'instant", agoM: "il y a {n} min", agoH: "il y a {n} h", agoD: "il y a {n} j",
     wNotary: "Notaire : {n}",
     notaryLine: "Vente organisée avec {n}, notaire à {c}.",
     checkedBy: "Vérifié par {n}",
     noNotary: "Notaire à désigner",
-    legalNote: "Enchérir vous engage à acheter si votre offre est retenue. Vente signée chez {n}.",
-    obTerms: "J'accepte les conditions de participation et je comprends qu'une offre retenue m'engage à acheter.",
-    obData: "J'accepte le traitement de mes données (CIN, preuve de fonds) pour vérifier mon identité et les transmettre au notaire de la vente (loi 09-08).",
+    legalNote: "Les conséquences d'une offre retenue dépendent des conditions de vente du lot.",
+    obTerms: "J'accepte les conditions générales de participation. Je comprends que les conséquences d'une offre retenue dépendent des conditions de vente propres à chaque lot.",
+    obData: "J'accepte le traitement de mes données (CIN, justificatifs) pour vérifier ma qualification d'enchérisseur (loi 09-08).",
     errTerms: "Acceptez les conditions de participation.",
     errData: "Acceptez le traitement de vos données pour continuer.",
     readTerms: "Lire les conditions de participation",
@@ -571,7 +597,6 @@ const I18N = {
     sNotaryCity: "Ville de l'étude",
     sNotaryOk: "Le notaire a reçu mandat pour cette vente et a vérifié le dossier de chaque bien (titre foncier, note de renseignement).",
     errNotaryOk: "Confirmez le mandat du notaire.",
-    sNeedNotary: "Désignez un notaire pour lancer ce live.",
     joinLive: "Rejoindre le live",
     kLots: "Lots",
     kFrom: "À partir de",
@@ -579,14 +604,137 @@ const I18N = {
     kStart: "Départ",
     kBids: "Offres",
     kLeader: "En tête",
-    stepOf: "Étape {x} sur 5",
+    stepOf: "Étape {x} sur 6",
     cDownShort: "Apport",
     menu: "Menu",
     back: "Retour",
     langSwitch: "العربية",
+    wS0: "Offre retenue",
+    wD0: "Offre de {p} retenue le {d0}.",
+    wS1: "Revue du dossier",
+    wD1: "Examen des pièces, de votre qualification et des conditions particulières du lot par {n}.",
+    wA1: "Transmettre mon dossier (simulation)",
+    wS2: "Étape contractuelle",
+    wD2: "Formalisation prévue par les conditions de vente du lot, à l'étude de {n}.",
+    wA2: "Confirmer l'étape (simulation)",
+    wS3: "Acte de vente",
+    wD3: "Signature de l'acte de vente chez {n}, prévue vers le {d}.",
+    wA3: "Confirmer la signature (simulation)",
+    wS4: "Inscription foncière",
+    wD4: "Inscription de la vente à la conservation foncière.",
+    wA4: "Confirmer l'inscription (simulation)",
+    wS5: "Transaction finalisée",
+    wD5: "Toutes les étapes sont terminées.",
+    wA5: "Clôturer le dossier (simulation)",
+    wWait: "Traitement en cours…",
+    bidderLabel: "Enchérisseur vérifié #{n} ✓",
+    bidderYou: "Vous · #{n} ✓",
+    vbCount: "✓ {n} enchérisseurs vérifiés",
+    q1: "Identité vérifiée",
+    q2: "Capacité financière vérifiée",
+    q3: "Garantie de participation constituée",
+    q3na: "Garantie de participation : non requise pour ce lot",
+    qTitle: "Qualification pour enchérir",
+    qLede: "Pour enchérir sur ce lot, toutes les conditions applicables doivent être remplies.",
+    qLocked: "Qualification requise pour enchérir",
+    qGoId: "Vérifier mon identité",
+    qGoCap: "Vérifier ma capacité financière",
+    qGoGua: "Constituer la garantie de participation",
+    capUpTo: "Vérifié pour enchérir jusqu'à {p}",
+    capOver: "Au-delà de votre capacité vérifiée ({p})",
+    capIncrease: "Augmenter ma capacité d'enchère",
+    capErr: "Ce montant dépasse votre capacité vérifiée ({p}).",
+    capInsuff: "Capacité vérifiée : {p}, insuffisante pour l'offre suivante ({m})",
+    capTitle: "Capacité financière",
+    capLede: "Niveau 2 sur 3. Indiquez le montant maximal que vous pouvez justifier (fonds propres, accord de crédit). Vous ne pourrez pas enchérir au-delà.",
+    capAmount: "Montant justifiable (DH)",
+    capSource: "Origine des fonds",
+    capSrc1: "Fonds propres",
+    capSrc2: "Accord de crédit",
+    capSrc3: "Fonds propres et crédit",
+    capProof: "Justificatif (facultatif dans la démo)",
+    capAttest: "J'atteste l'exactitude de ces informations.",
+    capGo: "Faire vérifier",
+    capMinErr: "Montant minimum : {p}.",
+    capAttestErr: "Cochez l'attestation pour continuer.",
+    capDone: "Capacité vérifiée jusqu'à {p}.",
+    capNote: "Simulation : aucun document n'est envoyé ni conservé.",
+    guaTitle: "Garantie de participation",
+    guaLede: "Niveau 3 sur 3, requis pour ce lot. Le montant, le dépositaire et les conditions sont définis dans les conditions particulières du lot.",
+    guaAmount: "Montant",
+    guaHolder: "Dépositaire",
+    guaCond: "Conditions",
+    guaCondTxt: "Imputation, restitution et délais : selon les conditions particulières du lot.",
+    guaRead: "J'ai lu les conditions particulières du lot.",
+    guaGo: "Constituer la garantie (simulation)",
+    guaWait: "Constitution en cours…",
+    guaDone: "Garantie de participation constituée pour ce lot.",
+    guaReadErr: "Confirmez avoir lu les conditions du lot.",
+    guaNote: "Simulation : aucun paiement n'est effectué. L'appli ne détient aucun fonds.",
+    guaNotReq: "Ce lot n'exige pas de garantie de participation.",
+    myQual: "Ma qualification",
+    qualGeneral: "La garantie de participation est demandée lot par lot, selon ses conditions.",
+    sellerNoBid: "Compte vendeur : vous ne pouvez pas enchérir sur vos propres lots.",
+    sellerOk: "Vendeur vérifié ✓",
+    docsOk: "Documents du bien examinés ✓",
+    tCond: "Conditions & intégrité",
+    condTitle: "Conditions particulières du lot",
+    kInc: "Pas d'enchère",
+    kReserve: "Prix de réserve",
+    vReserve: "Confidentiel : seul « atteint / non atteint » est affiché",
+    kGua: "Garantie de participation",
+    vGuaReq: "{p}, déposée auprès de : {h}",
+    vGuaNo: "Non requise",
+    kGuaCond: "Conditions de la garantie",
+    kEffects: "Effets d'une offre retenue",
+    vEffects: "Selon les conditions de vente du lot, communiquées par {n}.",
+    intTitle: "Intégrité des enchères",
+    int1: "Seuls les enchérisseurs qualifiés (identité, capacité financière et, si requise, garantie) peuvent enchérir.",
+    int2: "Les comptes vendeurs ne peuvent pas enchérir sur leurs propres lots.",
+    int3: "L'historique complet des offres est enregistré et horodaté.",
+    int4: "Les comportements suspects peuvent être soumis à revue et entraîner l'annulation d'offres.",
+    int5: "Pendant les enchères, les participants apparaissent sous un identifiant anonymisé.",
+    condNote: "Conditions simulées pour la démonstration. Seules les conditions particulières remises par le professionnel chargé de la vente font foi.",
+    resultPath: "Suite : offre retenue → revue du dossier → étape contractuelle → acte de vente → inscription foncière → transaction finalisée.",
+    flow0: "Brouillon",
+    flow1: "Revue du bien",
+    flow2: "Documents",
+    flow3: "Vérification vendeur",
+    flow4: "Conditions de vente",
+    flow5: "Approuvé",
+    flow6: "Programmation du live",
+    flowLede: "Simulation visuelle du circuit de validation : aucun contrôle réel n'est effectué.",
+    fSubmit: "Soumettre à la revue du bien",
+    f1Txt: "Contrôle de la description, de la surface, des photos et de la cohérence du prix de départ de chaque bien.",
+    f1Go: "Valider la revue (simulation)",
+    f2Txt: "Examen du titre foncier, de la note de renseignement et du rapport d'expertise de chaque bien.",
+    f2Go: "Marquer les documents comme examinés (simulation)",
+    f3Txt: "Vérification de l'identité du vendeur et de son mandat de vente.",
+    f3Go: "Valider le vendeur (simulation)",
+    f4Txt: "Définissez les conditions de vente communes aux lots du live. Le prix de réserve de chaque lot reste confidentiel.",
+    f4GuaReq: "Garantie de participation exigée",
+    f4GuaPct: "Montant de la garantie (% du prix de départ)",
+    f4Holder: "Dépositaire",
+    f4Cond: "Conditions (imputation, restitution, délais)",
+    f4CondPh: "Ex. : imputée sur le prix si la vente se réalise ; restituée sous 15 jours sinon.",
+    f4Go: "Enregistrer les conditions",
+    f5Txt: "Le live est approuvé. Chaque bien affiche « Vendeur vérifié ✓ » et « Documents du bien examinés ✓ ».",
+    f5Go: "Programmer le live",
+    f6Txt: "Choisissez la date du live. Il apparaîtra dans « Prochains lives ».",
+    f6Date: "Date et heure",
+    f6Go: "Programmer",
+    f6Now: "Démarrer maintenant (démo)",
+    f6Scheduled: "Live programmé : {d}.",
+    fBack: "Revenir au brouillon",
+    fWait: "Traitement…",
+    fDateErr: "Choisissez une date future.",
+    fPctErr: "Pourcentage entre 1 et 30.",
+    sScheduled: "Programmé",
+    sOpen: "Ouvrir",
+    whoCap: "✓ Vérifié · {p}",
   },
   ar: {
-    brandTag: "العقار بالمزاد، مباشرة", navLives: "البث المباشر", navStudio: "استوديو الوكيل", navWins: "التزاماتي", navCatalogue: "الكتالوج",
+    brandTag: "العقار بالمزاد، مباشرة", navLives: "البث المباشر", navStudio: "استوديو الوكيل", navWins: "عروضي المقبولة", navCatalogue: "الكتالوج",
     pickHandle: "تسجيل الدخول", verified: "هوية موثّقة", notifs: "الإشعارات", markRead: "تعليم الكل كمقروء", noNotifs: "لا توجد إشعارات حالياً.",
     whatsapp: "توصل بها أيضاً على واتساب (محاكاة)", langBtn: "FR",
     footer: "نموذج تجريبي: الفيديو والمشاهدون والدردشة والمزايدون الآخرون والتحقق من الهوية والأداءات كلها محاكاة. تبقى بياناتك في هذا المتصفح.",
@@ -597,14 +745,14 @@ const I18N = {
     viewers: "{n} مشاهد", lotsCount: "{n} عقارات", fromPrice: "ابتداءً من {p}", remind: "ذكّرني", reminded: "التذكير مفعّل",
     remindToast: "سنُعلمك عند بداية البث.", remindOff: "تم إلغاء التذكير.", yourLive: "بثّك", inT: "بعد {t}", live: "مباشر",
     howTitle: "كيف يعمل", how1t: "شاهد وتحقّق", how1: "زيارة مصوّرة، ملف العقار (الرسم العقاري، التصميم، الخبرة) وحساب التكلفة الإجمالية.",
-    how2t: "اسحب أو برمج", how2: "اسحب للعرض التالي، أو أدخل مبلغاً، أو حدّد مزايدة تلقائية قصوى.",
-    how3t: "قبول العرض، ثم الموثق", how3: "العرض المقبول يُلزمك بالشراء. يُوقَّع البيع لدى الموثق (عقد رسمي) ثم يُقيَّد في المحافظة العقارية.",
+    how2t: "اسحب أو برمج", how2: "بعد التأهيل، اسحب للعرض التالي أو أدخل مبلغاً في حدود قدرتك الموثقة أو حدد مزايدة تلقائية.",
+    how3t: "عرض مقبول، ثم مراحل الملف", how3: "العرض المقبول يفتح باقي الملف: المراجعة، المرحلة التعاقدية، عقد البيع، التقييد. تتوقف آثاره على شروط بيع العقار.",
     leave: "مغادرة البث", follow: "متابعة", following: "متابَع", followToast: "أنت تتابع {n}.", tour: "زيارة · {r}", lotsBtn: "العقارات ({n})", lotsTitle: "عقارات البث", close: "إغلاق",
     chat: "الدردشة", online: "{n} متصل", chatPh: "اطرح سؤالاً على المضيف…", hostChatPh: "تحدث إلى جمهورك…", send: "إرسال", hostTag: "المضيف",
     welcome: "مرحباً بك في بث {n}. يرجى الاحترام في الدردشة.", lotN: "العقار {i}/{n}", lotAnnounce: "العقار {i} من {n}: {t}",
-    openMsg: "الافتتاح بـ {p}، بخطوة {s}. هيا بنا!", lastSec: "الثواني الأخيرة… من يزيد؟", soldTo: "تم قبول عرض @{h} بـ {p}. التوقيع لدى الموثق خلال 30 يوماً.",
-    notMet: "لم يُبلغ الثمن الأدنى عند {p}: لن يُباع العقار الليلة.", noBids: "لا عروض على هذا العقار، سيُعرض في بث قادم.", bidLine: "يزايد بـ {p}",
-    current: "العرض الحالي", startP: "ثمن الانطلاق", bidsN: "{n} عروض", resOk: "تم بلوغ الثمن الأدنى", resNo: "الثمن الأدنى غير مبلوغ",
+    openMsg: "الافتتاح بـ {p}، بخطوة {s}. هيا بنا!", lastSec: "الثواني الأخيرة… من يزيد؟", soldTo: "تم قبول عرض {h} بـ {p}. تتوقف الخطوات التالية على شروط بيع العقار.",
+    notMet: "لم يُبلغ الثمن الأدنى عند {p}: لم يُقبل أي عرض على هذا العقار.", noBids: "لا عروض على هذا العقار، سيُعرض في بث قادم.", bidLine: "يزايد بـ {p}",
+    current: "العرض الحالي", startP: "ثمن الانطلاق", bidsN: "{n} عروض", resOk: "تم بلوغ الثمن الأدنى ✓", resNo: "الثمن الأدنى غير مبلوغ",
     introNote: "التقديم جارٍ. تُفتح المزايدة بعد {s} بـ {p}.", introHost: "التقديم جارٍ. افتح المزايدة متى شئت.",
     slide: "اسحب للمزايدة بـ {p}", lead: "أنت في المقدمة بـ {p}", slideHint: "اسحب الزر حتى النهاية", aCustom: "مبلغ", aAuto: "تلقائي", aDossier: "الملف", aLove: "إرسال قلوب",
     validate: "تأكيد", minErr: "أدخل على الأقل {p}، بدون سنتيمات.", leadAlready: "أنت في المقدمة بالفعل.", minBidToast: "أدنى عرض هو {p}.",
@@ -612,12 +760,12 @@ const I18N = {
     autoTitle: "المزايدة التلقائية", autoHelp: "يزايد التطبيق عنك بالخطوة التالية كلما تجاوزك أحد، دون أن يتخطى حدّك الأقصى أبداً. يبقى حدّك سرياً.",
     autoPh: "حدّك الأقصى، مثلاً {p}", autoSet: "تفعيل", autoStop: "إيقاف المزايدة التلقائية", autoOn: "تلقائي حتى {p}", autoToast: "تم تفعيل المزايدة التلقائية حتى {p}.", autoOff: "تم إيقاف المزايدة التلقائية.",
     autoDone: "تم تجاوز مزايدتك التلقائية عند {p}.", autoMinErr: "يجب أن يكون حدّك الأقصى {p} على الأقل.",
-    stampSold: "تم قبول العرض", stampNo: "لم يُقبل", wonBy: "تم قبول عرض <b>@{h}</b> بـ <b>{p}</b>", lastOffer: "آخر عرض: {p}. لم يُبلغ الثمن الأدنى للبائع.",
-    noOffer: "لا عروض على هذا العقار.", youWon: "تم تسجيل التزامك بالشراء. سيُوقَّع البيع لدى {n} خلال 30 يوماً.", seeWins: "عرض التزاماتي",
+    stampSold: "تم قبول العرض", stampNo: "لم يُقبل", wonBy: "تم قبول عرض <b>{h}</b> بـ <b>{p}</b>", lastOffer: "آخر عرض: {p}. لم يُبلغ الثمن الأدنى للبائع.",
+    noOffer: "لا عروض على هذا العقار.", youWon: "تم قبول عرضك. الخطوة التالية: مراجعة الملف. تتوقف آثاره على شروط بيع العقار.", seeWins: "عرض عروضي المقبولة",
     nextSoon: "العقار التالي بعد ثوانٍ…", lastLot: "كان هذا آخر عقار.", phaseSold: "تم قبول العرض.", phaseUnsold: "لم يُقبل أي عرض.", getReady: "استعد للعقار التالي.",
     ended: "انتهى البث.", endBadge: "انتهى البث", thanks: "شكراً لمتابعتك {n}", summary: "تم قبول {s} عروض من {n}، بمجموع {p}.", replay: "إعادة المشاهدة", otherLives: "بث آخر", backStudio: "العودة إلى الاستوديو",
     notLive: "هذا البث غير متاح الآن", notLiveP: "ربما انتهى أو لم يبدأ بعد.", seeLives: "عرض البث",
-    hostMode: "وضع المضيف", hOpen: "افتح المزايدة", hClose: "أرسِ المزاد الآن", hNext: "العقار التالي", hExtended: "تم تمديد الوقت 15 ثانية.", hBidders: "أفضل المزايدين", hNoBidders: "لا عروض بعد.",
+    hostMode: "وضع المضيف", hOpen: "افتح المزايدة", hClose: "إغلاق المزايدة", hNext: "العقار التالي", hExtended: "تم تمديد الوقت 15 ثانية.", hBidders: "أفضل المزايدين", hNoBidders: "لا عروض بعد.",
     rooms: { facade: "الواجهة", salon: "الصالون", chambre: "غرفة النوم", patio: "الفناء", terrasse: "السطح", vue: "الإطلالة" },
     types: { appartement: "شقة", maison: "منزل", villa: "فيلا", riad: "رياض", terrain: "أرض", local: "محل تجاري" },
     dTitle: "ملف العقار", tVisit: "الزيارة", tPlan: "التصميم", tDocs: "الوثائق", tCost: "التكلفة والقرض",
@@ -628,42 +776,35 @@ const I18N = {
     kValue: "القيمة المقدّرة", kState: "الحالة العامة", sgood: "جيدة، مرممة حديثاً", sworks: "أشغال مهمة متوقعة", kSyndic: "مصاريف الملكية المشتركة", kDate: "التاريخ",
     docsNote: "وثائق محاكاة لأغراض العرض.",
     pSalon: "صالون", pChambre: "غرفة", pCuisine: "مطبخ", pSdb: "حمام", pPatio: "فناء", pPlateau: "فضاء المحل", pReserve: "مخزن", pWc: "مرحاض", pTerrain: "قطعة أرضية", planNote: "تصميم تقريبي، المساحات تقديرية.",
-    cPrice: "ثمن الرسو (درهم)", cUseCurrent: "استعمل العرض الحالي", cReg: "رسوم التسجيل (4٪)", cCons: "المحافظة العقارية (1,5٪ + 200 درهم)",
+    cPrice: "مبلغ العرض (درهم)", cUseCurrent: "استعمل العرض الحالي", cReg: "رسوم التسجيل (4٪)", cCons: "المحافظة العقارية (1,5٪ + 200 درهم)",
     cNot: "أتعاب الموثق (1٪ + ض.ق.م 10٪)", cMisc: "مصاريف مختلفة (طوابع، نسخ)", cTotal: "التكلفة الإجمالية المقدّرة", cLoan: "القرض العقاري",
     cDown: "المساهمة الذاتية: {x}٪", cYears: "المدة: {x} سنة", cRate: "النسبة السنوية (٪)", cMonthly: "القسط الشهري المقدّر", cBorrow: "مبلغ القرض", cCash: "المبلغ الواجب توفيره (المساهمة + المصاريف)",
     cNote: "تقدير إرشادي دون احتساب التأمين. يجب تأكيد النسب والمصاريف مع الموثق والبنك.",
-    obTitle: "قبل المزايدة", obLede: "للمزايدة، نتحقق من هويتك لحساب موثق البيع. في البث، لا يرى المشاركون الآخرون سوى اسمك المستعار.",
-    obHandle: "الاسم المستعار", obCin: "رقم البطاقة الوطنية", obFunds: "إثبات الأموال أو موافقة القرض (اختياري، يُحال إلى الموثق فقط)",
-    obDeposit: "إذا قُبل عرضي، أودع ضماناً بنسبة 10٪ من ثمن الانطلاق في حساب مكتب التوثيق لدى صندوق الإيداع والتدبير. يُخصم من الثمن أو يُسترجع إذا لم يتم البيع لسبب لا يُنسب إلي.",
-    obGo: "تحقّق وتابع", cancel: "إلغاء", errHandle: "اختر اسماً مستعاراً من 3 إلى 24 حرفاً: حروف لاتينية أو أرقام أو نقطة أو شرطة سفلية.",
-    errCin: "أدخل رقم بطاقة وطنية صحيحاً، مثلاً BE123456.", errDep: "ضع علامة لقبول الضمان.", obVerifying: "جارٍ التحقق…",
-    obDone: "تم التحقق من الهوية. بالتوفيق!", kycNote: "محاكاة: لا تُرسل أي بيانات. لا يحتفظ التطبيق إلا باسمك المستعار ورقم بطاقة مُقنَّع.",
-    wTitle: "التزاماتي بالشراء", wLede: "العرض المقبول التزام بالشراء وليس بيعاً بعد. تنتقل إليك الملكية عند توقيع العقد الرسمي لدى الموثق ثم تقييده في المحافظة العقارية.", wEmpty: "ليس لديك أي عرض مقبول بعد.",
-    wDemo: "عرض مثال", wGoLive: "انضم إلى بث", wPrice: "مقبول بـ {p}", wTotal: "التكلفة الإجمالية المقدّرة: {p}", wDossier: "ملف العقار", demoFlag: "مثال",
-    s0: "الضمان لدى الموثق", s0d: "{p}، تُودَع في حساب مكتب {n} لدى صندوق الإيداع والتدبير. لا يمر أي مبلغ عبر التطبيق.", s0a: "التحويل إلى حساب المكتب لدى صندوق الإيداع والتدبير (محاكاة)", s0wait: "جارٍ التحويل…",
-    s1: "الهوية والأموال", s1d: "تحقق مكتب التوثيق من البطاقة الوطنية وإثبات الأموال (القانون 43-05).", s1a: "تأكيد وثائقي",
-    s2: "الوعد بالبيع لدى المكتب", s2d: "توقيع الوعد بالبيع الذي أعده {n}.", s2a: "تأكيد التوقيع",
-    s3: "العقد الرسمي لدى الموثق", s3d: "موعد يوم {d} لدى {n}: أداء الباقي وتوقيع العقد الرسمي.", s3a: "تأكيد الموعد",
-    s4: "التقييد وتسليم المفاتيح", s4d: "يقيّد الموثق البيع في المحافظة العقارية: تصبح مالكاً ثم تتسلم المفاتيح.", s4a: "تم استلام المفاتيح",
-    doneAll: "مبروك، أصبحت مالكاً!", stepDone: "تم تأكيد المرحلة.",
-    sTitle: "استوديو الوكيل", sLede: "حضّر بثك: أضف عقاراتك، ثم أطلق البيع وأدِره مباشرة من وضع المضيف.",
+    obTitle: "التحقق من الهوية", obLede: "المستوى 1 من 3. يتم التحقق من هويتك قبل أي مزايدة. خلال المزايدة تظهر بمعرّف مجهول.",
+    obHandle: "الاسم المستعار (الدردشة)", obCin: "رقم البطاقة الوطنية",    obGo: "تحقّق وتابع", cancel: "إلغاء", errHandle: "اختر اسماً مستعاراً من 3 إلى 24 حرفاً: حروف لاتينية أو أرقام أو نقطة أو شرطة سفلية.",
+    errCin: "أدخل رقم بطاقة وطنية صحيحاً، مثلاً BE123456.",obVerifying: "جارٍ التحقق…",
+    obDone: "تم التحقق من الهوية.", kycNote: "محاكاة: لا تُرسل أي بيانات. لا يحتفظ التطبيق إلا باسمك المستعار ورقم بطاقة مُقنَّع.",
+    wTitle: "عروضي المقبولة", wLede: "العرض المقبول ليس بيعاً منجزاً. إنه يفتح مساراً: مراجعة الملف، المرحلة التعاقدية، عقد البيع، التقييد العقاري. تتوقف آثاره على شروط بيع العقار.", wEmpty: "ليس لديك أي عرض مقبول بعد.",
+    wDemo: "عرض مثال", wGoLive: "انضم إلى بث", wPrice: "عرض مقبول: {p}", wTotal: "التكلفة الإجمالية المقدّرة: {p}", wDossier: "ملف العقار", demoFlag: "مثال",
+    doneAll: "تمت المعاملة ✓", stepDone: "تم تأكيد المرحلة.",
+    sTitle: "استوديو الوكيل", sLede: "حضّر بثك، اعرضه للمصادقة خطوة بخطوة، ثم برمجه.",
     sNew: "بث جديد", sShowTitle: "عنوان البث", sCities: "المدن", sCat: "الفئة", sAgency: "الوكالة", sHostName: "اسمك", sCreate: "إنشاء البث", sExample: "ملء بمثال",
-    sMyLives: "بثوثي", sNone: "لم تنشئ أي بث بعد.", sLots: "عقارات البث", sNoLots: "أضف عقاراً واحداً على الأقل لإطلاق البث.", sAddLot: "إضافة العقار", sAddTitle: "إضافة عقار",
+    sMyLives: "بثوثي", sNone: "لم تنشئ أي بث بعد.", sLots: "عقارات البث", sNoLots: "أضف عقاراً واحداً على الأقل قبل الإرسال.", sAddLot: "إضافة العقار", sAddTitle: "إضافة عقار",
     lTitle: "العنوان", lType: "النوع", lCity: "المدينة", lDistrict: "الحي", lSurface: "المساحة (م²)", lRooms: "الغرف", lBeds: "غرف النوم", lStart: "ثمن الانطلاق (درهم)", lReserve: "الثمن الأدنى (درهم)",
     lInc: "خطوة المزايدة (درهم)", lTF: "رقم الرسم العقاري", lPitch: "تقديمك (جملة في كل سطر)",
-    sLaunch: "إطلاق البث", sResume: "وضع المضيف", sViewer: "المشاهدة كمتفرج", sDelete: "حذف", sConfirmDel: "تأكيد الحذف", sRemoveLot: "إزالة",
+sResume: "وضع المضيف", sViewer: "المشاهدة كمتفرج", sDelete: "حذف", sConfirmDel: "تأكيد الحذف", sRemoveLot: "إزالة",
     sDraft: "مسودة", sLiveNow: "مباشر", errRequired: "حقل إلزامي.", errInt: "يجب إدخال عدد صحيح.", errReserve: "يجب أن يكون الثمن الأدنى مساوياً على الأقل لثمن الانطلاق.", errMin: "الحد الأدنى {p}.",
     sCreated: "تم إنشاء البث. أضف عقاراتك.", sLotAdded: "تمت إضافة العقار.", sLaunched: "بثّك على الهواء!", sDeleted: "تم حذف البث.",
-    nOutbid: "تمت المزايدة عليك في « {t} » ({p}).", nWon: "تم قبول عرضك على « {t} » ({p}). الخطوة التالية: الضمان لدى الموثق.", nRemind: "تذكير: « {t} » يبدأ {w}.",
+    nOutbid: "تمت المزايدة عليك في « {t} » ({p}).", nWon: "تم قبول عرضك على « {t} » ({p}). الخطوة التالية: مراجعة الملف.", nRemind: "تذكير: « {t} » يبدأ {w}.",
     nLaunched: "بثّك « {t} » على الهواء.", nWelcome: "مرحباً بك في Adjugé Live! فعّل التذكيرات حتى لا تفوتك أي عملية بيع.",
     ago0: "الآن", agoM: "منذ {n} د", agoH: "منذ {n} س", agoD: "منذ {n} ي",
     wNotary: "الموثق: {n}",
     notaryLine: "بيع منظم مع {n}، موثق بـ{c}.",
     checkedBy: "تم التحقق من طرف {n}",
     noNotary: "موثق سيُعيَّن",
-    legalNote: "المزايدة تُلزمك بالشراء إذا قُبل عرضك. يُوقَّع البيع لدى {n}.",
-    obTerms: "أقبل شروط المشاركة وأفهم أن العرض المقبول يُلزمني بالشراء.",
-    obData: "أوافق على معالجة بياناتي (البطاقة الوطنية، إثبات الأموال) للتحقق من هويتي وإحالتها إلى موثق البيع (القانون 09-08).",
+    legalNote: "تتوقف آثار العرض المقبول على شروط بيع العقار.",
+    obTerms: "أقبل الشروط العامة للمشاركة، وأفهم أن آثار العرض المقبول تتوقف على شروط البيع الخاصة بكل عقار.",
+    obData: "أوافق على معالجة بياناتي (البطاقة الوطنية، الوثائق المثبتة) للتحقق من تأهيلي كمزايد (القانون 09-08).",
     errTerms: "اقبل شروط المشاركة.",
     errData: "وافق على معالجة بياناتك للمتابعة.",
     readTerms: "قراءة شروط المشاركة",
@@ -675,7 +816,6 @@ const I18N = {
     sNotaryCity: "مدينة المكتب",
     sNotaryOk: "تلقى الموثق تفويضاً لهذا البيع وتحقق من ملف كل عقار (الرسم العقاري، مذكرة المعلومات).",
     errNotaryOk: "أكّد تفويض الموثق.",
-    sNeedNotary: "عيّن موثقاً لإطلاق هذا البث.",
     joinLive: "انضم إلى البث",
     kLots: "العقارات",
     kFrom: "ابتداءً من",
@@ -683,37 +823,162 @@ const I18N = {
     kStart: "الانطلاق",
     kBids: "العروض",
     kLeader: "في المقدمة",
-    stepOf: "المرحلة {x} من 5",
+    stepOf: "المرحلة {x} من 6",
     cDownShort: "المساهمة",
     menu: "القائمة",
     back: "رجوع",
     langSwitch: "Français",
+    wS0: "عرض مقبول",
+    wD0: "تم قبول عرض بـ {p} بتاريخ {d0}.",
+    wS1: "مراجعة الملف",
+    wD1: "فحص الوثائق وتأهيلك والشروط الخاصة بالعقار من طرف {n}.",
+    wA1: "إرسال ملفي (محاكاة)",
+    wS2: "المرحلة التعاقدية",
+    wD2: "إجراء منصوص عليه في شروط بيع العقار، لدى مكتب {n}.",
+    wA2: "تأكيد المرحلة (محاكاة)",
+    wS3: "عقد البيع",
+    wD3: "توقيع عقد البيع لدى {n}، في حدود {d}.",
+    wA3: "تأكيد التوقيع (محاكاة)",
+    wS4: "التقييد العقاري",
+    wD4: "تقييد البيع في المحافظة العقارية.",
+    wA4: "تأكيد التقييد (محاكاة)",
+    wS5: "إتمام المعاملة",
+    wD5: "انتهت جميع المراحل.",
+    wA5: "إغلاق الملف (محاكاة)",
+    wWait: "جارٍ المعالجة…",
+    bidderLabel: "مزايد موثق #{n} ✓",
+    bidderYou: "أنت · #{n} ✓",
+    vbCount: "✓ {n} مزايد موثق",
+    q1: "الهوية موثقة",
+    q2: "القدرة المالية موثقة",
+    q3: "ضمان المشاركة مُودَع",
+    q3na: "ضمان المشاركة: غير مطلوب لهذا العقار",
+    qTitle: "التأهيل للمزايدة",
+    qLede: "للمزايدة على هذا العقار، يجب استيفاء جميع الشروط المطبقة.",
+    qLocked: "التأهيل مطلوب للمزايدة",
+    qGoId: "التحقق من هويتي",
+    qGoCap: "التحقق من قدرتي المالية",
+    qGoGua: "إيداع ضمان المشاركة",
+    capUpTo: "موثق للمزايدة حتى {p}",
+    capOver: "يتجاوز قدرتك الموثقة ({p})",
+    capIncrease: "رفع قدرتي على المزايدة",
+    capErr: "هذا المبلغ يتجاوز قدرتك الموثقة ({p}).",
+    capInsuff: "القدرة الموثقة: {p}، غير كافية للعرض التالي ({m})",
+    capTitle: "القدرة المالية",
+    capLede: "المستوى 2 من 3. أدخل أقصى مبلغ يمكنك إثباته (أموال ذاتية، موافقة قرض). لن تتمكن من المزايدة أكثر منه.",
+    capAmount: "المبلغ القابل للإثبات (درهم)",
+    capSource: "مصدر الأموال",
+    capSrc1: "أموال ذاتية",
+    capSrc2: "موافقة قرض",
+    capSrc3: "أموال ذاتية وقرض",
+    capProof: "وثيقة الإثبات (اختيارية في العرض التجريبي)",
+    capAttest: "أشهد بصحة هذه المعلومات.",
+    capGo: "طلب التحقق",
+    capMinErr: "الحد الأدنى: {p}.",
+    capAttestErr: "ضع علامة على الإشهاد للمتابعة.",
+    capDone: "تم التحقق من القدرة حتى {p}.",
+    capNote: "محاكاة: لا تُرسل ولا تُحفظ أي وثيقة.",
+    guaTitle: "ضمان المشاركة",
+    guaLede: "المستوى 3 من 3، مطلوب لهذا العقار. يحدد المبلغ والجهة المودَع لديها والشروط في الشروط الخاصة بالعقار.",
+    guaAmount: "المبلغ",
+    guaHolder: "الجهة المودَع لديها",
+    guaCond: "الشروط",
+    guaCondTxt: "الخصم والاسترجاع والآجال: حسب الشروط الخاصة بالعقار.",
+    guaRead: "اطلعت على الشروط الخاصة بالعقار.",
+    guaGo: "إيداع الضمان (محاكاة)",
+    guaWait: "جارٍ الإيداع…",
+    guaDone: "تم إيداع ضمان المشاركة لهذا العقار.",
+    guaReadErr: "أكّد اطلاعك على شروط العقار.",
+    guaNote: "محاكاة: لا يتم أي أداء. لا يحتفظ التطبيق بأي أموال.",
+    guaNotReq: "هذا العقار لا يتطلب ضمان مشاركة.",
+    myQual: "تأهيلي",
+    qualGeneral: "يُطلب ضمان المشاركة عقاراً بعقار، حسب شروطه.",
+    sellerNoBid: "حساب البائع: لا يمكنك المزايدة على عقاراتك.",
+    sellerOk: "البائع موثق ✓",
+    docsOk: "وثائق العقار مُراجَعة ✓",
+    tCond: "الشروط والنزاهة",
+    condTitle: "الشروط الخاصة بالعقار",
+    kInc: "خطوة المزايدة",
+    kReserve: "الثمن الأدنى",
+    vReserve: "سري: يُعرض فقط «مبلوغ / غير مبلوغ»",
+    kGua: "ضمان المشاركة",
+    vGuaReq: "{p}، تُودَع لدى: {h}",
+    vGuaNo: "غير مطلوب",
+    kGuaCond: "شروط الضمان",
+    kEffects: "آثار العرض المقبول",
+    vEffects: "حسب شروط بيع العقار، التي يبلغها {n}.",
+    intTitle: "نزاهة المزايدة",
+    int1: "لا يزايد إلا المزايدون المؤهلون (الهوية، القدرة المالية، والضمان إن كان مطلوباً).",
+    int2: "لا يمكن لحسابات البائعين المزايدة على عقاراتها.",
+    int3: "يُسجَّل تاريخ العروض كاملاً مع توقيته.",
+    int4: "يمكن إخضاع السلوكيات المشبوهة للمراجعة وقد تؤدي إلى إلغاء العروض.",
+    int5: "خلال المزايدة يظهر المشاركون بمعرّف مجهول.",
+    condNote: "شروط محاكاة لأغراض العرض. لا يُعتد إلا بالشروط الخاصة التي يسلمها المهني المكلف بالبيع.",
+    resultPath: "التالي: عرض مقبول ← مراجعة الملف ← المرحلة التعاقدية ← عقد البيع ← التقييد العقاري ← إتمام المعاملة.",
+    flow0: "مسودة",
+    flow1: "مراجعة العقار",
+    flow2: "الوثائق",
+    flow3: "التحقق من البائع",
+    flow4: "شروط البيع",
+    flow5: "تمت الموافقة",
+    flow6: "برمجة البث",
+    flowLede: "محاكاة مرئية لمسار المصادقة: لا يتم أي تحقق فعلي.",
+    fSubmit: "إرسال لمراجعة العقار",
+    f1Txt: "مراقبة الوصف والمساحة والصور وانسجام ثمن الانطلاق لكل عقار.",
+    f1Go: "المصادقة على المراجعة (محاكاة)",
+    f2Txt: "فحص الرسم العقاري ومذكرة المعلومات وتقرير الخبرة لكل عقار.",
+    f2Go: "تعليم الوثائق كمُراجَعة (محاكاة)",
+    f3Txt: "التحقق من هوية البائع وتفويض البيع.",
+    f3Go: "المصادقة على البائع (محاكاة)",
+    f4Txt: "حدّد شروط البيع المشتركة لعقارات البث. يبقى الثمن الأدنى لكل عقار سرياً.",
+    f4GuaReq: "ضمان المشاركة مطلوب",
+    f4GuaPct: "مبلغ الضمان (٪ من ثمن الانطلاق)",
+    f4Holder: "الجهة المودَع لديها",
+    f4Cond: "الشروط (الخصم، الاسترجاع، الآجال)",
+    f4CondPh: "مثال: تُخصم من الثمن إذا تم البيع؛ تُسترجع خلال 15 يوماً في غير ذلك.",
+    f4Go: "حفظ الشروط",
+    f5Txt: "تمت الموافقة على البث. يعرض كل عقار «البائع موثق ✓» و«وثائق العقار مُراجَعة ✓».",
+    f5Go: "برمجة البث",
+    f6Txt: "اختر تاريخ البث. سيظهر في «البث القادم».",
+    f6Date: "التاريخ والساعة",
+    f6Go: "برمجة",
+    f6Now: "البدء الآن (عرض تجريبي)",
+    f6Scheduled: "تمت برمجة البث: {d}.",
+    fBack: "العودة إلى المسودة",
+    fWait: "جارٍ المعالجة…",
+    fDateErr: "اختر تاريخاً مستقبلياً.",
+    fPctErr: "نسبة بين 1 و30.",
+    sScheduled: "مبرمج",
+    sOpen: "فتح",
+    whoCap: "✓ موثق · {p}",
   },
 };
 const PLACES_AR = { Casablanca: "الدار البيضاء", Marrakech: "مراكش", "Fès": "فاس", Essaouira: "الصويرة", Tanger: "طنجة", Rabat: "الرباط", Agadir: "أكادير", Asilah: "أصيلة", Bouskoura: "بوسكورة", Taghazout: "تغازوت",
   Gauthier: "غوتييه", Anfa: "أنفا", "Maârif": "المعاريف", "Médina, Mouassine": "المدينة العتيقة، المواسين", "Médina, Batha": "المدينة العتيقة، البطحاء", "Médina": "المدينة العتيقة", Agdal: "أكدال" };
 
 /* Conditions de participation et données personnelles : projet à faire valider par un juriste. */
-const TERMS_V = 2;
+const TERMS_V = 3;
 const TERMS = {
   fr: [
-    ["Nature de l'offre", "Une enchère est une offre d'achat ferme. Quand elle est retenue (meilleure offre, au moins égale au prix de réserve), elle vous engage à acheter au prix indiqué. Elle ne transfère pas la propriété : le transfert exige un acte authentique dressé par un notaire ou des adouls, ou un acte d'avocat agréé près la Cour de cassation (art. 4 de la loi 39-08), puis l'inscription à la conservation foncière (dahir du 12 août 1913)."],
-    ["Rôle de l'appli et du notaire", "L'appli est un intermédiaire technique : elle n'est ni le vendeur ni un officier de vente judiciaire. Chaque vente est organisée avec un notaire, qui vérifie le dossier du bien avant le live et dresse l'acte."],
-    ["Consignation", "La consignation (10 % du prix de départ) est versée uniquement sur le compte de l'étude notariale à la CDG. Elle est imputée sur le prix ou restituée selon les conditions de la vente. L'appli ne détient aucun fonds."],
-    ["Prix de réserve", "Le vendeur fixe un prix minimum confidentiel. En dessous, aucune offre n'est retenue."],
-    ["Vérifications", "Votre identité et l'origine des fonds sont vérifiées par le notaire, soumis aux obligations de vigilance de la loi 43-05 relative à la lutte contre le blanchiment de capitaux."],
+    ["Offre retenue", "À la clôture d'un lot, la meilleure offre au moins égale au prix de réserve est « retenue ». Les conséquences d'une offre retenue (caractère engageant, délais, suites contractuelles) dépendent des conditions de vente propres au lot. Une offre retenue ne constitue pas une vente conclue : le transfert de propriété suppose un acte de vente conforme à la loi applicable, puis l'inscription à la conservation foncière."],
+    ["Rôle de l'appli", "L'appli est un intermédiaire technique : elle n'est ni le vendeur ni un officier de vente judiciaire. Chaque vente est organisée avec un professionnel habilité, désigné dans les conditions du lot."],
+    ["Garantie de participation", "Certains lots exigent une garantie de participation. Son montant, son dépositaire et ses conditions (imputation, restitution, délais) sont définis dans les conditions particulières du lot. L'appli ne détient aucun fonds."],
+    ["Prix de réserve", "Le vendeur peut fixer un prix de réserve confidentiel. Les participants voient seulement s'il est atteint ou non."],
+    ["Qualification des enchérisseurs", "Pour enchérir, chaque participant doit avoir une identité vérifiée, une capacité financière vérifiée couvrant son offre et, si le lot l'exige, une garantie de participation constituée. Les comptes vendeurs ne peuvent pas enchérir sur leurs propres lots."],
+    ["Intégrité", "L'historique des offres est enregistré. Les comportements suspects peuvent être soumis à revue et entraîner l'annulation d'offres ou la suspension d'un compte, selon les conditions applicables."],
   ],
   ar: [
-    ["طبيعة العرض", "المزايدة عرض شراء نهائي. عند قبوله (أفضل عرض يساوي على الأقل الثمن الأدنى)، يُلزمك بالشراء بالثمن المحدد. لا ينقل الملكية: يتطلب النقل عقداً رسمياً يحرره موثق أو عدول، أو محرراً من محامٍ مقبول لدى محكمة النقض (المادة 4 من القانون 39-08)، ثم التقييد في المحافظة العقارية (ظهير 12 غشت 1913)."],
-    ["دور التطبيق والموثق", "التطبيق وسيط تقني: ليس البائع ولا مأمور بيع قضائي. يُنظَّم كل بيع مع موثق يتحقق من ملف العقار قبل البث ويحرر العقد."],
-    ["الضمان", "يُودَع الضمان (10٪ من ثمن الانطلاق) فقط في حساب مكتب التوثيق لدى صندوق الإيداع والتدبير. يُخصم من الثمن أو يُسترجع حسب شروط البيع. لا يحتفظ التطبيق بأي أموال."],
-    ["الثمن الأدنى", "يحدد البائع ثمناً أدنى سرياً. دونه، لا يُقبل أي عرض."],
-    ["التحققات", "يتحقق الموثق من هويتك ومصدر الأموال، وهو خاضع لواجبات اليقظة المنصوص عليها في القانون 43-05 المتعلق بمكافحة غسل الأموال."],
+    ["العرض المقبول", "عند إغلاق عقار، يُقبل أفضل عرض يساوي على الأقل الثمن الأدنى. تتوقف آثار العرض المقبول (الطابع الملزم، الآجال، الخطوات التعاقدية) على شروط البيع الخاصة بالعقار. العرض المقبول ليس بيعاً منجزاً: يتطلب نقل الملكية عقد بيع مطابقاً للقانون المعمول به ثم التقييد في المحافظة العقارية."],
+    ["دور التطبيق", "التطبيق وسيط تقني: ليس البائع ولا مأمور بيع قضائي. يُنظَّم كل بيع مع مهني مؤهل يُحدَّد في شروط العقار."],
+    ["ضمان المشاركة", "تتطلب بعض العقارات ضمان مشاركة. يحدد مبلغه والجهة المودَع لديها وشروطه (الخصم، الاسترجاع، الآجال) في الشروط الخاصة بالعقار. لا يحتفظ التطبيق بأي أموال."],
+    ["الثمن الأدنى", "يمكن للبائع تحديد ثمن أدنى سري. لا يرى المشاركون إلا ما إذا كان مبلوغاً أم لا."],
+    ["تأهيل المزايدين", "للمزايدة، يجب أن تكون لكل مشارك هوية موثقة وقدرة مالية موثقة تغطي عرضه، وضمان مشاركة مودع إذا تطلبه العقار. لا يمكن لحسابات البائعين المزايدة على عقاراتها."],
+    ["النزاهة", "يُسجَّل تاريخ العروض. يمكن إخضاع السلوكيات المشبوهة للمراجعة وقد تؤدي إلى إلغاء عروض أو تعليق حساب، حسب الشروط المطبقة."],
   ],
 };
 const PRIVACY = {
-  fr: ["Données personnelles (loi 09-08)", "Responsable du traitement : l'éditeur de l'appli. Données : pseudo, CIN, preuve de fonds, offres. Finalités : vérifier votre identité et votre capacité d'achat, transmettre votre dossier au notaire de la vente. Destinataire : l'étude notariale. Durée : le temps de la vente, puis archivage légal. Vous disposez d'un droit d'accès, de rectification et d'opposition. Traitement déclaré à la CNDP sous le n° [à compléter avant lancement]."],
-  ar: ["المعطيات الشخصية (القانون 09-08)", "مسؤول المعالجة: ناشر التطبيق. البيانات: الاسم المستعار، البطاقة الوطنية، إثبات الأموال، العروض. الأغراض: التحقق من هويتك وقدرتك على الشراء وإحالة ملفك إلى موثق البيع. المرسَل إليه: مكتب التوثيق. المدة: طوال مدة البيع ثم الأرشفة القانونية. لك حق الولوج والتصحيح والتعرض. معالجة مصرح بها لدى اللجنة الوطنية لمراقبة حماية المعطيات ذات الطابع الشخصي تحت رقم [يُستكمل قبل الإطلاق]."],
+  fr: ["Données personnelles (loi 09-08)", "Responsable du traitement : l'éditeur de l'appli. Données : pseudo, CIN, justificatifs de capacité financière, offres. Finalités : vérifier votre identité et votre qualification d'enchérisseur, transmettre votre dossier au professionnel chargé de la vente du lot. Durée : le temps de la vente, puis archivage légal. Vous disposez d'un droit d'accès, de rectification et d'opposition. Traitement déclaré à la CNDP sous le n° [à compléter avant lancement]."],
+  ar: ["المعطيات الشخصية (القانون 09-08)", "مسؤول المعالجة: ناشر التطبيق. البيانات: الاسم المستعار، البطاقة الوطنية، وثائق القدرة المالية، العروض. الأغراض: التحقق من هويتك وتأهيلك كمزايد وإحالة ملفك إلى المهني المكلف ببيع العقار. المدة: طوال مدة البيع ثم الأرشفة القانونية. لك حق الولوج والتصحيح والتعرض. معالجة مصرح بها لدى اللجنة الوطنية لمراقبة حماية المعطيات ذات الطابع الشخصي تحت رقم [يُستكمل قبل الإطلاق]."],
 };
 
 /* ---------- Outils ---------- */
@@ -781,15 +1046,15 @@ const SHOWS = [
     host: { name: "Yasmine Alaoui", handle: "yasmine.medinaimmo", agency: "Médina Immobilier", hue: 18 }, notary: { name: "Maître Bennani", city: "Marrakech" },
     lots: [
       { id: "riad-mouassine", title: "Riad restauré avec patio et terrasse", title_ar: "رياض مرمم مع فناء وسطح", type: "riad", city: "Marrakech", district: "Médina, Mouassine",
-        surface: 220, rooms: 7, bedrooms: 5, hue: 10, start: 3800000, reserve: 4000000, inc: 25000, tf: "TF 18452/M", year: 1890, floor: "R+2", charges: 0, zone: "hab", state: "good",
+        surface: 220, rooms: 7, bedrooms: 5, hue: 10, start: 3800000, reserve: 4000000, inc: 25000, tf: "TF 18452/M", gua: { req: true, amount: 200000, holder: "Étude de Maître Bennani", holder_ar: "مكتب الأستاذ بناني" }, approved: true, year: 1890, floor: "R+2", charges: 0, zone: "hab", state: "good",
         pitch: ["On commence fort : riad de 220 m² à deux minutes de la place Mouassine.", "Patio en zellige avec fontaine, cinq chambres en tadelakt, terrasse avec vue sur l'Atlas.", "Titre foncier, restauré en 2021, prêt à exploiter en maison d'hôtes."],
         pitch_ar: ["نبدأ بقوة: رياض بمساحة 220 م² على بعد دقيقتين من ساحة المواسين.", "فناء بالزليج ونافورة، خمس غرف بالتادلاكت، وسطح يطل على الأطلس.", "رسم عقاري، مرمم سنة 2021، جاهز للاستغلال كدار ضيافة."] },
       { id: "dar-batha", title: "Dar du XIXe à rénover", title_ar: "دار من القرن 19 للترميم", type: "riad", city: "Fès", district: "Médina, Batha",
-        surface: 160, rooms: 6, bedrooms: 4, hue: 32, start: 950000, reserve: 1100000, inc: 10000, tf: "TF 7731/F", year: 1870, floor: "R+2", charges: 0, zone: "hab", state: "works",
+        surface: 160, rooms: 6, bedrooms: 4, hue: 32, start: 950000, reserve: 1100000, inc: 10000, tf: "TF 7731/F", gua: { req: false }, approved: true, year: 1870, floor: "R+2", charges: 0, zone: "hab", state: "works",
         pitch: ["Lot 2 pour les amoureux d'authenticité : un dar de 160 m² près de Bab Boujloud.", "Plafonds en cèdre sculpté et plâtres ciselés d'origine. Gros travaux à prévoir.", "Prix de départ sous le million, c'est le moment."],
         pitch_ar: ["العقار الثاني لعشاق الأصالة: دار بمساحة 160 م² قرب باب بوجلود.", "أسقف من خشب الأرز المنقوش وجبس منقوش أصلي. أشغال كبيرة متوقعة.", "ثمن انطلاق أقل من مليون، إنها الفرصة."] },
       { id: "riad-essaouira", title: "Riad face aux remparts", title_ar: "رياض قبالة الأسوار", type: "riad", city: "Essaouira", district: "Médina",
-        surface: 180, rooms: 6, bedrooms: 4, hue: 200, start: 2600000, reserve: 2800000, inc: 20000, tf: "TF 3390/E", year: 1910, floor: "R+2", charges: 0, zone: "hab", state: "good",
+        surface: 180, rooms: 6, bedrooms: 4, hue: 200, start: 2600000, reserve: 2800000, inc: 20000, tf: "TF 3390/E", gua: { req: true, amount: 130000, holder: "Étude de Maître Bennani", holder_ar: "مكتب الأستاذ بناني" }, approved: true, year: 1910, floor: "R+2", charges: 0, zone: "hab", state: "good",
         pitch: ["Direction Essaouira : riad blanc et bleu adossé aux remparts.", "Quatre suites, terrasse avec vue sur l'océan, déjà loué en saisonnier.", "Rentabilité locale autour de 7 % brut d'après le vendeur."],
         pitch_ar: ["نتجه إلى الصويرة: رياض أبيض وأزرق ملاصق للأسوار.", "أربع أجنحة، سطح يطل على المحيط، ومؤجر موسمياً.", "مردودية خام تقارب 7٪ حسب البائع."] },
     ] },
@@ -797,15 +1062,15 @@ const SHOWS = [
     host: { name: "Mehdi Benjelloun", handle: "mehdi.casaprestige", agency: "Casa Prestige", hue: 228 }, notary: { name: "Maître Tazi", city: "Casablanca" },
     lots: [
       { id: "art-deco-gauthier", title: "Appartement Art déco avec balcon", title_ar: "شقة آرت ديكو مع شرفة", type: "appartement", city: "Casablanca", district: "Gauthier",
-        surface: 135, rooms: 5, bedrooms: 3, hue: 215, start: 2900000, reserve: 3100000, inc: 20000, tf: "TF 25118/C", year: 1932, floor: "3", charges: 900, zone: "hab", state: "good",
+        surface: 135, rooms: 5, bedrooms: 3, hue: 215, start: 2900000, reserve: 3100000, inc: 20000, tf: "TF 25118/C", gua: { req: true, amount: 150000, holder: "Étude de Maître Tazi", holder_ar: "مكتب الأستاذ التازي" }, approved: true, year: 1932, floor: "3", charges: 900, zone: "hab", state: "good",
         pitch: ["Bonsoir Casa ! Premier lot : 135 m² dans un immeuble Art déco de 1932.", "Double salon sur balcon filant, 3,40 m sous plafond, carreaux de ciment d'origine.", "Ascenseur, concierge, titre foncier. On ouvre dans quelques secondes."],
         pitch_ar: ["مساء الخير يا كازا! العقار الأول: 135 م² في عمارة آرت ديكو من سنة 1932.", "صالون مزدوج على شرفة ممتدة، علو 3,40 م، وزليج إسمنتي أصلي.", "مصعد، حارس، رسم عقاري. نفتح المزايدة بعد ثوانٍ."] },
       { id: "penthouse-anfa", title: "Penthouse avec terrasse panoramique", title_ar: "بنتهاوس مع سطح بإطلالة بانورامية", type: "appartement", city: "Casablanca", district: "Anfa",
-        surface: 240, rooms: 6, bedrooms: 4, hue: 205, start: 7500000, reserve: 7900000, inc: 50000, tf: "TF 60277/C", year: 2019, floor: "9", charges: 2400, zone: "hab", state: "good",
+        surface: 240, rooms: 6, bedrooms: 4, hue: 205, start: 7500000, reserve: 7900000, inc: 50000, tf: "TF 60277/C", gua: { req: true, amount: 400000, holder: "Étude de Maître Tazi", holder_ar: "مكتب الأستاذ التازي" }, approved: true, year: 2019, floor: "9", charges: 2400, zone: "hab", state: "good",
         pitch: ["Le lot de la soirée : penthouse de 240 m² à Anfa.", "120 m² de terrasse avec vue sur l'océan et la mosquée Hassan II.", "Deux parkings, résidence gardée, livraison immédiate."],
         pitch_ar: ["عقار السهرة: بنتهاوس بمساحة 240 م² في أنفا.", "سطح بمساحة 120 م² يطل على المحيط ومسجد الحسن الثاني.", "موقفان للسيارات، إقامة محروسة، تسليم فوري."] },
       { id: "local-maarif", title: "Local commercial sur boulevard", title_ar: "محل تجاري على شارع رئيسي", type: "local", city: "Casablanca", district: "Maârif",
-        surface: 95, rooms: 2, bedrooms: 0, hue: 350, start: 1900000, reserve: 1950000, inc: 10000, tf: "TF 41906/C", year: 1998, floor: "RDC", charges: 600, zone: "com", state: "good",
+        surface: 95, rooms: 2, bedrooms: 0, hue: 350, start: 1900000, reserve: 1950000, inc: 10000, tf: "TF 41906/C", gua: { req: false }, approved: true, year: 1998, floor: "RDC", charges: 600, zone: "com", state: "good",
         pitch: ["On termine avec de l'investissement : 95 m² commerciaux au Maârif.", "Sept mètres de vitrine, mezzanine, libre de tout occupant."],
         pitch_ar: ["نختم بالاستثمار: 95 م² تجارية في المعاريف.", "واجهة بسبعة أمتار، طابق ميزانين، فارغ من أي شاغل."] },
     ] },
@@ -827,7 +1092,7 @@ const HOST_ANSWERS = [
   [/charge|syndic|سانديك|مصاريف/i, "Les charges sont indiquées dans le dossier, onglet Documents.", "مصاريف السانديك مكتوبة فالملف، فخانة الوثائق."],
   [/travaux|rénov|ترميم|أشغال/i, "Tout est dans le rapport d'expertise : ouvrez le Dossier.", "كلشي فتقرير الخبرة، حل الملف."],
   [/crédit|banque|financ|قرض|كريدي|بنك/i, "Utilisez l'onglet Coût & crédit du dossier pour estimer votre mensualité.", "استعمل خانة التكلفة والقرض فالملف باش تحسب القسط."],
-  [/consignation|caution|ضمان/i, "10 % du prix de départ, prélevés seulement si vous gagnez.", "10٪ من ثمن الانطلاق، كتتقتطع غير إلا ربحتي."],
+  [/consignation|caution|garantie|ضمان/i, "Si le lot l'exige, une garantie de participation est demandée : montant, dépositaire et conditions figurent dans les conditions du lot (onglet Dossier).", "إلا كان العقار كيتطلب، كيتطلب ضمان المشاركة: المبلغ والجهة والشروط كاينين فشروط العقار (الملف)."],
   [/parking|garage|باركينغ|مرآب/i, "Oui, le stationnement est inclus dans la vente.", "إيه، الباركينغ داخل فالبيع."],
 ];
 
@@ -844,6 +1109,27 @@ const prefs = {
 const save = (k) => store.set(`adjuge-live-${k === "myShows" ? "myshows" : k}`, prefs[k]);
 const allShows = () => [...prefs.myShows, ...SHOWS];
 const me = () => prefs.user?.handle;
+const showOf = (l) => allShows().find((x) => x.lots?.includes(l));
+/* Garantie de participation : propre à chaque lot (conditions particulières), sinon définie par le live dans le studio. */
+function lotGua(l, show = showOf(l)) {
+  if (l.gua) return l.gua;
+  const tm = show?.terms;
+  if (!tm || !tm.req) return { req: false };
+  return { req: true, amount: Math.round(l.start * tm.pct / 100 / 1000) * 1000, holder: tm.holder, cond: tm.cond };
+}
+const isApproved = (l) => !!(l.approved || (l.sellerVerified && l.docsReviewed));
+const trustHTML = (l) => isApproved(l) ? `<span class="trust"><span>${esc(t("sellerOk"))}</span><span>${esc(t("docsOk"))}</span></span>` : "";
+/* Trois niveaux : identité, capacité financière, garantie de participation (si le lot l'exige). */
+function qual(l, show = R?.show || showOf(l)) {
+  const u = prefs.user, g = lotGua(l, show);
+  const id = !!(u && u.idVerified && u.terms === TERMS_V);
+  const cap = id ? u.capacity || 0 : 0;
+  const need = R && R.show.lots[R.idx] === l ? minBid() : l.start;
+  const capOk = id && cap >= need;
+  const gua = !g.req || !!(id && u.guarantees?.[l.id]);
+  const seller = !!show && prefs.myShows.includes(show);
+  return { id, cap, need, capOk, gua, g, seller, ready: id && capOk && gua && !seller };
+}
 
 function notify(key, vars = {}) {
   prefs.notifs.unshift({ id: Math.random().toString(36).slice(2), key, vars, at: Date.now(), read: false });
@@ -1003,7 +1289,7 @@ function openTerms(privacyOnly = false) {
 const notaryOf = (show) => show?.notary?.name || t("noNotary");
 const closeBtn = () => `<button class="btn btn-ghost btn-small" type="button" data-close>${esc(t("close"))}</button>`;
 
-/* Identification + vérification d'identité (simulée) */
+/* Niveau 1 : vérification d'identité (simulée) */
 function onboard(then) {
   const el = openModal(`
     <div class="sheet-head"><h2>${esc(t("obTitle"))}</h2>${closeBtn()}</div>
@@ -1011,10 +1297,8 @@ function onboard(then) {
     <form id="ob" class="page" style="gap:12px" novalidate>
       <label class="field">${esc(t("obHandle"))}<input id="ob-handle" maxlength="24" autocomplete="nickname" placeholder="salma.invest" value="${esc(prefs.user?.handle || "")}" dir="ltr"></label>
       <label class="field">${esc(t("obCin"))}<input id="ob-cin" maxlength="10" placeholder="BE123456" dir="ltr" autocomplete="off"></label>
-      <label class="field">${esc(t("obFunds"))}<input id="ob-funds" type="file" accept=".pdf,image/*"></label>
       <details class="terms-details"><summary>${esc(t("readTerms"))}</summary>${termsHTML()}</details>
       <label class="check"><input type="checkbox" id="ob-terms"> ${esc(t("obTerms"))}</label>
-      <label class="check"><input type="checkbox" id="ob-dep"> ${esc(t("obDeposit"))}</label>
       <label class="check"><input type="checkbox" id="ob-data"> ${esc(t("obData"))}</label>
       <p class="err" id="ob-err" hidden></p>
       <p class="muted" style="font-size:.78rem">${esc(t("kycNote"))}</p>
@@ -1028,23 +1312,98 @@ function onboard(then) {
     if (!/^[a-z0-9._]{3,24}$/i.test(handle)) return fail("errHandle");
     if (!/^[A-Z]{1,2}\d{4,8}$/.test(cin)) return fail("errCin");
     if (!$("ob-terms").checked) return fail("errTerms");
-    if (!$("ob-dep").checked) return fail("errDep");
     if (!$("ob-data").checked) return fail("errData");
     const btn = $("ob-go"); btn.disabled = true; btn.textContent = t("obVerifying");
-    const funds = !!$("ob-funds").files?.length;
     setTimeout(() => {
-      prefs.user = { handle, terms: TERMS_V, kyc: { cin: cin.slice(0, 2) + "••••" + cin.slice(-2), funds, verified: true } }; save("user");
-      closeModal(); renderWho(); toast(t("obDone")); then?.();
+      const old = prefs.user || {};
+      prefs.user = { handle, terms: TERMS_V, idVerified: true, cin: cin.slice(0, 2) + "••••" + cin.slice(-2),
+        bidderNo: old.bidderNo || String(1000 + Math.floor(Math.random() * 9000)), capacity: old.terms === TERMS_V ? old.capacity || 0 : 0, guarantees: old.terms === TERMS_V ? old.guarantees || {} : {} };
+      save("user"); closeModal(); renderWho(); toast(t("obDone")); then?.();
     }, 900);
   });
+}
+/* Niveau 2 : capacité financière vérifiée (simulée) */
+function openCapacity(need, then) {
+  const u = prefs.user;
+  if (!(u?.idVerified && u.terms === TERMS_V)) return onboard(() => openCapacity(need, then));
+  const sugg = Math.ceil(Math.max(need || 0, (u.capacity || 0) * 1.5, 500000) / 500000) * 500000;
+  const el = openModal(`
+    <div class="sheet-head"><h2>${esc(t("capTitle"))}</h2>${closeBtn()}</div>
+    <p class="muted">${esc(t("capLede"))}</p>
+    ${u.capacity ? `<p class="ok-pill" style="justify-self:start">✓ ${esc(t("capUpTo", { p: dh(u.capacity) }))}</p>` : ""}
+    <form id="cap" class="page" style="gap:12px" novalidate>
+      <label class="field">${esc(t("capAmount"))}<input class="num" id="cap-amt" inputmode="numeric" value="${sugg}" dir="ltr"></label>
+      <label class="field">${esc(t("capSource"))}<select id="cap-src"><option value="own">${esc(t("capSrc1"))}</option><option value="loan">${esc(t("capSrc2"))}</option><option value="mix">${esc(t("capSrc3"))}</option></select></label>
+      <label class="field">${esc(t("capProof"))}<input id="cap-file" type="file" accept=".pdf,image/*"></label>
+      <label class="check"><input type="checkbox" id="cap-att"> ${esc(t("capAttest"))}</label>
+      <p class="err" id="cap-err" hidden></p>
+      <p class="muted" style="font-size:.78rem">${esc(t("capNote"))}</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary" type="submit" id="cap-go">${esc(t("capGo"))}</button><button class="btn btn-ghost" type="button" data-close2>${esc(t("cancel"))}</button></div>
+    </form>`);
+  el.querySelector("[data-close2]").addEventListener("click", closeModal);
+  el.querySelector("#cap").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const v = parseAmount($("cap-amt").value), err = $("cap-err");
+    if (!(Number.isInteger(v) && v >= 100000)) { err.textContent = t("capMinErr", { p: dh(100000) }); err.hidden = false; return; }
+    if (!$("cap-att").checked) { err.textContent = t("capAttestErr"); err.hidden = false; return; }
+    const btn = $("cap-go"); btn.disabled = true; btn.textContent = t("obVerifying");
+    setTimeout(() => { u.capacity = v; u.capSource = $("cap-src").value; save("user"); closeModal(); toast(t("capDone", { p: dh(v) })); refreshQual(); then?.(); }, 900);
+  });
+}
+/* Niveau 3 : garantie de participation, propre au lot (simulée) */
+function openGuarantee(l, then) {
+  const g = lotGua(l), u = prefs.user;
+  if (!g.req) return toast(t("guaNotReq"));
+  if (!(u?.idVerified && u.terms === TERMS_V)) return onboard(() => openGuarantee(l, then));
+  const el = openModal(`
+    <div class="sheet-head"><div><p class="label muted">${esc(t("guaTitle"))}</p><h2>${esc(lt(l, "title"))}</h2></div>${closeBtn()}</div>
+    <p class="muted">${esc(t("guaLede"))}</p>
+    <dl class="docview num"><dt>${esc(t("guaAmount"))}</dt><dd>${dh(g.amount)}</dd><dt>${esc(t("guaHolder"))}</dt><dd>${esc(lt(g, "holder"))}</dd><dt>${esc(t("guaCond"))}</dt><dd>${esc(g.cond || t("guaCondTxt"))}</dd></dl>
+    <label class="check"><input type="checkbox" id="gua-read"> ${esc(t("guaRead"))}</label>
+    <p class="err" id="gua-err" hidden></p>
+    <p class="muted" style="font-size:.78rem">${esc(t("guaNote"))}</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary" type="button" id="gua-go">${esc(t("guaGo"))}</button><button class="btn btn-ghost" type="button" data-close2>${esc(t("cancel"))}</button></div>`);
+  el.querySelector("[data-close2]").addEventListener("click", closeModal);
+  el.querySelector("#gua-go").addEventListener("click", (e) => {
+    if (!$("gua-read").checked) { $("gua-err").textContent = t("guaReadErr"); $("gua-err").hidden = false; return; }
+    e.currentTarget.disabled = true; e.currentTarget.textContent = t("guaWait");
+    setTimeout(() => { u.guarantees = { ...(u.guarantees || {}), [l.id]: true }; save("user"); closeModal(); toast(t("guaDone")); refreshQual(); then?.(); }, 1100);
+  });
+}
+/* Enchaîne les niveaux manquants pour un lot donné. */
+function nextStep(l, show = R?.show) {
+  const q = qual(l, show);
+  if (q.seller) return toast(t("sellerNoBid"));
+  const cont = () => { refreshQual(); const q2 = qual(l, show); if (!q2.ready && (q2.id !== q.id || q2.capOk !== q.capOk || q2.gua !== q.gua)) nextStep(l, show); };
+  if (!q.id) onboard(cont);
+  else if (!q.capOk) openCapacity(q.need, cont);
+  else if (!q.gua) openGuarantee(l, cont);
+}
+function refreshQual() { renderWho(); if (R) { renderCard(); updateVB(); } }
+function openQualification() {
+  const u = prefs.user, id = !!(u?.idVerified && u.terms === TERMS_V), cap = id ? u.capacity || 0 : 0;
+  const l = R ? lot() : null, q = l ? qual(l) : null;
+  const row = (ok, label, btn) => `<li class="${ok ? "ok" : ""}"><span aria-hidden="true">${ok ? "✓" : "○"}</span><span style="flex:1">${esc(label)}</span>${btn || ""}</li>`;
+  const b = (id_, k) => `<button class="btn btn-ghost btn-small" type="button" id="${id_}">${esc(t(k))}</button>`;
+  const el = openModal(`<div class="sheet-head"><h2>${esc(t("myQual"))}</h2>${closeBtn()}</div>
+    <ul class="qual-list">
+      ${row(id, t("q1"), id ? "" : b("qq-id", "qGoId"))}
+      ${row(cap > 0, cap ? t("capUpTo", { p: dh(cap) }) : t("q2"), id ? b("qq-cap", cap ? "capIncrease" : "qGoCap") : "")}
+      ${l ? (q.g.req ? row(q.gua, `${t("q3")} · ${lt(l, "title")} · ${dh(q.g.amount)}`, q.gua || !id ? "" : b("qq-gua", "qGoGua")) : row(true, t("q3na"))) : `<li><span aria-hidden="true">ⓘ</span><span>${esc(t("qualGeneral"))}</span></li>`}
+    </ul>`);
+  el.querySelector("#qq-id")?.addEventListener("click", () => onboard(refreshQual));
+  el.querySelector("#qq-cap")?.addEventListener("click", () => openCapacity(l ? q.need : 0));
+  el.querySelector("#qq-gua")?.addEventListener("click", () => openGuarantee(l));
 }
 
 /* ---------- En-tête : identité, notifications, langue ---------- */
 function renderWho() {
-  $("who").innerHTML = prefs.user
-    ? `<span dir="ltr"><b>@${esc(prefs.user.handle)}</b></span>${prefs.user.kyc?.verified ? `<span class="kyc-ok">✓ ${esc(t("verified"))}</span>` : ""}`
+  const u = prefs.user, id = !!(u?.idVerified && u.terms === TERMS_V);
+  $("who").innerHTML = u
+    ? `<span dir="ltr"><b>@${esc(u.handle)}</b></span><button class="linkbtn kyc-ok" type="button" id="who-q">${id ? esc(u.capacity ? t("whoCap", { p: short(u.capacity) }) : `✓ ${t("verified")}`) : esc(t("myQual"))}</button>`
     : `<button class="btn btn-ghost btn-small" type="button" id="who-login">${esc(t("pickHandle"))}</button>`;
-  $("who-login")?.addEventListener("click", () => onboard());
+  $("who-q")?.addEventListener("click", openQualification);
+  $("who-login")?.addEventListener("click", () => onboard(refreshQual));
 }
 function renderBell() {
   const n = prefs.notifs.filter((x) => !x.read).length;
@@ -1088,7 +1447,7 @@ let cat = "";
 function viewFeed(app) {
   const match = (s) => !cat || s.tags.includes(cat);
   const live = allShows().filter((s) => s.live && match(s));
-  const next = SHOWS.filter((s) => !s.live && match(s)).sort((a, b) => a.startsAt - b.startsAt);
+  const next = [...SHOWS, ...prefs.myShows.filter((x) => (x.stage || 0) >= 6 && x.startsAt)].filter((s) => !s.live && match(s)).sort((a, b) => a.startsAt - b.startsAt);
   app.innerHTML = `
     <div class="page">
       <div class="page-head"><p class="label" style="color:var(--live)">${esc(t("feedEyebrow"))}</p><h1>${esc(t("feedTitle"))}</h1><p>${esc(t("feedLede"))}</p></div>
@@ -1118,10 +1477,10 @@ function showCard(s) {
       <span class="trio-mini num"><span><small>${esc(t("kLots"))}</small>${s.lots.length}</span><span class="c"><small>${esc(t("kFrom"))}</small><b>${esc(short(Math.min(...s.lots.map((l) => l.start))))}</b></span><span class="e"><small>${esc(t("kViewers"))}</small>${numFmt.format(s.viewers)}</span></span></span></a>`;
 }
 function upCard(s) {
-  const on = prefs.reminders.includes(s.id);
-  return `<article class="up glass"><div class="thumb">${sceneSVG("facade", { type: s.preview.type, hue: s.preview.hue, title: s.title, id: s.id })}</div>
+  const on = prefs.reminders.includes(s.id), pv = s.preview || { type: s.lots?.[0]?.type || "appartement", hue: s.lots?.[0]?.hue ?? 30 };
+  return `<article class="up glass"><div class="thumb">${sceneSVG("facade", { type: pv.type, hue: pv.hue, title: s.title, id: s.id })}</div>
     <div class="body"><span class="when">${esc(untilLabel(s.startsAt - Date.now()))}</span><h3 style="font-size:1.02rem">${esc(lt(s, "title"))}</h3>
-    <span class="muted" style="font-size:.84rem">${esc(s.host.name)} · ${esc(t("lotsCount", { n: s.count }))} · ${esc(place(s.city))}</span>
+    <span class="muted" style="font-size:.84rem">${esc(s.host.name)} · ${esc(t("lotsCount", { n: s.count ?? s.lots.length }))} · ${esc(place(s.city))}</span>
     <div class="row"><button class="btn btn-ghost btn-small remind" type="button" data-remind="${s.id}" aria-pressed="${on}">${esc(t(on ? "reminded" : "remind"))}</button></div></div></article>`;
 }
 
@@ -1143,7 +1502,7 @@ function viewRoom(app, id, host, keep) {
   app.classList.add("room-mode");
   const reuse = keep && R && R.show.id === id && R.host === host;
   const oldMsgs = reuse ? $("msgs")?.innerHTML : "";
-  if (!reuse) { leaveRoom(); R = { show, host, idx: 0, phase: "intro", phaseEnd: 0, bids: [], results: [], tour: 0, viewers: show.viewers, timers: [], warned: false, rivalMax: 0, auto: null, custom: false }; }
+  if (!reuse) { leaveRoom(); R = { show, host, idx: 0, phase: "intro", phaseEnd: 0, bids: [], results: [], tour: 0, viewers: show.viewers, verified: Math.round(rand(12, 30)), anon: {}, timers: [], warned: false, rivalMax: 0, auto: null, custom: false }; }
   buildRoomShell(app);
   if (reuse) { $("msgs").innerHTML = oldMsgs; showScene(); renderLots(); renderCard(); renderOverlay(); return; }
   chat("", t("welcome", { n: show.host.name }), "sys");
@@ -1168,7 +1527,7 @@ function buildRoomShell(app) {
           <a class="iconbtn media-glass" href="${R.host ? "#studio" : "#lives"}" aria-label="${esc(t("leave"))}"><svg class="flip" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg></a>
           <div class="host media-glass">${avatar(show.host)}<span><b>${esc(show.host.name)}</b><span dir="ltr">@${esc(show.host.handle)}</span></span>${R.host ? "" : `<button class="follow" type="button" id="follow" aria-pressed="${following}">${esc(t(following ? "following" : "follow"))}</button>`}</div>
         </div>
-        <div class="stage-meta"><span class="live-badge">${esc(t("live"))}</span><span class="viewers num" id="viewers"></span><button class="tour media-glass" type="button" id="tour"></button><button class="tour media-glass lots-toggle" type="button" id="open-lots">${esc(t("lotsBtn", { n: show.lots.length }))}</button></div>
+        <div class="stage-meta"><span class="live-badge">${esc(t("live"))}</span><span class="viewers num" id="viewers"></span><span class="viewers vb num" id="vbidders"></span><button class="tour media-glass" type="button" id="tour"></button><button class="tour media-glass lots-toggle" type="button" id="open-lots">${esc(t("lotsBtn", { n: show.lots.length }))}</button></div>
         ${R.host ? `<div class="hostbar media-glass" id="hostbar"></div>` : ""}
         <div class="hearts" id="hearts" aria-hidden="true"></div>
         <div class="tourdots" id="tourdots"></div>
@@ -1200,6 +1559,13 @@ function buildRoomShell(app) {
     if (ans || /[?؟]/.test(text)) later(() => chat(R.show.host.name, `@${me()} ${ans ? (lang === "ar" ? ans[2] : ans[1]) : lang === "ar" ? "سؤال مزيان، غادي نجاوبك فالخاص من بعد هاد العقار." : "Bonne question, je vous réponds en privé juste après ce lot."}`, "from-host"), rand(1800, 3500));
   });
 }
+const myNo = () => prefs.user?.bidderNo || "0000";
+function bidderLabel(by) {
+  if (by === me() && !R.host) return t("bidderYou", { n: myNo() });
+  R.anon[by] ??= String(1000 + Math.floor(Math.random() * 9000));
+  return t("bidderLabel", { n: R.anon[by] });
+}
+function updateVB() { const el = $("vbidders"); if (el && R) el.textContent = t("vbCount", { n: R.verified + (!R.host && qual(lot()).ready ? 1 : 0) }); }
 function later(fn, ms) { if (!R) return; const tm = setTimeout(() => R && fn(), ms); R.timers.push(tm); }
 function leaveRoom() { if (!R) return; R.timers.forEach((x) => { clearInterval(x); clearTimeout(x); }); R = null; window.removeEventListener("resize", placeChat); }
 
@@ -1220,10 +1586,10 @@ function closeLot() {
   const l = lot(), tp = top(), sold = reserveMet();
   R.phase = "result"; R.phaseEnd = R.host ? Infinity : Date.now() + RESULT;
   R.results[R.idx] = { sold, amount: tp?.amount, by: tp?.by };
-  if (sold) chat(R.show.host.name, t("soldTo", { h: tp.by, p: dh(tp.amount) }), "from-host");
+  if (sold) chat(R.show.host.name, t("soldTo", { h: bidderLabel(tp.by), p: dh(tp.amount) }), "from-host");
   else chat(R.show.host.name, tp ? t("notMet", { p: dh(tp.amount) }) : t("noBids"), "from-host");
   if (sold && tp.by === me() && !R.host) {
-    prefs.wins.unshift({ id: `${l.id}-${Date.now()}`, lot: { ...l }, showTitle: [R.show.title, R.show.title_ar], notary: R.show.notary || null, amount: tp.amount, at: Date.now(), step: 0 }); save("wins");
+    prefs.wins.unshift({ id: `${l.id}-${Date.now()}`, lot: { ...l, gua: lotGua(l, R.show), approved: isApproved(l) }, showTitle: [R.show.title, R.show.title_ar], notary: R.show.notary || null, amount: tp.amount, at: Date.now(), step: 1, flow: 2 }); save("wins");
     notify("nWon", { t: [l.title, l.title_ar], amount: tp.amount });
   }
   renderOverlay(); renderLots(); renderCard();
@@ -1236,8 +1602,8 @@ function renderOverlay() {
     const res = R.results[R.idx], mine = res.sold && res.by === me() && !R.host;
     ov.innerHTML = `<div class="overlay">${mine ? confetti() : ""}<div class="box">
       <div class="stamp ${res.sold ? (mine ? "win" : "") : "no"}">${esc(t(res.sold ? "stampSold" : "stampNo"))}</div>
-      <p style="font-size:1.05rem">${res.sold ? t("wonBy", { h: esc(res.by), p: dh(res.amount) }) : esc(res.amount ? t("lastOffer", { p: dh(res.amount) }) : t("noOffer"))}</p>
-      ${mine ? `<p style="opacity:.85;font-size:.9rem">${esc(t("youWon", { n: notaryOf(R.show) }))}</p><a class="btn btn-primary btn-small" href="#victoires">${esc(t("seeWins"))}</a>` : ""}
+      <p style="font-size:1.05rem">${res.sold ? t("wonBy", { h: esc(bidderLabel(res.by)), p: dh(res.amount) }) : esc(res.amount ? t("lastOffer", { p: dh(res.amount) }) : t("noOffer"))}</p>
+      ${mine ? `<p style="opacity:.85;font-size:.9rem">${esc(t("youWon"))}</p><p class="path">${t("resultPath").replace(/^[^:：]*[:：]\s*/, "").split(/\s*[→←]\s*/).map((x) => `<span>${esc(x.replace(/\.$/, ""))}</span>`).join("")}</p><a class="btn btn-primary btn-small" href="#victoires">${esc(t("seeWins"))}</a>` : ""}
       <p style="opacity:.7;font-size:.82rem">${esc(t(R.idx + 1 < R.show.lots.length ? (R.host ? "getReady" : "nextSoon") : "lastLot"))}</p></div></div>`;
   } else if (R.phase === "ended") {
     const sold = R.results.filter((r) => r?.sold);
@@ -1253,14 +1619,16 @@ function placeBid(by, amount, isMe = false) {
   const tm = Date.now(), prev = top();
   R.bids.push({ by, amount, at: tm });
   if (R.phaseEnd - tm < RESET) R.phaseEnd = tm + RESET;
-  chat(`@${by}`, t("bidLine", { p: dh(amount) }), isMe ? "bid me" : "bid");
+  chat(bidderLabel(by), t("bidLine", { p: dh(amount) }), isMe ? "bid me" : "bid");
   if (prev?.by === me() && by !== me() && !R.host && !(R.auto && minBid() <= R.auto)) notify("nOutbid", { t: [lot().title, lot().title_ar], amount });
   renderCard(true);
 }
 function myBid(amount, auto = false) {
   if (R.host) return;
-  if (!prefs.user || prefs.user.terms !== TERMS_V) { onboard(() => R && myBid(Math.max(amount, minBid()))); return; }
   if (R.phase !== "bidding") return;
+  const q = qual(lot());
+  if (!q.ready) { nextStep(lot()); return; }
+  if (amount > q.cap) { toast(t("capErr", { p: dh(q.cap) })); return; }
   if (top()?.by === me()) { if (!auto) toast(t("leadAlready")); return; }
   if (!(amount >= minBid())) { toast(t("minBidToast", { p: dh(minBid()) })); return; }
   placeBid(me(), amount, true);
@@ -1282,7 +1650,7 @@ function tick() {
       if (amount >= minBid()) placeBid(by, amount);
     }
     // Enchère automatique : on relance au palier suivant tant que le maximum le permet.
-    if (R.auto && prefs.user && top()?.by !== me() && !R.autoWait) {
+    if (R.auto && qual(lot()).ready && top()?.by !== me() && !R.autoWait) {
       if (minBid() <= R.auto) { R.autoWait = true; later(() => { R.autoWait = false; if (R.phase === "bidding" && R.auto && top()?.by !== me() && minBid() <= R.auto) myBid(minBid(), true); }, 700); }
       else { notify("autoDone", { amount: R.auto }); toast(t("autoDone", { p: dh(R.auto) })); R.auto = null; renderCard(); }
     }
@@ -1296,6 +1664,8 @@ function ambient() {
   R.viewers = Math.max(50, R.viewers + Math.round(rand(-12, 18)));
   $("viewers").textContent = t("viewers", { n: numFmt.format(R.viewers) });
   $("chat-count").textContent = t("online", { n: numFmt.format(R.viewers) });
+  if (Math.random() < 0.12) R.verified++;
+  updateVB();
   const r = Math.random();
   if (r < 0.45) chat(`@${pick(HANDLES)}`, pick(CHAT_POOL[lang]));
   if (Math.random() < 0.5) hearts(1 + Math.floor(Math.random() * 3));
@@ -1312,12 +1682,13 @@ function showScene() {
   $("tourdots").innerHTML = tour.map((k, i) => `<button type="button" data-tour="${i}" aria-current="${i === cur}" aria-label="${esc(t("rooms")[k])}">${i === 0 ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>' : i}</button>`).join("");
   $("tourdots").querySelectorAll("[data-tour]").forEach((b) => b.addEventListener("click", () => { R.tour = +b.dataset.tour; R.tourTick = 0; showScene(); }));
   $("viewers").textContent = t("viewers", { n: numFmt.format(R.viewers) });
+  updateVB();
 }
 function renderLots() {
   $("lots").innerHTML = R.show.lots.map((l, i) => {
     const res = R.results[i];
     const st = i === R.idx && R.phase !== "ended" ? `<small class="on">${esc(t("sLiveNow"))}</small>` : res ? (res.sold ? `<small class="sold num">${esc(t("wPrice", { p: short(res.amount) }))}</small>` : `<small>${esc(t("stampNo"))}</small>`) : `<small class="num">${esc(t("startP"))} ${esc(short(l.start))}</small>`;
-    return `<li class="${i === R.idx ? "current" : ""}"><div class="mini">${sceneSVG("facade", l)}</div><div><strong>${esc(lt(l, "title"))}</strong><span class="muted" style="font-size:.76rem">${esc(place(l.city))} · ${l.surface} m²</span><br>${st}</div></li>`;
+    return `<li class="${i === R.idx ? "current" : ""}"><div class="mini">${sceneSVG("facade", l)}</div><div><strong>${esc(lt(l, "title"))}</strong><span class="muted" style="font-size:.76rem">${esc(place(l.city))} · ${l.surface} m²</span><br>${st}${isApproved(l) ? `<br><small class="sold">✓ ${esc(t("sellerOk").replace(" ✓", ""))} · ✓ ${esc(t("docsOk").replace(" ✓", ""))}</small>` : ""}</div></li>`;
   }).join("");
 }
 let sliding = false, pendingRender = false;
@@ -1326,29 +1697,42 @@ function renderCard(bump = false) {
   // Une nouvelle offre redessine la carte : on garde le montant en cours de saisie.
   const typed = $("custom-amt")?.value, typing = document.activeElement?.id === "custom-amt";
   const l = lot(), tp = top(), lead = tp && tp.by === me();
-  const head = `<div class="row1"><div><span class="label" style="opacity:.75">${esc(t("lotN", { i: R.idx + 1, n: R.show.lots.length }))}</span><h2>${esc(lt(l, "title"))}</h2><p class="where">${esc(place(l.city))} · ${esc(place(l.district))} · ${l.surface} m²${l.bedrooms ? ` · ${l.bedrooms} ${esc(t("fBeds").toLowerCase())}` : ""}</p></div>
+  const head = `<div class="row1"><div><span class="label" style="opacity:.75">${esc(t("lotN", { i: R.idx + 1, n: R.show.lots.length }))}</span><h2>${esc(lt(l, "title"))}</h2><p class="where">${esc(place(l.city))} · ${esc(place(l.district))} · ${l.surface} m²${l.bedrooms ? ` · ${l.bedrooms} ${esc(t("fBeds").toLowerCase())}` : ""}</p>${trustHTML(l)}</div>
     <div class="ring" id="ring"><svg viewBox="0 0 56 56"><circle class="track" cx="28" cy="28" r="24"/><circle class="bar" id="ring-bar" cx="28" cy="28" r="24" stroke-dasharray="150.8" stroke-dashoffset="0"/></svg><b class="num" id="ring-t"></b></div></div>`;
   const price = `<div class="trio num"><div><small>${esc(t("kStart"))}</small>${esc(short(l.start))}</div><div class="c"><span class="big ${bump ? "bump" : ""}" id="big">${dh(tp ? tp.amount : l.start)}</span><small>${esc(t(tp ? "current" : "startP"))}</small></div><div class="e"><small>${esc(t("kBids"))}</small>${R.bids.length}</div></div>
-    <div class="lead-row"><span>${tp ? `<small>${esc(t("kLeader"))}</small> <b dir="ltr" style="font-weight:400">@${esc(tp.by)}</b>` : ""}</span><span class="reserve ${reserveMet() ? "ok" : ""}">${esc(t(reserveMet() ? "resOk" : "resNo"))}</span></div>`;
+    <div class="lead-row"><span>${tp ? `<small>${esc(t("kLeader"))}</small> <b style="font-weight:400">${esc(bidderLabel(tp.by))}</b>` : ""}</span><span class="reserve ${reserveMet() ? "ok" : ""}">${esc(t(reserveMet() ? "resOk" : "resNo"))}</span></div>`;
   let action = "";
   if (R.host) {
     const best = [...new Map(R.bids.slice().reverse().map((b) => [b.by, b])).values()].slice(0, 3);
     action = R.phase === "intro" ? `<p class="phase-note">${esc(t("introHost"))}</p>`
-      : `<div><span class="label" style="opacity:.75">${esc(t("hBidders"))}</span>${best.length ? `<ol class="bidders num">${best.map((b) => `<li><span dir="ltr">@${esc(b.by)}</span><b>${dh(b.amount)}</b></li>`).join("")}</ol>` : `<p class="phase-note">${esc(t("hNoBidders"))}</p>`}</div>`;
-  } else if (R.phase === "intro") action = `<p class="phase-note">${esc(t("introNote", { s: "…", p: dh(l.start) })).replace("…", '<b class="num" id="intro-t"></b>')}<br><span style="opacity:.8">⚖ ${esc(t("checkedBy", { n: notaryOf(R.show) }))}</span></p><div class="actions" style="grid-template-columns:1fr"><button type="button" id="dossier-btn">${esc(t("aDossier"))}</button></div>`;
-  else if (R.phase === "bidding") {
-    action = `${R.auto ? `<span class="autochip">${esc(t("autoOn", { p: dh(R.auto) }))}</span>` : ""}
-      <div class="slide ${lead ? "lead disabled" : ""}" id="slide"><span class="fill" id="fill"></span><span class="txt" id="slide-txt">${esc(lead ? t("lead", { p: dh(tp.amount) }) : t("slide", { p: dh(minBid()) }))}</span>
-      <button class="knob" id="knob" type="button" aria-label="${esc(lead ? t("lead", { p: dh(tp.amount) }) : t("slide", { p: dh(minBid()) }))}" ${lead ? "disabled" : ""}><svg class="flip" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg></button></div>
-      ${R.custom ? `<form class="custom" id="custom"><input id="custom-amt" inputmode="numeric" placeholder="${esc(dh(minBid()))}" aria-label="${esc(t("aCustom"))}"><button class="btn btn-primary btn-small" type="submit">${esc(t("validate"))}</button></form><p class="custom-err" id="custom-err" hidden></p>` : ""}
+      : `<div><span class="label" style="opacity:.75">${esc(t("hBidders"))}</span>${best.length ? `<ol class="bidders num">${best.map((b) => `<li><span>${esc(bidderLabel(b.by))}</span><b>${dh(b.amount)}</b></li>`).join("")}</ol>` : `<p class="phase-note">${esc(t("hNoBidders"))}</p>`}</div>`;
+  } else if (R.phase === "intro" || R.phase === "bidding") {
+    const q = qual(l);
+    const gate = q.seller ? `<p class="phase-note">${esc(t("sellerNoBid"))}</p>` : !q.ready ? qualHTML(q) : `<span class="capchip num">✓ ${esc(t("capUpTo", { p: dh(q.cap) }))}</span>`;
+    if (R.phase === "intro") action = `<p class="phase-note">${esc(t("introNote", { s: "…", p: dh(l.start) })).replace("…", '<b class="num" id="intro-t"></b>')}<br><span style="opacity:.8">⚖ ${esc(t("checkedBy", { n: notaryOf(R.show) }))}</span></p>${gate}<div class="actions" style="grid-template-columns:1fr"><button type="button" id="dossier-btn">${esc(t("aDossier"))}</button></div>`;
+    else {
+      const blocked = !q.ready || lead;
+      const txt = lead ? t("lead", { p: dh(tp.amount) }) : q.seller ? t("sellerNoBid") : q.id && q.cap > 0 && !q.capOk ? t("capOver", { p: dh(q.cap) }) : !q.ready ? t("qLocked") : t("slide", { p: dh(minBid()) });
+      action = `${R.auto ? `<span class="autochip">${esc(t("autoOn", { p: dh(R.auto) }))}</span>` : ""}${gate}
+      <div class="slide ${lead ? "lead" : ""} ${blocked ? "disabled" : ""}" id="slide"><span class="fill" id="fill"></span><span class="txt" id="slide-txt">${esc(txt)}</span>
+      <button class="knob" id="knob" type="button" aria-label="${esc(txt)}" ${blocked ? "disabled" : ""}><svg class="flip" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg></button></div>
+      ${R.custom && q.ready ? `<form class="custom" id="custom"><input id="custom-amt" inputmode="numeric" placeholder="${esc(dh(minBid()))}" aria-label="${esc(t("aCustom"))}"><button class="btn btn-primary btn-small" type="submit">${esc(t("validate"))}</button></form><p class="custom-err" id="custom-err" hidden></p>` : ""}
       <div class="actions"><button type="button" id="toggle-custom" aria-pressed="${R.custom}">${esc(t("aCustom"))}</button><button type="button" id="auto-btn" aria-pressed="${!!R.auto}">${esc(t("aAuto"))}</button><button type="button" id="dossier-btn">${esc(t("aDossier"))}</button><button type="button" id="love" aria-label="${esc(t("aLove"))}">♥</button></div>
-      <p class="legal-note">${esc(t("legalNote", { n: notaryOf(R.show) }))}</p>`;
+      <p class="legal-note">${esc(t("legalNote"))}</p>`;
+    }
   } else if (R.phase === "result") action = `<p class="phase-note">${esc(t(R.results[R.idx]?.sold ? "phaseSold" : "phaseUnsold"))} ${R.idx + 1 < R.show.lots.length ? esc(t("getReady")) : ""}</p>`;
   else action = `<p class="phase-note">${esc(t("ended"))}</p>`;
   $("lotcard").innerHTML = head + price + action;
-  renderHostbar(); updateClock(); wireCard(); placeChat();
+  renderHostbar(); updateClock(); wireCard(); placeChat(); updateVB();
   const ci = $("custom-amt"); if (ci && typed) ci.value = typed; if (ci && typing) ci.focus();
   if (bump) setTimeout(() => $("big")?.classList.remove("bump"), 500);
+}
+function qualHTML(q) {
+  const row = (ok, label) => `<li class="${ok ? "ok" : ""}"><span aria-hidden="true">${ok ? "✓" : "○"}</span>${esc(label)}</li>`;
+  const capLabel = q.capOk ? t("capUpTo", { p: short(q.cap) }) : q.id && q.cap > 0 ? t("capInsuff", { p: short(q.cap), m: short(q.need) }) : t("q2");
+  const cta = !q.id ? "qGoId" : !q.capOk ? (q.cap > 0 ? "capIncrease" : "qGoCap") : "qGoGua";
+  const done = [q.id, q.capOk, q.gua].filter(Boolean).length;
+  return `<div class="qual"><b>${esc(t("qTitle"))} <span class="qual-sum num">${done}/3 ✓</span></b><ul>${row(q.id, t("q1"))}${row(q.capOk, capLabel)}${q.g.req ? row(q.gua, `${t("q3")} · ${short(q.g.amount)}`) : row(true, t("q3na"))}</ul><button class="btn btn-primary btn-small" type="button" id="q-next">${esc(t(cta))}</button></div>`;
 }
 function renderHostbar() {
   const hb = $("hostbar"); if (!hb) return;
@@ -1393,24 +1777,29 @@ function wireCard() {
     knob.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); myBid(minBid()); } });
     knob.addEventListener("click", (e) => { if (e.detail !== 0 && x === 0) $("slide-txt").textContent = t("slideHint"); });
   }
-  $("toggle-custom")?.addEventListener("click", () => { R.custom = !R.custom; renderCard(); $("custom-amt")?.focus(); });
-  $("auto-btn")?.addEventListener("click", openAuto);
+  const ready = !R.host && qual(lot()).ready;
+  $("q-next")?.addEventListener("click", () => nextStep(lot()));
+  $("toggle-custom")?.addEventListener("click", () => { if (!ready) return nextStep(lot()); R.custom = !R.custom; renderCard(); $("custom-amt")?.focus(); });
+  $("auto-btn")?.addEventListener("click", () => (ready ? openAuto() : nextStep(lot())));
   $("dossier-btn")?.addEventListener("click", () => openDossier(lot(), "docs"));
   $("love")?.addEventListener("click", () => hearts(4));
   $("custom")?.addEventListener("submit", (e) => {
     e.preventDefault();
     const v = parseAmount($("custom-amt").value), err = $("custom-err");
     if (!Number.isInteger(v) || v < minBid()) { err.textContent = t("minErr", { p: dh(minBid()) }); err.hidden = false; return; }
+    const cap = qual(lot()).cap;
+    if (v > cap) { err.innerHTML = `${esc(t("capErr", { p: dh(cap) }))} <button class="linkbtn" type="button" id="cap-inc2">${esc(t("capIncrease"))}</button>`; err.hidden = false; $("cap-inc2").addEventListener("click", () => openCapacity(v)); return; }
     myBid(v);
   });
 }
 function openAuto() {
-  if (!prefs.user || prefs.user.terms !== TERMS_V) { onboard(openAuto); return; }
+  if (!qual(lot()).ready) return nextStep(lot());
   const suggestion = Math.round((minBid() + 5 * lot().inc) / lot().inc) * lot().inc;
   const el = openModal(`
     <div class="sheet-head"><h2>${esc(t("autoTitle"))}</h2>${closeBtn()}</div>
     <p class="muted">${esc(t("autoHelp"))}</p>
     <p><b>${esc(lt(lot(), "title"))}</b> · ${esc(t("current"))} <b class="num">${dh(top()?.amount ?? lot().start)}</b></p>
+    <p class="capchip num">✓ ${esc(t("capUpTo", { p: dh(qual(lot()).cap) }))}</p>
     ${R.auto ? `<p class="autochip" style="color:var(--accent);background:var(--accent-soft)">${esc(t("autoOn", { p: dh(R.auto) }))}</p><button class="btn btn-danger" type="button" id="auto-stop">${esc(t("autoStop"))}</button>` : ""}
     <form id="auto-form" class="custom" novalidate><input class="inp" id="auto-amt" inputmode="numeric" placeholder="${esc(t("autoPh", { p: numFmt.format(suggestion) }))}" aria-label="${esc(t("autoTitle"))}"><button class="btn btn-primary" type="submit">${esc(t("autoSet"))}</button></form>
     <p class="err" id="auto-err" hidden></p>`);
@@ -1419,6 +1808,8 @@ function openAuto() {
     e.preventDefault();
     const v = parseAmount($("auto-amt").value);
     if (!Number.isInteger(v) || v < minBid()) { $("auto-err").textContent = t("autoMinErr", { p: dh(minBid()) }); $("auto-err").hidden = false; return; }
+    const cap = qual(lot()).cap;
+    if (v > cap) { $("auto-err").innerHTML = `${esc(t("capErr", { p: dh(cap) }))} <button class="linkbtn" type="button" id="cap-inc3">${esc(t("capIncrease"))}</button>`; $("auto-err").hidden = false; $("cap-inc3").addEventListener("click", () => openCapacity(v)); return; }
     R.auto = v; closeModal(); toast(t("autoToast", { p: dh(v) })); renderCard();
     if (R.phase === "bidding" && top()?.by !== me()) myBid(minBid(), true);
   });
@@ -1446,7 +1837,21 @@ function confetti() {
   const colors = ["#ffc46b", "#ff3b5c", "#6fd6c5", "#9aa8ff", "#fff"];
   return `<div class="confetti">${Array.from({ length: 40 }, () => `<i style="left:${rand(0, 100)}%;background:${pick(colors)};animation-delay:${rand(0, .8).toFixed(2)}s;animation-duration:${rand(1.8, 3).toFixed(2)}s"></i>`).join("")}</div>`;
 }
-function placeChat() { const room = document.querySelector(".room"), card = $("lotcard"); if (room && card) room.style.setProperty("--chat-bottom", `${card.offsetHeight + 30}px`); }
+function placeChat() {
+  const room = document.querySelector(".room"), card = $("lotcard"), dots = $("tourdots"), meta = document.querySelector(".stage-meta");
+  if (!room || !card) return;
+  room.style.setProperty("--chat-bottom", `${card.offsetHeight + 30}px`);
+  const cardTop = card.getBoundingClientRect().top;
+  // Carte haute (qualification, mobile) : on masque ce qui n'a plus la place au lieu de le superposer.
+  if (dots) dots.style.visibility = dots.getBoundingClientRect().bottom + 8 > cardTop ? "hidden" : "visible";
+  const chatEl = room.querySelector(".chat");
+  if (meta && chatEl) {
+    const avail = cardTop - meta.getBoundingClientRect().bottom - 46;
+    const overlay = matchMedia("(max-width: 760px)").matches;
+    chatEl.style.maxHeight = overlay ? `${Math.max(0, avail)}px` : "";
+    room.classList.toggle("chat-squeezed", overlay && avail < 90);
+  }
+}
 
 /* ====================================================================
    Dossier du bien (visite, plan, documents, coût & crédit)
@@ -1454,9 +1859,9 @@ function placeChat() { const room = document.querySelector(".room"), card = $("l
 function openDossier(l, tab = "docs", priceHint, notary) {
   const nName = notary?.name || (R && R.show.lots.includes(l) ? notaryOf(R.show) : t("noNotary"));
   const price0 = priceHint ?? (R && R.show.lots.includes(l) && top() ? top().amount : l.start);
-  const tabs = [["visit", "tVisit"], ["plan", "tPlan"], ["docs", "tDocs"], ["cost", "tCost"]];
+  const tabs = [["visit", "tVisit"], ["plan", "tPlan"], ["docs", "tDocs"], ["cond", "tCond"], ["cost", "tCost"]];
   const el = openModal(`
-    <div class="sheet-head"><div><p class="label muted">${esc(t("dTitle"))}</p><h2>${esc(lt(l, "title"))}</h2><p class="muted" style="font-size:.86rem">${esc(t("types")[l.type])} · ${esc(place(l.city))}, ${esc(place(l.district))}</p><p class="ok-pill" style="display:inline-block;margin-top:6px">⚖ ${esc(t("checkedBy", { n: nName }))}</p></div>${closeBtn()}</div>
+    <div class="sheet-head"><div><p class="label muted">${esc(t("dTitle"))}</p><h2>${esc(lt(l, "title"))}</h2><p class="muted" style="font-size:.86rem">${esc(t("types")[l.type])} · ${esc(place(l.city))}, ${esc(place(l.district))}</p><p class="ok-pill" style="display:inline-block;margin-top:6px">⚖ ${esc(t("checkedBy", { n: nName }))}</p>${trustHTML(l)}</div>${closeBtn()}</div>
     <div class="facts num">
       <div><b>${numFmt.format(l.surface)} m²</b><span>${esc(t("fSurface"))}</span></div>
       ${l.type === "terrain" ? "" : `<div><b>${l.rooms}</b><span>${esc(t("fRooms"))}</span></div><div><b>${l.bedrooms || "—"}</b><span>${esc(t("fBeds"))}</span></div><div><b>${esc(l.year || "—")}</b><span>${esc(t("fYear"))}</span></div>`}
@@ -1471,6 +1876,7 @@ function openDossier(l, tab = "docs", priceHint, notary) {
     if (k === "visit") body.innerHTML = `<div class="gallery">${(l.tour || TOURS[l.type]).map((r) => `<figure><div class="ph">${sceneSVG(r, l)}</div><figcaption>${esc(t("rooms")[r])}</figcaption></figure>`).join("")}</div>`;
     else if (k === "plan") body.innerHTML = `${planSVG(l)}<p class="muted" style="font-size:.8rem;margin-top:6px">${esc(t("planNote"))}</p>`;
     else if (k === "docs") { body.innerHTML = docsHTML(l, nName); wireDocs(body); }
+    else if (k === "cond") body.innerHTML = condHTML(l, nName);
     else { body.innerHTML = costHTML(l, price0); wireCost(body, l); }
   };
   el.querySelectorAll("[data-tab]").forEach((b) => b.addEventListener("click", () => show(b.dataset.tab)));
@@ -1487,6 +1893,15 @@ function docsHTML(l, nName) {
   ];
   if (l.charges) docs.push(d("dCO", [["kSyndic", esc(t("perMonth", { p: dh(l.charges) }))]]));
   return `<ul class="docs">${docs.join("")}</ul><p class="muted" style="font-size:.78rem;margin-top:8px">${esc(t("docsNote"))}</p>`;
+}
+function condHTML(l, nName) {
+  const g = lotGua(l);
+  const rows = [["startP", dh(l.start)], ["kInc", dh(l.inc)], ["kReserve", esc(t("vReserve"))],
+    ["kGua", g.req ? esc(t("vGuaReq", { p: dh(g.amount), h: lt(g, "holder") })) : esc(t("vGuaNo"))],
+    ...(g.req ? [["kGuaCond", esc(g.cond || t("guaCondTxt"))]] : []), ["kEffects", esc(t("vEffects", { n: nName }))]];
+  return `<h3 style="font-size:1.02rem;margin-bottom:8px">${esc(t("condTitle"))}</h3><dl class="docview num">${rows.map(([k, v]) => `<dt>${esc(t(k))}</dt><dd>${v}</dd>`).join("")}</dl>
+    <h3 style="font-size:1.02rem;margin:16px 0 8px">${esc(t("intTitle"))}</h3><ul class="integrity">${[1, 2, 3, 4, 5].map((i) => `<li>${esc(t(`int${i}`))}</li>`).join("")}</ul>
+    <p class="muted" style="font-size:.78rem;margin-top:10px">${esc(t("condNote"))}</p>`;
 }
 function wireDocs(body) {
   body.querySelectorAll("[data-doc]").forEach((b) => b.addEventListener("click", () => {
@@ -1530,20 +1945,25 @@ function wireCost(body, l) {
    ==================================================================== */
 function viewWins(app) {
   renderDock("victoires");
-  const steps = (w) => [0, 1, 2, 3, 4].map((i) => {
+  // Anciennes offres (parcours en 5 étapes) : décalage d'une étape.
+  let migrated = false;
+  prefs.wins.forEach((w) => { if (w.flow !== 2) { w.step = Math.min((w.step || 0) + 1, 6); w.flow = 2; migrated = true; } });
+  if (migrated) save("wins");
+  const steps = (w) => [0, 1, 2, 3, 4, 5].map((i) => {
     const state = i < w.step ? "done" : i === w.step ? "now" : "";
-    const desc = t(`s${i}d`, { n: w.notary?.name || t("noNotary"), p: dh(Math.round(w.lot.start * 0.1)), d: dateFmt(w.at + 30 * DAY, { weekday: "long", day: "numeric", month: "long" }) });
-    return `<li class="${state}"><span class="dot">${i < w.step ? "✓" : i + 1}</span><div><b>${esc(t(`s${i}`))}</b><p>${esc(desc)}</p>${i === w.step ? `<button class="btn btn-primary btn-small" type="button" data-step="${w.id}">${esc(t(`s${i}a`))}</button>` : ""}</div></li>`;
+    const desc = t(`wD${i}`, { n: w.notary?.name || t("noNotary"), p: dh(w.amount), d0: dateFmt(w.at, { dateStyle: "long" }), d: dateFmt(w.at + 30 * DAY, { day: "numeric", month: "long" }) });
+    return `<li class="${state}"><span class="dot">${i < w.step ? "✓" : i + 1}</span><div><b>${esc(t(`wS${i}`))}</b><p>${esc(desc)}</p>${i === w.step && i > 0 ? `<button class="btn btn-primary btn-small" type="button" data-step="${w.id}">${esc(t(`wA${i}`))}</button>` : ""}</div></li>`;
   }).join("");
   app.innerHTML = `<div class="page">
     <div class="page-head"><h1>${esc(t("wTitle"))}</h1><p>${esc(t("wLede"))}</p></div>
     ${prefs.wins.length ? `<div class="wins">${prefs.wins.map((w) => `
       <article class="win glass"><div class="thumb">${sceneSVG("facade", w.lot)}</div>
         <div class="win-body">
-          <div class="win-top"><div><h2 style="font-size:1.15rem">${esc(lt(w.lot, "title"))}</h2><p class="muted" style="font-size:.86rem">${esc(place(w.lot.city))} · ${esc(resolve(w.showTitle))} · ⚖ ${esc(t("wNotary", { n: w.notary?.name || t("noNotary") }))} ${w.demo ? `<span class="tag">${esc(t("demoFlag"))}</span>` : ""}</p></div>
+          <div class="win-top"><div><h2 style="font-size:1.15rem">${esc(lt(w.lot, "title"))}</h2><p class="muted" style="font-size:.86rem">${esc(place(w.lot.city))} · ${esc(resolve(w.showTitle))} · ⚖ ${esc(t("wNotary", { n: w.notary?.name || t("noNotary") }))} ${w.demo ? `<span class="tag">${esc(t("demoFlag"))}</span>` : ""}</p>${trustHTML(w.lot)}</div>
             <div style="text-align:end"><b class="num" style="font-size:1.2rem">${esc(t("wPrice", { p: dh(w.amount) }))}</b><p class="muted num" style="font-size:.82rem">${esc(t("wTotal", { p: dh(costEstimate(w.amount).total) }))}</p></div></div>
-          <div class="progress"><small>${esc(t("stepOf", { x: Math.min(w.step + 1, 5) }))}</small><div class="bar"><span style="width:${Math.min(w.step, 5) * 20}%"></span></div></div>
-          ${w.step >= 5 ? `<p class="ok-pill" style="justify-self:start;font-size:.9rem">🔑 ${esc(t("doneAll"))}</p>` : ""}
+          <div class="progress"><small>${esc(t("stepOf", { x: Math.min(w.step + 1, 6) }))}</small><div class="bar"><span style="width:${Math.round(Math.min(w.step, 6) / 6 * 100)}%"></span></div></div>
+          ${w.step >= 6 ? `<p class="ok-pill" style="justify-self:start;font-size:.9rem">${esc(t("doneAll"))}</p>` : ""}
+          <p class="legal-note" style="text-align:start">${esc(t("legalNote"))}</p>
           <ol class="steps">${steps(w)}</ol>
           <button class="linkbtn" type="button" data-dossier="${w.id}" style="justify-self:start">${esc(t("wDossier"))}</button>
         </div></article>`).join("")}</div>`
@@ -1551,16 +1971,14 @@ function viewWins(app) {
   </div>`;
   $("demo-win")?.addEventListener("click", () => {
     const l = SHOWS[1].lots[0];
-    prefs.wins.unshift({ id: `demo-${Date.now()}`, lot: { ...l }, showTitle: [SHOWS[1].title, SHOWS[1].title_ar], notary: SHOWS[1].notary, amount: 3160000, at: Date.now() - 2 * DAY, step: 1, demo: true }); save("wins");
+    prefs.wins.unshift({ id: `demo-${Date.now()}`, lot: { ...l }, showTitle: [SHOWS[1].title, SHOWS[1].title_ar], notary: SHOWS[1].notary, amount: 3160000, at: Date.now() - 2 * DAY, step: 2, flow: 2, demo: true }); save("wins");
     viewWins(app);
   });
-  app.querySelectorAll("[data-dossier]").forEach((b) => b.addEventListener("click", () => { const w = prefs.wins.find((x) => x.id === b.dataset.dossier); openDossier(w.lot, "cost", w.amount, w.notary); }));
+  app.querySelectorAll("[data-dossier]").forEach((b) => b.addEventListener("click", () => { const w = prefs.wins.find((x) => x.id === b.dataset.dossier); openDossier(w.lot, "cond", w.amount, w.notary); }));
   app.querySelectorAll("[data-step]").forEach((b) => b.addEventListener("click", () => {
     const w = prefs.wins.find((x) => x.id === b.dataset.step);
-    const advance = () => { w.step++; save("wins"); toast(t("stepDone")); viewWins(app); };
-    if (w.step === 0) { b.disabled = true; b.textContent = t("s0wait"); setTimeout(advance, 1200); }
-    else if (w.step === 1 && !prefs.user?.kyc?.verified) onboard(advance);
-    else advance();
+    b.disabled = true; b.textContent = t("wWait");
+    setTimeout(() => { w.step++; save("wins"); toast(t("stepDone")); viewWins(app); }, 900);
   }));
 }
 
@@ -1571,26 +1989,27 @@ let draftId = null;
 function viewStudio(app) {
   renderDock("studio");
   const draft = prefs.myShows.find((s) => s.id === draftId && !s.live);
+  const stageTag = (s) => s.live ? t("sLiveNow") : (s.stage || 0) >= 6 && s.startsAt ? t("sScheduled") : t(`flow${s.stage || 0}`);
   app.innerHTML = `<div class="page">
     <div class="page-head"><p class="label" style="color:var(--accent)">${esc(t("hostMode"))}</p><h1>${esc(t("sTitle"))}</h1><p>${esc(t("sLede"))}</p></div>
     <div class="studio">
       <section class="card glass"><h2>${esc(t("sMyLives"))}</h2>
         ${prefs.myShows.length ? `<div class="mylives">${prefs.myShows.map((s) => `
-          <div class="mylive glass"><div class="row"><b>${esc(s.title)}</b><span class="tag ${s.live ? "mine" : ""}">${esc(t(s.live ? "sLiveNow" : "sDraft"))}</span></div>
+          <div class="mylive glass"><div class="row"><b>${esc(s.title)}</b><span class="tag ${s.live ? "mine" : ""}">${esc(stageTag(s))}</span></div>
             <span class="muted" style="font-size:.84rem">${esc(t("lotsCount", { n: s.lots.length }))} · ${esc(s.city)}</span>
             <div class="row" style="justify-content:flex-start">
-              ${s.live ? `<a class="btn btn-primary btn-small" href="#host-${s.id}">${esc(t("sResume"))}</a><a class="btn btn-ghost btn-small" href="#live-${s.id}">${esc(t("sViewer"))}</a>` : `<button class="btn btn-ghost btn-small" type="button" data-edit="${s.id}">${esc(t("sLots"))}</button>`}
+              ${s.live ? `<a class="btn btn-primary btn-small" href="#host-${s.id}">${esc(t("sResume"))}</a><a class="btn btn-ghost btn-small" href="#live-${s.id}">${esc(t("sViewer"))}</a>` : `<button class="btn btn-ghost btn-small" type="button" data-edit="${s.id}">${esc(t("sOpen"))}</button>`}
               <button class="btn btn-danger btn-small" type="button" data-del="${s.id}">${esc(t("sDelete"))}</button>
             </div></div>`).join("")}</div>` : `<p class="muted">${esc(t("sNone"))}</p>`}
       </section>
-      <section class="card glass" id="editor">${draft ? lotsEditorHTML(draft) : newShowHTML()}</section>
+      <section class="card glass" id="editor">${draft ? editorHTML(draft) : newShowHTML()}</section>
     </div></div>`;
   app.querySelectorAll("[data-edit]").forEach((b) => b.addEventListener("click", () => { draftId = b.dataset.edit; viewStudio(app); }));
   app.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", () => {
     if (b.dataset.armed) { prefs.myShows = prefs.myShows.filter((s) => s.id !== b.dataset.del); save("myShows"); if (draftId === b.dataset.del) draftId = null; toast(t("sDeleted")); viewStudio(app); }
     else { b.dataset.armed = "1"; b.textContent = t("sConfirmDel"); }
   }));
-  if (draft) wireLotsEditor(app, draft); else wireNewShow(app);
+  if (draft) wireEditor(app, draft); else wireNewShow(app);
 }
 function newShowHTML() {
   return `<h2>${esc(t("sNew"))}</h2><form id="new-show" class="page" style="gap:12px" novalidate>
@@ -1630,56 +2049,110 @@ function wireNewShow(app) {
     if (!v("ns-ncity")) errs.ncity = t("errRequired");
     if (!$("ns-nok").checked) errs.nok = t("errNotaryOk");
     if (!fieldErrors(f, errs)) return;
-    const s = { id: `mon-live-${Math.random().toString(36).slice(2, 7)}`, title: v("ns-title"), city: v("ns-city"), tags: [v("ns-cat")], live: false, viewers: Math.round(rand(150, 400)),
+    const s = { id: `mon-live-${Math.random().toString(36).slice(2, 7)}`, title: v("ns-title"), city: v("ns-city"), tags: [v("ns-cat")], live: false, stage: 0, viewers: Math.round(rand(150, 400)),
       host: { name: v("ns-name"), handle: me() || "agent.demo", agency: v("ns-agency"), hue: Math.floor(rand(0, 360)) }, notary: { name: v("ns-notary"), city: v("ns-ncity") }, lots: [] };
     prefs.myShows.unshift(s); save("myShows"); draftId = s.id; toast(t("sCreated")); viewStudio(app);
   });
 }
-function lotsEditorHTML(s) {
-  const opt = Object.entries(t("types")).map(([k, v]) => `<option value="${k}">${esc(v)}</option>`).join("");
-  const fld = (f, id, label, attrs = "") => `<label class="field" data-f="${f}">${esc(t(label))}<input id="${id}" ${attrs}></label>`;
-  return `<div class="row" style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center"><h2>${esc(s.title)}</h2><button class="btn btn-primary" type="button" id="launch" ${s.lots.length && s.notary ? "" : "disabled"}>${esc(t("sLaunch"))}</button></div>
-    <p class="muted" style="font-size:.86rem">⚖ ${s.notary ? esc(t("notaryLine", { n: s.notary.name, c: s.notary.city })) : esc(t("sNeedNotary"))}</p>
-    ${s.lots.length ? `<ul class="lotlist">${s.lots.map((l) => `<li><div class="mini">${sceneSVG("facade", l)}</div><div><b>${esc(l.title)}</b><br><small class="num">${esc(t("types")[l.type])} · ${esc(l.city)} · ${esc(t("startP"))} ${dh(l.start)}</small></div><button class="btn btn-ghost btn-small" type="button" data-rm="${l.id}">${esc(t("sRemoveLot"))}</button></li>`).join("")}</ul>` : `<p class="muted">${esc(t("sNoLots"))}</p>`}
-    <form id="add-lot" class="page" style="gap:12px;border-top:1px solid var(--line);padding-top:14px" novalidate>
-      <h3>${esc(t("sAddTitle"))}</h3>
-      ${fld("title", "al-title", "lTitle", 'maxlength="70"')}
-      <div class="cols"><label class="field">${esc(t("lType"))}<select id="al-type">${opt}</select></label>${fld("city", "al-city", "lCity", 'maxlength="40"')}${fld("district", "al-district", "lDistrict", 'maxlength="40"')}</div>
-      <div class="cols">${fld("surface", "al-surface", "lSurface", 'inputmode="numeric"')}${fld("rooms", "al-rooms", "lRooms", 'inputmode="numeric"')}${fld("beds", "al-beds", "lBeds", 'inputmode="numeric"')}</div>
-      <div class="cols">${fld("start", "al-start", "lStart", 'inputmode="numeric"')}${fld("reserve", "al-reserve", "lReserve", 'inputmode="numeric"')}${fld("inc", "al-inc", "lInc", 'inputmode="numeric" value="10000"')}</div>
-      ${fld("tf", "al-tf", "lTF", 'maxlength="20" dir="ltr" placeholder="TF 12345/R"')}
-      <label class="field" data-f="pitch">${esc(t("lPitch"))}<textarea id="al-pitch" rows="3"></textarea></label>
-      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary" type="submit">${esc(t("sAddLot"))}</button><button class="btn btn-ghost" type="button" id="al-ex">${esc(t("sExample"))}</button></div>
-    </form>`;
+function lotListHTML(s, editable) {
+  return s.lots.length ? `<ul class="lotlist">${s.lots.map((l) => `<li><div class="mini">${sceneSVG("facade", l)}</div><div><b>${esc(l.title)}</b><br><small class="num">${esc(t("types")[l.type])} · ${esc(l.city)} · ${esc(t("startP"))} ${dh(l.start)}</small>${trustHTML(l)}</div>${editable ? `<button class="btn btn-ghost btn-small" type="button" data-rm="${l.id}">${esc(t("sRemoveLot"))}</button>` : `<span></span>`}</li>`).join("")}</ul>` : `<p class="muted">${esc(t("sNoLots"))}</p>`;
 }
-function wireLotsEditor(app, s) {
-  const f = $("add-lot");
-  $("al-ex").addEventListener("click", () => {
-    Object.entries({ title: "Appartement neuf avec terrasse", type: "appartement", city: "Rabat", district: "Agdal", surface: 120, rooms: 5, beds: 3, start: 1600000, reserve: 1750000, inc: 10000, tf: "TF 88412/R",
-      pitch: "Appartement neuf de 120 m² au cœur de l'Agdal.\nTerrasse de 25 m², double salon, trois chambres.\nTitre foncier individuel, livraison immédiate." }).forEach(([k, v]) => ($(`al-${k}`).value = v));
+function editorHTML(s) {
+  const st = s.stage || 0;
+  const flow = `<ol class="flow">${[0, 1, 2, 3, 4, 5, 6].map((i) => `<li class="${i < st ? "done" : i === st ? "now" : ""}">${i < st ? "✓ " : ""}${esc(t(`flow${i}`))}</li>`).join("")}</ol>`;
+  const back = `<button class="btn btn-ghost" type="button" id="f-back">${esc(t("fBack"))}</button>`;
+  const go = (k) => `<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary" type="button" id="f-go">${esc(t(k))}</button>${back}</div>`;
+  let panel = "";
+  if (st === 0) {
+    const opt = Object.entries(t("types")).map(([k, v]) => `<option value="${k}">${esc(v)}</option>`).join("");
+    const fld = (f, id, label, attrs = "") => `<label class="field" data-f="${f}">${esc(t(label))}<input id="${id}" ${attrs}></label>`;
+    panel = `${lotListHTML(s, true)}
+      <button class="btn btn-primary" type="button" id="f-submit" ${s.lots.length ? "" : "disabled"} style="justify-self:start">${esc(t("fSubmit"))}</button>
+      <form id="add-lot" class="page" style="gap:12px;border-top:1px solid var(--line);padding-top:14px" novalidate>
+        <h3>${esc(t("sAddTitle"))}</h3>
+        ${fld("title", "al-title", "lTitle", 'maxlength="70"')}
+        <div class="cols"><label class="field">${esc(t("lType"))}<select id="al-type">${opt}</select></label>${fld("city", "al-city", "lCity", 'maxlength="40"')}${fld("district", "al-district", "lDistrict", 'maxlength="40"')}</div>
+        <div class="cols">${fld("surface", "al-surface", "lSurface", 'inputmode="numeric"')}${fld("rooms", "al-rooms", "lRooms", 'inputmode="numeric"')}${fld("beds", "al-beds", "lBeds", 'inputmode="numeric"')}</div>
+        <div class="cols">${fld("start", "al-start", "lStart", 'inputmode="numeric"')}${fld("reserve", "al-reserve", "lReserve", 'inputmode="numeric"')}${fld("inc", "al-inc", "lInc", 'inputmode="numeric" value="10000"')}</div>
+        ${fld("tf", "al-tf", "lTF", 'maxlength="20" dir="ltr" placeholder="TF 12345/R"')}
+        <label class="field" data-f="pitch">${esc(t("lPitch"))}<textarea id="al-pitch" rows="3"></textarea></label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary" type="submit">${esc(t("sAddLot"))}</button><button class="btn btn-ghost" type="button" id="al-ex">${esc(t("sExample"))}</button></div>
+      </form>`;
+  } else if (st >= 1 && st <= 3) panel = `<p>${esc(t(`f${st}Txt`))}</p>${lotListHTML(s, false)}${go(`f${st}Go`)}`;
+  else if (st === 4) {
+    const tm = s.terms || { req: true, pct: 5, holder: `Étude de ${s.notary?.name || ""}`.trim(), cond: "" };
+    panel = `<p>${esc(t("f4Txt"))}</p><form id="f-terms" class="page" style="gap:12px" novalidate>
+      <label class="check"><input type="checkbox" id="ft-req" ${tm.req ? "checked" : ""}> ${esc(t("f4GuaReq"))}</label>
+      <div class="cols"><label class="field" data-f="pct">${esc(t("f4GuaPct"))}<input id="ft-pct" inputmode="numeric" value="${tm.pct}"></label><label class="field" data-f="holder">${esc(t("f4Holder"))}<input id="ft-holder" maxlength="60" value="${esc(tm.holder)}"></label></div>
+      <label class="field">${esc(t("f4Cond"))}<textarea id="ft-cond" rows="2" placeholder="${esc(t("f4CondPh"))}">${esc(tm.cond)}</textarea></label>
+      <p class="muted" style="font-size:.84rem">${esc(t("kReserve"))} : ${esc(t("vReserve"))}</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary" type="submit">${esc(t("f4Go"))}</button>${back}</div></form>`;
+  } else if (st === 5) panel = `<p>${esc(t("f5Txt"))}</p>${lotListHTML(s, false)}${go("f5Go")}`;
+  else {
+    const d = new Date(s.startsAt || at(1, 20, 0)); const local = new Date(d.getTime() - d.getTimezoneOffset() * MIN).toISOString().slice(0, 16);
+    panel = `<p>${esc(t("f6Txt"))}</p>${s.startsAt ? `<p class="ok-pill" style="justify-self:start">${esc(t("f6Scheduled", { d: dateFmt(s.startsAt, { dateStyle: "full", timeStyle: "short" }) }))}</p>` : ""}
+      <form id="f-sched" class="page" style="gap:12px" novalidate><label class="field" data-f="when">${esc(t("f6Date"))}<input id="fs-when" type="datetime-local" value="${local}"></label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary" type="submit">${esc(t("f6Go"))}</button><button class="btn btn-ghost" type="button" id="f-now">${esc(t("f6Now"))}</button>${back}</div></form>`;
+  }
+  return `<div style="display:grid;gap:12px"><h2>${esc(s.title)}</h2><p class="muted" style="font-size:.86rem">⚖ ${esc(t("notaryLine", { n: notaryOf(s), c: s.notary?.city || "—" }))}</p>${flow}<p class="muted" style="font-size:.78rem">${esc(t("flowLede"))}</p>${panel}</div>`;
+}
+function wireEditor(app, s) {
+  const st = s.stage || 0, redraw = () => { save("myShows"); viewStudio(app); };
+  $("f-back")?.addEventListener("click", () => { s.stage = 0; s.startsAt = undefined; s.lots.forEach((l) => { l.docsReviewed = l.sellerVerified = l.approved = false; }); redraw(); });
+  $("f-go")?.addEventListener("click", (e) => {
+    e.currentTarget.disabled = true; e.currentTarget.textContent = t("fWait");
+    setTimeout(() => {
+      if (st === 2) s.lots.forEach((l) => (l.docsReviewed = true));
+      if (st === 3) s.lots.forEach((l) => (l.sellerVerified = true));
+      s.stage = st + 1; toast(t("stepDone")); redraw();
+    }, 800);
   });
-  app.querySelectorAll("[data-rm]").forEach((b) => b.addEventListener("click", () => { s.lots = s.lots.filter((l) => l.id !== b.dataset.rm); save("myShows"); viewStudio(app); }));
-  $("launch").addEventListener("click", () => { s.live = true; save("myShows"); notify("nLaunched", { t: s.title }); toast(t("sLaunched")); location.hash = `host-${s.id}`; });
-  f.addEventListener("submit", (e) => {
+  if (st === 0) {
+    const f = $("add-lot");
+    $("f-submit").addEventListener("click", () => { s.stage = 1; redraw(); });
+    $("al-ex").addEventListener("click", () => {
+      Object.entries({ title: "Appartement neuf avec terrasse", type: "appartement", city: "Rabat", district: "Agdal", surface: 120, rooms: 5, beds: 3, start: 1600000, reserve: 1750000, inc: 10000, tf: "TF 88412/R",
+        pitch: "Appartement neuf de 120 m² au cœur de l'Agdal.\nTerrasse de 25 m², double salon, trois chambres.\nTitre foncier individuel, livraison immédiate." }).forEach(([k, v]) => ($(`al-${k}`).value = v));
+    });
+    app.querySelectorAll("[data-rm]").forEach((b) => b.addEventListener("click", () => { s.lots = s.lots.filter((l) => l.id !== b.dataset.rm); redraw(); }));
+    f.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const v = (k) => $(`al-${k}`).value.trim(), n = (k) => parseAmount(v(k)), errs = {}, type = v("type");
+      if (v("title").length < 4) errs.title = t("errRequired");
+      if (!v("city")) errs.city = t("errRequired");
+      for (const k of ["surface", "start", "inc"]) if (!(Number.isInteger(n(k)) && n(k) > 0)) errs[k] = t("errInt");
+      if (type !== "terrain" && !(Number.isInteger(n("rooms")) && n("rooms") > 0)) errs.rooms = t("errInt");
+      if (v("beds") && !Number.isInteger(n("beds"))) errs.beds = t("errInt");
+      if (!errs.start && n("start") < 10000) errs.start = t("errMin", { p: dh(10000) });
+      const reserve = v("reserve") ? n("reserve") : n("start");
+      if (!(Number.isInteger(reserve) && reserve >= n("start"))) errs.reserve = t("errReserve");
+      if (!errs.inc && n("inc") < 1000) errs.inc = t("errMin", { p: dh(1000) });
+      if (!fieldErrors(f, errs)) return;
+      s.lots.push({ id: `lot-${Math.random().toString(36).slice(2, 8)}`, title: v("title"), type, city: v("city"), district: v("district") || "—", surface: n("surface"),
+        rooms: type === "terrain" ? 0 : n("rooms"), bedrooms: n("beds") || 0, hue: Math.floor(rand(0, 360)), start: n("start"), reserve, inc: n("inc"), tf: v("tf") || "—",
+        year: "—", floor: "—", charges: 0, zone: type === "terrain" ? "villa" : type === "local" ? "com" : "hab", state: "good", tour: TOURS[type],
+        pitch: v("pitch").split("\n").map((x) => x.trim()).filter(Boolean).slice(0, 5) });
+      if (!s.tags.includes(type)) s.tags.push(type);
+      toast(t("sLotAdded")); redraw();
+    });
+  }
+  $("f-terms")?.addEventListener("submit", (e) => {
     e.preventDefault();
-    const v = (k) => $(`al-${k}`).value.trim(), n = (k) => parseAmount(v(k)), errs = {}, type = v("type");
-    if (v("title").length < 4) errs.title = t("errRequired");
-    if (!v("city")) errs.city = t("errRequired");
-    for (const k of ["surface", "start", "inc"]) if (!(Number.isInteger(n(k)) && n(k) > 0)) errs[k] = t("errInt");
-    if (type !== "terrain" && !(Number.isInteger(n("rooms")) && n("rooms") > 0)) errs.rooms = t("errInt");
-    if (v("beds") && !Number.isInteger(n("beds"))) errs.beds = t("errInt");
-    if (!errs.start && n("start") < 10000) errs.start = t("errMin", { p: dh(10000) });
-    const reserve = v("reserve") ? n("reserve") : n("start");
-    if (!(Number.isInteger(reserve) && reserve >= n("start"))) errs.reserve = t("errReserve");
-    if (!errs.inc && n("inc") < 1000) errs.inc = t("errMin", { p: dh(1000) });
+    const f = $("f-terms"), req = $("ft-req").checked, pct = parseAmount($("ft-pct").value), holder = $("ft-holder").value.trim(), errs = {};
+    if (req && !(Number.isInteger(pct) && pct >= 1 && pct <= 30)) errs.pct = t("fPctErr");
+    if (req && !holder) errs.holder = t("errRequired");
     if (!fieldErrors(f, errs)) return;
-    s.lots.push({ id: `lot-${Math.random().toString(36).slice(2, 8)}`, title: v("title"), type, city: v("city"), district: v("district") || "—", surface: n("surface"),
-      rooms: type === "terrain" ? 0 : n("rooms"), bedrooms: n("beds") || 0, hue: Math.floor(rand(0, 360)), start: n("start"), reserve, inc: n("inc"), tf: v("tf") || "—",
-      year: "—", floor: "—", charges: 0, zone: type === "terrain" ? "villa" : type === "local" ? "com" : "hab", state: "good", tour: TOURS[type],
-      pitch: v("pitch").split("\n").map((x) => x.trim()).filter(Boolean).slice(0, 5) });
-    if (!s.tags.includes(type)) s.tags.push(type);
-    save("myShows"); toast(t("sLotAdded")); viewStudio(app);
+    s.terms = { req, pct: req ? pct : 0, holder, cond: $("ft-cond").value.trim() };
+    s.lots.forEach((l) => (l.approved = !!(l.docsReviewed && l.sellerVerified)));
+    s.stage = 5; toast(t("stepDone")); redraw();
   });
+  $("f-sched")?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const when = new Date($("fs-when").value).getTime();
+    if (!(when > Date.now())) return fieldErrors($("f-sched"), { when: t("fDateErr") });
+    s.startsAt = when; toast(t("f6Scheduled", { d: dateFmt(when, { dateStyle: "full", timeStyle: "short" }) })); redraw();
+  });
+  $("f-now")?.addEventListener("click", () => { s.live = true; s.startsAt = undefined; save("myShows"); notify("nLaunched", { t: s.title }); toast(t("sLaunched")); location.hash = `host-${s.id}`; });
 }
 
 /* ====================================================================
@@ -1701,6 +2174,7 @@ function route({ keepRoom = false } = {}) {
   renderDock(nav);
   if (!keepRoom) window.scrollTo(0, 0);
 }
+prefs.myShows.forEach((x) => { if (x.stage == null) x.stage = x.live ? 6 : 0; if (x.live) x.lots.forEach((l) => { l.approved = l.approved ?? true; }); });
 function renderDock(nav) {
   const map = { lives: [t("navLives"), allShows().filter((x) => x.live).length], studio: [t("navStudio"), prefs.myShows.length], victoires: [t("navWins"), prefs.wins.length] };
   const [title, n] = map[nav] || map.lives;

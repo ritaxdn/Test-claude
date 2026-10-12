@@ -321,7 +321,7 @@ footer { border-top: 1px solid var(--glass-border); padding-block: 24px; color: 
 const MIN = 60_000, HOUR = 60 * MIN, DAY = 24 * HOUR;
 const SNIPE_WINDOW = 2 * MIN;     // une offre dans les 2 dernières minutes…
 const SNIPE_EXTEND = 2 * MIN;     // …prolonge la vente de 2 minutes
-const DEPOSIT_RATE = 0.10;        // consignation : 10 % de la mise à prix
+const DEPOSIT_RATE = 0.10;        // exemple de garantie de participation : les conditions réelles dépendent du lot
 const ME = "me";
 
 const statusOf = (lot, now) => now < lot.startsAt ? "upcoming" : now >= lot.endsAt ? "ended" : "live";
@@ -481,7 +481,7 @@ function statusPill(lot, now) {
   const s = statusOf(lot, now);
   if (s === "live") return `<span class="pill live">En cours</span>`;
   if (s === "upcoming") return `<span class="pill upcoming">À venir</span>`;
-  return reserveMet(lot) ? `<span class="pill sold">Adjugé</span>` : `<span class="pill unsold">Non adjugé</span>`;
+  return reserveMet(lot) ? `<span class="pill sold">Offre retenue</span>` : `<span class="pill unsold">Non retenu</span>`;
 }
 const lotNo = (lot) => `Lot ${pad(lot.lotNo)}`;
 const paddleOf = (lot, bidder) => {
@@ -570,7 +570,7 @@ function renderLots() {
   }
   el.innerHTML = list.map((l) => {
     const t = timeLabel(l, now), s = statusOf(l, now);
-    const priceLabel = s === "upcoming" ? "Mise à prix" : s === "ended" ? (reserveMet(l) ? "Adjugé à" : "Dernière offre") : l.bids.length ? "Offre actuelle" : "Mise à prix";
+    const priceLabel = s === "upcoming" ? "Mise à prix" : s === "ended" ? (reserveMet(l) ? "Offre retenue" : "Dernière offre") : l.bids.length ? "Offre actuelle" : "Mise à prix";
     return `<a class="lot" href="#lot-${esc(l.id)}">
       <div class="pic">${picture(l)}${statusPill(l, now)}<span class="lotno mono">${lotNo(l)}</span></div>
       <div class="body">
@@ -616,13 +616,13 @@ function viewLot(app, id) {
           <dl class="terms num">
             <dt>Mise à prix</dt><dd>${eur(lot.startingPrice)}</dd>
             <dt>Pas d'enchère</dt><dd>${eur(lot.increment)}</dd>
-            <dt>Consignation</dt><dd>${eur(deposit(lot))} (10 % de la mise à prix), restituée si vous n'êtes pas adjudicataire</dd>
+            <dt>Garantie de participation</dt><dd>Selon les conditions particulières du lot (montant, dépositaire, restitution), par exemple ${eur(deposit(lot))}</dd>
             <dt>Ouverture</dt><dd>${dateFmt.format(lot.startsAt)}</dd>
             <dt>Clôture prévue</dt><dd id="close-date">${dateFmt.format(lot.endsAt)}</dd>
             <dt>Visites</dt><dd>${esc(lot.visits || "Sur rendez-vous")}</dd>
             <dt>Vendeur</dt><dd>${esc(lot.sellerName)}</dd>
           </dl>
-          <p class="muted">Le vendeur a fixé un prix de réserve confidentiel. Si la dernière offre ne l'atteint pas, le bien n'est pas adjugé.</p>
+          <p class="muted">Le vendeur a fixé un prix de réserve confidentiel. Si la dernière offre ne l'atteint pas, aucune offre n'est retenue. Les conséquences d'une offre retenue dépendent des conditions de vente du lot.</p>
         </section>
       </div>
       <aside class="room" id="room" aria-label="Salle de vente"></aside>
@@ -644,7 +644,7 @@ function renderRoom(lot, { flash = false } = {}) {
     action = pendingBid ? `
       <div class="confirm" id="confirm">
         <p>Confirmez-vous une offre de <strong class="num">${eur(pendingBid)}</strong> ? Une offre est ferme et ne peut pas être retirée.</p>
-        <label class="check"><input type="checkbox" id="cgv"> J'accepte les conditions de vente et je m'engage à verser la consignation de ${eur(deposit(lot))}.</label>
+        <label class="check"><input type="checkbox" id="cgv"> J'ai lu les conditions de vente du lot, y compris la garantie de participation qu'elles prévoient.</label>
         <p class="error" id="confirm-error" hidden></p>
         <div class="row"><button class="btn btn-primary" type="button" id="confirm-yes">Confirmer l'offre</button><button class="btn btn-ghost" type="button" id="confirm-no">Modifier</button></div>
       </div>` : `
@@ -655,11 +655,11 @@ function renderRoom(lot, { flash = false } = {}) {
         <p class="error" id="bid-error" hidden></p>
       </form>`;
   } else if (s === "upcoming") {
-    action = `<div class="notice good">Les offres ouvrent le ${dateFmt.format(lot.startsAt)}. Préparez votre consignation de ${eur(deposit(lot))}.</div>`;
+    action = `<div class="notice good">Les offres ouvrent le ${dateFmt.format(lot.startsAt)}. Consultez les conditions du lot, notamment la garantie de participation éventuelle.</div>`;
   } else {
     action = reserveMet(lot)
-      ? `<p class="stamp">Adjugé</p><p>${top.bidder === ME ? "Félicitations, vous remportez ce bien. Le vendeur vous contactera pour la signature de l'acte." : `Adjugé à ${esc(paddleOf(lot, top.bidder))} pour ${eur(top.amount)}.`}</p>`
-      : `<p class="stamp unsold">Non adjugé</p><p class="muted">La dernière offre n'a pas atteint le prix de réserve du vendeur.</p>`;
+      ? `<p class="stamp">Offre retenue</p><p>${top.bidder === ME ? "Votre offre est retenue. Prochaine étape : la revue du dossier. Ses conséquences dépendent des conditions de vente du lot." : `Offre de ${esc(paddleOf(lot, top.bidder))} retenue à ${eur(top.amount)}.`}</p>`
+      : `<p class="stamp unsold">Non retenu</p><p class="muted">La dernière offre n'a pas atteint le prix de réserve du vendeur.</p>`;
   }
 
   const t = timeLabel(lot, now);
@@ -675,7 +675,7 @@ function renderRoom(lot, { flash = false } = {}) {
     </div>
     ${finalMinutes ? `<div class="notice">Dernières minutes : chaque nouvelle offre prolonge la vente de 2 minutes.</div>` : ""}
     <div class="price-block">
-      <span class="muted">${s === "ended" ? (reserveMet(lot) ? "Prix d'adjudication" : "Dernière offre") : top ? "Offre actuelle" : "Mise à prix"}</span>
+      <span class="muted">${s === "ended" ? (reserveMet(lot) ? "Offre retenue" : "Dernière offre") : top ? "Offre actuelle" : "Mise à prix"}</span>
       <span class="now num ${flash ? "flash" : ""}" id="now-price">${eur(currentPrice(lot))}</span>
       <div class="price-meta num"><span>${lot.bids.length} offre${lot.bids.length > 1 ? "s" : ""} · ${new Set(lot.bids.map((b) => b.bidder)).size} participant${new Set(lot.bids.map((b) => b.bidder)).size > 1 ? "s" : ""}</span><span class="reserve ${reserveMet(lot) ? "ok" : ""}">${reserveMet(lot) ? "Réserve atteinte" : "Réserve non atteinte"}</span></div>
     </div>
@@ -795,7 +795,7 @@ function viewSell(app) {
           <li><strong>Prix de réserve</strong> : le minimum que vous acceptez. Il reste confidentiel ; seul « réserve atteinte » est affiché.</li>
           <li><strong>Pas d'enchère</strong> : l'écart minimum entre deux offres, autour de 0,5 % de la mise à prix.</li>
         </ol>
-        <p class="muted">Les acheteurs versent une consignation de 10 % de la mise à prix avant d'enchérir.</p>
+        <p class="muted">Une garantie de participation peut être exigée : son montant, son dépositaire et ses conditions sont fixés dans les conditions particulières de chaque lot.</p>
       </aside>
     </div>`;
   const $ = (k) => document.getElementById(`s-${k}`);
@@ -851,18 +851,18 @@ function viewHow(app) {
     <section class="lot-head"><p class="mono" style="color:var(--brass)">Guide</p><h1>Comment se déroule une vente</h1></section>
     <ol class="steps">
       <li><h3>Visiter et s'informer</h3><p class="muted">Consultez la fiche, les conditions de vente et visitez le bien aux créneaux indiqués.</p></li>
-      <li><h3>Consigner</h3><p class="muted">Versez une consignation de 10 % de la mise à prix. Elle vous est restituée si vous ne remportez pas la vente.</p></li>
+      <li><h3>Se qualifier</h3><p class="muted">Faites vérifier votre identité et votre capacité financière. Si le lot l'exige, constituez la garantie de participation prévue par ses conditions.</p></li>
       <li><h3>Enchérir</h3><p class="muted">Chaque offre doit dépasser la précédente d'au moins le pas d'enchère. Une offre confirmée est ferme.</p></li>
-      <li><h3>Clôture et adjudication</h3><p class="muted">À l'heure de clôture, la meilleure offre l'emporte si elle atteint le prix de réserve. Le vendeur vous contacte pour l'acte.</p></li>
+      <li><h3>Clôture et offre retenue</h3><p class="muted">À l'heure de clôture, la meilleure offre est retenue si elle atteint le prix de réserve. Suivent la revue du dossier, l'étape contractuelle, l'acte de vente et l'inscription foncière, selon les conditions du lot.</p></li>
     </ol>
     <section class="view" style="gap:14px"><h2>Vocabulaire de la salle</h2>
       <dl class="glossary">
         <div><dt>Mise à prix</dt><dd>Le prix de départ, public. La première offre doit au moins l'atteindre.</dd></div>
-        <div><dt>Prix de réserve</dt><dd>Le minimum fixé par le vendeur, confidentiel. En dessous, le bien n'est pas adjugé.</dd></div>
+        <div><dt>Prix de réserve</dt><dd>Le minimum fixé par le vendeur, confidentiel. En dessous, aucune offre n'est retenue.</dd></div>
         <div><dt>Pas d'enchère</dt><dd>L'écart minimum entre deux offres successives.</dd></div>
-        <div><dt>Consignation</dt><dd>La garantie versée avant d'enchérir, pour s'assurer du sérieux des participants.</dd></div>
+        <div><dt>Garantie de participation</dt><dd>Garantie éventuellement exigée pour enchérir. Son montant, son dépositaire et ses conditions dépendent de chaque lot.</dd></div>
         <div><dt>Prolongation</dt><dd>Une offre dans les 2 dernières minutes repousse la clôture de 2 minutes, comme la bougie qu'on rallume en salle.</dd></div>
-        <div><dt>Adjudication</dt><dd>L'attribution du bien au meilleur enchérisseur. « Adjugé ! »</dd></div>
+        <div><dt>Offre retenue</dt><dd>La meilleure offre, au moins égale à la réserve, à la clôture. Ce n'est pas une vente conclue : ses suites dépendent des conditions de vente du lot.</dd></div>
       </dl>
     </section>`;
 }
