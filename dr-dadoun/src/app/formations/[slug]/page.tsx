@@ -63,7 +63,6 @@ export default async function CoursePage({ params }: Props) {
           </div>
           {course.media && (
             <MediaSlot
-              video={course.media.video}
               image={course.media.image}
               label={course.media.label}
               className="aspect-[4/5] w-full max-w-sm lg:justify-self-end"

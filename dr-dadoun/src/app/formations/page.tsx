@@ -5,8 +5,6 @@ import { ArrowDown, ArrowRight, CalendarDays, Check, GraduationCap, Mail } from 
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { MediaSlot } from "@/components/formations/MediaSlot";
-import { VideoCarousel } from "@/components/formations/VideoCarousel";
-import { image, video } from "@/lib/images";
 import { FormationRequestSection } from "@/components/formations/FormationRequest";
 import { NewsletterSignup } from "@/components/formations/NewsletterSignup";
 import { RevealOnScroll } from "@/components/formations/RevealOnScroll";
@@ -83,7 +81,6 @@ export default async function Formations() {
             <div data-reveal>
               <MediaSlot
                 image={f.transmission.media.image}
-                video={f.transmission.media.video}
                 label={f.transmission.media.label}
                 className="aspect-[4/5] w-full"
                 sizes="(min-width:1024px) 45vw, 100vw"
@@ -142,7 +139,7 @@ export default async function Formations() {
 
         {/* 4 — Une formation axée sur la pratique */}
         <section className="pb-28 md:pb-40">
-          <div className={`${section} grid gap-14 lg:grid-cols-[1fr_1.1fr] lg:items-center lg:gap-20`}>
+          <div className={section}>
             <div data-reveal>
               <h2 className="font-display text-4xl font-medium uppercase leading-[0.98] md:text-[3.4rem]">
                 {f.practice.title[0]}
@@ -150,7 +147,7 @@ export default async function Formations() {
                 <span className="text-accent-deep">{f.practice.title[1]}</span>
               </h2>
               <p className="mt-7 max-w-md leading-relaxed text-ink-soft">{f.practice.text}</p>
-              <ul className="mt-10 grid gap-x-8 sm:grid-cols-2">
+              <ul className="mt-10 grid gap-x-8 sm:grid-cols-2 lg:grid-cols-4">
                 {f.practice.points.map((p) => (
                   <li key={p} className="flex items-center gap-3 border-b border-line py-4 text-[0.95rem] font-medium">
                     <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent-deep">
@@ -160,14 +157,6 @@ export default async function Formations() {
                   </li>
                 ))}
               </ul>
-            </div>
-            <div className="min-w-0" data-reveal>
-              <VideoCarousel
-                items={f.practice.media.flatMap((m) => {
-                  const src = video(m.video);
-                  return src ? [{ src, poster: image(m.image) ?? undefined, label: m.label }] : [];
-                })}
-              />
             </div>
           </div>
         </section>
