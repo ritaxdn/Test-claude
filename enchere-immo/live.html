@@ -1,0 +1,844 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Adjugé Live</title>
+<style>
+/* Layout : une appli de ventes en direct façon live shopping. Un fil de lives, puis une salle :
+   la scène verticale au centre (visite filmée + carte du lot), les lots à gauche, le chat à droite. */
+:root {
+  --bg: #e9ecf7;
+  --blob-1: #6f83ff;
+  --blob-2: #ffc46b;
+  --blob-3: #ff8f7a;
+  --blob-4: #6fd6c5;
+  --surface: rgb(255 255 255 / .55);
+  --surface-strong: rgb(255 255 255 / .82);
+  --glass-border: rgb(255 255 255 / .75);
+  --ink: #141a3a;
+  --muted: #4e5578;
+  --line: rgb(20 26 58 / .12);
+  --accent: #2c3fd1;
+  --accent-ink: #ffffff;
+  --accent-soft: rgb(44 63 209 / .12);
+  --live: #ff3b5c;
+  --saffron: #ffc46b;
+  --good: #1f9d6b;
+  --danger: #c0392b;
+  --on-media: #ffffff;
+  --media-scrim: rgb(9 12 32 / .55);
+  --media-glass: rgb(16 20 48 / .45);
+  --shadow: 0 8px 32px rgb(31 38 100 / .12);
+  --blur: 18px;
+  --font: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  --radius: 18px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b0f26; --blob-1: #3346d6; --blob-2: #b8741a; --blob-3: #a2384a; --blob-4: #1d8a7c;
+    --surface: rgb(255 255 255 / .07); --surface-strong: rgb(22 27 58 / .86); --glass-border: rgb(255 255 255 / .16);
+    --ink: #eef0ff; --muted: #a9afd4; --line: rgb(255 255 255 / .12);
+    --accent: #9aa8ff; --accent-ink: #0b0f26; --accent-soft: rgb(154 168 255 / .16);
+    --good: #4fd39b; --danger: #ff8f80;
+    --shadow: 0 8px 32px rgb(0 0 0 / .35);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b0f26; --blob-1: #3346d6; --blob-2: #b8741a; --blob-3: #a2384a; --blob-4: #1d8a7c;
+  --surface: rgb(255 255 255 / .07); --surface-strong: rgb(22 27 58 / .86); --glass-border: rgb(255 255 255 / .16);
+  --ink: #eef0ff; --muted: #a9afd4; --line: rgb(255 255 255 / .12);
+  --accent: #9aa8ff; --accent-ink: #0b0f26; --accent-soft: rgb(154 168 255 / .16);
+  --good: #4fd39b; --danger: #ff8f80;
+  --shadow: 0 8px 32px rgb(0 0 0 / .35);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { background: var(--bg); color: var(--ink); font: 400 15px/1.5 var(--font); -webkit-font-smoothing: antialiased; }
+body::before { content: ""; position: fixed; inset: -10vmax; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(38vmax 38vmax at 12% 8%, var(--blob-1), transparent 70%),
+    radial-gradient(34vmax 34vmax at 92% 18%, var(--blob-2), transparent 70%),
+    radial-gradient(40vmax 40vmax at 78% 92%, var(--blob-3), transparent 70%),
+    radial-gradient(30vmax 30vmax at 8% 82%, var(--blob-4), transparent 70%);
+  opacity: .75; filter: blur(30px); }
+h1, h2, h3 { margin: 0; font-weight: 700; letter-spacing: -.02em; line-height: 1.1; text-wrap: balance; }
+h1 { font-size: clamp(1.8rem, 1.3rem + 2vw, 2.6rem); }
+h2 { font-size: 1.3rem; }
+p { margin: 0; }
+a { color: inherit; }
+button, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.num { font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); }
+.label { font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.wrap { max-width: 1240px; margin-inline: auto; padding-inline: 20px; }
+
+.glass { background: var(--surface); -webkit-backdrop-filter: blur(var(--blur)) saturate(160%); backdrop-filter: blur(var(--blur)) saturate(160%); border: 1px solid var(--glass-border); }
+.media-glass { background: var(--media-glass); -webkit-backdrop-filter: blur(14px) saturate(150%); backdrop-filter: blur(14px) saturate(150%); border: 1px solid rgb(255 255 255 / .18); color: var(--on-media); }
+
+/* En-tête */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; border-width: 0 0 1px; }
+.top .wrap { display: flex; align-items: center; gap: 20px; min-height: 60px; flex-wrap: wrap; padding-block: 6px; }
+.brand { display: flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 700; font-size: 1.35rem; letter-spacing: -.02em; }
+.brand .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--live); box-shadow: 0 0 0 4px rgb(255 59 92 / .2); }
+.brand small { font-weight: 400; font-size: .8rem; color: var(--muted); letter-spacing: 0; }
+nav.main { display: flex; gap: 4px; flex: 1; flex-wrap: wrap; }
+nav.main a { text-decoration: none; padding: 7px 12px; border-radius: 999px; color: var(--muted); font-weight: 700; font-size: .92rem; }
+nav.main a:hover { color: var(--ink); background: var(--accent-soft); }
+nav.main a[aria-current="page"] { color: var(--accent); background: var(--accent-soft); }
+.who { font-size: .85rem; color: var(--muted); display: flex; gap: 8px; align-items: center; }
+.who b { color: var(--ink); }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid transparent; border-radius: 999px; padding: 10px 18px; font-weight: 700; cursor: pointer; text-decoration: none; transition: transform .12s, background .2s; }
+.btn:active { transform: translateY(1px); }
+.btn-primary { background: var(--accent); color: var(--accent-ink); }
+.btn-ghost { background: var(--surface); border-color: var(--glass-border); color: var(--ink); }
+.btn-small { padding: 6px 12px; font-size: .82rem; }
+.linkbtn { background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+
+main { padding-block: 28px 56px; }
+main.room-mode { padding-block: 16px; }
+
+/* Badges */
+.live-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--live); color: #fff; font-weight: 700; font-size: .72rem; letter-spacing: .08em; padding: 4px 8px; border-radius: 6px; }
+.live-badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #fff; animation: pulse 1.4s infinite; }
+.viewers { display: inline-flex; align-items: center; gap: 5px; font-size: .78rem; font-weight: 700; padding: 4px 8px; border-radius: 6px; background: rgb(0 0 0 / .4); color: var(--on-media); }
+@keyframes pulse { 50% { opacity: .3; } }
+
+/* Fil des lives */
+.feed { display: grid; gap: 32px; }
+.feed-head { display: flex; justify-content: space-between; align-items: end; gap: 20px; flex-wrap: wrap; }
+.feed-head p { color: var(--muted); max-width: 52ch; margin-top: 8px; }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { padding: 8px 14px; border-radius: 999px; font-weight: 700; font-size: .85rem; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.section-title { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.lives { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
+.show { position: relative; display: block; aspect-ratio: 9 / 14; max-width: 100%; border-radius: var(--radius); overflow: hidden; text-decoration: none; color: var(--on-media); box-shadow: var(--shadow); transition: transform .2s; }
+.show:hover { transform: translateY(-3px); }
+.show > svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.show .shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgb(0 0 0 / .35), transparent 30%, transparent 45%, rgb(9 12 32 / .88)); }
+.show .tl { position: absolute; top: 12px; left: 12px; display: flex; gap: 6px; }
+.show .info { position: absolute; left: 14px; right: 14px; bottom: 14px; display: grid; gap: 8px; }
+.show .info h3 { font-size: 1.1rem; }
+.host { display: flex; align-items: center; gap: 8px; font-size: .82rem; min-width: 0; }
+.host b { display: block; }
+.avatar { flex: none; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: .8rem; color: #fff; border: 2px solid rgb(255 255 255 / .8); }
+.show .now { font-size: .8rem; padding: 8px 10px; border-radius: 10px; }
+.show .now b { display: block; font-size: .95rem; }
+.upcoming { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+.up { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 14px; padding: 12px; border-radius: var(--radius); align-items: center; }
+.up .thumb { position: relative; aspect-ratio: 3 / 4; border-radius: 12px; overflow: hidden; }
+.up .thumb > svg { width: 100%; height: 100%; display: block; }
+.up .body { display: grid; gap: 6px; min-width: 0; }
+.up .when { color: var(--accent); font-weight: 700; font-size: .82rem; }
+.up .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.remind[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.how { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; list-style: none; padding: 0; margin: 0; }
+.how li { padding: 18px; border-radius: var(--radius); display: grid; gap: 6px; }
+.how b { font-size: 1rem; }
+.empty { padding: 32px; border-radius: var(--radius); text-align: center; color: var(--muted); }
+
+/* Salle */
+.room { position: relative; display: grid; grid-template-columns: 270px minmax(0, 440px) 330px; justify-content: center; gap: 18px; height: min(860px, calc(100dvh - 110px)); min-height: 560px; }
+.panel { border-radius: var(--radius); display: grid; grid-template-rows: auto minmax(0, 1fr) auto; overflow: hidden; min-width: 0; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+.lots { list-style: none; margin: 0; padding: 8px; overflow: auto; display: grid; gap: 6px; align-content: start; }
+.lots li { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 10px; padding: 8px; border-radius: 12px; align-items: center; }
+.lots li.current { background: var(--accent-soft); }
+.lots .mini { aspect-ratio: 1; border-radius: 8px; overflow: hidden; }
+.lots .mini > svg { width: 100%; height: 100%; display: block; }
+.lots strong { display: block; font-size: .86rem; line-height: 1.25; }
+.lots small { font-size: .76rem; color: var(--muted); font-weight: 700; }
+.lots small.sold { color: var(--good); }
+.lots small.on { color: var(--live); }
+.close-sheet { display: none; }
+
+.stage { position: relative; border-radius: 24px; overflow: hidden; background: #10142e; color: var(--on-media); box-shadow: var(--shadow); isolation: isolate; }
+.scene { position: absolute; inset: 0; z-index: -2; }
+.scene > svg { width: 100%; height: 100%; display: block; animation: kenburns 9s ease-in-out infinite alternate; transform-origin: var(--ox, 50%) var(--oy, 60%); }
+.scene.swap > svg { animation: fadein .7s ease-out, kenburns 9s ease-in-out infinite alternate; }
+@keyframes kenburns { from { transform: scale(1.02); } to { transform: scale(1.14) translate(-2%, -1%); } }
+@keyframes fadein { from { opacity: 0; filter: blur(6px); } }
+.stage::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgb(0 0 0 / .45), transparent 22%, transparent 40%, rgb(9 12 32 / .92) 78%); pointer-events: none; }
+.stage-top { position: absolute; top: 12px; left: 12px; right: 12px; display: flex; gap: 8px; align-items: center; }
+.stage-top .host { flex: 1; padding: 4px 10px 4px 4px; border-radius: 999px; }
+.stage-top .host span { font-size: .72rem; opacity: .8; }
+.follow { margin-left: auto; padding: 5px 10px; border-radius: 999px; border: 0; background: var(--on-media); color: #10142e; font-weight: 700; font-size: .75rem; cursor: pointer; }
+.follow[aria-pressed="true"] { background: rgb(255 255 255 / .25); color: var(--on-media); }
+.iconbtn { flex: none; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; }
+.stage-meta { position: absolute; top: 60px; left: 12px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.tour { padding: 4px 10px; border-radius: 999px; font-size: .78rem; font-weight: 700; }
+.lots-toggle { display: none; }
+.hearts { position: absolute; right: 18px; bottom: 210px; width: 60px; height: 260px; pointer-events: none; }
+.heart { position: absolute; bottom: 0; left: 18px; width: 26px; height: 26px; color: var(--live); animation: floatup 2.6s ease-out forwards; }
+@keyframes floatup { 0% { transform: translate(0, 0) scale(.6); opacity: 0; } 15% { opacity: 1; } 100% { transform: translate(var(--dx, 0px), -240px) scale(1.1); opacity: 0; } }
+
+.lotcard { position: absolute; left: 12px; right: 12px; bottom: 12px; border-radius: 20px; padding: 14px; display: grid; gap: 12px; }
+.lotcard .row1 { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: start; }
+.lotcard h2 { font-size: 1.12rem; }
+.lotcard .where { font-size: .8rem; opacity: .8; margin-top: 3px; }
+.ring { position: relative; width: 56px; height: 56px; }
+.ring svg { width: 56px; height: 56px; transform: rotate(-90deg); }
+.ring circle { fill: none; stroke-width: 4; }
+.ring .track { stroke: rgb(255 255 255 / .2); }
+.ring .bar { stroke: var(--saffron); stroke-linecap: round; transition: stroke-dashoffset 1s linear, stroke .3s; }
+.ring.hot .bar { stroke: var(--live); }
+.ring b { position: absolute; inset: 0; display: grid; place-items: center; font-size: .95rem; }
+.pricebar { display: flex; justify-content: space-between; align-items: end; gap: 10px; }
+.pricebar .big { font-size: 1.7rem; font-weight: 700; letter-spacing: -.02em; line-height: 1; transition: color .3s, transform .3s; display: inline-block; }
+.pricebar .big.bump { color: var(--saffron); transform: scale(1.06); }
+.pricebar small { display: block; font-size: .75rem; opacity: .8; margin-bottom: 4px; }
+.pricebar .topb { text-align: right; font-size: .82rem; }
+.pricebar .topb b { display: block; font-size: .95rem; }
+.reserve { font-size: .72rem; font-weight: 700; padding: 3px 8px; border-radius: 999px; background: rgb(255 255 255 / .14); }
+.reserve.ok { background: var(--good); }
+.slide { position: relative; height: 56px; border-radius: 999px; background: rgb(255 255 255 / .16); border: 1px solid rgb(255 255 255 / .25); overflow: hidden; user-select: none; touch-action: none; }
+.slide .fill { position: absolute; inset: 0 auto 0 0; width: 0; background: linear-gradient(90deg, var(--saffron), #ff9a4d); opacity: .9; }
+.slide .txt { position: absolute; inset: 0; display: grid; place-items: center; font-weight: 700; font-size: .95rem; padding-left: 52px; padding-right: 12px; text-align: center; line-height: 1.15; }
+.slide .knob { position: absolute; top: 4px; left: 4px; width: 48px; height: 46px; border-radius: 999px; border: 0; background: var(--saffron); color: #2a1a00; display: grid; place-items: center; cursor: grab; box-shadow: 0 4px 14px rgb(0 0 0 / .3); }
+.slide.disabled { opacity: .55; }
+.slide.disabled .knob { cursor: not-allowed; background: rgb(255 255 255 / .4); }
+.slide.lead { background: rgb(31 157 107 / .5); border-color: rgb(79 211 155 / .6); }
+.actions { display: flex; gap: 8px; }
+.actions button { flex: 1; padding: 9px 10px; border-radius: 12px; border: 1px solid rgb(255 255 255 / .22); background: rgb(255 255 255 / .1); color: var(--on-media); font-weight: 700; font-size: .82rem; cursor: pointer; }
+.actions button:hover { background: rgb(255 255 255 / .18); }
+.custom { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+.custom input { border-radius: 12px; border: 1px solid rgb(255 255 255 / .3); background: rgb(255 255 255 / .12); color: var(--on-media); padding: 10px 12px; min-width: 0; }
+.custom input::placeholder { color: rgb(255 255 255 / .6); }
+.custom-err { font-size: .78rem; color: #ffd0c8; }
+.phase-note { font-size: .85rem; padding: 10px 12px; border-radius: 12px; background: rgb(255 255 255 / .12); }
+
+.overlay { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; text-align: center; background: rgb(9 12 32 / .55); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); z-index: 3; }
+.overlay .box { display: grid; gap: 10px; justify-items: center; max-width: 320px; }
+.stamp { font-size: 2.6rem; font-weight: 700; letter-spacing: -.03em; padding: 6px 18px; border: 4px solid var(--saffron); color: var(--saffron); border-radius: 12px; transform: rotate(-4deg); animation: stamp .5s cubic-bezier(.2, 1.6, .4, 1); }
+.stamp.no { border-color: rgb(255 255 255 / .6); color: rgb(255 255 255 / .85); font-size: 1.8rem; }
+.stamp.win { border-color: var(--good); color: #7ff0bd; }
+@keyframes stamp { from { transform: rotate(-4deg) scale(2); opacity: 0; } }
+.confetti { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.confetti i { position: absolute; top: -10px; width: 8px; height: 14px; border-radius: 2px; animation: fall 2.4s ease-in forwards; }
+@keyframes fall { to { transform: translateY(110vh) rotate(540deg); } }
+
+.chat { border-radius: var(--radius); }
+.msgs { list-style: none; margin: 0; padding: 10px 14px; overflow: auto; display: flex; flex-direction: column; gap: 8px; font-size: .88rem; }
+.msgs li { line-height: 1.35; overflow-wrap: anywhere; animation: msgin .25s ease-out; }
+.msgs li b { margin-right: 5px; }
+.msgs li.sys { font-size: .8rem; color: var(--muted); }
+.msgs li.bid { font-weight: 700; color: var(--accent); }
+.msgs li.from-host b::after { content: "Hôte"; margin-left: 6px; font-size: .62rem; letter-spacing: .06em; text-transform: uppercase; padding: 1px 5px; border-radius: 4px; background: var(--live); color: #fff; vertical-align: 2px; }
+.msgs li.me b { color: var(--accent); }
+@keyframes msgin { from { opacity: 0; transform: translateY(6px); } }
+.chat form { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; padding: 10px; border-top: 1px solid var(--line); }
+.chat input { border-radius: 999px; border: 1px solid var(--glass-border); background: var(--surface); padding: 9px 14px; min-width: 0; }
+.chat input:focus { outline: none; border-color: var(--accent); }
+
+/* Feuilles (identification) */
+.sheet-back { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; padding: 16px; background: rgb(11 15 38 / .4); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.sheet { width: min(420px, 100%); border-radius: 22px; padding: 22px; display: grid; gap: 12px; background: var(--surface-strong); }
+.sheet label { display: grid; gap: 6px; font-weight: 700; font-size: .88rem; }
+.sheet input[type="text"] { border-radius: 12px; border: 1px solid var(--glass-border); background: var(--surface); padding: 10px 12px; }
+.check { display: flex; gap: 10px; align-items: flex-start; font-weight: 400 !important; color: var(--muted); font-size: .84rem !important; display: flex !important; }
+.check input { margin-top: 3px; }
+.err { color: var(--danger); font-size: .82rem; font-weight: 700; }
+.toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 20px); transform: translateX(-50%); z-index: 50; background: var(--ink); color: var(--bg); padding: 11px 16px; border-radius: 12px; font-weight: 700; font-size: .88rem; max-width: calc(100% - 32px); box-shadow: var(--shadow); }
+footer { border-top: 1px solid var(--glass-border); padding-block: 20px; color: var(--muted); font-size: .8rem; }
+
+@media (max-width: 1100px) {
+  .room { grid-template-columns: minmax(0, 440px) 320px; }
+  .room > .lots-panel { display: none; }
+  .room > .lots-panel.open { display: grid; }
+  .lots-toggle { display: inline-flex; }
+}
+@media (max-width: 1100px) {
+  .lots-panel.open { position: fixed; z-index: 30; left: 16px; right: 16px; bottom: calc(env(safe-area-inset-bottom, 0px) + 16px); max-height: 70dvh; background: var(--surface-strong); box-shadow: var(--shadow); }
+  .lots-panel .close-sheet { display: inline-flex; }
+}
+@media (max-width: 760px) {
+  main.room-mode { padding-block: 10px; }
+  .room { grid-template-columns: minmax(0, 1fr); height: calc(100dvh - 140px); min-height: 520px; }
+  .room > .chat { position: absolute; left: 10px; right: 76px; bottom: var(--chat-bottom, 250px); max-height: 32%; background: none; border: 0; -webkit-backdrop-filter: none; backdrop-filter: none; grid-template-rows: minmax(0, 1fr) auto; z-index: 2; pointer-events: none; }
+  .room > .chat .panel-head { display: none; }
+  .room > .chat .msgs { padding: 0 4px; color: var(--on-media); font-size: .84rem; text-shadow: 0 1px 3px rgb(0 0 0 / .7); mask-image: linear-gradient(transparent, #000 30%); -webkit-mask-image: linear-gradient(transparent, #000 30%); pointer-events: auto; }
+  .room > .chat .msgs li.sys { color: rgb(255 255 255 / .75); }
+  .room > .chat .msgs li.bid, .room > .chat .msgs li.me b { color: var(--saffron); }
+  .room > .chat form { border: 0; padding: 6px 0 0; pointer-events: auto; }
+  .room > .chat input { background: rgb(0 0 0 / .35); border-color: rgb(255 255 255 / .25); color: var(--on-media); }
+  .room > .chat input::placeholder { color: rgb(255 255 255 / .65); }
+  .room > .chat .btn { display: none; }
+  .wrap { padding-inline: 16px; }
+  .top { position: static; }
+  .top .wrap { gap: 4px 12px; min-height: 0; }
+  .brand small { display: none; }
+  .who { width: 100%; }
+  .room { height: calc(100dvh - 120px); }
+  .room > .chat { max-height: 24%; }
+  .lotcard { padding: 12px; gap: 8px; left: 8px; right: 8px; bottom: 8px; }
+  .lotcard h2 { font-size: 1rem; }
+  .lotcard .where { display: none; }
+  .ring, .ring svg { width: 48px; height: 48px; }
+  .pricebar .big { font-size: 1.4rem; }
+  .slide { height: 52px; }
+  .slide .knob { height: 42px; width: 46px; }
+  .actions button { padding: 7px 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+
+<header class="top glass">
+  <div class="wrap">
+    <a class="brand" href="#lives"><span class="dot" aria-hidden="true"></span>Adjugé Live <small>l'immobilier aux enchères, en direct</small></a>
+    <nav class="main" aria-label="Navigation principale">
+      <a href="#lives" aria-current="page">Lives</a>
+      <a href="index.html">Catalogue</a>
+    </nav>
+    <div class="who" id="who"></div>
+  </div>
+</header>
+
+<main class="wrap" id="app"></main>
+
+<footer id="footer"><div class="wrap">Prototype de démonstration : la vidéo, les spectateurs, le chat et les autres enchérisseurs sont simulés dans la page. Votre pseudo et vos rappels restent dans ce navigateur.</div></footer>
+
+<div class="sheet-back" id="onboard" hidden>
+  <form class="sheet" id="onboard-form" novalidate>
+    <h2>Avant d'enchérir</h2>
+    <p class="muted">En live, les autres participants voient votre pseudo à chaque offre.</p>
+    <label for="ob-handle">Pseudo<input type="text" id="ob-handle" maxlength="24" autocomplete="nickname" placeholder="salma.invest"></label>
+    <label class="check" for="ob-deposit"><input type="checkbox" id="ob-deposit"> J'autorise une consignation de 10 % du prix de départ du lot, prélevée uniquement si je remporte la vente et remboursée sinon.</label>
+    <p class="err" id="ob-err" hidden></p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary" type="submit">C'est parti</button><button class="btn btn-ghost" type="button" id="ob-cancel">Annuler</button></div>
+  </form>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+(() => {
+"use strict";
+
+/* ---------- Outils ---------- */
+const SEC = 1000, MIN = 60 * SEC, HOUR = 60 * MIN, DAY = 24 * HOUR;
+const numFmt = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 });
+const dh = (n) => `${numFmt.format(n)} DH`;
+const short = (n) => n >= 1e6 ? `${String(+(n / 1e6).toFixed(2)).replace(".", ",")} M DH` : dh(n);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const pick = (a) => a[Math.floor(Math.random() * a.length)];
+const rand = (a, b) => a + Math.random() * (b - a);
+const $ = (id) => document.getElementById(id);
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+};
+let toastTimer;
+function toast(msg) { const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => (t.hidden = true), 3000); }
+function untilLabel(ms) {
+  const m = Math.max(0, Math.round(ms / MIN));
+  if (m < 60) return `Dans ${m} min`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `Dans ${h} h ${String(m % 60).padStart(2, "0")}`;
+  return new Intl.DateTimeFormat("fr-FR", { weekday: "long", hour: "2-digit", minute: "2-digit" }).format(Date.now() + ms);
+}
+
+/* ---------- Données de démonstration ---------- */
+const now0 = Date.now();
+const at = (days, h, m) => { const d = new Date(now0); d.setDate(d.getDate() + days); d.setHours(h, m, 0, 0); return d.getTime(); };
+const HANDLES = ["karim_casa", "salma.invest", "youssef.mrk", "ines_rabat", "hamza.immo", "leila.tanger", "amine_agadir", "sofia.dh", "reda.patrimoine", "nora.fes", "mehdi_212", "kenza.home"];
+const T = { facade: "Façade", salon: "Salon", chambre: "Chambre", patio: "Patio", terrasse: "Terrasse", vue: "Vue" };
+const SHOWS = [
+  { id: "riads-et-dars", title: "Riads & dars d'exception", live: true, viewers: 1240, tags: ["riad"], city: "Marrakech · Fès · Essaouira",
+    host: { name: "Yasmine Alaoui", handle: "yasmine.medinaimmo", agency: "Médina Immobilier", hue: 18 },
+    lots: [
+      { id: "riad-mouassine", title: "Riad restauré avec patio et terrasse", type: "riad", city: "Marrakech", district: "Médina, Mouassine", surface: 220, rooms: 7, bedrooms: 5, hue: 10,
+        start: 3800000, reserve: 4000000, inc: 25000, tour: ["facade", "patio", "salon", "chambre", "terrasse"],
+        pitch: ["On commence fort : riad de 220 m² à deux minutes de la place Mouassine.", "Patio en zellige avec fontaine, cinq chambres en tadelakt, terrasse avec vue sur l'Atlas.", "Titre foncier, restauré en 2021, prêt à exploiter en maison d'hôtes."] },
+      { id: "dar-batha", title: "Dar du XIXe à rénover", type: "riad", city: "Fès", district: "Médina, Batha", surface: 160, rooms: 6, bedrooms: 4, hue: 32,
+        start: 950000, reserve: 1100000, inc: 10000, tour: ["facade", "patio", "salon", "terrasse"],
+        pitch: ["Lot 2 pour les amoureux d'authenticité : un dar de 160 m² près de Bab Boujloud.", "Plafonds en cèdre sculpté et plâtres ciselés d'origine. Gros travaux à prévoir.", "Prix de départ sous le million, c'est le moment."] },
+      { id: "riad-essaouira", title: "Riad face aux remparts", type: "riad", city: "Essaouira", district: "Médina", surface: 180, rooms: 6, bedrooms: 4, hue: 200,
+        start: 2600000, reserve: 2800000, inc: 20000, tour: ["facade", "patio", "chambre", "terrasse"],
+        pitch: ["Direction Essaouira : riad blanc et bleu adossé aux remparts.", "Quatre suites, terrasse avec vue sur l'océan, déjà loué en saisonnier.", "Rentabilité locale autour de 7 % brut d'après le vendeur."] },
+    ] },
+  { id: "casa-prestige", title: "Casablanca Prestige", live: true, viewers: 860, tags: ["appartement", "local"], city: "Casablanca",
+    host: { name: "Mehdi Benjelloun", handle: "mehdi.casaprestige", agency: "Casa Prestige", hue: 228 },
+    lots: [
+      { id: "art-deco-gauthier", title: "Appartement Art déco avec balcon", type: "appartement", city: "Casablanca", district: "Gauthier", surface: 135, rooms: 5, bedrooms: 3, hue: 215,
+        start: 2900000, reserve: 3100000, inc: 20000, tour: ["facade", "salon", "chambre", "terrasse"],
+        pitch: ["Bonsoir Casa ! Premier lot : 135 m² dans un immeuble Art déco de 1932.", "Double salon sur balcon filant, 3,40 m sous plafond, carreaux de ciment d'origine.", "Ascenseur, concierge, titre foncier. On ouvre dans quelques secondes."] },
+      { id: "penthouse-anfa", title: "Penthouse avec terrasse panoramique", type: "appartement", city: "Casablanca", district: "Anfa", surface: 240, rooms: 6, bedrooms: 4, hue: 205,
+        start: 7500000, reserve: 7900000, inc: 50000, tour: ["facade", "salon", "terrasse", "vue", "chambre"],
+        pitch: ["Le lot de la soirée : penthouse de 240 m² à Anfa.", "120 m² de terrasse avec vue sur l'océan et la mosquée Hassan II.", "Deux parkings, résidence gardée, livraison immédiate."] },
+      { id: "local-maarif", title: "Local commercial sur boulevard", type: "local", city: "Casablanca", district: "Maârif", surface: 95, rooms: 2, bedrooms: 0, hue: 350,
+        start: 1900000, reserve: 1950000, inc: 10000, tour: ["facade", "salon"],
+        pitch: ["On termine avec de l'investissement : 95 m² commerciaux au Maârif.", "Sept mètres de vitrine, mezzanine, libre de tout occupant."] },
+    ] },
+  { id: "villas-nord", title: "Villas Tanger & Asilah", live: false, startsAt: now0 + 2 * HOUR + 14 * MIN, tags: ["villa"], city: "Tanger · Asilah",
+    host: { name: "Nadia Tazi", handle: "nadia.nordimmo", agency: "Nord Immo", hue: 160 }, preview: { type: "villa", hue: 190 }, count: 4 },
+  { id: "investir-agadir", title: "Investir à Agadir", live: false, startsAt: at(1, 20, 0), tags: ["appartement"], city: "Agadir · Taghazout",
+    host: { name: "Omar El Fassi", handle: "omar.souss", agency: "Souss Invest", hue: 40 }, preview: { type: "appartement", hue: 195 }, count: 6 },
+  { id: "terrains-rabat", title: "Terrains Rabat & Bouskoura", live: false, startsAt: at(3, 19, 30), tags: ["terrain"], city: "Rabat · Bouskoura",
+    host: { name: "Salma Berrada", handle: "salma.terrains", agency: "Berrada Foncier", hue: 120 }, preview: { type: "terrain", hue: 110 }, count: 5 },
+];
+const CATS = [["", "Tous"], ["riad", "Riads"], ["villa", "Villas"], ["appartement", "Appartements"], ["terrain", "Terrains"], ["local", "Commerces"]];
+
+/* ---------- Illustrations (format portrait 360 × 640) ---------- */
+function palette(hue) {
+  return {
+    sky: `hsl(${hue} 45% 80%)`, sky2: `hsl(${hue} 40% 93%)`, wall: `hsl(${(hue + 30) % 360} 25% 88%)`, wall2: `hsl(${(hue + 30) % 360} 20% 74%)`,
+    dark: `hsl(${hue} 25% 22%)`, roof: `hsl(${(hue + 180) % 360} 28% 42%)`, green: "hsl(115 30% 52%)", green2: "hsl(120 28% 38%)",
+    ochre: `hsl(${(hue % 40) + 15} 55% 64%)`, ochre2: `hsl(${(hue % 40) + 15} 45% 50%)`, sea: `hsl(${hue < 150 || hue > 260 ? 200 : hue} 55% 55%)`,
+  };
+}
+function exterior(type, hue) {
+  const c = palette(hue);
+  const win = (x, y, w = 22, h = 30) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2" fill="${c.dark}" opacity=".85"/><rect x="${x}" y="${y}" width="${w}" height="${h / 2.2}" rx="2" fill="${c.sky2}" opacity=".3"/>`;
+  let s = "";
+  if (type === "appartement") {
+    s = `<rect x="20" y="90" width="80" height="120" fill="${c.wall2}" opacity=".7"/><rect x="300" y="70" width="80" height="140" fill="${c.wall2}" opacity=".7"/><rect x="110" y="40" width="180" height="170" fill="${c.wall}"/><rect x="104" y="34" width="192" height="12" fill="${c.wall2}"/>`;
+    for (let r = 0; r < 4; r++) for (let k = 0; k < 4; k++) s += win(124 + k * 42, 58 + r * 36);
+    s += `<rect x="112" y="126" width="176" height="4" fill="${c.dark}" opacity=".6"/><rect x="186" y="186" width="28" height="24" fill="${c.roof}"/>`;
+  } else if (type === "villa") {
+    s = `<rect x="0" y="150" width="400" height="60" fill="${c.sea}"/><rect x="70" y="80" width="200" height="70" fill="${c.wall}"/><rect x="160" y="50" width="150" height="34" fill="${c.wall}"/><rect x="60" y="76" width="220" height="6" fill="${c.wall2}"/><rect x="152" y="46" width="166" height="6" fill="${c.wall2}"/>`;
+    s += `<rect x="86" y="96" width="70" height="44" fill="${c.dark}" opacity=".8"/><rect x="170" y="96" width="84" height="44" fill="${c.dark}" opacity=".8"/><rect x="178" y="58" width="114" height="20" fill="${c.dark}" opacity=".7"/><rect x="70" y="160" width="190" height="22" rx="3" fill="hsl(195 70% 70%)"/><circle cx="340" cy="112" r="26" fill="${c.green2}"/><rect x="337" y="130" width="6" height="22" fill="${c.dark}"/>`;
+  } else if (type === "riad") {
+    s = `<rect x="70" y="62" width="260" height="148" fill="${c.ochre}"/>`;
+    for (let i = 0; i < 13; i++) s += `<rect x="${70 + i * 20}" y="52" width="12" height="12" fill="${c.ochre}"/>`;
+    s += `<rect x="70" y="78" width="260" height="5" fill="${c.ochre2}"/>`;
+    for (const x of [100, 150, 230, 280]) s += `<path d="M${x} 130 v-18 a10 10 0 0 1 20 0 v18z" fill="${c.dark}" opacity=".85"/>`;
+    s += `<path d="M180 210 v-46 a20 20 0 0 1 40 0 v46z" fill="hsl(200 45% 30%)"/><path d="M172 210 v-46 a28 28 0 0 1 56 0 v46" fill="none" stroke="hsl(195 45% 55%)" stroke-width="4"/><rect x="355" y="110" width="6" height="100" fill="hsl(25 35% 35%)"/>`;
+    for (const r of [-150, -110, -70, -30, 10]) s += `<ellipse cx="376" cy="110" rx="20" ry="6" fill="${c.green2}" transform="rotate(${r} 358 110)"/>`;
+  } else if (type === "terrain") {
+    s = `<polygon points="0,120 90,70 170,110 260,60 400,115 400,210 0,210" fill="hsl(${hue} 20% 70%)"/><rect x="0" y="140" width="400" height="70" fill="${c.green}"/>`;
+    for (let i = 0; i < 9; i++) s += `<line x1="${i * 50 - 20}" y1="210" x2="${i * 50 + 30}" y2="140" stroke="${c.green2}" stroke-width="2" opacity=".5"/>`;
+    s += `<rect x="130" y="128" width="2" height="40" fill="${c.dark}"/><rect x="132" y="128" width="26" height="16" fill="hsl(10 70% 55%)"/>`;
+  } else {
+    s = `<rect x="60" y="40" width="280" height="170" fill="${c.wall}"/><rect x="60" y="40" width="280" height="40" fill="${c.wall2}"/>`;
+    for (let k = 0; k < 4; k++) s += win(84 + k * 66, 50, 34, 22);
+    s += `<rect x="60" y="100" width="280" height="22" fill="${c.roof}"/><rect x="80" y="132" width="180" height="78" fill="${c.dark}" opacity=".85"/><rect x="80" y="132" width="180" height="20" fill="${c.sky2}" opacity=".25"/><rect x="276" y="140" width="44" height="70" fill="${c.dark}"/>`;
+  }
+  return `<rect width="360" height="640" fill="url(#${GID})"/><circle cx="292" cy="96" r="24" fill="hsl(45 90% 75%)" opacity=".8"/><svg x="-160" y="80" width="680" height="357" viewBox="0 0 400 210" preserveAspectRatio="none">${s}</svg><rect y="435" width="360" height="205" fill="${type === "villa" ? c.sea : type === "terrain" ? c.green : c.wall2}"/>`;
+}
+function interior(kind, lot) {
+  const c = palette(lot.hue);
+  const riad = lot.type === "riad";
+  const floor = riad ? `<rect y="420" width="360" height="220" fill="hsl(${lot.hue} 30% 85%)"/>${Array.from({ length: 8 }, (_, i) => `<line x1="${i * 60 - 60}" y1="640" x2="${180 + (i - 4) * 18}" y2="420" stroke="hsl(${lot.hue} 35% 62%)" stroke-width="2"/>`).join("")}<line x1="0" y1="500" x2="360" y2="500" stroke="hsl(${lot.hue} 35% 62%)" stroke-width="2"/><line x1="0" y1="580" x2="360" y2="580" stroke="hsl(${lot.hue} 35% 62%)" stroke-width="2"/>`
+    : `<rect y="420" width="360" height="220" fill="hsl(30 35% 62%)"/>${Array.from({ length: 6 }, (_, i) => `<line x1="0" y1="${440 + i * 36}" x2="360" y2="${440 + i * 36}" stroke="hsl(30 30% 52%)" stroke-width="2"/>`).join("")}`;
+  const wallC = riad ? c.ochre : c.wall;
+  const windowSky = (x, y, w, h, arch) => arch
+    ? `<path d="M${x} ${y + h} V${y + w / 2} a${w / 2} ${w / 2} 0 0 1 ${w} 0 V${y + h}z" fill="${c.sky}"/><path d="M${x} ${y + h} V${y + w / 2} a${w / 2} ${w / 2} 0 0 1 ${w} 0 V${y + h}" fill="none" stroke="${c.dark}" stroke-width="6"/>`
+    : `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${c.sky}"/><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="${c.dark}" stroke-width="6"/><line x1="${x + w / 2}" y1="${y}" x2="${x + w / 2}" y2="${y + h}" stroke="${c.dark}" stroke-width="4"/>`;
+  if (kind === "salon") {
+    return `<rect width="360" height="420" fill="${wallC}"/>${floor}${windowSky(110, 120, 140, 200, riad)}
+      <ellipse cx="180" cy="560" rx="150" ry="34" fill="hsl(${(lot.hue + 160) % 360} 45% 45%)" opacity=".75"/>
+      <rect x="40" y="430" width="280" height="70" rx="14" fill="hsl(${(lot.hue + 200) % 360} 30% 40%)"/><rect x="40" y="395" width="280" height="50" rx="14" fill="hsl(${(lot.hue + 200) % 360} 30% 48%)"/>
+      <rect x="70" y="410" width="60" height="40" rx="10" fill="${c.saffron || "hsl(40 85% 65%)"}"/><rect x="230" y="410" width="60" height="40" rx="10" fill="hsl(40 85% 65%)"/>
+      <rect x="320" y="300" width="4" height="200" fill="${c.dark}"/><path d="M300 300 h44 l-10 -40 h-24z" fill="hsl(45 80% 75%)"/>
+      <circle cx="40" cy="360" r="34" fill="${c.green2}"/><rect x="26" y="380" width="28" height="40" rx="4" fill="hsl(20 40% 45%)"/>`;
+  }
+  if (kind === "chambre") {
+    return `<rect width="360" height="420" fill="${wallC}"/>${floor}${windowSky(30, 140, 90, 150, riad)}
+      <rect x="140" y="300" width="200" height="120" rx="10" fill="hsl(${(lot.hue + 20) % 360} 25% 35%)"/>
+      <rect x="130" y="400" width="220" height="110" rx="10" fill="hsl(0 0% 96%)"/><rect x="130" y="450" width="220" height="70" rx="8" fill="hsl(${(lot.hue + 180) % 360} 35% 55%)"/>
+      <rect x="150" y="380" width="80" height="34" rx="12" fill="hsl(0 0% 100%)"/><rect x="250" y="380" width="80" height="34" rx="12" fill="hsl(0 0% 100%)"/>
+      <rect x="40" y="440" width="60" height="60" rx="6" fill="hsl(30 30% 45%)"/><path d="M52 440 h36 l-8 -34 h-20z" fill="hsl(45 80% 75%)"/>`;
+  }
+  if (kind === "patio") {
+    let tiles = "";
+    for (let r = 0; r < 7; r++) for (let k = 0; k < 7; k++) tiles += `<rect x="${k * 60 - (r % 2) * 30}" y="${430 + r * 32}" width="22" height="22" transform="rotate(45 ${k * 60 - (r % 2) * 30 + 11} ${441 + r * 32})" fill="hsl(${(r + k) % 2 ? 190 : 150} 45% 45%)" opacity=".8"/>`;
+    return `<rect width="360" height="430" fill="${c.ochre}"/>${[30, 135, 240].map((x) => `<path d="M${x} 430 V250 a45 45 0 0 1 90 0 V430z" fill="${c.dark}" opacity=".55"/><path d="M${x} 430 V250 a45 45 0 0 1 90 0 V430" fill="none" stroke="${c.ochre2}" stroke-width="8"/>`).join("")}
+      <rect x="0" y="80" width="360" height="14" fill="${c.ochre2}"/><rect y="430" width="360" height="210" fill="hsl(40 40% 88%)"/>${tiles}
+      <ellipse cx="180" cy="540" rx="90" ry="26" fill="hsl(190 50% 40%)"/><ellipse cx="180" cy="534" rx="78" ry="20" fill="hsl(190 60% 62%)"/><rect x="172" y="470" width="16" height="60" fill="hsl(190 45% 40%)"/><ellipse cx="180" cy="470" rx="26" ry="8" fill="hsl(190 60% 62%)"/>
+      <circle cx="40" cy="430" r="40" fill="${c.green2}"/><circle cx="28" cy="420" r="5" fill="hsl(30 90% 55%)"/><circle cx="52" cy="440" r="5" fill="hsl(30 90% 55%)"/><rect x="20" y="460" width="40" height="40" rx="4" fill="hsl(15 50% 45%)"/>
+      <circle cx="320" cy="430" r="40" fill="${c.green2}"/><circle cx="310" cy="420" r="5" fill="hsl(30 90% 55%)"/><circle cx="332" cy="440" r="5" fill="hsl(30 90% 55%)"/><rect x="300" y="460" width="40" height="40" rx="4" fill="hsl(15 50% 45%)"/>`;
+  }
+  // terrasse et vue
+  const horizon = lot.type === "riad" && lot.city !== "Essaouira"
+    ? `<polygon points="0,330 70,250 130,300 200,220 270,290 360,240 360,360 0,360" fill="hsl(${lot.hue} 15% 70%)"/><polygon points="190,232 200,220 212,234" fill="#fff"/><rect y="340" width="360" height="40" fill="${c.ochre2}" opacity=".7"/>`
+    : lot.type === "local" ? `${Array.from({ length: 9 }, (_, i) => `<rect x="${i * 42}" y="${250 + (i * 37) % 80}" width="36" height="${130 - (i * 37) % 80}" fill="hsl(${lot.hue} 12% ${55 + (i % 3) * 8}%)"/>`).join("")}`
+    : `<rect y="300" width="360" height="80" fill="${c.sea}"/><rect y="300" width="360" height="4" fill="#fff" opacity=".5"/>${lot.id === "penthouse-anfa" ? `<rect x="250" y="190" width="14" height="110" fill="hsl(40 30% 85%)"/><rect x="246" y="180" width="22" height="14" fill="hsl(150 40% 40%)"/>` : ""}`;
+  const pool = lot.type === "villa" || kind === "terrasse" && lot.id === "penthouse-anfa" ? `<rect x="40" y="470" width="280" height="70" rx="8" fill="hsl(190 70% 62%)"/>` : "";
+  return `<rect width="360" height="380" fill="url(#${GID})"/><circle cx="270" cy="120" r="34" fill="hsl(40 95% 72%)" opacity=".9"/>${horizon}
+    <rect y="380" width="360" height="260" fill="${riad ? c.ochre : "hsl(30 25% 80%)"}"/>${pool}
+    <rect y="370" width="360" height="10" fill="${c.dark}" opacity=".7"/>${Array.from({ length: 13 }, (_, i) => `<rect x="${i * 30}" y="372" width="5" height="70" fill="${c.dark}" opacity=".6"/>`).join("")}<rect y="440" width="360" height="6" fill="${c.dark}" opacity=".6"/>
+    ${kind === "terrasse" ? `<rect x="60" y="540" width="110" height="20" rx="6" fill="hsl(0 0% 96%)"/><rect x="190" y="540" width="110" height="20" rx="6" fill="hsl(0 0% 96%)"/><rect x="148" y="480" width="64" height="8" fill="hsl(${(lot.hue + 160) % 360} 50% 55%)"/><rect x="178" y="486" width="4" height="60" fill="${c.dark}"/>` : ""}`;
+}
+let GID = "sky", gidN = 0;
+function sceneSVG(kind, lot) {
+  const c = palette(lot.hue);
+  GID = `sky${++gidN}`;
+  const body = kind === "facade" ? exterior(lot.type, lot.hue) : interior(kind, lot);
+  return `<svg viewBox="0 0 360 640" preserveAspectRatio="xMidYMid slice" role="img" aria-label="${esc(T[kind])} : ${esc(lot.title)}"><defs><linearGradient id="${GID}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c.sky}"/><stop offset="1" stop-color="${c.sky2}"/></linearGradient></defs>${body}</svg>`;
+}
+const avatar = (h) => `<span class="avatar" style="background:hsl(${h.hue} 55% 45%)" aria-hidden="true">${esc(h.name.split(" ").map((w) => w[0]).join(""))}</span>`;
+
+/* ---------- État utilisateur ---------- */
+const user = store.get("adjuge-live-user", null);
+const prefs = { user, reminders: store.get("adjuge-live-reminders", []), follows: store.get("adjuge-live-follows", []) };
+function renderWho() {
+  $("who").innerHTML = prefs.user ? `<span>Connecté : <b>@${esc(prefs.user.handle)}</b></span>` : `<button class="btn btn-ghost btn-small" type="button" id="who-login">Choisir un pseudo</button>`;
+  $("who-login")?.addEventListener("click", () => onboard());
+}
+let onboardThen = null;
+function onboard(then) { onboardThen = then || null; $("onboard").hidden = false; $("ob-err").hidden = true; $("ob-handle").focus(); }
+$("onboard-form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const handle = $("ob-handle").value.trim().replace(/^@/, "");
+  const err = $("ob-err");
+  if (!/^[a-z0-9._]{3,24}$/i.test(handle)) { err.textContent = "Choisissez un pseudo de 3 à 24 caractères : lettres, chiffres, point ou tiret bas."; err.hidden = false; return; }
+  if (!$("ob-deposit").checked) { err.textContent = "Cochez la case pour autoriser la consignation."; err.hidden = false; return; }
+  prefs.user = { handle }; store.set("adjuge-live-user", prefs.user);
+  $("onboard").hidden = true; renderWho();
+  const fn = onboardThen; onboardThen = null; fn?.();
+});
+$("ob-cancel").addEventListener("click", () => { $("onboard").hidden = true; onboardThen = null; });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") { $("onboard").hidden = true; document.querySelector(".lots-panel")?.classList.remove("open"); } });
+
+/* ---------- Fil des lives ---------- */
+let cat = "";
+function viewFeed(app) {
+  const match = (s) => !cat || s.tags.includes(cat);
+  const live = SHOWS.filter((s) => s.live && match(s));
+  const next = SHOWS.filter((s) => !s.live && match(s)).sort((a, b) => a.startsAt - b.startsAt);
+  app.innerHTML = `
+    <div class="feed">
+      <div class="feed-head">
+        <div><p class="label" style="color:var(--live)">En direct</p><h1>Les biens passent un par un. Glissez pour enchérir.</h1>
+        <p>Un agent présente chaque bien en visite filmée, répond au chat, puis ouvre une enchère éclair. Chaque offre dans les 10 dernières secondes relance le chrono.</p></div>
+      </div>
+      <div class="chips" role="group" aria-label="Catégories">${CATS.map(([k, v]) => `<button class="chip glass" type="button" data-cat="${k}" aria-pressed="${cat === k}">${v}</button>`).join("")}</div>
+      <section><div class="section-title"><span class="live-badge">LIVE</span><h2>En ce moment</h2></div>
+        ${live.length ? `<div class="lives">${live.map(showCard).join("")}</div>` : `<p class="empty glass">Aucun live dans cette catégorie en ce moment. Activez un rappel ci-dessous.</p>`}
+      </section>
+      <section><div class="section-title"><h2>Prochains lives</h2></div>
+        ${next.length ? `<div class="upcoming">${next.map(upCard).join("")}</div>` : `<p class="empty glass">Aucun live programmé dans cette catégorie.</p>`}
+      </section>
+      <section><div class="section-title"><h2>Comment ça marche</h2></div>
+        <ol class="how">
+          <li class="glass"><b>Regardez la visite</b><span class="muted">L'agent fait le tour du bien en direct et répond à vos questions dans le chat.</span></li>
+          <li class="glass"><b>Glissez pour enchérir</b><span class="muted">Le bouton propose toujours l'offre minimum suivante. Pour viser plus haut, saisissez votre propre montant.</span></li>
+          <li class="glass"><b>Adjugé, puis le notaire</b><span class="muted">Si la réserve est atteinte, le bien est à vous : la consignation est prélevée et la signature a lieu sous 30 jours.</span></li>
+        </ol>
+      </section>
+    </div>`;
+  app.querySelectorAll("[data-cat]").forEach((b) => b.addEventListener("click", () => { cat = b.dataset.cat; viewFeed(app); }));
+  app.querySelectorAll("[data-remind]").forEach((b) => b.addEventListener("click", () => {
+    const id = b.dataset.remind, on = !prefs.reminders.includes(id);
+    prefs.reminders = on ? [...prefs.reminders, id] : prefs.reminders.filter((x) => x !== id);
+    store.set("adjuge-live-reminders", prefs.reminders);
+    b.setAttribute("aria-pressed", on); b.textContent = on ? "Rappel activé" : "Me rappeler";
+    toast(on ? "Nous vous préviendrons au début du live." : "Rappel retiré.");
+  }));
+}
+function showCard(s) {
+  const lot = s.lots[0];
+  return `<a class="show" href="#live-${s.id}">${sceneSVG("facade", lot)}<span class="shade"></span>
+    <span class="tl"><span class="live-badge">LIVE</span><span class="viewers num">${numFmt.format(s.viewers)} spectateurs</span></span>
+    <span class="info"><span class="host">${avatar(s.host)}<span><b>${esc(s.host.name)}</b>${esc(s.host.agency)}</span></span>
+      <h3>${esc(s.title)}</h3>
+      <span class="now media-glass"><span>${s.lots.length} lots · ${esc(s.city)}</span><b class="num">À partir de ${short(Math.min(...s.lots.map((l) => l.start)))}</b></span></span></a>`;
+}
+function upCard(s) {
+  const on = prefs.reminders.includes(s.id);
+  return `<article class="up glass"><div class="thumb">${sceneSVG("facade", { type: s.preview.type, hue: s.preview.hue, title: s.title, id: s.id })}</div>
+    <div class="body"><span class="when">${untilLabel(s.startsAt - Date.now())}</span><h3 style="font-size:1.02rem">${esc(s.title)}</h3>
+    <span class="muted" style="font-size:.84rem">${esc(s.host.name)} · ${s.count} lots · ${esc(s.city)}</span>
+    <div class="row"><span></span><button class="btn btn-ghost btn-small remind" type="button" data-remind="${s.id}" aria-pressed="${on}">${on ? "Rappel activé" : "Me rappeler"}</button></div></div></article>`;
+}
+
+/* ---------- Salle de live ---------- */
+const INTRO = 12 * SEC, BIDDING = 30 * SEC, RESET = 10 * SEC, RESULT = 6 * SEC;
+let R = null; // état de la salle courante
+const CHAT_POOL = ["Bonsoir de Rabat 👋", "Magnifique", "Le patio est sublime", "On peut revoir la terrasse ?", "Ça part vite ce soir", "Superbe rénovation", "Je suis là pour le lot suivant", "Quelle surface pour la terrasse ?", "Titre foncier ok ?", "Les charges sont de combien ?", "Trop beau 😍", "Bravo pour la présentation", "Prix de départ raisonnable", "Il y a un parking ?"];
+const HOST_ANSWERS = [
+  [/titre|foncier/i, "Oui, titre foncier individuel, prêt pour la signature."],
+  [/visite|visiter/i, "Une visite physique est possible avant la signature, sur rendez-vous."],
+  [/charge|syndic/i, "Les charges tournent autour de 800 DH par mois."],
+  [/travaux|rénov/i, "Le rapport d'expertise détaille l'état du bien ; je le partage en privé après le lot."],
+  [/crédit|banque|financ/i, "La signature a lieu sous 30 jours : c'est compatible avec un crédit déjà accordé."],
+  [/consignation|caution/i, "10 % du prix de départ, prélevés seulement si vous gagnez."],
+  [/parking|garage/i, "Oui, stationnement inclus dans la vente."],
+];
+
+function viewRoom(app, id) {
+  const show = SHOWS.find((s) => s.id === id && s.live);
+  if (!show) { app.innerHTML = `<div class="empty glass"><h2>Ce live n'est pas en cours</h2><p style="margin:10px 0 16px">Il est peut-être terminé ou pas encore commencé.</p><a class="btn btn-primary" href="#lives">Voir les lives</a></div>`; return; }
+  app.classList.add("room-mode");
+  R = { show, idx: 0, phase: "intro", phaseEnd: 0, bids: [], results: [], tour: 0, viewers: show.viewers, timers: [], lastHost: 0, warned: false, rivalMax: 0 };
+  const following = prefs.follows.includes(show.host.handle);
+  app.innerHTML = `
+    <div class="room">
+      <aside class="panel glass lots-panel" id="lots-panel" aria-label="Lots du live">
+        <div class="panel-head"><b>Lots du live</b><button class="btn btn-ghost btn-small close-sheet" type="button" id="close-lots">Fermer</button></div>
+        <ol class="lots" id="lots"></ol>
+      </aside>
+      <section class="stage" id="stage" aria-label="Live vidéo">
+        <div class="scene" id="scene"></div>
+        <div class="stage-top">
+          <a class="iconbtn media-glass" href="#lives" aria-label="Quitter le live"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg></a>
+          <div class="host media-glass">${avatar(show.host)}<span><b>${esc(show.host.name)}</b><span>@${esc(show.host.handle)}</span></span><button class="follow" type="button" id="follow" aria-pressed="${following}">${following ? "Suivi" : "Suivre"}</button></div>
+        </div>
+        <div class="stage-meta"><span class="live-badge">LIVE</span><span class="viewers num" id="viewers"></span><span class="tour media-glass" id="tour"></span><button class="tour media-glass lots-toggle" type="button" id="open-lots">Lots (${show.lots.length})</button></div>
+        <div class="hearts" id="hearts" aria-hidden="true"></div>
+        <div class="lotcard media-glass" id="lotcard"></div>
+        <div id="overlay"></div>
+      </section>
+      <aside class="panel glass chat" aria-label="Chat du live">
+        <div class="panel-head"><b>Chat</b><span class="muted num" id="chat-count" style="font-size:.8rem"></span></div>
+        <ul class="msgs" id="msgs" aria-live="off"></ul>
+        <form id="chat-form" autocomplete="off"><input id="chat-input" maxlength="140" placeholder="Posez une question à l'hôte…" aria-label="Message"><button class="btn btn-primary btn-small" type="submit">Envoyer</button></form>
+      </aside>
+    </div>`;
+  $("follow").addEventListener("click", (e) => {
+    const on = !prefs.follows.includes(show.host.handle);
+    prefs.follows = on ? [...prefs.follows, show.host.handle] : prefs.follows.filter((h) => h !== show.host.handle);
+    store.set("adjuge-live-follows", prefs.follows);
+    e.currentTarget.setAttribute("aria-pressed", on); e.currentTarget.textContent = on ? "Suivi" : "Suivre";
+    if (on) toast(`Vous suivez ${show.host.name}.`);
+  });
+  $("open-lots").addEventListener("click", () => $("lots-panel").classList.add("open"));
+  $("close-lots").addEventListener("click", () => $("lots-panel").classList.remove("open"));
+  $("chat-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const text = $("chat-input").value.trim(); if (!text) return;
+    if (!prefs.user) { onboard(() => $("chat-form").requestSubmit()); return; }
+    chat(`@${prefs.user.handle}`, text, "me"); $("chat-input").value = "";
+    const ans = HOST_ANSWERS.find(([re]) => re.test(text));
+    if (ans || text.includes("?")) later(() => chat(R.show.host.name, `@${prefs.user.handle} ${ans ? ans[1] : "Bonne question, je vous réponds en privé juste après ce lot."}`, "from-host"), rand(1800, 3500));
+  });
+  chat("", `Bienvenue dans le live de ${show.host.name}. Soyez courtois dans le chat.`, "sys");
+  for (let i = 0; i < 3; i++) chat(`@${pick(HANDLES)}`, pick(CHAT_POOL));
+  startLot();
+  R.timers.push(setInterval(tick, 250));
+  R.timers.push(setInterval(ambient, 2600));
+  window.addEventListener("resize", placeChat);
+}
+function later(fn, ms) { if (!R) return; const t = setTimeout(() => R && fn(), ms); R.timers.push(t); }
+function leaveRoom() { if (!R) return; R.timers.forEach((t) => { clearInterval(t); clearTimeout(t); }); R = null; window.removeEventListener("resize", placeChat); }
+const lot = () => R.show.lots[R.idx];
+const top = () => R.bids[R.bids.length - 1];
+const minBid = () => top() ? top().amount + lot().inc : lot().start;
+const reserveMet = () => !!top() && top().amount >= lot().reserve;
+
+function startLot() {
+  const l = lot();
+  R.phase = "intro"; R.phaseEnd = Date.now() + INTRO; R.bids = []; R.tour = 0; R.warned = false; R.custom = false;
+  R.rivalMax = Math.round(l.reserve * rand(0.96, 1.12) / l.inc) * l.inc;
+  showScene(true); renderLots(); renderCard(); $("overlay").innerHTML = "";
+  chat("", `Lot ${R.idx + 1} sur ${R.show.lots.length} : ${l.title}`, "sys");
+  l.pitch.forEach((line, i) => later(() => chat(R.show.host.name, line, "from-host"), 600 + i * 3400));
+}
+function openBidding() {
+  R.phase = "bidding"; R.phaseEnd = Date.now() + BIDDING;
+  chat(R.show.host.name, `Ouverture à ${dh(lot().start)}, pas de ${dh(lot().inc)}. C'est parti !`, "from-host");
+  renderCard();
+}
+function closeLot() {
+  const l = lot(), t = top(), sold = reserveMet();
+  R.phase = "result"; R.phaseEnd = Date.now() + RESULT;
+  R.results[R.idx] = { sold, amount: t?.amount, by: t?.by };
+  const mine = sold && t.by === prefs.user?.handle;
+  if (sold) chat(R.show.host.name, `Adjugé à @${t.by} pour ${dh(t.amount)} ! Bravo.`, "from-host");
+  else chat(R.show.host.name, t ? `Réserve non atteinte à ${dh(t.amount)} : le lot n'est pas adjugé ce soir.` : "Pas d'offre sur ce lot, il repassera dans un prochain live.", "from-host");
+  $("overlay").innerHTML = `<div class="overlay">${mine ? confetti() : ""}<div class="box">
+    <div class="stamp ${sold ? (mine ? "win" : "") : "no"}">${sold ? "Adjugé !" : "Non adjugé"}</div>
+    ${sold ? `<p style="font-size:1.1rem"><b>@${esc(t.by)}</b> remporte le lot pour <b class="num">${dh(t.amount)}</b></p>` : `<p>${t ? `Dernière offre : <b class="num">${dh(t.amount)}</b>. La réserve du vendeur n'est pas atteinte.` : "Aucune offre sur ce lot."}</p>`}
+    ${mine ? `<p style="opacity:.85;font-size:.9rem">Félicitations ! La consignation de ${dh(Math.round(l.start * 0.1))} est prélevée. L'étude vous contacte pour la signature chez le notaire sous 30 jours.</p>` : ""}
+    <p style="opacity:.7;font-size:.82rem">${R.idx + 1 < R.show.lots.length ? "Lot suivant dans quelques secondes…" : "C'était le dernier lot."}</p></div></div>`;
+  renderLots(); renderCard();
+}
+function endShow() {
+  R.phase = "ended";
+  const sold = R.results.filter((r) => r?.sold);
+  $("overlay").innerHTML = `<div class="overlay"><div class="box"><span class="live-badge" style="background:rgb(255 255 255 / .2)">LIVE TERMINÉ</span>
+    <h2 style="font-size:1.6rem">Merci d'avoir suivi ${esc(R.show.host.name)}</h2>
+    <p class="num">${sold.length} lot${sold.length > 1 ? "s" : ""} adjugé${sold.length > 1 ? "s" : ""} sur ${R.show.lots.length}, pour ${dh(sold.reduce((a, r) => a + r.amount, 0))} au total.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"><button class="btn btn-primary" type="button" id="replay">Revoir le live</button><a class="btn btn-ghost" href="#lives">Autres lives</a></div></div></div>`;
+  $("replay").addEventListener("click", () => { R.idx = 0; R.results = []; startLot(); });
+  renderCard();
+}
+
+function placeBid(by, amount, isMe = false) {
+  const t = Date.now();
+  R.bids.push({ by, amount, at: t });
+  if (R.phaseEnd - t < RESET) R.phaseEnd = t + RESET;
+  chat(`@${by}`, `enchérit ${dh(amount)}`, isMe ? "bid me" : "bid");
+  renderCard(true);
+}
+function myBid(amount) {
+  if (!prefs.user) { onboard(() => myBid(amount)); return; }
+  if (R.phase !== "bidding") return;
+  if (top()?.by === prefs.user.handle) { toast("Vous menez déjà l'enchère."); return; }
+  if (!(amount >= minBid())) { toast(`L'offre minimum est de ${dh(minBid())}.`); return; }
+  placeBid(prefs.user.handle, amount, true);
+  R.custom = false;
+  hearts(3);
+  toast(reserveMet() ? "Offre enregistrée. Réserve atteinte !" : "Offre enregistrée. Vous menez !");
+}
+
+function tick() {
+  if (!R) return;
+  const t = Date.now();
+  if (R.phase === "intro") { if (t >= R.phaseEnd) openBidding(); else updateClock(); }
+  else if (R.phase === "bidding") {
+    const left = R.phaseEnd - t;
+    if (left <= 0) { closeLot(); return; }
+    // Enchérisseurs simulés : plus nerveux quand le chrono baisse.
+    const tp = top();
+    if (minBid() <= R.rivalMax && Math.random() < (left < 5 * SEC ? 0.09 : 0.035)) {
+      const by = pick(HANDLES.filter((h) => h !== tp?.by));
+      const jump = Math.random() < 0.2 ? 2 : 1;
+      const amount = Math.min(R.rivalMax, minBid() + (jump - 1) * lot().inc);
+      if (amount >= minBid()) placeBid(by, amount);
+    }
+    if (left < 6 * SEC && !R.warned) { R.warned = true; chat(R.show.host.name, "Dernières secondes… qui dit mieux ?", "from-host"); }
+    if (left > 6 * SEC) R.warned = false;
+    updateClock();
+  } else if (R.phase === "result" && t >= R.phaseEnd) {
+    if (R.idx + 1 < R.show.lots.length) { R.idx++; startLot(); } else endShow();
+  }
+}
+function ambient() {
+  if (!R) return;
+  R.viewers = Math.max(50, R.viewers + Math.round(rand(-12, 18)));
+  $("viewers").textContent = `${numFmt.format(R.viewers)} spectateurs`;
+  $("chat-count").textContent = `${numFmt.format(R.viewers)} en ligne`;
+  const r = Math.random();
+  if (r < 0.45) chat(`@${pick(HANDLES)}`, pick(CHAT_POOL));
+  else if (r < 0.6) chat("", `@${pick(HANDLES)} a rejoint le live`, "sys");
+  if (Math.random() < 0.5) hearts(1 + Math.floor(Math.random() * 3));
+  // La caméra avance dans la visite.
+  if (R.phase === "intro" || R.phase === "bidding") { R.tourTick = (R.tourTick || 0) + 1; if (R.tourTick % 2 === 0) { R.tour = (R.tour + 1) % lot().tour.length; showScene(false); } }
+}
+
+/* ---------- Rendu de la salle ---------- */
+function showScene() {
+  const kind = lot().tour[R.tour];
+  const sc = $("scene");
+  sc.classList.remove("swap"); void sc.offsetWidth; sc.classList.add("swap");
+  sc.style.setProperty("--ox", `${Math.round(rand(30, 70))}%`); sc.style.setProperty("--oy", `${Math.round(rand(40, 70))}%`);
+  sc.innerHTML = sceneSVG(kind, lot());
+  $("tour").textContent = `Visite · ${T[kind]}`;
+  $("viewers").textContent = `${numFmt.format(R.viewers)} spectateurs`;
+}
+function renderLots() {
+  $("lots").innerHTML = R.show.lots.map((l, i) => {
+    const res = R.results[i];
+    const st = i === R.idx && R.phase !== "ended" ? `<small class="on">En cours</small>` : res ? (res.sold ? `<small class="sold num">Adjugé ${short(res.amount)}</small>` : `<small>Non adjugé</small>`) : `<small class="num">Départ ${short(l.start)}</small>`;
+    return `<li class="${i === R.idx ? "current" : ""}"><div class="mini">${sceneSVG("facade", l)}</div><div><strong>${esc(l.title)}</strong><span class="muted" style="font-size:.76rem">${esc(l.city)} · ${l.surface} m²</span><br>${st}</div></li>`;
+  }).join("");
+}
+let sliding = false, pendingRender = false;
+function renderCard(bump = false) {
+  if (sliding) { pendingRender = true; return; }
+  const l = lot(), t = top(), me = prefs.user?.handle, lead = t && t.by === me;
+  const head = `<div class="row1"><div><span class="label" style="opacity:.75">Lot ${R.idx + 1}/${R.show.lots.length}</span><h2>${esc(l.title)}</h2><p class="where">${esc(l.city)} · ${esc(l.district)} · ${l.surface} m²${l.bedrooms ? ` · ${l.bedrooms} ch.` : ""}</p></div>
+    <div class="ring" id="ring"><svg viewBox="0 0 56 56"><circle class="track" cx="28" cy="28" r="24"/><circle class="bar" id="ring-bar" cx="28" cy="28" r="24" stroke-dasharray="150.8" stroke-dashoffset="0"/></svg><b class="num" id="ring-t"></b></div></div>`;
+  const price = `<div class="pricebar"><div><small>${t ? "Offre actuelle" : "Prix de départ"}</small><span class="big num ${bump ? "bump" : ""}" id="big">${dh(t ? t.amount : l.start)}</span></div>
+    <div class="topb">${t ? `<small style="opacity:.8">${R.bids.length} offre${R.bids.length > 1 ? "s" : ""}</small><b>@${esc(t.by)}</b>` : ""}<span class="reserve ${reserveMet() ? "ok" : ""}">${reserveMet() ? "Réserve atteinte" : "Réserve non atteinte"}</span></div></div>`;
+  let action = "";
+  if (R.phase === "intro") action = `<p class="phase-note">Présentation en cours. Les enchères ouvrent dans <b class="num" id="intro-t"></b> à ${dh(l.start)}.</p>`;
+  else if (R.phase === "bidding") {
+    action = `<div class="slide ${lead ? "lead disabled" : ""}" id="slide"><span class="fill" id="fill"></span><span class="txt" id="slide-txt">${lead ? `Vous menez à ${dh(t.amount)}` : `Glisser pour enchérir ${dh(minBid())}`}</span>
+      <button class="knob" id="knob" type="button" aria-label="${lead ? "Vous menez l'enchère" : `Enchérir ${dh(minBid())}`}" ${lead ? "disabled" : ""}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg></button></div>
+      ${R.custom ? `<form class="custom" id="custom"><input id="custom-amt" inputmode="numeric" placeholder="Minimum ${dh(minBid())}" aria-label="Montant de votre offre"><button class="btn btn-primary btn-small" type="submit">Valider</button></form><p class="custom-err" id="custom-err" hidden></p>` : ""}
+      <div class="actions"><button type="button" id="toggle-custom">${R.custom ? "Fermer" : "Offre personnalisée"}</button><button type="button" id="love" aria-label="Envoyer des cœurs">♥ J'adore</button></div>`;
+  } else if (R.phase === "result") action = `<p class="phase-note">${R.results[R.idx]?.sold ? "Lot adjugé." : "Lot non adjugé."} ${R.idx + 1 < R.show.lots.length ? "Préparez-vous pour le lot suivant." : ""}</p>`;
+  else action = `<p class="phase-note">Le live est terminé.</p>`;
+  $("lotcard").innerHTML = head + price + action;
+  updateClock();
+  wireCard();
+  placeChat();
+  if (bump) setTimeout(() => $("big")?.classList.remove("bump"), 500);
+}
+function updateClock() {
+  if (!R) return;
+  const left = Math.max(0, R.phaseEnd - Date.now());
+  const s = Math.ceil(left / SEC);
+  const ring = $("ring"), bar = $("ring-bar"), tt = $("ring-t");
+  if (!ring) return;
+  if (R.phase === "bidding") {
+    ring.hidden = false; tt.textContent = `${s}s`;
+    bar.style.strokeDashoffset = String(150.8 * (1 - Math.min(1, left / BIDDING)));
+    ring.classList.toggle("hot", left <= RESET);
+  } else if (R.phase === "intro") {
+    ring.hidden = false; tt.textContent = `${s}s`; bar.style.strokeDashoffset = String(150.8 * (1 - left / INTRO)); ring.classList.remove("hot");
+    const it = $("intro-t"); if (it) it.textContent = `${s} s`;
+  } else ring.hidden = true;
+}
+function wireCard() {
+  const knob = $("knob"), slide = $("slide");
+  if (knob && !knob.disabled) {
+    let startX = 0, x = 0, max = 0, dragging = false;
+    const set = (v) => { x = v; knob.style.transform = `translateX(${v}px)`; $("fill").style.width = `${v + 48}px`; };
+    knob.addEventListener("pointerdown", (e) => { dragging = true; sliding = true; startX = e.clientX - x; max = slide.clientWidth - 56; knob.setPointerCapture(e.pointerId); knob.style.transition = "none"; });
+    knob.addEventListener("pointermove", (e) => { if (dragging) set(Math.max(0, Math.min(max, e.clientX - startX))); });
+    const end = () => {
+      if (!dragging) return; dragging = false; sliding = false;
+      const done = x >= max * 0.85;
+      knob.style.transition = "transform .25s"; set(0); $("fill").style.width = "0";
+      if (pendingRender) { pendingRender = false; renderCard(true); }
+      // L'offre part au prochain palier au moment où l'on relâche, même si un autre enchérisseur vient de passer.
+      if (done) myBid(minBid());
+    };
+    knob.addEventListener("pointerup", end); knob.addEventListener("pointercancel", end);
+    knob.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); myBid(minBid()); } });
+    knob.addEventListener("click", (e) => { if (e.detail === 0) return; if (x === 0 && !dragging) $("slide-txt").textContent = "Glissez le bouton jusqu'au bout →"; });
+  }
+  $("toggle-custom")?.addEventListener("click", () => { R.custom = !R.custom; renderCard(); $("custom-amt")?.focus(); });
+  $("love")?.addEventListener("click", () => hearts(4));
+  $("custom")?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const v = Number($("custom-amt").value.replace(/dh|mad/gi, "").replace(/[\s  .]/g, ""));
+    const err = $("custom-err");
+    if (!Number.isInteger(v) || v < minBid()) { err.textContent = `Saisissez au moins ${dh(minBid())}, sans centimes.`; err.hidden = false; return; }
+    myBid(v);
+  });
+}
+function chat(who, text, cls = "") {
+  const ul = $("msgs"); if (!ul) return;
+  const li = document.createElement("li");
+  li.className = cls;
+  li.innerHTML = who ? `<b>${esc(who)}</b>${esc(text)}` : esc(text);
+  ul.appendChild(li);
+  while (ul.children.length > 80) ul.firstChild.remove();
+  ul.scrollTop = ul.scrollHeight;
+}
+function hearts(n) {
+  if (!R || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  for (let i = 0; i < n; i++) later(() => {
+    const h = document.createElement("span");
+    h.className = "heart"; h.style.setProperty("--dx", `${Math.round(rand(-30, 20))}px`);
+    h.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor" width="26" height="26"><path d="M12 21s-7.5-4.6-9.6-9.2C1 8.6 3 5 6.4 5c2 0 3.6 1.1 4.6 2.6C12 6.1 13.6 5 15.6 5 19 5 21 8.6 19.6 11.8 17.5 16.4 12 21 12 21z"/></svg>`;
+    h.style.color = pick(["var(--live)", "var(--saffron)", "#fff", "#9aa8ff"]);
+    $("hearts")?.appendChild(h); setTimeout(() => h.remove(), 2700);
+  }, i * 180);
+}
+function confetti() {
+  const colors = ["#ffc46b", "#ff3b5c", "#6fd6c5", "#9aa8ff", "#fff"];
+  return `<div class="confetti">${Array.from({ length: 40 }, () => `<i style="left:${rand(0, 100)}%;background:${pick(colors)};animation-delay:${rand(0, .8).toFixed(2)}s;animation-duration:${rand(1.8, 3).toFixed(2)}s"></i>`).join("")}</div>`;
+}
+function placeChat() {
+  const room = document.querySelector(".room"), card = $("lotcard");
+  if (room && card) room.style.setProperty("--chat-bottom", `${card.offsetHeight + 30}px`);
+}
+
+/* ---------- Navigation ---------- */
+function route() {
+  leaveRoom();
+  const app = $("app"); app.classList.remove("room-mode");
+  const h = location.hash.slice(1);
+  $("footer").hidden = h.startsWith("live-");
+  if (h.startsWith("live-")) viewRoom(app, h.slice(5));
+  else viewFeed(app);
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", route);
+renderWho();
+route();
+})();
+</script>
+</html>

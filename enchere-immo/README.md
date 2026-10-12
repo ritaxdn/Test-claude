@@ -16,11 +16,24 @@ Un seul fichier, sans dépendance ni serveur : ouvrez `index.html` dans un navig
 - **Vendre un bien** : formulaire avec validation (mise à prix, réserve, pas, période de vente).
 - **Mes enchères** : suivi des lots où vous avez enchéri (en tête / surenchéri / remporté) et de vos annonces.
 
+## Adjugé Live (`live.html`) — ventes en direct
+
+Une seconde expérience inspirée du live shopping (façon Whatnot), reliée au catalogue par le menu :
+
+- **Fil des lives** : lives en cours (spectateurs, hôte, prix de départ), prochains lives avec rappel, filtres par catégorie.
+- **Salle de live** : visite « filmée » du bien (façade, patio, salon, chambre, terrasse) commentée par l'agent,
+  puis enchère éclair de 30 s ; toute offre dans les 10 dernières secondes relance le chrono à 10 s.
+- **Glisser pour enchérir** au palier suivant (ou Entrée au clavier), offre personnalisée, cœurs,
+  chat avec réponses de l'hôte aux questions courantes (titre foncier, charges, crédit, consignation…).
+- **Adjugé !** : écran de résultat (réserve atteinte ou non), puis lot suivant ; récapitulatif en fin de live.
+- Pseudo public et autorisation de consignation demandés à la première offre ; suivi des hôtes et rappels enregistrés localement.
+
 ## Limites (démo)
 
-- Les autres enchérisseurs sont **simulés** dans la page pour donner vie à la salle.
+- Les autres enchérisseurs sont **simulés** dans la page pour donner vie à la salle ; en live, la vidéo,
+  les spectateurs et le chat le sont aussi.
 - Les données sont stockées dans le `localStorage` du navigateur : rien n'est partagé entre utilisateurs.
 - Pas de vraie authentification ni de paiement de la consignation.
 
 Pour passer en production il faudra un back-end (API + base de données avec transaction sur chaque offre),
-une authentification, du temps réel (WebSocket/SSE) et un prestataire de paiement pour les consignations.
+une authentification, du temps réel (WebSocket/SSE), de la vidéo en direct (WebRTC/HLS) et un prestataire de paiement pour les consignations.
