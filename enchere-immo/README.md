@@ -57,6 +57,13 @@ Expérience façon live shopping (Whatnot), reliée au catalogue par le menu. De
 (rôle du notaire, statut de la consignation) avec un notaire ou un avocat, et la conformité à la loi 09-08 (CNDP)
 pour les données personnelles (CIN, justificatifs).
 
+### Sécurité (prototype)
+
+CSP stricte par empreinte de script (aucune requête réseau), en-têtes HTTP dans `vercel.json`
+(anti-clickjacking, HSTS, nosniff, Referrer-Policy, Permissions-Policy), revalidation de toutes les données
+relues depuis le navigateur, anti-spam du chat et bouton « Supprimer mes données de ce navigateur ».
+Détails, limites et exigences serveur du vrai produit : [SECURITY.md](SECURITY.md).
+
 ## Limites (démo)
 
 - Les autres enchérisseurs sont **simulés** dans la page pour donner vie à la salle ; en live, la vidéo,

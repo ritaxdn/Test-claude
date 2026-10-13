@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-ATLR9oi8lH5uiEWoDez5No+olwuEe/MYvj+Os4LHFBc='; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; font-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'">
+<meta name="referrer" content="no-referrer">
 <title>Adjugé Live</title>
 <style>
 /* Layout : une appli de ventes en direct façon live shopping. Un fil de lives, puis une salle :
@@ -732,6 +734,10 @@ sResume: "Mode hôte", sViewer: "Voir comme spectateur", sDelete: "Supprimer", s
     sScheduled: "Programmé",
     sOpen: "Ouvrir",
     whoCap: "✓ Vérifié · {p}",
+    delData: "Supprimer mes données de ce navigateur",
+    delConfirm: "Confirmer la suppression",
+    delDone: "Vos données ont été supprimées de ce navigateur.",
+    chatSlow: "Patientez quelques secondes avant d'envoyer un autre message.",
   },
   ar: {
     brandTag: "العقار بالمزاد، مباشرة", navLives: "البث المباشر", navStudio: "استوديو الوكيل", navWins: "عروضي المقبولة", navCatalogue: "الكتالوج",
@@ -951,6 +957,10 @@ sResume: "وضع المضيف", sViewer: "المشاهدة كمتفرج", sDelet
     sScheduled: "مبرمج",
     sOpen: "فتح",
     whoCap: "✓ موثق · {p}",
+    delData: "حذف بياناتي من هذا المتصفح",
+    delConfirm: "تأكيد الحذف",
+    delDone: "تم حذف بياناتك من هذا المتصفح.",
+    chatSlow: "انتظر بضع ثوانٍ قبل إرسال رسالة أخرى.",
   },
 };
 const PLACES_AR = { Casablanca: "الدار البيضاء", Marrakech: "مراكش", "Fès": "فاس", Essaouira: "الصويرة", Tanger: "طنجة", Rabat: "الرباط", Agadir: "أكادير", Asilah: "أصيلة", Bouskoura: "بوسكورة", Taghazout: "تغازوت",
@@ -1106,6 +1116,56 @@ const prefs = {
   notifs: store.get("adjuge-live-notifs", []),
   whatsapp: store.get("adjuge-live-whatsapp", false),
 };
+/* Sécurité : tout ce qui est relu depuis le stockage du navigateur est considéré comme non fiable
+   (modifiable par n'importe qui sur l'appareil). On le ramène à des types et longueurs attendus
+   avant de l'injecter dans la page (certaines valeurs finissent dans du SVG ou des attributs). */
+const clean = (() => {
+  const num = (v, lo, hi, d = 0) => (Number.isFinite(+v) ? Math.min(hi, Math.max(lo, +v)) : d);
+  const int = (v, lo, hi, d = 0) => Math.round(num(v, lo, hi, d));
+  const sid = (v) => String(v ?? "").replace(/[^a-z0-9-]/gi, "").slice(0, 64);
+  const str = (v, n = 200) => (typeof v === "string" ? v.slice(0, n) : "");
+  const one = (v, list, d) => (list.includes(v) ? v : d);
+  const handleOk = (v) => (typeof v === "string" && /^[a-z0-9._]{3,24}$/i.test(v) ? v : "");
+  const types = ["appartement", "maison", "villa", "riad", "terrain", "local"];
+  const gua = (g) => (g && g.req ? { req: true, amount: int(g.amount, 0, 1e10), holder: str(g.holder, 80), holder_ar: str(g.holder_ar, 80), cond: str(g.cond, 300) } : g ? { req: false } : undefined);
+  const lot = (l = {}) => {
+    const type = one(l.type, types, "appartement");
+    return { id: sid(l.id) || "lot", title: str(l.title, 120), title_ar: str(l.title_ar, 120), type, city: str(l.city, 60), district: str(l.district, 60),
+      surface: int(l.surface, 1, 1e6, 1), rooms: int(l.rooms, 0, 99), bedrooms: int(l.bedrooms, 0, 99), hue: int(l.hue, 0, 360, 30),
+      start: int(l.start, 0, 1e10), reserve: int(l.reserve, 0, 1e10), inc: int(l.inc, 1, 1e9, 1000), tf: str(l.tf, 40), year: str(String(l.year ?? ""), 10), floor: str(String(l.floor ?? ""), 10),
+      charges: int(l.charges, 0, 1e7), zone: one(l.zone, ["hab", "villa", "com"], "hab"), state: one(l.state, ["good", "works"], "good"), tour: TOURS[type],
+      pitch: (Array.isArray(l.pitch) ? l.pitch : []).slice(0, 5).map((x) => str(x, 300)), pitch_ar: Array.isArray(l.pitch_ar) ? l.pitch_ar.slice(0, 5).map((x) => str(x, 300)) : undefined,
+      gua: gua(l.gua), approved: !!l.approved, docsReviewed: !!l.docsReviewed, sellerVerified: !!l.sellerVerified };
+  };
+  const person = (x = {}) => ({ name: str(x.name, 60), city: str(x.city, 60) });
+  const show = (x = {}) => ({ id: sid(x.id) || `mon-live-${Math.random().toString(36).slice(2, 7)}`, title: str(x.title, 60), title_ar: x.title_ar ? str(x.title_ar, 60) : undefined, city: str(x.city, 60),
+    preview: x.preview ? { type: one(x.preview.type, types, "appartement"), hue: int(x.preview.hue, 0, 360, 30) } : undefined, count: x.count != null ? int(x.count, 0, 99) : undefined,
+    tags: (Array.isArray(x.tags) ? x.tags : []).filter((k) => CATS.includes(k)), live: !!x.live, stage: int(x.stage, 0, 6), viewers: int(x.viewers, 0, 1e6, 200),
+    host: { name: str(x.host?.name, 40), handle: handleOk(x.host?.handle) || "agent.demo", agency: str(x.host?.agency, 40), hue: int(x.host?.hue, 0, 360, 30) },
+    notary: x.notary ? person(x.notary) : undefined, terms: x.terms ? { req: !!x.terms.req, pct: int(x.terms.pct, 0, 30), holder: str(x.terms.holder, 60), cond: str(x.terms.cond, 300) } : undefined,
+    startsAt: Number.isFinite(+x.startsAt) && x.startsAt ? +x.startsAt : undefined, lots: (Array.isArray(x.lots) ? x.lots : []).slice(0, 20).map(lot) });
+  const win = (w = {}) => ({ id: sid(w.id) || `w-${Date.now()}`, lot: lot(w.lot), showTitle: (Array.isArray(w.showTitle) ? w.showTitle : [w.showTitle]).slice(0, 2).map((x) => str(x, 80)),
+    notary: w.notary ? person(w.notary) : null, amount: int(w.amount, 0, 1e10), at: int(w.at, 0, 4e12, Date.now()), step: int(w.step, 0, 6), flow: int(w.flow, 0, 2), demo: !!w.demo });
+  const user = (u) => {
+    const handle = handleOk(u?.handle);
+    if (!handle) return null;
+    const g = {}; Object.keys(u.guarantees || {}).slice(0, 200).forEach((k) => { if (sid(k)) g[sid(k)] = true; });
+    return { handle, terms: int(u.terms, 0, 99), idVerified: !!u.idVerified, cin: /^[A-Z]{1,2}•+\d{2}$/.test(u.cin || "") ? u.cin : "",
+      bidderNo: /^\d{4}$/.test(u.bidderNo || "") ? u.bidderNo : String(1000 + Math.floor(Math.random() * 9000)), capacity: int(u.capacity, 0, 1e10),
+      capSource: one(u.capSource, ["own", "loan", "mix"], undefined), guarantees: g };
+  };
+  const notifVal = (v) => (typeof v === "string" ? str(v, 200) : Array.isArray(v) ? v.slice(0, 2).map((x) => str(x, 200)) : typeof v === "number" ? v : v && typeof v === "object" ? { at: int(v.at, 0, 4e12) } : "");
+  const notif = (n = {}) => ({ id: sid(n.id), key: Object.prototype.hasOwnProperty.call(I18N.fr, n.key) && typeof I18N.fr[n.key] === "string" ? n.key : "nWelcome",
+    vars: Object.fromEntries(Object.entries(n.vars || {}).slice(0, 6).filter(([k]) => /^[a-z]{1,10}$/i.test(k)).map(([k, v]) => [k, notifVal(v)])), at: int(n.at, 0, 4e12), read: !!n.read });
+  const list = (v, f, max) => (Array.isArray(v) ? v.slice(0, max).map(f).filter(Boolean) : []);
+  const objs = (f) => (x) => (x && typeof x === "object" && !Array.isArray(x) ? f(x) : null);
+  return { user: objs(user), shows: (v) => list(v, objs(show), 30), wins: (v) => list(v, objs(win), 50), notifs: (v) => list(v, objs(notif), 40),
+    ids: (v) => list(v, (x) => (typeof x === "string" ? sid(x) || handleOk(x) : ""), 200) };
+})();
+[["user", "user", null], ["myShows", "shows", []], ["wins", "wins", []], ["notifs", "notifs", []], ["reminders", "ids", []], ["follows", "ids", []]].forEach(([k, f, d]) => {
+  try { prefs[k] = clean[f](prefs[k]); } catch { prefs[k] = d; }
+});
+prefs.whatsapp = !!prefs.whatsapp;
 const save = (k) => store.set(`adjuge-live-${k === "myShows" ? "myshows" : k}`, prefs[k]);
 const allShows = () => [...prefs.myShows, ...SHOWS];
 const me = () => prefs.user?.handle;
@@ -1391,6 +1451,13 @@ function openQualification() {
       ${row(cap > 0, cap ? t("capUpTo", { p: dh(cap) }) : t("q2"), id ? b("qq-cap", cap ? "capIncrease" : "qGoCap") : "")}
       ${l ? (q.g.req ? row(q.gua, `${t("q3")} · ${lt(l, "title")} · ${dh(q.g.amount)}`, q.gua || !id ? "" : b("qq-gua", "qGoGua")) : row(true, t("q3na"))) : `<li><span aria-hidden="true">ⓘ</span><span>${esc(t("qualGeneral"))}</span></li>`}
     </ul>`);
+  el.insertAdjacentHTML("beforeend", `<button class="btn btn-danger btn-small" type="button" id="del-data" style="justify-self:start">${esc(t("delData"))}</button>`);
+  el.querySelector("#del-data").addEventListener("click", (e) => {
+    if (!e.currentTarget.dataset.armed) { e.currentTarget.dataset.armed = "1"; e.currentTarget.textContent = t("delConfirm"); return; }
+    try { Object.keys(localStorage).filter((k) => k.startsWith("adjuge-live-")).forEach((k) => localStorage.removeItem(k)); } catch {}
+    Object.assign(prefs, { user: null, reminders: [], follows: [], wins: [], myShows: [], notifs: [], whatsapp: false });
+    closeModal(); toast(t("delDone")); renderWho(); renderBell(); route();
+  });
   el.querySelector("#qq-id")?.addEventListener("click", () => onboard(refreshQual));
   el.querySelector("#qq-cap")?.addEventListener("click", () => openCapacity(l ? q.need : 0));
   el.querySelector("#qq-gua")?.addEventListener("click", () => openGuarantee(l));
@@ -1554,6 +1621,9 @@ function buildRoomShell(app) {
     const text = $("chat-input").value.trim(); if (!text) return;
     if (R.host) { chat(R.show.host.name, text, "from-host"); $("chat-input").value = ""; return; }
     if (!prefs.user) { onboard(() => $("chat-form")?.requestSubmit()); return; }
+    // Anti-spam : un message toutes les 3 secondes au plus.
+    if (Date.now() - (R.lastChat || 0) < 3000) { toast(t("chatSlow")); return; }
+    R.lastChat = Date.now();
     chat(`@${me()}`, text, "me"); $("chat-input").value = "";
     const ans = HOST_ANSWERS.find(([re]) => re.test(text));
     if (ans || /[?؟]/.test(text)) later(() => chat(R.show.host.name, `@${me()} ${ans ? (lang === "ar" ? ans[2] : ans[1]) : lang === "ar" ? "سؤال مزيان، غادي نجاوبك فالخاص من بعد هاد العقار." : "Bonne question, je vous réponds en privé juste après ce lot."}`, "from-host"), rand(1800, 3500));
