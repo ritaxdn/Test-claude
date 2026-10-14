@@ -33,6 +33,8 @@ export const legacyRedirects: Record<string, string> = {
   "/skin-bright": "/fr/technologies/skin-bright",
   "/tanita-bc-1000": "/fr/technologies/tanita", // fiche TANITA = destination commerciale pertinente
   "/my-pen": "/fr/technologies/mym-dermapen", // « My Pen » = MYM DERMAPEN (fiche)
+  "/slimax-lipo-3": "/fr/technologies/slimax-lipo-3",
+  "/longiflash": "/fr/technologies/longiflash",
   // Anciennes pages de gamme recréées en pages de gamme (validé par Cellulift)
   "/solutions-lasers": "/fr/technologies/gammes/lasers",
   "/amincissement-avance": "/fr/technologies/gammes/amincissement",
