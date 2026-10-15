@@ -18,6 +18,10 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
   },
+  // CRM interne (page statique dans public/crm) accessible à l'adresse /crm.
+  async rewrites() {
+    return [{ source: "/crm", destination: "/crm/index.html" }];
+  },
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },
