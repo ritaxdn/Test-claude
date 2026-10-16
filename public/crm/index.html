@@ -992,15 +992,15 @@ function openOpp(o){
 // Mentions légales imprimées en pied de devis : à compléter (raison sociale, ICE, RC, IF, adresse, RIB…).
 const SOCIETE = { nom:"CELLULIFT", activite:"Distribution d’équipements de médecine esthétique", telephone:"+212 (0)5 22 49 01 09", email:"", site:"cellulift.ma", ice:"001910344000074", rc:"", if_:"", patente:"", cnss:"", rib:"", banque:"" };
 const AGENCES = {
-  casablanca:{nom:"Casablanca", adresse:"N°02 Rue Savoie, Quartier des Hôpitaux, Casablanca, Maroc"},
+  casablanca:{nom:"Siège Casablanca", adresse:"N°02 Rue Savoie, Quartier des Hôpitaux, Casablanca, Maroc"},
   marrakech:{nom:"Agence Marrakech", adresse:"Hay Al Massira III, C 624, Marrakech"},
   tanger:{nom:"Agence Tanger", adresse:"N°73, Bd Moulay Rachid, Tanger"},
 };
-// Agence par défaut selon la ville du client (nord → Tanger, sud → Marrakech, sinon Casablanca).
+// Agence par défaut selon la ville du client : nord → agence Tanger, sud → agence Marrakech, reste du pays → siège Casablanca.
 function agenceDefaut(c){
   const v=strip((c&&c.ville)||"");
-  if(/tanger|tetouan|larache|asilah|al hoce|nador|chefchaouen|fnideq|mdiq|ksar/.test(v)) return "tanger";
-  if(/marrakech|agadir|safi|essaouira|ouarzazate|beni mellal|kelaa|inezgane|tiznit|guelmim|laayoune|dakhla|taroudant/.test(v)) return "marrakech";
+  if(/tanger|tetouan|larache|asilah|al hoce|nador|chefchaouen|fnideq|mdiq|ksar|martil|ouazzane|oujda|berkane|taourirt|driouch/.test(v)) return "tanger";
+  if(/marrakech|agadir|safi|essaouira|ouarzazate|beni mellal|kelaa|inezgane|ait melloul|tiznit|guelmim|laayoune|dakhla|taroudant|errachidia|zagora|tata|youssoufia|chichaoua/.test(v)) return "marrakech";
   return "casablanca";
 }
 const DEVIS_LABEL = {brouillon:"Brouillon",envoye:"Envoyé",accepte:"Accepté",refuse:"Refusé",signe:"Signé"};
@@ -1273,7 +1273,7 @@ ${lignes.map(l=>`<tr><td>${esc(l.designation)}</td><td class="num">${+l.quantite
 <div class="lettres">Arrêté le présent devis à la somme de <b>${esc(enLettres(t.ttc))}</b> toutes taxes comprises.</div>
 ${d.conditions?`<div class="cond"><div class="lab">Conditions</div>${esc(d.conditions)}</div>`:""}
 <div class="foot"><div></div><div><div class="lab">Bon pour accord — date, cachet et signature du client</div><div class="signbox"></div></div></div>
-<div class="legal"><span translate="no">${esc(SOCIETE.nom)}</span>${legal?" · "+esc(legal):""} · Tél. ${esc(SOCIETE.telephone)}<br>${Object.values(AGENCES).map(a=>esc(a.nom.replace(/^Agence /,""))+" : "+esc(a.adresse)).join(" · ")}${SOCIETE.rib?`<br>RIB ${esc(SOCIETE.rib)}${SOCIETE.banque?" · "+esc(SOCIETE.banque):""}`:""}</div>
+<div class="legal"><span translate="no">${esc(SOCIETE.nom)}</span>${legal?" · "+esc(legal):""} · Tél. ${esc(SOCIETE.telephone)}<br>${Object.values(AGENCES).map(a=>esc(a.nom)+" : "+esc(a.adresse)).join(" · ")}${SOCIETE.rib?`<br>RIB ${esc(SOCIETE.rib)}${SOCIETE.banque?" · "+esc(SOCIETE.banque):""}`:""}</div>
 </div><script>(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>setTimeout(()=>window.print(),300));<\/script></body></html>`;
   w.document.open(); w.document.write(html); w.document.close();
 }
