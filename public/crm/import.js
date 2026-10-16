@@ -384,7 +384,7 @@
     const telByContact = new Map(opps.filter((o) => o.tel && o.contact).map((o) => [nameKey(o.contact), o.tel]));
 
     const seen = new Map();
-    const acts = (sheets["Activités"] || sheets["Activites"] || []).map((r) => {
+    const acts = (sheets["Activités"] || sheets["Activites"] || []).filter((r) => ["Label", "Type", "Date début", "Date de création", "opportunité", "Créateur", "Responsable"].some((k) => clean(r[k]))).map((r) => {
       const type = TYPE_ACT[strip(clean(r["Type"])).replace(/[^a-z]/g, "")] || "autre";
       const quand = frDate(r["Date début"]) || frDate(r["Date de création"]);
       const base = ["act", clean(r["Site"]), clean(r["Date de création"]), clean(r["Label"]), type, clean(r["opportunité"])].join("|");

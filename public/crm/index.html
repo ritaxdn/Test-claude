@@ -2774,11 +2774,12 @@ function openImport(){
     const files=[...e.target.files]; plan=null; go.disabled=true; if(!files.length){ out.innerHTML=""; return; }
     out.innerHTML=`<p class="hint">Lecture de ${files.length} fichier${files.length>1?"s":""}…</p>`;
     try{
-      await loadScript("https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"); await loadScript("/crm/import.js?v=20261016-5");
+      await loadScript("https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"); await loadScript("/crm/import.js?v=20261016-6");
       if(!window.CRMImport||!CRMImport.mapExportCommercial||!CRMImport.readSheets) throw new Error("Une ancienne version de la page est encore chargée. Rechargez la page (Cmd + Maj + R sur Mac, Ctrl + Maj + R sur PC) puis recommencez.");
       const sheets=await CRMImport.readSheets(files,window.XLSX);
       if(sheets["Contacts"] && Object.keys(sheets).some(n=>/activit/i.test(n))){
         plan=CRMImport.mapExportCommercial(sheets,state.comptes,state.equipe); const st=plan.stats;
+        if(!(st.contacts+st.opps+st.acts+st.devis)){ out.innerHTML=`<div class="panel" style="padding:16px"><p style="margin:0"><b>Ce fichier est vide</b> : ses feuilles n’ont aucune ligne remplie. Rien n’a été importé. Vérifie dans l’ancien CRM que l’export a bien été fait pour le bon commercial et sur toute la période.</p></div>`; plan=null; go.disabled=true; return; }
         out.innerHTML=`<div class="panel" style="padding:16px">
           <p style="margin:0 0 8px">Export de <b>${esc(st.owner||"commercial")}</b>${plan.owner?` (${esc(plan.owner.email)})`:""} :</p>
           <ul style="margin:0 0 8px;padding-left:18px"><li><b>${nf.format(st.contacts)}</b> contacts</li><li><b>${nf.format(st.opps)}</b> opportunités, dont ${st.gagnees} gagnées et ${st.perdues} annulées</li><li><b>${nf.format(st.acts)}</b> activités, dont ${st.aFaire} à faire</li><li><b>${st.devis}</b> devis</li></ul>
