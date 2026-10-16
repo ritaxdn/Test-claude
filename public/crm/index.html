@@ -103,6 +103,8 @@ nav.tabs::-webkit-scrollbar{display:none}
 @media (max-width:1439px){.who{display:none}}
 @media (max-width:639px){.status{width:100%;justify-content:flex-start}}
 .btn.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 40%,transparent)}
+.chip:has(input:focus-visible){outline:2px solid currentColor;outline-offset:2px}
+.btn.primary.bad{background:var(--bad);border-color:var(--bad);color:#fff}
 .btn.bad{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 40%,transparent)}
 .btn[disabled]{opacity:.5;cursor:default;transform:none}
 .btn[aria-busy="true"]::after{content:"";width:12px;height:12px;border-radius:50%;border:2px solid currentColor;border-right-color:transparent;animation:spin .7s linear infinite}
@@ -811,7 +813,7 @@ let shown=PAGE;
 function viewComptes(v){
   const q=strip(filt.q);
   const list=state.comptes.filter(c=>(!filt.segment||(filt.segment==="a_classer"?c.metier_a_verifier:filt.segment.startsWith("cat:")?c.categorie===filt.segment.slice(4):c.metier===filt.segment))&&(!filt.ville||c.ville===filt.ville)&&(!filt.statut||c.statut===filt.statut)&&(!filt.com||(filt.com==="none"?!c.commercial_id:c.commercial_id===filt.com))
-    &&(!q||strip([c.nom,c.specialite,c.telephone,c.ville,c.notes].filter(Boolean).join(" ")).includes(q)||(c.telephone||"").replace(/\D/g,"").includes(q.replace(/\D/g,"")||"§")));
+    &&(!q||strip([c.nom,c.specialite,c.telephone,c.telephone_2,c.ville,c.notes].filter(Boolean).join(" ")).includes(q)||((c.telephone||"")+" "+(c.telephone_2||"")).replace(/\D/g,"").includes(q.replace(/\D/g,"")||"§")));
   const page=list.slice(0,shown);
   const nf=new Intl.NumberFormat("fr-FR");
   v.innerHTML=`<div class="section-head"><div><h2>${estPilote()?"Clients":"Mes clients"}</h2><p class="hint">${estPilote()?"":"Tu vois les clients que tu suis ou que tu as créés. "}Médecins et non-médecins, classés par spécialité${(n=>n?` · <button class="linkish" data-act="f-a-classer">${new Intl.NumberFormat("fr-FR").format(n)} à classer</button>`:"")(state.comptes.filter(c=>c.metier_a_verifier&&(estPilote()||!me||c.commercial_id===me.id)).length)}</p></div>
@@ -1010,30 +1012,99 @@ async function chargerDoublons(){
   const {data,error}=await sb.rpc("doublons_base"); if(!document.contains(el)) return;
   if(error){ el.innerHTML=`<p class="hint">${esc(errorCopy(error)[1])}</p>`; return; }
   const paires=(data||[]).map(r=>({a:byId(state.comptes,r.a),b:byId(state.comptes,r.b),motif:r.motif})).filter(p=>p.a&&p.b);
-  const ligne=c=>`<button class="linkish" data-act="open-compte" data-id="${c.id}"><b>${esc(c.nom)}</b></button><div class="hint" style="margin:0">${esc([c.ville,c.telephone,c.commercial_id?nomMembre(c.commercial_id):"non assigné"].filter(Boolean).join(" · "))}</div>`;
-  el.innerHTML=paires.length?`<p class="hint" style="margin-top:0">${paires.length} paire${paires.length>1?"s":""}${paires.length>=500?" (500 premières)":""}</p><div class="closed-list">${paires.slice(0,100).map(p=>`<div class="closed-row"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1;min-width:0"><div>${ligne(p.a)}</div><div>${ligne(p.b)}</div></div><div class="tools"><span class="pill">${esc(p.motif)}</span><button class="btn small" data-act="fusion" data-a="${p.a.id}" data-b="${p.b.id}">Fusionner</button></div></div>`).join("")}</div>${paires.length>100?`<p class="hint">Les 100 premières sont affichées ; fusionnez-les pour voir la suite.</p>`:""}`
+  const ligne=c=>`<button class="linkish" data-act="open-compte" data-id="${c.id}"><b>${esc(c.nom)}</b></button><div class="hint" style="margin:0">${esc([c.ville,c.telephone,c.telephone_2,c.commercial_id?nomMembre(c.commercial_id):"non assigné"].filter(Boolean).join(" · "))}</div>`;
+  el.innerHTML=paires.length?`<p class="hint" style="margin-top:0">${paires.length} paire${paires.length>1?"s":""}${paires.length>=500?" (500 premières)":""}</p><div class="closed-list">${paires.slice(0,100).map(p=>`<div class="closed-row"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1;min-width:0"><div>${ligne(p.a)}</div><div>${ligne(p.b)}</div></div><div class="tools"><span class="pill">${esc(p.motif)}</span><button class="btn small" data-act="fusion" data-a="${p.a.id}" data-b="${p.b.id}">Traiter</button></div></div>`).join("")}</div>${paires.length>100?`<p class="hint">Les 100 premières sont affichées ; fusionnez-les pour voir la suite.</p>`:""}`
     :`<p class="hint">Aucun doublon détecté.</p>`;
 }
 function formFusion(aId,bId){
   const A=byId(state.comptes,aId), B=byId(state.comptes,bId); if(!A||!B) return;
-  const cnt=c=>[["contacts",state.contacts],["opportunités",state.opportunites],["activités",state.activites],["devis",state.devis],["paiements",state.paiements]].map(([l,arr])=>{ const n=arr.filter(x=>x.compte_id===c.id).length; return n?n+" "+l:""; }).filter(Boolean).join(", ")||"aucun historique";
-  const carte=(c,k)=>`<label class="check" style="align-items:flex-start;padding:12px;border:1px solid var(--line-strong);border-radius:16px"><input type="radio" name="garder" value="${c.id}" ${k?"checked":""} style="margin-top:3px"><span><b>${esc(c.nom)}</b><span class="hint" style="display:block;margin:2px 0 0">${esc([c.ville,c.telephone,c.email,c.specialite].filter(Boolean).join(" · "))}</span><span class="hint" style="display:block;margin:2px 0 0">Suivi par ${esc(c.commercial_id?nomMembre(c.commercial_id):"personne")} · ${esc(cnt(c))}</span></span></label>`;
-  const h=`<p style="margin-top:0">Choisis la fiche à <b>garder</b>. Tout l’historique de l’autre (contacts, opportunités, activités, devis, paiements, commentaires) y est déplacé, ses coordonnées complètent les champs vides, puis elle est supprimée. La fusion est inscrite dans l’historique.</p>
-    <div style="display:flex;flex-direction:column;gap:8px">${carte(A,true)}${carte(B,false)}</div>`;
+  const liens=c=>[["contacts",state.contacts],["opportunités",state.opportunites],["activités",state.activites],["devis",state.devis],["paiements",state.paiements]].map(([l,arr])=>[l,arr.filter(x=>x.compte_id===c.id).length]).filter(x=>x[1]);
+  const cnt=c=>liens(c).map(([l,n])=>n+" "+l).join(", ")||"aucun historique";
+  const poids=c=>liens(c).reduce((s,x)=>s+x[1],0);
+  const base=poids(B)>poids(A)?B:A, autre=base===A?B:A;
+  const vide=v=>v==null||String(v).trim()==="";
+  const telK=t=>String(t||"").replace(/\D/g,"").slice(-9);
+  const tels=[]; [base.telephone,base.telephone_2,autre.telephone,autre.telephone_2].forEach(t=>{ t=String(t||"").trim(); if(t&&telK(t).length>=6&&!tels.some(x=>telK(x)===telK(t))) tels.push(t); });
+  const metLab=c=>[CATEGORIES[c.categorie],(METIERS[c.metier]||[])[1]].filter(Boolean).join(" · ")||"À classer";
+  const CH=[["nom","Nom",c=>c.nom],["metier","Catégorie et spécialité",metLab],["specialite","Précision",c=>c.specialite],["ville","Ville",c=>c.ville],["adresse","Adresse",c=>c.adresse],["email","Email",c=>c.email],["site_web","Site web",c=>c.site_web],["statut","Statut",c=>STATUTS[c.statut]||c.statut],["source","Source",c=>c.source],["commercial_id","Suivi par",c=>c.commercial_id?nomMembre(c.commercial_id):""]];
+  const diff=CH.filter(([k,,lab])=>!vide(lab(A))&&!vide(lab(B))&&String(lab(A)).trim()!==String(lab(B)).trim());
+  const auto=CH.filter(([k,,lab])=>!diff.some(d=>d[0]===k)&&vide(lab(base))&&!vide(lab(autre)));
+  const defaut=k=>{ if(k==="statut") return B.statut==="client"&&A.statut!=="client"?"b":A.statut==="client"&&B.statut!=="client"?"a":(base===A?"a":"b");
+    if(k==="metier"){ const faible=c=>!c.categorie||c.metier==="autre"||c.metier_a_verifier; if(faible(A)&&!faible(B)) return "b"; if(faible(B)&&!faible(A)) return "a"; }
+    return base===A?"a":"b"; };
+  const radio=(name,val,txt,on)=>`<label class="check" style="flex:1;min-width:140px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line-strong);border-radius:12px"><input type="radio" name="${name}" value="${val}" ${on?"checked":""} style="margin-top:3px"><span>${txt}</span></label>`;
+  const carte=(c,l)=>`<div style="flex:1;min-width:0;padding:10px 12px;border:1px solid var(--line-strong);border-radius:12px"><span class="pill">${l}</span> <b>${esc(c.nom)}</b><div class="hint" style="margin:4px 0 0">${esc([c.ville,c.telephone,c.telephone_2,c.email].filter(Boolean).join(" · ")||"Aucune coordonnée")}</div><div class="hint" style="margin:2px 0 0">Suivi par ${esc(c.commercial_id?nomMembre(c.commercial_id):"personne")} · ${esc(cnt(c))}</div></div>`;
+  const telOpts=(sel,blank)=>(blank?`<option value="">${blank}</option>`:"")+tels.map(t=>`<option value="${esc(t)}" ${t===sel?"selected":""}>${esc(t)}</option>`).join("");
+  const t1=tels[0]||"", t2=tels.find(t=>t!==t1)||"";
+  const h=`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">${carte(A,"A")}${carte(B,"B")}</div>
+   <div class="chips" role="radiogroup" aria-label="Que faire ?" style="margin-bottom:14px">
+     ${[["fusion","Fusionner en une fiche"],["suppr","Supprimer une fiche"],["ignore","Ce n’est pas un doublon"]].map(([v,l],i)=>`<label class="chip" style="cursor:pointer"><input type="radio" name="mode" value="${v}" ${i?"":"checked"} style="position:absolute;opacity:0;pointer-events:none">${l}</label>`).join("")}
+   </div>
+   <div data-mode="fusion">
+     <p class="hint" style="margin-top:0">Choisis ce que tu gardes, ligne par ligne. Tout l’historique des deux fiches (contacts, opportunités, activités, devis, paiements, commentaires) est regroupé sur une seule, l’autre est supprimée. Les notes des deux sont conservées.</p>
+     ${tels.length>1?`<fieldset style="border:0;padding:0;margin:0 0 12px"><legend style="font-weight:600;margin-bottom:6px">Téléphones</legend><div class="form-grid">
+        ${fld("fz-t1","Téléphone 1 (principal)",`<select id="fz-t1" name="tel1">${telOpts(t1)}</select>`)}
+        ${fld("fz-t2","Téléphone 2",`<select id="fz-t2" name="tel2">${telOpts(t2,"Aucun")}</select>`)}</div>
+        ${tels.length>2?`<p class="hint" style="margin:4px 0 0">${tels.length} numéros différents : seuls 2 sont gardés, les autres sont copiés dans les notes.</p>`:""}</fieldset>`:""}
+     ${diff.map(([k,l,lab])=>`<fieldset style="border:0;padding:0;margin:0 0 12px"><legend style="font-weight:600;margin-bottom:6px">${esc(l)}</legend><div style="display:flex;gap:8px;flex-wrap:wrap">${radio("c_"+k,"a",`<span class="hint" style="margin:0">A</span> ${esc(lab(A))}`,defaut(k)==="a")}${radio("c_"+k,"b",`<span class="hint" style="margin:0">B</span> ${esc(lab(B))}`,defaut(k)==="b")}</div></fieldset>`).join("")}
+     ${!diff.length&&tels.length<2?`<p class="hint">Les deux fiches ne se contredisent sur aucun champ.</p>`:""}
+     ${auto.length?`<p class="hint">Repris automatiquement de la fiche qui l’a : ${esc(auto.map(x=>x[1]).join(", "))}.</p>`:""}
+   </div>
+   <div data-mode="suppr" hidden>
+     <p class="hint" style="margin-top:0">Pour une fiche de test ou créée par erreur. L’autre fiche ne change pas.</p>
+     <div style="display:flex;gap:8px;flex-wrap:wrap">${radio("suppr",A.id,`Supprimer <b>A</b> · ${esc(A.nom)}<span class="hint" style="display:block;margin:2px 0 0">${esc(cnt(A))}</span>`,poids(A)<=poids(B))}${radio("suppr",B.id,`Supprimer <b>B</b> · ${esc(B.nom)}<span class="hint" style="display:block;margin:2px 0 0">${esc(cnt(B))}</span>`,poids(B)<poids(A))}</div>
+     <div id="fz-warn" style="margin-top:10px"></div>
+   </div>
+   <div data-mode="ignore" hidden><p class="hint" style="margin-top:0">Les deux fiches restent telles quelles et cette paire ne sera plus proposée dans les doublons (par exemple deux personnes différentes qui portent le même nom).</p></div>`;
   const submit=async f=>{
-    const keep=f.garder===B.id?B:A, drop=keep===A?B:A;
-    setStatus("busy","Fusion…");
+    const mode=f.mode||"fusion";
     try{
+      if(mode==="ignore"){
+        const [x,y]=[A.id,B.id].sort();
+        const {error}=await sb.from("doublons_ignores").insert({a:x,b:y,par:me&&me.id||null}); if(error) throw error;
+        toast("Paire retirée des doublons"); closeModal(true); await load(); return true;
+      }
+      if(mode==="suppr"){
+        const vic=f.suppr===B.id?B:A;
+        setStatus("busy","Suppression…");
+        const {error}=await sb.from("comptes").delete().eq("id",vic.id); if(error) throw error;
+        toast("Fiche « "+vic.nom+" » supprimée"); closeModal(true); await load(); return true;
+      }
+      const keep=base, drop=autre, pick=k=>{ const ch=f["c_"+k]; return ch?(ch==="a"?A:B):(vide(CH.find(x=>x[0]===k)[2](keep))?drop:keep); };
+      setStatus("busy","Fusion…");
       for(const t of ["contacts","opportunites","activites","devis","paiements","commentaires"]){ const {error}=await sb.from(t).update({compte_id:keep.id}).eq("compte_id",drop.id); if(error) throw error; }
-      const patch={}; ["telephone","email","adresse","site_web","specialite","source","ville"].forEach(k=>{ if(!keep[k]&&drop[k]) patch[k]=drop[k]; });
-      if(drop.notes) patch.notes=[keep.notes,"Fusionné avec « "+drop.nom+" » : "+drop.notes].filter(Boolean).join("\n");
-      if(drop.statut==="client"&&keep.statut!=="client") patch.statut="client";
+      const patch={};
+      ["nom","specialite","ville","adresse","email","site_web","statut","source","commercial_id"].forEach(k=>{ const src=pick(k); if(src!==keep&&(src[k]??null)!==(keep[k]??null)) patch[k]=src[k]; });
+      const sm=pick("metier"); if(sm!==keep) ["categorie","metier","metier_a_verifier","metier_auto","segment"].forEach(k=>{ patch[k]=sm[k]; });
+      let tel1=tels[0]||null, tel2=null;
+      if(tels.length>1){ tel1=f.tel1||tels[0]; tel2=f.tel2&&telK(f.tel2)!==telK(tel1)?f.tel2:null; }
+      if(tel1!==(keep.telephone||null)) patch.telephone=tel1;
+      if(tel2!==(keep.telephone_2||null)) patch.telephone_2=tel2;
+      const perdus=tels.filter(t=>t!==tel1&&t!==tel2);
+      const notes=[keep.notes, drop.notes?"Fusionné avec « "+drop.nom+" » : "+drop.notes:"Fusionné avec « "+drop.nom+" »", perdus.length?"Autres numéros : "+perdus.join(", "):""].filter(Boolean).join("\n");
+      if(notes!==(keep.notes||"")) patch.notes=notes;
       if(Object.keys(patch).length){ const {error}=await sb.from("comptes").update(patch).eq("id",keep.id); if(error) throw error; }
       const {error}=await sb.from("comptes").delete().eq("id",drop.id); if(error) throw error;
       toast("Fiches fusionnées"); closeModal(true); await load(); return true;
     }catch(e){ setStatus("bad","Échec"); toast(errorCopy(e).join(" — ")); await load(); return false; }
   };
-  modal("Fusionner deux fiches",h,submit,"Fusionner");
+  submit.validate=f=>{
+    if(f.mode==="suppr"){ const vic=f.suppr===B.id?B:A; if(poids(vic)&&!f.ok_suppr) return ["ok_suppr","Coche la case pour confirmer : l’historique de cette fiche sera supprimé aussi."]; }
+    if((f.mode||"fusion")==="fusion"&&tels.length>1&&f.tel2&&telK(f.tel2)===telK(f.tel1)) return ["tel2","Le téléphone 2 est le même que le téléphone 1."];
+    return null;
+  };
+  modal("Doublon : que faire ?",h,submit,"Fusionner");
+  const form=$("#mform"), LAB={fusion:"Fusionner",suppr:"Supprimer la fiche",ignore:"Ce n’est pas un doublon"};
+  const maj=()=>{
+    const m=(form.querySelector('input[name="mode"]:checked')||{}).value||"fusion";
+    form.querySelectorAll("[data-mode]").forEach(d=>{ d.hidden=d.dataset.mode!==m; });
+    form.querySelectorAll('input[name="mode"]').forEach(i=>i.parentElement.setAttribute("aria-pressed",String(i.checked)));
+    const b=$("#msubmit"); if(b){ b.textContent=LAB[m]; b.classList.toggle("bad",m==="suppr"); }
+    const sel=(form.querySelector('input[name="suppr"]:checked')||{}).value, vic=sel===B.id?B:A, w=$("#fz-warn");
+    if(w) w.innerHTML=poids(vic)?`<p style="margin:0 0 6px;color:var(--bad,#c0392b)"><b>Attention :</b> cette fiche a ${esc(cnt(vic))}. Tout sera supprimé avec elle. Si ce n’est pas une fiche de test, choisis plutôt « Fusionner ».</p><label class="check"><input type="checkbox" name="ok_suppr" value="1"> Je confirme la suppression définitive</label>`:`<p class="hint" style="margin:0">Aucun historique sur cette fiche.</p>`;
+  };
+  form.addEventListener("change",e=>{ if(e.target.name==="mode"||e.target.name==="suppr") maj(); });
+  maj();
 }
 function viewEquipe(v){
   setTimeout(chargerDoublons,0);
@@ -1102,14 +1173,15 @@ function formCompte(c){
    ${fld("m-spec","Précision (texte libre)",`<input id="m-spec" name="specialite" autocomplete="off" placeholder="Ex. Kiné et amincissement…" value="${esc(c.specialite||"")}">`)}
    ${fld("m-src","Source",`<input id="m-src" name="source" list="dl-sources" autocomplete="off" placeholder="Ex. Medical Expo 2026…" value="${esc(c.source||"")}"><datalist id="dl-sources">${sources().map(x=>`<option value="${esc(x)}">`).join("")}</datalist>`)}
    ${fld("m-tel","Téléphone",`<input id="m-tel" name="telephone" type="tel" inputmode="tel" autocomplete="off" placeholder="+212 6…" value="${esc(c.telephone||"")}">`)}
+   ${fld("m-tel2","Téléphone 2",`<input id="m-tel2" name="telephone_2" type="tel" inputmode="tel" autocomplete="off" placeholder="Optionnel" value="${esc(c.telephone_2||"")}">`)}
    ${fld("m-mail","Email",`<input id="m-mail" name="email" type="email" autocomplete="off" spellcheck="false" placeholder="contact@clinique.ma…" value="${esc(c.email||"")}">`)}
-   ${fld("m-adr","Adresse",`<input id="m-adr" name="adresse" value="${esc(c.adresse||"")}">`,true)}
+   ${fld("m-adr","Adresse",`<input id="m-adr" name="adresse" value="${esc(c.adresse||"")}">`)}
    ${estPilote()?fld("m-com","Suivi par",`<select id="m-com" name="commercial_id">${opt(equipeOpts(),c.commercial_id||(c.id?"":(me&&me.id)),"Non assigné")}</select>`):""}
    ${fld("m-web","Site web",`<input id="m-web" name="site_web" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://…" value="${esc(c.site_web||"")}">`)}
    <div class="field" style="grid-column:1/-1"><label for="m-notes">Notes</label><textarea id="m-notes" name="notes">${esc(c.notes||"")}</textarea><div class="tools ia-bar"><button type="button" class="btn small" id="m-cmic" aria-pressed="false">🎤 Note vocale</button><span id="m-cmic-msg" class="hint" aria-live="polite" style="margin:0"></span></div></div></div>`;
   const submit=async f=>{
     const met=sEnum(f.metier,Object.keys(METIERS))||"autre", cat=sEnum(f.categorie,Object.keys(CATEGORIES))||(METIERS[met]||[])[0]||null;
-    const obj={nom:sTxt(f.nom),categorie:cat,metier:met,metier_auto:false,metier_a_verifier:met==="autre"||!cat,segment:segmentCompat(met)||c.segment||"B_cabinet",ville:sTxt(f.ville),statut:sEnum(f.statut,Object.keys(STATUTS))||"prospect",specialite:sTxt(f.specialite),source:sTxt(f.source),adresse:sTxt(f.adresse),telephone:sTxt(f.telephone),email:sTxt(f.email),site_web:sTxt(f.site_web),commercial_id:estPilote()?sUuid(f.commercial_id):(c.commercial_id||(me&&me.id)||null),notes:sTxt(f.notes)};
+    const obj={nom:sTxt(f.nom),categorie:cat,metier:met,metier_auto:false,metier_a_verifier:met==="autre"||!cat,segment:segmentCompat(met)||c.segment||"B_cabinet",ville:sTxt(f.ville),statut:sEnum(f.statut,Object.keys(STATUTS))||"prospect",specialite:sTxt(f.specialite),source:sTxt(f.source),adresse:sTxt(f.adresse),telephone:sTxt(f.telephone),telephone_2:sTxt(f.telephone_2),email:sTxt(f.email),site_web:sTxt(f.site_web),commercial_id:estPilote()?sUuid(f.commercial_id):(c.commercial_id||(me&&me.id)||null),notes:sTxt(f.notes)};
     const changeId=!c.id||strip(c.nom)!==strip(obj.nom)||String(c.telephone||"").replace(/\D/g,"")!==String(obj.telephone||"").replace(/\D/g,"");
     if(changeId&&!submit.force){
       const {data:dups}=await sb.rpc("chercher_doublons",{p_nom:obj.nom,p_tel:obj.telephone,p_ville:obj.ville,p_exclure:c.id||null});
@@ -1265,7 +1337,7 @@ function openCompte(c){
   $("#modal-slot").innerHTML=`<div class="overlay" id="ov"><div class="modal" style="max-width:760px" role="dialog" aria-modal="true" aria-labelledby="ctitle">
    <div class="modal-head"><div><h3 id="ctitle" style="font-family:var(--f-display);font-stretch:118%;font-weight:500;font-size:24px;letter-spacing:-.03em;text-transform:uppercase;line-height:1">${esc(c.nom)}</h3><div class="tools" style="margin-top:6px">${c.categorie?`<span class="pill ${c.categorie==="medecin"?"A":"C"}">${CATEGORIES[c.categorie]}</span>`:""}<span class="pill">${esc(metierLabel(c))}</span>${c.metier_a_verifier?`<button class="pill warn" data-act="edit-compte" data-id="${c.id}" style="cursor:pointer">à classer · corriger</button>`:""}<span class="pill">${esc(c.ville||"Ville ?")}</span>${c.statut==="client"?`<span class="pill ok">Client</span>`:c.statut==="personnel"?`<span class="pill">Personnel</span>`:`<span class="pill">Prospect</span>`}<span class="hint">Suivi par ${com?esc(com.nom):"personne"}${c.createur_id&&c.createur_id!==c.commercial_id?` · créé par ${esc(nomMembre(c.createur_id))}`:""}</span></div></div><button class="x" id="mx" aria-label="Fermer">×</button></div>
    ${c.specialite||c.source?`<p style="margin:0 0 4px">${esc(c.specialite||"")}${c.source?` <span class="hint">· source : ${esc(c.source)}</span>`:""}</p>`:""}
-   <div class="hint">${[c.telephone,c.email,c.adresse,c.site_web].filter(Boolean).map(esc).join(" · ")||"Aucune coordonnée"}</div>
+   <div class="hint">${[c.telephone,c.telephone_2,c.email,c.adresse,c.site_web].filter(Boolean).map(esc).join(" · ")||"Aucune coordonnée"}</div>
    ${c.notes?`<p style="margin-top:8px">${esc(c.notes)}</p>`:""}
    <div class="tools" style="margin-block:14px"><button class="btn small" data-act="edit-compte" data-id="${c.id}">Modifier</button><button class="btn small" data-act="transfer" data-id="${c.id}">Transférer</button><button class="btn small" data-act="new-contact" data-id="${c.id}">+ Contact</button><button class="btn small" data-act="new-opp" data-compte="${c.id}">+ Opportunité</button><button class="btn small" data-act="log" data-compte="${c.id}">+ Activité</button><button class="btn small" data-act="new-devis" data-compte="${c.id}">+ Devis</button><button class="btn small" data-act="new-echeancier" data-compte="${c.id}">+ Échéancier</button><button class="btn small" data-act="relance-ia" data-compte="${c.id}">✨ Relance</button></div>
    <div class="sep"></div>
