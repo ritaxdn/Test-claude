@@ -589,6 +589,9 @@ body.ai-open .ai-fab,body.auth .ai-fab{display:none}
 const ETAPES = ["Qualification","Proposition","Negociation","Fermeture"];
 const ETAPE_LABEL = {Qualification:"Qualification",Proposition:"Proposition",Negociation:"Négociation",Fermeture:"Fermeture"};
 const PROB_DEFAUT = {Qualification:20,Proposition:40,Negociation:65,Fermeture:85};
+const proba = o => o.issue==="gagnee"?100:(o.probabilite!=null?+o.probabilite:(PROB_DEFAUT[o.etape]||0));
+const ISSUE_LABEL = {en_cours:"En cours",gagnee:"Gagnée",perdue:"Perdue",dormante:"En sommeil"};
+const issuePill = o => `<span class="pill ${o.issue==="gagnee"?"ok":o.issue==="perdue"?"bad":o.issue==="dormante"?"warn":""}">${ISSUE_LABEL[o.issue]||o.issue}</span>`;
 const SEGMENTS = {A_clinique:"A · Clinique / médico-esth.",B_cabinet:"B · Cabinet / santé",C_salon:"C · Salon / beauté"};
 const CATEGORIES = {medecin:"Médecin",non_medecin:"Non-médecin"};
 // Spécialités regroupées par ce que les clients achètent (même cible = même segment de reporting)
@@ -620,7 +623,7 @@ const $ = (s,el=document)=>el.querySelector(s);
 const esc = s => String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const mad = n => (n==null||isNaN(n))?"—":new Intl.NumberFormat("fr-FR",{maximumFractionDigits:0}).format(Number(n));
 const madShort = n => { n=Number(n)||0; if(n>=1e6) return (n/1e6).toLocaleString("fr-FR",{maximumFractionDigits:1})+" M"; if(n>=1e4) return Math.round(n/1e3).toLocaleString("fr-FR")+" k"; return mad(n); };
-const fmtDate = d => d? new Date(d).toLocaleDateString("fr-FR",{day:"2-digit",month:"short"}) : "—";
+const fmtDate = d => { if(!d) return "—"; const x=new Date(d); return x.toLocaleDateString("fr-FR",x.getFullYear()===new Date().getFullYear()?{day:"2-digit",month:"short"}:{day:"2-digit",month:"short",year:"numeric"}); };
 const byId = (arr,id)=>arr.find(x=>x.id===id);
 const strip = s => String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
 const localISO = (d=new Date())=>{ const z=new Date(d.getTime()-d.getTimezoneOffset()*6e4); return z.toISOString().slice(0,10); };
@@ -721,7 +724,7 @@ function renderKpis(){
   const open = state.opportunites.filter(o=>o.issue==="en_cours");
   const won = state.opportunites.filter(o=>o.issue==="gagnee");
   const tot = open.reduce((s,o)=>s+(+o.montant_mad||0),0);
-  const pond = open.reduce((s,o)=>s+(+o.montant_mad||0)*(+o.probabilite||0)/100,0);
+  const pond = open.reduce((s,o)=>s+(+o.montant_mad||0)*proba(o)/100,0);
   const wonAmt = won.reduce((s,o)=>s+(+o.montant_mad||0),0);
   const lost = state.opportunites.filter(o=>o.issue==="perdue").length;
   const rate = (won.length+lost)? Math.round(won.length*100/(won.length+lost)) : null;
@@ -770,6 +773,31 @@ function formSeuils(){
   modal("Seuils de risque du pipeline",h,submit,"Enregistrer");
 }
 
+function formSommeil(){
+  const cfg=Object.assign({jours:90,auto:true},state.reglages.sommeil||{});
+  const h=`<p style="margin-top:0">Une affaire <b>en cours</b> passe <b>en sommeil</b> quand personne n’y a touché depuis le délai choisi : pas d’activité, pas de commentaire, pas de devis en cours, pas de tâche prévue. Elle sort du pipeline, des alertes et des prévisions, mais <b>rien n’est supprimé</b> : elle reste sur la fiche client, et une nouvelle activité ou un commentaire la réveille automatiquement.</p>
+   <div class="form-grid">${fld("sm-j","Délai sans action (jours)",`<input id="sm-j" name="jours" type="number" inputmode="numeric" min="30" max="365" value="${esc(cfg.jours)}">`)}
+   <div class="field"><label>&nbsp;</label><label class="check"><input type="checkbox" name="auto" value="1" ${cfg.auto?"checked":""}> Le faire automatiquement chaque nuit</label></div></div>
+   <div id="sm-apercu" class="panel" style="padding:12px 14px;margin-top:4px" aria-live="polite"><span class="hint">Calcul…</span></div>
+   ${cfg.dernier?`<p class="hint">Dernier passage : ${esc(new Date(cfg.dernier).toLocaleString("fr-FR",{dateStyle:"medium",timeStyle:"short"}))}.</p>`:""}
+   <label class="check" style="margin-top:8px"><input type="checkbox" name="maintenant" value="1"> Mettre en sommeil maintenant les affaires listées ci-dessus</label>`;
+  const submit=async f=>{
+    const jours=sInt(f.jours,30,365)||90;
+    const r1=await sb.from("reglages").upsert({cle:"sommeil",valeur:Object.assign({},cfg,{jours,auto:!!f.auto}),updated_at:new Date().toISOString()});
+    if(r1.error){ $("#merr").textContent=errorCopy(r1.error).join(" — "); return false; }
+    if(f.maintenant){ setStatus("busy","Mise en sommeil…"); const {data,error}=await sb.rpc("endormir_affaires",{p_jours:jours,p_apercu:false}); if(error){ $("#merr").textContent=errorCopy(error).join(" — "); return false; }
+      toast(new Intl.NumberFormat("fr-FR").format(data.total)+" affaires mises en sommeil"); }
+    else toast("Réglage enregistré");
+    closeModal(true); await load(); return true;
+  };
+  modal("Mise en sommeil des affaires",h,submit,"Enregistrer");
+  const ap=async()=>{ const j=sInt($("#sm-j").value,30,365)||90; const {data,error}=await sb.rpc("endormir_affaires",{p_jours:j,p_apercu:true}); const el=$("#sm-apercu"); if(!el) return;
+    if(error){ el.innerHTML=`<span class="hint">${esc(errorCopy(error)[1])}</span>`; return; }
+    const nf=new Intl.NumberFormat("fr-FR");
+    el.innerHTML=data.total?`<b>${nf.format(data.total)} affaires</b> sans action depuis ${data.jours} jours : ${ETAPES.filter(e=>data.par_etape[e]).map(e=>`${ETAPE_LABEL[e]} ${nf.format(data.par_etape[e])}`).join(" · ")}`:`Aucune affaire sans action depuis ${data.jours} jours.`; };
+  let tm; $("#sm-j").addEventListener("input",()=>{ clearTimeout(tm); tm=setTimeout(ap,400); }); ap();
+}
+
 function oppCard(o){
   const c = byId(state.comptes,o.compte_id), com = byId(state.equipe,o.commercial_id), p = byId(state.produits,o.produit_id);
   const idx = ETAPES.indexOf(o.etape);
@@ -777,8 +805,8 @@ function oppCard(o){
     <button class="t linkish" data-act="open-opp" data-id="${o.id}">${esc(o.titre)}</button>
     <div class="c">${esc(c?c.nom:"Compte supprimé")}${c?" "+metierPill(c):""}</div>
     ${risquePill(o)?`<div class="meta">${risquePill(o)}</div>`:""}
-    <div class="meta"><span class="amt">${mad(o.montant_mad)} MAD</span><span>· ${o.probabilite??"–"} %</span>${o.date_cloture_prevue?`<span>· ${fmtDate(o.date_cloture_prevue)}</span>`:""}</div>
-    <div class="prob" aria-hidden="true"><i style="width:${Math.min(100,+o.probabilite||0)}%"></i></div>
+    <div class="meta"><span class="amt">${mad(o.montant_mad)} MAD</span><span>· ${proba(o)} %</span>${o.date_cloture_prevue?`<span>· ${fmtDate(o.date_cloture_prevue)}</span>`:""}</div>
+    <div class="prob" aria-hidden="true"><i style="width:${Math.min(100,proba(o))}%"></i></div>
     <div class="meta">${com?esc(com.nom):"Non assignée"}${p?" · "+esc(p.nom):""}</div>
     <div class="acts">
       ${idx>0?`<button class="btn small" data-act="move" data-id="${o.id}" data-to="${ETAPES[idx-1]}" title="Étape précédente">←</button>`:""}
@@ -796,17 +824,18 @@ function viewPipeline(v){
   const q=strip(pipeFilt.q);
   const match=o=>(!pipeFilt.com||(pipeFilt.com==="moi"?(me&&o.commercial_id===me.id):pipeFilt.com==="none"?!o.commercial_id:o.commercial_id===pipeFilt.com))
     &&(!q||strip([o.titre,o.description,(byId(state.comptes,o.compte_id)||{}).nom].filter(Boolean).join(" ")).includes(q))
-    &&(!pipeFilt.risque||(r=>r&&(pipeFilt.risque==="bloquee"?r.niveau==="bloquee":!!r.niveau))(risque(o)));
+    &&(!pipeFilt.risque||pipeFilt.risque==="dormante"||(r=>r&&(pipeFilt.risque==="bloquee"?r.niveau==="bloquee":!!r.niveau))(risque(o)));
   const rk=o=>{ const r=risque(o); return r&&r.niveau==="bloquee"?2:r&&r.niveau?1:0; };
-  const open = state.opportunites.filter(o=>o.issue==="en_cours"&&match(o)).sort((a,b)=>pipeFilt.risque?(rk(b)-rk(a))||((+b.montant_mad||0)-(+a.montant_mad||0)):String(b.updated_at||"").localeCompare(String(a.updated_at||"")));
-  const closed = state.opportunites.filter(o=>o.issue!=="en_cours").slice(0,12);
+  const vueSommeil=pipeFilt.risque==="dormante", nbSommeil=state.opportunites.filter(o=>o.issue==="dormante").length;
+  const open = state.opportunites.filter(o=>o.issue===(vueSommeil?"dormante":"en_cours")&&match(o)).sort((a,b)=>pipeFilt.risque?(rk(b)-rk(a))||((+b.montant_mad||0)-(+a.montant_mad||0)):String(b.updated_at||"").localeCompare(String(a.updated_at||"")));
+  const closed = state.opportunites.filter(o=>o.issue==="gagnee"||o.issue==="perdue").slice(0,12);
   const noCompte = !state.comptes.length;
   v.innerHTML = `
-  <div class="section-head"><div><h2>Pipeline commercial</h2><p class="hint">Seuils de risque : ${ETAPES.map(e=>ETAPE_LABEL[e].slice(0,5)+". "+seuils()[e]+" j").join(" · ")}${estPilote()?` · <button class="linkish" data-act="seuils">modifier</button>`:""}</p></div>
+  <div class="section-head"><div><h2>Pipeline commercial</h2><p class="hint">Seuils de risque : ${ETAPES.map(e=>ETAPE_LABEL[e].slice(0,5)+". "+seuils()[e]+" j").join(" · ")}${estPilote()?` · <button class="linkish" data-act="seuils">modifier</button> · <button class="linkish" data-act="sommeil">mise en sommeil</button>`:""}</p>${vueSommeil?`<p class="hint" style="margin:4px 0 0"><b>Affaires en sommeil</b> : sans action depuis longtemps, sorties du pipeline et des prévisions. Ouvre-en une pour la réveiller ; une nouvelle activité la réveille aussi automatiquement.</p>`:""}</div>
     <div class="tools"><button class="btn" data-act="new-compte">+ Compte</button><button class="btn primary" data-act="new-opp" ${noCompte?"disabled title='Ajoutez d’abord un compte'":""}>+ Opportunité</button></div></div>
   ${state.opportunites.length?`<div class="filters" style="margin-bottom:12px"><input id="p-q" type="search" placeholder="Client, opportunité, note…" value="${esc(pipeFilt.q)}" aria-label="Rechercher une opportunité" autocomplete="off" spellcheck="false">
     <select id="p-com" aria-label="Commercial"><option value="">Tous les commerciaux</option><option value="moi" ${pipeFilt.com==="moi"?"selected":""}>Mes opportunités</option><option value="none" ${pipeFilt.com==="none"?"selected":""}>Non assignées</option>${state.equipe.filter(e=>state.opportunites.some(o=>o.commercial_id===e.id)).map(e=>`<option value="${e.id}" ${pipeFilt.com===e.id?"selected":""}>${esc(e.nom)}</option>`).join("")}</select>
-    <select id="p-risque" aria-label="État"><option value="">Toutes les affaires</option><option value="risque" ${pipeFilt.risque==="risque"?"selected":""}>À risque ou bloquées</option><option value="bloquee" ${pipeFilt.risque==="bloquee"?"selected":""}>Bloquées seulement</option></select></div>`:""}
+    <select id="p-risque" aria-label="État"><option value="">Toutes les affaires</option><option value="risque" ${pipeFilt.risque==="risque"?"selected":""}>À risque ou bloquées</option><option value="bloquee" ${pipeFilt.risque==="bloquee"?"selected":""}>Bloquées seulement</option>${nbSommeil||vueSommeil?`<option value="dormante" ${vueSommeil?"selected":""}>En sommeil (${nbSommeil})</option>`:""}</select></div>`:""}
   ${noCompte?`<div class="panel empty"><h3>Le CRM est vide pour l’instant</h3><p>Commencez par ajouter une clinique, un cabinet ou un salon, puis créez sa première opportunité.</p><div class="form-actions" style="justify-content:center"><button class="btn primary" data-act="new-compte">Ajouter un premier compte</button></div></div>`:""}
   ${(()=>{ if(!estMobile()) return ""; if(!pipeStage||!ETAPES.includes(pipeStage)) pipeStage=(ETAPES.find(e=>open.some(o=>o.etape===e&&o.montant_mad>0))||ETAPES[0]);
     return `<div class="stage-tabs" role="group" aria-label="Étape">${ETAPES.map(e=>{ const it=open.filter(o=>o.etape===e), bl=it.filter(o=>(risque(o)||{}).niveau==="bloquee").length; return `<button class="chip" data-act="pipe-stage" data-v="${e}" aria-pressed="${pipeStage===e}">${ETAPE_LABEL[e]}<span class="n">${it.length}</span>${bl?`<span class="pill bad" style="margin-left:2px">${bl}</span>`:""}</button>`; }).join("")}</div>`; })()}
@@ -817,7 +846,7 @@ function viewPipeline(v){
       ${items.length?items.slice(0,colShown[e]||25).map(oppCard).join(""):`<div class="empty-col">Aucune opportunité</div>`}
       ${items.length>(colShown[e]||25)?`<button class="btn small" data-act="col-more" data-etape="${e}">Afficher 25 de plus · ${items.length-(colShown[e]||25)} restantes</button>`:""}</section>`;}).join("")}
   </div></div>
-  ${closed.length?`<div class="panel" style="margin-top:16px"><h3>Dernières affaires clôturées</h3><div class="closed-list" style="margin-top:8px">${closed.map(o=>{const c=byId(state.comptes,o.compte_id);return `<div class="closed-row"><div><b>${esc(o.titre)}</b> <span class="hint">· ${esc(c?c.nom:"")}</span>${o.raison_perte?`<div class="hint">Raison : ${esc(o.raison_perte)}</div>`:""}</div><div class="tools"><span class="amt" style="font-family:var(--f-mono);font-size:12px">${mad(o.montant_mad)} MAD</span><span class="pill ${o.issue==="gagnee"?"ok":"bad"}">${o.issue==="gagnee"?"Gagnée":"Perdue"}</span><button class="btn small" data-act="reopen" data-id="${o.id}">Rouvrir</button></div></div>`;}).join("")}</div></div>`:""}`;
+  ${closed.length?`<div class="panel" style="margin-top:16px"><h3>Dernières affaires clôturées</h3><div class="closed-list" style="margin-top:8px">${closed.map(o=>{const c=byId(state.comptes,o.compte_id);return `<div class="closed-row"><div><b>${esc(o.titre)}</b> <span class="hint">· ${esc(c?c.nom:"")}</span>${o.raison_perte?`<div class="hint">Raison : ${esc(o.raison_perte)}</div>`:""}</div><div class="tools"><span class="amt" style="font-family:var(--f-mono);font-size:12px">${mad(o.montant_mad)} MAD</span>${issuePill(o)}<button class="btn small" data-act="reopen" data-id="${o.id}">Rouvrir</button></div></div>`;}).join("")}</div></div>`:""}`;
   if($("#p-q")){ let t=null; $("#p-q").addEventListener("input",e=>{ clearTimeout(t); t=setTimeout(()=>{ pipeFilt.q=e.target.value; colShown={}; const pos=e.target.selectionStart; viewPipeline(v); const n=$("#p-q"); n.focus(); try{n.setSelectionRange(pos,pos);}catch(_){} },200); });
     $("#p-com").addEventListener("change",e=>{ pipeFilt.com=e.target.value; colShown={}; viewPipeline(v); });
     $("#p-risque").addEventListener("change",e=>{ pipeFilt.risque=e.target.value; colShown={}; viewPipeline(v); }); }
@@ -988,7 +1017,7 @@ function viewSuperviseur(v){
   const rows=[...state.equipe.filter(e=>!supShowroom||e.showroom===supShowroom),...(supShowroom?[]:[{id:null,nom:"Non assigné"}])].map(e=>{
     const ops=state.opportunites.filter(o=>(o.commercial_id||null)===e.id), op=ops.filter(o=>o.issue==="en_cours");
     const by={}; ETAPES.forEach(s=>by[s]=op.filter(o=>o.etape===s).length);
-    return {e,by,tot:op.reduce((s,o)=>s+(+o.montant_mad||0),0),pond:op.reduce((s,o)=>s+(+o.montant_mad||0)*(+o.probabilite||0)/100,0),won:ops.filter(o=>o.issue==="gagnee").reduce((s,o)=>s+(+o.montant_mad||0),0),
+    return {e,by,tot:op.reduce((s,o)=>s+(+o.montant_mad||0),0),pond:op.reduce((s,o)=>s+(+o.montant_mad||0)*proba(o)/100,0),won:ops.filter(o=>o.issue==="gagnee").reduce((s,o)=>s+(+o.montant_mad||0),0),
       act:state.activites.filter(a=>(a.commercial_id||null)===e.id&&new Date(a.date_activite).getTime()>=wk).length,comptes:state.comptes.filter(c=>(c.commercial_id||null)===e.id).length};
   }).filter(r=>r.e.actif||r.tot||r.act||r.comptes).sort((a,b)=>b.tot-a.tot||b.comptes-a.comptes);
   const imp=state.comptes.some(c=>c.import_ref);
@@ -1211,8 +1240,8 @@ function formCompte(c){
 }
 
 // Ajout rapide d'une opportunité : on cherche le client (ou on le crée), on note, c'est tout.
-function formOpp(o,presetCompte){
-  o=o||{}; const edit=!!o.id;
+function formOpp(o,presetCompte,opts){
+  o=o||{}; opts=opts||{}; const edit=!!o.id; const etape0=opts.etape||o.etape||"Qualification";
   const c0=byId(state.comptes,o.compte_id||presetCompte);
   const prodSelect=`<select id="m-prod" name="produit_id" aria-describedby="m-prod-warn"><option value="">Pas encore précisée</option>${Object.entries(state.produits.filter(p=>p.actif||p.id===o.produit_id).reduce((m,p)=>((m[p.categorie]=m[p.categorie]||[]).push(p),m),{})).map(([f,ps])=>`<optgroup label="${esc(f)}">${ps.sort((a,b)=>a.nom.localeCompare(b.nom,"fr")).map(p=>`<option value="${p.id}" ${p.id===o.produit_id?"selected":""}>${esc(p.nom)}${p.medical_only?" · médical":""}</option>`).join("")}</optgroup>`).join("")}</select><span id="m-prod-warn" class="field-err" aria-live="polite"></span>`;
   const contactsDe=id=>state.contacts.filter(x=>x.compte_id===id);
@@ -1232,8 +1261,8 @@ function formOpp(o,presetCompte){
    </div>
    ${fld("m-pers","Personne rencontrée (facultatif)",`<input id="m-pers" name="personne" list="dl-pers" autocomplete="off" placeholder="Ex. Dr Benali, la gérante…" value="${esc(ct0?nomContact(ct0):"")}"><datalist id="dl-pers"></datalist>`)}
    ${fld("m-prod","Machine",prodSelect)}
-   ${fld("m-mt","Montant estimé (MAD, facultatif)",`<input id="m-mt" name="montant_mad" type="number" min="0" step="1000" inputmode="numeric" value="${esc(o.montant_mad??"")}">`)}
-   <div class="field" style="grid-column:1/-1"><span class="lab-mono" id="m-et-l">Où en est-on ?</span><div class="chips" role="group" aria-labelledby="m-et-l" data-chips="etape">${ETAPES.map(e=>`<button type="button" class="chip" data-v="${e}" aria-pressed="${(o.etape||"Qualification")===e}">${ETAPE_LABEL[e]}</button>`).join("")}</div><input type="hidden" name="etape" value="${esc(o.etape||"Qualification")}"></div>
+   ${fld("m-mt",`Montant estimé (MAD)<span class="hint" id="m-mt-req" style="margin:0 0 0 6px;text-transform:none;letter-spacing:0"></span>`,`<input id="m-mt" name="montant_mad" type="number" min="0" step="1000" inputmode="numeric" value="${esc(o.montant_mad??"")}">`)}
+   <div class="field" style="grid-column:1/-1"><span class="lab-mono" id="m-et-l">Où en est-on ?</span><div class="chips" role="group" aria-labelledby="m-et-l" data-chips="etape">${ETAPES.map(e=>`<button type="button" class="chip" data-v="${e}" aria-pressed="${etape0===e}">${ETAPE_LABEL[e]}</button>`).join("")}</div><input type="hidden" name="etape" value="${esc(etape0)}"></div>
    <div class="field" style="grid-column:1/-1"><label for="m-desc">Note · ce qui a été fait, ce qui a été dit</label><textarea id="m-desc" name="description" placeholder="Ex. Visite au cabinet, intéressée par le Longiflash, attend le devis…">${esc(o.description||"")}</textarea>
      <div class="tools ia-bar"><button type="button" class="btn small" id="m-mic" aria-pressed="false">🎤 Note vocale</button><span id="m-mic-msg" class="hint" aria-live="polite" style="margin:0"></span></div></div>
    ${estPilote()?fld("m-com","Suivie par",`<select id="m-com" name="commercial_id">${opt(equipeOpts(o.commercial_id),o.commercial_id||(c0&&c0.commercial_id)||(me&&me.id),"Non assigné")}</select>`):""}
@@ -1261,8 +1290,13 @@ function formOpp(o,presetCompte){
     else { obj.titre=[c.nom,p&&p.nom].filter(Boolean).join(" — "); obj.probabilite=PROB_DEFAUT[etape]; }
     return edit ? write(upd("opportunites",o.id,obj),"Opportunité mise à jour") : write(ins("opportunites",obj),"Opportunité ajoutée");
   };
-  submit.validate=f=>{ const v=$("#m-compte").value.trim(); return v.length<2?["compte_label","Tape le nom du client."]:null; };
+  submit.validate=f=>{ const v=$("#m-compte").value.trim(); if(v.length<2) return ["compte_label","Tape le nom du client."];
+    if(ETAPES.indexOf(sEnum(f.etape,ETAPES)||"Qualification")>=1&&!(sNum(f.montant_mad)>0)) return ["montant_mad","À partir de l’étape Proposition, indique un montant estimé (même approximatif)."];
+    return null; };
   modal(edit?"Modifier l’opportunité":"Nouvelle opportunité",h,submit,edit?"Enregistrer":"Ajouter");
+  const majReq=()=>{ const e=($("#mform input[name=etape]")||{}).value; $("#m-mt-req").textContent=ETAPES.indexOf(e)>=1?"· obligatoire à cette étape":"· facultatif en Qualification"; };
+  $("#mform").addEventListener("click",()=>setTimeout(majReq,0)); majReq();
+  if(opts.etape){ const m=$("#m-mt"); if(m){ m.focus(); m.setAttribute("aria-invalid","true"); } }
   brancherDictee($("#m-mic"),$("#m-desc"),$("#m-mic-msg"));
   $("#mform").querySelectorAll("[data-chips]").forEach(g=>g.addEventListener("click",e=>{ const b=e.target.closest(".chip"); if(!b) return; g.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",String(x===b))); $(`#mform input[name="${g.dataset.chips}"]`).value=b.dataset.v; dirty=true; }));
   const majClient=()=>{ const {id,nom}=lireClient(), c=byId(state.comptes,id);
@@ -1405,7 +1439,7 @@ function openCompte(c){
    ${(()=>{const dv=state.devis.filter(x=>x.compte_id===c.id); return dv.length?`<h3 style="margin-top:16px">Devis</h3><div class="closed-list">${dv.map(x=>`<div class="closed-row"><div><b translate="no">${esc(devisNum(x))}</b><div class="hint">${fmtDate(x.created_at)} · ${mad(x.montant_mad)} MAD HT</div></div><div class="tools"><span class="pill ${DEVIS_PILL[x.statut]||""}">${DEVIS_LABEL[x.statut]}</span><button class="btn small" data-act="edit-devis" data-id="${x.id}">Modifier</button><button class="btn small" data-act="print-devis" data-id="${x.id}">Imprimer</button></div></div>`).join("")}</div>`:"";})()}
    ${(()=>{const ps=state.paiements.filter(p=>p.compte_id===c.id); if(!ps.length) return ""; const reste=ps.filter(p=>p.statut!=="encaisse").reduce((s,p)=>s+(+p.montant_mad||0),0);
      return `<h3 style="margin-top:16px">Paiements <span class="hint">· reste ${mad2(reste)} MAD</span></h3><div class="closed-list">${ps.map(p=>`<div class="closed-row"><div><b>${PAY_MODES[p.mode]} ${p.rang}/${p.nb}</b>${p.numero?` <span class="hint">n° ${esc(p.numero)}</span>`:""}<div class="hint">${fmtDate(p.date_echeance+"T12:00")} · ${mad2(p.montant_mad)} MAD</div></div><div class="tools"><span class="pill ${PAY_PILL[p.statut]}">${PAY_STATUTS[p.statut]}</span><button class="btn small" data-act="edit-paiement" data-id="${p.id}">Détails</button></div></div>`).join("")}</div>`;})()}
-   <h3 style="margin-top:16px">Opportunités</h3>${ops.length?`<div class="closed-list">${ops.map(o=>`<div class="closed-row"><div><button class="linkish" data-act="open-opp" data-id="${o.id}"><b>${esc(o.titre)}</b></button><div class="hint">${ETAPE_LABEL[o.etape]} · ${o.probabilite??"–"} %</div></div><div class="tools"><span style="font-family:var(--f-mono);font-size:12px">${mad(o.montant_mad)} MAD</span><span class="pill ${o.issue==="gagnee"?"ok":o.issue==="perdue"?"bad":""}">${o.issue==="en_cours"?"En cours":o.issue==="gagnee"?"Gagnée":"Perdue"}</span></div></div>`).join("")}</div>`:`<p class="hint">Aucune opportunité.</p>`}
+   <h3 style="margin-top:16px">Opportunités</h3>${ops.length?`<div class="closed-list">${ops.map(o=>`<div class="closed-row"><div><button class="linkish" data-act="open-opp" data-id="${o.id}"><b>${esc(o.titre)}</b></button><div class="hint">${ETAPE_LABEL[o.etape]} · ${proba(o)} %</div></div><div class="tools"><span style="font-family:var(--f-mono);font-size:12px">${mad(o.montant_mad)} MAD</span>${issuePill(o)}</div></div>`).join("")}</div>`:`<p class="hint">Aucune opportunité.</p>`}
    <h3 style="margin-top:16px">Dernières activités</h3>${acts.length?`<div class="feed">${acts.map(a=>feedItem(a,{noCompte:true})).join("")}</div>`:`<p class="hint">Aucune activité.</p>`}
    <details class="fam" style="margin-top:16px" id="c-hist"><summary><span>Historique du compte</span></summary><div id="c-hist-body"></div></details>
   </div></div>`;
@@ -1422,6 +1456,8 @@ document.addEventListener("click",async e=>{
   if(act==="quick-visite") return formVisite();
   if(act==="pipe-stage"){ pipeStage=t.dataset.v; colShown={}; viewPipeline($("#view")); window.scrollTo({top:0}); return; }
   if(act==="seuils") return formSeuils();
+  if(act==="sommeil") return formSommeil();
+  if(act==="today-com"){ todayCom=t.dataset.v||""; todayQui="equipe"; return viewAujourdhui($("#view")); }
   if(act==="relance-ia") return formRelance(t.dataset.compte||id, t.dataset.devis);
   if(act==="objectifs") return formObjectifs();
   if(act==="sup-metric"){ supMetric=t.dataset.v; return viewSuperviseur($("#view")); }
@@ -1441,7 +1477,7 @@ document.addEventListener("click",async e=>{
   if(act==="ag-day"){ agDay=+t.dataset.n; return viewAgenda($("#view")); }
   if(act==="ag-new"){ const d=new Date(); d.setDate(d.getDate()+1); d.setHours(10,0,0,0); return formActivite(null,null,{type:"rdv",when:d,com:agQui&&agQui!=="tous"?agQui:undefined}); }
   if(act==="today-tab"){ todayTab=t.dataset.v; return viewAujourdhui($("#view")); }
-  if(act==="today-qui"){ todayQui=t.dataset.v; return viewAujourdhui($("#view")); }
+  if(act==="today-qui"){ todayQui=t.dataset.v; todayCom=""; return viewAujourdhui($("#view")); }
   if(act==="relance-ok"){ t.disabled=true; return write(upd("activites",id,{date_prochaine_action:null}),"Relance retirée de la liste"); }
   if(act==="rep-csv") return exportRep("csv");
   if(act==="rep-xlsx") return exportRep("xlsx");
@@ -1478,10 +1514,10 @@ document.addEventListener("click",async e=>{
   if(act==="new-produit") return formProduit();
   if(act==="edit-produit") return formProduit(byId(state.produits,id));
   if(act==="lost") return formPerte(byId(state.opportunites,id));
-  if(act==="move"){ t.disabled=true; const to=t.dataset.to; const o=byId(state.opportunites,id); const p=Math.max(+o.probabilite||0,PROB_DEFAUT[to]);
+  if(act==="move"){ const to=t.dataset.to; const o=byId(state.opportunites,id); if(ETAPES.indexOf(to)>=1&&!(+o.montant_mad>0)){ toast("Indique le montant avant de passer en "+ETAPE_LABEL[to]); return formOpp(o,null,{etape:to}); } t.disabled=true; const p=Math.max(+o.probabilite||0,PROB_DEFAUT[to]);
     return write(upd("opportunites",id,{etape:sEnum(to,ETAPES),probabilite:ETAPES.indexOf(to)>ETAPES.indexOf(o.etape)?p:PROB_DEFAUT[to]}),"Passée en "+ETAPE_LABEL[to]); }
   if(act==="won"){ t.disabled=true; devisBanner=null; return write(upd("opportunites",id,{issue:"gagnee",probabilite:100}),"Affaire gagnée"); }
-  if(act==="reopen"){ t.disabled=true; return write(upd("opportunites",id,{issue:"en_cours",raison_perte:null}),"Affaire rouverte"); }
+  if(act==="reopen"){ t.disabled=true; const o0=byId(state.opportunites,id); return write(upd("opportunites",id,{issue:"en_cours",raison_perte:null}),o0&&o0.issue==="dormante"?"Affaire réveillée":"Affaire rouverte"); }
 });
 document.addEventListener("keydown",e=>{
   if(e.key==="Escape" && !$("#aipanel").hidden && !$("#ov")){ toggleAI(false); $("#ai-btn").focus(); return; }
@@ -1668,16 +1704,18 @@ function viewAcquisition(v){
 }
 
 /* ---- Aujourd'hui ---- */
-let todayTab=null, todayQui="moi";
+let todayTab=null, todayQui=null, todayCom="";
 const startOfDay=(d=new Date())=>{ const z=new Date(d); z.setHours(0,0,0,0); return z; };
 const daysSince=d=>Math.floor((Date.now()-new Date(d).getTime())/864e5);
-function aMoi(id, createur){ if(todayQui==="equipe") return true; return !!me && (id===me.id || (!id && createur===me.id)); }
+function aMoi(id, createur){ if(todayQui==="equipe") return !todayCom || (id||createur)===todayCom; return !!me && (id===me.id || (!id && createur===me.id)); }
 function derniereActivite(o){
   let t=new Date(o.updated_at||o.created_at).getTime();
   state.activites.forEach(a=>{ if(a.opportunite_id===o.id && a.statut!=="a_faire"){ const x=new Date(a.date_activite).getTime(); if(x>t) t=x; } });
   return t;
 }
 function viewAujourdhui(v){
+  if(todayQui==null&&me) todayQui=estPilote()?"equipe":"moi";
+  if(todayQui!=="equipe") todayCom="";
   const d0=startOfDay().getTime(), d1=d0+864e5, d7=d0+8*864e5;
   const items=[];
   state.activites.forEach(a=>{
@@ -1711,7 +1749,7 @@ function viewAujourdhui(v){
   const nbRetard=g.retard.length, nbJour=g.jour.length;
   const dateTxt=new Date().toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"});
   v.innerHTML=`<div class="today-head"><div><div class="lab-mono">${esc(dateTxt)}</div><h2>Bonjour ${esc(prenom)}</h2>
-      <p class="hint" style="font-size:15px">${[nbRetard?`${nbRetard} en retard`:"rien en retard",`${nbJour} pour aujourd’hui`,dv.length?`${dv.length} devis à relancer`:""].filter(Boolean).join(" · ")}</p></div>
+      ${todayCom?`<p style="margin:4px 0 0"><span class="pill warn">Vue : ${esc(nomMembre(todayCom))}</span> <button class="linkish" data-act="today-com" data-v="">voir toute l’équipe</button></p>`:""}<p class="hint" style="font-size:15px">${[nbRetard?`${nbRetard} en retard`:"rien en retard",`${nbJour} pour aujourd’hui`,dv.length?`${dv.length} devis à relancer`:""].filter(Boolean).join(" · ")}</p></div>
     <div class="tools">${estPilote()?`<div class="chips" role="group" aria-label="Voir"><button class="chip" data-act="today-qui" data-v="moi" aria-pressed="${todayQui==="moi"}">Moi</button><button class="chip" data-act="today-qui" data-v="equipe" aria-pressed="${todayQui==="equipe"}">Toute l’équipe</button></div>`:""}
       <button class="btn" data-act="log" data-type="tache" ${state.comptes.length?"":"disabled"}>+ Tâche</button><button class="btn primary big hide-mobile" data-act="quick-visite" ${state.comptes.length?"":"disabled"}>J’ai fait une visite</button></div></div>
   <div class="grid2"><div class="panel" style="min-width:0">
@@ -1720,6 +1758,18 @@ function viewAujourdhui(v){
       :`<div class="empty"><p>${todayTab==="retard"?"Rien en retard. Bien joué.":todayTab==="jour"?"Rien de prévu aujourd’hui. Ajoute une tâche ou planifie une relance.":"Rien de prévu cette semaine."}</p></div>`}
   </div>
   <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+    ${todayQui==="equipe"&&!todayCom?(()=>{ const now=Date.now(), rows=new Map();
+      const R=id=>{ if(!rows.has(id)) rows.set(id,{id,retard:0,devis:0,bloq:0}); return rows.get(id); };
+      state.activites.forEach(a=>{ if(a.statut==="a_faire"&&new Date(a.date_activite).getTime()<d0) R(a.commercial_id||a.createur_id||null).retard++; });
+      state.devis.forEach(d=>{ if(d.statut==="envoye"&&daysSince(d.date_envoi||d.updated_at||d.created_at)>=7) R(d.commercial_id||null).devis++; });
+      state.opportunites.forEach(o=>{ if(o.issue==="en_cours"&&(risque(o)||{}).niveau==="bloquee") R(o.commercial_id||null).bloq++; });
+      const L=[...rows.values()].filter(r=>r.retard||r.devis||r.bloq).sort((a,b)=>b.retard-a.retard||b.devis-a.devis||b.bloq-a.bloq);
+      if(!L.length) return "";
+      const n=x=>x?`<b class="mono">${x}</b>`:`<span class="hint" style="margin:0">·</span>`;
+      return `<div class="panel"><h3>Par commercial</h3><p class="hint" style="margin-top:0">Tâches en retard, devis à relancer et affaires bloquées. Clique sur un nom pour voir sa liste.</p>
+        <div class="tbl-wrap obj-tbl"><table><thead><tr><th>Commercial</th><th class="num" title="Tâches en retard">Retards</th><th class="num" title="Devis envoyés il y a plus de 7 jours">Devis</th><th class="num" title="Affaires bloquées">Bloquées</th></tr></thead><tbody>
+        ${L.slice(0,12).map(r=>{ const e=byId(state.equipe,r.id); return `<tr><td>${r.id?`<button class="linkish" data-act="today-com" data-v="${r.id}"><b>${esc(e?e.nom:"—")}</b></button>${e&&e.parti_le?` <span class="pill">parti·e</span>`:""}`:`<span class="hint" style="margin:0">Non assigné</span>`}</td><td class="num">${n(r.retard)}</td><td class="num">${n(r.devis)}</td><td class="num">${n(r.bloq)}</td></tr>`; }).join("")}
+        </tbody></table></div>${L.length>12?`<p class="hint">+ ${L.length-12} autres</p>`:""}</div>`; })():""}
     <div class="panel"><h3>Devis à relancer</h3><p class="hint" style="margin-top:0">Envoyés il y a plus de 7 jours, sans réponse</p>
       ${dv.length?dv.slice(0,8).map(d=>{const c=byId(state.comptes,d.compte_id), j=daysSince(d.date_envoi||d.updated_at||d.created_at);
         return `<div class="mini-row"><div style="min-width:0"><button class="linkish" data-act="edit-devis" data-id="${d.id}"><b translate="no">${esc(devisNum(d))}</b></button><div class="hint">${esc(c?c.nom:"")}${todayQui==="equipe"?" · "+esc(nomMembre(d.commercial_id)):""}</div></div><div style="text-align:right"><div style="font-family:var(--f-mono);font-size:12px">${mad(d.montant_mad)} MAD</div><span class="pill ${j>14?"bad":"warn"}">${j} j</span><div><button class="btn small" data-act="relance-ia" data-compte="${d.compte_id}" data-devis="${d.id}" style="margin-top:4px">✨ Relancer</button></div></div></div>`;}).join(""):`<p class="hint">Aucun devis en attente depuis plus d’une semaine.</p>`}</div>
@@ -2066,7 +2116,7 @@ async function repData(){
   if(m==="opps") state.opportunites.filter(o=>inP(o.created_at)).forEach(o=>R.push({date:o.created_at,v:1,commercial_id:o.commercial_id,compte_id:o.compte_id,produit_id:o.produit_id,lib:o.titre}));
   if(m==="devis_n"||m==="devis_mt") state.devis.filter(d=>d.statut!=="brouillon"&&inP(d.date_envoi||d.created_at)).forEach(d=>{ const o=oppOf(d.opportunite_id); R.push({date:d.date_envoi||d.created_at,v:m==="devis_n"?1:(+d.montant_mad||0),commercial_id:d.commercial_id,compte_id:d.compte_id,produit_id:o&&o.produit_id,lib:devisNum(d)}); });
   if(m==="contacts") state.comptes.filter(c=>inP(c.created_at)).forEach(c=>R.push({date:c.created_at,v:1,commercial_id:c.commercial_id,compte_id:c.id,lib:c.nom}));
-  if(m==="taux") state.opportunites.filter(o=>o.issue!=="en_cours"&&inP(o.updated_at)).forEach(o=>R.push({date:o.updated_at,v:o.issue==="gagnee"?1:0,commercial_id:o.commercial_id,compte_id:o.compte_id,produit_id:o.produit_id,lib:o.titre}));
+  if(m==="taux") state.opportunites.filter(o=>(o.issue==="gagnee"||o.issue==="perdue")&&inP(o.updated_at)).forEach(o=>R.push({date:o.updated_at,v:o.issue==="gagnee"?1:0,commercial_id:o.commercial_id,compte_id:o.compte_id,produit_id:o.produit_id,lib:o.titre}));
   if(m==="visites"||m==="appels"){ const types=m==="visites"?["visite","demo","rdv","formation"]:["appel","whatsapp","email"];
     (await actsPeriode(du,au)).filter(a=>a.statut!=="a_faire"&&types.includes(a.type)&&inP(a.date_activite)).forEach(a=>{ const o=oppOf(a.opportunite_id); R.push({date:a.date_activite,v:1,commercial_id:a.commercial_id||a.createur_id,compte_id:a.compte_id,produit_id:o&&o.produit_id,lib:TYPES_ACT[a.type]}); }); }
   const showroomOf=id=>{ const e=byId(state.equipe,id); return e&&e.showroom||""; };
@@ -2180,13 +2230,13 @@ function openOpp(o){ if(o) ctxCompte=o.compte_id;
   const closed=o.issue!=="en_cours";
   $("#modal-slot").innerHTML=`<div class="overlay" id="ov"><div class="modal opp-modal" role="dialog" aria-modal="true" aria-labelledby="otitle">
    <div class="modal-head"><div style="min-width:0"><div class="lab-mono">Opportunité</div><h3 id="otitle" class="opp-title">${esc(o.titre)}</h3>
-     <div class="tools" style="margin-top:6px">${c?`<button class="linkish" data-act="open-compte" data-id="${c.id}">${esc(c.nom)}</button>${metierPill(c)}`:""}${closed?`<span class="pill ${o.issue==="gagnee"?"ok":"bad"}">${o.issue==="gagnee"?"Gagnée":"Perdue"}</span>`:""}${o.raison_perte?`<span class="hint">${esc(o.raison_perte)}</span>`:""}</div></div>
+     <div class="tools" style="margin-top:6px">${c?`<button class="linkish" data-act="open-compte" data-id="${c.id}">${esc(c.nom)}</button>${metierPill(c)}`:""}${closed?issuePill(o):""}${o.raison_perte?`<span class="hint">${esc(o.raison_perte)}</span>`:""}</div></div>
      <button class="x" id="mx" aria-label="Fermer">×</button></div>
    ${o.description&&o.description!==o.titre?`<p style="margin:10px 0 0;white-space:pre-line">${esc(o.description)}</p>`:""}
    <ol class="stepper" aria-label="Étapes">${ETAPES.map((e,i)=>`<li><button type="button" class="step ${i<idx?"done":i===idx?"cur":""}" ${closed||i===idx?"disabled":""} data-act="move" data-id="${o.id}" data-to="${e}" ${i===idx?'aria-current="step"':""}><span class="dotn">${i<idx?"✓":i+1}</span>${ETAPE_LABEL[e]}</button></li>`).join("")}</ol>
    <div class="opp-facts">
      <div><div class="lab-mono">Montant</div><b class="mono">${mad(o.montant_mad)} MAD</b></div>
-     <div><div class="lab-mono">Probabilité</div><b class="mono">${o.probabilite??"–"} %</b></div>
+     <div><div class="lab-mono">Probabilité</div><b class="mono">${proba(o)} %</b>${o.probabilite==null&&o.issue==="en_cours"?`<div class="hint">par défaut pour l’étape</div>`:""}</div>
      <div><div class="lab-mono">Clôture prévue</div><b>${o.date_cloture_prevue?fmtDate(o.date_cloture_prevue):"—"}</b></div>
      <div><div class="lab-mono">Responsable</div><b>${esc(nomMembre(o.commercial_id))}</b>${o.createur_id&&o.createur_id!==o.commercial_id?`<div class="hint">créée par ${esc(nomMembre(o.createur_id))}</div>`:""}</div>
      <div><div class="lab-mono">Machine</div><b>${p?esc(p.nom):"—"}</b></div>
@@ -2194,7 +2244,7 @@ function openOpp(o){ if(o) ctxCompte=o.compte_id;
    <div class="tools quick">
      <button class="btn small" data-act="log" data-opp="${o.id}" data-type="tache">+ Tâche</button><button class="btn small" data-act="log" data-opp="${o.id}" data-type="evenement">+ Événement</button><button class="btn small" data-act="log" data-opp="${o.id}" data-type="appel">+ Appel</button><button class="btn small primary" data-act="new-devis" data-opp="${o.id}">Créer un devis</button>
      <span style="flex:1"></span>
-     ${closed?`<button class="btn small" data-act="reopen" data-id="${o.id}">Rouvrir</button>`:`<button class="btn small ok" data-act="won" data-id="${o.id}">Gagnée</button><button class="btn small bad" data-act="lost" data-id="${o.id}">Perdue</button>`}
+     ${closed?`<button class="btn small${o.issue==="dormante"?" primary":""}" data-act="reopen" data-id="${o.id}">${o.issue==="dormante"?"Réveiller l’affaire":"Rouvrir"}</button>`:`<button class="btn small ok" data-act="won" data-id="${o.id}">Gagnée</button><button class="btn small bad" data-act="lost" data-id="${o.id}">Perdue</button>`}
      <button class="btn small" data-act="edit-opp" data-id="${o.id}">Modifier</button>
    </div>
    <div class="seg-tabs" role="tablist" aria-label="Sections de l’opportunité">${[["activites","Activités ("+acts.length+")"],["commentaires","Commentaires"],["devis","Devis ("+dv.length+")"],["historique","Historique"]].map(([k,l])=>`<button type="button" role="tab" id="ot-${k}" aria-controls="op-${k}" aria-selected="${oppSection===k}" data-osec="${k}">${l}</button>`).join("")}</div>
