@@ -990,7 +990,19 @@ function openOpp(o){
 
 /* ---- Devis ---- */
 // Mentions légales imprimées en pied de devis : à compléter (raison sociale, ICE, RC, IF, adresse, RIB…).
-const SOCIETE = { nom:"CELLULIFT", activite:"Distribution d’équipements de médecine esthétique", adresse:"", telephone:"", email:"", site:"cellulift.ma", ice:"", rc:"", if_:"", patente:"", cnss:"", rib:"", banque:"" };
+const SOCIETE = { nom:"CELLULIFT", activite:"Distribution d’équipements de médecine esthétique", telephone:"+212 (0)5 22 49 01 09", email:"", site:"cellulift.ma", ice:"001910344000074", rc:"", if_:"", patente:"", cnss:"", rib:"", banque:"" };
+const AGENCES = {
+  casablanca:{nom:"Casablanca", adresse:"N°02 Rue Savoie, Quartier des Hôpitaux, Casablanca, Maroc"},
+  marrakech:{nom:"Agence Marrakech", adresse:"Hay Al Massira III, C 624, Marrakech"},
+  tanger:{nom:"Agence Tanger", adresse:"N°73, Bd Moulay Rachid, Tanger"},
+};
+// Agence par défaut selon la ville du client (nord → Tanger, sud → Marrakech, sinon Casablanca).
+function agenceDefaut(c){
+  const v=strip((c&&c.ville)||"");
+  if(/tanger|tetouan|larache|asilah|al hoce|nador|chefchaouen|fnideq|mdiq|ksar/.test(v)) return "tanger";
+  if(/marrakech|agadir|safi|essaouira|ouarzazate|beni mellal|kelaa|inezgane|tiznit|guelmim|laayoune|dakhla|taroudant/.test(v)) return "marrakech";
+  return "casablanca";
+}
 const DEVIS_LABEL = {brouillon:"Brouillon",envoye:"Envoyé",accepte:"Accepté",refuse:"Refusé",signe:"Signé"};
 const DEVIS_PILL = {brouillon:"",envoye:"warn",accepte:"ok",refuse:"bad",signe:"ok"};
 const r2 = n => Math.round((+n||0)*100)/100;
@@ -1063,6 +1075,7 @@ function formDevis(d, preset){
       ${fld("dv-compte","Client",c0?`<input id="dv-compte" value="${esc(compteLabel(c0))}" readonly aria-readonly="true">`:`<input id="dv-compte" name="compte" list="dl-comptes" autocomplete="off" placeholder="Tapez le nom du client…" required>${comptesDl}`,true)}
       ${fld("dv-opp","Opportunité liée",`<select id="dv-opp" name="opportunite_id"></select>`)}
       ${fld("dv-com","Commercial",`<select id="dv-com" name="commercial_id">${opt(equipeOpts(),d.commercial_id||(opp0&&opp0.commercial_id)||(c0&&c0.commercial_id)||(me&&me.id),"Non assigné")}</select>`)}
+      ${fld("dv-ag","Agence émettrice",`<select id="dv-ag" name="agence">${opt(Object.entries(AGENCES).map(([k,a])=>[k,a.nom]),d.agence||agenceDefaut(c0))}</select>`)}
     </div>
     <div class="tbl-wrap" style="margin-top:16px"><table class="dv-lines"><thead><tr><th style="min-width:200px">Machine / désignation</th><th class="num" style="width:70px">Qté</th><th class="num" style="width:130px">PU HT (MAD)</th><th class="num" style="width:90px">Remise %</th><th class="num" style="width:120px">Total HT</th><th style="width:44px"><span class="sr-only">Retirer</span></th></tr></thead><tbody id="dv-body"></tbody></table></div>
     <div class="tools" style="margin-top:8px"><button type="button" class="btn small" id="dv-add">+ Ligne</button></div>
@@ -1090,7 +1103,7 @@ function formDevis(d, preset){
   };
   fillOpps();
   $("#dv-opp").addEventListener("change",()=>{ $("#dv-sync-wrap").hidden=!$("#dv-opp").value; });
-  if(!c0) $("#dv-compte").addEventListener("change",e=>{ compteId = compteByLabel.get(e.target.value)||""; fillOpps(); const c=byId(state.comptes,compteId); if(c&&c.commercial_id) $("#dv-com").value=c.commercial_id; });
+  if(!c0) $("#dv-compte").addEventListener("change",e=>{ compteId = compteByLabel.get(e.target.value)||""; fillOpps(); const c=byId(state.comptes,compteId); if(c&&c.commercial_id) $("#dv-com").value=c.commercial_id; if(c&&!d.agence) $("#dv-ag").value=agenceDefaut(c); });
 
   const renderLines = ()=>{
     $("#dv-body").innerHTML = lignes.map((l,i)=>`<tr data-i="${i}">
@@ -1143,7 +1156,7 @@ function formDevis(d, preset){
       lignes.some(l=>+l.remise_pct<0||+l.remise_pct>100) || +$("#dv-rg").value<0 || +$("#dv-rg").value>100 ? "Les remises vont de 0 à 100 %." : null;
     if(err){ $("#merr").textContent=err; if(printWin) printWin.close(); if(!compteId) $("#dv-compte").focus(); return; }
     const b=$("#msubmit"); b.disabled=true; b.setAttribute("aria-busy","true"); $("#dv-save-print").disabled=true;
-    const payload = { id:d.id||null, compte_id:compteId, opportunite_id:$("#dv-opp").value||null, commercial_id:$("#dv-com").value||null,
+    const payload = { id:d.id||null, compte_id:compteId, opportunite_id:$("#dv-opp").value||null, commercial_id:$("#dv-com").value||null, agence:$("#dv-ag").value||null,
       remise_pct:$("#dv-rg").value||0, tva_pct:$("#dv-tva").value===""?20:$("#dv-tva").value, validite_jours:$("#dv-val").value||30,
       conditions:$("#dv-cond").value.trim(), notes:$("#dv-notes").value.trim(), maj_opportunite: !!$("#dv-opp").value && $("#dv-sync").checked,
       lignes: lignes.map(l=>({produit_id:l.produit_id||null, designation:String(l.designation).trim(), quantite:+l.quantite||1, prix_unitaire_mad:+l.prix_unitaire_mad||0, remise_pct:+l.remise_pct||0})) };
@@ -1207,7 +1220,8 @@ function imprimerDevis(d, w){
   const fd=x=>x.toLocaleDateString("fr-FR",{day:"2-digit",month:"long",year:"numeric"});
   const anyRem=lignes.some(l=>+l.remise_pct>0);
   const legal=[SOCIETE.ice&&"ICE "+SOCIETE.ice, SOCIETE.rc&&"RC "+SOCIETE.rc, SOCIETE.if_&&"IF "+SOCIETE.if_, SOCIETE.patente&&"Patente "+SOCIETE.patente, SOCIETE.cnss&&"CNSS "+SOCIETE.cnss].filter(Boolean).join(" · ");
-  const coord=[SOCIETE.adresse, SOCIETE.telephone, SOCIETE.email, SOCIETE.site].filter(Boolean).join(" · ");
+  const ag=AGENCES[d.agence]||AGENCES[agenceDefaut(c)];
+  const coord=[ag.adresse, "Tél.\u00a0"+SOCIETE.telephone.replace(/ /g,"\u00a0"), SOCIETE.email, SOCIETE.site].filter(Boolean).join(" · ");
   const html=`<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>${esc(devisNum(d))} — ${esc(c.nom||"Devis")}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..600&family=Cormorant+Garamond:wght@400&family=Instrument+Sans:wght@400..600&family=JetBrains+Mono:wght@400;500&display=swap">
@@ -1250,7 +1264,7 @@ tr{break-inside:avoid}
 <div class="tag">Metamorphosis Technology</div></div>
 <div class="doc"><h1>Devis</h1><div class="mono" style="margin-top:8px">${esc(devisNum(d))}</div><div style="margin-top:4px">Émis le ${fd(emis)}</div><div>Valable jusqu’au ${fd(valid)}</div></div></div>
 <div class="sig"></div>
-<div class="parties"><div class="box"><div class="lab">Émetteur</div><b translate="no">${esc(SOCIETE.nom)}</b><div>${esc(SOCIETE.activite)}</div>${coord?`<div>${esc(coord)}</div>`:""}${com?`<div style="margin-top:6px">Votre interlocuteur : ${esc(com.nom)}${com.email?" · "+esc(com.email):""}</div>`:""}</div>
+<div class="parties"><div class="box"><div class="lab">Émetteur</div><b translate="no">${esc(SOCIETE.nom)}</b> <span>· ${esc(ag.nom)}</span><div>${esc(SOCIETE.activite)}</div>${coord?`<div>${esc(coord)}</div>`:""}${com?`<div style="margin-top:6px">Votre interlocuteur : ${esc(com.nom)}${com.email?" · "+esc(com.email):""}</div>`:""}</div>
 <div class="box"><div class="lab">Client</div><b>${esc(c.nom||"")}</b>${c.specialite?`<div>${esc(c.specialite)}</div>`:""}${contact&&[contact.prenom,contact.nom].join(" ").trim()!==c.nom?`<div>À l’attention de ${esc([contact.prenom,contact.nom].filter(Boolean).join(" "))}</div>`:""}<div>${esc([c.adresse,c.ville].filter(Boolean).join(", "))}</div><div>${esc([c.telephone,c.email].filter(Boolean).join(" · "))}</div></div></div>
 <table><thead><tr><th>Désignation</th><th class="num">Qté</th><th class="num">PU HT</th>${anyRem?`<th class="num">Remise</th>`:""}<th class="num">Total HT</th></tr></thead><tbody>
 ${lignes.map(l=>`<tr><td>${esc(l.designation)}</td><td class="num">${+l.quantite}</td><td class="num">${mad2(l.prix_unitaire_mad)}</td>${anyRem?`<td class="num">${+l.remise_pct?(+l.remise_pct)+" %":"—"}</td>`:""}<td class="num">${mad2((+l.quantite)*(+l.prix_unitaire_mad)*(1-(+l.remise_pct)/100))}</td></tr>`).join("")}
@@ -1259,7 +1273,7 @@ ${lignes.map(l=>`<tr><td>${esc(l.designation)}</td><td class="num">${+l.quantite
 <div class="lettres">Arrêté le présent devis à la somme de <b>${esc(enLettres(t.ttc))}</b> toutes taxes comprises.</div>
 ${d.conditions?`<div class="cond"><div class="lab">Conditions</div>${esc(d.conditions)}</div>`:""}
 <div class="foot"><div></div><div><div class="lab">Bon pour accord — date, cachet et signature du client</div><div class="signbox"></div></div></div>
-${legal||SOCIETE.rib?`<div class="legal">${esc(SOCIETE.nom)}${legal?" · "+esc(legal):""}${SOCIETE.rib?`<br>RIB ${esc(SOCIETE.rib)}${SOCIETE.banque?" · "+esc(SOCIETE.banque):""}`:""}</div>`:""}
+<div class="legal"><span translate="no">${esc(SOCIETE.nom)}</span>${legal?" · "+esc(legal):""} · Tél. ${esc(SOCIETE.telephone)}<br>${Object.values(AGENCES).map(a=>esc(a.nom.replace(/^Agence /,""))+" : "+esc(a.adresse)).join(" · ")}${SOCIETE.rib?`<br>RIB ${esc(SOCIETE.rib)}${SOCIETE.banque?" · "+esc(SOCIETE.banque):""}`:""}</div>
 </div><script>(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>setTimeout(()=>window.print(),300));<\/script></body></html>`;
   w.document.open(); w.document.write(html); w.document.close();
 }
