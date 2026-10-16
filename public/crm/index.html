@@ -730,7 +730,7 @@ function viewComptes(v){
     &&(!q||strip([c.nom,c.specialite,c.telephone,c.ville,c.notes].filter(Boolean).join(" ")).includes(q)||(c.telephone||"").replace(/\D/g,"").includes(q.replace(/\D/g,"")||"§")));
   const page=list.slice(0,shown);
   const nf=new Intl.NumberFormat("fr-FR");
-  v.innerHTML=`<div class="section-head"><div><h2>Clients</h2><p class="hint">Médecins et non-médecins, classés par spécialité${(n=>n?` · <button class="linkish" data-act="f-a-classer">${new Intl.NumberFormat("fr-FR").format(n)} à classer</button>`:"")(state.comptes.filter(c=>c.metier_a_verifier&&(estPilote()||!me||c.commercial_id===me.id)).length)}</p></div>
+  v.innerHTML=`<div class="section-head"><div><h2>${estPilote()?"Clients":"Mes clients"}</h2><p class="hint">${estPilote()?"":"Tu vois les clients que tu suis ou que tu as créés. "}Médecins et non-médecins, classés par spécialité${(n=>n?` · <button class="linkish" data-act="f-a-classer">${new Intl.NumberFormat("fr-FR").format(n)} à classer</button>`:"")(state.comptes.filter(c=>c.metier_a_verifier&&(estPilote()||!me||c.commercial_id===me.id)).length)}</p></div>
     <div class="tools">${me&&["admin","superviseur"].includes(me.role)?`<button class="btn" data-act="import">Importer (Excel)</button>`:""}<button class="btn primary" data-act="new-compte">+ Compte</button></div></div>
   <div class="panel">
     <div class="filters" style="margin-bottom:12px">
@@ -810,9 +810,41 @@ function viewSuperviseur(v){
   $("#f-sr").addEventListener("change",e=>{ supShowroom=e.target.value; viewSuperviseur(v); });
 }
 
+async function chargerDoublons(){
+  const el=$("#dup-body"); if(!el) return;
+  const {data,error}=await sb.rpc("doublons_base"); if(!document.contains(el)) return;
+  if(error){ el.innerHTML=`<p class="hint">${esc(errorCopy(error)[1])}</p>`; return; }
+  const paires=(data||[]).map(r=>({a:byId(state.comptes,r.a),b:byId(state.comptes,r.b),motif:r.motif})).filter(p=>p.a&&p.b);
+  const ligne=c=>`<button class="linkish" data-act="open-compte" data-id="${c.id}"><b>${esc(c.nom)}</b></button><div class="hint" style="margin:0">${esc([c.ville,c.telephone,c.commercial_id?nomMembre(c.commercial_id):"non assigné"].filter(Boolean).join(" · "))}</div>`;
+  el.innerHTML=paires.length?`<p class="hint" style="margin-top:0">${paires.length} paire${paires.length>1?"s":""}${paires.length>=500?" (500 premières)":""}</p><div class="closed-list">${paires.slice(0,100).map(p=>`<div class="closed-row"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1;min-width:0"><div>${ligne(p.a)}</div><div>${ligne(p.b)}</div></div><div class="tools"><span class="pill">${esc(p.motif)}</span><button class="btn small" data-act="fusion" data-a="${p.a.id}" data-b="${p.b.id}">Fusionner</button></div></div>`).join("")}</div>${paires.length>100?`<p class="hint">Les 100 premières sont affichées ; fusionnez-les pour voir la suite.</p>`:""}`
+    :`<p class="hint">Aucun doublon détecté.</p>`;
+}
+function formFusion(aId,bId){
+  const A=byId(state.comptes,aId), B=byId(state.comptes,bId); if(!A||!B) return;
+  const cnt=c=>[["contacts",state.contacts],["opportunités",state.opportunites],["activités",state.activites],["devis",state.devis],["paiements",state.paiements]].map(([l,arr])=>{ const n=arr.filter(x=>x.compte_id===c.id).length; return n?n+" "+l:""; }).filter(Boolean).join(", ")||"aucun historique";
+  const carte=(c,k)=>`<label class="check" style="align-items:flex-start;padding:12px;border:1px solid var(--line-strong);border-radius:16px"><input type="radio" name="garder" value="${c.id}" ${k?"checked":""} style="margin-top:3px"><span><b>${esc(c.nom)}</b><span class="hint" style="display:block;margin:2px 0 0">${esc([c.ville,c.telephone,c.email,c.specialite].filter(Boolean).join(" · "))}</span><span class="hint" style="display:block;margin:2px 0 0">Suivi par ${esc(c.commercial_id?nomMembre(c.commercial_id):"personne")} · ${esc(cnt(c))}</span></span></label>`;
+  const h=`<p style="margin-top:0">Choisis la fiche à <b>garder</b>. Tout l’historique de l’autre (contacts, opportunités, activités, devis, paiements, commentaires) y est déplacé, ses coordonnées complètent les champs vides, puis elle est supprimée. La fusion est inscrite dans l’historique.</p>
+    <div style="display:flex;flex-direction:column;gap:8px">${carte(A,true)}${carte(B,false)}</div>`;
+  const submit=async f=>{
+    const keep=f.garder===B.id?B:A, drop=keep===A?B:A;
+    setStatus("busy","Fusion…");
+    try{
+      for(const t of ["contacts","opportunites","activites","devis","paiements","commentaires"]){ const {error}=await sb.from(t).update({compte_id:keep.id}).eq("compte_id",drop.id); if(error) throw error; }
+      const patch={}; ["telephone","email","adresse","site_web","specialite","source","ville"].forEach(k=>{ if(!keep[k]&&drop[k]) patch[k]=drop[k]; });
+      if(drop.notes) patch.notes=[keep.notes,"Fusionné avec « "+drop.nom+" » : "+drop.notes].filter(Boolean).join("\n");
+      if(drop.statut==="client"&&keep.statut!=="client") patch.statut="client";
+      if(Object.keys(patch).length){ const {error}=await sb.from("comptes").update(patch).eq("id",keep.id); if(error) throw error; }
+      const {error}=await sb.from("comptes").delete().eq("id",drop.id); if(error) throw error;
+      toast("Fiches fusionnées"); closeModal(true); await load(); return true;
+    }catch(e){ setStatus("bad","Échec"); toast(errorCopy(e).join(" — ")); await load(); return false; }
+  };
+  modal("Fusionner deux fiches",h,submit,"Fusionner");
+}
 function viewEquipe(v){
+  setTimeout(chargerDoublons,0);
   v.innerHTML=`<div class="section-head"><div><h2>Équipe &amp; catalogue</h2><p class="hint">Un membre « sans accès » ne peut pas se connecter. Activez-le dans « Modifier » ; il se connecte ensuite avec l’email indiqué ici.</p></div>
    <div class="tools"><button class="btn" data-act="import">Importer des contacts (Excel)</button><button class="btn" data-act="new-produit">+ Machine</button><button class="btn primary" data-act="new-membre">+ Membre</button></div></div>
+  <div class="panel" style="margin-bottom:16px" id="dup-panel"><h3>Doublons probables</h3><p class="hint">Même téléphone, ou même nom dans la même ville, y compris entre clients de commerciaux différents.</p><div id="dup-body"><div class="skeleton" style="height:40px"></div></div></div>
   <div class="grid2"><div class="panel"><h3>Équipe</h3><div class="tbl-wrap" style="margin-top:8px"><table><thead><tr><th>Nom</th><th>Email</th><th>Rôle</th><th>Showroom</th><th>Statut</th><th></th></tr></thead><tbody>
   ${state.equipe.map(e=>`<tr><td><b>${esc(e.nom)}</b></td><td>${esc(e.email||"—")}</td><td>${ROLES[e.role]}</td><td>${e.showroom?esc(SHOWROOMS[e.showroom].replace("Showroom ","")):"—"}</td><td><span class="pill ${e.actif?"ok":""}">${e.actif?"Accès actif":"Sans accès"}</span></td><td><button class="btn small" data-act="edit-membre" data-id="${e.id}">Modifier</button></td></tr>`).join("")}
   </tbody></table></div></div>
@@ -883,6 +915,11 @@ function formCompte(c){
   const submit=async f=>{
     const met=sEnum(f.metier,Object.keys(METIERS))||"autre", cat=sEnum(f.categorie,Object.keys(CATEGORIES))||(METIERS[met]||[])[0]||null;
     const obj={nom:sTxt(f.nom),categorie:cat,metier:met,metier_auto:false,metier_a_verifier:met==="autre"||!cat,segment:segmentCompat(met)||c.segment||"B_cabinet",ville:sTxt(f.ville),statut:sEnum(f.statut,Object.keys(STATUTS))||"prospect",specialite:sTxt(f.specialite),source:sTxt(f.source),adresse:sTxt(f.adresse),telephone:sTxt(f.telephone),email:sTxt(f.email),site_web:sTxt(f.site_web),commercial_id:sUuid(f.commercial_id),notes:sTxt(f.notes)};
+    const changeId=!c.id||strip(c.nom)!==strip(obj.nom)||String(c.telephone||"").replace(/\D/g,"")!==String(obj.telephone||"").replace(/\D/g,"");
+    if(changeId&&!submit.force){
+      const {data:dups}=await sb.rpc("chercher_doublons",{p_nom:obj.nom,p_tel:obj.telephone,p_ville:obj.ville,p_exclure:c.id||null});
+      if(dups&&dups.length){ afficherDoublons(dups,submit); return false; }
+    }
     return c.id ? write(upd("comptes",c.id,obj),"Compte mis à jour") : write(ins("comptes",obj),"Compte ajouté");
   };
   submit.validate=f=>!f.nom.trim()?["nom","Indiquez le nom du compte."]:!f.categorie?["categorie","Médecin ou non-médecin ?"]:!f.metier||f.metier==="autre"&&!f.specialite.trim()?["metier","Choisissez la spécialité (ou précisez-la en texte libre)."]:null;
@@ -917,6 +954,17 @@ function formOpp(o,presetCompte){
   const medWarn=()=>{ const p=byId(state.produits,$("#m-prod").value), c=byId(state.comptes,$("#m-compte").value);
     $("#m-prod-warn").textContent = p&&p.medical_only&&c&&c.categorie==="non_medecin" ? `Machine réservée aux médecins : ce client est classé non-médecin (${metierLabel(c)}).` : p&&p.medical_only&&c&&c.categorie!=="medecin" ? "Machine réservée aux médecins : vérifiez qu’un médecin exerce chez ce client." : ""; };
   $("#m-prod").addEventListener("change",medWarn); $("#m-compte").addEventListener("change",medWarn); medWarn();
+}
+
+function afficherDoublons(dups,submit){
+  const box=$("#merr"); box.className="";
+  box.innerHTML=`<div class="banner warn" role="alert"><div style="flex:1"><b>Ce client existe peut-être déjà</b>
+    <div class="closed-list" style="margin:8px 0">${dups.map(d=>`<div class="closed-row"><div><b>${esc(d.nom)}</b><div class="hint" style="margin:0">${esc([d.ville,d.motif,d.a_moi?"dans tes clients":"suivi par "+(d.suivi_par||"personne")].filter(Boolean).join(" · "))}</div></div>
+      <div class="tools">${d.a_moi?`<button type="button" class="btn small" data-act="open-compte" data-id="${d.id}">Ouvrir</button>`:`<button type="button" class="btn small" data-act="demande-transfert" data-id="${d.id}">Demander le transfert</button>`}</div></div>`).join("")}</div>
+    <span>Si c’est bien le même client, ne le recrée pas : ${dups.some(d=>!d.a_moi)?"demande le transfert, le superviseur sera prévenu.":"ouvre sa fiche."}</span>
+    <div class="tools" style="margin-top:10px"><button type="button" class="btn small" id="dup-force">Ce n’est pas le même, enregistrer quand même</button></div></div></div>`;
+  $("#dup-force").onclick=()=>{ submit.force=true; box.innerHTML=""; box.className="field-err"; $("#mform").requestSubmit(); };
+  box.scrollIntoView({block:"nearest"});
 }
 
 function formContact(compteId){
@@ -1008,6 +1056,8 @@ document.addEventListener("click",async e=>{
   if(act==="quick-visite") return formVisite();
   if(act==="pipe-stage"){ pipeStage=t.dataset.v; colShown={}; viewPipeline($("#view")); window.scrollTo({top:0}); return; }
   if(act==="seuils") return formSeuils();
+  if(act==="demande-transfert"){ t.disabled=true; const {error}=await sb.rpc("demander_transfert",{p_compte:id}); if(error){ t.disabled=false; return toast(errorCopy(error).join(" — ")); } t.textContent="Demande envoyée ✓"; toast("Le superviseur a été prévenu"); return; }
+  if(act==="fusion"){ return formFusion(t.dataset.a,t.dataset.b); }
   if(act==="f-a-classer"){ filt.segment="a_classer"; filt.com=estPilote()?"":(me?me.id:""); shown=PAGE; return viewComptes($("#view")); }
   if(act==="new-echeancier") return formEcheancier({devis:t.dataset.devis,compte:t.dataset.compte});
   if(act==="edit-paiement") return formPaiement(byId(state.paiements,id));
