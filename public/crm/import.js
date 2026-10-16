@@ -189,5 +189,150 @@
     return { created, already: records.length - created, newMembers: toAdd.length };
   }
 
-  root.CRMImport = { mapRows, readFiles, run, _test: { realPhone, normPhone, normCity, segmentOf, nameCase, parseCreator } };
+
+  /* ---------- Opportunités et devis de l'ancien CRM ---------- */
+  // Clé de rapprochement d'un nom : sans accents, sans titre (Dr, Mme…), mots triés.
+  const nameKey = (s) => strip(clean(s)).replace(/\b(dr|pr|docteur|mme|mlle|mr|m|madame|monsieur)\b\.?/g, " ").match(/[a-z0-9]+/g)?.sort().join(" ") || "";
+  const ETAPE = { qualification: "Qualification", proposition: "Proposition", negociation: "Negociation", closing: "Fermeture", fermeture: "Fermeture" };
+  const PROBA = { Qualification: 20, Proposition: 40, Negociation: 65, Fermeture: 85 };
+  function segmentFromName(n) {
+    const k = strip(n);
+    if (/clinique|centre (medical|medico|laser|d.?esthetique medic)|medico|polyclinique/.test(k)) return "A_clinique";
+    if (/salon|spa\b|beaut|coiff|nail|ongl|hammam|institut|massage|lounge|studio|room|esthetique|bien.?etre|lash|brow|make ?up/.test(k)) return "C_salon";
+    return "B_cabinet";
+  }
+  function titreOpp(detail, client) {
+    const d = clean(detail).replace(/^OPPO-\d+\s*[—–-]?\s*/i, "");
+    if (!d || nameKey(d) === nameKey(client) || nameKey(d).split(" ").every((w) => nameKey(client).includes(w))) return "Prospection";
+    return d.length > 90 ? d.slice(0, 87).trim() + "…" : d[0].toUpperCase() + d.slice(1);
+  }
+  const num = (v) => {
+    let t = String(v ?? "").replace(/[\s\u00a0\u202f]/g, "").replace(/(MAD|DH)$/i, "");
+    if (/^\d{1,3}(,\d{3})+(\.\d+)?$/.test(t)) t = t.replace(/,/g, "");        // 270,000.00
+    else if (/^\d{1,3}(\.\d{3})+(,\d+)?$/.test(t)) t = t.replace(/\./g, "").replace(",", "."); // 270.000,00
+    else t = t.replace(",", ".");
+    const n = parseFloat(t); return isFinite(n) ? n : null;
+  };
+  const isoDate = (v) => { const s = clean(v); const m = s.match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? `${m[1]}-${m[2]}-${m[3]}T09:00:00Z` : null; };
+
+  /** sheets : { nomFeuille: lignes }, comptes / equipe : données actuelles du CRM. */
+  function mapOpportunites(sheets, comptes, equipe) {
+    const names = Object.keys(sheets);
+    const oppRows = sheets[names.find((n) => /opportunit/i.test(n))] || [];
+    const devRows = sheets[names.find((n) => /devis/i.test(n))] || [];
+    // Comptes existants : par nom + ville, puis par nom seul s'il est unique.
+    const byNameCity = new Map(), byName = new Map();
+    for (const c of comptes) {
+      const k = nameKey(c.nom); if (!k) continue;
+      byNameCity.set(k + "|" + strip(c.ville || ""), c.id);
+      byName.set(k, byName.has(k) ? null : c.id);
+    }
+    const memberKey = (n) => nameKey(n);
+    const members = new Map(equipe.map((e) => [memberKey(e.nom), e.id]));
+    // « Admin » de l'export = « Admin (mariamlahlou) » importé avec les contacts.
+    const admin = equipe.find((e) => /^admin\b/i.test(e.nom)); if (admin) members.set("admin", admin.id);
+    const newMembers = new Map();
+    const memberRef = (n) => { const k = memberKey(n); if (!k) return null; if (members.has(k)) return { id: members.get(k) }; if (!newMembers.has(k)) newMembers.set(k, { nom: nameCase(n), role: "commercial", actif: false }); return { key: k }; };
+
+    const newComptes = new Map(); let matched = 0;
+    const compteRef = (client, villeRaw, comKey) => {
+      const { ville, quartier } = normCity(villeRaw);
+      const k = nameKey(client); const vk = strip(ville || "");
+      const id = byNameCity.get(k + "|" + vk) || (byName.get(k) || null);
+      if (id) { matched++; return { id }; }
+      const ref = "opp:" + k + "|" + vk;
+      if (!newComptes.has(ref)) newComptes.set(ref, { import_ref: ref, nom: nameCase(client), segment: segmentFromName(client), ville, adresse: quartier, statut: "prospect", source: "Ancien CRM (opportunités)", commercialRef: comKey });
+      return { ref };
+    };
+
+    const opps = []; const etapes = {};
+    for (const r of oppRows) {
+      const client = clean(r["Client"]); if (!client) continue;
+      const com = memberRef(r["Commercial d'origine"] ?? r["Commercial"]);
+      const cpt = compteRef(client, r["Ville"], com);
+      const etape = ETAPE[strip(clean(r["Étape"] ?? r["Etape"]))] || "Qualification";
+      etapes[etape] = (etapes[etape] || 0) + 1;
+      const ht = num(r["Montant HT"]);
+      const created = isoDate(r["Date"]);
+      opps.push({ import_ref: "oppo:" + clean(r["Réf. ancien CRM"] ?? r["Ref"] ?? (client + "|" + r["Date"])), cpt, com,
+        row: { titre: titreOpp(r["Détail"], client), description: clean(r["Détail"]) || null, etape, issue: "en_cours", montant_mad: ht, probabilite: PROBA[etape],
+               created_at: created || undefined, updated_at: created || undefined } });
+    }
+    const devis = [];
+    for (const r of devRows) {
+      const client = clean(r["Client"]); if (!client) continue;
+      const ref = clean(r["Détail"]) || clean(r["Réf. devis"]).replace(/^DEVIS:/i, "");
+      const ht = num(r["Montant HT"]), ttc = num(r["Montant TTC"]);
+      const com = memberRef(r["Commercial d'origine"] ?? r["Commercial"]);
+      const cpt = compteRef(client, r["Ville"], com);
+      devis.push({ cpt, com, oppKey: nameKey(client), row: { reference: ref, import_ref: "devis:" + ref, montant_mad: ht ?? 0, tva_pct: ht && ttc ? Math.round((ttc / ht - 1) * 1000) / 10 : 20, statut: "envoye",
+        date_envoi: (isoDate(r["Date"]) || "").slice(0, 10) || null, created_at: isoDate(r["Date"]) || undefined, notes: "Repris de l'ancien CRM (détail des lignes non disponible)." } });
+    }
+    return { kind: "opportunites", opps, devis, newComptes: [...newComptes.values()], newMembers: [...newMembers.entries()].map(([k, m]) => ({ key: k, ...m })),
+      stats: { opps: opps.length, devis: devis.length, matched, nouveaux: newComptes.size, etapes, avecMontant: opps.filter((o) => o.row.montant_mad).length, commerciaux: newMembers.size } };
+  }
+
+  async function runOpportunites(sb, plan, onProgress) {
+    // 1. Commerciaux absents de l'équipe : ajoutés sans accès (sans email).
+    const memberId = new Map();
+    const { data: team, error: e0 } = await sb.from("equipe").select("id,nom"); if (e0) throw e0;
+    (team || []).forEach((t) => memberId.set(nameKey(t.nom), t.id));
+    for (const m of plan.newMembers) {
+      if (memberId.has(m.key)) continue;
+      const { data, error } = await sb.from("equipe").insert({ nom: m.nom, role: m.role, actif: false }).select("id").single();
+      if (error) throw error; memberId.set(m.key, data.id);
+    }
+    const comId = (ref) => (ref ? ref.id || memberId.get(ref.key) || null : null);
+    // 2. Nouveaux comptes (relance sans doublon grâce à import_ref).
+    const N = 200; let done = 0; const total = plan.newComptes.length + plan.opps.length + plan.devis.length;
+    const idByRef = new Map();
+    for (let i = 0; i < plan.newComptes.length; i += N) {
+      const chunk = plan.newComptes.slice(i, i + N);
+      const rows = chunk.map(({ commercialRef, ...c }) => ({ ...c, commercial_id: comId(commercialRef) }));
+      const { error } = await sb.from("comptes").upsert(rows, { onConflict: "import_ref", ignoreDuplicates: true });
+      if (error) throw error;
+      const { data, error: e2 } = await sb.from("comptes").select("id,import_ref").in("import_ref", chunk.map((c) => c.import_ref));
+      if (e2) throw e2; data.forEach((x) => idByRef.set(x.import_ref, x.id));
+      done += chunk.length; onProgress && onProgress(done, total);
+    }
+    const cid = (cpt) => cpt.id || idByRef.get(cpt.ref) || null;
+    // 3. Opportunités.
+    let created = 0; const oppByCompte = new Map();
+    for (let i = 0; i < plan.opps.length; i += N) {
+      const chunk = plan.opps.slice(i, i + N).filter((o) => cid(o.cpt));
+      const rows = chunk.map((o) => { const r = { ...o.row, import_ref: o.import_ref, compte_id: cid(o.cpt), commercial_id: comId(o.com) }; if (!r.created_at) { delete r.created_at; delete r.updated_at; } return r; });
+      const { data, error } = await sb.from("opportunites").upsert(rows, { onConflict: "import_ref", ignoreDuplicates: true }).select("id");
+      if (error) throw error; created += (data || []).length;
+      done += plan.opps.slice(i, i + N).length; onProgress && onProgress(done, total);
+    }
+    const { data: allOpps } = await sb.from("opportunites").select("id,compte_id,import_ref").like("import_ref", "oppo:%");
+    (allOpps || []).forEach((o) => oppByCompte.set(o.compte_id, o.id));
+    // 4. Devis (montants repris, une ligne de synthèse).
+    let devisCrees = 0;
+    for (const d of plan.devis) {
+      const compte_id = cid(d.cpt); if (!compte_id) continue;
+      const row = { ...d.row, compte_id, commercial_id: comId(d.com), opportunite_id: oppByCompte.get(compte_id) || null };
+      if (!row.created_at) delete row.created_at;
+      const { data, error } = await sb.from("devis").upsert(row, { onConflict: "import_ref", ignoreDuplicates: true }).select("id");
+      if (error) throw error;
+      if (data && data.length) {
+        devisCrees++;
+        const { error: e3 } = await sb.from("devis_lignes").insert({ devis_id: data[0].id, position: 1, designation: "Devis " + d.row.reference + " repris de l'ancien CRM", quantite: 1, prix_unitaire_mad: d.row.montant_mad || 0, remise_pct: 0 });
+        if (e3) throw e3;
+      }
+      done++; onProgress && onProgress(done, total);
+    }
+    return { comptes: idByRef.size, opps: created, oppsDeja: plan.opps.length - created, devis: devisCrees, membres: plan.newMembers.length };
+  }
+
+  async function readSheets(files, XLSX) {
+    const out = {};
+    for (const f of files) {
+      const wb = XLSX.read(await f.arrayBuffer(), { type: "array" });
+      for (const name of wb.SheetNames) out[name] = (out[name] || []).concat(XLSX.utils.sheet_to_json(wb.Sheets[name], { defval: null, raw: false }));
+    }
+    return out;
+  }
+
+  root.CRMImport = { mapRows, readFiles, run, readSheets, mapOpportunites, runOpportunites, _test: { realPhone, normPhone, normCity, segmentOf, nameCase, parseCreator } };
 })(typeof window !== "undefined" ? window : globalThis);

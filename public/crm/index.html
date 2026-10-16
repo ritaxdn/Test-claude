@@ -449,20 +449,29 @@ function oppCard(o){
     </div></article>`;
 }
 
+let pipeFilt={com:"",q:""}, colShown={};
 function viewPipeline(v){
-  const open = state.opportunites.filter(o=>o.issue==="en_cours");
+  const q=strip(pipeFilt.q);
+  const match=o=>(!pipeFilt.com||(pipeFilt.com==="moi"?(me&&o.commercial_id===me.id):pipeFilt.com==="none"?!o.commercial_id:o.commercial_id===pipeFilt.com))
+    &&(!q||strip([o.titre,o.description,(byId(state.comptes,o.compte_id)||{}).nom].filter(Boolean).join(" ")).includes(q));
+  const open = state.opportunites.filter(o=>o.issue==="en_cours"&&match(o)).sort((a,b)=>String(b.updated_at||"").localeCompare(String(a.updated_at||"")));
   const closed = state.opportunites.filter(o=>o.issue!=="en_cours").slice(0,12);
   const noCompte = !state.comptes.length;
   v.innerHTML = `
   <div class="section-head"><div><h2>Pipeline commercial</h2><p class="hint">Qualification → Proposition → Négociation → Fermeture</p></div>
     <div class="tools"><button class="btn" data-act="new-compte">+ Compte</button><button class="btn primary" data-act="new-opp" ${noCompte?"disabled title='Ajoutez d’abord un compte'":""}>+ Opportunité</button></div></div>
+  ${state.opportunites.length?`<div class="filters" style="margin-bottom:12px"><input id="p-q" type="search" placeholder="Client, opportunité, note…" value="${esc(pipeFilt.q)}" aria-label="Rechercher une opportunité" autocomplete="off" spellcheck="false">
+    <select id="p-com" aria-label="Commercial"><option value="">Tous les commerciaux</option><option value="moi" ${pipeFilt.com==="moi"?"selected":""}>Mes opportunités</option><option value="none" ${pipeFilt.com==="none"?"selected":""}>Non assignées</option>${state.equipe.filter(e=>state.opportunites.some(o=>o.commercial_id===e.id)).map(e=>`<option value="${e.id}" ${pipeFilt.com===e.id?"selected":""}>${esc(e.nom)}</option>`).join("")}</select></div>`:""}
   ${noCompte?`<div class="panel empty"><h3>Le CRM est vide pour l’instant</h3><p>Commencez par ajouter une clinique, un cabinet ou un salon, puis créez sa première opportunité.</p><div class="form-actions" style="justify-content:center"><button class="btn primary" data-act="new-compte">Ajouter un premier compte</button></div></div>`:""}
   <div class="board-scroll"><div class="board">${ETAPES.map(e=>{
     const items=open.filter(o=>o.etape===e); const sum=items.reduce((s,o)=>s+(+o.montant_mad||0),0);
     return `<section class="col" aria-label="${ETAPE_LABEL[e]}"><div class="col-head"><span class="name">${ETAPE_LABEL[e]}<span class="n">${items.length}</span></span><span class="sum">${madShort(sum)} MAD</span></div>
-      ${items.length?items.map(oppCard).join(""):`<div class="empty-col">Aucune opportunité</div>`}</section>`;}).join("")}
+      ${items.length?items.slice(0,colShown[e]||25).map(oppCard).join(""):`<div class="empty-col">Aucune opportunité</div>`}
+      ${items.length>(colShown[e]||25)?`<button class="btn small" data-act="col-more" data-etape="${e}">Afficher 25 de plus · ${items.length-(colShown[e]||25)} restantes</button>`:""}</section>`;}).join("")}
   </div></div>
   ${closed.length?`<div class="panel" style="margin-top:16px"><h3>Dernières affaires clôturées</h3><div class="closed-list" style="margin-top:8px">${closed.map(o=>{const c=byId(state.comptes,o.compte_id);return `<div class="closed-row"><div><b>${esc(o.titre)}</b> <span class="hint">· ${esc(c?c.nom:"")}</span>${o.raison_perte?`<div class="hint">Raison : ${esc(o.raison_perte)}</div>`:""}</div><div class="tools"><span class="amt" style="font-family:var(--f-mono);font-size:12px">${mad(o.montant_mad)} MAD</span><span class="pill ${o.issue==="gagnee"?"ok":"bad"}">${o.issue==="gagnee"?"Gagnée":"Perdue"}</span><button class="btn small" data-act="reopen" data-id="${o.id}">Rouvrir</button></div></div>`;}).join("")}</div></div>`:""}`;
+  if($("#p-q")){ let t=null; $("#p-q").addEventListener("input",e=>{ clearTimeout(t); t=setTimeout(()=>{ pipeFilt.q=e.target.value; colShown={}; const pos=e.target.selectionStart; viewPipeline(v); const n=$("#p-q"); n.focus(); try{n.setSelectionRange(pos,pos);}catch(_){} },200); });
+    $("#p-com").addEventListener("change",e=>{ pipeFilt.com=e.target.value; colShown={}; viewPipeline(v); }); }
 }
 
 let shown=PAGE;
@@ -614,9 +623,10 @@ function formOpp(o,presetCompte){
    ${fld("m-etape","Étape",`<select id="m-etape" name="etape">${opt(ETAPES.map(e=>[e,ETAPE_LABEL[e]]),o.etape||"Qualification")}</select>`)}
    ${fld("m-prob","Probabilité %",`<input id="m-prob" name="probabilite" type="number" min="0" max="100" step="5" value="${esc(o.probabilite??PROB_DEFAUT[o.etape||"Qualification"])}">`)}
    ${fld("m-mt","Montant (MAD)",`<input id="m-mt" name="montant_mad" type="number" min="0" step="1000" inputmode="numeric" value="${esc(o.montant_mad??"")}">`)}
-   ${fld("m-date","Clôture prévue",`<input id="m-date" name="date_cloture_prevue" type="date" value="${esc(o.date_cloture_prevue||"")}">`)}</div>`;
+   ${fld("m-date","Clôture prévue",`<input id="m-date" name="date_cloture_prevue" type="date" value="${esc(o.date_cloture_prevue||"")}">`)}
+   ${fld("m-desc","Notes",`<textarea id="m-desc" name="description" placeholder="Contexte, besoin, budget…">${esc(o.description||"")}</textarea>`,true)}</div>`;
   const submit=async f=>{
-    const obj={compte_id:sUuid(f.compte_id),contact_id:sUuid(f.contact_id),produit_id:sUuid(f.produit_id),commercial_id:sUuid(f.commercial_id),titre:sTxt(f.titre),etape:sEnum(f.etape,ETAPES),montant_mad:sNum(f.montant_mad),probabilite:sInt(f.probabilite,0,100),date_cloture_prevue:sDate(f.date_cloture_prevue)};
+    const obj={description:sTxt(f.description),compte_id:sUuid(f.compte_id),contact_id:sUuid(f.contact_id),produit_id:sUuid(f.produit_id),commercial_id:sUuid(f.commercial_id),titre:sTxt(f.titre),etape:sEnum(f.etape,ETAPES),montant_mad:sNum(f.montant_mad),probabilite:sInt(f.probabilite,0,100),date_cloture_prevue:sDate(f.date_cloture_prevue)};
     return o.id ? write(upd("opportunites",o.id,obj),"Opportunité mise à jour") : write(ins("opportunites",obj),"Opportunité créée");
   };
   submit.validate=f=>!f.titre.trim()?["titre","Indiquez un intitulé pour l’opportunité."]:!UUID_RE.test(f.compte_id||"")?["compte_id","Choisissez le compte concerné."]:null;
@@ -712,6 +722,7 @@ document.addEventListener("click",async e=>{
   const id=t.dataset.id, act=t.dataset.act;
   if(act==="new-compte") return formCompte();
   if(act==="more"){ shown+=PAGE; return viewComptes($("#view")); }
+  if(act==="col-more"){ const e=t.dataset.etape; colShown[e]=(colShown[e]||25)+25; return viewPipeline($("#view")); }
   if(act==="import") return openImport();
   if(act==="new-devis") return formDevis(null,{opp:t.dataset.opp,compte:t.dataset.compte});
   if(act==="edit-devis") return formDevis(byId(state.devis,id));
@@ -953,6 +964,7 @@ function openOpp(o){
    <div class="modal-head"><div style="min-width:0"><div class="lab-mono">Opportunité</div><h3 id="otitle" class="opp-title">${esc(o.titre)}</h3>
      <div class="tools" style="margin-top:6px">${c?`<button class="linkish" data-act="open-compte" data-id="${c.id}">${esc(c.nom)}</button><span class="pill ${c.segment[0]}">${c.segment[0]}</span>`:""}${closed?`<span class="pill ${o.issue==="gagnee"?"ok":"bad"}">${o.issue==="gagnee"?"Gagnée":"Perdue"}</span>`:""}${o.raison_perte?`<span class="hint">${esc(o.raison_perte)}</span>`:""}</div></div>
      <button class="x" id="mx" aria-label="Fermer">×</button></div>
+   ${o.description&&o.description!==o.titre?`<p style="margin:10px 0 0;white-space:pre-line">${esc(o.description)}</p>`:""}
    <ol class="stepper" aria-label="Étapes">${ETAPES.map((e,i)=>`<li><button type="button" class="step ${i<idx?"done":i===idx?"cur":""}" ${closed||i===idx?"disabled":""} data-act="move" data-id="${o.id}" data-to="${e}" ${i===idx?'aria-current="step"':""}><span class="dotn">${i<idx?"✓":i+1}</span>${ETAPE_LABEL[e]}</button></li>`).join("")}</ol>
    <div class="opp-facts">
      <div><div class="lab-mono">Montant</div><b class="mono">${mad(o.montant_mad)} MAD</b></div>
@@ -1284,8 +1296,8 @@ function loadScript(src){ return new Promise((ok,ko)=>{ if(document.querySelecto
 function openImport(){
   lastFocus=document.activeElement; dirty=false;
   $("#modal-slot").innerHTML=`<div class="overlay" id="ov"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="itl" style="max-width:680px">
-    <div class="modal-head"><h3 id="itl">Importer des contacts</h3><button type="button" class="x" id="mx" aria-label="Fermer">×</button></div>
-    <p style="margin-top:0">Choisissez un ou plusieurs exports « contacts » de l’ancien CRM (.xlsx ou .csv). Rien n’est enregistré avant votre confirmation, et vous pouvez relancer l’import sans créer de doublons.</p>
+    <div class="modal-head"><h3 id="itl">Importer depuis l’ancien CRM</h3><button type="button" class="x" id="mx" aria-label="Fermer">×</button></div>
+    <p style="margin-top:0">Choisissez les exports de l’ancien CRM (.xlsx ou .csv) : « contacts », ou « opportunités et devis ». Rien n’est enregistré avant votre confirmation, et vous pouvez relancer l’import sans créer de doublons.</p>
     <div class="field"><label for="imp-files">Fichiers</label><input id="imp-files" type="file" accept=".xlsx,.xls,.csv" multiple></div>
     <div id="imp-out" aria-live="polite" style="margin-top:14px"></div>
     <div class="form-actions"><button type="button" class="btn" id="imp-cancel">Fermer</button><button type="button" class="btn primary" id="imp-go" disabled>Importer</button></div>
@@ -1299,7 +1311,18 @@ function openImport(){
     out.innerHTML=`<p class="hint">Lecture de ${files.length} fichier${files.length>1?"s":""}…</p>`;
     try{
       await loadScript("https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"); await loadScript("/crm/import.js");
-      const rows=await CRMImport.readFiles(files,window.XLSX);
+      const sheets=await CRMImport.readSheets(files,window.XLSX);
+      if(Object.keys(sheets).some(n=>/opportunit/i.test(n))){
+        plan=CRMImport.mapOpportunites(sheets,state.comptes,state.equipe); const st=plan.stats;
+        out.innerHTML=`<div class="panel" style="padding:16px">
+          <p style="margin:0 0 8px"><b>${nf.format(st.opps)} opportunités</b> et <b>${st.devis} devis</b> à importer.</p>
+          <div class="tools" style="margin-bottom:8px">${ETAPES.map(e=>`<span class="pill">${ETAPE_LABEL[e]} · ${nf.format(st.etapes[e]||0)}</span>`).join("")}</div>
+          <p class="hint" style="margin:0 0 4px">${nf.format(st.matched)} rattachées à un compte existant (même nom et ville) · ${nf.format(st.nouveaux)} nouveaux comptes créés pour les autres, sans téléphone (l’export n’en contient pas).</p>
+          <p class="hint" style="margin:0 0 4px">${st.avecMontant} opportunités ont un montant ; les autres arrivent à 0 MAD.</p>
+          <p class="hint" style="margin:0">${st.commerciaux?`${st.commerciaux} commerciaux absents de l’équipe seront ajoutés <b>sans accès</b> : ${esc(plan.newMembers.map(m=>m.nom).join(", "))}.`:"Tous les commerciaux sont déjà dans l’équipe."}</p></div>`;
+        go.textContent=`Importer ${nf.format(st.opps)} opportunités`; go.disabled=false; go.focus(); return;
+      }
+      const rows=Object.values(sheets).flat();
       if(!rows.length || !("Nom" in rows[0]) || !("Telephone" in rows[0] || "Téléphone" in rows[0])) throw new Error("Colonnes attendues introuvables (Nom, Prenom, Telephone…). Utilisez l’export « contacts » de l’ancien CRM.");
       plan=CRMImport.mapRows(rows); const st=plan.stats;
       const known=new Set(state.equipe.map(t=>(t.email||"").toLowerCase())); const newMembers=plan.creators.filter(c=>!known.has(c.email));
@@ -1318,8 +1341,14 @@ function openImport(){
     if(!plan||busy) return; busy=true; importBusy=true; go.disabled=true; go.setAttribute("aria-busy","true"); $("#imp-files").disabled=true;
     const bar=document.createElement("div"); bar.innerHTML=`<div class="prob" style="height:6px;margin-top:12px"><i id="imp-bar" style="width:0%"></i></div><p class="hint" id="imp-msg">Import en cours… Gardez cette fenêtre ouverte.</p>`; out.appendChild(bar);
     try{
-      const res=await CRMImport.run(sb,plan,(d,t)=>{ $("#imp-bar").style.width=Math.round(d*100/t)+"%"; $("#imp-msg").textContent=`Import en cours… ${nf.format(d)} / ${nf.format(t)}`; });
+      const prog=(d,t)=>{ $("#imp-bar").style.width=Math.round(d*100/t)+"%"; $("#imp-msg").textContent=`Import en cours… ${nf.format(d)} / ${nf.format(t)}`; };
+      if(plan.kind==="opportunites"){
+        const res=await CRMImport.runOpportunites(sb,plan,prog);
+        busy=false; importBusy=false; $("#imp-msg").textContent=`Terminé : ${nf.format(res.opps)} opportunités créées${res.oppsDeja?`, ${nf.format(res.oppsDeja)} déjà présentes`:""}, ${nf.format(res.comptes)} nouveaux comptes, ${res.devis} devis${res.membres?`, ${res.membres} commerciaux ajoutés`:""}.`;
+      } else {
+      const res=await CRMImport.run(sb,plan,prog);
       busy=false; importBusy=false; $("#imp-msg").textContent=`Terminé : ${nf.format(res.created)} comptes créés${res.already?`, ${nf.format(res.already)} déjà présents`:""}${res.newMembers?`, ${res.newMembers} commerciaux ajoutés`:""}.`;
+      }
       go.removeAttribute("aria-busy"); go.textContent="Importé"; toast("Import terminé"); await load();
     }catch(err){
       busy=false; importBusy=false; go.removeAttribute("aria-busy"); go.disabled=false; go.textContent="Reprendre l’import";
