@@ -192,6 +192,8 @@
 
   /* ---------- Opportunités et devis de l'ancien CRM ---------- */
   // Clé de rapprochement d'un nom : sans accents, sans titre (Dr, Mme…), mots triés.
+  // Clé insensible aux voyelles, aux lettres doublées et à l'ordre des mots (Fatema/Fatima, Zahra/Zahraa)
+  const sonKey = (s) => { const w = (nameKey(s) || "").split(" ").filter((x) => x.length >= 2).map((x) => (x[0] + x.slice(1).replace(/[aeiouyh]/g, "")).replace(/(.)\1+/g, "$1")); return w.length >= 2 && w.join("").length >= 5 ? w.sort().join(" ") : ""; };
   const nameKey = (s) => strip(clean(s)).replace(/\b(dr|pr|docteur|mme|mlle|mr|m|madame|monsieur)\b\.?/g, " ").match(/[a-z0-9]+/g)?.sort().join(" ") || "";
   const ETAPE = { qualification: "Qualification", proposition: "Proposition", negociation: "Negociation", closing: "Fermeture", fermeture: "Fermeture" };
   const PROBA = { Qualification: 20, Proposition: 40, Negociation: 65, Fermeture: 85 };
@@ -221,11 +223,12 @@
     const oppRows = sheets[names.find((n) => /opportunit/i.test(n))] || [];
     const devRows = sheets[names.find((n) => /devis/i.test(n))] || [];
     // Comptes existants : par nom + ville, puis par nom seul s'il est unique.
-    const byNameCity = new Map(), byName = new Map();
+    const byNameCity = new Map(), byName = new Map(), bySon = new Map();
     for (const c of comptes) {
       const k = nameKey(c.nom); if (!k) continue;
       byNameCity.set(k + "|" + strip(c.ville || ""), c.id);
       byName.set(k, byName.has(k) ? null : c.id);
+      const sk = sonKey(c.nom); if (sk) { const kk = sk + "|" + strip(c.ville || ""); bySon.set(kk, bySon.has(kk) ? null : c.id); }
     }
     const memberKey = (n) => nameKey(n);
     const members = new Map(equipe.map((e) => [memberKey(e.nom), e.id]));
@@ -238,7 +241,7 @@
     const compteRef = (client, villeRaw, comKey) => {
       const { ville, quartier } = normCity(villeRaw);
       const k = nameKey(client); const vk = strip(ville || "");
-      const id = byNameCity.get(k + "|" + vk) || (byName.get(k) || null);
+      const id = byNameCity.get(k + "|" + vk) || (byName.get(k) || null) || (sonKey(client) && bySon.get(sonKey(client) + "|" + vk)) || null;
       if (id) { matched++; return { id }; }
       const ref = "opp:" + k + "|" + vk;
       if (!newComptes.has(ref)) newComptes.set(ref, { import_ref: ref, nom: nameCase(client), segment: segmentFromName(client), ville, adresse: quartier, statut: "prospect", source: "Ancien CRM (opportunités)", commercialRef: comKey });
