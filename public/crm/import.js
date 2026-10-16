@@ -334,5 +334,136 @@
     return out;
   }
 
-  root.CRMImport = { mapRows, readFiles, run, readSheets, mapOpportunites, runOpportunites, _test: { realPhone, normPhone, normCity, segmentOf, nameCase, parseCreator } };
+  /* ---------- Export complet d'un commercial (Contacts, Opportunités, Activités, Devis) ---------- */
+  const MOIS = { "janv": 1, "fevr": 2, "mars": 3, "avr": 4, "mai": 5, "juin": 6, "juil": 7, "aout": 8, "sept": 9, "oct": 10, "nov": 11, "dec": 12 };
+  // « nov. 7, 2025 11:37:28 » ou « 2025-11-07 » → ISO (heure du Maroc ≈ UTC+1)
+  function frDate(v) {
+    const t = clean(v); if (!t) return null;
+    const iso = t.match(/^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}):(\d{2}))?/); if (iso) return `${iso[1]}-${iso[2]}-${iso[3]}T${iso[4] || "09"}:${iso[5] || "00"}:00+01:00`;
+    const m = strip(t).match(/^([a-z]+)\.?\s+(\d{1,2}),\s*(\d{4})(?:\s+(\d{1,2}):(\d{2}))?/);
+    if (!m || !MOIS[m[1]]) return null;
+    const pad = (n) => String(n).padStart(2, "0");
+    return `${m[3]}-${pad(MOIS[m[1]])}-${pad(m[2])}T${pad(m[4] || 9)}:${m[5] || "00"}:00+01:00`;
+  }
+  const TYPE_ACT = { "tache": "tache", "appel": "appel", "evenement": "evenement", "email": "email", "whatsapp": "whatsapp", "rdv": "rdv", "visite": "visite", "demo": "demo" };
+  const STATUT_DEVIS = { "envoye": "envoye", "accepte": "accepte", "refuse": "refuse", "signe": "signe", "brouillon": "brouillon", "negociation": "envoye" };
+
+  function mapExportCommercial(sheets, comptes, equipe) {
+    const resume = sheets["Résumé"] || sheets["Resume"] || [];
+    const head = clean((resume[0] && Object.keys(resume[0])[0]) || "");
+    const hm = head.match(/:\s*(.+?)\s*\(([^,)]+@[^,)]+)(?:,\s*([^)]+))?\)/);
+    const owner = hm ? { nom: nameCase(hm[1]), email: hm[2].trim().toLowerCase(), role: /admin/i.test(hm[3] || "") ? "superviseur" : "commercial" } : null;
+    const ownerTag = owner ? `${owner.nom} (${owner.email}) - Roles: ${owner.role === "superviseur" ? "super_admin" : "BIZ DEV"}` : null;
+
+    // Contacts : même traitement que l'export « contacts », créateur = le commercial de l'export.
+    const contactRows = (sheets["Contacts"] || []).map((r) => ({ ...r, "Créateur": r["Créateur"] || ownerTag }));
+    const contactsPlan = mapRows(contactRows);
+
+    // Membres cités dans les activités (créateur / responsable) absents de l'équipe.
+    const known = new Map(equipe.map((e) => [nameKey(e.nom), e]));
+    const extra = new Map();
+    const memberKey = (n) => { const k = nameKey(n); if (!k) return null; if (owner && k === nameKey(owner.nom)) return "owner"; if (!known.has(k) && !extra.has(k)) extra.set(k, { key: k, nom: nameCase(n), role: "commercial", actif: false }); return k; };
+
+    const refByName = new Map();
+    for (const rec of contactsPlan.records) { const k = nameKey([rec.contact.nom, rec.contact.prenom].filter(Boolean).join(" ")); if (k) refByName.set(k, refByName.has(k) ? null : rec.import_ref); }
+    const telRef = (v, nom) => { const d = normPhone(v); return realPhone(d) ? "tel:" + d : (refByName.get(nameKey(nom)) || null); };
+    const opps = (sheets["Opportunités"] || sheets["Opportunites"] || []).filter((r) => clean(r["Identifiant"] || r["Titre"])).map((r, i) => {
+      const statut = strip(clean(r["Statut"]));
+      const etape = ETAPE[strip(clean(r["Étape Pipeline"] ?? r["Etape Pipeline"]))] || "Qualification";
+      const issue = /gagn/.test(statut) ? "gagnee" : /annul|perdu/.test(statut) ? "perdue" : "en_cours";
+      const montant = num(r["Montant reel"]) ?? num(r["Montant estime"]);
+      return { import_ref: "oppo:" + clean(r["Site"] || "x") + ":" + clean(r["Identifiant"] || i), tel: telRef(r["Téléphone Contact"] ?? r["Telephone Contact"], r["Contact"]), contact: clean(r["Contact"]),
+        row: { titre: clean(r["Titre"]) || "Prospection", etape: issue === "gagnee" ? "Fermeture" : etape, issue, raison_perte: issue === "perdue" ? clean(r["Statut"]) : null,
+          montant_mad: montant, probabilite: issue === "gagnee" ? 100 : (num(r["Probabilite"]) ?? PROBA[etape]),
+          date_cloture_prevue: (frDate(r["Date echeance"]) || "").slice(0, 10) || null, description: clean(r["Source"]) ? "Source : " + clean(r["Source"]) : null,
+          created_at: frDate(r["Date de création"]) || undefined, updated_at: frDate(r["Date de modification"]) || frDate(r["Date de création"]) || undefined } };
+    });
+    const telByContact = new Map(opps.filter((o) => o.tel && o.contact).map((o) => [nameKey(o.contact), o.tel]));
+
+    const seen = new Map();
+    const acts = (sheets["Activités"] || sheets["Activites"] || []).map((r) => {
+      const type = TYPE_ACT[strip(clean(r["Type"])).replace(/[^a-z]/g, "")] || "autre";
+      const quand = frDate(r["Date début"]) || frDate(r["Date de création"]);
+      const base = ["act", clean(r["Site"]), clean(r["Date de création"]), clean(r["Label"]), type, clean(r["opportunité"])].join("|");
+      const n = (seen.get(base) || 0) + 1; seen.set(base, n);
+      return { import_ref: base + (n > 1 ? "#" + n : ""), createur: memberKey(r["Créateur"]), responsable: memberKey(r["Responsable"]),
+        row: { type, label: clean(r["Label"]) || null, statut: /termin|fait/.test(strip(clean(r["Statut"]))) ? "fait" : "a_faire", prioritaire: /oui|true|1/.test(strip(clean(r["prioritaire"]))),
+          date_activite: quand || new Date().toISOString(), resume: clean(r["opportunité"]) && !/^(visite terrain|appel+e? telephonique)$/.test(strip(clean(r["opportunité"]))) ? clean(r["opportunité"]) : null,
+          fait_le: /termin|fait/.test(strip(clean(r["Statut"]))) ? (frDate(r["Date de modification"]) || quand) : null } };
+    });
+
+    const devis = (sheets["Devis"] || []).filter((r) => clean(r["Numéro de Devis"])).map((r) => {
+      const ref = clean(r["Numéro de Devis"]); const ht = num(r["Total ht"]) ?? 0;
+      return { tel: telByContact.get(nameKey(r["Contact"])) || refByName.get(nameKey(r["Contact"])) || null, contact: clean(r["Contact"]),
+        row: { reference: ref, import_ref: "devis:" + ref, montant_mad: ht, tva_pct: num(r["Tva"]) ?? 20, remise_pct: num(r["Remise"]) ?? 0,
+          statut: STATUT_DEVIS[strip(clean(r["Status"] ?? r["Statut"])).replace(/[^a-z]/g, "")] || "brouillon",
+          date_envoi: (frDate(r["Date emission"]) || "").slice(0, 10) || null, created_at: frDate(r["Date devis"]) || undefined,
+          notes: "Repris de l'ancien CRM" + (clean(r["Produit"]) && clean(r["Produit"]) !== "N/A" ? " — " + clean(r["Produit"]) : "") + " (détail des lignes non disponible)." } };
+    });
+
+    return { kind: "export", owner, contactsPlan, opps, acts, devis, extraMembers: [...extra.values()],
+      stats: { owner: owner && owner.nom, contacts: contactsPlan.stats.unique, opps: opps.length, gagnees: opps.filter((o) => o.row.issue === "gagnee").length,
+        perdues: opps.filter((o) => o.row.issue === "perdue").length, acts: acts.length, aFaire: acts.filter((a) => a.row.statut === "a_faire").length, devis: devis.length,
+        extra: extra.size } };
+  }
+
+  async function runExportCommercial(sb, plan, onProgress) {
+    const total = plan.contactsPlan.records.length + plan.opps.length + plan.acts.length + plan.devis.length; let base = 0;
+    const prog = (d) => onProgress && onProgress(base + d, total);
+    // 0. Le commercial existe peut-être déjà (sans email, ajouté par l'import des opportunités) : on complète son email.
+    const { data: team0, error: e0 } = await sb.from("equipe").select("id,nom,email"); if (e0) throw e0;
+    if (plan.owner) {
+      const same = team0.find((t) => nameKey(t.nom) === nameKey(plan.owner.nom));
+      if (same && !same.email) { const { error } = await sb.from("equipe").update({ email: plan.owner.email }).eq("id", same.id); if (error) throw error; }
+    }
+    // 1. Contacts (crée le commercial s'il n'existe pas).
+    const r1 = await run(sb, plan.contactsPlan, (d) => prog(d)); base += plan.contactsPlan.records.length;
+    // 2. Membres de l'équipe.
+    const { data: team, error: e1 } = await sb.from("equipe").select("id,nom,email"); if (e1) throw e1;
+    const byKey = new Map(team.map((t) => [nameKey(t.nom), t.id]));
+    const ownerId = plan.owner ? (team.find((t) => (t.email || "").toLowerCase() === plan.owner.email) || {}).id || byKey.get(nameKey(plan.owner.nom)) : null;
+    for (const m of plan.extraMembers) if (!byKey.has(m.key)) { const { data, error } = await sb.from("equipe").insert({ nom: m.nom, role: m.role, actif: false }).select("id").single(); if (error) throw error; byKey.set(m.key, data.id); }
+    const mid = (k) => (k === "owner" ? ownerId : k ? byKey.get(k) || null : null);
+    // 3. Comptes des opportunités et devis, par téléphone.
+    const refs = [...new Set([...plan.opps, ...plan.devis].map((o) => o.tel).filter(Boolean))];
+    const idByRef = new Map();
+    for (let i = 0; i < refs.length; i += 200) {
+      const { data, error } = await sb.from("comptes").select("id,import_ref").in("import_ref", refs.slice(i, i + 200)); if (error) throw error;
+      data.forEach((x) => idByRef.set(x.import_ref, x.id));
+    }
+    // 4. Opportunités.
+    let opps = 0;
+    for (let i = 0; i < plan.opps.length; i += 200) {
+      const rows = plan.opps.slice(i, i + 200).filter((o) => idByRef.has(o.tel)).map((o) => { const r = { ...o.row, import_ref: o.import_ref, compte_id: idByRef.get(o.tel), commercial_id: ownerId }; for (const k of ["created_at", "updated_at"]) if (!r[k]) delete r[k]; return r; });
+      if (rows.length) { const { data, error } = await sb.from("opportunites").upsert(rows, { onConflict: "import_ref", ignoreDuplicates: true }).select("id"); if (error) throw error; opps += (data || []).length; }
+      prog(Math.min(plan.opps.length, i + 200)); 
+    }
+    base += plan.opps.length;
+    // 5. Activités (sans client : l'export ne le précise pas).
+    let acts = 0;
+    for (let i = 0; i < plan.acts.length; i += 200) {
+      const rows = plan.acts.slice(i, i + 200).map((a) => ({ ...a.row, import_ref: a.import_ref, commercial_id: mid(a.responsable) || ownerId }));
+      const { data, error } = await sb.from("activites").upsert(rows, { onConflict: "import_ref", ignoreDuplicates: true }).select("id"); if (error) throw error;
+      acts += (data || []).length; prog(Math.min(plan.acts.length, i + 200));
+    }
+    base += plan.acts.length;
+    // 6. Devis.
+    const { data: oppList } = await sb.from("opportunites").select("id,compte_id").like("import_ref", "oppo:%");
+    const oppByCompte = new Map((oppList || []).map((o) => [o.compte_id, o.id]));
+    let devis = 0;
+    for (const [i, d] of plan.devis.entries()) {
+      const compte_id = idByRef.get(d.tel); if (!compte_id) { prog(i + 1); continue; }
+      const row = { ...d.row, compte_id, commercial_id: ownerId, opportunite_id: oppByCompte.get(compte_id) || null }; if (!row.created_at) delete row.created_at;
+      const { data, error } = await sb.from("devis").upsert(row, { onConflict: "import_ref", ignoreDuplicates: true }).select("id"); if (error) throw error;
+      if (data && data.length) {
+        devis++;
+        const { error: e3 } = await sb.from("devis_lignes").insert({ devis_id: data[0].id, position: 1, designation: "Devis " + d.row.reference + " repris de l'ancien CRM", quantite: 1, prix_unitaire_mad: d.row.montant_mad || 0, remise_pct: 0 });
+        if (e3) throw e3;
+      }
+      prog(i + 1);
+    }
+    return { contacts: r1.created, opps, acts, devis, devisSansClient: plan.devis.filter((d) => !idByRef.get(d.tel)).length };
+  }
+
+  root.CRMImport = { mapRows, readFiles, run, readSheets, mapOpportunites, runOpportunites, mapExportCommercial, runExportCommercial, _test: { realPhone, normPhone, normCity, segmentOf, nameCase, parseCreator } };
 })(typeof window !== "undefined" ? window : globalThis);

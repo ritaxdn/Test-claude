@@ -1312,6 +1312,15 @@ function openImport(){
     try{
       await loadScript("https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"); await loadScript("/crm/import.js");
       const sheets=await CRMImport.readSheets(files,window.XLSX);
+      if(sheets["Contacts"] && Object.keys(sheets).some(n=>/activit/i.test(n))){
+        plan=CRMImport.mapExportCommercial(sheets,state.comptes,state.equipe); const st=plan.stats;
+        out.innerHTML=`<div class="panel" style="padding:16px">
+          <p style="margin:0 0 8px">Export de <b>${esc(st.owner||"commercial")}</b>${plan.owner?` (${esc(plan.owner.email)})`:""} :</p>
+          <ul style="margin:0 0 8px;padding-left:18px"><li><b>${nf.format(st.contacts)}</b> contacts</li><li><b>${nf.format(st.opps)}</b> opportunités, dont ${st.gagnees} gagnées et ${st.perdues} annulées</li><li><b>${nf.format(st.acts)}</b> activités, dont ${st.aFaire} à faire</li><li><b>${st.devis}</b> devis</li></ul>
+          <p class="hint" style="margin:0 0 4px">Les contacts déjà présents (même numéro) ne sont pas dupliqués. Les opportunités et devis sont rattachés à leur client par le téléphone, ou par le nom quand il manque.</p>
+          <p class="hint" style="margin:0">L’export ne relie pas les activités à un client : elles comptent dans son historique et la supervision, sans fiche client.${st.extra?` ${st.extra} autre${st.extra>1?"s":""} membre${st.extra>1?"s":""} cité${st.extra>1?"s":""} dans les activités ajouté${st.extra>1?"s":""} sans accès.`:""}</p></div>`;
+        go.textContent=`Importer l’export de ${st.owner||"ce commercial"}`; go.disabled=false; go.focus(); return;
+      }
       if(Object.keys(sheets).some(n=>/opportunit/i.test(n))){
         plan=CRMImport.mapOpportunites(sheets,state.comptes,state.equipe); const st=plan.stats;
         out.innerHTML=`<div class="panel" style="padding:16px">
@@ -1342,7 +1351,10 @@ function openImport(){
     const bar=document.createElement("div"); bar.innerHTML=`<div class="prob" style="height:6px;margin-top:12px"><i id="imp-bar" style="width:0%"></i></div><p class="hint" id="imp-msg">Import en cours… Gardez cette fenêtre ouverte.</p>`; out.appendChild(bar);
     try{
       const prog=(d,t)=>{ $("#imp-bar").style.width=Math.round(d*100/t)+"%"; $("#imp-msg").textContent=`Import en cours… ${nf.format(d)} / ${nf.format(t)}`; };
-      if(plan.kind==="opportunites"){
+      if(plan.kind==="export"){
+        const res=await CRMImport.runExportCommercial(sb,plan,prog);
+        busy=false; importBusy=false; $("#imp-msg").textContent=`Terminé : ${nf.format(res.contacts)} contacts, ${nf.format(res.opps)} opportunités, ${nf.format(res.acts)} activités et ${res.devis} devis ajoutés${res.devisSansClient?` (${res.devisSansClient} devis sans client retrouvé)`:""}.`;
+      } else if(plan.kind==="opportunites"){
         const res=await CRMImport.runOpportunites(sb,plan,prog);
         busy=false; importBusy=false; $("#imp-msg").textContent=`Terminé : ${nf.format(res.opps)} opportunités créées${res.oppsDeja?`, ${nf.format(res.oppsDeja)} déjà présentes`:""}, ${nf.format(res.comptes)} nouveaux comptes, ${res.devis} devis${res.membres?`, ${res.membres} commerciaux ajoutés`:""}.`;
       } else {
