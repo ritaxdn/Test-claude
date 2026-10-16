@@ -205,6 +205,12 @@ textarea{min-height:72px;resize:vertical}
 .closed-list{display:flex;flex-direction:column;gap:8px}
 .closed-row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
 .closed-row:last-child{border-bottom:0}
+.fam{border-top:1px solid var(--line);padding-block:4px}
+.fam summary{display:flex;justify-content:space-between;align-items:center;gap:8px;cursor:pointer;padding:10px 2px;font-weight:600;list-style:none;min-height:40px}
+.fam summary::-webkit-details-marker{display:none}
+.fam summary::after{content:"＋";color:var(--muted);margin-left:8px}
+.fam[open] summary::after{content:"－"}
+.fam summary .hint{margin:0 0 0 auto;font-family:var(--f-mono)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.ecg path{stroke-dashoffset:0}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
@@ -494,7 +500,8 @@ function viewEquipe(v){
   <div class="grid2"><div class="panel"><h3>Équipe</h3><div class="tbl-wrap" style="margin-top:8px"><table><thead><tr><th>Nom</th><th>Email</th><th>Rôle</th><th>Ville</th><th>Statut</th><th></th></tr></thead><tbody>
   ${state.equipe.map(e=>`<tr><td><b>${esc(e.nom)}</b></td><td>${esc(e.email||"—")}</td><td>${ROLES[e.role]}</td><td>${esc(e.ville||"—")}</td><td><span class="pill ${e.actif?"ok":""}">${e.actif?"Accès actif":"Sans accès"}</span></td><td><button class="btn small" data-act="edit-membre" data-id="${e.id}">Modifier</button></td></tr>`).join("")}
   </tbody></table></div></div>
-  <div class="panel"><h3>Catalogue machines</h3>${state.produits.length?`<div class="closed-list" style="margin-top:8px">${state.produits.map(p=>`<div class="closed-row"><div><b>${esc(p.nom)}</b><div class="hint">${esc(p.categorie)}${p.marque?" · "+esc(p.marque):""}</div></div><div class="tools"><span style="font-family:var(--f-mono);font-size:12px">${p.prix_catalogue_mad!=null?mad(p.prix_catalogue_mad)+" MAD":""}</span><button class="btn small" data-act="edit-produit" data-id="${p.id}">Modifier</button></div></div>`).join("")}</div>`:`<p class="hint">Aucune machine. Ajoutez le catalogue (42 machines, 5 catégories) pour rattacher les opportunités à un produit.</p>`}</div></div>`;
+  <div class="panel"><h3>Catalogue machines</h3>${state.produits.length?(()=>{const fam={}; state.produits.forEach(p=>(fam[p.categorie]=fam[p.categorie]||[]).push(p));
+    return `<p class="hint">${state.produits.filter(p=>p.actif).length} machines actives · ${Object.keys(fam).length} familles</p>`+Object.entries(fam).map(([f,ps])=>`<details class="fam"><summary><span>${esc(f)}</span><span class="hint">${ps.length}</span></summary><div class="closed-list">${ps.sort((a,b)=>a.nom.localeCompare(b.nom,"fr")).map(p=>`<div class="closed-row"><div><b translate="no">${esc(p.nom)}</b>${p.medical_only?` <span class="pill warn" title="Vente réservée aux médecins">Médical</span>`:""}${p.actif?"":` <span class="pill">Inactive</span>`}<div class="hint" translate="no">${esc([p.reference,p.marque].filter(Boolean).join(" · "))}</div></div><div class="tools"><span style="font-family:var(--f-mono);font-size:12px">${p.prix_catalogue_mad!=null?mad(p.prix_catalogue_mad)+" MAD":""}</span><button class="btn small" data-act="edit-produit" data-id="${p.id}">Modifier</button></div></div>`).join("")}</div></details>`).join("");})():`<p class="hint">Aucune machine. Ajoutez le catalogue pour rattacher les opportunités à un produit.</p>`}</div></div>`;
 }
 
 /* ---- Modal forms ---- */
@@ -571,7 +578,7 @@ function formOpp(o,presetCompte){
    ${fld("m-titre","Intitulé",`<input id="m-titre" name="titre" required value="${esc(o.titre||"")}" placeholder="Ex. Laser diode pour 2 cabines…" autocomplete="off">`,true)}
    ${fld("m-compte","Compte",`<select id="m-compte" name="compte_id" required>${opt(state.comptes.map(c=>[c.id,c.nom]),compteSel,"Choisir…")}</select>`)}
    ${fld("m-contact","Contact",`<select id="m-contact" name="contact_id">${opt(contacts,o.contact_id,"—")}</select>`)}
-   ${fld("m-prod","Machine",`<select id="m-prod" name="produit_id">${opt(state.produits.map(p=>[p.id,p.nom+" · "+p.categorie]),o.produit_id,"—")}</select>`)}
+   ${fld("m-prod","Machine",`<select id="m-prod" name="produit_id" aria-describedby="m-prod-warn"><option value="">—</option>${Object.entries(state.produits.filter(p=>p.actif||p.id===o.produit_id).reduce((m,p)=>((m[p.categorie]=m[p.categorie]||[]).push(p),m),{})).map(([f,ps])=>`<optgroup label="${esc(f)}">${ps.sort((a,b)=>a.nom.localeCompare(b.nom,"fr")).map(p=>`<option value="${p.id}" ${p.id===o.produit_id?"selected":""}>${esc(p.nom)}${p.medical_only?" · médical":""}</option>`).join("")}</optgroup>`).join("")}</select><span id="m-prod-warn" class="field-err" aria-live="polite"></span>`)}
    ${fld("m-com","Commercial",`<select id="m-com" name="commercial_id">${opt(equipeOpts(),o.commercial_id,"Non assigné")}</select>`)}
    ${fld("m-etape","Étape",`<select id="m-etape" name="etape">${opt(ETAPES.map(e=>[e,ETAPE_LABEL[e]]),o.etape||"Qualification")}</select>`)}
    ${fld("m-prob","Probabilité %",`<input id="m-prob" name="probabilite" type="number" min="0" max="100" step="5" value="${esc(o.probabilite??PROB_DEFAUT[o.etape||"Qualification"])}">`)}
@@ -585,6 +592,9 @@ function formOpp(o,presetCompte){
   modal(o.id?"Modifier l’opportunité":"Nouvelle opportunité",h,submit,o.id?"Enregistrer":"Créer");
   $("#m-compte").addEventListener("change",e=>{const cs=state.contacts.filter(x=>x.compte_id===e.target.value).map(x=>[x.id,[x.prenom,x.nom].filter(Boolean).join(" ")]);$("#m-contact").innerHTML=opt(cs,"","—");});
   $("#m-etape").addEventListener("change",e=>{if(!o.id) $("#m-prob").value=PROB_DEFAUT[e.target.value];});
+  const medWarn=()=>{ const p=byId(state.produits,$("#m-prod").value), c=byId(state.comptes,$("#m-compte").value);
+    $("#m-prod-warn").textContent = p&&p.medical_only&&c&&c.segment!=="B_cabinet"&&c.segment!=="A_clinique" ? "Machine réservée aux médecins : vérifiez que ce compte peut l’acheter." : p&&p.medical_only&&c&&c.segment!=="B_cabinet"&&!/m[ée]dec|derm|chirurg|gyn|dr /i.test((c.specialite||"")+" "+c.nom) ? "Machine réservée aux médecins : vérifiez qu’un médecin exerce dans ce centre." : ""; };
+  $("#m-prod").addEventListener("change",medWarn); $("#m-compte").addEventListener("change",medWarn); medWarn();
 }
 
 function formActivite(oppId,compteId){
@@ -639,10 +649,13 @@ function formProduit(p){
   const h=`<div class="form-grid">
    ${fld("m-nom","Machine",`<input id="m-nom" name="nom" required value="${esc(p.nom||"")}">`,true)}
    ${fld("m-cat","Catégorie",`<input id="m-cat" name="categorie" required list="cats" value="${esc(p.categorie||"")}"><datalist id="cats">${cats.map(c=>`<option value="${esc(c)}">`).join("")}</datalist>`)}
-   ${fld("m-mq","Marque",`<input id="m-mq" name="marque" value="${esc(p.marque||"")}">`)}
+   ${fld("m-ref","Référence",`<input id="m-ref" name="reference" autocomplete="off" spellcheck="false" placeholder="Ex. LAS-MEGALIGHT…" value="${esc(p.reference||"")}">`)}
+   ${fld("m-mq","Marque",`<input id="m-mq" name="marque" autocomplete="off" value="${esc(p.marque||"")}">`)}
+   ${fld("m-med","Vente",`<select id="m-med" name="medical_only">${opt([["","Tous les clients"],["1","Réservée aux médecins"]],p.medical_only?"1":"")}</select>`)}
+   ${fld("m-act","Statut",`<select id="m-act" name="actif">${opt([["1","Active"],["","Inactive"]],p.actif===false?"":"1")}</select>`)}
    ${fld("m-px","Prix catalogue (MAD)",`<input id="m-px" name="prix" type="number" min="0" step="1000" value="${esc(p.prix_catalogue_mad??"")}">`)}</div>`;
   const submit=async f=>{
-    const obj={nom:sTxt(f.nom),categorie:sTxt(f.categorie),marque:sTxt(f.marque),prix_catalogue_mad:sNum(f.prix)};
+    const obj={nom:sTxt(f.nom),reference:sTxt(f.reference),categorie:sTxt(f.categorie),marque:sTxt(f.marque),prix_catalogue_mad:sNum(f.prix),medical_only:sBool(f.medical_only),actif:sBool(f.actif)};
     return p.id ? write(upd("produits",p.id,obj),"Machine mise à jour") : write(ins("produits",obj),"Machine ajoutée");
   };
   submit.validate=f=>!f.nom.trim()?["nom","Indiquez le nom de la machine."]:!f.categorie.trim()?["categorie","Indiquez la catégorie."]:null;
