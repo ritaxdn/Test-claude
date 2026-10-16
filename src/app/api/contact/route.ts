@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { resendKey, defaultFrom } from "@/lib/resend";
 import { SITE_URL } from "@/lib/site";
+import { sendToCrm, type CrmLead } from "@/lib/crm";
 import { contactRules, emailPattern, isParcours, isValidPhone, whatsappNumber, type ContactField, type Parcours } from "@/lib/contact-rules";
 
 type ContactPayload = Partial<Record<ContactField, string>> & {
@@ -9,6 +10,7 @@ type ContactPayload = Partial<Record<ContactField, string>> & {
   machineSlug?: string; // technologie d'origine (identifiant de la fiche)
   origin?: string; // page d'où vient le visiteur
   lang?: string;
+  attribution?: Record<string, unknown>; // campagne d'arrivée (utm_*, gclid, fbclid, référent, page d'entrée)
   website?: string; // champ piège (doit rester vide)
   elapsed?: number; // durée de remplissage, en ms
 };
@@ -109,6 +111,38 @@ async function sendToCellulift(parcours: Parcours, body: ContactPayload) {
   return res.ok;
 }
 
+const ATTR_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "gclid", "fbclid", "referent", "entree"] as const;
+function attribution(body: ContactPayload) {
+  const out: Record<string, string> = {};
+  const a = body.attribution && typeof body.attribution === "object" ? body.attribution : {};
+  for (const k of ATTR_KEYS) {
+    const v = (a as Record<string, unknown>)[k];
+    if (typeof v === "string" && v.trim()) out[k] = v.trim().slice(0, 200);
+  }
+  return out;
+}
+
+/** Source lisible pour le CRM : la campagne quand il y en a une, sinon « Site web ». */
+function sourceCrm(a: Record<string, string>) {
+  const s = (a.utm_source || "").toLowerCase();
+  if (a.fbclid || /facebook|instagram|meta|^fb$|^ig$/.test(s)) return /instagram|^ig$/.test(s) ? "Instagram (site)" : "Meta Ads (site)";
+  if (a.gclid || /google/.test(s)) return (a.utm_medium || "").toLowerCase().includes("cpc") || a.gclid ? "Google Ads (site)" : "Google (site)";
+  if (/tiktok/.test(s)) return "TikTok (site)";
+  if (/linkedin/.test(s)) return "LinkedIn (site)";
+  if (s) return `Site web · ${a.utm_source}`;
+  return "Site web";
+}
+
+function crmLead(parcours: string, body: ContactPayload, a: Record<string, string>): CrmLead {
+  return {
+    nom: body.name, organisation: body.organization, telephone: body.phone, email: body.email, ville: body.city,
+    specialite: body.specialty, machine: body.machine, parcours, parcours_libelle: body.subject,
+    message: [body.message, body.serial ? `N° de série : ${body.serial}` : "", body.session ? `Session : ${body.session}` : ""].filter(Boolean).join("\n") || undefined,
+    page: a.entree || body.origin, langue: body.lang, ...a,
+    source: sourceCrm(a), // libellé de la source dans le CRM
+  };
+}
+
 /** Mêmes règles que le formulaire : champs obligatoires du parcours, formats, longueurs. */
 function invalid(parcours: Parcours, body: ContactPayload) {
   const rule = contactRules[parcours];
@@ -144,6 +178,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "rate_limited" }, { status: 429 });
   }
 
+  const attr = attribution(body);
+
+  // Guide gratuit (page /guide) : seuls le nom et l'e-mail sont demandés.
+  if (body.parcours === "guide") {
+    const name = String(body.name ?? "").trim().slice(0, 200), email = String(body.email ?? "").trim().slice(0, 200);
+    if (!name || !emailPattern.test(email)) return NextResponse.json({ ok: false, error: "validation" }, { status: 422 });
+    const g: ContactPayload = { name, email, specialty: String(body.specialty ?? "").trim().slice(0, 200) || undefined, subject: "Guide gratuit", message: String(body.message ?? "").slice(0, 1000), lang: body.lang };
+    const [mail, crm] = await Promise.all([sendToCellulift("autre", g), sendToCrm(crmLead("guide", g, attr))]);
+    return mail || crm ? NextResponse.json({ ok: true }) : NextResponse.json({ ok: false, error: "send_failed" }, { status: 502 });
+  }
+
   const parcours: Parcours = isParcours(body.parcours) ? body.parcours : "autre";
   // Seuls les champs du parcours sont gardés (un champ masqué ne part pas dans l'e-mail).
   const clean: ContactPayload = { ...body };
@@ -156,8 +201,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "validation" }, { status: 422 });
   }
 
-  const sent = await sendToCellulift(parcours, clean);
-  if (!sent) return NextResponse.json({ ok: false, error: "send_failed" }, { status: 502 });
+  // E-mail à l'équipe et fiche dans le CRM, en parallèle : l'un suffit pour ne rien perdre.
+  const [sent, crm] = await Promise.all([sendToCellulift(parcours, clean), sendToCrm(crmLead(parcours, clean, attr))]);
+  if (!sent && !crm) return NextResponse.json({ ok: false, error: "send_failed" }, { status: 502 });
 
   return NextResponse.json({ ok: true });
 }

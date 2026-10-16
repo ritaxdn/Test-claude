@@ -1050,6 +1050,50 @@ function viewSuperviseur(v){
   $("#f-sr").addEventListener("change",e=>{ supShowroom=e.target.value; viewSuperviseur(v); });
 }
 
+const CANAUX={site:"Site web",meta:"Meta (Facebook / Instagram)",google:"Google Ads",tiktok:"TikTok",whatsapp:"WhatsApp",salon:"Salon / événement",autre:"Autre"};
+async function chargerLeads(){
+  const el=$("#leads-body"); if(!el) return;
+  const [s,l]=await Promise.all([sb.from("sources_leads").select("*").order("created_at"),sb.from("leads").select("*").order("recu_le",{ascending:false}).limit(15)]);
+  if(!document.contains(el)) return;
+  if(s.error||l.error){ el.innerHTML=`<p class="hint">${esc(errorCopy(s.error||l.error)[1])}</p>`; return; }
+  const src=s.data, leads=l.data, d30=Date.now()-30*864e5;
+  const nb=id=>leads.filter(x=>x.source_id===id&&new Date(x.recu_le).getTime()>d30).length;
+  const url="https://igfgqfwkhyonptbtrywl.supabase.co/rest/v1/rpc/recevoir_lead";
+  el.innerHTML=(src.length?`<div class="closed-list">${src.map(x=>`<div class="closed-row"><div><b>${esc(x.nom)}</b> <span class="pill">${esc(CANAUX[x.canal]||x.canal)}</span>${x.actif?"":` <span class="pill bad">Coupée</span>`}<div class="hint" style="margin:0">Clé ${esc(x.cle_debut)}… · ${x.dernier_lead?"dernier lead "+esc(fmtDate(x.dernier_lead)):"aucun lead reçu pour l’instant"}</div></div><div class="tools"><button class="btn small" data-act="toggle-source" data-id="${x.id}" data-on="${x.actif?"":"1"}">${x.actif?"Couper":"Réactiver"}</button></div></div>`).join("")}</div>`
+    :`<p class="hint">Aucune source pour l’instant. Commence par « + Source » › Site web, puis colle la clé dans Vercel.</p>`)
+   +(leads.length?`<h4 style="margin-top:14px">Derniers leads</h4><div class="closed-list">${leads.map(x=>`<div class="closed-row"><div style="min-width:0">${x.compte_id?`<button class="linkish" data-act="open-compte" data-id="${x.compte_id}"><b>${esc(x.nom||"—")}</b></button>`:`<b>${esc(x.nom||"—")}</b>`}${x.deja_client?` <span class="pill ok">Déjà client</span>`:""}<div class="hint" style="margin:0">${esc([fmtDate(x.recu_le)+" "+new Date(x.recu_le).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}),x.source,x.parcours,x.ville].filter(Boolean).join(" · "))}</div></div><div class="hint" style="margin:0">${x.commercial_id?esc(nomMembre(x.commercial_id)):`<span class="pill warn">À attribuer</span>`}</div></div>`).join("")}</div>`:"")
+   +`<details class="fam" style="margin-top:12px"><summary><span>Brancher une autre source (Meta, Google, n8n, Make…)</span></summary><div style="padding:8px 0">
+      <p class="hint" style="margin-top:0">Chaque outil envoie un <b>POST</b> à cette adresse, avec la clé de sa source :</p>
+      <pre style="white-space:pre-wrap;font-size:12px;background:var(--glass,rgba(0,0,0,.04));padding:10px;border-radius:10px">${esc(url)}
+En-têtes : apikey = (clé publique du CRM), Content-Type = application/json
+Corps :
+{ "p_cle": "CLÉ DE LA SOURCE",
+  "p_lead": { "nom": "…", "organisation": "…", "telephone": "…", "email": "…",
+              "ville": "…", "specialite": "…", "machine": "…", "message": "…",
+              "parcours": "demo", "utm_campaign": "…" } }</pre>
+      <p class="hint">Pour les formulaires Meta (Facebook / Instagram) et Google Ads, le plus simple est un scénario n8n ou Make : « nouveau lead » → requête HTTP ci-dessus. Les leads déjà connus (même téléphone ou e-mail) sont rattachés à leur fiche, sans doublon.</p></div></details>`;
+}
+function formSource(){
+  const h=`<div class="form-grid">${fld("src-nom","Nom de la source",`<input id="src-nom" name="nom" required placeholder="Ex. Site web, Meta Ads octobre…" autocomplete="off">`)}
+    ${fld("src-canal","Canal",`<select id="src-canal" name="canal">${opt(Object.entries(CANAUX),"site")}</select>`)}</div>
+    <p class="hint">La clé est générée dans ton navigateur et affichée <b>une seule fois</b>. Le CRM n’en garde qu’une empreinte : si tu la perds, crée une nouvelle source et coupe l’ancienne.</p>`;
+  const submit=async f=>{
+    const b=new Uint8Array(24); crypto.getRandomValues(b);
+    const cle="cl_"+[...b].map(x=>x.toString(16).padStart(2,"0")).join("");
+    const hash=[...new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(cle)))].map(x=>x.toString(16).padStart(2,"0")).join("");
+    const {error}=await sb.from("sources_leads").insert({nom:sTxt(f.nom),canal:sEnum(f.canal,Object.keys(CANAUX))||"autre",cle_hash:hash,cle_debut:cle.slice(0,9),cree_par:me&&me.id||null});
+    if(error){ $("#merr").textContent=errorCopy(error).join(" — "); return false; }
+    closeModal(true);
+    modal("Clé de la source « "+sTxt(f.nom)+" »",`<p style="margin-top:0">Copie cette clé maintenant : elle ne sera plus affichée.</p>
+      <div style="display:flex;gap:8px"><input id="src-cle" readonly value="${cle}" style="font-family:var(--f-mono);font-size:13px"><button type="button" class="btn" id="src-copy">Copier</button></div>
+      ${sEnum(f.canal,Object.keys(CANAUX))==="site"?`<p class="hint"><b>Pour le site :</b> Vercel › projet du site › Settings › Environment Variables › ajoute <code>CRM_LEADS_KEY</code> avec cette valeur (Production), puis Deployments › Redeploy. Les demandes du formulaire de contact et du guide arriveront ensuite dans le CRM, en plus de l’e-mail.</p>`:`<p class="hint">Colle-la dans ton scénario n8n / Make (champ <code>p_cle</code>), voir « Brancher une autre source » dans Réglages.</p>`}`,async()=>{ closeModal(true); chargerLeads(); return true; },"J’ai copié la clé");
+    $("#src-copy").onclick=async()=>{ try{ await navigator.clipboard.writeText(cle); $("#src-copy").textContent="Copiée ✓"; }catch{ $("#src-cle").select(); } };
+    $("#src-cle").select(); return true;
+  };
+  submit.validate=f=>!sTxt(f.nom)?["nom","Donne un nom à la source."]:null;
+  modal("Nouvelle source de leads",h,submit,"Créer la clé");
+}
+
 async function chargerDoublons(){
   const el=$("#dup-body"); if(!el) return;
   const {data,error}=await sb.rpc("doublons_base"); if(!document.contains(el)) return;
@@ -1150,9 +1194,10 @@ function formFusion(aId,bId){
   maj();
 }
 function viewEquipe(v){
-  setTimeout(chargerDoublons,0);
+  setTimeout(chargerDoublons,0); setTimeout(chargerLeads,0);
   v.innerHTML=`<div class="section-head"><div><h2>Équipe &amp; catalogue</h2><p class="hint">Un membre « sans accès » ne peut pas se connecter. Activez-le dans « Modifier » ; il se connecte ensuite avec l’email indiqué ici.</p></div>
    <div class="tools"><button class="btn" data-act="objectifs">Objectifs mensuels</button><button class="btn" data-act="import">Importer des contacts (Excel)</button><button class="btn" data-act="new-produit">+ Machine</button><button class="btn primary" data-act="new-membre">+ Membre</button></div></div>
+  <div class="panel" style="margin-bottom:16px" id="leads-panel"><div class="section-head" style="margin:0 0 6px"><div><h3>Leads entrants</h3><p class="hint" style="margin:0">Les demandes du site et des campagnes arrivent ici toutes seules : fiche client (ou client existant retrouvé par téléphone/e-mail), opportunité, tâche « Rappeler » pour le commercial du showroom de la ville, et notification.</p></div><button class="btn small" data-act="new-source">+ Source</button></div><div id="leads-body"><div class="skeleton" style="height:40px"></div></div></div>
   <div class="panel" style="margin-bottom:16px" id="dup-panel"><h3>Doublons probables</h3><p class="hint">Même téléphone, ou même nom dans la même ville, y compris entre clients de commerciaux différents.</p><div id="dup-body"><div class="skeleton" style="height:40px"></div></div></div>
   <div class="grid2"><div class="panel"><h3>Équipe</h3><div class="tbl-wrap" style="margin-top:8px"><table><thead><tr><th>Nom</th><th>Email</th><th>Rôle</th><th>Showroom</th><th>Statut</th><th></th></tr></thead><tbody>
   ${[...state.equipe].sort((a,b)=>(!!a.parti_le-!!b.parti_le)).map(e=>`<tr${e.parti_le?' style="opacity:.7"':""}><td><b>${esc(e.nom)}</b></td><td>${esc(e.email||"—")}</td><td>${ROLES[e.role]}</td><td>${e.showroom?esc(SHOWROOMS[e.showroom].replace("Showroom ","")):"—"}</td><td>${e.parti_le?`<span class="pill">Parti·e le ${esc(new Date(e.parti_le+"T12:00").toLocaleDateString("fr-FR",{day:"numeric",month:"short",year:"numeric"}))}</span>`:`<span class="pill ${e.actif?"ok":""}">${e.actif?"Accès actif":"Sans accès"}</span>`}${(()=>{ const n=state.comptes.filter(c=>c.commercial_id===e.id).length; return n?`<div class="hint" style="margin:2px 0 0">${n} client${n>1?"s":""}</div>`:""; })()}</td><td><div class="tools" style="flex-wrap:nowrap"><button class="btn small" data-act="edit-membre" data-id="${e.id}">Modifier</button>${e.role!=="admin"?`<button class="btn small" data-act="depart-membre" data-id="${e.id}">${e.parti_le?"Transférer":"Départ / transfert"}</button>`:""}</div></td></tr>`).join("")}
@@ -1463,6 +1508,8 @@ document.addEventListener("click",async e=>{
   if(act==="sup-metric"){ supMetric=t.dataset.v; return viewSuperviseur($("#view")); }
   if(act==="demande-transfert"){ t.disabled=true; const {error}=await sb.rpc("demander_transfert",{p_compte:id}); if(error){ t.disabled=false; return toast(errorCopy(error).join(" — ")); } t.textContent="Demande envoyée ✓"; toast("Le superviseur a été prévenu"); return; }
   if(act==="fusion"){ return formFusion(t.dataset.a,t.dataset.b); }
+  if(act==="new-source") return formSource();
+  if(act==="toggle-source"){ t.disabled=true; const {error}=await sb.from("sources_leads").update({actif:!!t.dataset.on}).eq("id",id); if(error) toast(errorCopy(error).join(" — ")); return chargerLeads(); }
   if(act==="f-a-classer"){ filt.segment="a_classer"; filt.com=estPilote()?"":(me?me.id:""); shown=PAGE; return viewComptes($("#view")); }
   if(act==="new-echeancier") return formEcheancier({devis:t.dataset.devis,compte:t.dataset.compte});
   if(act==="edit-paiement") return formPaiement(byId(state.paiements,id));

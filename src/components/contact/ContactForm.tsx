@@ -1,5 +1,6 @@
 "use client";
 
+import { readAttribution } from "@/lib/attribution";
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { Loader2, CheckCircle2, AlertCircle, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -158,6 +159,7 @@ export function ContactForm({
           machineSlug,
           origin,
           lang: document.documentElement.lang,
+          attribution: readAttribution(),
           website: String(formData.get("website") ?? ""),
           elapsed: Date.now() - startedAt.current,
         }),

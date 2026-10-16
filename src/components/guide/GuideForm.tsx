@@ -1,5 +1,6 @@
 "use client";
 
+import { readAttribution } from "@/lib/attribution";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Loader2, CheckCircle2, Download, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -69,7 +70,10 @@ export function GuideForm({
           name,
           email,
           specialty: String(data.get("specialty") ?? ""),
+          parcours: "guide",
           subject: "Guide gratuit téléchargé",
+          attribution: readAttribution(),
+          lang: document.documentElement.lang,
           message: "Téléchargement du guide « Choisir sa technologie médico-esthétique — 7 questions à se poser avant d'investir ».",
           website: String(data.get("website") ?? ""),
           elapsed: Date.now() - startedAt.current,
