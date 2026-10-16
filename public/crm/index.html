@@ -7,54 +7,78 @@
 <title>CRM Cellulift</title>
 <link rel="icon" href="/icon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Raleway:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://igfgqfwkhyonptbtrywl.supabase.co">
+<meta name="theme-color" content="#ECEEF3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F1114" media="(prefers-color-scheme: dark)">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..600&family=Cormorant+Garamond:wght@400&family=Instrument+Sans:wght@400..600&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: sticky glass header, KPI band, tabbed workspace (pipeline board / accounts / activity / team) */
+/* Direction « Nacre & verre » (cellulift.ma) : fond nacré, panneaux de verre, signal arc-en-ciel. Archivo élargi / Instrument Sans / JetBrains Mono. */
 :root{
-  --bg:#F3F5F8; --bg-glow1:rgba(0,188,212,.10); --bg-glow2:rgba(123,97,255,.09); --bg-glow3:rgba(233,30,140,.06);
-  --glass:rgba(255,255,255,.66); --glass-strong:rgba(255,255,255,.86); --line:rgba(22,26,36,.09); --line-strong:rgba(22,26,36,.16);
-  --ink:#161A24; --ink-2:#3B4152; --muted:#7A8091; --accent:#7B61FF; --accent-ink:#ffffff;
-  --ok:#11845B; --ok-bg:rgba(17,132,91,.10); --warn:#B26A00; --warn-bg:rgba(178,106,0,.10); --bad:#C2264B; --bad-bg:rgba(194,38,75,.10);
-  --shadow:0 1px 2px rgba(22,26,36,.04),0 8px 24px rgba(22,26,36,.06);
+  --bg:#ECEEF3; --bg-glow1:rgba(0,188,212,.08); --bg-glow2:rgba(123,97,255,.10); --bg-glow3:rgba(233,30,140,.07);
+  --glass:linear-gradient(145deg,rgba(255,255,255,.78),rgba(255,255,255,.46)); --glass-edge:rgba(255,255,255,.9);
+  --glass-strong:linear-gradient(145deg,rgba(255,255,255,.94),rgba(255,255,255,.70)); --field:#F7F7FA;
+  --line:rgba(29,27,38,.08); --line-strong:rgba(29,27,38,.15);
+  --ink:#1D1B26; --ink-2:#5D5B6B; --muted:#6E6C7C; --accent:#7B61FF; --on-ink:#FFFFFF;
+  --ok:#11845B; --ok-bg:rgba(17,132,91,.10); --warn:#9A5B00; --warn-bg:rgba(178,106,0,.10); --bad:#C2264B; --bad-bg:rgba(194,38,75,.10);
+  --seg-a:#007F8F; --seg-c:#B0185E;
+  --shadow:0 1px 0 rgba(255,255,255,.9) inset,0 24px 60px -30px rgba(29,27,38,.25);
+  --shadow-sm:0 1px 0 rgba(255,255,255,.9) inset,0 10px 24px -16px rgba(29,27,38,.30);
   --rainbow:linear-gradient(90deg,#00BCD4,#7B61FF,#E91E8C,#FF5722,#FFC107);
-  --f-display:"Cormorant Garamond",Garamond,"Times New Roman",serif;
-  --f-body:"Raleway",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
-  --f-mono:"Space Mono",ui-monospace,"SFMono-Regular",Menlo,"Courier New",monospace;
+  --f-display:"Archivo","Arial Narrow",sans-serif;
+  --f-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --f-mark:"Cormorant Garamond","Times New Roman",serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0E1017; --bg-glow1:rgba(0,188,212,.12); --bg-glow2:rgba(123,97,255,.14); --bg-glow3:rgba(233,30,140,.08);
-  --glass:rgba(28,32,44,.62); --glass-strong:rgba(32,36,50,.92); --line:rgba(230,234,245,.09); --line-strong:rgba(230,234,245,.18);
-  --ink:#ECEEF5; --ink-2:#C2C7D6; --muted:#8C93A6; --accent:#9C87FF; --accent-ink:#0E1017;
+  --bg:#0F1114; --bg-glow1:rgba(0,188,212,.10); --bg-glow2:rgba(123,97,255,.14); --bg-glow3:rgba(233,30,140,.08);
+  --glass:linear-gradient(145deg,rgba(36,40,48,.78),rgba(23,26,31,.60)); --glass-edge:rgba(255,255,255,.08);
+  --glass-strong:linear-gradient(145deg,rgba(44,48,58,.95),rgba(30,33,40,.88)); --field:#1B1E24;
+  --line:rgba(236,235,231,.09); --line-strong:rgba(236,235,231,.18);
+  --ink:#ECEBE7; --ink-2:#B4B6BC; --muted:#9B9EA4; --accent:#A797FF; --on-ink:#0F1114;
   --ok:#3FCB8E; --ok-bg:rgba(63,203,142,.12); --warn:#F0A63A; --warn-bg:rgba(240,166,58,.12); --bad:#FF6B8B; --bad-bg:rgba(255,107,139,.12);
-  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35); color-scheme:dark}}
+  --seg-a:#5FD6E6; --seg-c:#F27BB8;
+  --shadow:0 1px 0 rgba(255,255,255,.05) inset,0 24px 60px -30px rgba(0,0,0,.6);
+  --shadow-sm:0 1px 0 rgba(255,255,255,.05) inset,0 10px 24px -16px rgba(0,0,0,.6); color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0E1017; --bg-glow1:rgba(0,188,212,.12); --bg-glow2:rgba(123,97,255,.14); --bg-glow3:rgba(233,30,140,.08);
-  --glass:rgba(28,32,44,.62); --glass-strong:rgba(32,36,50,.92); --line:rgba(230,234,245,.09); --line-strong:rgba(230,234,245,.18);
-  --ink:#ECEEF5; --ink-2:#C2C7D6; --muted:#8C93A6; --accent:#9C87FF; --accent-ink:#0E1017;
+  --bg:#0F1114; --bg-glow1:rgba(0,188,212,.10); --bg-glow2:rgba(123,97,255,.14); --bg-glow3:rgba(233,30,140,.08);
+  --glass:linear-gradient(145deg,rgba(36,40,48,.78),rgba(23,26,31,.60)); --glass-edge:rgba(255,255,255,.08);
+  --glass-strong:linear-gradient(145deg,rgba(44,48,58,.95),rgba(30,33,40,.88)); --field:#1B1E24;
+  --line:rgba(236,235,231,.09); --line-strong:rgba(236,235,231,.18);
+  --ink:#ECEBE7; --ink-2:#B4B6BC; --muted:#9B9EA4; --accent:#A797FF; --on-ink:#0F1114;
   --ok:#3FCB8E; --ok-bg:rgba(63,203,142,.12); --warn:#F0A63A; --warn-bg:rgba(240,166,58,.12); --bad:#FF6B8B; --bad-bg:rgba(255,107,139,.12);
-  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35); color-scheme:dark}
+  --seg-a:#5FD6E6; --seg-c:#F27BB8;
+  --shadow:0 1px 0 rgba(255,255,255,.05) inset,0 24px 60px -30px rgba(0,0,0,.6);
+  --shadow-sm:0 1px 0 rgba(255,255,255,.05) inset,0 10px 24px -16px rgba(0,0,0,.6); color-scheme:dark}
 
 *{box-sizing:border-box}
-html{color-scheme:light}
+html{color-scheme:light;-webkit-tap-highlight-color:transparent}
+button,a,input,select,textarea,tr.click{touch-action:manipulation}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.skip{position:absolute;left:12px;top:-60px;z-index:100;background:var(--ink);color:var(--on-ink);padding:10px 14px;border-radius:999px;text-decoration:none}
+.skip:focus{top:calc(12px + env(safe-area-inset-top,0px))}
+@media (pointer:fine){html{overscroll-behavior:none}}
 body{margin:0}
 [hidden]{display:none!important}
 body.auth header.top .tabs,body.auth header.top .status,body.auth .wrap>*{display:none}
 .who{font-family:var(--f-mono);font-size:11px;color:var(--muted);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.5;min-height:100vh;
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh;
   background-image:radial-gradient(60vw 40vw at 0% 0%,var(--bg-glow1),transparent 60%),radial-gradient(50vw 40vw at 100% 10%,var(--bg-glow2),transparent 60%),radial-gradient(60vw 40vw at 50% 100%,var(--bg-glow3),transparent 60%);background-attachment:fixed}
 .wrap{max-width:1280px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 button,input,select,textarea{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 /* Header */
-header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--glass);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);border-bottom:1px solid var(--line)}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--glass);backdrop-filter:blur(24px) saturate(1.6);-webkit-backdrop-filter:blur(24px) saturate(1.6);border-bottom:1px solid var(--line)}
+header.top::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:var(--rainbow);opacity:.6}
 .top .wrap{display:flex;align-items:center;gap:16px;padding-block:12px;flex-wrap:wrap}
 .brand{display:flex;flex-direction:column;gap:2px;margin-right:auto}
-.wordmark{font-family:var(--f-display);font-weight:300;font-size:22px;letter-spacing:.22em;line-height:1;background:var(--rainbow);-webkit-background-clip:text;background-clip:text;color:transparent}
+.wordmark{font-family:var(--f-mark);font-weight:400;margin:0;font-size:22px;letter-spacing:.22em;line-height:1;background:var(--rainbow);-webkit-background-clip:text;background-clip:text;color:transparent}
 .ecg{display:block;width:150px;height:14px}
 .ecg path{fill:none;stroke:url(#rb);stroke-width:1.2;stroke-dasharray:320;stroke-dashoffset:320;animation:ecg 1.8s ease forwards .2s}
 @keyframes ecg{to{stroke-dashoffset:0}}
-.tagline{font-family:var(--f-mono);font-size:9px;letter-spacing:.28em;color:var(--muted);text-transform:uppercase}
+.tagline{font-family:var(--f-mono);font-size:8px;letter-spacing:.28em;color:var(--muted);text-transform:uppercase}
 .status{font-family:var(--f-mono);font-size:11px;color:var(--muted);display:flex;align-items:center;gap:8px}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--muted)}
 .dot.ok{background:var(--ok)} .dot.bad{background:var(--bad)} .dot.busy{background:var(--warn);animation:pulse 1s infinite}
@@ -62,33 +86,42 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;backgroun
 
 nav.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
 nav.tabs::-webkit-scrollbar{display:none}
-.tab{border:0;background:none;padding:8px 14px;border-radius:999px;cursor:pointer;color:var(--ink-2);font-weight:500;white-space:nowrap}
-.tab[aria-selected="true"]{background:var(--ink);color:var(--bg)}
-.tab:hover:not([aria-selected="true"]){background:var(--line)}
+.tab{text-decoration:none;border:0;background:none;padding:9px 16px;border-radius:999px;cursor:pointer;color:var(--ink-2);font-weight:500;white-space:nowrap;transition:background-color .2s,color .2s}
+.tab[aria-current="page"]{background:var(--glass-strong);color:var(--ink);box-shadow:var(--shadow-sm),0 0 0 1px var(--glass-edge)}
+.tab:hover:not([aria-current="page"]){background:var(--line);color:var(--ink)}
 
 /* Buttons */
-.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-strong);background:var(--glass-strong);padding:8px 14px;border-radius:10px;cursor:pointer;font-weight:500;white-space:nowrap;transition:transform .2s,background .2s}
-.btn:hover{transform:translateY(-1px)}
-.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.btn.small{padding:5px 10px;font-size:12px;border-radius:8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line-strong);background:var(--glass-strong);box-shadow:var(--shadow-sm);padding:9px 18px;border-radius:999px;cursor:pointer;font-weight:500;white-space:nowrap;min-height:38px;transition:transform .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-1px);box-shadow:var(--shadow-sm),0 0 0 1px var(--line-strong)}
+.btn:active{transform:translateY(0)}
+.btn.primary{background:var(--ink);color:var(--on-ink);border-color:var(--ink)}
+.btn.small{padding:5px 12px;font-size:12px;min-height:30px}
+@media (pointer:coarse){.btn.small{min-height:40px;padding:8px 14px}.btn{min-height:44px}}
+.btn.icon{width:38px;padding:0;font-size:16px}
+.login{display:flex;justify-content:center;padding-inline:max(16px,env(safe-area-inset-left,0px))}
+.login .modal{margin-top:12vh}
+@media (max-width:639px){.who{display:none}.status{width:100%;justify-content:flex-start}}
 .btn.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 40%,transparent)}
 .btn.bad{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 40%,transparent)}
 .btn[disabled]{opacity:.5;cursor:default;transform:none}
+.btn[aria-busy="true"]::after{content:"";width:12px;height:12px;border-radius:50%;border:2px solid currentColor;border-right-color:transparent;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 
 /* KPIs */
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;padding-block:20px 8px}
-.kpi{background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:16px;padding:14px 16px;min-width:0}
-.kpi .lab{font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-.kpi .val{font-family:var(--f-display);font-size:30px;font-weight:400;line-height:1.15;margin-top:4px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi{background:var(--glass);backdrop-filter:blur(22px) saturate(1.4);-webkit-backdrop-filter:blur(22px) saturate(1.4);border:1px solid var(--glass-edge);box-shadow:var(--shadow);border-radius:22px;padding:14px 16px;min-width:0}
+.kpi .lab{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.kpi .val{font-family:var(--f-display);font-stretch:118%;font-size:30px;font-weight:500;letter-spacing:-.03em;line-height:1.1;margin-top:4px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .kpi .val small{font-family:var(--f-mono);font-size:11px;color:var(--muted);margin-left:4px;letter-spacing:.06em}
 .kpi .sub{font-size:12px;color:var(--muted)}
 
-.sep{height:2px;background:var(--rainbow);opacity:.45;border-radius:2px;margin-block:12px}
+.sep{height:1px;background:var(--rainbow);opacity:.55;margin-block:14px}
 
 main{padding-block:8px 48px}
 .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-block:12px 16px}
-h2{font-family:var(--f-display);font-weight:400;font-size:30px;margin:0;line-height:1.1;text-wrap:balance}
-h3{font-family:var(--f-display);font-weight:500;font-size:20px;margin:0}
+h2{font-family:var(--f-display);font-stretch:118%;font-weight:500;font-size:28px;letter-spacing:-.035em;text-transform:uppercase;margin:0;line-height:.95;text-wrap:balance;scroll-margin-top:120px}
+@media (max-width:639px){h2{font-size:22px;font-stretch:108%}}
+h3{font-family:var(--f-body);font-weight:600;font-size:16px;letter-spacing:-.01em;margin:0;text-wrap:balance}
 .hint{color:var(--muted);font-size:13px;margin:4px 0 0}
 .tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 
@@ -96,12 +129,12 @@ h3{font-family:var(--f-display);font-weight:500;font-size:20px;margin:0}
 .board-scroll{overflow-x:auto;padding-bottom:8px;margin-inline:-4px}
 .board{display:grid;grid-template-columns:repeat(4,minmax(240px,1fr));gap:12px;padding-inline:4px;min-width:max-content}
 @media (min-width:1100px){.board{min-width:0}}
-.col{background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:10px;min-height:180px;min-width:0}
+.col{background:var(--glass);backdrop-filter:blur(22px) saturate(1.4);-webkit-backdrop-filter:blur(22px) saturate(1.4);border:1px solid var(--glass-edge);box-shadow:var(--shadow);border-radius:24px;padding:12px;display:flex;flex-direction:column;gap:10px;min-height:180px;min-width:0}
 .col-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:2px 4px 8px;border-bottom:1px solid var(--line)}
 .col-head .name{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
 .col-head .sum{font-family:var(--f-mono);font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
 .col-head .n{display:inline-block;min-width:20px;text-align:center;border-radius:999px;background:var(--line);padding:0 6px;margin-left:6px;color:var(--ink-2)}
-.card{background:var(--glass-strong);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:6px;box-shadow:var(--shadow);transition:transform .25s,box-shadow .25s}
+.card{background:var(--glass-strong);border:1px solid var(--glass-edge);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:6px;box-shadow:var(--shadow-sm);transition:transform .25s,box-shadow .25s}
 .card:hover{transform:translateY(-2px)}
 .card .t{font-weight:600;font-size:14px;line-height:1.3;overflow-wrap:anywhere}
 .card .c{color:var(--ink-2);font-size:13px;overflow-wrap:anywhere}
@@ -114,13 +147,13 @@ h3{font-family:var(--f-display);font-weight:500;font-size:20px;margin:0}
 
 /* Pills */
 .pill{display:inline-flex;align-items:center;gap:4px;font-family:var(--f-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:999px;border:1px solid var(--line-strong);color:var(--ink-2);white-space:nowrap}
-.pill.A{color:#008C9E;border-color:rgba(0,188,212,.4)} .pill.B{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 45%,transparent)} .pill.C{color:#C2185B;border-color:rgba(233,30,140,.4)}
+.pill.A{color:var(--seg-a);border-color:rgba(0,188,212,.4)} .pill.B{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 45%,transparent)} .pill.C{color:var(--seg-c);border-color:rgba(233,30,140,.4)}
 .pill.ok{color:var(--ok);background:var(--ok-bg);border-color:transparent}
 .pill.bad{color:var(--bad);background:var(--bad-bg);border-color:transparent}
 .pill.warn{color:var(--warn);background:var(--warn-bg);border-color:transparent}
 
 /* Panels & tables */
-.panel{background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:16px;padding:16px;min-width:0}
+.panel{background:var(--glass);backdrop-filter:blur(22px) saturate(1.4);-webkit-backdrop-filter:blur(22px) saturate(1.4);border:1px solid var(--glass-edge);box-shadow:var(--shadow);border-radius:28px;padding:20px;min-width:0}
 .grid2{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:16px}
 @media (max-width:860px){.grid2{grid-template-columns:minmax(0,1fr)}}
 .tbl-wrap{overflow-x:auto}
@@ -128,13 +161,17 @@ table{width:100%;border-collapse:collapse;font-size:13px}
 th{font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:left;font-weight:400;padding:8px 10px;border-bottom:1px solid var(--line-strong);white-space:nowrap}
 td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
 td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--f-mono);font-size:12px}
-tr.click{cursor:pointer} tr.click:hover td{background:var(--line)}
+tr.click{cursor:pointer} tr.click:hover td,tr.click:focus-visible td{background:var(--line)}
+tr.click:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 .filters{display:flex;gap:8px;flex-wrap:wrap}
 
 /* Forms */
 .field{display:flex;flex-direction:column;gap:4px;min-width:0}
 .field label{font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-input,select,textarea{background:var(--glass-strong);border:1px solid var(--line-strong);border-radius:10px;padding:8px 10px;width:100%;min-width:0}
+input,select,textarea{background:var(--field);color:var(--ink);border:1px solid var(--line-strong);border-radius:12px;padding:9px 12px;width:100%;min-width:0;font-size:14px}
+@media (pointer:coarse),(max-width:639px){input,select,textarea{font-size:16px}}
+input:hover,select:hover,textarea:hover{border-color:var(--ink-2)}
+.field-err{color:var(--bad);font-size:12px}
 textarea{min-height:72px;resize:vertical}
 .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
 .form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px;flex-wrap:wrap}
@@ -149,18 +186,18 @@ textarea{min-height:72px;resize:vertical}
 .feed-item .next{font-size:12px;color:var(--ink-2);margin-top:4px}
 
 /* Overlay modal */
-.overlay{position:fixed;inset:0;z-index:50;background:rgba(10,12,18,.42);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:max(24px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px))}
-.modal{background:var(--glass-strong);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--line-strong);border-radius:18px;padding:20px;width:100%;max-width:640px;box-shadow:var(--shadow);margin-top:4vh;animation:rise .3s ease}
+.overlay{position:fixed;inset:0;z-index:50;overscroll-behavior:contain;background:rgba(10,12,18,.42);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:max(24px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px))}
+.modal{background:var(--glass-strong);backdrop-filter:blur(22px) saturate(1.4);-webkit-backdrop-filter:blur(22px) saturate(1.4);border:1px solid var(--glass-edge);border-radius:28px;padding:22px;width:100%;max-width:640px;box-shadow:var(--shadow);margin-top:4vh;animation:rise .3s ease}
 @keyframes rise{from{transform:translateY(16px);opacity:.4}to{transform:none;opacity:1}}
 .modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
-.x{border:0;background:var(--line);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:18px;line-height:1}
+.x{border:0;background:var(--line);color:var(--ink);width:36px;height:36px;flex:none;border-radius:50%;cursor:pointer;font-size:18px;line-height:1}
 
 /* Banners & toasts */
-.banner{border-radius:14px;padding:14px 16px;margin-top:16px;display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line-strong);background:var(--glass-strong)}
+.banner{border-radius:20px;padding:14px 16px;margin-top:16px;display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line-strong);background:var(--glass-strong)}
 .banner.bad{border-color:color-mix(in srgb,var(--bad) 40%,transparent)}
 .banner.warn{border-color:color-mix(in srgb,var(--warn) 40%,transparent)}
 .banner b{display:block;margin-bottom:2px}
-.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:13px;box-shadow:var(--shadow);max-width:calc(100vw - 32px)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;background:var(--ink);color:var(--on-ink);padding:10px 16px;border-radius:999px;font-size:13px;box-shadow:var(--shadow);max-width:calc(100vw - 32px)}
 .empty{text-align:center;padding:32px 16px;color:var(--muted)}
 .empty h3{color:var(--ink);margin-bottom:6px}
 .skeleton{background:linear-gradient(90deg,var(--line),transparent,var(--line));background-size:200% 100%;animation:sk 1.4s infinite;border-radius:10px;height:64px}
@@ -173,25 +210,26 @@ textarea{min-height:72px;resize:vertical}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 </head>
 <body class="auth">
+<a class="skip" href="#view">Aller au contenu</a>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="rb" x1="0" x2="1"><stop offset="0" stop-color="#00BCD4"/><stop offset=".25" stop-color="#7B61FF"/><stop offset=".5" stop-color="#E91E8C"/><stop offset=".75" stop-color="#FF5722"/><stop offset="1" stop-color="#FFC107"/></linearGradient></defs></svg>
 
 <header class="top">
   <div class="wrap">
     <div class="brand">
-      <span class="wordmark">CELLULIFT</span>
+      <h1 class="wordmark" translate="no">CELLULIFT</h1>
       <svg class="ecg" viewBox="0 0 150 14" aria-hidden="true"><path d="M0 7 H48 L54 7 L58 2 L62 12 L66 1 L70 13 L74 7 H150"/></svg>
       <span class="tagline">CRM commercial</span>
     </div>
-    <nav class="tabs" role="tablist" aria-label="Sections">
-      <button class="tab" role="tab" data-tab="pipeline" aria-selected="true" id="tab-pipeline">Pipeline</button>
-      <button class="tab" role="tab" data-tab="comptes" aria-selected="false" id="tab-comptes">Comptes</button>
-      <button class="tab" role="tab" data-tab="activites" aria-selected="false" id="tab-activites">Activités</button>
-      <button class="tab" role="tab" data-tab="superviseur" aria-selected="false" id="tab-superviseur">Supervision</button>
-      <button class="tab" role="tab" data-tab="equipe" aria-selected="false" id="tab-equipe">Équipe &amp; catalogue</button>
+    <nav class="tabs" aria-label="Sections du CRM">
+      <a class="tab" href="#pipeline" data-tab="pipeline" id="tab-pipeline">Pipeline</a>
+      <a class="tab" href="#comptes" data-tab="comptes" id="tab-comptes">Comptes</a>
+      <a class="tab" href="#activites" data-tab="activites" id="tab-activites">Activités</a>
+      <a class="tab" href="#superviseur" data-tab="superviseur" id="tab-superviseur">Supervision</a>
+      <a class="tab" href="#equipe" data-tab="equipe" id="tab-equipe">Équipe &amp; catalogue</a>
     </nav>
-    <div class="status"><span class="dot busy" id="dot"></span><span id="status-text">Connexion…</span>
-      <button class="btn small" id="refresh" title="Recharger les données">↻</button>
+    <div class="status"><span class="dot busy" id="dot" aria-hidden="true"></span><span id="status-text" aria-live="polite">Connexion…</span>
+      <button class="btn small icon" id="refresh" title="Recharger les données" aria-label="Recharger les données"><span aria-hidden="true">↻</span></button>
       <span class="who" id="who"></span><button class="btn small" id="logout">Déconnexion</button></div>
   </div>
 </header>
@@ -200,11 +238,11 @@ textarea{min-height:72px;resize:vertical}
   <div id="banner-slot"></div>
   <section class="kpis" id="kpis" aria-label="Indicateurs"></section>
   <div class="sep"></div>
-  <main id="view"></main>
+  <main id="view" tabindex="-1"></main>
 </div>
 <div id="auth-slot"></div>
 <div id="modal-slot"></div>
-<div id="toast-slot"></div>
+<div id="toast-slot" aria-live="polite"></div>
 
 <script>
 (function(){
@@ -227,6 +265,7 @@ const mad = n => (n==null||isNaN(n))?"—":new Intl.NumberFormat("fr-FR",{maximu
 const madShort = n => { n=Number(n)||0; if(n>=1e6) return (n/1e6).toLocaleString("fr-FR",{maximumFractionDigits:1})+" M"; if(n>=1e4) return Math.round(n/1e3).toLocaleString("fr-FR")+" k"; return mad(n); };
 const fmtDate = d => d? new Date(d).toLocaleDateString("fr-FR",{day:"2-digit",month:"short"}) : "—";
 const byId = (arr,id)=>arr.find(x=>x.id===id);
+const localISO = (d=new Date())=>{ const z=new Date(d.getTime()-d.getTimezoneOffset()*6e4); return z.toISOString().slice(0,10); };
 
 /* ---- Value helpers (validated JS values for Supabase) ---- */
 const UUID_RE=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -248,7 +287,7 @@ const upd = (table,id,obj)=>()=>sb.from(table).update(obj).eq("id",id);
 
 /* ---- Status / errors ---- */
 function setStatus(kind,text){ $("#dot").className="dot "+kind; $("#status-text").textContent=text; }
-function toast(msg){ const t=document.createElement("div"); t.className="toast"; t.setAttribute("role","status"); t.textContent=msg; const s=$("#toast-slot"); s.innerHTML=""; s.appendChild(t); setTimeout(()=>{ if(t.parentNode) t.remove(); },3200); }
+function toast(msg){ const t=document.createElement("div"); t.className="toast"; t.textContent=msg; const s=$("#toast-slot"); s.innerHTML=""; s.appendChild(t); setTimeout(()=>{ if(t.parentNode) t.remove(); },3200); }
 function errorCopy(e){
   const msg = (e && (e.message||e.error_description)) || "";
   if(e && e.code==="42501") return ["Accès refusé","Votre compte n’a pas les droits pour cette action (réservée au superviseur ou à l’admin)."];
@@ -287,7 +326,7 @@ async function load(){
 
 async function write(op,okMsg){
   setStatus("busy","Enregistrement…");
-  try{ const {error} = await op(); if(error) throw error; toast(okMsg||"Enregistré"); closeModal(); await load(); return true; }
+  try{ const {error} = await op(); if(error) throw error; toast(okMsg||"Enregistré"); closeModal(true); await load(); return true; }
   catch(e){ setStatus("bad","Échec"); const [t,d]=errorCopy(e); toast(t+" — "+d.slice(0,120)); return false; }
 }
 
@@ -302,7 +341,7 @@ function renderKpis(){
   const rate = (won.length+lost)? Math.round(won.length*100/(won.length+lost)) : null;
   const wk = Date.now()-7*864e5;
   const act7 = state.activites.filter(a=>new Date(a.date_activite).getTime()>=wk).length;
-  const today = new Date().toISOString().slice(0,10);
+  const today = localISO();
   const late = state.activites.filter(a=>a.date_prochaine_action && a.date_prochaine_action<today).length;
   const k = (lab,val,unit,sub)=>`<div class="kpi"><div class="lab">${lab}</div><div class="val">${val}${unit?`<small>${unit}</small>`:""}</div><div class="sub">${sub}</div></div>`;
   $("#kpis").innerHTML = loaded ? [
@@ -317,7 +356,7 @@ function renderKpis(){
 /* ---- Views ---- */
 function render(){
   renderKpis();
-  document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===tab)));
+  document.querySelectorAll(".tab").forEach(b=>{ if(b.dataset.tab===tab) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current"); });
   const v=$("#view");
   if(!loaded){ v.innerHTML=`<div class="board-scroll"><div class="board">${ETAPES.map(()=>'<div class="col"><div class="skeleton"></div><div class="skeleton"></div></div>').join("")}</div></div>`; return; }
   ({pipeline:viewPipeline,comptes:viewComptes,activites:viewActivites,superviseur:viewSuperviseur,equipe:viewEquipe})[tab](v);
@@ -364,7 +403,7 @@ function viewComptes(v){
     <div class="tools"><button class="btn primary" data-act="new-compte">+ Compte</button></div></div>
   <div class="panel">
     <div class="filters" style="margin-bottom:12px">
-      <input id="f-q" type="search" placeholder="Rechercher un compte" value="${esc(filt.q)}" aria-label="Rechercher">
+      <input id="f-q" type="search" placeholder="Rechercher un compte…" value="${esc(filt.q)}" aria-label="Rechercher un compte" autocomplete="off" spellcheck="false">
       <select id="f-seg" aria-label="Segment"><option value="">Tous segments</option>${Object.entries(SEGMENTS).map(([k,l])=>`<option value="${k}" ${filt.segment===k?"selected":""}>${l}</option>`).join("")}</select>
       <select id="f-ville" aria-label="Ville"><option value="">Toutes villes</option>${VILLES.map(x=>`<option ${filt.ville===x?"selected":""}>${x}</option>`).join("")}</select>
     </div>
@@ -380,7 +419,7 @@ function viewComptes(v){
 
 function feedItem(a){
   const c=byId(state.comptes,a.compte_id), com=byId(state.equipe,a.commercial_id), o=byId(state.opportunites,a.opportunite_id);
-  const today=new Date().toISOString().slice(0,10);
+  const today=localISO();
   const late=a.date_prochaine_action && a.date_prochaine_action<today;
   return `<div class="feed-item"><div class="when">${fmtDate(a.date_activite)}<br>${new Date(a.date_activite).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}</div>
    <div><div class="what"><span class="pill">${TYPES_ACT[a.type]||a.type}</span> <b>${esc(c?c.nom:"—")}</b>${o?` · ${esc(o.titre)}`:""}${com?` <span class="hint">· ${esc(com.nom)}</span>`:""}</div>
@@ -389,8 +428,8 @@ function feedItem(a){
 }
 
 function viewActivites(v){
-  const today=new Date().toISOString().slice(0,10);
-  const relances=state.activites.filter(a=>a.date_prochaine_action).sort((a,b)=>a.date_prochaine_action.localeCompare(b.date_prochaine_action)).filter(a=>a.date_prochaine_action>=new Date(Date.now()-60*864e5).toISOString().slice(0,10)).slice(0,15);
+  const today=localISO();
+  const relances=state.activites.filter(a=>a.date_prochaine_action).sort((a,b)=>a.date_prochaine_action.localeCompare(b.date_prochaine_action)).filter(a=>a.date_prochaine_action>=localISO(new Date(Date.now()-60*864e5))).slice(0,15);
   v.innerHTML=`<div class="section-head"><div><h2>Activités</h2><p class="hint">Appels, visites, démos et relances de l’équipe</p></div>
    <div class="tools"><button class="btn primary" data-act="log" ${state.comptes.length?"":"disabled"}>+ Activité</button></div></div>
   <div class="grid2"><div class="panel"><h3>Journal</h3>${state.activites.length?`<div class="feed">${state.activites.slice(0,60).map(feedItem).join("")}</div>`:`<div class="empty"><p>Aucune activité enregistrée. Chaque appel ou visite saisi ici apparaît en temps réel pour la supervision.</p></div>`}</div>
@@ -430,14 +469,43 @@ function viewEquipe(v){
 }
 
 /* ---- Modal forms ---- */
-function closeModal(){ $("#modal-slot").innerHTML=""; }
-function modal(title,body,onSubmit,submitLabel){
-  $("#modal-slot").innerHTML=`<div class="overlay" id="ov"><form class="modal" id="mform" novalidate><div class="modal-head"><h3>${esc(title)}</h3><button type="button" class="x" id="mx" aria-label="Fermer">×</button></div>${body}<div id="merr" class="hint" style="color:var(--bad)"></div><div class="form-actions"><button type="button" class="btn" id="mcancel">Annuler</button><button type="submit" class="btn primary" id="msubmit">${esc(submitLabel||"Enregistrer")}</button></div></form></div>`;
-  $("#mx").onclick=$("#mcancel").onclick=closeModal;
-  $("#ov").addEventListener("click",e=>{if(e.target.id==="ov")closeModal();});
-  $("#mform").addEventListener("submit",async e=>{e.preventDefault(); const fd=Object.fromEntries(new FormData(e.target)); const err=onSubmit.validate&&onSubmit.validate(fd); if(err){$("#merr").textContent=err;return;} $("#msubmit").disabled=true; const ok=await onSubmit(fd); if(!ok&&$("#msubmit")) $("#msubmit").disabled=false;});
-  const first=$("#mform input,#mform select"); if(first) first.focus();
+let lastFocus=null, dirty=false;
+function closeModal(force){
+  if(dirty && !force){ const c=$("#mconfirm"); if(c){ c.hidden=false; c.querySelector("button").focus(); return; } }
+  $("#modal-slot").innerHTML=""; dirty=false;
+  if(lastFocus && document.contains(lastFocus)) lastFocus.focus(); lastFocus=null;
 }
+function trapFocus(root){
+  root.addEventListener("keydown",e=>{
+    if(e.key!=="Tab") return;
+    const f=[...root.querySelectorAll('button:not([disabled]),[href],input,select,textarea,[tabindex]:not([tabindex="-1"])')].filter(el=>el.offsetParent!==null);
+    if(!f.length) return; const a=f[0], b=f[f.length-1];
+    if(e.shiftKey && document.activeElement===a){ e.preventDefault(); b.focus(); }
+    else if(!e.shiftKey && document.activeElement===b){ e.preventDefault(); a.focus(); }
+  });
+}
+function modal(title,body,onSubmit,submitLabel){
+  lastFocus=document.activeElement; dirty=false;
+  $("#modal-slot").innerHTML=`<div class="overlay" id="ov"><form class="modal" id="mform" novalidate role="dialog" aria-modal="true" aria-labelledby="mtitle"><div class="modal-head"><h3 id="mtitle">${esc(title)}</h3><button type="button" class="x" id="mx" aria-label="Fermer">×</button></div>${body}<div id="merr" class="field-err" aria-live="polite" style="margin-top:10px"></div><div id="mconfirm" class="banner warn" hidden><div style="flex:1"><b>Abandonner la saisie ?</b><span>Les informations non enregistrées seront perdues.</span><div class="tools" style="margin-top:10px"><button type="button" class="btn small" id="mkeep">Continuer la saisie</button><button type="button" class="btn small bad" id="mdrop">Abandonner</button></div></div></div><div class="form-actions"><button type="button" class="btn" id="mcancel">Annuler</button><button type="submit" class="btn primary" id="msubmit">${esc(submitLabel||"Enregistrer")}</button></div></form></div>`;
+  const form=$("#mform"); trapFocus(form);
+  form.addEventListener("input",()=>{dirty=true;}); form.addEventListener("change",()=>{dirty=true;});
+  $("#mx").onclick=()=>closeModal(); $("#mcancel").onclick=()=>closeModal();
+  $("#mkeep").onclick=()=>{ $("#mconfirm").hidden=true; const f=form.querySelector("input,select,textarea"); if(f) f.focus(); };
+  $("#mdrop").onclick=()=>closeModal(true);
+  $("#ov").addEventListener("click",e=>{if(e.target.id==="ov")closeModal();});
+  form.addEventListener("submit",async e=>{
+    e.preventDefault();
+    form.querySelectorAll("[aria-invalid]").forEach(el=>el.removeAttribute("aria-invalid")); $("#merr").textContent="";
+    const fd=Object.fromEntries(new FormData(form));
+    const err=onSubmit.validate&&onSubmit.validate(fd);
+    if(err){ const [name,msg]=Array.isArray(err)?err:[null,err]; $("#merr").textContent=msg; const el=name&&form.elements[name]; if(el){ el.setAttribute("aria-invalid","true"); el.setAttribute("aria-describedby","merr"); el.focus(); } return; }
+    const b=$("#msubmit"); b.disabled=true; b.setAttribute("aria-busy","true");
+    const ok=await onSubmit(fd);
+    if(!ok&&$("#msubmit")){ b.disabled=false; b.removeAttribute("aria-busy"); }
+  });
+  const first=form.querySelector("input,select"); if(first && window.matchMedia("(pointer:fine)").matches) first.focus(); else $("#mx").focus();
+}
+window.addEventListener("beforeunload",e=>{ if(dirty){ e.preventDefault(); e.returnValue=""; } });
 const opt=(arr,sel,blank)=>(blank?`<option value="">${blank}</option>`:"")+arr.map(([v,l])=>`<option value="${esc(v)}" ${v===sel?"selected":""}>${esc(l)}</option>`).join("");
 const fld=(id,label,html,span)=>`<div class="field"${span?' style="grid-column:1/-1"':""}><label for="${id}">${label}</label>${html}</div>`;
 const equipeOpts=()=>state.equipe.filter(e=>e.actif).map(e=>[e.id,e.nom]);
@@ -445,20 +513,20 @@ const equipeOpts=()=>state.equipe.filter(e=>e.actif).map(e=>[e.id,e.nom]);
 function formCompte(c){
   c=c||{};
   const h=`<div class="form-grid">
-   ${fld("m-nom","Nom du compte",`<input id="m-nom" name="nom" required value="${esc(c.nom||"")}" placeholder="Clinique, cabinet ou salon">`,true)}
+   ${fld("m-nom","Nom du compte",`<input id="m-nom" name="nom" required value="${esc(c.nom||"")}" placeholder="Ex. Clinique Atlas…" autocomplete="off">`,true)}
    ${fld("m-seg","Segment",`<select id="m-seg" name="segment">${opt(Object.entries(SEGMENTS),c.segment||"A_clinique")}</select>`)}
    ${fld("m-ville","Ville",`<select id="m-ville" name="ville">${opt(VILLES.map(x=>[x,x]),c.ville||"Casablanca")}</select>`)}
-   ${fld("m-tel","Téléphone",`<input id="m-tel" name="telephone" value="${esc(c.telephone||"")}">`)}
-   ${fld("m-mail","Email",`<input id="m-mail" name="email" type="email" value="${esc(c.email||"")}">`)}
+   ${fld("m-tel","Téléphone",`<input id="m-tel" name="telephone" type="tel" inputmode="tel" autocomplete="off" placeholder="+212 6…" value="${esc(c.telephone||"")}">`)}
+   ${fld("m-mail","Email",`<input id="m-mail" name="email" type="email" autocomplete="off" spellcheck="false" placeholder="contact@clinique.ma…" value="${esc(c.email||"")}">`)}
    ${fld("m-adr","Adresse",`<input id="m-adr" name="adresse" value="${esc(c.adresse||"")}">`,true)}
    ${fld("m-com","Commercial",`<select id="m-com" name="commercial_id">${opt(equipeOpts(),c.commercial_id,"Non assigné")}</select>`)}
-   ${fld("m-web","Site web",`<input id="m-web" name="site_web" value="${esc(c.site_web||"")}">`)}
+   ${fld("m-web","Site web",`<input id="m-web" name="site_web" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://…" value="${esc(c.site_web||"")}">`)}
    ${fld("m-notes","Notes",`<textarea id="m-notes" name="notes">${esc(c.notes||"")}</textarea>`,true)}</div>`;
   const submit=async f=>{
     const obj={nom:sTxt(f.nom),segment:sEnum(f.segment,Object.keys(SEGMENTS)),ville:sEnum(f.ville,VILLES),adresse:sTxt(f.adresse),telephone:sTxt(f.telephone),email:sTxt(f.email),site_web:sTxt(f.site_web),commercial_id:sUuid(f.commercial_id),notes:sTxt(f.notes)};
     return c.id ? write(upd("comptes",c.id,obj),"Compte mis à jour") : write(ins("comptes",obj),"Compte ajouté");
   };
-  submit.validate=f=>!f.nom.trim()?"Le nom du compte est obligatoire.":null;
+  submit.validate=f=>!f.nom.trim()?["nom","Indiquez le nom du compte."]:null;
   modal(c.id?"Modifier le compte":"Nouveau compte",h,submit,c.id?"Enregistrer":"Ajouter le compte");
 }
 
@@ -467,7 +535,7 @@ function formOpp(o,presetCompte){
   const compteSel=o.compte_id||presetCompte||"";
   const contacts=state.contacts.filter(x=>x.compte_id===compteSel).map(x=>[x.id,[x.prenom,x.nom].filter(Boolean).join(" ")]);
   const h=`<div class="form-grid">
-   ${fld("m-titre","Intitulé",`<input id="m-titre" name="titre" required value="${esc(o.titre||"")}" placeholder="Ex. Laser diode pour 2 cabines">`,true)}
+   ${fld("m-titre","Intitulé",`<input id="m-titre" name="titre" required value="${esc(o.titre||"")}" placeholder="Ex. Laser diode pour 2 cabines…" autocomplete="off">`,true)}
    ${fld("m-compte","Compte",`<select id="m-compte" name="compte_id" required>${opt(state.comptes.map(c=>[c.id,c.nom]),compteSel,"Choisir…")}</select>`)}
    ${fld("m-contact","Contact",`<select id="m-contact" name="contact_id">${opt(contacts,o.contact_id,"—")}</select>`)}
    ${fld("m-prod","Machine",`<select id="m-prod" name="produit_id">${opt(state.produits.map(p=>[p.id,p.nom+" · "+p.categorie]),o.produit_id,"—")}</select>`)}
@@ -480,7 +548,7 @@ function formOpp(o,presetCompte){
     const obj={compte_id:sUuid(f.compte_id),contact_id:sUuid(f.contact_id),produit_id:sUuid(f.produit_id),commercial_id:sUuid(f.commercial_id),titre:sTxt(f.titre),etape:sEnum(f.etape,ETAPES),montant_mad:sNum(f.montant_mad),probabilite:sInt(f.probabilite,0,100),date_cloture_prevue:sDate(f.date_cloture_prevue)};
     return o.id ? write(upd("opportunites",o.id,obj),"Opportunité mise à jour") : write(ins("opportunites",obj),"Opportunité créée");
   };
-  submit.validate=f=>!f.titre.trim()?"L’intitulé est obligatoire.":!UUID_RE.test(f.compte_id||"")?"Choisissez un compte.":null;
+  submit.validate=f=>!f.titre.trim()?["titre","Indiquez un intitulé pour l’opportunité."]:!UUID_RE.test(f.compte_id||"")?["compte_id","Choisissez le compte concerné."]:null;
   modal(o.id?"Modifier l’opportunité":"Nouvelle opportunité",h,submit,o.id?"Enregistrer":"Créer");
   $("#m-compte").addEventListener("change",e=>{const cs=state.contacts.filter(x=>x.compte_id===e.target.value).map(x=>[x.id,[x.prenom,x.nom].filter(Boolean).join(" ")]);$("#m-contact").innerHTML=opt(cs,"","—");});
   $("#m-etape").addEventListener("change",e=>{if(!o.id) $("#m-prob").value=PROB_DEFAUT[e.target.value];});
@@ -495,10 +563,10 @@ function formActivite(oppId,compteId){
    ${fld("m-opp","Opportunité",`<select id="m-opp" name="opportunite_id">${opt(state.opportunites.filter(x=>x.compte_id===cId&&x.issue==="en_cours").map(x=>[x.id,x.titre]),oppId||"","—")}</select>`)}
    ${fld("m-com","Commercial",`<select id="m-com" name="commercial_id">${opt(equipeOpts(),(o&&o.commercial_id)||(me&&me.id),"Non assigné")}</select>`)}
    ${fld("m-res","Compte rendu",`<textarea id="m-res" name="resume" placeholder="Ce qui s’est dit, objections, intérêt…"></textarea>`,true)}
-   ${fld("m-next","Prochaine action",`<input id="m-next" name="prochaine_action" placeholder="Ex. Envoyer devis, planifier démo">`)}
+   ${fld("m-next","Prochaine action",`<input id="m-next" name="prochaine_action" placeholder="Ex. Envoyer le devis…" autocomplete="off">`)}
    ${fld("m-nd","Date de relance",`<input id="m-nd" name="date_prochaine_action" type="date">`)}</div>`;
   const submit=async f=>write(ins("activites",{compte_id:sUuid(f.compte_id),opportunite_id:sUuid(f.opportunite_id),commercial_id:sUuid(f.commercial_id),type:sEnum(f.type,Object.keys(TYPES_ACT)),resume:sTxt(f.resume),prochaine_action:sTxt(f.prochaine_action),date_prochaine_action:sDate(f.date_prochaine_action)}),"Activité enregistrée");
-  submit.validate=f=>!UUID_RE.test(f.compte_id||"")?"Choisissez un compte.":null;
+  submit.validate=f=>!UUID_RE.test(f.compte_id||"")?["compte_id","Choisissez le compte concerné."]:null;
   modal("Nouvelle activité",h,submit,"Enregistrer");
   $("#m-compte").addEventListener("change",e=>{$("#m-opp").innerHTML=opt(state.opportunites.filter(x=>x.compte_id===e.target.value&&x.issue==="en_cours").map(x=>[x.id,x.titre]),"","—");});
 }
@@ -507,12 +575,12 @@ function formContact(compteId){
   const h=`<div class="form-grid">
    ${fld("m-pre","Prénom",`<input id="m-pre" name="prenom">`)}
    ${fld("m-nom","Nom",`<input id="m-nom" name="nom" required>`)}
-   ${fld("m-fn","Fonction",`<input id="m-fn" name="fonction" placeholder="Dermatologue, gérante…">`)}
-   ${fld("m-tel","Téléphone",`<input id="m-tel" name="telephone">`)}
-   ${fld("m-mail","Email",`<input id="m-mail" name="email" type="email">`)}
+   ${fld("m-fn","Fonction",`<input id="m-fn" name="fonction" placeholder="Ex. Dermatologue…" autocomplete="off">`)}
+   ${fld("m-tel","Téléphone",`<input id="m-tel" name="telephone" type="tel" inputmode="tel" autocomplete="off" placeholder="+212 6…">`)}
+   ${fld("m-mail","Email",`<input id="m-mail" name="email" type="email" autocomplete="off" spellcheck="false" placeholder="nom@clinique.ma…">`)}
    ${fld("m-dec","Décideur",`<select id="m-dec" name="decideur"><option value="">Non</option><option value="1">Oui</option></select>`)}</div>`;
   const submit=async f=>write(ins("contacts",{compte_id:sUuid(compteId),prenom:sTxt(f.prenom),nom:sTxt(f.nom),fonction:sTxt(f.fonction),telephone:sTxt(f.telephone),email:sTxt(f.email),decideur:sBool(f.decideur)}),"Contact ajouté");
-  submit.validate=f=>!f.nom.trim()?"Le nom est obligatoire.":null;
+  submit.validate=f=>!f.nom.trim()?["nom","Indiquez le nom."]:null;
   modal("Nouveau contact",h,submit,"Ajouter");
 }
 
@@ -520,7 +588,7 @@ function formMembre(m){
   m=m||{};
   const h=`<div class="form-grid">
    ${fld("m-nom","Nom",`<input id="m-nom" name="nom" required value="${esc(m.nom||"")}">`)}
-   ${fld("m-mail","Email de connexion",`<input id="m-mail" name="email" type="email" value="${esc(m.email||"")}" placeholder="prenom@cellulift.ma">`)}
+   ${fld("m-mail","Email de connexion",`<input id="m-mail" name="email" type="email" value="${esc(m.email||"")}" placeholder="prenom@cellulift.ma…" autocomplete="off" spellcheck="false">`)}
    ${fld("m-role","Rôle",`<select id="m-role" name="role">${opt(Object.entries(ROLES),m.role||"commercial")}</select>`)}
    ${fld("m-ville","Ville",`<select id="m-ville" name="ville">${opt(VILLES.map(x=>[x,x]),m.ville,"—")}</select>`)}
    ${m.id?fld("m-act","Statut",`<select id="m-act" name="actif"><option value="1" ${m.actif?"selected":""}>Actif</option><option value="" ${!m.actif?"selected":""}>Inactif</option></select>`):""}</div>`;
@@ -528,7 +596,7 @@ function formMembre(m){
     const obj={nom:sTxt(f.nom),email:sTxt((f.email||"").toLowerCase()),role:sEnum(f.role,Object.keys(ROLES)),ville:sEnum(f.ville,VILLES)};
     return m.id ? write(upd("equipe",m.id,Object.assign(obj,{actif:sBool(f.actif)})),"Membre mis à jour") : write(ins("equipe",obj),"Membre ajouté");
   };
-  submit.validate=f=>!f.nom.trim()?"Le nom est obligatoire.":null;
+  submit.validate=f=>!f.nom.trim()?["nom","Indiquez le nom."]:null;
   modal(m.id?"Modifier le membre":"Nouveau membre",h,submit,m.id?"Enregistrer":"Ajouter");
 }
 
@@ -544,23 +612,24 @@ function formProduit(p){
     const obj={nom:sTxt(f.nom),categorie:sTxt(f.categorie),marque:sTxt(f.marque),prix_catalogue_mad:sNum(f.prix)};
     return p.id ? write(upd("produits",p.id,obj),"Machine mise à jour") : write(ins("produits",obj),"Machine ajoutée");
   };
-  submit.validate=f=>!f.nom.trim()||!f.categorie.trim()?"Nom et catégorie obligatoires.":null;
+  submit.validate=f=>!f.nom.trim()?["nom","Indiquez le nom de la machine."]:!f.categorie.trim()?["categorie","Indiquez la catégorie."]:null;
   modal(p.id?"Modifier la machine":"Nouvelle machine",h,submit,p.id?"Enregistrer":"Ajouter");
 }
 
 function formPerte(o){
-  const h=fld("m-raison","Raison de la perte",`<select id="m-raison" name="raison"><option>Prix</option><option>Concurrent</option><option>Financement refusé</option><option>Projet reporté</option><option>Pas de besoin</option><option>Autre</option></select>`,true)+`<div style="margin-top:12px">${fld("m-det","Précision",`<input id="m-det" name="detail" placeholder="Optionnel">`,true)}</div>`;
+  const h=fld("m-raison","Raison de la perte",`<select id="m-raison" name="raison"><option>Prix</option><option>Concurrent</option><option>Financement refusé</option><option>Projet reporté</option><option>Pas de besoin</option><option>Autre</option></select>`,true)+`<div style="margin-top:12px">${fld("m-det","Précision",`<input id="m-det" name="detail" placeholder="Ex. budget reporté à 2027…" autocomplete="off">`,true)}</div>`;
   const submit=async f=>write(upd("opportunites",o.id,{issue:"perdue",raison_perte:sTxt([f.raison,f.detail].filter(Boolean).join(" — "))}),"Affaire marquée perdue");
   modal("Affaire perdue : "+o.titre,h,submit,"Confirmer");
 }
 
 function openCompte(c){
+  lastFocus=document.activeElement; dirty=false;
   const contacts=state.contacts.filter(x=>x.compte_id===c.id);
   const ops=state.opportunites.filter(o=>o.compte_id===c.id);
   const acts=state.activites.filter(a=>a.compte_id===c.id).slice(0,8);
   const com=byId(state.equipe,c.commercial_id);
-  $("#modal-slot").innerHTML=`<div class="overlay" id="ov"><div class="modal" style="max-width:760px" role="dialog" aria-label="${esc(c.nom)}">
-   <div class="modal-head"><div><h3 style="font-size:26px">${esc(c.nom)}</h3><div class="tools" style="margin-top:6px"><span class="pill ${c.segment[0]}">${SEGMENTS[c.segment]}</span><span class="pill">${esc(c.ville)}</span><span class="hint">${com?esc(com.nom):"Non assigné"}</span></div></div><button class="x" id="mx" aria-label="Fermer">×</button></div>
+  $("#modal-slot").innerHTML=`<div class="overlay" id="ov"><div class="modal" style="max-width:760px" role="dialog" aria-modal="true" aria-labelledby="ctitle">
+   <div class="modal-head"><div><h3 id="ctitle" style="font-family:var(--f-display);font-stretch:118%;font-weight:500;font-size:24px;letter-spacing:-.03em;text-transform:uppercase;line-height:1">${esc(c.nom)}</h3><div class="tools" style="margin-top:6px"><span class="pill ${c.segment[0]}">${SEGMENTS[c.segment]}</span><span class="pill">${esc(c.ville)}</span><span class="hint">${com?esc(com.nom):"Non assigné"}</span></div></div><button class="x" id="mx" aria-label="Fermer">×</button></div>
    <div class="hint">${[c.telephone,c.email,c.adresse,c.site_web].filter(Boolean).map(esc).join(" · ")||"Aucune coordonnée"}</div>
    ${c.notes?`<p style="margin-top:8px">${esc(c.notes)}</p>`:""}
    <div class="tools" style="margin-block:14px"><button class="btn small" data-act="edit-compte" data-id="${c.id}">Modifier</button><button class="btn small" data-act="new-contact" data-id="${c.id}">+ Contact</button><button class="btn small" data-act="new-opp" data-compte="${c.id}">+ Opportunité</button><button class="btn small" data-act="log" data-compte="${c.id}">+ Activité</button></div>
@@ -569,7 +638,7 @@ function openCompte(c){
    <h3 style="margin-top:16px">Opportunités</h3>${ops.length?`<div class="closed-list">${ops.map(o=>`<div class="closed-row"><div><b>${esc(o.titre)}</b><div class="hint">${ETAPE_LABEL[o.etape]} · ${o.probabilite??"–"} %</div></div><div class="tools"><span style="font-family:var(--f-mono);font-size:12px">${mad(o.montant_mad)} MAD</span><span class="pill ${o.issue==="gagnee"?"ok":o.issue==="perdue"?"bad":""}">${o.issue==="en_cours"?"En cours":o.issue==="gagnee"?"Gagnée":"Perdue"}</span></div></div>`).join("")}</div>`:`<p class="hint">Aucune opportunité.</p>`}
    <h3 style="margin-top:16px">Dernières activités</h3>${acts.length?`<div class="feed">${acts.map(feedItem).join("")}</div>`:`<p class="hint">Aucune activité.</p>`}
   </div></div>`;
-  $("#mx").onclick=closeModal; $("#ov").addEventListener("click",e=>{if(e.target.id==="ov")closeModal();});
+  $("#mx").onclick=()=>closeModal(); $("#ov").addEventListener("click",e=>{if(e.target.id==="ov")closeModal();}); trapFocus($("#ov .modal")); $("#mx").focus();
 }
 
 /* ---- Event delegation ---- */
@@ -594,23 +663,26 @@ document.addEventListener("click",async e=>{
   if(act==="reopen"){ t.disabled=true; return write(upd("opportunites",id,{issue:"en_cours",raison_perte:null}),"Affaire rouverte"); }
 });
 document.addEventListener("keydown",e=>{
-  if(e.key==="Escape") closeModal();
+  if(e.key==="Escape" && $("#ov")) closeModal();
   if(e.key==="Enter"&&e.target.matches("tr.click")) e.target.click();
 });
-document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{tab=b.dataset.tab; try{localStorage.setItem("crm-tab",tab);}catch(_){} render();}));
+const TABS=["pipeline","comptes","activites","superviseur","equipe"];
+function syncTab(){ const h=location.hash.slice(1); if(TABS.includes(h)&&h!==tab){ tab=h; try{localStorage.setItem("crm-tab",tab);}catch(_){} if(currentUser) render(); } }
+window.addEventListener("hashchange",syncTab);
 $("#refresh").addEventListener("click",()=>load());
-try{ const s=localStorage.getItem("crm-tab"); if(s&&["pipeline","comptes","activites","superviseur","equipe"].includes(s)) tab=s; }catch(_){}
+try{ const s=localStorage.getItem("crm-tab"); if(s&&TABS.includes(s)) tab=s; }catch(_){}
+if(TABS.includes(location.hash.slice(1))) tab=location.hash.slice(1);
 
 /* ---- Auth ---- */
 function showLogin(msg){
   document.body.classList.add("auth");
-  $("#auth-slot").innerHTML=`<div class="login"><form class="modal" id="login-form" novalidate style="max-width:420px;margin-top:10vh">
-    <div style="text-align:center;margin-bottom:18px"><span class="wordmark" style="font-size:28px">CELLULIFT</span><div class="tagline" style="margin-top:6px">CRM commercial · Accès équipe</div></div>
+  $("#auth-slot").innerHTML=`<div class="login"><form class="modal" id="login-form" novalidate style="max-width:420px" aria-labelledby="login-title">
+    <div style="text-align:center;margin-bottom:18px"><h2 class="wordmark" id="login-title" translate="no" style="font-family:var(--f-mark);font-size:28px;font-weight:400;font-stretch:normal;letter-spacing:.22em;text-transform:none;line-height:1">CELLULIFT</h2><div class="tagline" style="margin-top:6px">CRM commercial · Accès équipe</div></div>
     <div class="form-grid" style="grid-template-columns:1fr">
-      ${fld("l-mail","Email professionnel",`<input id="l-mail" name="email" type="email" autocomplete="username" required placeholder="prenom@cellulift.ma">`)}
+      ${fld("l-mail","Email professionnel",`<input id="l-mail" name="email" type="email" autocomplete="username" spellcheck="false" required placeholder="prenom@cellulift.ma…">`)}
       ${fld("l-pw","Mot de passe",`<input id="l-pw" name="password" type="password" autocomplete="current-password" required minlength="8">`)}
     </div>
-    <div id="l-err" class="hint" style="color:var(--bad);margin-top:10px">${esc(msg||"")}</div>
+    <div id="l-err" class="hint" aria-live="polite" style="color:var(--bad);margin-top:10px">${esc(msg||"")}</div>
     <div class="form-actions" style="justify-content:space-between"><button type="button" class="btn" id="l-signup">Première connexion</button><button type="submit" class="btn primary" id="l-go">Se connecter</button></div>
     <p class="hint" style="margin-top:14px">Première connexion : saisissez l’email que votre superviseur a enregistré et choisissez un mot de passe (8 caractères minimum), puis cliquez sur « Première connexion ».</p>
   </form></div>`;
