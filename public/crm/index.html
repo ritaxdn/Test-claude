@@ -206,6 +206,17 @@ textarea{min-height:72px;resize:vertical}
 .closed-row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
 .closed-row:last-child{border-bottom:0}
 .fam{border-top:1px solid var(--line);padding-block:4px}
+.modal.devis-modal{max-width:980px}
+.dv-lines td{padding:8px 6px}.dv-lines input,.dv-lines select{padding:7px 9px}.dv-lines input.num{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.dv-lines td[data-total]{vertical-align:middle;white-space:nowrap}
+.dv-bottom{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:20px;margin-top:16px;align-items:start}
+@media (max-width:760px){.dv-bottom{grid-template-columns:minmax(0,1fr)}}
+.dv-tot{display:grid;grid-template-columns:1fr auto;gap:6px 16px;margin:0;padding:16px;border-radius:20px;background:var(--glass-strong);border:1px solid var(--glass-edge);box-shadow:var(--shadow-sm)}
+.dv-tot dt{color:var(--ink-2)}.dv-tot dd{margin:0;text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.dv-tot .ttc{font-weight:600;color:var(--ink);font-size:16px;padding-top:8px;border-top:1px solid var(--line-strong)}
+.dv-sync{display:flex;gap:8px;align-items:center;margin-top:12px;font-size:13px;cursor:pointer;min-height:32px}.dv-sync input{width:auto}
+select.dstat{width:auto;padding:5px 10px;border-radius:999px;font-size:12px}
+select.dstat.ok{color:var(--ok);background:var(--ok-bg)}select.dstat.warn{color:var(--warn);background:var(--warn-bg)}select.dstat.bad{color:var(--bad);background:var(--bad-bg)}
 .fam summary{display:flex;justify-content:space-between;align-items:center;gap:8px;cursor:pointer;padding:10px 2px;font-weight:600;list-style:none;min-height:40px}
 .fam summary::-webkit-details-marker{display:none}
 .fam summary::after{content:"＋";color:var(--muted);margin-left:8px}
@@ -232,6 +243,7 @@ textarea{min-height:72px;resize:vertical}
       <a class="tab" href="#comptes" data-tab="comptes" id="tab-comptes">Comptes</a>
       <a class="tab" href="#activites" data-tab="activites" id="tab-activites">Activités</a>
       <a class="tab" href="#superviseur" data-tab="superviseur" id="tab-superviseur">Supervision</a>
+      <a class="tab" href="#devis" data-tab="devis" id="tab-devis">Devis</a>
       <a class="tab" href="#equipe" data-tab="equipe" id="tab-equipe">Équipe &amp; catalogue</a>
     </nav>
     <div class="status"><span class="dot busy" id="dot" aria-hidden="true"></span><span id="status-text" aria-live="polite">Connexion…</span>
@@ -267,7 +279,7 @@ const ROLES = {commercial:"Commercial",superviseur:"Superviseur",admin:"Admin"};
 const DEVIS_STATUTS = ["brouillon","envoye","accepte","refuse","signe"];
 
 let currentUser = null;
-let state = {equipe:[],comptes:[],contacts:[],produits:[],opportunites:[],activites:[],devis:[]};
+let state = {equipe:[],comptes:[],contacts:[],produits:[],opportunites:[],activites:[],devis:[],devis_lignes:[]};
 let loaded = false, tab = "pipeline", filt = {q:"",segment:"",ville:"",statut:"",com:""};
 
 const $ = (s,el=document)=>el.querySelector(s);
@@ -331,11 +343,11 @@ async function load(){
     };
     const res = await Promise.all([
       q("equipe","nom",true), q("comptes","nom",true), q("contacts","nom",true), q("produits","nom",true),
-      q("opportunites","updated_at",false), q("activites","date_activite",false,300), q("devis","created_at",false)
+      q("opportunites","updated_at",false), q("activites","date_activite",false,300), q("devis","created_at",false), q("devis_lignes","position",true).then(r=>r.error?{data:[],error:null}:r)
     ]);
     const err = res.find(r=>r.error); if(err) throw err.error;
-    const [equipe,comptes,contacts,produits,opportunites,activites,devis] = res.map(r=>r.data||[]);
-    state = {equipe,comptes,contacts,produits,opportunites,activites,devis};
+    const [equipe,comptes,contacts,produits,opportunites,activites,devis,devis_lignes] = res.map(r=>r.data||[]);
+    state = {equipe,comptes,contacts,produits,opportunites,activites,devis,devis_lignes};
     idx.contactsBy=new Map(); contacts.forEach(c=>idx.contactsBy.set(c.compte_id,(idx.contactsBy.get(c.compte_id)||0)+1));
     idx.pipeBy=new Map(); opportunites.filter(o=>o.issue==="en_cours").forEach(o=>idx.pipeBy.set(o.compte_id,(idx.pipeBy.get(o.compte_id)||0)+(+o.montant_mad||0)));
     me = equipe.find(e=>e.user_id===currentUser.id) || null;
@@ -382,7 +394,7 @@ function render(){
   document.querySelectorAll(".tab").forEach(b=>{ if(b.dataset.tab===tab) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current"); });
   const v=$("#view");
   if(!loaded){ v.innerHTML=`<div class="board-scroll"><div class="board">${ETAPES.map(()=>'<div class="col"><div class="skeleton"></div><div class="skeleton"></div></div>').join("")}</div></div>`; return; }
-  ({pipeline:viewPipeline,comptes:viewComptes,activites:viewActivites,superviseur:viewSuperviseur,equipe:viewEquipe})[tab](v);
+  ({pipeline:viewPipeline,comptes:viewComptes,activites:viewActivites,devis:viewDevis,superviseur:viewSuperviseur,equipe:viewEquipe})[tab](v);
 }
 
 function oppCard(o){
@@ -400,6 +412,7 @@ function oppCard(o){
       ${idx===3?`<button class="btn small ok" data-act="won" data-id="${o.id}">Gagnée</button><button class="btn small bad" data-act="lost" data-id="${o.id}">Perdue</button>`:""}
       <button class="btn small" data-act="edit-opp" data-id="${o.id}">Modifier</button>
       <button class="btn small" data-act="log" data-opp="${o.id}">+ Activité</button>
+      <button class="btn small" data-act="new-devis" data-opp="${o.id}">+ Devis</button>
     </div></article>`;
 }
 
@@ -679,9 +692,10 @@ function openCompte(c){
    ${c.specialite||c.source?`<p style="margin:0 0 4px">${esc(c.specialite||"")}${c.source?` <span class="hint">· source : ${esc(c.source)}</span>`:""}</p>`:""}
    <div class="hint">${[c.telephone,c.email,c.adresse,c.site_web].filter(Boolean).map(esc).join(" · ")||"Aucune coordonnée"}</div>
    ${c.notes?`<p style="margin-top:8px">${esc(c.notes)}</p>`:""}
-   <div class="tools" style="margin-block:14px"><button class="btn small" data-act="edit-compte" data-id="${c.id}">Modifier</button><button class="btn small" data-act="new-contact" data-id="${c.id}">+ Contact</button><button class="btn small" data-act="new-opp" data-compte="${c.id}">+ Opportunité</button><button class="btn small" data-act="log" data-compte="${c.id}">+ Activité</button></div>
+   <div class="tools" style="margin-block:14px"><button class="btn small" data-act="edit-compte" data-id="${c.id}">Modifier</button><button class="btn small" data-act="new-contact" data-id="${c.id}">+ Contact</button><button class="btn small" data-act="new-opp" data-compte="${c.id}">+ Opportunité</button><button class="btn small" data-act="log" data-compte="${c.id}">+ Activité</button><button class="btn small" data-act="new-devis" data-compte="${c.id}">+ Devis</button></div>
    <div class="sep"></div>
    <h3>Contacts</h3>${contacts.length?`<div class="closed-list">${contacts.map(x=>`<div class="closed-row"><div><b>${esc([x.prenom,x.nom].filter(Boolean).join(" "))}</b>${x.decideur?` <span class="pill ok">Décideur</span>`:""}<div class="hint">${esc(x.fonction||"")}</div></div><div class="hint">${[x.telephone,x.email].filter(Boolean).map(esc).join(" · ")}</div></div>`).join("")}</div>`:`<p class="hint">Aucun contact.</p>`}
+   ${(()=>{const dv=state.devis.filter(x=>x.compte_id===c.id); return dv.length?`<h3 style="margin-top:16px">Devis</h3><div class="closed-list">${dv.map(x=>`<div class="closed-row"><div><b translate="no">${esc(devisNum(x))}</b><div class="hint">${fmtDate(x.created_at)} · ${mad(x.montant_mad)} MAD HT</div></div><div class="tools"><span class="pill ${DEVIS_PILL[x.statut]||""}">${DEVIS_LABEL[x.statut]}</span><button class="btn small" data-act="edit-devis" data-id="${x.id}">Modifier</button><button class="btn small" data-act="print-devis" data-id="${x.id}">Imprimer</button></div></div>`).join("")}</div>`:"";})()}
    <h3 style="margin-top:16px">Opportunités</h3>${ops.length?`<div class="closed-list">${ops.map(o=>`<div class="closed-row"><div><b>${esc(o.titre)}</b><div class="hint">${ETAPE_LABEL[o.etape]} · ${o.probabilite??"–"} %</div></div><div class="tools"><span style="font-family:var(--f-mono);font-size:12px">${mad(o.montant_mad)} MAD</span><span class="pill ${o.issue==="gagnee"?"ok":o.issue==="perdue"?"bad":""}">${o.issue==="en_cours"?"En cours":o.issue==="gagnee"?"Gagnée":"Perdue"}</span></div></div>`).join("")}</div>`:`<p class="hint">Aucune opportunité.</p>`}
    <h3 style="margin-top:16px">Dernières activités</h3>${acts.length?`<div class="feed">${acts.map(feedItem).join("")}</div>`:`<p class="hint">Aucune activité.</p>`}
   </div></div>`;
@@ -695,6 +709,10 @@ document.addEventListener("click",async e=>{
   if(act==="new-compte") return formCompte();
   if(act==="more"){ shown+=PAGE; return viewComptes($("#view")); }
   if(act==="import") return openImport();
+  if(act==="new-devis") return formDevis(null,{opp:t.dataset.opp,compte:t.dataset.compte});
+  if(act==="edit-devis") return formDevis(byId(state.devis,id));
+  if(act==="print-devis"){ const d=byId(state.devis,id); if(d) imprimerDevis(d); return; }
+  if(act==="dismiss-banner"){ devisBanner=null; return render(); }
   if(act==="edit-compte") return formCompte(byId(state.comptes,id));
   if(act==="open-compte") return openCompte(byId(state.comptes,id));
   if(act==="new-contact") return formContact(id);
@@ -708,19 +726,295 @@ document.addEventListener("click",async e=>{
   if(act==="lost") return formPerte(byId(state.opportunites,id));
   if(act==="move"){ t.disabled=true; const to=t.dataset.to; const o=byId(state.opportunites,id); const p=Math.max(+o.probabilite||0,PROB_DEFAUT[to]);
     return write(upd("opportunites",id,{etape:sEnum(to,ETAPES),probabilite:ETAPES.indexOf(to)>ETAPES.indexOf(o.etape)?p:PROB_DEFAUT[to]}),"Passée en "+ETAPE_LABEL[to]); }
-  if(act==="won"){ t.disabled=true; return write(upd("opportunites",id,{issue:"gagnee",probabilite:100}),"Affaire gagnée"); }
+  if(act==="won"){ t.disabled=true; devisBanner=null; return write(upd("opportunites",id,{issue:"gagnee",probabilite:100}),"Affaire gagnée"); }
   if(act==="reopen"){ t.disabled=true; return write(upd("opportunites",id,{issue:"en_cours",raison_perte:null}),"Affaire rouverte"); }
 });
 document.addEventListener("keydown",e=>{
   if(e.key==="Escape" && $("#ov")) closeModal();
   if(e.key==="Enter"&&e.target.matches("tr.click")) e.target.click();
 });
-const TABS=["pipeline","comptes","activites","superviseur","equipe"];
+const TABS=["pipeline","comptes","activites","devis","superviseur","equipe"];
 function syncTab(){ const h=location.hash.slice(1); if(TABS.includes(h)&&h!==tab){ tab=h; try{localStorage.setItem("crm-tab",tab);}catch(_){} if(currentUser) render(); } }
 window.addEventListener("hashchange",syncTab);
 $("#refresh").addEventListener("click",()=>load());
 try{ const s=localStorage.getItem("crm-tab"); if(s&&TABS.includes(s)) tab=s; }catch(_){}
 if(TABS.includes(location.hash.slice(1))) tab=location.hash.slice(1);
+
+/* ---- Devis ---- */
+// Mentions légales imprimées en pied de devis : à compléter (raison sociale, ICE, RC, IF, adresse, RIB…).
+const SOCIETE = { nom:"CELLULIFT", activite:"Distribution d’équipements de médecine esthétique", adresse:"", telephone:"", email:"", site:"cellulift.ma", ice:"", rc:"", if_:"", patente:"", cnss:"", rib:"", banque:"" };
+const DEVIS_LABEL = {brouillon:"Brouillon",envoye:"Envoyé",accepte:"Accepté",refuse:"Refusé",signe:"Signé"};
+const DEVIS_PILL = {brouillon:"",envoye:"warn",accepte:"ok",refuse:"bad",signe:"ok"};
+const r2 = n => Math.round((+n||0)*100)/100;
+const mad2 = n => new Intl.NumberFormat("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2}).format(r2(n));
+
+function devisTotaux(lignes, remisePct, tvaPct){
+  const brut = lignes.reduce((s,l)=>s+(+l.quantite||0)*(+l.prix_unitaire_mad||0),0);
+  const sousTotal = lignes.reduce((s,l)=>s+(+l.quantite||0)*(+l.prix_unitaire_mad||0)*(1-(+l.remise_pct||0)/100),0);
+  const remiseLignes = brut - sousTotal;
+  const remiseGlobale = sousTotal*(+remisePct||0)/100;
+  const ht = sousTotal - remiseGlobale;
+  const tva = ht*(+tvaPct||0)/100;
+  return { brut:r2(brut), remiseLignes:r2(remiseLignes), sousTotal:r2(sousTotal), remiseGlobale:r2(remiseGlobale), ht:r2(ht), tva:r2(tva), ttc:r2(ht+tva) };
+}
+
+// Montant en lettres (dirhams et centimes), règles françaises traditionnelles.
+function enLettres(n){
+  const U=["zéro","un","deux","trois","quatre","cinq","six","sept","huit","neuf","dix","onze","douze","treize","quatorze","quinze","seize"];
+  const D={2:"vingt",3:"trente",4:"quarante",5:"cinquante",6:"soixante"};
+  const moinsCent=n=>{
+    if(n<17) return U[n];
+    if(n<20) return "dix-"+U[n-10];
+    const d=Math.floor(n/10), u=n%10;
+    if(d<7) return D[d]+(u===0?"":u===1?" et un":"-"+U[u]);
+    if(d===7) return "soixante"+(u===1?" et onze":"-"+moinsCent(10+u));
+    if(d===8) return u===0?"quatre-vingts":"quatre-vingt-"+U[u];
+    return "quatre-vingt-"+moinsCent(10+u);
+  };
+  const moinsMille=n=>{
+    const c=Math.floor(n/100), r=n%100;
+    if(!c) return moinsCent(r);
+    const cent = c===1?"cent":U[c]+" cent"+(r===0?"s":"");
+    return r?cent+" "+moinsCent(r):cent;
+  };
+  const entier=n=>{
+    if(n===0) return "zéro";
+    const parts=[]; const mds=Math.floor(n/1e9), mns=Math.floor(n%1e9/1e6), mil=Math.floor(n%1e6/1e3), rest=n%1e3;
+    if(mds) parts.push(moinsMille(mds)+" milliard"+(mds>1?"s":""));
+    if(mns) parts.push(moinsMille(mns)+" million"+(mns>1?"s":""));
+    if(mil) parts.push(mil===1?"mille":moinsMille(mil).replace(/(cent|vingt)s$/,"$1")+" mille");
+    if(rest) parts.push(moinsMille(rest));
+    return parts.join(" ");
+  };
+  const total=Math.round((+n||0)*100), dh=Math.floor(total/100), cts=total%100;
+  const e=entier(dh);
+  let s=e+(/(million|milliard)s?$/.test(e)?" de":"")+" dirham"+(dh>1?"s":"");
+  if(cts) s+=" et "+entier(cts)+" centime"+(cts>1?"s":"");
+  return s.charAt(0).toUpperCase()+s.slice(1);
+}
+
+function devisNum(d){ return d.reference || ("DEV-" + String(d.numero||"").padStart(4,"0")); }
+const lignesDe = id => state.devis_lignes.filter(l=>l.devis_id===id).sort((a,b)=>a.position-b.position);
+function compteLabel(c){ return [c.nom, c.ville, c.telephone].filter(Boolean).join(" — "); }
+
+function formDevis(d, preset){
+  d = d || {}; preset = preset || {};
+  lastFocus=document.activeElement; dirty=false;
+  const opp0 = byId(state.opportunites, d.opportunite_id || preset.opp);
+  const compteId0 = d.compte_id || (opp0 && opp0.compte_id) || preset.compte || "";
+  const c0 = byId(state.comptes, compteId0);
+  let lignes = d.id ? lignesDe(d.id).map(l=>({produit_id:l.produit_id||"",designation:l.designation,quantite:+l.quantite,prix_unitaire_mad:+l.prix_unitaire_mad,remise_pct:+l.remise_pct}))
+    : opp0 && opp0.produit_id ? [ligneProduit(byId(state.produits,opp0.produit_id))] : [{produit_id:"",designation:"",quantite:1,prix_unitaire_mad:0,remise_pct:0}];
+  let compteId = compteId0;
+  const prodOpts = sel => `<option value="">Autre (saisie libre)</option>` + Object.entries(state.produits.filter(p=>p.actif||p.id===sel).reduce((m,p)=>((m[p.categorie]=m[p.categorie]||[]).push(p),m),{}))
+    .map(([f,ps])=>`<optgroup label="${esc(f)}">${ps.sort((a,b)=>a.nom.localeCompare(b.nom,"fr")).map(p=>`<option value="${p.id}" ${p.id===sel?"selected":""}>${esc(p.nom)}${p.prix_catalogue_mad!=null?" · "+mad(p.prix_catalogue_mad)+" MAD":""}</option>`).join("")}</optgroup>`).join("");
+  const comptesDl = c0 ? "" : `<datalist id="dl-comptes">${state.comptes.map(c=>`<option value="${esc(compteLabel(c))}">`).join("")}</datalist>`;
+  $("#modal-slot").innerHTML=`<div class="overlay" id="ov"><form class="modal devis-modal" id="mform" novalidate role="dialog" aria-modal="true" aria-labelledby="mtitle">
+    <div class="modal-head"><h3 id="mtitle">${d.id?"Modifier le devis "+esc(devisNum(d)):"Nouveau devis"}</h3><button type="button" class="x" id="mx" aria-label="Fermer">×</button></div>
+    <div class="form-grid">
+      ${fld("dv-compte","Client",c0?`<input id="dv-compte" value="${esc(compteLabel(c0))}" readonly aria-readonly="true">`:`<input id="dv-compte" name="compte" list="dl-comptes" autocomplete="off" placeholder="Tapez le nom du client…" required>${comptesDl}`,true)}
+      ${fld("dv-opp","Opportunité liée",`<select id="dv-opp" name="opportunite_id"></select>`)}
+      ${fld("dv-com","Commercial",`<select id="dv-com" name="commercial_id">${opt(equipeOpts(),d.commercial_id||(opp0&&opp0.commercial_id)||(c0&&c0.commercial_id)||(me&&me.id),"Non assigné")}</select>`)}
+    </div>
+    <div class="tbl-wrap" style="margin-top:16px"><table class="dv-lines"><thead><tr><th style="min-width:200px">Machine / désignation</th><th class="num" style="width:70px">Qté</th><th class="num" style="width:130px">PU HT (MAD)</th><th class="num" style="width:90px">Remise %</th><th class="num" style="width:120px">Total HT</th><th style="width:44px"><span class="sr-only">Retirer</span></th></tr></thead><tbody id="dv-body"></tbody></table></div>
+    <div class="tools" style="margin-top:8px"><button type="button" class="btn small" id="dv-add">+ Ligne</button></div>
+    <div class="dv-bottom">
+      <div class="form-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">
+        ${fld("dv-rg","Remise globale %",`<input id="dv-rg" name="remise_pct" type="number" inputmode="decimal" min="0" max="100" step="0.5" value="${esc(d.remise_pct??0)}">`)}
+        ${fld("dv-tva","TVA %",`<input id="dv-tva" name="tva_pct" type="number" inputmode="decimal" min="0" max="100" step="1" value="${esc(d.tva_pct??20)}">`)}
+        ${fld("dv-val","Validité (jours)",`<input id="dv-val" name="validite_jours" type="number" inputmode="numeric" min="1" max="365" value="${esc(d.validite_jours??30)}">`)}
+        ${fld("dv-cond","Conditions (paiement, livraison, garantie)",`<textarea id="dv-cond" name="conditions" placeholder="Ex. 50 % à la commande, solde à l’installation…">${esc(d.conditions||"")}</textarea>`,true)}
+        ${fld("dv-notes","Note interne (non imprimée)",`<textarea id="dv-notes" name="notes" placeholder="Ex. remise validée par Abdelhamid…">${esc(d.notes||"")}</textarea>`,true)}
+      </div>
+      <dl class="dv-tot" id="dv-tot" aria-live="polite"></dl>
+    </div>
+    <label class="dv-sync" id="dv-sync-wrap"><input type="checkbox" id="dv-sync" checked> Mettre à jour le montant de l’opportunité avec le total HT</label>
+    <div id="merr" class="field-err" aria-live="polite" style="margin-top:10px"></div>
+    <div id="mconfirm" class="banner warn" hidden><div style="flex:1"><b>Abandonner la saisie ?</b><span>Les informations non enregistrées seront perdues.</span><div class="tools" style="margin-top:10px"><button type="button" class="btn small" id="mkeep">Continuer la saisie</button><button type="button" class="btn small bad" id="mdrop">Abandonner</button></div></div></div>
+    <div class="form-actions"><button type="button" class="btn" id="mcancel">Annuler</button><button type="button" class="btn" id="dv-save-print">Enregistrer et imprimer</button><button type="submit" class="btn primary" id="msubmit">Enregistrer le devis</button></div>
+  </form></div>`;
+  const form=$("#mform"); trapFocus(form);
+  const compteByLabel = new Map(state.comptes.map(c=>[compteLabel(c),c.id]));
+  const fillOpps = ()=>{
+    const ops = state.opportunites.filter(o=>o.compte_id===compteId && (o.issue==="en_cours"||o.id===(d.opportunite_id||preset.opp)));
+    $("#dv-opp").innerHTML = `<option value="">Aucune</option>` + ops.map(o=>`<option value="${o.id}" ${o.id===(d.opportunite_id||preset.opp)?"selected":""}>${esc(o.titre)}</option>`).join("");
+    $("#dv-sync-wrap").hidden = !$("#dv-opp").value;
+  };
+  fillOpps();
+  $("#dv-opp").addEventListener("change",()=>{ $("#dv-sync-wrap").hidden=!$("#dv-opp").value; });
+  if(!c0) $("#dv-compte").addEventListener("change",e=>{ compteId = compteByLabel.get(e.target.value)||""; fillOpps(); const c=byId(state.comptes,compteId); if(c&&c.commercial_id) $("#dv-com").value=c.commercial_id; });
+
+  const renderLines = ()=>{
+    $("#dv-body").innerHTML = lignes.map((l,i)=>`<tr data-i="${i}">
+      <td><select aria-label="Machine, ligne ${i+1}" data-f="produit_id">${prodOpts(l.produit_id)}</select>
+          <input aria-label="Désignation, ligne ${i+1}" data-f="designation" value="${esc(l.designation)}" placeholder="Désignation…" autocomplete="off" style="margin-top:6px"></td>
+      <td><input aria-label="Quantité, ligne ${i+1}" data-f="quantite" type="number" inputmode="decimal" min="1" step="1" value="${l.quantite}" class="num"></td>
+      <td><input aria-label="Prix unitaire HT, ligne ${i+1}" data-f="prix_unitaire_mad" type="number" inputmode="decimal" min="0" step="100" value="${l.prix_unitaire_mad||""}" placeholder="0" class="num"></td>
+      <td><input aria-label="Remise en %, ligne ${i+1}" data-f="remise_pct" type="number" inputmode="decimal" min="0" max="100" step="0.5" value="${l.remise_pct||""}" placeholder="0" class="num"></td>
+      <td class="num" data-total>${mad2((+l.quantite||0)*(+l.prix_unitaire_mad||0)*(1-(+l.remise_pct||0)/100))}</td>
+      <td><button type="button" class="btn small icon" data-del="${i}" aria-label="Retirer la ligne ${i+1}" ${lignes.length<2?"disabled":""}>×</button></td></tr>`).join("");
+    renderTot();
+  };
+  const renderTot = ()=>{
+    const t = devisTotaux(lignes, $("#dv-rg").value, $("#dv-tva").value);
+    $("#dv-tot").innerHTML = `${t.remiseLignes?`<dt>Total brut HT</dt><dd>${mad2(t.brut)}</dd><dt>Remises lignes</dt><dd>− ${mad2(t.remiseLignes)}</dd>`:""}
+      <dt>Sous-total HT</dt><dd>${mad2(t.sousTotal)}</dd>
+      ${t.remiseGlobale?`<dt>Remise globale (${+$("#dv-rg").value} %)</dt><dd>− ${mad2(t.remiseGlobale)}</dd>`:""}
+      <dt><b>Total HT</b></dt><dd><b>${mad2(t.ht)}</b></dd><dt>TVA ${+$("#dv-tva").value||0} %</dt><dd>${mad2(t.tva)}</dd>
+      <dt class="ttc">Total TTC</dt><dd class="ttc">${mad2(t.ttc)} MAD</dd>
+      ${t.remiseLignes+t.remiseGlobale>0?`<dt class="hint">Remise totale</dt><dd class="hint">${mad2(t.remiseLignes+t.remiseGlobale)} (${(t.brut?Math.round((t.remiseLignes+t.remiseGlobale)*1000/t.brut)/10:0).toLocaleString("fr-FR")} %)</dd>`:""}`;
+  };
+  $("#dv-body").addEventListener("input",e=>{
+    const f=e.target.dataset.f, tr=e.target.closest("tr"); if(!f||!tr) return; const i=+tr.dataset.i;
+    if(f==="produit_id") return;
+    lignes[i][f] = f==="designation" ? e.target.value : e.target.value;
+    tr.querySelector("[data-total]").textContent = mad2((+lignes[i].quantite||0)*(+lignes[i].prix_unitaire_mad||0)*(1-(+lignes[i].remise_pct||0)/100));
+    renderTot();
+  });
+  $("#dv-body").addEventListener("change",e=>{
+    if(e.target.dataset.f!=="produit_id") return; const i=+e.target.closest("tr").dataset.i;
+    const p=byId(state.produits,e.target.value);
+    lignes[i] = p ? {...ligneProduit(p), quantite:lignes[i].quantite||1, remise_pct:lignes[i].remise_pct||0} : {...lignes[i], produit_id:""};
+    renderLines(); const s=$(`#dv-body tr[data-i="${i}"] [data-f="prix_unitaire_mad"]`); if(s) s.focus();
+  });
+  $("#dv-body").addEventListener("click",e=>{ const b=e.target.closest("[data-del]"); if(!b||b.disabled) return; lignes.splice(+b.dataset.del,1); dirty=true; renderLines(); });
+  $("#dv-add").onclick=()=>{ lignes.push({produit_id:"",designation:"",quantite:1,prix_unitaire_mad:0,remise_pct:0}); dirty=true; renderLines(); $(`#dv-body tr[data-i="${lignes.length-1}"] select`).focus(); };
+  ["#dv-rg","#dv-tva"].forEach(s=>$(s).addEventListener("input",renderTot));
+  form.addEventListener("input",()=>{dirty=true;}); form.addEventListener("change",()=>{dirty=true;});
+  $("#mx").onclick=()=>closeModal(); $("#mcancel").onclick=()=>closeModal();
+  $("#mkeep").onclick=()=>{ $("#mconfirm").hidden=true; };
+  $("#mdrop").onclick=()=>closeModal(true);
+  $("#ov").addEventListener("click",e=>{ if(e.target.id==="ov") closeModal(); });
+  renderLines();
+
+  const save = async (printWin)=>{
+    $("#merr").textContent="";
+    const err = !compteId ? "Choisissez le client dans la liste." :
+      lignes.some(l=>!String(l.designation||"").trim()) ? "Chaque ligne a besoin d’une désignation." :
+      lignes.some(l=>!(+l.quantite>0)) ? "Les quantités doivent être supérieures à 0." :
+      lignes.some(l=>+l.remise_pct<0||+l.remise_pct>100) || +$("#dv-rg").value<0 || +$("#dv-rg").value>100 ? "Les remises vont de 0 à 100 %." : null;
+    if(err){ $("#merr").textContent=err; if(printWin) printWin.close(); if(!compteId) $("#dv-compte").focus(); return; }
+    const b=$("#msubmit"); b.disabled=true; b.setAttribute("aria-busy","true"); $("#dv-save-print").disabled=true;
+    const payload = { id:d.id||null, compte_id:compteId, opportunite_id:$("#dv-opp").value||null, commercial_id:$("#dv-com").value||null,
+      remise_pct:$("#dv-rg").value||0, tva_pct:$("#dv-tva").value===""?20:$("#dv-tva").value, validite_jours:$("#dv-val").value||30,
+      conditions:$("#dv-cond").value.trim(), notes:$("#dv-notes").value.trim(), maj_opportunite: !!$("#dv-opp").value && $("#dv-sync").checked,
+      lignes: lignes.map(l=>({produit_id:l.produit_id||null, designation:String(l.designation).trim(), quantite:+l.quantite||1, prix_unitaire_mad:+l.prix_unitaire_mad||0, remise_pct:+l.remise_pct||0})) };
+    setStatus("busy","Enregistrement…");
+    const { data:id, error } = await sb.rpc("enregistrer_devis", { p: payload });
+    if(error){ setStatus("bad","Échec"); const [t,dd]=errorCopy(error); $("#merr").textContent=t+" — "+dd; b.disabled=false; b.removeAttribute("aria-busy"); $("#dv-save-print").disabled=false; if(printWin) printWin.close(); return; }
+    toast("Devis enregistré"); closeModal(true); await load();
+    if(printWin){ const dv=byId(state.devis,id); if(dv) imprimerDevis(dv, printWin); else printWin.close(); }
+  };
+  form.addEventListener("submit",e=>{ e.preventDefault(); save(null); });
+  $("#dv-save-print").onclick=()=>{ const w=window.open("","_blank"); save(w); };
+  const first=c0?$("#dv-body select"):$("#dv-compte"); if(first && window.matchMedia("(pointer:fine)").matches) first.focus();
+}
+function ligneProduit(p){ return p ? {produit_id:p.id, designation:p.nom+(p.reference?" ("+p.reference+")":""), quantite:1, prix_unitaire_mad:+p.prix_catalogue_mad||0, remise_pct:0} : {produit_id:"",designation:"",quantite:1,prix_unitaire_mad:0,remise_pct:0}; }
+
+async function setDevisStatut(id, statut){
+  const d=byId(state.devis,id); if(!d||!DEVIS_STATUTS.includes(statut)) return;
+  const patch={statut}; if(statut==="envoye" && !d.date_envoi) patch.date_envoi=localISO();
+  const ok = await write(upd("devis",id,patch),"Devis : "+DEVIS_LABEL[statut]);
+  if(ok && (statut==="signe"||statut==="accepte")){
+    const o=byId(state.opportunites,d.opportunite_id);
+    if(o && o.issue==="en_cours") devisBanner = {opp:o.id, devis:id};
+    render();
+  }
+}
+let devisBanner=null, devisFilt="";
+
+function viewDevis(v){
+  const nf=new Intl.NumberFormat("fr-FR");
+  const list=state.devis.filter(d=>!devisFilt||d.statut===devisFilt);
+  const enAttente=state.devis.filter(d=>d.statut==="envoye");
+  const mois=localISO().slice(0,7);
+  const signesMois=state.devis.filter(d=>(d.statut==="signe"||d.statut==="accepte")&&String(d.updated_at||"").slice(0,7)===mois);
+  const ttc=d=>r2((+d.montant_mad||0)*(1+(+d.tva_pct||0)/100));
+  const ob=devisBanner&&byId(state.opportunites,devisBanner.opp);
+  v.innerHTML=`<div class="section-head"><div><h2>Devis</h2><p class="hint">${nf.format(enAttente.length)} envoyé${enAttente.length>1?"s":""} en attente (${madShort(enAttente.reduce((s,d)=>s+(+d.montant_mad||0),0))} MAD HT) · ${signesMois.length} accepté${signesMois.length>1?"s":""} ou signé${signesMois.length>1?"s":""} ce mois</p></div>
+    <div class="tools"><button class="btn primary" data-act="new-devis" ${state.comptes.length?"":"disabled"}>+ Devis</button></div></div>
+  ${ob&&ob.issue==="en_cours"?`<div class="banner" style="margin-bottom:16px"><div style="flex:1"><b>Devis accepté pour « ${esc(ob.titre)} »</b><span>Marquer l’opportunité comme gagnée ?</span><div class="tools" style="margin-top:10px"><button class="btn small ok" data-act="won" data-id="${ob.id}">Marquer gagnée</button><button class="btn small" data-act="dismiss-banner">Plus tard</button></div></div></div>`:""}
+  <div class="panel">
+    <div class="filters" style="margin-bottom:12px"><select id="f-dstat" aria-label="Statut du devis"><option value="">Tous les devis</option>${DEVIS_STATUTS.map(s=>`<option value="${s}" ${devisFilt===s?"selected":""}>${DEVIS_LABEL[s]}</option>`).join("")}</select></div>
+    ${list.length?`<div class="tbl-wrap"><table><thead><tr><th>N°</th><th>Client</th><th>Opportunité</th><th class="num">Total HT</th><th class="num">Total TTC</th><th>Statut</th><th>Date</th><th><span class="sr-only">Actions</span></th></tr></thead><tbody>
+    ${list.map(d=>{const c=byId(state.comptes,d.compte_id), o=byId(state.opportunites,d.opportunite_id);
+      return `<tr><td translate="no" style="font-family:var(--f-mono);font-size:12px;white-space:nowrap">${esc(devisNum(d))}</td><td><b>${esc(c?c.nom:"—")}</b><div class="hint">${esc(c&&c.ville||"")}</div></td><td>${esc(o?o.titre:"—")}</td>
+        <td class="num">${mad(d.montant_mad)}</td><td class="num">${mad(ttc(d))}</td>
+        <td><select data-dstat="${d.id}" aria-label="Statut du devis ${esc(devisNum(d))}" class="dstat ${DEVIS_PILL[d.statut]||""}">${DEVIS_STATUTS.map(s=>`<option value="${s}" ${d.statut===s?"selected":""}>${DEVIS_LABEL[s]}</option>`).join("")}</select></td>
+        <td style="white-space:nowrap">${fmtDate(d.date_envoi||d.created_at)}</td>
+        <td><div class="tools" style="flex-wrap:nowrap"><button class="btn small" data-act="edit-devis" data-id="${d.id}">Modifier</button><button class="btn small" data-act="print-devis" data-id="${d.id}">Imprimer / PDF</button></div></td></tr>`;}).join("")}
+    </tbody></table></div>`:`<div class="empty"><h3>${state.devis.length?"Aucun devis avec ce statut":"Aucun devis pour l’instant"}</h3><p>Créez un devis ici, depuis une fiche client ou depuis une opportunité du pipeline.</p></div>`}
+  </div>`;
+  $("#f-dstat").addEventListener("change",e=>{ devisFilt=e.target.value; viewDevis(v); });
+  v.querySelectorAll("[data-dstat]").forEach(s=>s.addEventListener("change",e=>setDevisStatut(e.target.dataset.dstat,e.target.value)));
+}
+
+function imprimerDevis(d, w){
+  w = w || window.open("","_blank");
+  if(!w){ toast("Autorisez les fenêtres pop-up pour imprimer le devis."); return; }
+  const c=byId(state.comptes,d.compte_id)||{}, com=byId(state.equipe,d.commercial_id), lignes=lignesDe(d.id);
+  const contact=state.contacts.find(x=>x.compte_id===c.id);
+  const t=devisTotaux(lignes,d.remise_pct,d.tva_pct);
+  const emis=new Date(d.created_at||Date.now()), valid=new Date(emis.getTime()+(+d.validite_jours||30)*864e5);
+  const fd=x=>x.toLocaleDateString("fr-FR",{day:"2-digit",month:"long",year:"numeric"});
+  const anyRem=lignes.some(l=>+l.remise_pct>0);
+  const legal=[SOCIETE.ice&&"ICE "+SOCIETE.ice, SOCIETE.rc&&"RC "+SOCIETE.rc, SOCIETE.if_&&"IF "+SOCIETE.if_, SOCIETE.patente&&"Patente "+SOCIETE.patente, SOCIETE.cnss&&"CNSS "+SOCIETE.cnss].filter(Boolean).join(" · ");
+  const coord=[SOCIETE.adresse, SOCIETE.telephone, SOCIETE.email, SOCIETE.site].filter(Boolean).join(" · ");
+  const html=`<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>${esc(devisNum(d))} — ${esc(c.nom||"Devis")}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..600&family=Cormorant+Garamond:wght@400&family=Instrument+Sans:wght@400..600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+@page{size:A4;margin:16mm 14mm}
+*{box-sizing:border-box}html{color-scheme:light}
+body{margin:0;color:#1D1B26;background:#fff;font:10.5pt/1.5 "Instrument Sans",system-ui,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.page{max-width:182mm;margin:0 auto;padding:24px 16px}
+@media print{.page{padding:0}.noprint{display:none}}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:24px}
+.mark{font-family:"Cormorant Garamond","Times New Roman",serif;font-size:24pt;letter-spacing:.22em;line-height:1;background:linear-gradient(90deg,#00BCD4,#7B61FF,#E91E8C,#FF5722,#FFC107);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tag{font:7pt "JetBrains Mono",monospace;letter-spacing:.28em;color:#5D5B6B;text-transform:uppercase;margin-top:4px}
+.doc{text-align:right}
+.doc h1{font-family:"Archivo","Arial Narrow",sans-serif;font-stretch:118%;font-weight:500;text-transform:uppercase;letter-spacing:-.03em;font-size:26pt;line-height:.9;margin:0}
+.lab{font:7.5pt "JetBrains Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:#5D5B6B}
+.mono{font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums}
+.sig{height:1px;background:linear-gradient(90deg,#00BCD4,#7B61FF,#E91E8C,#FF5722,#FFC107);margin:16px 0 18px}
+.parties{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+.box{border:1px solid rgba(29,27,38,.12);border-radius:14px;padding:12px 14px}
+.box b{font-size:11.5pt}
+table{width:100%;border-collapse:collapse}
+th{font:7.5pt "JetBrains Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:#5D5B6B;text-align:left;font-weight:400;padding:8px 6px;border-bottom:1px solid rgba(29,27,38,.25)}
+td{padding:9px 6px;border-bottom:1px solid rgba(29,27,38,.08);vertical-align:top}
+.num{text-align:right;font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr{break-inside:avoid}
+.sum{display:grid;grid-template-columns:1fr auto;gap:4px 24px;margin:14px 0 0 auto;max-width:300px}
+.sum dt{color:#5D5B6B}.sum dd{margin:0;text-align:right;font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums}
+.sum .ttc{font-weight:600;color:#1D1B26;font-size:12pt;padding-top:6px;border-top:1px solid rgba(29,27,38,.25)}
+.lettres{margin-top:16px;padding:10px 14px;border-radius:12px;background:#ECEEF3}
+.cond{margin-top:16px;white-space:pre-line}
+.foot{margin-top:28px;display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:end}
+.signbox{border:1px dashed rgba(29,27,38,.3);border-radius:14px;height:90px;padding:10px 14px}
+.legal{margin-top:22px;font-size:8pt;color:#5D5B6B;text-align:center}
+.noprint{display:flex;gap:8px;justify-content:flex-end;margin-bottom:16px}
+.noprint button{font:inherit;padding:8px 16px;border-radius:999px;border:1px solid rgba(29,27,38,.2);background:#1D1B26;color:#fff;cursor:pointer}
+</style></head><body><div class="page">
+<div class="noprint"><button onclick="window.print()">Imprimer / Enregistrer en PDF</button></div>
+<div class="top"><div><div class="mark" translate="no">CELLULIFT</div>
+<svg width="160" height="18" viewBox="0 0 160 20" aria-hidden="true"><defs><linearGradient id="g" x1="0" x2="160" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#00BCD4"/><stop offset=".25" stop-color="#7B61FF"/><stop offset=".5" stop-color="#E91E8C"/><stop offset=".75" stop-color="#FF5722"/><stop offset="1" stop-color="#FFC107"/></linearGradient></defs><path d="M0 10 H50 L58 10 L64 2 L72 18 L80 6 L86 10 H100 L106 10 L112 4 L118 16 L124 10 H160" fill="none" stroke="url(#g)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<div class="tag">Metamorphosis Technology</div></div>
+<div class="doc"><h1>Devis</h1><div class="mono" style="margin-top:8px">${esc(devisNum(d))}</div><div style="margin-top:4px">Émis le ${fd(emis)}</div><div>Valable jusqu’au ${fd(valid)}</div></div></div>
+<div class="sig"></div>
+<div class="parties"><div class="box"><div class="lab">Émetteur</div><b translate="no">${esc(SOCIETE.nom)}</b><div>${esc(SOCIETE.activite)}</div>${coord?`<div>${esc(coord)}</div>`:""}${com?`<div style="margin-top:6px">Votre interlocuteur : ${esc(com.nom)}${com.email?" · "+esc(com.email):""}</div>`:""}</div>
+<div class="box"><div class="lab">Client</div><b>${esc(c.nom||"")}</b>${c.specialite?`<div>${esc(c.specialite)}</div>`:""}${contact&&[contact.prenom,contact.nom].join(" ").trim()!==c.nom?`<div>À l’attention de ${esc([contact.prenom,contact.nom].filter(Boolean).join(" "))}</div>`:""}<div>${esc([c.adresse,c.ville].filter(Boolean).join(", "))}</div><div>${esc([c.telephone,c.email].filter(Boolean).join(" · "))}</div></div></div>
+<table><thead><tr><th>Désignation</th><th class="num">Qté</th><th class="num">PU HT</th>${anyRem?`<th class="num">Remise</th>`:""}<th class="num">Total HT</th></tr></thead><tbody>
+${lignes.map(l=>`<tr><td>${esc(l.designation)}</td><td class="num">${+l.quantite}</td><td class="num">${mad2(l.prix_unitaire_mad)}</td>${anyRem?`<td class="num">${+l.remise_pct?(+l.remise_pct)+" %":"—"}</td>`:""}<td class="num">${mad2((+l.quantite)*(+l.prix_unitaire_mad)*(1-(+l.remise_pct)/100))}</td></tr>`).join("")}
+</tbody></table>
+<dl class="sum">${t.remiseLignes?`<dt>Total brut HT</dt><dd>${mad2(t.brut)}</dd><dt>Remises</dt><dd>− ${mad2(t.remiseLignes)}</dd>`:""}<dt>Sous-total HT</dt><dd>${mad2(t.sousTotal)}</dd>${t.remiseGlobale?`<dt>Remise ${+d.remise_pct} %</dt><dd>− ${mad2(t.remiseGlobale)}</dd>`:""}<dt>Total HT</dt><dd>${mad2(t.ht)}</dd><dt>TVA ${+d.tva_pct} %</dt><dd>${mad2(t.tva)}</dd><dt class="ttc">Total TTC</dt><dd class="ttc">${mad2(t.ttc)} MAD</dd></dl>
+<div class="lettres">Arrêté le présent devis à la somme de <b>${esc(enLettres(t.ttc))}</b> toutes taxes comprises.</div>
+${d.conditions?`<div class="cond"><div class="lab">Conditions</div>${esc(d.conditions)}</div>`:""}
+<div class="foot"><div></div><div><div class="lab">Bon pour accord — date, cachet et signature du client</div><div class="signbox"></div></div></div>
+${legal||SOCIETE.rib?`<div class="legal">${esc(SOCIETE.nom)}${legal?" · "+esc(legal):""}${SOCIETE.rib?`<br>RIB ${esc(SOCIETE.rib)}${SOCIETE.banque?" · "+esc(SOCIETE.banque):""}`:""}</div>`:""}
+</div><script>(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>setTimeout(()=>window.print(),300));<\/script></body></html>`;
+  w.document.open(); w.document.write(html); w.document.close();
+}
 
 /* ---- Import Excel (ancien CRM) ---- */
 function loadScript(src){ return new Promise((ok,ko)=>{ if(document.querySelector(`script[src="${src}"]`)) return ok(); const el=document.createElement("script"); el.src=src; el.onload=ok; el.onerror=()=>ko(new Error("Impossible de charger "+src+". Vérifiez la connexion puis réessayez.")); document.head.appendChild(el); }); }
