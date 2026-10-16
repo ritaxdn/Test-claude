@@ -2137,14 +2137,15 @@ async function exportRep(kind){
 
 /* ---- Historique & commentaires ---- */
 function histItem(h){
-  const sup=h.action==="suppression";
+  const sup=h.action==="suppression", old=h.table_name==="ancien_crm";
+  if(old) return `<div class="hist"><div class="when">${new Date(h.created_at).toLocaleDateString("fr-FR",{day:"2-digit",month:"short",year:"2-digit"})}</div><div><div>${esc(h.resume)}</div><div class="hint"><span class="pill">Ancien CRM</span> ${h.auteur_id?esc(nomMembre(h.auteur_id)):""}</div></div></div>`;
   return `<div class="hist${sup?" del":""}"><div class="when">${new Date(h.created_at).toLocaleDateString("fr-FR",{day:"2-digit",month:"short"})}<br>${new Date(h.created_at).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}</div>
    <div><div>${esc(h.resume)}</div><div class="hint">${h.auteur_id?esc(nomMembre(h.auteur_id)):"Automatique (import, classement)"}${sup?` · <span class="pill bad">Suppression</span>`:""}</div></div></div>`;
 }
 async function loadHistorique(el, col, id, limit){
   el.innerHTML=`<div class="skeleton" style="height:40px"></div>`;
   let q=sb.from("historique").select("*").order("created_at",{ascending:false}).limit(limit||200);
-  if(col) q=q.eq(col,id); else q=q.not("auteur_id","is",null);
+  if(col) q=q.eq(col,id); else q=q.not("auteur_id","is",null).neq("table_name","ancien_crm");
   const {data,error}=await q;
   if(error){ el.innerHTML=`<p class="hint">Historique indisponible : ${esc(errorCopy(error)[1])}</p>`; return; }
   el.innerHTML=data.length?`<div class="feed">${data.map(histItem).join("")}</div>`:`<p class="hint">Aucune action enregistrée pour l’instant. Chaque création, modification et suppression apparaîtra ici.</p>`;
@@ -2774,9 +2775,25 @@ function openImport(){
     const files=[...e.target.files]; plan=null; go.disabled=true; if(!files.length){ out.innerHTML=""; return; }
     out.innerHTML=`<p class="hint">Lecture de ${files.length} fichier${files.length>1?"s":""}…</p>`;
     try{
-      await loadScript("https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"); await loadScript("/crm/import.js?v=20261016-6");
+      await loadScript("https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"); await loadScript("/crm/import.js?v=20261016-7");
       if(!window.CRMImport||!CRMImport.mapExportCommercial||!CRMImport.readSheets) throw new Error("Une ancienne version de la page est encore chargée. Rechargez la page (Cmd + Maj + R sur Mac, Ctrl + Maj + R sur PC) puis recommencez.");
       const sheets=await CRMImport.readSheets(files,window.XLSX);
+      const c0=(sheets["Contacts"]||[])[0];
+      if(c0 && "legacy_id" in c0 && sheets["Opportunites"]){
+        plan=CRMImport.mapMigration(sheets,state.comptes); const st=plan.stats;
+        out.innerHTML=`<div class="panel" style="padding:16px">
+          <p style="margin:0 0 8px"><b>Migration complète de l’ancien CRM</b> (tous les commerciaux, les 4 sites) :</p>
+          <ul style="margin:0 0 8px;padding-left:18px">
+            <li><b>${nf.format(st.contacts)}</b> contacts${st.tests?` (${st.tests} fiches « Test » ignorées)`:""} : ceux qui existent déjà dans le CRM (même téléphone, ou même nom pour les fiches sans numéro) sont <b>complétés</b>, pas dupliqués</li>
+            <li><b>${nf.format(st.opps)}</b> opportunités, dont ${st.gagnees} gagnées et ${st.perdues} fermées ou annulées</li>
+            <li><b>${nf.format(st.acts)}</b> activités reliées à leur client et à leur opportunité, dont ${nf.format(st.aFaire)} encore à faire</li>
+            <li><b>${nf.format(st.coms)}</b> commentaires et <b>${nf.format(st.hist)}</b> lignes d’historique</li>
+            <li><b>${st.devis}</b> devis</li></ul>
+          <p class="hint" style="margin:0 0 4px">Les opportunités et activités déjà importées (anciens fichiers, export de Sofia) sont mises à jour au lieu d’être recopiées. Les dates d’origine sont conservées. Aucune notification n’est envoyée.</p>
+          <p class="hint" style="margin:0 0 4px">Les ${nf.format(st.aFaire)} tâches encore ouvertes arrivent chez leur commercial. Pour celles des commerciaux partis, utilise ensuite « Départ / transfert ».</p>
+          <p class="hint" style="margin:0">Compte 5 à 10 minutes. Garde la page ouverte ; si la connexion coupe, « Reprendre » continue sans doublon.</p></div>`;
+        go.textContent="Lancer la migration"; go.disabled=false; go.focus(); return;
+      }
       if(sheets["Contacts"] && Object.keys(sheets).some(n=>/activit/i.test(n))){
         plan=CRMImport.mapExportCommercial(sheets,state.comptes,state.equipe); const st=plan.stats;
         if(!(st.contacts+st.opps+st.acts+st.devis)){ out.innerHTML=`<div class="panel" style="padding:16px"><p style="margin:0"><b>Ce fichier est vide</b> : ses feuilles n’ont aucune ligne remplie. Rien n’a été importé. Vérifie dans l’ancien CRM que l’export a bien été fait pour le bon commercial et sur toute la période.</p></div>`; plan=null; go.disabled=true; return; }
@@ -2817,7 +2834,12 @@ function openImport(){
     const bar=document.createElement("div"); bar.innerHTML=`<div class="prob" style="height:6px;margin-top:12px"><i id="imp-bar" style="width:0%"></i></div><p class="hint" id="imp-msg">Import en cours… Gardez cette fenêtre ouverte.</p>`; out.appendChild(bar);
     try{
       const prog=(d,t)=>{ $("#imp-bar").style.width=Math.round(d*100/t)+"%"; $("#imp-msg").textContent=`Import en cours… ${nf.format(d)} / ${nf.format(t)}`; };
-      if(plan.kind==="export"){
+      if(plan.kind==="migration"){
+        const ETAP={equipe:"équipe",comptes:"clients",opps:"opportunités",acts:"activités",devis:"devis",coms:"commentaires",hist:"historique"};
+        const res=await CRMImport.runMigration(sb,plan,(d,t,k)=>{ $("#imp-bar").style.width=Math.round(d*100/t)+"%"; $("#imp-msg").textContent=`Migration en cours (${ETAP[k]||k})… ${nf.format(d)} / ${nf.format(t)}. Garde cette fenêtre ouverte.`; });
+        const g=k=>nf.format(res[k]||0);
+        busy=false; importBusy=false; $("#imp-msg").innerHTML=`<b>Migration terminée.</b> Clients : ${g("comptes.nouveaux")} créés, ${g("comptes.completes")} complétés · Opportunités : ${g("opps.nouvelles")} créées, ${g("opps.completees")} mises à jour · Activités : ${g("acts.nouvelles")} créées, ${g("acts.completees")} mises à jour · ${g("coms.ajoutes")} commentaires · ${g("hist.ajoutees")} lignes d’historique · Devis : ${g("devis.nouveaux")} créés, ${g("devis.completes")} mis à jour${res["equipe.nouveaux"]?` · ${res["equipe.nouveaux"]} membres ajoutés sans accès`:""}.`;
+      } else if(plan.kind==="export"){
         const res=await CRMImport.runExportCommercial(sb,plan,prog);
         busy=false; importBusy=false; $("#imp-msg").textContent=`Terminé : ${nf.format(res.contacts)} contacts, ${nf.format(res.opps)} opportunités, ${nf.format(res.acts)} activités et ${res.devis} devis ajoutés${res.devisSansClient?` (${res.devisSansClient} devis sans client retrouvé)`:""}.`;
       } else if(plan.kind==="opportunites"){

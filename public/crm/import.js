@@ -468,5 +468,123 @@
     return { contacts: r1.created, opps, acts, devis, devisSansClient: plan.devis.filter((d) => !idByRef.get(d.tel)).length };
   }
 
-  root.CRMImport = { mapRows, readFiles, run, readSheets, mapOpportunites, runOpportunites, mapExportCommercial, runExportCommercial, _test: { realPhone, normPhone, normCity, segmentOf, nameCase, parseCreator } };
+  /* ---------- Migration complète de l'ancien CRM (fichier « Cellulift_CRM_Migration_COMPLET ») ---------- */
+  const TEST_RE = /^\s*(test|tes|test v)\s*$/i;
+  const GENERIQUE = /^(visite?r? (de )?te?rr?ai?n|appel+e? (t[eé]l[eé]phonique)?|app pour dmd de rdv au showroom|prospection|rendez-vous au show-?room)$/;
+  // « août 31, 2026 10:37:12 » (export d'un commercial) → « 2026-08-31 10:37:12 »
+  const dateSec = (v) => { const m = strip(clean(v)).match(/^([a-z]+)\.?\s+(\d{1,2}),\s*(\d{4})\s+(\d{1,2}):(\d{2}):(\d{2})/); if (!m || !MOIS[m[1]]) return null; const p2 = (n) => String(n).padStart(2, "0"); return `${m[3]}-${p2(MOIS[m[1]])}-${p2(m[2])} ${p2(m[4])}:${m[5]}:${m[6]}`; };
+  function typeAct(libelle, type) {
+    const l = strip(clean(libelle)), t = strip(clean(type));
+    if (/whats/.test(l)) return "whatsapp";
+    if (/rendez|rdv|show/.test(l)) return "rdv";
+    if (/visit|terrain|terain/.test(l)) return "visite";
+    if (/appel|tel|phone/.test(l)) return "appel";
+    if (/demo/.test(l)) return "demo";
+    if (/formation/.test(l)) return "formation";
+    return t.startsWith("appel") ? "appel" : t.startsWith("ev") ? "evenement" : "tache";
+  }
+  const fr = (v) => { const t = clean(v); const m = t.match(/^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}:\d{2}))?/); return m ? `${m[3]}/${m[2]}/${m[1]}${m[4] ? " " + m[4] : ""}` : t; };
+
+  function mapMigration(sheets, comptes) {
+    const S = (n) => sheets[n] || [];
+    const contactsRaw = S("Contacts"), tests = new Set();
+    const comptesRows = [];
+    for (const r of contactsRaw) {
+      const nom = nameCase(r.nom), prenom = nameCase(r.prenom), titre = clean(r.titre);
+      if (TEST_RE.test(nom) || TEST_RE.test(prenom) || TEST_RE.test(nom + " " + prenom)) { tests.add(clean(r.legacy_id)); continue; }
+      const isDr = /^(dr|prof|pr)\.?$/i.test(titre) && !/^(dr|pr|prof)\b/i.test(nom);
+      const display = clean((isDr ? (titre.toLowerCase().startsWith("pr") ? "Pr " : "Dr ") : "") + [nom, prenom].filter(Boolean).join(" "));
+      const tel = normPhone(r.telephone_normalise || r.telephone), telAff = normPhone(r.telephone);
+      const { ville, quartier } = normCity(r.ville);
+      const spec = clean(r.specialite), unite = clean(r.unite_commerciale), service = clean(r.service);
+      comptesRows.push({ legacy: clean(r.legacy_id), nom: display || fmtPhone(telAff) || "Sans nom", tel: realPhone(tel) ? tel : "", telephone: telAff ? fmtPhone(telAff) : "",
+        email: clean(r.email).toLowerCase(), site_web: clean(r.site_web), adresse: [clean(r.adresse), quartier].filter(Boolean).join(", "), ville: ville || "",
+        specialite: spec ? spec[0].toUpperCase() + spec.slice(1) : "", source: normSource(r.source) || "", unite: unite || service, statut: statutOf(r.type_contact),
+        segment: segmentOf(unite, service, spec), commercial: clean(r.commercial), c_nom: nom, c_prenom: prenom });
+    }
+    const ETP = { qualification: "Qualification", proposition: "Proposition", negociation: "Negociation", fermeture: "Fermeture" };
+    const opps = S("Opportunites").filter((r) => !tests.has(clean(r.contact_legacy_id)) && !TEST_RE.test(clean(r.titre))).map((r) => {
+      const st = strip(clean(r.statut));
+      const issue = /gagn/.test(st) ? "gagnee" : /ferm|annul|perdu/.test(st) ? "perdue" : "en_cours";
+      const etape = issue === "gagnee" ? "Fermeture" : ETP[strip(clean(r.etape_pipeline))] || "Qualification";
+      const devise = clean(r.devise) || "MAD", m = num(r.montant_reel) || num(r.montant_estime);
+      const titre = clean(r.titre);
+      const desc = [clean(r.note), clean(r.source) && "Source : " + clean(r.source), [clean(r.business_unit), clean(r.service)].filter(Boolean).join(" · "),
+        m && devise !== "MAD" ? `Montant dans l’ancien CRM : ${m} ${devise}` : "", clean(r.pieces_jointes) && "Pièces jointes (ancien CRM) : " + clean(r.pieces_jointes),
+        "Réf. ancien CRM : " + (clean(r.reference) || clean(r.legacy_id)).replace(/\s+/g, "")].filter(Boolean).join("\n");
+      return { legacy: clean(r.legacy_id), num: clean(r.legacy_num), contact: clean(r.contact_legacy_id),
+        titre: !titre || GENERIQUE.test(strip(titre)) ? "" : (titre.length > 90 ? titre.slice(0, 87).trim() + "…" : titre),
+        etape, issue, raison: issue === "perdue" ? (/annul/.test(st) ? "Annulée (ancien CRM)" : "Fermée (ancien CRM)") : "",
+        montant: m && devise === "MAD" ? String(m) : "", proba: issue === "gagnee" ? "100" : (num(r.probabilite_pct) != null ? String(Math.round(num(r.probabilite_pct))) : ""),
+        echeance: clean(r.date_echeance), description: desc, commercial: clean(r.commercial), cree: clean(r.date_creation), modifie: clean(r.date_modification) };
+    });
+    const acts = S("Activites").filter((r) => clean(r.legacy_id) && !tests.has(clean(r.contact_legacy_id))).map((r) => {
+      const st = strip(clean(r.statut));
+      return { legacy: clean(r.legacy_id), opp: clean(r.opportunite_legacy_id), contact: clean(r.contact_legacy_id), type: typeAct(r.libelle, r.type),
+        label: clean(r.libelle), statut: /termin/.test(st) ? "fait" : "a_faire", debut: clean(r.date_debut), fin: clean(r.date_fin), cree: clean(r.date_creation), modifie: clean(r.date_modification),
+        createur: clean(r.createur), responsable: clean(r.responsable), _k: clean(r.date_creation).slice(0, 19) };
+    });
+    const coms = S("Commentaires").filter((r) => clean(r.commentaire) && !tests.has(clean(r.contact_legacy_id))).map((r) => ({
+      ref: clean(r.opportunite_legacy_id) + "|" + clean(r.ordre), opp: clean(r.opportunite_legacy_id), contact: clean(r.contact_legacy_id), auteur: clean(r.auteur), date: clean(r.date), texte: String(r.commentaire).trim() }));
+    const hist = S("Historique_actions").filter((r) => !tests.has(clean(r.contact_legacy_id))).map((r) => {
+      const ech = clean(r.date_echeance_ou_appel), resp = clean(r.responsable), aut = clean(r.auteur);
+      const resume = [`${clean(r.action) || "Action"} — ${clean(r.evenement) || "modifié"}`, clean(r.statut), ech && "échéance " + fr(ech), resp && resp !== aut ? "pour " + nameCase(resp) : "", clean(r.autres)].filter(Boolean).join(" · ");
+      return { ref: "H|" + clean(r.opportunite_legacy_id) + "|" + clean(r.ordre_affichage), opp: clean(r.opportunite_legacy_id), contact: clean(r.contact_legacy_id), auteur: aut,
+        evenement: clean(r.evenement), resume, quand: clean(r.debut) || ech,
+        details: { action: clean(r.action), evenement: clean(r.evenement), statut: clean(r.statut), echeance: ech, debut: clean(r.debut), fin: clean(r.fin), responsable: resp, autres: clean(r.autres) } };
+    });
+    const DV = { envoye: "envoye", brouillon: "brouillon", accepte: "accepte", refuse: "refuse", negociation: "envoye", signe: "signe" };
+    const devis = S("Devis").filter((r) => clean(r.numero) && !tests.has(clean(r.contact_legacy_id))).map((r) => ({
+      numero: clean(r.numero), contact: clean(r.contact_legacy_id), statut: DV[strip(clean(r.statut)).replace(/[^a-z]/g, "")] || "brouillon",
+      ht: num(r.total_ht) != null ? String(num(r.total_ht)) : "", tva: num(r.tva_pct) != null ? String(num(r.tva_pct)) : "", remise: num(r.remise_pct) != null ? String(num(r.remise_pct)) : "",
+      validite: num(r.validite_jours) != null ? String(Math.round(num(r.validite_jours))) : "", date: clean(r.date_devis), emission: clean(r.date_emission), pdf: clean(r.pdf_url),
+      commercial: clean(r.commercial),
+      notes: ["Repris de l’ancien CRM", clean(r.produit) && clean(r.produit) !== "N/A" ? "Produit : " + clean(r.produit) : "", clean(r.devise) && clean(r.devise) !== "MAD" ? "Devise : " + clean(r.devise) : "",
+        clean(r.note), clean(r.pieces_jointes) && "Pièces jointes : " + clean(r.pieces_jointes)].filter(Boolean).join("\n") }));
+    const membres = S("Commerciaux").filter((r) => clean(r.commercial) && ["contacts", "opportunites", "activites_creees", "commentaires", "devis"].some((k) => num(r[k]) > 0)).map((r) => {
+      const email = clean(r.email).toLowerCase(); let nom = nameCase(r.commercial);
+      if (/^admin$/i.test(nom)) nom = "Admin (" + email.split("@")[0] + ")";
+      return { nom, email, role: /admin|directeur/i.test(clean(r.role)) ? "superviseur" : "commercial" };
+    });
+    const telsExist = new Set(); comptes.forEach((c) => [c.telephone, c.telephone_2].forEach((t) => { const d = String(t || "").replace(/\D/g, ""); if (d.length >= 8) telsExist.add(d.slice(-9)); }));
+    const deja = comptesRows.filter((c) => c.tel && telsExist.has(c.tel.slice(-9))).length;
+    const telsVus = new Set(); let memeNumero = 0; comptesRows.forEach((c) => { if (!c.tel) return; if (telsVus.has(c.tel)) memeNumero++; telsVus.add(c.tel); });
+    return { kind: "migration", membres, comptes: comptesRows, opps, acts, coms, hist, devis,
+      stats: { contacts: comptesRows.length, tests: tests.size, deja, memeNumero, opps: opps.length, gagnees: opps.filter((o) => o.issue === "gagnee").length, perdues: opps.filter((o) => o.issue === "perdue").length,
+        acts: acts.length, aFaire: acts.filter((a) => a.statut === "a_faire").length, coms: coms.length, hist: hist.length, devis: devis.length, membres: membres.length } };
+  }
+
+  async function runMigration(sb, plan, onProgress) {
+    const total = plan.membres.length + plan.comptes.length + plan.opps.length + plan.acts.length + plan.coms.length + plan.hist.length + plan.devis.length;
+    let done = 0; const res = {};
+    const lots = async (fn, rows, size, cle) => {
+      for (let i = 0; i < rows.length; i += size) {
+        const lot = rows.slice(i, i + size).map(({ _k, ...x }) => x);
+        let data, error;
+        for (let essai = 0; essai < 3; essai++) { ({ data, error } = await sb.rpc(fn, { p: lot })); if (!error) break; await new Promise((ok) => setTimeout(ok, 1500 * (essai + 1))); }
+        if (error) throw error;
+        for (const [k, v] of Object.entries(data || {})) res[cle + "." + k] = (res[cle + "." + k] || 0) + v;
+        done += lot.length; onProgress && onProgress(done, total, cle);
+      }
+    };
+    await lots("mig_equipe", plan.membres, 100, "equipe");
+    await lots("mig_comptes", plan.comptes, 200, "comptes");
+    await lots("mig_opportunites", plan.opps, 200, "opps");
+    // Activités déjà importées depuis l'export d'un commercial : on les complète au lieu de les dupliquer.
+    const anciennes = new Map();
+    for (let from = 0; ; from += 1000) {
+      const { data, error } = await sb.from("activites").select("id,import_ref").like("import_ref", "act|%").range(from, from + 999);
+      if (error) throw error;
+      for (const a of data) { const k = dateSec(String(a.import_ref || "").split("|")[2]); if (k) (anciennes.get(k) || anciennes.set(k, []).get(k)).push(a.id); }
+      if (data.length < 1000) break;
+    }
+    for (const a of plan.acts) { const l = anciennes.get(a._k); if (l && l.length) a.old_id = l.shift(); }
+    await lots("mig_activites", plan.acts, 300, "acts");
+    await lots("mig_devis", plan.devis, 100, "devis");
+    await lots("mig_commentaires", plan.coms, 300, "coms");
+    await lots("mig_historique", plan.hist, 400, "hist");
+    return res;
+  }
+
+  root.CRMImport = { mapMigration, runMigration, mapRows, readFiles, run, readSheets, mapOpportunites, runOpportunites, mapExportCommercial, runExportCommercial, _test: { realPhone, normPhone, normCity, segmentOf, nameCase, parseCreator } };
 })(typeof window !== "undefined" ? window : globalThis);
