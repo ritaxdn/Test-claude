@@ -86,7 +86,7 @@ header.top::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height
 
 nav.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
 nav.tabs::-webkit-scrollbar{display:none}
-.tab{text-decoration:none;border:0;background:none;padding:9px 16px;border-radius:999px;cursor:pointer;color:var(--ink-2);font-weight:500;white-space:nowrap;transition:background-color .2s,color .2s}
+.tab{text-decoration:none;border:0;background:none;padding:9px 13px;border-radius:999px;cursor:pointer;color:var(--ink-2);font-weight:500;white-space:nowrap;transition:background-color .2s,color .2s}
 .tab[aria-current="page"]{background:var(--glass-strong);color:var(--ink);box-shadow:var(--shadow-sm),0 0 0 1px var(--glass-edge)}
 .tab:hover:not([aria-current="page"]){background:var(--line);color:var(--ink)}
 
@@ -100,7 +100,8 @@ nav.tabs::-webkit-scrollbar{display:none}
 .btn.icon{width:38px;padding:0;font-size:16px}
 .login{display:flex;justify-content:center;padding-inline:max(16px,env(safe-area-inset-left,0px))}
 .login .modal{margin-top:12vh}
-@media (max-width:639px){.who{display:none}.status{width:100%;justify-content:flex-start}}
+@media (max-width:1439px){.who{display:none}}
+@media (max-width:639px){.status{width:100%;justify-content:flex-start}}
 .btn.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 40%,transparent)}
 .btn.bad{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 40%,transparent)}
 .btn[disabled]{opacity:.5;cursor:default;transform:none}
@@ -207,6 +208,37 @@ textarea{min-height:72px;resize:vertical}
 .closed-row:last-child{border-bottom:0}
 .fam{border-top:1px solid var(--line);padding-block:4px}
 .modal.devis-modal{max-width:980px}
+.linkish{background:none;border:0;padding:0;margin:0;font:inherit;color:inherit;text-align:left;cursor:pointer;text-decoration:underline;text-decoration-color:var(--line-strong);text-underline-offset:3px}
+.linkish:hover{text-decoration-color:var(--accent)}
+.card .t.linkish{font-weight:600;font-size:14px;line-height:1.3;text-decoration:none}.card .t.linkish:hover{text-decoration:underline}
+.check{display:flex;gap:8px;align-items:center;cursor:pointer;min-height:38px;font-size:14px}.check input{width:auto}
+.pill.lab{text-transform:none;letter-spacing:0;font-family:var(--f-body);font-size:11px;color:var(--ink)}
+.feed-item.prio{box-shadow:inset 3px 0 0 var(--bad);padding-left:10px}
+.acts-inline{flex-wrap:wrap}
+.hist{display:grid;grid-template-columns:70px minmax(0,1fr);gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}
+.hist .when{font-family:var(--f-mono);font-size:11px;color:var(--muted)}.hist.del>div:last-child>div:first-child{color:var(--bad)}
+.modal.opp-modal{max-width:900px}
+.lab-mono{font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.opp-title{font-family:var(--f-display);font-stretch:118%;font-weight:500;font-size:24px;letter-spacing:-.03em;text-transform:uppercase;line-height:1;margin-top:4px;overflow-wrap:anywhere}
+.stepper{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;list-style:none;padding:0;margin:18px 0}
+.step{width:100%;display:flex;align-items:center;gap:8px;justify-content:center;padding:10px 8px;border-radius:999px;border:1px solid var(--line-strong);background:var(--field);color:var(--ink-2);font-weight:500;cursor:pointer;min-height:42px;font-size:13px}
+.step .dotn{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--line);font-family:var(--f-mono);font-size:11px;flex:none}
+.step.done{color:var(--ink)}.step.done .dotn{background:var(--ok-bg);color:var(--ok)}
+.step.cur{background:var(--ink);color:var(--on-ink);border-color:var(--ink)}.step.cur .dotn{background:var(--rainbow);color:#fff}
+.step[disabled]{cursor:default}.step:not([disabled]):hover{border-color:var(--ink-2)}
+@media (max-width:600px){.stepper{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.opp-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;padding:14px 16px;border-radius:20px;background:var(--glass-strong);border:1px solid var(--glass-edge)}
+.opp-facts .mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.quick{margin:14px 0}
+.seg-tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:12px;overflow-x:auto}
+.seg-tabs button{border:0;background:none;padding:10px 14px;cursor:pointer;color:var(--ink-2);font-weight:500;border-bottom:2px solid transparent;white-space:nowrap}
+.seg-tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+h4{font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:400;margin:12px 0 0}
+.cmts{display:flex;flex-direction:column;gap:12px;margin-top:14px}
+.cmt{padding:12px 14px;border-radius:16px;background:var(--glass-strong);border:1px solid var(--glass-edge)}
+.cmt.reply{margin-top:8px;margin-left:18px;background:var(--field)}
+.cmt-head{margin-bottom:4px}.cmt .acts-inline{margin-top:6px}
+.reply-form{margin-top:8px;margin-left:18px}
 .dv-lines td{padding:8px 6px}.dv-lines input,.dv-lines select{padding:7px 9px}.dv-lines input.num{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
 .dv-lines td[data-total]{vertical-align:middle;white-space:nowrap}
 .dv-bottom{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:20px;margin-top:16px;align-items:start}
@@ -242,8 +274,9 @@ select.dstat.ok{color:var(--ok);background:var(--ok-bg)}select.dstat.warn{color:
       <a class="tab" href="#pipeline" data-tab="pipeline" id="tab-pipeline">Pipeline</a>
       <a class="tab" href="#comptes" data-tab="comptes" id="tab-comptes">Comptes</a>
       <a class="tab" href="#activites" data-tab="activites" id="tab-activites">Activités</a>
-      <a class="tab" href="#superviseur" data-tab="superviseur" id="tab-superviseur">Supervision</a>
       <a class="tab" href="#devis" data-tab="devis" id="tab-devis">Devis</a>
+      <a class="tab" href="#acquisition" data-tab="acquisition" id="tab-acquisition">Acquisition</a>
+      <a class="tab" href="#superviseur" data-tab="superviseur" id="tab-superviseur">Supervision</a>
       <a class="tab" href="#equipe" data-tab="equipe" id="tab-equipe">Équipe &amp; catalogue</a>
     </nav>
     <div class="status"><span class="dot busy" id="dot" aria-hidden="true"></span><span id="status-text" aria-live="polite">Connexion…</span>
@@ -274,7 +307,7 @@ const STATUTS = {prospect:"Prospect",client:"Client",personnel:"Personnel"};
 const PAGE = 100;
 // Villes connues : celles de la base, les plus fréquentes d'abord.
 function villes(){ const m=new Map(); VILLES_BASE.forEach(v=>m.set(v,0)); state.comptes.forEach(c=>{ if(c.ville) m.set(c.ville,(m.get(c.ville)||0)+1); }); return [...m.entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],"fr")).map(x=>x[0]); }
-const TYPES_ACT = {appel:"Appel",visite:"Visite",demo:"Démo",email:"Email",whatsapp:"WhatsApp",formation:"Formation",autre:"Autre"};
+const TYPES_ACT = {appel:"Appel",visite:"Visite",rdv:"RDV",demo:"Démo",tache:"Tâche",evenement:"Événement",email:"Email",whatsapp:"WhatsApp",formation:"Formation",autre:"Autre"};
 const ROLES = {commercial:"Commercial",superviseur:"Superviseur",admin:"Admin"};
 const DEVIS_STATUTS = ["brouillon","envoye","accepte","refuse","signe"];
 
@@ -361,7 +394,7 @@ async function load(){
 
 async function write(op,okMsg){
   setStatus("busy","Enregistrement…");
-  try{ const {error} = await op(); if(error) throw error; toast(okMsg||"Enregistré"); closeModal(true); await load(); return true; }
+  try{ const {error} = await op(); if(error) throw error; toast(okMsg||"Enregistré"); const r=reopenAfter; reopenAfter=null; closeModal(true); await load(); if(r) r(); return true; }
   catch(e){ setStatus("bad","Échec"); const [t,d]=errorCopy(e); toast(t+" — "+d.slice(0,120)); return false; }
 }
 
@@ -394,14 +427,14 @@ function render(){
   document.querySelectorAll(".tab").forEach(b=>{ if(b.dataset.tab===tab) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current"); });
   const v=$("#view");
   if(!loaded){ v.innerHTML=`<div class="board-scroll"><div class="board">${ETAPES.map(()=>'<div class="col"><div class="skeleton"></div><div class="skeleton"></div></div>').join("")}</div></div>`; return; }
-  ({pipeline:viewPipeline,comptes:viewComptes,activites:viewActivites,devis:viewDevis,superviseur:viewSuperviseur,equipe:viewEquipe})[tab](v);
+  ({pipeline:viewPipeline,comptes:viewComptes,activites:viewActivites,devis:viewDevis,acquisition:viewAcquisition,superviseur:viewSuperviseur,equipe:viewEquipe})[tab](v);
 }
 
 function oppCard(o){
   const c = byId(state.comptes,o.compte_id), com = byId(state.equipe,o.commercial_id), p = byId(state.produits,o.produit_id);
   const idx = ETAPES.indexOf(o.etape);
   return `<article class="card">
-    <div class="t">${esc(o.titre)}</div>
+    <button class="t linkish" data-act="open-opp" data-id="${o.id}">${esc(o.titre)}</button>
     <div class="c">${esc(c?c.nom:"Compte supprimé")}${c?` <span class="pill ${c.segment[0]}">${c.segment[0]}</span>`:""}</div>
     <div class="meta"><span class="amt">${mad(o.montant_mad)} MAD</span><span>· ${o.probabilite??"–"} %</span>${o.date_cloture_prevue?`<span>· ${fmtDate(o.date_cloture_prevue)}</span>`:""}</div>
     <div class="prob" aria-hidden="true"><i style="width:${Math.min(100,+o.probabilite||0)}%"></i></div>
@@ -461,25 +494,6 @@ function viewComptes(v){
   [["#f-seg","segment"],["#f-statut","statut"],["#f-ville","ville"],["#f-com","com"]].forEach(([sel,k])=>$(sel).addEventListener("change",e=>{filt[k]=e.target.value; shown=PAGE; viewComptes(v);}));
 }
 
-function feedItem(a){
-  const c=byId(state.comptes,a.compte_id), com=byId(state.equipe,a.commercial_id), o=byId(state.opportunites,a.opportunite_id);
-  const today=localISO();
-  const late=a.date_prochaine_action && a.date_prochaine_action<today;
-  return `<div class="feed-item"><div class="when">${fmtDate(a.date_activite)}<br>${new Date(a.date_activite).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}</div>
-   <div><div class="what"><span class="pill">${TYPES_ACT[a.type]||a.type}</span> <b>${esc(c?c.nom:"—")}</b>${o?` · ${esc(o.titre)}`:""}${com?` <span class="hint">· ${esc(com.nom)}</span>`:""}</div>
-   ${a.resume?`<div class="what" style="margin-top:4px">${esc(a.resume)}</div>`:""}
-   ${a.prochaine_action?`<div class="next">Prochaine action : ${esc(a.prochaine_action)}${a.date_prochaine_action?` <span class="pill ${late?"bad":"warn"}">${late?"en retard · ":""}${fmtDate(a.date_prochaine_action)}</span>`:""}</div>`:""}</div></div>`;
-}
-
-function viewActivites(v){
-  const today=localISO();
-  const relances=state.activites.filter(a=>a.date_prochaine_action).sort((a,b)=>a.date_prochaine_action.localeCompare(b.date_prochaine_action)).filter(a=>a.date_prochaine_action>=localISO(new Date(Date.now()-60*864e5))).slice(0,15);
-  v.innerHTML=`<div class="section-head"><div><h2>Activités</h2><p class="hint">Appels, visites, démos et relances de l’équipe</p></div>
-   <div class="tools"><button class="btn primary" data-act="log" ${state.comptes.length?"":"disabled"}>+ Activité</button></div></div>
-  <div class="grid2"><div class="panel"><h3>Journal</h3>${state.activites.length?`<div class="feed">${state.activites.slice(0,60).map(feedItem).join("")}</div>`:`<div class="empty"><p>Aucune activité enregistrée. Chaque appel ou visite saisi ici apparaît en temps réel pour la supervision.</p></div>`}</div>
-  <div class="panel"><h3>Relances à venir</h3>${relances.length?`<div class="closed-list" style="margin-top:8px">${relances.map(a=>{const c=byId(state.comptes,a.compte_id);const late=a.date_prochaine_action<today;return `<div class="closed-row"><div><b>${esc(c?c.nom:"—")}</b><div class="hint">${esc(a.prochaine_action||"")}</div></div><span class="pill ${late?"bad":"warn"}">${fmtDate(a.date_prochaine_action)}</span></div>`;}).join("")}</div>`:`<p class="hint">Aucune relance planifiée.</p>`}</div></div>`;
-}
-
 function viewSuperviseur(v){
   const wk=Date.now()-7*864e5;
   const rows=[...state.equipe,{id:null,nom:"Non assigné"}].map(e=>{
@@ -504,7 +518,10 @@ function viewSuperviseur(v){
   ${rows.map(r=>`<tr><td><b>${esc(r.e.nom)}</b>${r.e.role?` <span class="hint">· ${ROLES[r.e.role]}${r.e.actif?"":" · sans accès"}</span>`:""}</td>${ETAPES.map(s=>`<td class="num">${r.by[s]||"·"}</td>`).join("")}<td class="num">${mad(r.tot)}</td><td class="num">${mad(r.pond)}</td><td class="num">${mad(r.won)}</td><td class="num">${r.comptes}</td><td class="num">${r.act?r.act:(r.e.actif?`<span class="pill bad">0</span>`:"·")}</td></tr>`).join("")}
   </tbody></table></div></div>
   <div class="grid2" style="margin-top:16px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)"><div class="panel"><h3>Pipeline par segment</h3><div style="margin-top:8px">${Object.entries(SEGMENTS).map(([k,l])=>bar(l,seg[k],segMax)).join("")}</div></div>
-  <div class="panel"><h3>Pipeline par ville</h3><p class="hint">Les 8 premières villes · nombre de comptes entre parenthèses</p><div style="margin-top:8px">${topV.map(x=>bar(`${esc(x)} <span class="hint">(${vilN[x]})</span>`,vil[x]||0,vilMax)).join("")}</div></div></div>`;
+  <div class="panel"><h3>Pipeline par ville</h3><p class="hint">Les 8 premières villes · nombre de comptes entre parenthèses</p><div style="margin-top:8px">${topV.map(x=>bar(`${esc(x)} <span class="hint">(${vilN[x]})</span>`,vil[x]||0,vilMax)).join("")}</div></div></div>
+  <div class="panel" style="margin-top:16px"><div class="section-head" style="margin:0 0 8px"><h3>Dernières actions de l’équipe</h3><select id="f-hist" aria-label="Filtrer les actions"><option value="">Toutes</option><option value="suppression">Suppressions uniquement</option></select></div><p class="hint" style="margin-top:0">Écrit par la base de données : personne, même un admin, ne peut modifier ou effacer cet historique depuis le CRM.</p><div id="sup-hist"></div></div>`;
+  const histEl=$("#sup-hist"); const lh=()=>{ const f=$("#f-hist").value; if(f){ histEl.innerHTML=""; sb.from("historique").select("*").eq("action",f).order("created_at",{ascending:false}).limit(60).then(({data,error})=>{ histEl.innerHTML=error?`<p class="hint">${esc(errorCopy(error)[1])}</p>`:data.length?`<div class="feed">${data.map(histItem).join("")}</div>`:`<p class="hint">Aucune suppression.</p>`; }); } else loadHistorique(histEl,null,null,60); };
+  $("#f-hist").addEventListener("change",lh); lh();
 }
 
 function viewEquipe(v){
@@ -523,6 +540,7 @@ function closeModal(force){
   if(importBusy) return;
   if(dirty && !force){ const c=$("#mconfirm"); if(c){ c.hidden=false; c.querySelector("button").focus(); return; } }
   $("#modal-slot").innerHTML=""; dirty=false;
+  if(reopenAfter){ const r=reopenAfter; reopenAfter=null; return r(); }
   if(lastFocus && document.contains(lastFocus)) lastFocus.focus(); lastFocus=null;
 }
 function trapFocus(root){
@@ -568,7 +586,7 @@ function formCompte(c){
    ${fld("m-ville","Ville",`<input id="m-ville" name="ville" list="dl-villes" autocomplete="off" placeholder="Ex. Fès…" value="${esc(c.ville||"")}"><datalist id="dl-villes">${villes().map(x=>`<option value="${esc(x)}">`).join("")}</datalist>`)}
    ${fld("m-statut","Statut",`<select id="m-statut" name="statut">${opt(Object.entries(STATUTS),c.statut||"prospect")}</select>`)}
    ${fld("m-spec","Spécialité",`<input id="m-spec" name="specialite" autocomplete="off" placeholder="Ex. Dermatologue…" value="${esc(c.specialite||"")}">`)}
-   ${fld("m-src","Source",`<input id="m-src" name="source" autocomplete="off" placeholder="Ex. Visite terrain…" value="${esc(c.source||"")}">`)}
+   ${fld("m-src","Source",`<input id="m-src" name="source" list="dl-sources" autocomplete="off" placeholder="Ex. Medical Expo 2026…" value="${esc(c.source||"")}"><datalist id="dl-sources">${sources().map(x=>`<option value="${esc(x)}">`).join("")}</datalist>`)}
    ${fld("m-tel","Téléphone",`<input id="m-tel" name="telephone" type="tel" inputmode="tel" autocomplete="off" placeholder="+212 6…" value="${esc(c.telephone||"")}">`)}
    ${fld("m-mail","Email",`<input id="m-mail" name="email" type="email" autocomplete="off" spellcheck="false" placeholder="contact@clinique.ma…" value="${esc(c.email||"")}">`)}
    ${fld("m-adr","Adresse",`<input id="m-adr" name="adresse" value="${esc(c.adresse||"")}">`,true)}
@@ -608,23 +626,6 @@ function formOpp(o,presetCompte){
   const medWarn=()=>{ const p=byId(state.produits,$("#m-prod").value), c=byId(state.comptes,$("#m-compte").value);
     $("#m-prod-warn").textContent = p&&p.medical_only&&c&&c.segment!=="B_cabinet"&&c.segment!=="A_clinique" ? "Machine réservée aux médecins : vérifiez que ce compte peut l’acheter." : p&&p.medical_only&&c&&c.segment!=="B_cabinet"&&!/m[ée]dec|derm|chirurg|gyn|dr /i.test((c.specialite||"")+" "+c.nom) ? "Machine réservée aux médecins : vérifiez qu’un médecin exerce dans ce centre." : ""; };
   $("#m-prod").addEventListener("change",medWarn); $("#m-compte").addEventListener("change",medWarn); medWarn();
-}
-
-function formActivite(oppId,compteId){
-  const o=oppId?byId(state.opportunites,oppId):null;
-  const cId=compteId||(o&&o.compte_id)||"";
-    const h=`<div class="form-grid">
-   ${fld("m-type","Type",`<select id="m-type" name="type">${opt(Object.entries(TYPES_ACT),"appel")}</select>`)}
-   ${fld("m-compte","Compte",`<select id="m-compte" name="compte_id" required>${opt(state.comptes.map(c=>[c.id,c.nom]),cId,"Choisir…")}</select>`)}
-   ${fld("m-opp","Opportunité",`<select id="m-opp" name="opportunite_id">${opt(state.opportunites.filter(x=>x.compte_id===cId&&x.issue==="en_cours").map(x=>[x.id,x.titre]),oppId||"","—")}</select>`)}
-   ${fld("m-com","Commercial",`<select id="m-com" name="commercial_id">${opt(equipeOpts(),(o&&o.commercial_id)||(me&&me.id),"Non assigné")}</select>`)}
-   ${fld("m-res","Compte rendu",`<textarea id="m-res" name="resume" placeholder="Ce qui s’est dit, objections, intérêt…"></textarea>`,true)}
-   ${fld("m-next","Prochaine action",`<input id="m-next" name="prochaine_action" placeholder="Ex. Envoyer le devis…" autocomplete="off">`)}
-   ${fld("m-nd","Date de relance",`<input id="m-nd" name="date_prochaine_action" type="date">`)}</div>`;
-  const submit=async f=>write(ins("activites",{compte_id:sUuid(f.compte_id),opportunite_id:sUuid(f.opportunite_id),commercial_id:sUuid(f.commercial_id),type:sEnum(f.type,Object.keys(TYPES_ACT)),resume:sTxt(f.resume),prochaine_action:sTxt(f.prochaine_action),date_prochaine_action:sDate(f.date_prochaine_action)}),"Activité enregistrée");
-  submit.validate=f=>!UUID_RE.test(f.compte_id||"")?["compte_id","Choisissez le compte concerné."]:null;
-  modal("Nouvelle activité",h,submit,"Enregistrer");
-  $("#m-compte").addEventListener("change",e=>{$("#m-opp").innerHTML=opt(state.opportunites.filter(x=>x.compte_id===e.target.value&&x.issue==="en_cours").map(x=>[x.id,x.titre]),"","—");});
 }
 
 function formContact(compteId){
@@ -688,18 +689,21 @@ function openCompte(c){
   const acts=state.activites.filter(a=>a.compte_id===c.id).slice(0,8);
   const com=byId(state.equipe,c.commercial_id);
   $("#modal-slot").innerHTML=`<div class="overlay" id="ov"><div class="modal" style="max-width:760px" role="dialog" aria-modal="true" aria-labelledby="ctitle">
-   <div class="modal-head"><div><h3 id="ctitle" style="font-family:var(--f-display);font-stretch:118%;font-weight:500;font-size:24px;letter-spacing:-.03em;text-transform:uppercase;line-height:1">${esc(c.nom)}</h3><div class="tools" style="margin-top:6px"><span class="pill ${c.segment[0]}">${SEGMENTS[c.segment]}</span><span class="pill">${esc(c.ville||"Ville ?")}</span>${c.statut==="client"?`<span class="pill ok">Client</span>`:c.statut==="personnel"?`<span class="pill">Personnel</span>`:`<span class="pill">Prospect</span>`}<span class="hint">${com?esc(com.nom):"Non assigné"}</span></div></div><button class="x" id="mx" aria-label="Fermer">×</button></div>
+   <div class="modal-head"><div><h3 id="ctitle" style="font-family:var(--f-display);font-stretch:118%;font-weight:500;font-size:24px;letter-spacing:-.03em;text-transform:uppercase;line-height:1">${esc(c.nom)}</h3><div class="tools" style="margin-top:6px"><span class="pill ${c.segment[0]}">${SEGMENTS[c.segment]}</span><span class="pill">${esc(c.ville||"Ville ?")}</span>${c.statut==="client"?`<span class="pill ok">Client</span>`:c.statut==="personnel"?`<span class="pill">Personnel</span>`:`<span class="pill">Prospect</span>`}<span class="hint">Suivi par ${com?esc(com.nom):"personne"}${c.createur_id&&c.createur_id!==c.commercial_id?` · créé par ${esc(nomMembre(c.createur_id))}`:""}</span></div></div><button class="x" id="mx" aria-label="Fermer">×</button></div>
    ${c.specialite||c.source?`<p style="margin:0 0 4px">${esc(c.specialite||"")}${c.source?` <span class="hint">· source : ${esc(c.source)}</span>`:""}</p>`:""}
    <div class="hint">${[c.telephone,c.email,c.adresse,c.site_web].filter(Boolean).map(esc).join(" · ")||"Aucune coordonnée"}</div>
    ${c.notes?`<p style="margin-top:8px">${esc(c.notes)}</p>`:""}
-   <div class="tools" style="margin-block:14px"><button class="btn small" data-act="edit-compte" data-id="${c.id}">Modifier</button><button class="btn small" data-act="new-contact" data-id="${c.id}">+ Contact</button><button class="btn small" data-act="new-opp" data-compte="${c.id}">+ Opportunité</button><button class="btn small" data-act="log" data-compte="${c.id}">+ Activité</button><button class="btn small" data-act="new-devis" data-compte="${c.id}">+ Devis</button></div>
+   <div class="tools" style="margin-block:14px"><button class="btn small" data-act="edit-compte" data-id="${c.id}">Modifier</button><button class="btn small" data-act="transfer" data-id="${c.id}">Transférer</button><button class="btn small" data-act="new-contact" data-id="${c.id}">+ Contact</button><button class="btn small" data-act="new-opp" data-compte="${c.id}">+ Opportunité</button><button class="btn small" data-act="log" data-compte="${c.id}">+ Activité</button><button class="btn small" data-act="new-devis" data-compte="${c.id}">+ Devis</button></div>
    <div class="sep"></div>
    <h3>Contacts</h3>${contacts.length?`<div class="closed-list">${contacts.map(x=>`<div class="closed-row"><div><b>${esc([x.prenom,x.nom].filter(Boolean).join(" "))}</b>${x.decideur?` <span class="pill ok">Décideur</span>`:""}<div class="hint">${esc(x.fonction||"")}</div></div><div class="hint">${[x.telephone,x.email].filter(Boolean).map(esc).join(" · ")}</div></div>`).join("")}</div>`:`<p class="hint">Aucun contact.</p>`}
    ${(()=>{const dv=state.devis.filter(x=>x.compte_id===c.id); return dv.length?`<h3 style="margin-top:16px">Devis</h3><div class="closed-list">${dv.map(x=>`<div class="closed-row"><div><b translate="no">${esc(devisNum(x))}</b><div class="hint">${fmtDate(x.created_at)} · ${mad(x.montant_mad)} MAD HT</div></div><div class="tools"><span class="pill ${DEVIS_PILL[x.statut]||""}">${DEVIS_LABEL[x.statut]}</span><button class="btn small" data-act="edit-devis" data-id="${x.id}">Modifier</button><button class="btn small" data-act="print-devis" data-id="${x.id}">Imprimer</button></div></div>`).join("")}</div>`:"";})()}
-   <h3 style="margin-top:16px">Opportunités</h3>${ops.length?`<div class="closed-list">${ops.map(o=>`<div class="closed-row"><div><b>${esc(o.titre)}</b><div class="hint">${ETAPE_LABEL[o.etape]} · ${o.probabilite??"–"} %</div></div><div class="tools"><span style="font-family:var(--f-mono);font-size:12px">${mad(o.montant_mad)} MAD</span><span class="pill ${o.issue==="gagnee"?"ok":o.issue==="perdue"?"bad":""}">${o.issue==="en_cours"?"En cours":o.issue==="gagnee"?"Gagnée":"Perdue"}</span></div></div>`).join("")}</div>`:`<p class="hint">Aucune opportunité.</p>`}
-   <h3 style="margin-top:16px">Dernières activités</h3>${acts.length?`<div class="feed">${acts.map(feedItem).join("")}</div>`:`<p class="hint">Aucune activité.</p>`}
+   <h3 style="margin-top:16px">Opportunités</h3>${ops.length?`<div class="closed-list">${ops.map(o=>`<div class="closed-row"><div><button class="linkish" data-act="open-opp" data-id="${o.id}"><b>${esc(o.titre)}</b></button><div class="hint">${ETAPE_LABEL[o.etape]} · ${o.probabilite??"–"} %</div></div><div class="tools"><span style="font-family:var(--f-mono);font-size:12px">${mad(o.montant_mad)} MAD</span><span class="pill ${o.issue==="gagnee"?"ok":o.issue==="perdue"?"bad":""}">${o.issue==="en_cours"?"En cours":o.issue==="gagnee"?"Gagnée":"Perdue"}</span></div></div>`).join("")}</div>`:`<p class="hint">Aucune opportunité.</p>`}
+   <h3 style="margin-top:16px">Dernières activités</h3>${acts.length?`<div class="feed">${acts.map(a=>feedItem(a,{noCompte:true})).join("")}</div>`:`<p class="hint">Aucune activité.</p>`}
+   <details class="fam" style="margin-top:16px" id="c-hist"><summary><span>Historique du compte</span></summary><div id="c-hist-body"></div></details>
   </div></div>`;
   $("#mx").onclick=()=>closeModal(); $("#ov").addEventListener("click",e=>{if(e.target.id==="ov")closeModal();}); trapFocus($("#ov .modal")); $("#mx").focus();
+  $("#c-hist").addEventListener("toggle",e=>{ if(e.target.open&&!e.target._l){ e.target._l=1; loadHistorique($("#c-hist-body"),"compte_id",c.id,100); } });
+  $("#ov .modal").addEventListener("click",e=>{ const t=e.target.closest("[data-act]"); if(t&&["edit-compte","transfer","new-contact","new-opp","log","new-devis","edit-act","act-done","del-act-yes","edit-devis"].includes(t.dataset.act)) reopenAfter=()=>openCompte(byId(state.comptes,c.id)); },true);
 }
 
 /* ---- Event delegation ---- */
@@ -718,7 +722,15 @@ document.addEventListener("click",async e=>{
   if(act==="new-contact") return formContact(id);
   if(act==="new-opp") return formOpp(null,t.dataset.compte);
   if(act==="edit-opp") return formOpp(byId(state.opportunites,id));
-  if(act==="log") return formActivite(t.dataset.opp,t.dataset.compte);
+  if(act==="log") return formActivite(t.dataset.opp,t.dataset.compte,{type:t.dataset.type});
+  if(act==="edit-act") return formActivite(null,null,{},byId(state.activites,id));
+  if(act==="act-done"){ t.disabled=true; return write(upd("activites",id,{statut:"fait",fait_le:new Date().toISOString()}),"Marqué fait"); }
+  if(act==="del-act") return confirmInline(t,"Supprimer cette activité ? La suppression reste visible dans l’historique.","del-act-yes",id);
+  if(act==="del-act-yes"){ t.disabled=true; return write(()=>sb.from("activites").delete().eq("id",id),"Activité supprimée"); }
+  if(act==="del-cmt") return confirmInline(t,"Supprimer ce commentaire ?","del-cmt-yes",id);
+  if(act==="del-cmt-yes"){ t.disabled=true; const box=t.closest("#op-commentaires"); const {error}=await sb.from("commentaires").delete().eq("id",id); if(error) toast(errorCopy(error).join(" — ")); else toast("Commentaire supprimé"); if(box&&box._reload) box._reload(); return; }
+  if(act==="open-opp") return openOpp(byId(state.opportunites,id));
+  if(act==="transfer") return formTransfert(byId(state.comptes,id));
   if(act==="new-membre") return formMembre();
   if(act==="edit-membre") return formMembre(byId(state.equipe,id));
   if(act==="new-produit") return formProduit();
@@ -733,12 +745,248 @@ document.addEventListener("keydown",e=>{
   if(e.key==="Escape" && $("#ov")) closeModal();
   if(e.key==="Enter"&&e.target.matches("tr.click")) e.target.click();
 });
-const TABS=["pipeline","comptes","activites","devis","superviseur","equipe"];
+const TABS=["pipeline","comptes","activites","devis","acquisition","superviseur","equipe"];
 function syncTab(){ const h=location.hash.slice(1); if(TABS.includes(h)&&h!==tab){ tab=h; try{localStorage.setItem("crm-tab",tab);}catch(_){} if(currentUser) render(); } }
 window.addEventListener("hashchange",syncTab);
 $("#refresh").addEventListener("click",()=>load());
 try{ const s=localStorage.getItem("crm-tab"); if(s&&TABS.includes(s)) tab=s; }catch(_){}
 if(TABS.includes(location.hash.slice(1))) tab=location.hash.slice(1);
+
+/* ---- Activités : labels, priorité, créateur / responsable, à faire ---- */
+const LABELS_DEFAUT = ["🔄 Relance devis","📤 Envoi devis","🆕 Nouvelle installation","📍 RDV / Re-visite","🤝 Premier contact","🎓 Formation","🛠️ SAV / Maintenance"];
+const TYPES_A_FAIRE = ["tache","evenement","rdv"];
+function labels(){ const s=new Set(LABELS_DEFAUT); state.activites.forEach(a=>{ if(a.label) s.add(a.label); }); return [...s]; }
+function sources(){ const m=new Map(); state.comptes.forEach(c=>{ if(c.source) m.set(c.source,(m.get(c.source)||0)+1); }); return [...m.entries()].sort((a,b)=>b[1]-a[1]).map(x=>x[0]); }
+const nomMembre = id => { const e=byId(state.equipe,id); return e?e.nom:"—"; };
+const toLocalInput = d => { const x=new Date(d); const z=new Date(x.getTime()-x.getTimezoneOffset()*6e4); return z.toISOString().slice(0,16); };
+let reopenAfter=null;
+
+function comptePicker(id, cId){
+  const c=byId(state.comptes,cId);
+  return `<input id="${id}" name="compte_label" list="dl-comptes-all" autocomplete="off" placeholder="Tapez le nom du client…" value="${c?esc(compteLabel(c)):""}" required><datalist id="dl-comptes-all">${state.comptes.map(x=>`<option value="${esc(compteLabel(x))}">`).join("")}</datalist>`;
+}
+const compteIdFromLabel = v => { const c=state.comptes.find(x=>compteLabel(x)===v); return c?c.id:""; };
+
+function formActivite(oppId, compteId, preset, a){
+  preset=preset||{}; a=a||null;
+  const o=oppId?byId(state.opportunites,oppId):(a?byId(state.opportunites,a.opportunite_id):null);
+  const cId=(a&&a.compte_id)||compteId||(o&&o.compte_id)||"";
+  const type=(a&&a.type)||preset.type||"appel";
+  const aFaire = a ? a.statut==="a_faire" : TYPES_A_FAIRE.includes(type);
+  const when = a ? toLocalInput(a.date_activite) : aFaire ? toLocalInput(new Date(Date.now()+864e5).setHours(10,0,0,0)) : toLocalInput(Date.now());
+  const titre = a ? "Modifier l’activité" : ({tache:"Nouvelle tâche",evenement:"Nouvel événement",appel:"Nouvel appel",rdv:"Nouveau RDV"}[type]||"Nouvelle activité");
+  const h=`<div class="form-grid">
+   ${fld("m-type","Type",`<select id="m-type" name="type">${opt(Object.entries(TYPES_ACT),type)}</select>`)}
+   ${fld("m-label","Label",`<input id="m-label" name="label" list="dl-labels" autocomplete="off" placeholder="Ex. 🔄 Relance devis…" value="${esc((a&&a.label)||preset.label||"")}"><datalist id="dl-labels">${labels().map(l=>`<option value="${esc(l)}">`).join("")}</datalist>`)}
+   ${fld("m-when","Date et heure",`<input id="m-when" name="date_activite" type="datetime-local" value="${when}">`)}
+   ${fld("m-statut","Statut",`<select id="m-statut" name="statut">${opt([["fait","Fait"],["a_faire","À faire"]],aFaire?"a_faire":"fait")}</select>`)}
+   ${fld("m-compte","Client",comptePicker("m-compte",cId),true)}
+   ${fld("m-opp","Opportunité",`<select id="m-opp" name="opportunite_id">${opt(state.opportunites.filter(x=>x.compte_id===cId&&(x.issue==="en_cours"||x.id===(o&&o.id))).map(x=>[x.id,x.titre]),(o&&o.id)||"","—")}</select>`)}
+   ${fld("m-com","Responsable",`<select id="m-com" name="commercial_id">${opt(equipeOpts(),(a&&a.commercial_id)||(me&&me.id),"Non assigné")}</select>`)}
+   <div class="field" style="justify-content:flex-end"><label class="check"><input type="checkbox" id="m-prio" name="prioritaire" ${(a&&a.prioritaire)||preset.prioritaire?"checked":""}> Prioritaire</label></div>
+   ${fld("m-res","Compte rendu / description",`<textarea id="m-res" name="resume" placeholder="Ce qui s’est dit, objections, intérêt…">${esc((a&&a.resume)||"")}</textarea>`,true)}
+   ${fld("m-next","Prochaine action",`<input id="m-next" name="prochaine_action" placeholder="Ex. Envoyer le devis…" autocomplete="off" value="${esc((a&&a.prochaine_action)||"")}">`)}
+   ${fld("m-nd","Date de relance",`<input id="m-nd" name="date_prochaine_action" type="date" value="${esc((a&&a.date_prochaine_action)||"")}">`)}
+   ${a?`<p class="hint" style="grid-column:1/-1;margin:0">Créée par ${esc(nomMembre(a.createur_id))}${a.createur_id&&a.createur_id!==a.commercial_id?` · responsable : ${esc(nomMembre(a.commercial_id))}`:""}</p>`:""}</div>`;
+  const submit=async f=>{
+    const statut=f.statut==="a_faire"?"a_faire":"fait";
+    const obj={compte_id:sUuid(compteIdFromLabel(f.compte_label)),opportunite_id:sUuid(f.opportunite_id),commercial_id:sUuid(f.commercial_id),type:sEnum(f.type,Object.keys(TYPES_ACT)),
+      label:sTxt(f.label),prioritaire:!!f.prioritaire,statut,date_activite:f.date_activite?new Date(f.date_activite).toISOString():new Date().toISOString(),
+      resume:sTxt(f.resume),prochaine_action:sTxt(f.prochaine_action),date_prochaine_action:sDate(f.date_prochaine_action)};
+    if(statut==="fait" && (!a || a.statut!=="fait")) obj.fait_le=new Date().toISOString();
+    if(statut==="a_faire") obj.fait_le=null;
+    return a ? write(upd("activites",a.id,obj),"Activité mise à jour") : write(ins("activites",obj),statut==="a_faire"?"Ajouté à faire":"Activité enregistrée");
+  };
+  submit.validate=f=>!compteIdFromLabel(f.compte_label)?["compte_label","Choisissez le client dans la liste."]:null;
+  modal(titre,h,submit,a?"Enregistrer":"Ajouter");
+  $("#m-compte").addEventListener("change",e=>{ const id=compteIdFromLabel(e.target.value); $("#m-opp").innerHTML=opt(state.opportunites.filter(x=>x.compte_id===id&&x.issue==="en_cours").map(x=>[x.id,x.titre]),"","—"); });
+  $("#m-type").addEventListener("change",e=>{ if(!a) $("#m-statut").value=TYPES_A_FAIRE.includes(e.target.value)?"a_faire":"fait"; });
+}
+
+function feedItem(a, opts){
+  opts=opts||{};
+  const c=byId(state.comptes,a.compte_id), o=byId(state.opportunites,a.opportunite_id);
+  const today=localISO(), now=Date.now();
+  const late=a.date_prochaine_action && a.date_prochaine_action<today;
+  const aFaire=a.statut==="a_faire", overdue=aFaire && new Date(a.date_activite).getTime()<now;
+  const diff=a.createur_id && a.commercial_id && a.createur_id!==a.commercial_id;
+  return `<div class="feed-item${a.prioritaire?" prio":""}" data-aid="${a.id}"><div class="when">${fmtDate(a.date_activite)}<br>${new Date(a.date_activite).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}</div>
+   <div><div class="what"><span class="pill">${TYPES_ACT[a.type]||a.type}</span>${a.label?` <span class="pill lab">${esc(a.label)}</span>`:""}${a.prioritaire?` <span class="pill bad">Prioritaire</span>`:""}${aFaire?` <span class="pill ${overdue?"bad":"warn"}">${overdue?"En retard":"À faire"}</span>`:""}
+     ${opts.noCompte?"":` <b>${esc(c?c.nom:"—")}</b>`}${o&&!opts.noOpp?` · <button class="linkish" data-act="open-opp" data-id="${o.id}">${esc(o.titre)}</button>`:""}</div>
+   <div class="hint">${diff?`Créée par ${esc(nomMembre(a.createur_id))} · pour ${esc(nomMembre(a.commercial_id))}`:esc(nomMembre(a.commercial_id||a.createur_id))}</div>
+   ${a.resume?`<div class="what" style="margin-top:4px;white-space:pre-line">${esc(a.resume)}</div>`:""}
+   ${a.prochaine_action?`<div class="next">Prochaine action : ${esc(a.prochaine_action)}${a.date_prochaine_action?` <span class="pill ${late?"bad":"warn"}">${late?"en retard · ":""}${fmtDate(a.date_prochaine_action)}</span>`:""}</div>`:""}
+   <div class="tools acts-inline" style="margin-top:6px">${aFaire?`<button class="btn small ok" data-act="act-done" data-id="${a.id}">Marquer fait</button>`:""}<button class="btn small" data-act="edit-act" data-id="${a.id}">Modifier</button><button class="btn small" data-act="del-act" data-id="${a.id}">Supprimer</button></div></div></div>`;
+}
+
+let actFilt={qui:"moi",label:""};
+function viewActivites(v){
+  const today=localISO();
+  const mine=a=>actFilt.qui!=="moi"||!me||a.commercial_id===me.id||(!a.commercial_id&&a.createur_id===me.id);
+  const lab=a=>!actFilt.label||a.label===actFilt.label;
+  const todo=state.activites.filter(a=>a.statut==="a_faire"&&mine(a)&&lab(a)).sort((a,b)=>(b.prioritaire-a.prioritaire)||a.date_activite.localeCompare(b.date_activite));
+  const journal=state.activites.filter(a=>a.statut!=="a_faire"&&lab(a)).slice(0,60);
+  const relances=state.activites.filter(a=>a.date_prochaine_action&&mine(a)).sort((a,b)=>a.date_prochaine_action.localeCompare(b.date_prochaine_action)).filter(a=>a.date_prochaine_action>=localISO(new Date(Date.now()-60*864e5))).slice(0,15);
+  v.innerHTML=`<div class="section-head"><div><h2>Activités</h2><p class="hint">Tâches, événements, appels, visites et relances de l’équipe</p></div>
+   <div class="tools"><button class="btn" data-act="log" data-type="tache" ${state.comptes.length?"":"disabled"}>+ Tâche</button><button class="btn" data-act="log" data-type="evenement" ${state.comptes.length?"":"disabled"}>+ Événement</button><button class="btn primary" data-act="log" data-type="appel" ${state.comptes.length?"":"disabled"}>+ Appel</button></div></div>
+  <div class="filters" style="margin-bottom:12px"><select id="f-qui" aria-label="Afficher"><option value="moi" ${actFilt.qui==="moi"?"selected":""}>Mes tâches</option><option value="tous" ${actFilt.qui==="tous"?"selected":""}>Toute l’équipe</option></select>
+    <select id="f-lab" aria-label="Label"><option value="">Tous les labels</option>${labels().map(l=>`<option ${actFilt.label===l?"selected":""}>${esc(l)}</option>`).join("")}</select></div>
+  <div class="grid2"><div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+    <div class="panel"><h3>À faire <span class="hint">· ${todo.length}</span></h3>${todo.length?`<div class="feed">${todo.slice(0,80).map(a=>feedItem(a)).join("")}</div>`:`<p class="hint">Rien à faire${actFilt.qui==="moi"?" pour vous":""}. Ajoutez une tâche ou un événement.</p>`}</div>
+    <div class="panel"><h3>Journal</h3>${journal.length?`<div class="feed">${journal.map(a=>feedItem(a)).join("")}</div>`:`<div class="empty"><p>Aucune activité enregistrée. Chaque appel ou visite saisi ici apparaît en temps réel pour la supervision.</p></div>`}</div></div>
+  <div class="panel"><h3>Relances à venir</h3>${relances.length?`<div class="closed-list" style="margin-top:8px">${relances.map(a=>{const c=byId(state.comptes,a.compte_id);const late=a.date_prochaine_action<today;return `<div class="closed-row"><div><b>${esc(c?c.nom:"—")}</b><div class="hint">${esc(a.prochaine_action||"")}</div></div><span class="pill ${late?"bad":"warn"}">${fmtDate(a.date_prochaine_action)}</span></div>`;}).join("")}</div>`:`<p class="hint">Aucune relance planifiée.</p>`}</div></div>`;
+  $("#f-qui").addEventListener("change",e=>{actFilt.qui=e.target.value;viewActivites(v);});
+  $("#f-lab").addEventListener("change",e=>{actFilt.label=e.target.value;viewActivites(v);});
+}
+
+function confirmInline(btn, question, yesAct, id){
+  const box=btn.closest(".acts-inline")||btn.parentElement;
+  const prev=box.innerHTML;
+  box.innerHTML=`<span class="hint" style="margin:0">${esc(question)}</span><button class="btn small bad" data-act="${yesAct}" data-id="${id}">Oui, supprimer</button><button class="btn small" data-cancel>Annuler</button>`;
+  box.querySelector("[data-cancel]").addEventListener("click",ev=>{ ev.stopPropagation(); box.innerHTML=prev; },{once:true});
+  box.querySelector(`[data-act="${yesAct}"]`).focus();
+}
+
+/* ---- Transfert d'un contact ---- */
+function formTransfert(c){
+  const ops=state.opportunites.filter(o=>o.compte_id===c.id&&o.issue==="en_cours"&&o.commercial_id===c.commercial_id);
+  const h=`<p style="margin-top:0">Le contact passe à un autre commercial. <b>${esc(nomMembre(c.createur_id))}</b> reste indiqué comme créateur, et le transfert est inscrit dans l’historique.</p>
+   <div class="form-grid">${fld("m-to","Nouveau responsable",`<select id="m-to" name="to">${opt(state.equipe.filter(e=>e.id!==c.commercial_id).map(e=>[e.id,e.nom+(e.actif?"":" (sans accès)")]),"","Choisir…")}</select>`,true)}
+   ${ops.length?`<label class="check" style="grid-column:1/-1"><input type="checkbox" name="opps" checked> Transférer aussi ${ops.length} opportunité${ops.length>1?"s":""} en cours</label>`:""}</div>`;
+  const submit=async f=>{
+    const to=sUuid(f.to);
+    const ok=await write(upd("comptes",c.id,{commercial_id:to}),"Contact transféré à "+nomMembre(to));
+    if(ok&&f.opps&&ops.length){ await sb.from("opportunites").update({commercial_id:to}).in("id",ops.map(o=>o.id)); await load(); }
+    return ok;
+  };
+  submit.validate=f=>!UUID_RE.test(f.to||"")?["to","Choisissez à qui transférer."]:null;
+  modal("Transférer « "+c.nom+" »",h,submit,"Transférer");
+}
+
+/* ---- Canal d'acquisition ---- */
+let acqPeriode="30j", acqDu="", acqAu="";
+function periode(){
+  const now=new Date(), d0=x=>{const z=new Date(x);z.setHours(0,0,0,0);return z;};
+  switch(acqPeriode){
+    case "7j": return [d0(Date.now()-6*864e5), null];
+    case "30j": return [d0(Date.now()-29*864e5), null];
+    case "mois": return [new Date(now.getFullYear(),now.getMonth(),1), null];
+    case "mois-1": return [new Date(now.getFullYear(),now.getMonth()-1,1), new Date(now.getFullYear(),now.getMonth(),1)];
+    case "trim": return [new Date(now.getFullYear(),Math.floor(now.getMonth()/3)*3,1), null];
+    case "annee": return [new Date(now.getFullYear(),0,1), null];
+    case "perso": return [acqDu?new Date(acqDu+"T00:00"):null, acqAu?new Date(new Date(acqAu+"T00:00").getTime()+864e5):null];
+    default: return [null,null];
+  }
+}
+function viewAcquisition(v){
+  const [du,au]=periode(), inP=d=>{ const t=new Date(d).getTime(); return (!du||t>=du.getTime())&&(!au||t<au.getTime()); };
+  const srcOf=new Map(state.comptes.map(c=>[c.id,c.source||"Sans source"]));
+  const rows={}; const R=s=>rows[s]=rows[s]||{s,contacts:0,clients:0,opps:0,gagnees:0,ca:0,pipe:0};
+  state.comptes.forEach(c=>{ if(inP(c.created_at)){ const r=R(c.source||"Sans source"); r.contacts++; if(c.statut==="client") r.clients++; } });
+  state.opportunites.forEach(o=>{ const s=srcOf.get(o.compte_id)||"Sans source"; if(inP(o.created_at)){ R(s).opps++; if(o.issue==="en_cours") R(s).pipe+=(+o.montant_mad||0); }
+    if(o.issue==="gagnee"&&inP(o.updated_at)){ R(s).gagnees++; R(s).ca+=(+o.montant_mad||0); } });
+  const list=Object.values(rows).sort((a,b)=>b.contacts-a.contacts||b.ca-a.ca);
+  const tot=list.reduce((t,r)=>({contacts:t.contacts+r.contacts,opps:t.opps+r.opps,gagnees:t.gagnees+r.gagnees,ca:t.ca+r.ca}),{contacts:0,opps:0,gagnees:0,ca:0});
+  const max=Math.max(1,...list.map(r=>r.contacts)), nf=new Intl.NumberFormat("fr-FR");
+  const imp=state.comptes.filter(c=>c.import_ref).length;
+  const P={"7j":"7 derniers jours","30j":"30 derniers jours",mois:"Ce mois-ci","mois-1":"Mois dernier",trim:"Ce trimestre",annee:"Cette année",tout:"Depuis le début",perso:"Dates personnalisées"};
+  v.innerHTML=`<div class="section-head"><div><h2>Canal d’acquisition</h2><p class="hint">Nouveaux contacts, opportunités et chiffre d’affaires par source (salon, événement, canal)</p></div></div>
+  <div class="filters" style="margin-bottom:12px"><select id="f-per" aria-label="Période">${Object.entries(P).map(([k,l])=>`<option value="${k}" ${acqPeriode===k?"selected":""}>${l}</option>`).join("")}</select>
+   ${acqPeriode==="perso"?`<input id="f-du" type="date" aria-label="Du" value="${acqDu}"><input id="f-au" type="date" aria-label="Au" value="${acqAu}">`:""}</div>
+  <div class="kpis" style="padding-top:0">
+    <div class="kpi"><div class="lab">Nouveaux contacts</div><div class="val">${nf.format(tot.contacts)}</div><div class="sub">${(n=>n+" source"+(n>1?"s":"")+" active"+(n>1?"s":""))(list.filter(r=>r.contacts).length)}</div></div>
+    <div class="kpi"><div class="lab">Opportunités créées</div><div class="val">${nf.format(tot.opps)}</div><div class="sub">${tot.contacts?Math.round(tot.opps*1000/tot.contacts)/10:0} % des nouveaux contacts</div></div>
+    <div class="kpi"><div class="lab">Affaires gagnées</div><div class="val">${nf.format(tot.gagnees)}</div><div class="sub">sur la période</div></div>
+    <div class="kpi"><div class="lab">CA gagné</div><div class="val">${madShort(tot.ca)}<small>MAD</small></div><div class="sub">HT, affaires gagnées sur la période</div></div>
+  </div>
+  <div class="panel"><div class="tbl-wrap"><table><thead><tr><th>Source</th><th style="min-width:120px"><span class="sr-only">Volume</span></th><th class="num">Contacts</th><th class="num">Dont clients</th><th class="num">Opportunités</th><th class="num">Conversion</th><th class="num">Gagnées</th><th class="num">CA gagné MAD</th><th class="num">Pipeline MAD</th></tr></thead><tbody>
+  ${list.length?list.map(r=>`<tr><td><b>${esc(r.s)}</b></td><td><div class="prob" style="height:6px"><i style="width:${Math.round(r.contacts*100/max)}%"></i></div></td><td class="num">${nf.format(r.contacts)}</td><td class="num">${r.clients||"·"}</td><td class="num">${r.opps||"·"}</td><td class="num">${r.contacts?(Math.round(r.opps*1000/r.contacts)/10).toLocaleString("fr-FR")+" %":"·"}</td><td class="num">${r.gagnees||"·"}</td><td class="num">${r.ca?mad(r.ca):"·"}</td><td class="num">${r.pipe?mad(r.pipe):"·"}</td></tr>`).join(""):`<tr><td colspan="9"><p class="hint">Aucun contact créé sur cette période.</p></td></tr>`}
+  </tbody></table></div>
+  <p class="hint" style="margin-top:12px">Pour mesurer le ROI d’un salon : choisissez la période de l’événement, puis comparez le CA gagné de sa source à son coût. ${imp?`Les ${nf.format(imp)} contacts importés de l’ancien CRM portent la date de l’import (16 oct. 2026), pas leur date de création d’origine.`:""}</p></div>`;
+  $("#f-per").addEventListener("change",e=>{acqPeriode=e.target.value;viewAcquisition(v);});
+  if($("#f-du")){ $("#f-du").addEventListener("change",e=>{acqDu=e.target.value;viewAcquisition(v);}); $("#f-au").addEventListener("change",e=>{acqAu=e.target.value;viewAcquisition(v);}); }
+}
+
+/* ---- Historique & commentaires ---- */
+function histItem(h){
+  const sup=h.action==="suppression";
+  return `<div class="hist${sup?" del":""}"><div class="when">${new Date(h.created_at).toLocaleDateString("fr-FR",{day:"2-digit",month:"short"})}<br>${new Date(h.created_at).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}</div>
+   <div><div>${esc(h.resume)}</div><div class="hint">${esc(nomMembre(h.auteur_id))}${sup?` · <span class="pill bad">Suppression</span>`:""}</div></div></div>`;
+}
+async function loadHistorique(el, col, id, limit){
+  el.innerHTML=`<div class="skeleton" style="height:40px"></div>`;
+  let q=sb.from("historique").select("*").order("created_at",{ascending:false}).limit(limit||200);
+  if(col) q=q.eq(col,id);
+  const {data,error}=await q;
+  if(error){ el.innerHTML=`<p class="hint">Historique indisponible : ${esc(errorCopy(error)[1])}</p>`; return; }
+  el.innerHTML=data.length?`<div class="feed">${data.map(histItem).join("")}</div>`:`<p class="hint">Aucune action enregistrée pour l’instant. Chaque création, modification et suppression apparaîtra ici.</p>`;
+}
+async function loadCommentaires(el, oppId){
+  const {data,error}=await sb.from("commentaires").select("*").eq("opportunite_id",oppId).order("created_at",{ascending:true});
+  if(error){ el.innerHTML=`<p class="hint">Commentaires indisponibles : ${esc(errorCopy(error)[1])}</p>`; return; }
+  const top=data.filter(c=>!c.parent_id), kids=id=>data.filter(c=>c.parent_id===id);
+  const canDel=c=>me&&(c.auteur_id===me.id||["admin","superviseur"].includes(me.role));
+  const item=(c,reply)=>`<div class="cmt${reply?" reply":""}" data-cid="${c.id}"><div class="cmt-head"><b>${esc(nomMembre(c.auteur_id))}</b> <span class="hint">${new Date(c.created_at).toLocaleString("fr-FR",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"})}</span></div>
+     <div style="white-space:pre-line">${esc(c.texte)}</div>
+     <div class="tools acts-inline">${reply?"":`<button class="btn small" data-reply="${c.id}">Répondre</button>`}${canDel(c)?`<button class="btn small" data-act="del-cmt" data-id="${c.id}">Supprimer</button>`:""}</div>
+     ${reply?"":`<div class="replies">${kids(c.id).map(k=>item(k,true)).join("")}</div><form class="reply-form" data-parent="${c.id}" hidden><textarea aria-label="Votre réponse" placeholder="Votre réponse…" required></textarea><div class="tools" style="margin-top:6px"><button class="btn small primary" type="submit">Répondre</button></div></form>`}</div>`;
+  el.innerHTML=`<form id="cmt-form"><label for="cmt-new" class="sr-only">Nouveau commentaire</label><textarea id="cmt-new" placeholder="Écrire un commentaire pour l’équipe…" required></textarea><div class="tools" style="margin-top:6px;justify-content:flex-end"><button class="btn small primary" type="submit">Publier</button></div></form>
+    <div class="cmts">${top.length?top.slice().reverse().map(c=>item(c,false)).join(""):`<p class="hint">Aucun commentaire. Lancez la discussion avec l’équipe.</p>`}</div>`;
+  const post=async(texte,parent)=>{ texte=texte.trim(); if(!texte) return; const {error}=await sb.from("commentaires").insert({opportunite_id:oppId,parent_id:parent||null,texte}); if(error){ toast(errorCopy(error).join(" — ")); return; } loadCommentaires(el,oppId); };
+  el.querySelector("#cmt-form").addEventListener("submit",e=>{ e.preventDefault(); const b=e.target.querySelector("button"); b.disabled=true; post(e.target.querySelector("textarea").value); });
+  el.querySelectorAll("[data-reply]").forEach(b=>b.addEventListener("click",()=>{ const f=el.querySelector(`.reply-form[data-parent="${b.dataset.reply}"]`); f.hidden=!f.hidden; if(!f.hidden) f.querySelector("textarea").focus(); }));
+  el.querySelectorAll(".reply-form").forEach(f=>f.addEventListener("submit",e=>{ e.preventDefault(); f.querySelector("button").disabled=true; post(f.querySelector("textarea").value,f.dataset.parent); }));
+  el._reload=()=>loadCommentaires(el,oppId);
+}
+
+/* ---- Fiche opportunité ---- */
+let oppSection="activites";
+function openOpp(o){
+  if(!o) return;
+  lastFocus=lastFocus||document.activeElement; dirty=false;
+  const c=byId(state.comptes,o.compte_id), p=byId(state.produits,o.produit_id), idx=ETAPES.indexOf(o.etape);
+  const acts=state.activites.filter(a=>a.opportunite_id===o.id).sort((a,b)=>(a.statut==="a_faire")-(b.statut==="a_faire")||b.date_activite.localeCompare(a.date_activite));
+  const todo=acts.filter(a=>a.statut==="a_faire"), done=acts.filter(a=>a.statut!=="a_faire");
+  const dv=state.devis.filter(d=>d.opportunite_id===o.id);
+  const closed=o.issue!=="en_cours";
+  $("#modal-slot").innerHTML=`<div class="overlay" id="ov"><div class="modal opp-modal" role="dialog" aria-modal="true" aria-labelledby="otitle">
+   <div class="modal-head"><div style="min-width:0"><div class="lab-mono">Opportunité</div><h3 id="otitle" class="opp-title">${esc(o.titre)}</h3>
+     <div class="tools" style="margin-top:6px">${c?`<button class="linkish" data-act="open-compte" data-id="${c.id}">${esc(c.nom)}</button><span class="pill ${c.segment[0]}">${c.segment[0]}</span>`:""}${closed?`<span class="pill ${o.issue==="gagnee"?"ok":"bad"}">${o.issue==="gagnee"?"Gagnée":"Perdue"}</span>`:""}${o.raison_perte?`<span class="hint">${esc(o.raison_perte)}</span>`:""}</div></div>
+     <button class="x" id="mx" aria-label="Fermer">×</button></div>
+   <ol class="stepper" aria-label="Étapes">${ETAPES.map((e,i)=>`<li><button type="button" class="step ${i<idx?"done":i===idx?"cur":""}" ${closed||i===idx?"disabled":""} data-act="move" data-id="${o.id}" data-to="${e}" ${i===idx?'aria-current="step"':""}><span class="dotn">${i<idx?"✓":i+1}</span>${ETAPE_LABEL[e]}</button></li>`).join("")}</ol>
+   <div class="opp-facts">
+     <div><div class="lab-mono">Montant</div><b class="mono">${mad(o.montant_mad)} MAD</b></div>
+     <div><div class="lab-mono">Probabilité</div><b class="mono">${o.probabilite??"–"} %</b></div>
+     <div><div class="lab-mono">Clôture prévue</div><b>${o.date_cloture_prevue?fmtDate(o.date_cloture_prevue):"—"}</b></div>
+     <div><div class="lab-mono">Responsable</div><b>${esc(nomMembre(o.commercial_id))}</b>${o.createur_id&&o.createur_id!==o.commercial_id?`<div class="hint">créée par ${esc(nomMembre(o.createur_id))}</div>`:""}</div>
+     <div><div class="lab-mono">Machine</div><b>${p?esc(p.nom):"—"}</b></div>
+   </div>
+   <div class="tools quick">
+     <button class="btn small" data-act="log" data-opp="${o.id}" data-type="tache">+ Tâche</button><button class="btn small" data-act="log" data-opp="${o.id}" data-type="evenement">+ Événement</button><button class="btn small" data-act="log" data-opp="${o.id}" data-type="appel">+ Appel</button><button class="btn small primary" data-act="new-devis" data-opp="${o.id}">Créer un devis</button>
+     <span style="flex:1"></span>
+     ${closed?`<button class="btn small" data-act="reopen" data-id="${o.id}">Rouvrir</button>`:`<button class="btn small ok" data-act="won" data-id="${o.id}">Gagnée</button><button class="btn small bad" data-act="lost" data-id="${o.id}">Perdue</button>`}
+     <button class="btn small" data-act="edit-opp" data-id="${o.id}">Modifier</button>
+   </div>
+   <div class="seg-tabs" role="tablist" aria-label="Sections de l’opportunité">${[["activites","Activités ("+acts.length+")"],["commentaires","Commentaires"],["devis","Devis ("+dv.length+")"],["historique","Historique"]].map(([k,l])=>`<button type="button" role="tab" id="ot-${k}" aria-controls="op-${k}" aria-selected="${oppSection===k}" data-osec="${k}">${l}</button>`).join("")}</div>
+   <div id="op-activites" role="tabpanel" aria-labelledby="ot-activites" ${oppSection==="activites"?"":"hidden"}>${todo.length?`<h4>À faire</h4><div class="feed">${todo.map(a=>feedItem(a,{noCompte:true,noOpp:true})).join("")}</div>`:""}${done.length?`<h4>Fait</h4><div class="feed">${done.map(a=>feedItem(a,{noCompte:true,noOpp:true})).join("")}</div>`:""}${acts.length?"":`<p class="hint">Aucune activité sur cette opportunité. Utilisez Tâche, Événement ou Appel ci-dessus.</p>`}</div>
+   <div id="op-commentaires" role="tabpanel" aria-labelledby="ot-commentaires" ${oppSection==="commentaires"?"":"hidden"}><div class="skeleton" style="height:40px"></div></div>
+   <div id="op-devis" role="tabpanel" aria-labelledby="ot-devis" ${oppSection==="devis"?"":"hidden"}>${dv.length?`<div class="closed-list">${dv.map(x=>`<div class="closed-row"><div><b translate="no">${esc(devisNum(x))}</b><div class="hint">${fmtDate(x.created_at)} · ${mad(x.montant_mad)} MAD HT</div></div><div class="tools"><span class="pill ${DEVIS_PILL[x.statut]||""}">${DEVIS_LABEL[x.statut]}</span><button class="btn small" data-act="edit-devis" data-id="${x.id}">Modifier</button><button class="btn small" data-act="print-devis" data-id="${x.id}">Imprimer</button></div></div>`).join("")}</div>`:`<p class="hint">Aucun devis. « Créer un devis » le rattache à cette opportunité.</p>`}</div>
+   <div id="op-historique" role="tabpanel" aria-labelledby="ot-historique" ${oppSection==="historique"?"":"hidden"}></div>
+  </div></div>`;
+  $("#mx").onclick=()=>{ reopenAfter=null; closeModal(); };
+  $("#ov").addEventListener("click",e=>{ if(e.target.id==="ov"){ reopenAfter=null; closeModal(); } });
+  trapFocus($("#ov .modal"));
+  const loaded={};
+  const show=k=>{ oppSection=k; document.querySelectorAll("[data-osec]").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.osec===k))); ["activites","commentaires","devis","historique"].forEach(s=>$("#op-"+s).hidden=s!==k);
+    if(k==="commentaires"&&!loaded.c){ loaded.c=1; loadCommentaires($("#op-commentaires"),o.id); }
+    if(k==="historique"&&!loaded.h){ loaded.h=1; loadHistorique($("#op-historique"),"opportunite_id",o.id); } };
+  document.querySelectorAll("[data-osec]").forEach(b=>b.addEventListener("click",()=>show(b.dataset.osec)));
+  $(".seg-tabs").addEventListener("keydown",e=>{ if(!["ArrowLeft","ArrowRight"].includes(e.key)) return; const ks=["activites","commentaires","devis","historique"]; const i=(ks.indexOf(oppSection)+(e.key==="ArrowRight"?1:3))%4; show(ks[i]); $("#ot-"+ks[i]).focus(); });
+  show(oppSection);
+  // Toute action lancée depuis la fiche y revient ensuite.
+  $("#ov .modal").addEventListener("click",e=>{ const t=e.target.closest("[data-act]"); if(t&&!["open-compte","del-act","del-cmt","del-cmt-yes","print-devis"].includes(t.dataset.act)) reopenAfter=()=>openOpp(byId(state.opportunites,o.id)); },true);
+  $("#mx").focus();
+}
 
 /* ---- Devis ---- */
 // Mentions légales imprimées en pied de devis : à compléter (raison sociale, ICE, RC, IF, adresse, RIB…).
@@ -902,7 +1150,7 @@ function formDevis(d, preset){
     setStatus("busy","Enregistrement…");
     const { data:id, error } = await sb.rpc("enregistrer_devis", { p: payload });
     if(error){ setStatus("bad","Échec"); const [t,dd]=errorCopy(error); $("#merr").textContent=t+" — "+dd; b.disabled=false; b.removeAttribute("aria-busy"); $("#dv-save-print").disabled=false; if(printWin) printWin.close(); return; }
-    toast("Devis enregistré"); closeModal(true); await load();
+    toast("Devis enregistré"); const back=reopenAfter; reopenAfter=null; closeModal(true); await load(); if(back) back();
     if(printWin){ const dv=byId(state.devis,id); if(dv) imprimerDevis(dv, printWin); else printWin.close(); }
   };
   form.addEventListener("submit",e=>{ e.preventDefault(); save(null); });
