@@ -1163,6 +1163,7 @@ function formDevis(d, preset){
     setStatus("busy","Enregistrement…");
     const { data:id, error } = await sb.rpc("enregistrer_devis", { p: payload });
     if(error){ setStatus("bad","Échec"); const [t,dd]=errorCopy(error); $("#merr").textContent=t+" — "+dd; b.disabled=false; b.removeAttribute("aria-busy"); $("#dv-save-print").disabled=false; if(printWin) printWin.close(); return; }
+    if(payload.agence){ await sb.from("devis").update({agence:payload.agence}).eq("id",id); }
     toast("Devis enregistré"); const back=reopenAfter; reopenAfter=null; closeModal(true); await load(); if(back) back();
     if(printWin){ const dv=byId(state.devis,id); if(dv) imprimerDevis(dv, printWin); else printWin.close(); }
   };
