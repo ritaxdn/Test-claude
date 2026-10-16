@@ -288,6 +288,32 @@ body:not(.pilote) .pilote-only{display:none!important}
 .rep-bar .v{font-family:var(--f-mono);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
 .alert-row{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}
 .alert-row:last-child{border-bottom:0}
+/* Agenda */
+.ag-scroll{max-height:72vh;overflow:auto;border-radius:18px;border:1px solid var(--line);background:var(--glass-strong)}
+.ag-head,.ag-body{display:grid;grid-template-columns:52px repeat(var(--cols),minmax(0,1fr))}
+.ag-head{position:sticky;top:0;z-index:4;background:var(--bg);border-bottom:1px solid var(--line-strong)}
+.ag-dh{padding:8px 4px;text-align:center;font-size:11px;color:var(--muted);text-transform:capitalize}
+.ag-dh b{display:grid;place-items:center;width:32px;height:32px;margin:2px auto 0;font-family:var(--f-display);font-size:18px;color:var(--ink);font-weight:500;border-radius:50%}
+.ag-dh.today b{background:var(--ink);color:var(--on-ink)}
+.ag-body{position:relative}
+.ag-hours{position:relative}
+.ag-hours div{position:absolute;right:8px;transform:translateY(-50%);font-family:var(--f-mono);font-size:10px;color:var(--muted)}
+.ag-day{position:relative;border-left:1px solid var(--line);cursor:copy;background-image:linear-gradient(to bottom,var(--line) 1px,transparent 1px),linear-gradient(to bottom,transparent 50%,color-mix(in srgb,var(--line) 45%,transparent) 50%,color-mix(in srgb,var(--line) 45%,transparent) calc(50% + 1px),transparent calc(50% + 1px));background-size:100% 52px}
+.ag-day.wkend{background-color:color-mix(in srgb,var(--ink) 3%,transparent)}
+.ag-day.over{background-color:color-mix(in srgb,var(--accent) 8%,transparent)}
+.ag-ev{position:absolute;z-index:1;border:0;border-left:3px solid var(--accent);border-radius:8px;padding:3px 6px;text-align:left;font-size:11px;line-height:1.25;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;gap:1px;color:var(--ink);background:color-mix(in srgb,var(--accent) 15%,var(--bg));box-shadow:var(--shadow-sm)}
+.ag-ev:hover{z-index:3;box-shadow:var(--shadow)}
+.ag-ev b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ag-ev span{color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ag-ev.call{border-left-color:var(--ok);background:color-mix(in srgb,var(--ok) 13%,var(--bg))}
+.ag-ev.task{border-left-color:var(--warn);background:color-mix(in srgb,var(--warn) 13%,var(--bg))}
+.ag-ev.evt{border-left-color:#E91E8C;background:color-mix(in srgb,#E91E8C 12%,var(--bg))}
+.ag-ev.done{opacity:.6}.ag-ev.done b{text-decoration:line-through}
+.ag-ev.prio{box-shadow:inset 0 0 0 1.5px var(--bad)}
+.ag-now{position:absolute;left:0;right:0;height:2px;background:var(--bad);z-index:2;pointer-events:none}
+.ag-now::before{content:"";position:absolute;left:-5px;top:-4px;width:10px;height:10px;border-radius:50%;background:var(--bad)}
+.ag-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink-2);margin-top:10px}
+.ag-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
 .alert-row .sq{width:9px;height:9px;border-radius:3px;margin-top:6px;flex:none;background:var(--warn)}
 .alert-row .sq.bad{background:var(--bad)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.ecg path{stroke-dashoffset:0}}
@@ -309,6 +335,7 @@ body:not(.pilote) .pilote-only{display:none!important}
     <nav class="tabs" aria-label="Sections du CRM">
       <span class="tab-grp pilote-only" aria-hidden="true">Mon travail</span>
       <a class="tab" href="#aujourdhui" data-tab="aujourdhui" id="tab-aujourdhui">Aujourd’hui</a>
+      <a class="tab" href="#agenda" data-tab="agenda" id="tab-agenda">Agenda</a>
       <a class="tab" href="#pipeline" data-tab="pipeline" id="tab-pipeline">Pipeline</a>
       <a class="tab" href="#comptes" data-tab="comptes" id="tab-comptes">Clients</a>
       <a class="tab" href="#activites" data-tab="activites" id="tab-activites">Activités</a>
@@ -489,7 +516,7 @@ function render(){
   document.querySelectorAll(".tab").forEach(b=>{ if(b.dataset.tab===tab) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current"); });
   const v=$("#view");
   if(!loaded){ v.innerHTML=`<div class="board-scroll"><div class="board">${ETAPES.map(()=>'<div class="col"><div class="skeleton"></div><div class="skeleton"></div></div>').join("")}</div></div>`; return; }
-  ({aujourdhui:viewAujourdhui,pipeline:viewPipeline,comptes:viewComptes,activites:viewActivites,devis:viewDevis,acquisition:viewAcquisition,superviseur:viewSuperviseur,reporting:viewReporting,equipe:viewEquipe})[tab](v);
+  ({aujourdhui:viewAujourdhui,agenda:viewAgenda,pipeline:viewPipeline,comptes:viewComptes,activites:viewActivites,devis:viewDevis,acquisition:viewAcquisition,superviseur:viewSuperviseur,reporting:viewReporting,equipe:viewEquipe})[tab](v);
 }
 
 function oppCard(o){
@@ -810,6 +837,10 @@ document.addEventListener("click",async e=>{
   const id=t.dataset.id, act=t.dataset.act;
   if(act==="new-compte") return formCompte();
   if(act==="quick-visite") return formVisite();
+  if(act==="ag-move"){ agStart=new Date(agStart); agStart.setDate(agStart.getDate()+(+t.dataset.n)); agDay=null; return viewAgenda($("#view")); }
+  if(act==="ag-today"){ agStart=lundiDe(new Date()); agDay=null; return viewAgenda($("#view")); }
+  if(act==="ag-day"){ agDay=+t.dataset.n; return viewAgenda($("#view")); }
+  if(act==="ag-new"){ const d=new Date(); d.setDate(d.getDate()+1); d.setHours(10,0,0,0); return formActivite(null,null,{type:"rdv",when:d,com:agQui&&agQui!=="tous"?agQui:undefined}); }
   if(act==="today-tab"){ todayTab=t.dataset.v; return viewAujourdhui($("#view")); }
   if(act==="today-qui"){ todayQui=t.dataset.v; return viewAujourdhui($("#view")); }
   if(act==="relance-ok"){ t.disabled=true; return write(upd("activites",id,{date_prochaine_action:null}),"Relance retirée de la liste"); }
@@ -857,7 +888,7 @@ document.addEventListener("keydown",e=>{
   if(e.key==="Escape" && $("#ov")) closeModal();
   if(e.key==="Enter"&&e.target.matches("tr.click")) e.target.click();
 });
-const TABS=["aujourdhui","pipeline","comptes","activites","devis","acquisition","superviseur","reporting","equipe"];
+const TABS=["aujourdhui","agenda","pipeline","comptes","activites","devis","acquisition","superviseur","reporting","equipe"];
 const PILOTE_TABS=["acquisition","superviseur","reporting","equipe"];
 function syncTab(){ const h=location.hash.slice(1); if(TABS.includes(h)&&h!==tab){ tab=h; try{localStorage.setItem("crm-tab",tab);}catch(_){} if(currentUser) render(); } }
 window.addEventListener("hashchange",syncTab);
@@ -879,22 +910,26 @@ function comptePicker(id, cId){
 }
 const compteIdFromLabel = v => { const c=state.comptes.find(x=>compteLabel(x)===v); return c?c.id:""; };
 
+const DUREES=[["15","15 min"],["30","30 min"],["45","45 min"],["60","1 h"],["90","1 h 30"],["120","2 h"],["180","3 h"],["240","4 h"],["480","Journée"]];
+const dureeDefaut=t=>({appel:15,whatsapp:15,email:15,tache:30,visite:60,rdv:60,demo:90,formation:180,evenement:120}[t]||30);
 function formActivite(oppId, compteId, preset, a){
   preset=preset||{}; a=a||null;
   const o=oppId?byId(state.opportunites,oppId):(a?byId(state.opportunites,a.opportunite_id):null);
   const cId=(a&&a.compte_id)||compteId||(o&&o.compte_id)||"";
   const type=(a&&a.type)||preset.type||"appel";
   const aFaire = a ? a.statut==="a_faire" : TYPES_A_FAIRE.includes(type);
-  const when = a ? toLocalInput(a.date_activite) : aFaire ? toLocalInput(new Date(Date.now()+864e5).setHours(10,0,0,0)) : toLocalInput(Date.now());
+  const when = a ? toLocalInput(a.date_activite) : preset.when ? toLocalInput(preset.when) : aFaire ? toLocalInput(new Date(Date.now()+864e5).setHours(10,0,0,0)) : toLocalInput(Date.now());
   const titre = a ? "Modifier l’activité" : ({tache:"Nouvelle tâche",evenement:"Nouvel événement",appel:"Nouvel appel",rdv:"Nouveau RDV"}[type]||"Nouvelle activité");
   const h=`<div class="form-grid">
    ${fld("m-type","Type",`<select id="m-type" name="type">${opt(Object.entries(TYPES_ACT),type)}</select>`)}
    ${fld("m-label","Label",`<input id="m-label" name="label" list="dl-labels" autocomplete="off" placeholder="Ex. 🔄 Relance devis…" value="${esc((a&&a.label)||preset.label||"")}"><datalist id="dl-labels">${labels().map(l=>`<option value="${esc(l)}">`).join("")}</datalist>`)}
    ${fld("m-when","Date et heure",`<input id="m-when" name="date_activite" type="datetime-local" value="${when}">`)}
+   ${fld("m-duree","Durée",`<select id="m-duree" name="duree_min">${opt(DUREES,String((a&&a.duree_min)||preset.duree||dureeDefaut(type)))}</select>`)}
    ${fld("m-statut","Statut",`<select id="m-statut" name="statut">${opt([["fait","Fait"],["a_faire","À faire"]],aFaire?"a_faire":"fait")}</select>`)}
+   ${fld("m-lieu","Lieu",`<input id="m-lieu" name="lieu" autocomplete="off" placeholder="Adresse, showroom, visio…" value="${esc((a&&a.lieu)||"")}">`)}
    ${fld("m-compte","Client",comptePicker("m-compte",cId),true)}
    ${fld("m-opp","Opportunité",`<select id="m-opp" name="opportunite_id">${opt(state.opportunites.filter(x=>x.compte_id===cId&&(x.issue==="en_cours"||x.id===(o&&o.id))).map(x=>[x.id,x.titre]),(o&&o.id)||"","—")}</select>`)}
-   ${fld("m-com","Responsable",`<select id="m-com" name="commercial_id">${opt(equipeOpts(),(a&&a.commercial_id)||(me&&me.id),"Non assigné")}</select>`)}
+   ${fld("m-com","Responsable",`<select id="m-com" name="commercial_id">${opt(equipeOpts(),(a&&a.commercial_id)||preset.com||(me&&me.id),"Non assigné")}</select>`)}
    <div class="field" style="justify-content:flex-end"><label class="check"><input type="checkbox" id="m-prio" name="prioritaire" ${(a&&a.prioritaire)||preset.prioritaire?"checked":""}> Prioritaire</label></div>
    ${fld("m-res","Compte rendu / description",`<textarea id="m-res" name="resume" placeholder="Ce qui s’est dit, objections, intérêt…">${esc((a&&a.resume)||"")}</textarea>`,true)}
    ${fld("m-next","Prochaine action",`<input id="m-next" name="prochaine_action" placeholder="Ex. Envoyer le devis…" autocomplete="off" value="${esc((a&&a.prochaine_action)||"")}">`)}
@@ -903,7 +938,7 @@ function formActivite(oppId, compteId, preset, a){
   const submit=async f=>{
     const statut=f.statut==="a_faire"?"a_faire":"fait";
     const obj={compte_id:sUuid(compteIdFromLabel(f.compte_label)),opportunite_id:sUuid(f.opportunite_id),commercial_id:sUuid(f.commercial_id),type:sEnum(f.type,Object.keys(TYPES_ACT)),
-      label:sTxt(f.label),prioritaire:!!f.prioritaire,statut,date_activite:f.date_activite?new Date(f.date_activite).toISOString():new Date().toISOString(),
+      label:sTxt(f.label),prioritaire:!!f.prioritaire,statut,duree_min:sInt(f.duree_min,5,1440),lieu:sTxt(f.lieu),date_activite:f.date_activite?new Date(f.date_activite).toISOString():new Date().toISOString(),
       resume:sTxt(f.resume),prochaine_action:sTxt(f.prochaine_action),date_prochaine_action:sDate(f.date_prochaine_action)};
     if(statut==="fait" && (!a || a.statut!=="fait")) obj.fait_le=new Date().toISOString();
     if(statut==="a_faire") obj.fait_le=null;
@@ -912,7 +947,8 @@ function formActivite(oppId, compteId, preset, a){
   submit.validate=f=>!compteIdFromLabel(f.compte_label)?["compte_label","Choisissez le client dans la liste."]:null;
   modal(titre,h,submit,a?"Enregistrer":"Ajouter");
   $("#m-compte").addEventListener("change",e=>{ const id=compteIdFromLabel(e.target.value); $("#m-opp").innerHTML=opt(state.opportunites.filter(x=>x.compte_id===id&&x.issue==="en_cours").map(x=>[x.id,x.titre]),"","—"); });
-  $("#m-type").addEventListener("change",e=>{ if(!a) $("#m-statut").value=TYPES_A_FAIRE.includes(e.target.value)?"a_faire":"fait"; });
+  $("#m-type").addEventListener("change",e=>{ if(!a){ if(!preset.when) $("#m-statut").value=TYPES_A_FAIRE.includes(e.target.value)?"a_faire":"fait"; if(!preset.duree) $("#m-duree").value=String(dureeDefaut(e.target.value)); } });
+  if(preset.when && !a) $("#m-statut").value = new Date(preset.when).getTime()>Date.now()-36e5 ? "a_faire" : "fait";
 }
 
 function feedItem(a, opts){
@@ -1089,6 +1125,73 @@ function viewAujourdhui(v){
       <div class="mini-row"><span>CA signé</span><b style="font-family:var(--f-mono)">${mad(gagne)} MAD</b></div></div>
   </div></div>`;
 }
+
+/* ---- Agenda ---- */
+let agStart=null, agQui=null, agDay=null;
+const AG_H0=7, AG_H1=21, AG_PX=52;
+const AG_CLS={rdv:"",visite:"",demo:"",formation:"",evenement:"evt",appel:"call",whatsapp:"call",email:"call",tache:"task",autre:"task"};
+const lundiDe=d=>{ const z=startOfDay(d); z.setDate(z.getDate()-((z.getDay()+6)%7)); return z; };
+const hm=d=>new Date(d).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
+function viewAgenda(v){
+  if(!agStart) agStart=lundiDe(new Date());
+  if(agQui==null) agQui=me?me.id:"tous";
+  const mobile=window.matchMedia("(max-width:720px)").matches;
+  const days=[...Array(7)].map((_,i)=>{ const d=new Date(agStart); d.setDate(d.getDate()+i); return d; });
+  const end=new Date(agStart); end.setDate(end.getDate()+7);
+  const qui=a=>agQui==="tous"||(a.commercial_id||a.createur_id)===agQui;
+  const evs=state.activites.filter(a=>{ const t=new Date(a.date_activite); return t>=agStart&&t<end&&qui(a); });
+  let shown=evs.some(a=>new Date(a.date_activite).getDay()===0)?days:days.slice(0,6);
+  const now=new Date(), inWeek=now>=agStart&&now<end;
+  if(mobile){ if(agDay==null||agDay>=shown.length) agDay=inWeek?Math.min((now.getDay()+6)%7,shown.length-1):0; }
+  const cols=mobile?[shown[agDay]]:shown;
+  const nRdv=evs.filter(a=>!["appel","whatsapp","email","tache","autre"].includes(a.type)).length, nCall=evs.filter(a=>["appel","whatsapp","email"].includes(a.type)).length, nTache=evs.filter(a=>a.type==="tache"||a.type==="autre").length;
+  const lab=`${days[0].toLocaleDateString("fr-FR",{day:"numeric",month:"short"})} – ${days[6].toLocaleDateString("fr-FR",{day:"numeric",month:"short",year:"numeric"})}`;
+  const dayHtml=d=>{
+    const k=localISO(d), list=evs.filter(a=>localISO(new Date(a.date_activite))===k).map(a=>{ const s=new Date(a.date_activite); const st=s.getHours()*60+s.getMinutes(); return {a,st,en:st+Math.max(15,a.duree_min||dureeDefaut(a.type))}; }).sort((x,y)=>x.st-y.st||y.en-x.en);
+    // couloirs pour les RDV qui se chevauchent
+    let cl=[], clEnd=-1; const clusters=[];
+    list.forEach(e=>{ if(e.st>=clEnd){ cl=[]; clusters.push(cl); clEnd=-1; } let lane=0; while(cl.some(x=>x.lane===lane&&x.en>e.st)) lane++; e.lane=lane; cl.push(e); clEnd=Math.max(clEnd,e.en); });
+    clusters.forEach(c=>{ const n=Math.max(...c.map(e=>e.lane))+1; c.forEach(e=>e.n=n); });
+    const top=m=>Math.max(0,Math.min((AG_H1-AG_H0)*AG_PX-14,(m-AG_H0*60)/60*AG_PX));
+    const evHtml=list.map(({a,st,en,lane,n})=>{ const c=byId(state.comptes,a.compte_id), t=top(st), h=Math.max(20,top(en)-t-2);
+      const titre=c?c.nom:(a.label||TYPES_ACT[a.type]);
+      return `<button class="ag-ev ${AG_CLS[a.type]||""}${a.statut==="fait"?" done":""}${a.prioritaire?" prio":""}" draggable="true" data-act="edit-act" data-id="${a.id}" data-dur="${en-st}" style="top:${t}px;height:${h}px;left:calc(${lane*100/n}% + 2px);width:calc(${100/n}% - 4px)" title="${esc([hm(a.date_activite),TYPES_ACT[a.type],a.label,c&&c.nom,a.lieu,agQui==="tous"?nomMembre(a.commercial_id||a.createur_id):""].filter(Boolean).join(" · "))}">
+        <b>${hm(a.date_activite)} ${esc(titre)}</b>${h>34?`<span>${esc([TYPES_ACT[a.type],a.label&&c?a.label:"",a.lieu].filter(Boolean).join(" · "))}</span>`:""}${h>50&&agQui==="tous"?`<span>${esc(nomMembre(a.commercial_id||a.createur_id))}</span>`:""}</button>`; }).join("");
+    const nowL=localISO(now)===k?`<div class="ag-now" style="top:${top(now.getHours()*60+now.getMinutes())}px" aria-hidden="true"></div>`:"";
+    return `<div class="ag-day${d.getDay()%6===0?" wkend":""}" data-day="${k}" style="height:${(AG_H1-AG_H0)*AG_PX}px" aria-label="${esc(d.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"}))}">${evHtml}${nowL}</div>`;
+  };
+  const membres=state.equipe.filter(e=>e.actif||state.activites.some(a=>a.commercial_id===e.id&&new Date(a.date_activite)>=agStart&&new Date(a.date_activite)<end));
+  v.innerHTML=`<div class="section-head"><div><h2>Agenda</h2><p class="hint">Clique sur un créneau pour planifier un RDV${mobile?"":", glisse un RDV pour le déplacer"}. Tout ce qui est prévu apparaît aussi dans Aujourd’hui.</p></div>
+    <div class="tools">${estPilote()?`<select id="ag-qui" aria-label="Agenda de" style="width:auto"><option value="${me?me.id:""}" ${agQui===(me&&me.id)?"selected":""}>Mon agenda</option><option value="tous" ${agQui==="tous"?"selected":""}>Toute l’équipe</option>${membres.filter(e=>!me||e.id!==me.id).map(e=>`<option value="${e.id}" ${agQui===e.id?"selected":""}>${esc(e.nom)}</option>`).join("")}</select>`:""}
+      <button class="btn icon" data-act="ag-move" data-n="-7" aria-label="Semaine précédente">‹</button><button class="btn" data-act="ag-today">Cette semaine</button><button class="btn icon" data-act="ag-move" data-n="7" aria-label="Semaine suivante">›</button>
+      <button class="btn primary" data-act="ag-new">+ RDV</button></div></div>
+  <div class="panel">
+    <div class="section-head" style="margin:0 0 10px"><h3 style="text-transform:capitalize">${esc(lab)}</h3><span class="hint" style="margin:0">${nRdv} RDV et visites · ${nCall} appels · ${nTache} tâches</span></div>
+    ${mobile?`<div class="chips" role="group" aria-label="Jour" style="margin-bottom:10px">${shown.map((d,i)=>`<button class="chip" data-act="ag-day" data-n="${i}" aria-pressed="${i===agDay}">${d.toLocaleDateString("fr-FR",{weekday:"short"})} ${d.getDate()}<span class="n">${evs.filter(a=>localISO(new Date(a.date_activite))===localISO(d)).length||""}</span></button>`).join("")}</div>`:""}
+    <div class="ag-scroll" id="ag-scroll"><div style="--cols:${cols.length}">
+      <div class="ag-head"><div></div>${cols.map(d=>`<div class="ag-dh${localISO(d)===localISO(now)?" today":""}">${d.toLocaleDateString("fr-FR",{weekday:"short"})}<b>${d.getDate()}</b></div>`).join("")}</div>
+      <div class="ag-body"><div class="ag-hours" style="height:${(AG_H1-AG_H0)*AG_PX}px">${[...Array(AG_H1-AG_H0)].map((_,i)=>i?`<div style="top:${i*AG_PX}px">${AG_H0+i}h</div>`:"").join("")}</div>${cols.map(dayHtml).join("")}</div>
+    </div></div>
+    <div class="ag-legend"><span><i style="background:var(--accent)"></i>RDV, visite, démo</span><span><i style="background:var(--ok)"></i>Appel, message</span><span><i style="background:var(--warn)"></i>Tâche</span><span><i style="background:#E91E8C"></i>Événement</span><span><i style="background:transparent;box-shadow:inset 0 0 0 1.5px var(--bad)"></i>Prioritaire</span></div>
+  </div>`;
+  const sc=$("#ag-scroll"); sc.scrollTop=(8-AG_H0)*AG_PX;
+  if($("#ag-qui")) $("#ag-qui").addEventListener("change",e=>{ agQui=e.target.value; viewAgenda(v); });
+  const slot=(day,y,snap)=>{ const m=Math.round((AG_H0*60+y/AG_PX*60)/snap)*snap; const d=new Date(day+"T00:00"); d.setMinutes(Math.max(AG_H0*60,Math.min(AG_H1*60-15,m))); return d; };
+  v.querySelectorAll(".ag-day").forEach(col=>{
+    col.addEventListener("click",e=>{ if(e.target!==col) return; const y=e.clientY-col.getBoundingClientRect().top;
+      formActivite(null,null,{type:"rdv",when:slot(col.dataset.day,y,30),com:agQui!=="tous"?agQui:undefined}); });
+    col.addEventListener("dragover",e=>{ e.preventDefault(); col.classList.add("over"); });
+    col.addEventListener("dragleave",()=>col.classList.remove("over"));
+    col.addEventListener("drop",e=>{ e.preventDefault(); col.classList.remove("over");
+      const [id,off]=(e.dataTransfer.getData("text/plain")||"").split("|"); const a=byId(state.activites,id); if(!a) return;
+      const y=e.clientY-col.getBoundingClientRect().top-(+off||0); const d=slot(col.dataset.day,y,15);
+      if(d.getTime()===new Date(a.date_activite).getTime()) return;
+      write(upd("activites",a.id,{date_activite:d.toISOString()}),"Déplacé au "+d.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric"})+" à "+hm(d)); });
+  });
+  v.querySelectorAll(".ag-ev").forEach(ev=>ev.addEventListener("dragstart",e=>{ e.dataTransfer.setData("text/plain",ev.dataset.id+"|"+(e.clientY-ev.getBoundingClientRect().top)); e.dataTransfer.effectAllowed="move"; }));
+}
+
+window.matchMedia("(max-width:720px)").addEventListener("change",()=>{ if(tab==="agenda"&&loaded&&!$("#ov")) viewAgenda($("#view")); });
 
 function formVisite(){
   const TYPES=[["visite","Visite"],["appel","Appel"],["whatsapp","WhatsApp"],["demo","Démo"],["email","Email"]];
