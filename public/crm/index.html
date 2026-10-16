@@ -321,6 +321,103 @@ button.kpi[aria-pressed="true"]{box-shadow:var(--shadow),0 0 0 2px var(--accent)
 .ag-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
 .alert-row .sq{width:9px;height:9px;border-radius:3px;margin-top:6px;flex:none;background:var(--warn)}
 .alert-row .sq.bad{background:var(--bad)}
+
+/* ===== Téléphone : barre d'onglets en bas, feuilles, cartes, relief tactile ===== */
+.botnav,.fab{display:none}
+@media (max-width:720px){
+  body:not(.auth){padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+  header.top .tabs,.status #status-text,.status .dot,.status #refresh,.status #logout,.tagline,.ecg{display:none!important}
+  .top .wrap{flex-wrap:nowrap;padding-block:8px;gap:8px}
+  .brand{margin-right:auto}.wordmark{font-size:17px;letter-spacing:.2em}
+  .status{width:auto!important;gap:6px}
+  .status .bell{width:42px;height:42px;min-height:42px}.status .bell svg{width:20px;height:20px}
+  body.fab-on:not(.auth){padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))}
+  .botnav{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;z-index:30;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));background:var(--glass);backdrop-filter:blur(24px) saturate(1.6);-webkit-backdrop-filter:blur(24px) saturate(1.6);border-top:1px solid var(--line)}
+  body.auth .botnav,body.auth .fab{display:none!important}
+  .botnav a,.botnav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:52px;border:0;background:none;border-radius:16px;color:var(--muted);text-decoration:none;font-size:10.5px;font-weight:500;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .12s,background-color .2s}
+  .botnav a[aria-current="page"],.botnav button[aria-current="page"]{color:var(--ink);background:var(--glass-strong);box-shadow:var(--shadow-sm),0 0 0 1px var(--glass-edge)}
+  .botnav a[aria-current="page"] svg,.botnav button[aria-current="page"] svg{stroke:url(#rb)}
+  .botnav a:active,.botnav button:active{transform:scale(.92)}
+  .fab{display:flex;align-items:center;gap:6px;position:fixed;right:16px;bottom:calc(80px + env(safe-area-inset-bottom,0px));z-index:31;border:0;border-radius:999px;padding:0 18px 0 14px;height:52px;background:var(--ink);color:var(--on-ink);font-weight:600;font-size:15px;box-shadow:0 12px 30px -10px rgba(29,27,38,.6),inset 0 1px 0 rgba(255,255,255,.18);cursor:pointer;transition:transform .12s}
+  .fab:active{transform:scale(.94)}
+  body:not(.fab-on) .fab{display:none}
+  .hide-mobile{display:none!important}
+  .toast{bottom:calc(150px + env(safe-area-inset-bottom,0px))}
+  .npanel{left:8px;right:8px;width:auto}
+  /* Champs : 16 px pour éviter le zoom iOS, aspect « creux » */
+  input,select,textarea{font-size:16px;min-height:46px;border-radius:14px;box-shadow:inset 0 2px 4px rgba(29,27,38,.06)}
+  textarea{min-height:90px}
+  /* Boutons et puces : « relief » + retour tactile */
+  .btn,.chip{min-height:44px;box-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 2px 0 rgba(29,27,38,.06),0 8px 16px -12px rgba(29,27,38,.35);-webkit-tap-highlight-color:transparent}
+  .btn:active,.chip:active,.card:active,.kpi:active{transform:scale(.97);box-shadow:inset 0 2px 6px rgba(29,27,38,.14)}
+  .btn.small{min-height:40px;padding:8px 14px;font-size:13px}
+  /* En-têtes de section compacts */
+  .section-head{margin-block:10px 12px;align-items:flex-start}
+  .section-head .tools{width:100%}
+  .section-head .tools .btn{flex:1 1 auto}
+  .today-head h2{font-size:28px}
+  .panel{border-radius:22px;padding:16px}
+  /* Filtres : une ligne qu'on fait défiler */
+  .filters{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding:2px 16px 6px;scroll-padding-inline:16px}
+  .filters::-webkit-scrollbar{display:none}
+  .filters input[type=search]{min-width:72vw;flex:0 0 auto}
+  .filters select{width:auto;flex:0 0 auto;border-radius:999px;min-height:44px;padding-right:32px}
+  .filters .check{flex:0 0 auto;white-space:nowrap}
+  /* Indicateurs : bande horizontale */
+  .kpis{display:flex;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding:12px 16px 6px;scroll-snap-type:x mandatory}
+  .kpis::-webkit-scrollbar{display:none}
+  .kpi{flex:0 0 46%;scroll-snap-align:start}
+  .kpi .val{font-size:24px}
+  /* Tableaux → cartes */
+  table.cardable thead{display:none}
+  table.cardable,table.cardable tbody{display:block}
+  table.cardable tr{display:flex;flex-wrap:wrap;gap:4px 12px;padding:12px 2px;border-bottom:1px solid var(--line);align-items:center}
+  table.cardable tr:last-child{border-bottom:0}
+  table.cardable td{display:block;border:0;padding:0;text-align:left!important;font-size:13px}
+  table.cardable td:first-child{flex:1 1 100%;font-size:14px}
+  table.cardable td[data-label]:not(:first-child)::before{content:attr(data-label);display:block;font-family:var(--f-mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:1px}
+  table.cardable td:empty,table.cardable td.vide{display:none}
+  table.cardable td:last-child:has(.btn,select){flex:1 1 100%}
+  table.cardable tr.click:active{background:var(--line);border-radius:14px}
+  /* Activités : une colonne, actions en ligne défilante */
+  .feed-item{grid-template-columns:1fr;gap:4px}
+  .feed-item .when{display:flex;gap:6px}.feed-item .when br{display:none}
+  .acts-inline{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .acts-inline::-webkit-scrollbar{display:none}
+  /* Fenêtres → feuilles qui montent du bas */
+  .overlay{align-items:flex-end;padding:0;overflow:hidden}
+  .overlay>.modal{margin:0;max-width:none!important;border-radius:26px 26px 0 0;max-height:92vh;max-height:92dvh;overflow-y:auto;overscroll-behavior:contain;padding:10px 16px calc(16px + env(safe-area-inset-bottom,0px));animation:sheet .28s cubic-bezier(.2,.8,.2,1)}
+  .overlay>.modal::before{content:"";display:block;width:40px;height:5px;border-radius:3px;background:var(--line-strong);margin:0 auto 10px}
+  .modal-head{position:sticky;top:-10px;z-index:2;background:var(--bg);margin:-10px -16px 12px;padding:14px 16px 10px;border-bottom:1px solid var(--line)}
+  .form-grid{grid-template-columns:minmax(0,1fr)!important}
+  .form-actions{position:sticky;bottom:calc(-16px - env(safe-area-inset-bottom,0px));background:var(--bg);margin:16px -16px calc(-16px - env(safe-area-inset-bottom,0px));padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);flex-wrap:nowrap;z-index:2}
+  .form-actions .btn{flex:1}
+  .grid2{gap:12px}
+  /* Pipeline : une étape à la fois */
+  .board-scroll{overflow:visible;margin:0}
+  .board.one{grid-template-columns:minmax(0,1fr);min-width:0;padding:0}
+  .stage-tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -16px 10px;padding:2px 16px}
+  .stage-tabs::-webkit-scrollbar{display:none}
+  .stage-tabs .chip{flex:0 0 auto}
+  /* Feuille « Plus » */
+  .more-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .more-grid a{display:flex;align-items:center;min-height:56px;padding:0 16px;border-radius:16px;background:var(--glass-strong);border:1px solid var(--glass-edge);box-shadow:var(--shadow-sm);text-decoration:none;color:var(--ink);font-weight:600}
+  .more-grid a[aria-current="page"]{outline:2px solid var(--accent)}
+  .more-grid a:active{transform:scale(.97)}
+  .more-foot{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+  .more-foot .hint{flex:1 1 100%}
+  /* Liste de choix avec recherche */
+  .combo-list{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:5;background:var(--bg);border:1px solid var(--line-strong);border-radius:16px;box-shadow:var(--shadow);max-height:46vh;overflow-y:auto;padding:4px}
+}
+@keyframes sheet{from{transform:translateY(40px);opacity:.4}}
+.combo{position:relative}
+.combo-list{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:5;background:var(--bg);border:1px solid var(--line-strong);border-radius:14px;box-shadow:var(--shadow);max-height:300px;overflow-y:auto;padding:4px}
+.combo-list button{display:block;width:100%;text-align:left;border:0;background:none;padding:11px 12px;border-radius:10px;cursor:pointer;font-size:14px;line-height:1.3}
+.combo-list button small{display:block;color:var(--muted);font-size:12px}
+.combo-list button[aria-selected="true"],.combo-list button:hover{background:var(--line)}
+.combo-list .empty{padding:12px;font-size:13px}
+.stage-tabs{display:none}
+@media (max-width:720px){.stage-tabs{display:flex}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.ecg path{stroke-dashoffset:0}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
@@ -367,6 +464,22 @@ button.kpi[aria-pressed="true"]{box-shadow:var(--shadow),0 0 0 2px var(--accent)
   <main id="view" tabindex="-1"></main>
 </div>
 <div id="auth-slot"></div>
+<nav class="botnav" aria-label="Navigation">
+  <a href="#aujourdhui" data-tab="aujourdhui"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6h-6v6H4a1 1 0 01-1-1z"/></svg><span>Aujourd’hui</span></a>
+  <a href="#agenda" data-tab="agenda"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Agenda</span></a>
+  <a href="#pipeline" data-tab="pipeline"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4" width="4.5" height="16" rx="1.5"/><rect x="9.75" y="4" width="4.5" height="11" rx="1.5"/><rect x="16" y="4" width="4.5" height="7" rx="1.5"/></svg><span>Pipeline</span></a>
+  <a href="#comptes" data-tab="comptes"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0113 0"/><path d="M16 4.5a3.5 3.5 0 010 7M18 14a6 6 0 013.5 6"/></svg><span>Clients</span></a>
+  <button type="button" id="more-btn" aria-haspopup="dialog" aria-controls="more-sheet"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg><span>Plus</span></button>
+</nav>
+<button type="button" class="fab" data-act="quick-visite" aria-label="J’ai fait une visite"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Visite</span></button>
+<div id="more-sheet" class="overlay sheet-ov" hidden><div class="modal more" role="dialog" aria-modal="true" aria-label="Plus">
+  <div class="grabber" aria-hidden="true"></div>
+  <div class="more-grid">
+    <a href="#activites" data-tab="activites">Activités</a><a href="#devis" data-tab="devis">Devis</a><a href="#paiements" data-tab="paiements">Paiements</a>
+    <a class="pilote-only" href="#superviseur" data-tab="superviseur">Équipe</a><a class="pilote-only" href="#acquisition" data-tab="acquisition">Acquisition</a><a class="pilote-only" href="#reporting" data-tab="reporting">Reporting</a><a class="pilote-only" href="#equipe" data-tab="equipe">Réglages</a>
+  </div>
+  <div class="more-foot"><span id="more-status" class="hint" style="margin:0"></span><button type="button" class="btn small" id="more-refresh">Actualiser</button><button type="button" class="btn small" id="more-logout">Déconnexion</button></div>
+</div></div>
 <div id="npanel" class="npanel" role="dialog" aria-label="Notifications" hidden></div>
 <div id="modal-slot"></div>
 <div id="toast-slot" aria-live="polite"></div>
@@ -421,7 +534,7 @@ const ins = (table,obj)=>()=>sb.from(table).insert(obj);
 const upd = (table,id,obj)=>()=>sb.from(table).update(obj).eq("id",id);
 
 /* ---- Status / errors ---- */
-function setStatus(kind,text){ $("#dot").className="dot "+kind; $("#status-text").textContent=text; }
+function setStatus(kind,text){ $("#dot").className="dot "+kind; $("#status-text").textContent=text; const m=$("#more-status"); if(m) m.textContent=text; }
 function toast(msg){ const t=document.createElement("div"); t.className="toast"; t.textContent=msg; const s=$("#toast-slot"); s.innerHTML=""; s.appendChild(t); setTimeout(()=>{ if(t.parentNode) t.remove(); },3200); }
 function errorCopy(e){
   const msg = (e && (e.message||e.error_description)) || "";
@@ -522,7 +635,9 @@ function render(){
   const showK = tab==="superviseur";
   $("#kpis").hidden = !showK; $(".wrap > .sep").hidden = !showK;
   if(showK) renderKpis();
-  document.querySelectorAll(".tab").forEach(b=>{ if(b.dataset.tab===tab) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current"); });
+  document.querySelectorAll(".tab,.botnav a,.more-grid a").forEach(b=>{ if(b.dataset.tab===tab) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current"); });
+  const plus=$("#more-btn"); if(plus){ if(["activites","devis","paiements","superviseur","acquisition","reporting","equipe"].includes(tab)) plus.setAttribute("aria-current","page"); else plus.removeAttribute("aria-current"); }
+  document.body.classList.toggle("fab-on",["aujourdhui","agenda","comptes","pipeline","activites"].includes(tab));
   const v=$("#view");
   if(!loaded){ v.innerHTML=`<div class="board-scroll"><div class="board">${ETAPES.map(()=>'<div class="col"><div class="skeleton"></div><div class="skeleton"></div></div>').join("")}</div></div>`; return; }
   ({aujourdhui:viewAujourdhui,agenda:viewAgenda,pipeline:viewPipeline,comptes:viewComptes,activites:viewActivites,devis:viewDevis,paiements:viewPaiements,acquisition:viewAcquisition,superviseur:viewSuperviseur,reporting:viewReporting,equipe:viewEquipe})[tab](v);
@@ -565,7 +680,8 @@ function oppCard(o){
     </div></article>`;
 }
 
-let pipeFilt={com:"",q:"",risque:""}, colShown={};
+let pipeFilt={com:"",q:"",risque:""}, colShown={}, pipeStage=null;
+const estMobile=()=>window.matchMedia("(max-width:720px)").matches;
 function viewPipeline(v){
   const q=strip(pipeFilt.q);
   const match=o=>(!pipeFilt.com||(pipeFilt.com==="moi"?(me&&o.commercial_id===me.id):pipeFilt.com==="none"?!o.commercial_id:o.commercial_id===pipeFilt.com))
@@ -582,7 +698,9 @@ function viewPipeline(v){
     <select id="p-com" aria-label="Commercial"><option value="">Tous les commerciaux</option><option value="moi" ${pipeFilt.com==="moi"?"selected":""}>Mes opportunités</option><option value="none" ${pipeFilt.com==="none"?"selected":""}>Non assignées</option>${state.equipe.filter(e=>state.opportunites.some(o=>o.commercial_id===e.id)).map(e=>`<option value="${e.id}" ${pipeFilt.com===e.id?"selected":""}>${esc(e.nom)}</option>`).join("")}</select>
     <select id="p-risque" aria-label="État"><option value="">Toutes les affaires</option><option value="risque" ${pipeFilt.risque==="risque"?"selected":""}>À risque ou bloquées</option><option value="bloquee" ${pipeFilt.risque==="bloquee"?"selected":""}>Bloquées seulement</option></select></div>`:""}
   ${noCompte?`<div class="panel empty"><h3>Le CRM est vide pour l’instant</h3><p>Commencez par ajouter une clinique, un cabinet ou un salon, puis créez sa première opportunité.</p><div class="form-actions" style="justify-content:center"><button class="btn primary" data-act="new-compte">Ajouter un premier compte</button></div></div>`:""}
-  <div class="board-scroll"><div class="board">${ETAPES.map(e=>{
+  ${(()=>{ if(!estMobile()) return ""; if(!pipeStage||!ETAPES.includes(pipeStage)) pipeStage=(ETAPES.find(e=>open.some(o=>o.etape===e&&o.montant_mad>0))||ETAPES[0]);
+    return `<div class="stage-tabs" role="group" aria-label="Étape">${ETAPES.map(e=>{ const it=open.filter(o=>o.etape===e), bl=it.filter(o=>(risque(o)||{}).niveau==="bloquee").length; return `<button class="chip" data-act="pipe-stage" data-v="${e}" aria-pressed="${pipeStage===e}">${ETAPE_LABEL[e]}<span class="n">${it.length}</span>${bl?`<span class="pill bad" style="margin-left:2px">${bl}</span>`:""}</button>`; }).join("")}</div>`; })()}
+  <div class="board-scroll"><div class="board${estMobile()?" one":""}">${(estMobile()?[pipeStage]:ETAPES).map(e=>{
     const items=open.filter(o=>o.etape===e); const sum=items.reduce((s,o)=>s+(+o.montant_mad||0),0);
     const bl=items.filter(o=>(risque(o)||{}).niveau==="bloquee").length;
     return `<section class="col" aria-label="${ETAPE_LABEL[e]}"><div class="col-head"><span class="name">${ETAPE_LABEL[e]}<span class="n">${items.length}</span></span><span class="sum">${madShort(sum)} MAD</span></div>${bl?`<div class="hint" style="margin:-4px 0 6px"><span class="pill bad">${bl} bloquée${bl>1?"s":""}</span> au-delà de ${seuils()[e]} j</div>`:""}
@@ -874,6 +992,7 @@ document.addEventListener("click",async e=>{
   const id=t.dataset.id, act=t.dataset.act;
   if(act==="new-compte") return formCompte();
   if(act==="quick-visite") return formVisite();
+  if(act==="pipe-stage"){ pipeStage=t.dataset.v; colShown={}; viewPipeline($("#view")); window.scrollTo({top:0}); return; }
   if(act==="seuils") return formSeuils();
   if(act==="new-echeancier") return formEcheancier({devis:t.dataset.devis,compte:t.dataset.compte});
   if(act==="edit-paiement") return formPaiement(byId(state.paiements,id));
@@ -930,6 +1049,7 @@ document.addEventListener("click",async e=>{
   if(act==="reopen"){ t.disabled=true; return write(upd("opportunites",id,{issue:"en_cours",raison_perte:null}),"Affaire rouverte"); }
 });
 document.addEventListener("keydown",e=>{
+  if(e.key==="Escape" && !$("#more-sheet").hidden){ toggleMore(false); $("#more-btn").focus(); return; }
   if(e.key==="Escape" && !$("#npanel").hidden){ toggleNotifs(false); $("#bell").focus(); return; }
   if(e.key==="Escape" && $("#ov")) closeModal();
   if(e.key==="Enter"&&e.target.matches("tr.click")) e.target.click();
@@ -1151,7 +1271,7 @@ function viewAujourdhui(v){
   v.innerHTML=`<div class="today-head"><div><div class="lab-mono">${esc(dateTxt)}</div><h2>Bonjour ${esc(prenom)}</h2>
       <p class="hint" style="font-size:15px">${[nbRetard?`${nbRetard} en retard`:"rien en retard",`${nbJour} pour aujourd’hui`,dv.length?`${dv.length} devis à relancer`:""].filter(Boolean).join(" · ")}</p></div>
     <div class="tools">${estPilote()?`<div class="chips" role="group" aria-label="Voir"><button class="chip" data-act="today-qui" data-v="moi" aria-pressed="${todayQui==="moi"}">Moi</button><button class="chip" data-act="today-qui" data-v="equipe" aria-pressed="${todayQui==="equipe"}">Toute l’équipe</button></div>`:""}
-      <button class="btn" data-act="log" data-type="tache" ${state.comptes.length?"":"disabled"}>+ Tâche</button><button class="btn primary big" data-act="quick-visite" ${state.comptes.length?"":"disabled"}>J’ai fait une visite</button></div></div>
+      <button class="btn" data-act="log" data-type="tache" ${state.comptes.length?"":"disabled"}>+ Tâche</button><button class="btn primary big hide-mobile" data-act="quick-visite" ${state.comptes.length?"":"disabled"}>J’ai fait une visite</button></div></div>
   <div class="grid2"><div class="panel" style="min-width:0">
     <div class="section-head" style="margin:0 0 6px"><h3>À faire</h3><div class="chips" role="group" aria-label="Période">${[["retard","En retard"],["jour","Aujourd’hui"],["semaine","7 prochains jours"]].map(([k,l])=>`<button class="chip" data-act="today-tab" data-v="${k}" aria-pressed="${todayTab===k}">${l}<span class="n">${g[k].length}</span></button>`).join("")}</div></div>
     ${liste.length?`<div class="feed">${liste.slice(0,60).map(i=>i.k==="relance"?relItem(i):feedItem(i.a)).join("")}</div>${liste.length>60?`<p class="hint">${liste.length-60} autres dans Activités.</p>`:""}`
@@ -1237,7 +1357,7 @@ function viewAgenda(v){
   v.querySelectorAll(".ag-ev").forEach(ev=>ev.addEventListener("dragstart",e=>{ e.dataTransfer.setData("text/plain",ev.dataset.id+"|"+(e.clientY-ev.getBoundingClientRect().top)); e.dataTransfer.effectAllowed="move"; }));
 }
 
-window.matchMedia("(max-width:720px)").addEventListener("change",()=>{ if(tab==="agenda"&&loaded&&!$("#ov")) viewAgenda($("#view")); });
+window.matchMedia("(max-width:720px)").addEventListener("change",()=>{ if(["agenda","pipeline"].includes(tab)&&loaded&&!$("#ov")) render(); });
 
 function formVisite(){
   const TYPES=[["visite","Visite"],["appel","Appel"],["whatsapp","WhatsApp"],["demo","Démo"],["email","Email"]];
@@ -1263,6 +1383,52 @@ function formVisite(){
   $("#mform").querySelectorAll("[data-chips]").forEach(g=>g.addEventListener("click",e=>{ const b=e.target.closest(".chip"); if(!b) return;
     g.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",String(x===b))); $(`#mform input[name="${g.dataset.chips}"]`).value=b.dataset.v; dirty=true; }));
 }
+
+/* ---- Téléphone : feuille « Plus », tableaux en cartes, listes avec recherche ---- */
+function toggleMore(open){ const m=$("#more-sheet"); m.hidden=!open; $("#more-btn").setAttribute("aria-expanded",String(open)); if(open){ const f=m.querySelector("a"); if(f) f.focus(); } }
+$("#more-btn").addEventListener("click",()=>toggleMore(true));
+$("#more-sheet").addEventListener("click",e=>{ if(e.target.id==="more-sheet"||e.target.closest(".more-grid a")) toggleMore(false); });
+$("#more-refresh").addEventListener("click",()=>{ toggleMore(false); load(); });
+$("#more-logout").addEventListener("click",async()=>{ toggleMore(false); await sb.auth.signOut(); });
+function cardify(root){
+  root.querySelectorAll(".tbl-wrap table:not(.cardable)").forEach(tb=>{
+    const heads=[...tb.querySelectorAll("thead th")].map(th=>th.textContent.trim());
+    tb.querySelectorAll("tbody tr").forEach(tr=>[...tr.children].forEach((td,i)=>{ if(heads[i]) td.setAttribute("data-label",heads[i]); const tx=td.textContent.trim(); if(i>0&&!td.querySelector("button,select,input")&&(!tx||["·","—","0"].includes(tx))) td.classList.add("vide"); }));
+    tb.classList.add("cardable");
+  });
+}
+let cardT=null; new MutationObserver(()=>{ clearTimeout(cardT); cardT=setTimeout(()=>cardify($("#view")),0); }).observe($("#view"),{childList:true,subtree:true});
+// Listes de clients : recherche tolérante (accents, ordre des mots), tactile
+function enhanceCombos(root){
+  root.querySelectorAll("input[list]").forEach(inp=>{
+    const dl=document.getElementById(inp.getAttribute("list")); if(!dl) return;
+    const vals=[...dl.options].map(o=>o.value); if(!vals.length) return;
+    const keys=vals.map(v=>strip(v));
+    inp.removeAttribute("list"); inp.setAttribute("role","combobox"); inp.setAttribute("aria-autocomplete","list"); inp.setAttribute("aria-expanded","false");
+    const box=document.createElement("div"); box.className="combo"; inp.parentNode.insertBefore(box,inp); box.appendChild(inp);
+    const lid=inp.id+"-lb"; const list=document.createElement("div"); list.className="combo-list"; list.id=lid; list.setAttribute("role","listbox"); list.hidden=true; box.appendChild(list); inp.setAttribute("aria-controls",lid);
+    let items=[], sel=-1;
+    const show=()=>{ const q=strip(inp.value).split(/\s+/).filter(Boolean); items=[];
+      for(let i=0;i<vals.length&&items.length<40;i++){ if(q.every(w=>keys[i].includes(w))||(/\d{4,}/.test(inp.value)&&keys[i].replace(/\D/g,"").includes(inp.value.replace(/\D/g,"")))) items.push(vals[i]); }
+      if(items.length===1&&items[0]===inp.value){ hide(); return; }
+      sel=-1; list.innerHTML=items.length?items.map((v,i)=>{ const [a,...r]=v.split(" — "); return `<button type="button" role="option" id="${lid}-${i}" aria-selected="false" data-i="${i}"><b>${esc(a)}</b>${r.length?`<small>${esc(r.join(" · "))}</small>`:""}</button>`; }).join(""):`<div class="empty hint">Aucun client ne correspond. Créez-le d’abord dans Clients.</div>`;
+      list.hidden=false; inp.setAttribute("aria-expanded","true"); };
+    const hide=()=>{ list.hidden=true; inp.setAttribute("aria-expanded","false"); inp.removeAttribute("aria-activedescendant"); };
+    const pick=i=>{ inp.value=items[i]; hide(); inp.dispatchEvent(new Event("input",{bubbles:true})); inp.dispatchEvent(new Event("change",{bubbles:true})); };
+    const mark=()=>{ list.querySelectorAll("[role=option]").forEach((b,i)=>b.setAttribute("aria-selected",String(i===sel))); if(sel>=0){ inp.setAttribute("aria-activedescendant",lid+"-"+sel); const b=list.querySelector(`[data-i="${sel}"]`); if(b) b.scrollIntoView({block:"nearest"}); } };
+    inp.addEventListener("input",e=>{ if(e.isTrusted) show(); });
+    inp.addEventListener("focus",()=>{ if(!inp.readOnly) show(); });
+    inp.addEventListener("blur",()=>setTimeout(hide,150));
+    inp.addEventListener("keydown",e=>{ if(list.hidden) return;
+      if(e.key==="ArrowDown"){ e.preventDefault(); sel=Math.min(items.length-1,sel+1); mark(); }
+      else if(e.key==="ArrowUp"){ e.preventDefault(); sel=Math.max(0,sel-1); mark(); }
+      else if(e.key==="Enter"&&items.length){ e.preventDefault(); pick(sel<0?0:sel); }
+      else if(e.key==="Escape"){ e.stopPropagation(); hide(); } });
+    list.addEventListener("mousedown",e=>e.preventDefault());
+    list.addEventListener("click",e=>{ const b=e.target.closest("[data-i]"); if(b) pick(+b.dataset.i); });
+  });
+}
+new MutationObserver(()=>enhanceCombos($("#modal-slot"))).observe($("#modal-slot"),{childList:true,subtree:false});
 
 /* ---- Notifications ---- */
 let notifs=[];
@@ -1874,7 +2040,7 @@ function viewPaiements(v){
   const aEnc=base.filter(p=>!["encaisse","impaye"].includes(p.statut));
   const ceMois=aEnc.filter(p=>String(p.date_echeance).slice(0,7)===mois), retard=base.filter(enRetard), imp=base.filter(p=>p.statut==="impaye"), encM=base.filter(p=>p.statut==="encaisse"&&String(p.encaisse_le||"").slice(0,7)===mois);
   const moisOpts=[...new Set(base.map(p=>String(p.date_echeance).slice(0,7)))].sort();
-  const k=(lab,val,sub,f)=>`<button class="kpi" data-act="pay-f" data-f="${f}" style="text-align:left;cursor:pointer;font:inherit;color:inherit" aria-pressed="${payFilt.statut===f}"><div class="lab">${lab}</div><div class="val">${madShort(val)}<small>MAD</small></div><div class="sub">${sub}</div></button>`;
+  const k=(lab,val,sub,f)=>`<button class="kpi" data-act="pay-f" data-f="${f}" style="text-align:left;cursor:pointer;font:inherit;color:inherit" aria-pressed="${!!f&&payFilt.statut===f}"><div class="lab">${lab}</div><div class="val">${madShort(val)}<small>MAD</small></div><div class="sub">${sub}</div></button>`;
   v.innerHTML=`<div class="section-head"><div><h2>Paiements</h2><p class="hint">Chèques, virements et effets : échéancier et encaissement${mineOnly?" de vos clients":""}</p></div>
     <div class="tools"><button class="btn" data-act="pay-xlsx" ${list.length?"":"disabled"}>Exporter Excel</button><button class="btn primary" data-act="new-echeancier" ${state.comptes.length?"":"disabled"}>+ Échéancier</button></div></div>
   <div class="kpis" style="padding-top:0">
