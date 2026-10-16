@@ -1020,7 +1020,7 @@ function viewEquipe(v){
 let lastFocus=null, dirty=false, importBusy=false;
 function closeModal(force){
   if(importBusy) return;
-  if(dirty && !force){ const c=$("#mconfirm"); if(c){ c.hidden=false; c.querySelector("button").focus(); return; } }
+  if(dirty && !force){ const c=$("#mconfirm"); if(c){ c.hidden=false; c.scrollIntoView({block:"center"}); c.querySelector("button").focus({preventScroll:true}); return; } }
   $("#modal-slot").innerHTML=""; dirty=false;
   if(reopenAfter){ const r=reopenAfter; reopenAfter=null; return r(); }
   if(lastFocus && document.contains(lastFocus)) lastFocus.focus(); lastFocus=null;
