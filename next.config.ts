@@ -28,6 +28,9 @@ const nextConfig: NextConfig = {
       // Vidéos et images : mises en cache longtemps par le navigateur.
       { source: "/videos/:file*", headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }] },
       { source: "/images/:file*", headers: [{ key: "Cache-Control", value: "public, max-age=2592000" }] },
+      // CRM : toujours la dernière version (pas de cache navigateur sur la page et ses scripts).
+      { source: "/crm/:path*", headers: [{ key: "Cache-Control", value: "no-cache, must-revalidate" }] },
+      { source: "/crm", headers: [{ key: "Cache-Control", value: "no-cache, must-revalidate" }] },
     ];
   },
 };

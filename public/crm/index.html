@@ -1310,7 +1310,8 @@ function openImport(){
     const files=[...e.target.files]; plan=null; go.disabled=true; if(!files.length){ out.innerHTML=""; return; }
     out.innerHTML=`<p class="hint">Lecture de ${files.length} fichier${files.length>1?"s":""}…</p>`;
     try{
-      await loadScript("https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"); await loadScript("/crm/import.js");
+      await loadScript("https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"); await loadScript("/crm/import.js?v=20261016-3");
+      if(!window.CRMImport||!CRMImport.mapExportCommercial||!CRMImport.readSheets) throw new Error("Une ancienne version de la page est encore chargée. Rechargez la page (Cmd + Maj + R sur Mac, Ctrl + Maj + R sur PC) puis recommencez.");
       const sheets=await CRMImport.readSheets(files,window.XLSX);
       if(sheets["Contacts"] && Object.keys(sheets).some(n=>/activit/i.test(n))){
         plan=CRMImport.mapExportCommercial(sheets,state.comptes,state.equipe); const st=plan.stats;
