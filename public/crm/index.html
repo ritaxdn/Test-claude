@@ -351,7 +351,19 @@ table.vheat td[style*="--a:6"] span,table.vheat td[style*="--a:7"] span,table.vh
 .new-client{border:1px dashed var(--line-strong);border-radius:18px;padding:12px 14px}
 
 /* Assistant */
-.ai-btn{gap:4px}
+.status:not([data-k="bad"]) #status-text,.status:not([data-k="bad"]) .dot{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.status[data-k="bad"] #status-text{color:var(--bad)}
+.acct{position:relative}
+.acct-menu{position:absolute;right:0;top:calc(100% + 8px);z-index:40;min-width:220px;padding:12px;border-radius:16px;background:var(--bg);border:1px solid var(--line-strong);box-shadow:0 18px 40px -20px rgba(29,27,38,.35);display:flex;flex-direction:column;gap:10px;align-items:stretch}
+.acct-menu[hidden]{display:none}
+.acct-menu .who{display:block!important;max-width:none}
+.ai-fab{position:fixed;right:24px;bottom:24px;z-index:32;width:56px;height:56px;border-radius:50%;border:0;display:grid;place-items:center;font-size:24px;cursor:pointer;color:#fff;
+  background:linear-gradient(135deg,#7B61FF,#E91E8C 60%,#FF5722);box-shadow:0 14px 30px -12px rgba(123,97,255,.65),0 2px 6px rgba(29,27,38,.18);transition:transform .15s ease,box-shadow .15s ease}
+.ai-fab:hover{transform:translateY(-2px) scale(1.04)}
+.ai-fab:active{transform:scale(.96)}
+.ai-fab:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+body.ai-open .ai-fab,body.auth .ai-fab{display:none}
+@media (prefers-reduced-motion:reduce){.ai-fab{transition:none}}
 .aipanel{position:fixed;z-index:45;top:0;right:0;bottom:0;width:min(440px,100vw);background:var(--bg);border-left:1px solid var(--line-strong);box-shadow:-20px 0 60px -30px rgba(29,27,38,.35);display:flex;flex-direction:column}
 .ai-head{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:14px 16px;border-bottom:1px solid var(--line)}
 .ai-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;overscroll-behavior:contain}
@@ -404,7 +416,9 @@ table.vheat td[style*="--a:6"] span,table.vheat td[style*="--a:7"] span,table.vh
 .botnav,.fab{display:none}
 @media (max-width:720px){
   body:not(.auth){padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
-  header.top .tabs,.status #status-text,.status .dot,.status #refresh,.status #logout,.tagline,.ecg{display:none!important}
+  header.top .tabs,.status #status-text,.status .dot,.status .acct,.tagline,.ecg{display:none!important}
+  .ai-fab{right:16px;width:52px;height:52px;font-size:22px;bottom:calc(144px + env(safe-area-inset-bottom,0px))}
+  body:not(.fab-on) .ai-fab{bottom:calc(80px + env(safe-area-inset-bottom,0px))}
   .top .wrap{flex-wrap:nowrap;padding-block:8px;gap:8px}
   .brand{margin-right:auto}.wordmark{font-size:17px;letter-spacing:.2em}
   .status{width:auto!important;gap:6px}
@@ -528,11 +542,10 @@ table.vheat td[style*="--a:6"] span,table.vheat td[style*="--a:7"] span,table.vh
       <a class="tab pilote-only" href="#reporting" data-tab="reporting" id="tab-reporting">Reporting</a>
       <a class="tab gear pilote-only" href="#equipe" data-tab="equipe" id="tab-equipe" title="Réglages : équipe, catalogue, imports" aria-label="Réglages"><span aria-hidden="true">⚙</span></a>
     </nav>
-    <div class="status"><span class="dot busy" id="dot" aria-hidden="true"></span><span id="status-text" aria-live="polite">Connexion…</span>
-      <button class="btn small ai-btn" id="ai-btn" aria-haspopup="dialog" aria-controls="aipanel" aria-expanded="false"><span aria-hidden="true">✨</span><span class="ai-lab">Assistant</span></button>
+    <div class="status" data-k="busy"><span class="dot busy" id="dot" aria-hidden="true"></span><span id="status-text" aria-live="polite">Connexion…</span>
       <button class="btn small icon bell" id="bell" aria-label="Notifications" aria-expanded="false" aria-controls="npanel"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9a6 6 0 0112 0c0 6 2 8 2 8H4s2-2 2-8"/><path d="M10 21a2 2 0 004 0"/></svg><span class="badge" id="bell-n" hidden></span></button>
-      <button class="btn small icon" id="refresh" title="Recharger les données" aria-label="Recharger les données"><span aria-hidden="true">↻</span></button>
-      <span class="who" id="who"></span><button class="btn small" id="logout">Déconnexion</button></div>
+      <div class="acct"><button class="btn small icon" id="acct-btn" aria-label="Mon compte" aria-haspopup="true" aria-expanded="false" aria-controls="acct-menu"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg></button>
+        <div class="acct-menu" id="acct-menu" hidden><div class="who" id="who"></div><button class="btn small" id="logout">Déconnexion</button></div></div></div>
   </div>
 </header>
 
@@ -550,6 +563,7 @@ table.vheat td[style*="--a:6"] span,table.vheat td[style*="--a:7"] span,table.vh
   <a href="#comptes" data-tab="comptes"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0113 0"/><path d="M16 4.5a3.5 3.5 0 010 7M18 14a6 6 0 013.5 6"/></svg><span>Clients</span></a>
   <button type="button" id="more-btn" aria-haspopup="dialog" aria-controls="more-sheet"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg><span>Plus</span></button>
 </nav>
+<button type="button" class="ai-fab" id="ai-btn" aria-label="Assistant IA" title="Assistant IA" aria-haspopup="dialog" aria-controls="aipanel" aria-expanded="false"><span aria-hidden="true">✨</span></button>
 <button type="button" class="fab" data-act="quick-visite" aria-label="J’ai fait une visite"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Visite</span></button>
 <div id="more-sheet" class="overlay sheet-ov" hidden><div class="modal more" role="dialog" aria-modal="true" aria-label="Plus">
   <div class="grabber" aria-hidden="true"></div>
@@ -557,7 +571,7 @@ table.vheat td[style*="--a:6"] span,table.vheat td[style*="--a:7"] span,table.vh
     <a href="#activites" data-tab="activites">Activités</a><a href="#devis" data-tab="devis">Devis</a><a href="#paiements" data-tab="paiements">Paiements</a>
     <a class="pilote-only" href="#superviseur" data-tab="superviseur">Équipe</a><a class="pilote-only" href="#acquisition" data-tab="acquisition">Acquisition</a><a class="pilote-only" href="#reporting" data-tab="reporting">Reporting</a><a class="pilote-only" href="#equipe" data-tab="equipe">Réglages</a>
   </div>
-  <div class="more-foot"><span id="more-status" class="hint" style="margin:0"></span><button type="button" class="btn small" id="more-refresh">Actualiser</button><button type="button" class="btn small" id="more-logout">Déconnexion</button></div>
+  <div class="more-foot"><span id="more-status" class="hint" style="margin:0"></span><button type="button" class="btn small" id="more-logout">Déconnexion</button></div>
 </div></div>
 <aside id="aipanel" class="aipanel" role="dialog" aria-modal="false" aria-labelledby="ai-title" hidden>
   <div class="ai-head"><h3 id="ai-title">✨ Assistant</h3><div class="tools"><button type="button" class="btn small" id="ai-new">Nouvelle conversation</button><button type="button" class="x" id="ai-close" aria-label="Fermer l’assistant">×</button></div></div>
@@ -630,7 +644,7 @@ const ins = (table,obj)=>()=>sb.from(table).insert(obj);
 const upd = (table,id,obj)=>()=>sb.from(table).update(obj).eq("id",id);
 
 /* ---- Status / errors ---- */
-function setStatus(kind,text){ $("#dot").className="dot "+kind; $("#status-text").textContent=text; const m=$("#more-status"); if(m) m.textContent=text; }
+function setStatus(kind,text){ $("#dot").className="dot "+kind; const st=document.querySelector(".top .status"); if(st) st.dataset.k=kind; $("#status-text").textContent=text; const m=$("#more-status"); if(m) m.textContent=text; }
 function toast(msg){ const t=document.createElement("div"); t.className="toast"; t.textContent=msg; const s=$("#toast-slot"); s.innerHTML=""; s.appendChild(t); setTimeout(()=>{ if(t.parentNode) t.remove(); },3200); }
 function errorCopy(e){
   const msg = (e && (e.message||e.error_description)) || "";
@@ -915,7 +929,7 @@ const objectifs=()=>state.reglages.objectifs||{};
 const objDe=id=>objectifs()[id]||{};
 const objEquipe=k=>Object.entries(objectifs()).reduce((s,[id,o])=>{ const e=byId(state.equipe,id); return s+((!supShowroom||!e||e.showroom===supShowroom)?(+o[k]||0):0); },0);
 function formObjectifs(){
-  const ms=state.equipe.filter(e=>e.role!=="admin"&&(e.actif||state.comptes.some(c=>c.commercial_id===e.id))).sort((a,b)=>(b.actif-a.actif)||a.nom.localeCompare(b.nom,"fr"));
+  const ms=state.equipe.filter(e=>e.role!=="admin"&&!e.parti_le&&(e.actif||state.comptes.some(c=>c.commercial_id===e.id))).sort((a,b)=>(b.actif-a.actif)||a.nom.localeCompare(b.nom,"fr"));
   const h=`<p style="margin-top:0">Objectifs <b>par mois</b>, identiques chaque mois. Ils servent aux anneaux de progression des commerciaux et aux traits d’objectif de la page Équipe. Laisse vide si pas d’objectif.</p>
   <div class="tbl-wrap"><table class="obj-tbl"><thead><tr><th>Commercial</th><th class="num">Visites</th><th class="num">Devis envoyés</th><th class="num">CA signé (MAD HT)</th></tr></thead><tbody>
   ${ms.map(e=>{ const o=objDe(e.id); return `<tr><td><b>${esc(e.nom)}</b>${e.actif?"":` <span class="hint">sans accès</span>`}</td>${["visites","devis","ca"].map(k=>`<td><input name="${k}:${e.id}" type="number" inputmode="numeric" min="0" step="${k==="ca"?10000:1}" value="${esc(o[k]??"")}" aria-label="${esc(k+" "+e.nom)}" class="num"></td>`).join("")}</tr>`; }).join("")}
@@ -946,7 +960,7 @@ function viewSuperviseur(v){
   const steps=ETAPES.map((e,i)=>({label:ETAPE_LABEL[e],n:open.filter(o=>o.etape===e).length,montant:open.filter(o=>o.etape===e).reduce((s,o)=>s+(+o.montant_mad||0),0),passe:atteint(i)?Math.round(atteint(i+1)*100/atteint(i)):null}));
   steps.push({label:"Gagnées",n:opps.filter(o=>o.issue==="gagnee").length,montant:opps.filter(o=>o.issue==="gagnee").reduce((s,o)=>s+(+o.montant_mad||0),0),cls:"s-ok"});
   // Classement des commerciaux
-  const membres=state.equipe.filter(e=>okSr(e.id)&&e.role!=="admin");
+  const membres=state.equipe.filter(e=>okSr(e.id)&&e.role!=="admin"&&!e.parti_le);
   const val={ca:e=>opps.filter(o=>o.issue==="gagnee"&&o.commercial_id===e.id&&inM(o.updated_at)).reduce((s,o)=>s+(+o.montant_mad||0),0),
     visites:e=>state.activites.filter(a=>a.statut!=="a_faire"&&(a.commercial_id||a.createur_id)===e.id&&["visite","demo","rdv","formation"].includes(a.type)&&inM(a.date_activite)).length,
     devis:e=>dvs.filter(d=>d.commercial_id===e.id&&d.statut!=="brouillon"&&inM(d.date_envoi||d.created_at)).length};
@@ -1112,7 +1126,7 @@ function viewEquipe(v){
    <div class="tools"><button class="btn" data-act="objectifs">Objectifs mensuels</button><button class="btn" data-act="import">Importer des contacts (Excel)</button><button class="btn" data-act="new-produit">+ Machine</button><button class="btn primary" data-act="new-membre">+ Membre</button></div></div>
   <div class="panel" style="margin-bottom:16px" id="dup-panel"><h3>Doublons probables</h3><p class="hint">Même téléphone, ou même nom dans la même ville, y compris entre clients de commerciaux différents.</p><div id="dup-body"><div class="skeleton" style="height:40px"></div></div></div>
   <div class="grid2"><div class="panel"><h3>Équipe</h3><div class="tbl-wrap" style="margin-top:8px"><table><thead><tr><th>Nom</th><th>Email</th><th>Rôle</th><th>Showroom</th><th>Statut</th><th></th></tr></thead><tbody>
-  ${state.equipe.map(e=>`<tr><td><b>${esc(e.nom)}</b></td><td>${esc(e.email||"—")}</td><td>${ROLES[e.role]}</td><td>${e.showroom?esc(SHOWROOMS[e.showroom].replace("Showroom ","")):"—"}</td><td><span class="pill ${e.actif?"ok":""}">${e.actif?"Accès actif":"Sans accès"}</span></td><td><button class="btn small" data-act="edit-membre" data-id="${e.id}">Modifier</button></td></tr>`).join("")}
+  ${[...state.equipe].sort((a,b)=>(!!a.parti_le-!!b.parti_le)).map(e=>`<tr${e.parti_le?' style="opacity:.7"':""}><td><b>${esc(e.nom)}</b></td><td>${esc(e.email||"—")}</td><td>${ROLES[e.role]}</td><td>${e.showroom?esc(SHOWROOMS[e.showroom].replace("Showroom ","")):"—"}</td><td>${e.parti_le?`<span class="pill">Parti·e le ${esc(new Date(e.parti_le+"T12:00").toLocaleDateString("fr-FR",{day:"numeric",month:"short",year:"numeric"}))}</span>`:`<span class="pill ${e.actif?"ok":""}">${e.actif?"Accès actif":"Sans accès"}</span>`}${(()=>{ const n=state.comptes.filter(c=>c.commercial_id===e.id).length; return n?`<div class="hint" style="margin:2px 0 0">${n} client${n>1?"s":""}</div>`:""; })()}</td><td><div class="tools" style="flex-wrap:nowrap"><button class="btn small" data-act="edit-membre" data-id="${e.id}">Modifier</button>${e.role!=="admin"?`<button class="btn small" data-act="depart-membre" data-id="${e.id}">${e.parti_le?"Transférer":"Départ / transfert"}</button>`:""}</div></td></tr>`).join("")}
   </tbody></table></div></div>
   <div class="panel"><h3>Catalogue machines</h3>${state.produits.length?(()=>{const fam={}; state.produits.forEach(p=>(fam[p.categorie]=fam[p.categorie]||[]).push(p));
     return `<p class="hint">${state.produits.filter(p=>p.actif).length} machines actives · ${Object.keys(fam).length} familles</p>`+Object.entries(fam).map(([f,ps])=>`<details class="fam"><summary><span>${esc(f)}</span><span class="hint">${ps.length}</span></summary><div class="closed-list">${ps.sort((a,b)=>a.nom.localeCompare(b.nom,"fr")).map(p=>`<div class="closed-row"><div><b translate="no">${esc(p.nom)}</b>${p.medical_only?` <span class="pill warn" title="Vente réservée aux médecins">Médical</span>`:""}${p.actif?"":` <span class="pill">Inactive</span>`}<div class="hint" translate="no">${esc([p.reference,p.marque].filter(Boolean).join(" · "))}</div></div><div class="tools"><span style="font-family:var(--f-mono);font-size:12px">${p.prix_catalogue_mad!=null?mad(p.prix_catalogue_mad)+" MAD":""}</span><button class="btn small" data-act="edit-produit" data-id="${p.id}">Modifier</button></div></div>`).join("")}</div></details>`).join("");})():`<p class="hint">Aucune machine. Ajoutez le catalogue pour rattacher les opportunités à un produit.</p>`}</div></div>`;
@@ -1160,7 +1174,7 @@ function modal(title,body,onSubmit,submitLabel){
 window.addEventListener("beforeunload",e=>{ if(dirty||importBusy){ e.preventDefault(); e.returnValue=""; } });
 const opt=(arr,sel,blank)=>(blank?`<option value="">${blank}</option>`:"")+arr.map(([v,l])=>`<option value="${esc(v)}" ${v===sel?"selected":""}>${esc(l)}</option>`).join("");
 const fld=(id,label,html,span)=>`<div class="field"${span?' style="grid-column:1/-1"':""}><label for="${id}">${label}</label>${html}</div>`;
-const equipeOpts=()=>state.equipe.map(e=>[e.id,e.nom+(e.actif?"":" (sans accès)")]);
+const equipeOpts=cur=>state.equipe.filter(e=>!e.parti_le||e.id===cur).map(e=>[e.id,e.nom+(e.parti_le?" (parti·e)":e.actif?"":" (sans accès)")]);
 
 function formCompte(c){
   c=c||{};
@@ -1176,7 +1190,7 @@ function formCompte(c){
    ${fld("m-tel2","Téléphone 2",`<input id="m-tel2" name="telephone_2" type="tel" inputmode="tel" autocomplete="off" placeholder="Optionnel" value="${esc(c.telephone_2||"")}">`)}
    ${fld("m-mail","Email",`<input id="m-mail" name="email" type="email" autocomplete="off" spellcheck="false" placeholder="contact@clinique.ma…" value="${esc(c.email||"")}">`)}
    ${fld("m-adr","Adresse",`<input id="m-adr" name="adresse" value="${esc(c.adresse||"")}">`)}
-   ${estPilote()?fld("m-com","Suivi par",`<select id="m-com" name="commercial_id">${opt(equipeOpts(),c.commercial_id||(c.id?"":(me&&me.id)),"Non assigné")}</select>`):""}
+   ${estPilote()?fld("m-com","Suivi par",`<select id="m-com" name="commercial_id">${opt(equipeOpts(c.commercial_id),c.commercial_id||(c.id?"":(me&&me.id)),"Non assigné")}</select>`):""}
    ${fld("m-web","Site web",`<input id="m-web" name="site_web" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://…" value="${esc(c.site_web||"")}">`)}
    <div class="field" style="grid-column:1/-1"><label for="m-notes">Notes</label><textarea id="m-notes" name="notes">${esc(c.notes||"")}</textarea><div class="tools ia-bar"><button type="button" class="btn small" id="m-cmic" aria-pressed="false">🎤 Note vocale</button><span id="m-cmic-msg" class="hint" aria-live="polite" style="margin:0"></span></div></div></div>`;
   const submit=async f=>{
@@ -1222,7 +1236,7 @@ function formOpp(o,presetCompte){
    <div class="field" style="grid-column:1/-1"><span class="lab-mono" id="m-et-l">Où en est-on ?</span><div class="chips" role="group" aria-labelledby="m-et-l" data-chips="etape">${ETAPES.map(e=>`<button type="button" class="chip" data-v="${e}" aria-pressed="${(o.etape||"Qualification")===e}">${ETAPE_LABEL[e]}</button>`).join("")}</div><input type="hidden" name="etape" value="${esc(o.etape||"Qualification")}"></div>
    <div class="field" style="grid-column:1/-1"><label for="m-desc">Note · ce qui a été fait, ce qui a été dit</label><textarea id="m-desc" name="description" placeholder="Ex. Visite au cabinet, intéressée par le Longiflash, attend le devis…">${esc(o.description||"")}</textarea>
      <div class="tools ia-bar"><button type="button" class="btn small" id="m-mic" aria-pressed="false">🎤 Note vocale</button><span id="m-mic-msg" class="hint" aria-live="polite" style="margin:0"></span></div></div>
-   ${estPilote()?fld("m-com","Suivie par",`<select id="m-com" name="commercial_id">${opt(equipeOpts(),o.commercial_id||(c0&&c0.commercial_id)||(me&&me.id),"Non assigné")}</select>`):""}
+   ${estPilote()?fld("m-com","Suivie par",`<select id="m-com" name="commercial_id">${opt(equipeOpts(o.commercial_id),o.commercial_id||(c0&&c0.commercial_id)||(me&&me.id),"Non assigné")}</select>`):""}
    ${edit?fld("m-titre","Intitulé",`<input id="m-titre" name="titre" value="${esc(o.titre||"")}" autocomplete="off">`,true):""}
   </div>
   ${!estPilote()&&me?`<p class="hint">Suivie par toi (${esc(me.nom)}).</p>`:""}`;
@@ -1294,13 +1308,59 @@ function formMembre(m){
    ${fld("m-role","Rôle",`<select id="m-role" name="role">${opt(Object.entries(ROLES),m.role||"commercial")}</select>`)}
    ${fld("m-sr","Showroom",`<select id="m-sr" name="showroom">${opt(Object.entries(SHOWROOMS),m.showroom||"","Non renseigné")}</select>`)}
    ${fld("m-ville","Ville",`<input id="m-ville" name="ville" list="dl-villes" autocomplete="off" placeholder="Ex. Tanger…" value="${esc(m.ville||"")}"><datalist id="dl-villes">${villes().map(x=>`<option value="${esc(x)}">`).join("")}</datalist>`)}
-   ${m.id?fld("m-act","Statut",`<select id="m-act" name="actif"><option value="1" ${m.actif?"selected":""}>Actif</option><option value="" ${!m.actif?"selected":""}>Inactif</option></select>`):""}</div>`;
+   ${m.id?fld("m-act","Statut",`<select id="m-act" name="actif"><option value="1" ${m.actif&&!m.parti_le?"selected":""}>Accès actif</option><option value="" ${!m.actif&&!m.parti_le?"selected":""}>Sans accès</option><option value="parti" ${m.parti_le?"selected":""}>A quitté Cellulift</option></select>`):""}</div>
+   ${m.id?`<p class="hint">Pour un départ, utilise plutôt « Départ / transfert » : tu pourras donner ses clients à quelqu’un d’autre en même temps.</p>`:""}`;
   const submit=async f=>{
     const obj={nom:sTxt(f.nom),email:sTxt((f.email||"").toLowerCase()),role:sEnum(f.role,Object.keys(ROLES)),ville:sTxt(f.ville),showroom:sEnum(f.showroom,Object.keys(SHOWROOMS))};
-    return m.id ? write(upd("equipe",m.id,Object.assign(obj,{actif:sBool(f.actif)})),"Membre mis à jour") : write(ins("equipe",obj),"Membre ajouté");
+    return m.id ? write(upd("equipe",m.id,Object.assign(obj,f.actif==="parti"?{actif:false,parti_le:m.parti_le||localISO()}:{actif:sBool(f.actif),parti_le:null})),"Membre mis à jour") : write(ins("equipe",obj),"Membre ajouté");
   };
   submit.validate=f=>!f.nom.trim()?["nom","Indiquez le nom."]:null;
   modal(m.id?"Modifier le membre":"Nouveau membre",h,submit,m.id?"Enregistrer":"Ajouter");
+}
+
+function formDepart(m){
+  if(!m) return;
+  const mes=state.comptes.filter(c=>c.commercial_id===m.id);
+  const parVille={}; mes.forEach(c=>{ const v=c.ville||""; parVille[v]=(parVille[v]||0)+1; });
+  const villesM=Object.entries(parVille).sort((a,b)=>b[1]-a[1]);
+  const compte=ids=>{ const inSet=x=>!ids||ids.has(x.compte_id);
+    return { comptes:ids?ids.size:mes.length,
+      opportunites:state.opportunites.filter(o=>o.commercial_id===m.id&&o.issue==="en_cours"&&inSet(o)).length,
+      taches:state.activites.filter(a=>a.commercial_id===m.id&&a.statut==="a_faire"&&inSet(a)).length,
+      devis:state.devis.filter(d=>d.commercial_id===m.id&&["brouillon","envoye"].includes(d.statut)&&inSet(d)).length,
+      paiements:state.paiements.filter(p=>p.commercial_id===m.id&&p.statut!=="encaisse"&&inSet(p)).length }; };
+  const resume=n=>[[n.comptes,"client","clients"],[n.opportunites,"opportunité en cours","opportunités en cours"],[n.taches,"tâche à faire","tâches à faire"],[n.devis,"devis en cours","devis en cours"],[n.paiements,"paiement à suivre","paiements à suivre"]].filter(x=>x[0]).map(([k,a,b])=>k+" "+(k>1?b:a)).join(", ")||"rien à transférer";
+  const dest=state.equipe.filter(e=>e.id!==m.id&&!e.parti_le).sort((a,b)=>(b.showroom===m.showroom)-(a.showroom===m.showroom)||a.nom.localeCompare(b.nom,"fr"));
+  const h=`<p style="margin-top:0"><b>${esc(m.nom)}</b>${m.showroom?` · ${esc(SHOWROOMS[m.showroom])}`:""}</p>
+   <p class="hint" style="margin-top:0">Ce qui est en cours passe à la personne choisie : clients, opportunités en cours, tâches à faire, devis en brouillon ou envoyés, paiements pas encore encaissés. Les ventes gagnées ou perdues restent à son nom pour les statistiques. Une seule notification récapitulative est envoyée.</p>
+   <div class="form-grid">
+   ${fld("dp-vers","Transférer à",`<select id="dp-vers" name="vers"><option value="">Choisir…</option>${dest.map(e=>`<option value="${e.id}">${esc(e.nom)}${e.showroom?" · "+esc(SHOWROOMS[e.showroom].replace("Showroom ","")):""}</option>`).join("")}<option value="none">Personne pour l’instant (non assigné)</option></select>`,true)}
+   </div>
+   ${villesM.length>1?`<fieldset style="border:0;padding:0;margin:4px 0 12px"><legend style="font-weight:600;margin-bottom:6px">Quels clients ?</legend><p class="hint" style="margin:0 0 8px">Décoche des villes pour répartir entre plusieurs personnes : fais un premier transfert, puis rouvre ce bouton pour le reste.</p>
+     <div class="chips" style="flex-wrap:wrap"><button type="button" class="chip" id="dp-tout">Tout cocher / décocher</button></div>
+     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:4px 12px;margin-top:8px">${villesM.map(([v,n],i)=>`<label class="check"><input type="checkbox" name="v_${i}" value="1" checked data-ville="${esc(v)}"> ${esc(v||"Sans ville")} <span class="hint" style="margin:0">${n}</span></label>`).join("")}</div></fieldset>`:""}
+   <p id="dp-resume" class="hint" aria-live="polite" style="font-weight:600"></p>
+   ${m.parti_le?`<p class="hint">A quitté Cellulift le ${esc(new Date(m.parti_le+"T12:00").toLocaleDateString("fr-FR"))} : son accès est déjà coupé.</p>`:`<label class="check" style="margin-top:4px"><input type="checkbox" name="depart" value="1" checked> ${esc(m.nom.split(" ")[0])} a quitté Cellulift : couper son accès au CRM</label>`}`;
+  const choix=()=>{ const boxes=[...$("#mform").querySelectorAll("input[data-ville]")]; if(!boxes.length||boxes.every(b=>b.checked)) return null; return boxes.filter(b=>b.checked).map(b=>b.dataset.ville); };
+  const idsDe=v=>v?new Set(mes.filter(c=>v.includes(c.ville||"")).map(c=>c.id)):null;
+  const submit=async f=>{
+    const villes=choix(), vers=f.vers==="none"?null:sUuid(f.vers);
+    setStatus("busy","Transfert…");
+    const {data,error}=await sb.rpc("transferer_portefeuille",{p_de:m.id,p_vers:vers,p_villes:villes,p_depart:!!f.depart});
+    if(error){ setStatus("bad","Échec"); toast(errorCopy(error).join(" — ")); return false; }
+    toast((vers?"Transféré à "+nomMembre(vers):"Mis en non assigné")+" : "+resume(data||{})+(f.depart?" · accès coupé":""));
+    closeModal(true); await load(); return true;
+  };
+  submit.validate=f=>{
+    if(!f.vers) return ["vers","Choisis à qui transférer, ou « Personne pour l’instant »."];
+    const v=choix(); if(v&&!v.length) return [null,"Coche au moins une ville."];
+    return null;
+  };
+  modal(m.parti_le?"Transférer ses clients":"Départ et transfert des clients",h,submit,"Transférer");
+  const maj=()=>{ const n=compte(idsDe(choix())); $("#dp-resume").textContent="À transférer : "+resume(n)+"."; };
+  const form=$("#mform"); form.addEventListener("change",maj);
+  const t=$("#dp-tout"); if(t) t.onclick=()=>{ const bs=[...form.querySelectorAll("input[data-ville]")], on=!bs.every(b=>b.checked); bs.forEach(b=>b.checked=on); maj(); };
+  maj();
 }
 
 function formProduit(p){
@@ -1414,6 +1474,7 @@ document.addEventListener("click",async e=>{
   if(act==="transfer") return formTransfert(byId(state.comptes,id));
   if(act==="new-membre") return formMembre();
   if(act==="edit-membre") return formMembre(byId(state.equipe,id));
+  if(act==="depart-membre") return formDepart(byId(state.equipe,id));
   if(act==="new-produit") return formProduit();
   if(act==="edit-produit") return formProduit(byId(state.produits,id));
   if(act==="lost") return formPerte(byId(state.opportunites,id));
@@ -1433,7 +1494,13 @@ const TABS=["aujourdhui","agenda","pipeline","comptes","activites","devis","paie
 const PILOTE_TABS=["acquisition","superviseur","reporting","equipe"];
 function syncTab(){ const h=location.hash.slice(1); if(TABS.includes(h)&&h!==tab){ tab=h; try{localStorage.setItem("crm-tab",tab);}catch(_){} if(currentUser) render(); } }
 window.addEventListener("hashchange",syncTab);
-$("#refresh").addEventListener("click",()=>load());
+{ let derniere=Date.now();
+  document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible"&&!document.body.classList.contains("auth")&&!$("#ov")&&Date.now()-derniere>120000){ derniere=Date.now(); load(); } });
+  const acct=$("#acct-btn"), menu=$("#acct-menu");
+  const fermerAcct=()=>{ menu.hidden=true; acct.setAttribute("aria-expanded","false"); };
+  acct.addEventListener("click",e=>{ e.stopPropagation(); menu.hidden=!menu.hidden; acct.setAttribute("aria-expanded",String(!menu.hidden)); });
+  document.addEventListener("click",e=>{ if(!menu.hidden&&!menu.contains(e.target)) fermerAcct(); });
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&!menu.hidden){ fermerAcct(); acct.focus(); } }); }
 if(TABS.includes(location.hash.slice(1))) tab=location.hash.slice(1);
 
 /* ---- Activités : labels, priorité, créateur / responsable, à faire ---- */
@@ -1470,7 +1537,7 @@ function formActivite(oppId, compteId, preset, a){
    ${fld("m-lieu","Lieu",`<input id="m-lieu" name="lieu" autocomplete="off" placeholder="Adresse, showroom, visio…" value="${esc((a&&a.lieu)||"")}">`)}
    ${fld("m-compte","Client",comptePicker("m-compte",cId),true)}
    ${fld("m-opp","Opportunité",`<select id="m-opp" name="opportunite_id">${opt(state.opportunites.filter(x=>x.compte_id===cId&&(x.issue==="en_cours"||x.id===(o&&o.id))).map(x=>[x.id,x.titre]),(o&&o.id)||"","—")}</select>`)}
-   ${fld("m-com","Responsable",`<select id="m-com" name="commercial_id">${opt(equipeOpts(),(a&&a.commercial_id)||preset.com||(me&&me.id),"Non assigné")}</select>`)}
+   ${fld("m-com","Responsable",`<select id="m-com" name="commercial_id">${opt(equipeOpts(a&&a.commercial_id),(a&&a.commercial_id)||preset.com||(me&&me.id),"Non assigné")}</select>`)}
    <div class="field" style="justify-content:flex-end"><label class="check"><input type="checkbox" id="m-prio" name="prioritaire" ${(a&&a.prioritaire)||preset.prioritaire?"checked":""}> Prioritaire</label></div>
    ${fld("m-res","Compte rendu / description",`<textarea id="m-res" name="resume" placeholder="Ce qui s’est dit, objections, intérêt…">${esc((a&&a.resume)||"")}</textarea>`,true)}
    ${fld("m-next","Prochaine action",`<input id="m-next" name="prochaine_action" placeholder="Ex. Envoyer le devis…" autocomplete="off" value="${esc((a&&a.prochaine_action)||"")}">`)}
@@ -1543,7 +1610,7 @@ function confirmInline(btn, question, yesAct, id){
 function formTransfert(c){
   const ops=state.opportunites.filter(o=>o.compte_id===c.id&&o.issue==="en_cours"&&o.commercial_id===c.commercial_id);
   const h=`<p style="margin-top:0">Le contact passe à un autre commercial. <b>${esc(nomMembre(c.createur_id))}</b> reste indiqué comme créateur, et le transfert est inscrit dans l’historique.</p>
-   <div class="form-grid">${fld("m-to","Nouveau responsable",`<select id="m-to" name="to">${opt(state.equipe.filter(e=>e.id!==c.commercial_id).map(e=>[e.id,e.nom+(e.actif?"":" (sans accès)")]),"","Choisir…")}</select>`,true)}
+   <div class="form-grid">${fld("m-to","Nouveau responsable",`<select id="m-to" name="to">${opt(state.equipe.filter(e=>e.id!==c.commercial_id&&!e.parti_le).map(e=>[e.id,e.nom+(e.actif?"":" (sans accès)")]),"","Choisir…")}</select>`,true)}
    ${ops.length?`<label class="check" style="grid-column:1/-1"><input type="checkbox" name="opps" checked> Transférer aussi ${ops.length} opportunité${ops.length>1?"s":""} en cours</label>`:""}</div>`;
   const submit=async f=>{
     const to=sUuid(f.to);
@@ -1841,7 +1908,7 @@ function formVisite(){
 function toggleMore(open){ const m=$("#more-sheet"); m.hidden=!open; $("#more-btn").setAttribute("aria-expanded",String(open)); if(open){ const f=m.querySelector("a"); if(f) f.focus(); } }
 $("#more-btn").addEventListener("click",()=>toggleMore(true));
 $("#more-sheet").addEventListener("click",e=>{ if(e.target.id==="more-sheet"||e.target.closest(".more-grid a")) toggleMore(false); });
-$("#more-refresh").addEventListener("click",()=>{ toggleMore(false); load(); });
+
 $("#more-logout").addEventListener("click",async()=>{ toggleMore(false); await sb.auth.signOut(); });
 function cardify(root){
   root.querySelectorAll(".tbl-wrap table:not(.cardable):not(.vheat):not(.obj-tbl)").forEach(tb=>{
@@ -1925,7 +1992,7 @@ async function aiEnvoyer(q){
   aiMsgs=aiMsgs.filter((m,i,arr)=>!(m.erreur&&i<arr.length-1)); aiSave(); aiRender();
 }
 function toggleAI(open){
-  const p=$("#aipanel"); if(open==null) open=p.hidden; p.hidden=!open; $("#ai-btn").setAttribute("aria-expanded",String(open));
+  const p=$("#aipanel"); if(open==null) open=p.hidden; p.hidden=!open; $("#ai-btn").setAttribute("aria-expanded",String(open)); document.body.classList.toggle("ai-open",open);
   if(open){ aiRender(); if(window.matchMedia("(pointer:fine)").matches) $("#ai-q").focus(); }
 }
 $("#ai-btn").addEventListener("click",()=>toggleAI());
@@ -2236,7 +2303,7 @@ function formDevis(d, preset){
     <div class="form-grid">
       ${fld("dv-compte","Client",c0?`<input id="dv-compte" value="${esc(compteLabel(c0))}" readonly aria-readonly="true">`:`<input id="dv-compte" name="compte" list="dl-comptes" autocomplete="off" placeholder="Tapez le nom du client…" required>${comptesDl}`,true)}
       ${fld("dv-opp","Opportunité liée",`<select id="dv-opp" name="opportunite_id"></select>`)}
-      ${fld("dv-com","Commercial",`<select id="dv-com" name="commercial_id">${opt(equipeOpts(),d.commercial_id||(opp0&&opp0.commercial_id)||(c0&&c0.commercial_id)||(me&&me.id),"Non assigné")}</select>`)}
+      ${fld("dv-com","Commercial",`<select id="dv-com" name="commercial_id">${opt(equipeOpts(d.commercial_id),d.commercial_id||(opp0&&opp0.commercial_id)||(c0&&c0.commercial_id)||(me&&me.id),"Non assigné")}</select>`)}
       ${fld("dv-ag","Showroom émetteur",`<select id="dv-ag" name="agence">${opt(Object.entries(AGENCES).map(([k,a])=>[k,a.nom]),d.agence||agenceDefaut(c0))}</select>`)}
     </div>
     <div class="tbl-wrap" style="margin-top:16px"><table class="dv-lines"><thead><tr><th style="min-width:200px">Machine / désignation</th><th class="num" style="width:70px">Qté</th><th class="num" style="width:130px">PU HT (MAD)</th><th class="num" style="width:90px">Remise %</th><th class="num" style="width:120px">Total HT</th><th style="width:44px"><span class="sr-only">Retirer</span></th></tr></thead><tbody id="dv-body"></tbody></table></div>
