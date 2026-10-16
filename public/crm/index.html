@@ -344,6 +344,8 @@ table.vheat td span{color:var(--ink)}
 table.vheat td[style*="--a:6"] span,table.vheat td[style*="--a:7"] span,table.vheat td[style*="--a:8"] span,table.vheat td[style*="--a:9"] span,table.vheat td[style*="--a:100"] span{color:#fff}
 .obj-tbl input{min-width:90px}
 @media (max-width:720px){ .kpi .vspark{display:none} .vbar{grid-template-columns:minmax(70px,110px) minmax(0,1fr) auto} .vfunnel .fstep{grid-template-columns:86px minmax(0,1fr) auto} .vfunnel .fpass{padding-left:100px} .vcols{height:160px} .vcol .vv{font-size:9px} table.vheat.cardable thead{display:table-header-group} table.vheat.cardable,table.vheat.cardable tbody{display:table-row-group} table.vheat.cardable tr{display:table-row} table.vheat.cardable td,table.vheat.cardable th{display:table-cell} table.vheat.cardable td::before{content:none!important} }
+.ia-bar{margin-top:6px;align-items:center}
+#qv-mic[aria-pressed="true"]{background:var(--bad);color:#fff;border-color:var(--bad)}
 /* Agenda */
 .ag-scroll{max-height:72vh;overflow:auto;border-radius:18px;border:1px solid var(--line);background:var(--glass-strong)}
 .ag-head,.ag-body{display:grid;grid-template-columns:52px repeat(var(--cols),minmax(0,1fr))}
@@ -1195,7 +1197,7 @@ function openCompte(c){
    ${c.specialite||c.source?`<p style="margin:0 0 4px">${esc(c.specialite||"")}${c.source?` <span class="hint">· source : ${esc(c.source)}</span>`:""}</p>`:""}
    <div class="hint">${[c.telephone,c.email,c.adresse,c.site_web].filter(Boolean).map(esc).join(" · ")||"Aucune coordonnée"}</div>
    ${c.notes?`<p style="margin-top:8px">${esc(c.notes)}</p>`:""}
-   <div class="tools" style="margin-block:14px"><button class="btn small" data-act="edit-compte" data-id="${c.id}">Modifier</button><button class="btn small" data-act="transfer" data-id="${c.id}">Transférer</button><button class="btn small" data-act="new-contact" data-id="${c.id}">+ Contact</button><button class="btn small" data-act="new-opp" data-compte="${c.id}">+ Opportunité</button><button class="btn small" data-act="log" data-compte="${c.id}">+ Activité</button><button class="btn small" data-act="new-devis" data-compte="${c.id}">+ Devis</button><button class="btn small" data-act="new-echeancier" data-compte="${c.id}">+ Échéancier</button></div>
+   <div class="tools" style="margin-block:14px"><button class="btn small" data-act="edit-compte" data-id="${c.id}">Modifier</button><button class="btn small" data-act="transfer" data-id="${c.id}">Transférer</button><button class="btn small" data-act="new-contact" data-id="${c.id}">+ Contact</button><button class="btn small" data-act="new-opp" data-compte="${c.id}">+ Opportunité</button><button class="btn small" data-act="log" data-compte="${c.id}">+ Activité</button><button class="btn small" data-act="new-devis" data-compte="${c.id}">+ Devis</button><button class="btn small" data-act="new-echeancier" data-compte="${c.id}">+ Échéancier</button><button class="btn small" data-act="relance-ia" data-compte="${c.id}">✨ Relance</button></div>
    <div class="sep"></div>
    <h3>Contacts</h3>${contacts.length?`<div class="closed-list">${contacts.map(x=>`<div class="closed-row"><div><b>${esc([x.prenom,x.nom].filter(Boolean).join(" "))}</b>${x.decideur?` <span class="pill ok">Décideur</span>`:""}<div class="hint">${esc(x.fonction||"")}</div></div><div class="hint">${[x.telephone,x.email].filter(Boolean).map(esc).join(" · ")}</div></div>`).join("")}</div>`:`<p class="hint">Aucun contact.</p>`}
    ${(()=>{const dv=state.devis.filter(x=>x.compte_id===c.id); return dv.length?`<h3 style="margin-top:16px">Devis</h3><div class="closed-list">${dv.map(x=>`<div class="closed-row"><div><b translate="no">${esc(devisNum(x))}</b><div class="hint">${fmtDate(x.created_at)} · ${mad(x.montant_mad)} MAD HT</div></div><div class="tools"><span class="pill ${DEVIS_PILL[x.statut]||""}">${DEVIS_LABEL[x.statut]}</span><button class="btn small" data-act="edit-devis" data-id="${x.id}">Modifier</button><button class="btn small" data-act="print-devis" data-id="${x.id}">Imprimer</button></div></div>`).join("")}</div>`:"";})()}
@@ -1207,7 +1209,7 @@ function openCompte(c){
   </div></div>`;
   $("#mx").onclick=()=>closeModal(); $("#ov").addEventListener("click",e=>{if(e.target.id==="ov")closeModal();}); trapFocus($("#ov .modal")); $("#mx").focus();
   $("#c-hist").addEventListener("toggle",e=>{ if(e.target.open&&!e.target._l){ e.target._l=1; loadHistorique($("#c-hist-body"),"compte_id",c.id,100); } });
-  $("#ov .modal").addEventListener("click",e=>{ const t=e.target.closest("[data-act]"); if(t&&["edit-compte","transfer","new-contact","new-opp","log","new-devis","edit-act","act-done","del-act-yes","edit-devis","new-echeancier","edit-paiement"].includes(t.dataset.act)) reopenAfter=()=>openCompte(byId(state.comptes,c.id)); },true);
+  $("#ov .modal").addEventListener("click",e=>{ const t=e.target.closest("[data-act]"); if(t&&["edit-compte","transfer","new-contact","new-opp","log","new-devis","edit-act","act-done","del-act-yes","edit-devis","new-echeancier","edit-paiement","relance-ia"].includes(t.dataset.act)) reopenAfter=()=>openCompte(byId(state.comptes,c.id)); },true);
 }
 
 /* ---- Event delegation ---- */
@@ -1218,6 +1220,7 @@ document.addEventListener("click",async e=>{
   if(act==="quick-visite") return formVisite();
   if(act==="pipe-stage"){ pipeStage=t.dataset.v; colShown={}; viewPipeline($("#view")); window.scrollTo({top:0}); return; }
   if(act==="seuils") return formSeuils();
+  if(act==="relance-ia") return formRelance(t.dataset.compte||id, t.dataset.devis);
   if(act==="objectifs") return formObjectifs();
   if(act==="sup-metric"){ supMetric=t.dataset.v; return viewSuperviseur($("#view")); }
   if(act==="demande-transfert"){ t.disabled=true; const {error}=await sb.rpc("demander_transfert",{p_compte:id}); if(error){ t.disabled=false; return toast(errorCopy(error).join(" — ")); } t.textContent="Demande envoyée ✓"; toast("Le superviseur a été prévenu"); return; }
@@ -1479,7 +1482,7 @@ function viewAujourdhui(v){
   const relItem=({a})=>{ const c=byId(state.comptes,a.compte_id), o=byId(state.opportunites,a.opportunite_id), late=a.date_prochaine_action<localISO();
     return `<div class="feed-item${a.prioritaire?" prio":""}"><div class="when">${fmtDate(a.date_prochaine_action)}</div><div><div class="what"><span class="pill ${late?"bad":"warn"}">Relance${late?" en retard":""}</span>${c?` <button class="linkish" data-act="open-compte" data-id="${c.id}"><b>${esc(c.nom)}</b></button>`:""}${o?` · <button class="linkish" data-act="open-opp" data-id="${o.id}">${esc(o.titre)}</button>`:""}</div>
       <div class="next" style="margin-top:2px">${esc(a.prochaine_action||"Relancer le client")}</div>${todayQui==="equipe"?`<div class="hint">${esc(nomMembre(a.commercial_id||a.createur_id))}</div>`:""}
-      <div class="tools acts-inline" style="margin-top:6px"><button class="btn small primary" data-act="log" data-compte="${a.compte_id||""}" data-opp="${a.opportunite_id||""}" data-type="appel">Faire la relance</button><button class="btn small" data-act="relance-ok" data-id="${a.id}">C’est fait</button></div></div></div>`; };
+      <div class="tools acts-inline" style="margin-top:6px">${a.compte_id?`<button class="btn small primary" data-act="relance-ia" data-compte="${a.compte_id}">✨ Rédiger la relance</button>`:""}<button class="btn small" data-act="log" data-compte="${a.compte_id||""}" data-opp="${a.opportunite_id||""}" data-type="appel">Noter un appel</button><button class="btn small" data-act="relance-ok" data-id="${a.id}">C’est fait</button></div></div></div>`; };
   const liste=g[todayTab];
   // Devis envoyés sans réponse depuis 7 jours
   const dv=state.devis.filter(d=>d.statut==="envoye"&&aMoi(d.commercial_id)&&daysSince(d.date_envoi||d.updated_at||d.created_at)>=7)
@@ -1509,7 +1512,7 @@ function viewAujourdhui(v){
   <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
     <div class="panel"><h3>Devis à relancer</h3><p class="hint" style="margin-top:0">Envoyés il y a plus de 7 jours, sans réponse</p>
       ${dv.length?dv.slice(0,8).map(d=>{const c=byId(state.comptes,d.compte_id), j=daysSince(d.date_envoi||d.updated_at||d.created_at);
-        return `<div class="mini-row"><div style="min-width:0"><button class="linkish" data-act="edit-devis" data-id="${d.id}"><b translate="no">${esc(devisNum(d))}</b></button><div class="hint">${esc(c?c.nom:"")}${todayQui==="equipe"?" · "+esc(nomMembre(d.commercial_id)):""}</div></div><div style="text-align:right"><div style="font-family:var(--f-mono);font-size:12px">${mad(d.montant_mad)} MAD</div><span class="pill ${j>14?"bad":"warn"}">${j} j</span></div></div>`;}).join(""):`<p class="hint">Aucun devis en attente depuis plus d’une semaine.</p>`}</div>
+        return `<div class="mini-row"><div style="min-width:0"><button class="linkish" data-act="edit-devis" data-id="${d.id}"><b translate="no">${esc(devisNum(d))}</b></button><div class="hint">${esc(c?c.nom:"")}${todayQui==="equipe"?" · "+esc(nomMembre(d.commercial_id)):""}</div></div><div style="text-align:right"><div style="font-family:var(--f-mono);font-size:12px">${mad(d.montant_mad)} MAD</div><span class="pill ${j>14?"bad":"warn"}">${j} j</span><div><button class="btn small" data-act="relance-ia" data-compte="${d.compte_id}" data-devis="${d.id}" style="margin-top:4px">✨ Relancer</button></div></div></div>`;}).join(""):`<p class="hint">Aucun devis en attente depuis plus d’une semaine.</p>`}</div>
     <div class="panel"><h3>Affaires qui traînent</h3><p class="hint" style="margin-top:0">Restées trop longtemps dans la même étape, les bloquées d’abord</p>
       ${dort.length?dort.slice(0,8).map(({o,j})=>{const c=byId(state.comptes,o.compte_id);
         return `<div class="mini-row"><div style="min-width:0"><button class="linkish" data-act="open-opp" data-id="${o.id}"><b>${esc(o.titre)}</b></button><div class="hint">${esc(c?c.nom:"")} · ${ETAPE_LABEL[o.etape]} · dernière action il y a ${j} j</div></div><div style="text-align:right"><div style="font-family:var(--f-mono);font-size:12px">${madShort(o.montant_mad)} MAD</div>${risquePill(o)}</div></div>`;}).join("")+(dort.length>8?`<p class="hint">+ ${dort.length-8} autres · <a href="#pipeline" data-act="pipe-risque">voir dans le pipeline</a></p>`:""):`<p class="hint">Aucune affaire au-delà des seuils de son étape.</p>`}</div>
@@ -1593,13 +1596,68 @@ function viewAgenda(v){
 
 window.matchMedia("(max-width:720px)").addEventListener("change",()=>{ if(["agenda","pipeline"].includes(tab)&&loaded&&!$("#ov")) render(); });
 
+/* ---- Assistant IA ---- */
+async function appelIA(body){
+  try{
+    const {data,error}=await sb.functions.invoke("assistant",{body});
+    if(error){ let code=""; try{ code=(await error.context.json()).error; }catch(_){}
+      return {ok:false,erreur:code==="cle_absente"?"L’assistant n’est pas encore activé : la clé API doit être ajoutée dans Supabase.":code==="acces_refuse"?"Ton compte n’a pas accès à l’assistant.":code==="ia_indisponible"?"L’IA ne répond pas pour l’instant, réessaie dans une minute.":"L’assistant n’a pas pu répondre. Réessaie."}; }
+    return Object.assign({ok:true},data);
+  }catch(e){ return {ok:false,erreur:"Pas de connexion à l’assistant."}; }
+}
+function brancherDictee(btn,zone,msg){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){ btn.hidden=true; zone.placeholder+=" (ou le micro du clavier)"; return; }
+  let rec=null, base="";
+  btn.onclick=()=>{
+    if(rec){ rec.stop(); return; }
+    rec=new SR(); rec.lang="fr-FR"; rec.continuous=true; rec.interimResults=true; base=zone.value?zone.value.replace(/\s*$/," "):"";
+    rec.onresult=e=>{ let fin="",tmp=""; for(const r of e.results){ (r.isFinal?(fin+=r[0].transcript):(tmp+=r[0].transcript)); } zone.value=base+fin+tmp; dirty=true; };
+    rec.onerror=e=>{ msg.textContent=e.error==="not-allowed"?"Autorise le micro pour dicter.":"Dictée interrompue."; };
+    rec.onend=()=>{ rec=null; btn.setAttribute("aria-pressed","false"); btn.textContent="🎤 Dicter"; };
+    rec.start(); btn.setAttribute("aria-pressed","true"); btn.textContent="⏹ Arrêter"; msg.textContent="Je t’écoute… parle normalement.";
+  };
+}
+function formRelance(compteId, devisId){
+  const c=byId(state.comptes,compteId); if(!c) return;
+  const tel=String(c.telephone||"").replace(/\D/g,""), telWa=tel.startsWith("0")?"212"+tel.slice(1):tel;
+  const h=`<p style="margin-top:0">L’IA rédige à partir de l’historique de <b>${esc(c.nom)}</b> (échanges, devis, affaires). Tu relis, tu modifies, puis tu envoies toi-même : rien ne part automatiquement.</p>
+   <div class="form-grid">
+    <div class="field"><span class="lab-mono" id="rl-c">Canal</span><div class="chips" role="group" aria-labelledby="rl-c" data-chips="canal"><button type="button" class="chip" data-v="whatsapp" aria-pressed="true">WhatsApp</button><button type="button" class="chip" data-v="email" aria-pressed="false">E-mail</button></div><input type="hidden" name="canal" value="whatsapp"></div>
+    <div class="field"><span class="lab-mono" id="rl-t">Ton</span><div class="chips" role="group" aria-labelledby="rl-t" data-chips="ton"><button type="button" class="chip" data-v="cordial" aria-pressed="true">Cordial</button><button type="button" class="chip" data-v="direct" aria-pressed="false">Direct</button></div><input type="hidden" name="ton" value="cordial"></div>
+    ${fld("rl-cons","Précision pour l’IA (facultatif)",`<input id="rl-cons" name="consigne" autocomplete="off" placeholder="Ex. proposer une démo jeudi, rappeler l’offre de formation…">`,true)}
+   </div>
+   <div class="tools" style="margin-top:12px"><button type="button" class="btn primary" id="rl-go">✨ Rédiger</button><span id="rl-msg" class="hint" aria-live="polite" style="margin:0"></span></div>
+   <div id="rl-out" hidden style="margin-top:12px">
+     <div class="field" id="rl-objet-f" hidden><label for="rl-objet">Objet</label><input id="rl-objet" name="objet"></div>
+     <div class="field" style="margin-top:8px"><label for="rl-msgtxt">Message</label><textarea id="rl-msgtxt" name="message" rows="7"></textarea></div>
+     <div class="tools" style="margin-top:8px"><button type="button" class="btn small" id="rl-copy">Copier</button>${telWa.length>=10?`<a class="btn small" id="rl-wa" target="_blank" rel="noopener">Ouvrir WhatsApp</a>`:""}${c.email?`<a class="btn small" id="rl-mail">Ouvrir l’e-mail</a>`:""}</div>
+   </div>`;
+  const submit=async f=>{ if(!f.message||!f.message.trim()) return false;
+    return write(ins("activites",{compte_id:c.id,commercial_id:me?me.id:null,type:f.canal==="email"?"email":"whatsapp",label:devisId?"🔄 Relance devis":"🔄 Relance",statut:"fait",fait_le:new Date().toISOString(),date_activite:new Date().toISOString(),resume:sTxt((f.objet?f.objet+"\n":"")+f.message)}),"Relance notée dans l’historique"); };
+  submit.validate=f=>!f.message||!f.message.trim()?["message","Rédige d’abord le message."]:null;
+  modal("Rédiger une relance",h,submit,"Noter comme envoyée");
+  $("#mform").querySelectorAll("[data-chips]").forEach(g=>g.addEventListener("click",e=>{ const b=e.target.closest(".chip"); if(!b) return; g.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",String(x===b))); $(`#mform input[name="${g.dataset.chips}"]`).value=b.dataset.v; }));
+  const maj=()=>{ const m=$("#rl-msgtxt").value, o=$("#rl-objet").value; if($("#rl-wa")) $("#rl-wa").href="https://wa.me/"+telWa+"?text="+encodeURIComponent(m); if($("#rl-mail")) $("#rl-mail").href="mailto:"+encodeURIComponent(c.email)+"?subject="+encodeURIComponent(o)+"&body="+encodeURIComponent(m); };
+  $("#rl-msgtxt").addEventListener("input",maj); $("#rl-objet").addEventListener("input",maj);
+  $("#rl-copy").onclick=async()=>{ try{ await navigator.clipboard.writeText(($("#rl-objet").value?$("#rl-objet").value+"\n\n":"")+$("#rl-msgtxt").value); toast("Copié"); }catch(_){ $("#rl-msgtxt").select(); } };
+  $("#rl-go").onclick=async()=>{ const b=$("#rl-go"), msg=$("#rl-msg"); b.disabled=true; b.setAttribute("aria-busy","true"); msg.textContent="Rédaction…";
+    const canal=$('#mform input[name="canal"]').value;
+    const r=await appelIA({action:"relance",compte_id:c.id,devis_id:devisId||null,canal,ton:$('#mform input[name="ton"]').value,consigne:$("#rl-cons").value});
+    b.disabled=false; b.removeAttribute("aria-busy"); b.textContent="✨ Rédiger à nouveau";
+    if(!r.ok){ msg.textContent=r.erreur; return; }
+    msg.textContent="Relis avant d’envoyer."; $("#rl-out").hidden=false; $("#rl-objet-f").hidden=canal!=="email"; $("#rl-objet").value=r.objet||""; $("#rl-msgtxt").value=r.message||""; maj(); dirty=true; $("#rl-msgtxt").focus(); };
+}
+
 function formVisite(){
   const TYPES=[["visite","Visite"],["appel","Appel"],["whatsapp","WhatsApp"],["demo","Démo"],["email","Email"]];
   const RELS=[["","Pas de relance"],["3","3 jours"],["7","7 jours"],["15","15 jours"],["30","1 mois"]];
   const h=`<div class="form-grid">
    ${fld("m-compte","Client",comptePicker("m-compte",""),true)}
    <div class="field" style="grid-column:1/-1"><span class="lab-mono" id="qv-tl">Type</span><div class="chips" role="group" aria-labelledby="qv-tl" data-chips="type">${TYPES.map(([k,l],i)=>`<button type="button" class="chip" data-v="${k}" aria-pressed="${i===0}">${l}</button>`).join("")}</div><input type="hidden" name="type" value="visite"></div>
-   ${fld("m-res","Ce qui s’est dit",`<textarea id="m-res" name="resume" placeholder="Intérêt, objections, machine évoquée…"></textarea>`,true)}
+   <div class="field" style="grid-column:1/-1"><label for="m-res">Ce qui s’est dit</label><textarea id="m-res" name="resume" placeholder="Intérêt, objections, machine évoquée… ou dicte avec le micro"></textarea>
+     <div class="tools ia-bar"><button type="button" class="btn small" id="qv-mic" aria-pressed="false">🎤 Dicter</button><button type="button" class="btn small" id="qv-ia">✨ Remplir avec l’IA</button><span id="qv-ia-msg" class="hint" aria-live="polite" style="margin:0"></span></div>
+     <div id="qv-ia-out"></div></div>
    <div class="field" style="grid-column:1/-1"><span class="lab-mono" id="qv-rl">Relancer dans</span><div class="chips" role="group" aria-labelledby="qv-rl" data-chips="relance">${RELS.map(([k,l])=>`<button type="button" class="chip" data-v="${k}" aria-pressed="${k==="7"}">${l}</button>`).join("")}</div><input type="hidden" name="relance" value="7"></div>
    ${fld("m-next","Relance : quoi faire",`<input id="m-next" name="prochaine_action" autocomplete="off" placeholder="Ex. Envoyer le devis Longiflash…">`,true)}</div>`;
   const submit=async f=>{
@@ -1614,6 +1672,24 @@ function formVisite(){
   };
   submit.validate=f=>!compteIdFromLabel(f.compte_label)?["compte_label","Choisis le client dans la liste."]:null;
   modal("J’ai fait une visite",h,submit,"Enregistrer");
+  brancherDictee($("#qv-mic"),$("#m-res"),$("#qv-ia-msg"));
+  $("#qv-ia").onclick=async()=>{
+    const txt=$("#m-res").value.trim(), msg=$("#qv-ia-msg"), b=$("#qv-ia"); if(txt.length<5){ msg.textContent="Dicte ou écris d’abord quelques mots."; return; }
+    b.disabled=true; b.setAttribute("aria-busy","true"); msg.textContent="L’IA lit ton compte rendu…";
+    const r=await appelIA({action:"compte_rendu",texte:txt,compte_id:compteIdFromLabel($("#m-compte").value)||null});
+    b.disabled=false; b.removeAttribute("aria-busy"); if(!r.ok){ msg.textContent=r.erreur; return; }
+    const f=r.fiche||{}; msg.textContent="Vérifie et corrige si besoin, rien n’est enregistré avant « Enregistrer ».";
+    const pick=(g,v)=>{ const box=$(`#mform [data-chips="${g}"]`); const c=box&&box.querySelector(`.chip[data-v="${v}"]`); if(!c) return; box.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",String(x===c))); $(`#mform input[name="${g}"]`).value=v; };
+    if(f.type) pick("type",f.type);
+    const extra=[f.machines&&f.machines.length?"Machines : "+f.machines.join(", "):"",f.objections&&f.objections.length?"Freins : "+f.objections.join(", "):"",f.interet?"Intérêt : "+{froid:"froid",tiede:"tiède",chaud:"chaud"}[f.interet]:""].filter(Boolean).join("\n");
+    $("#m-res").value=[f.resume,extra].filter(Boolean).join("\n");
+    if(f.prochaine_action) $("#m-next").value=f.prochaine_action;
+    if(f.relance_jours>0){ const opts=[3,7,15,30]; const best=opts.reduce((a,b)=>Math.abs(b-f.relance_jours)<=Math.abs(a-f.relance_jours)?b:a); pick("relance",String(best)); }
+    if(!compteIdFromLabel($("#m-compte").value)&&f.client_mentionne){ const k=strip(f.client_mentionne).split(/\s+/).filter(w=>w.length>2); const hits=state.comptes.filter(c=>k.length&&k.every(w=>strip(c.nom).includes(w)));
+      if(hits.length===1) $("#m-compte").value=compteLabel(hits[0]); else if(hits.length) $("#qv-ia-out").innerHTML=`<p class="hint">Client cité : « ${esc(f.client_mentionne)} ». ${hits.length} clients correspondent, choisis-le dans la liste.</p>`;
+      else $("#qv-ia-out").innerHTML=`<p class="hint">Client cité : « ${esc(f.client_mentionne)} », introuvable dans tes clients.</p>`; }
+    dirty=true;
+  };
   $("#mform").querySelectorAll("[data-chips]").forEach(g=>g.addEventListener("click",e=>{ const b=e.target.closest(".chip"); if(!b) return;
     g.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",String(x===b))); $(`#mform input[name="${g.dataset.chips}"]`).value=b.dataset.v; dirty=true; }));
 }
@@ -2103,7 +2179,7 @@ function viewDevis(v){
         <td class="num">${mad(d.montant_mad)}</td><td class="num">${mad(ttc(d))}</td>
         <td><select data-dstat="${d.id}" aria-label="Statut du devis ${esc(devisNum(d))}" class="dstat ${DEVIS_PILL[d.statut]||""}">${DEVIS_STATUTS.map(s=>`<option value="${s}" ${d.statut===s?"selected":""}>${DEVIS_LABEL[s]}</option>`).join("")}</select></td>
         <td style="white-space:nowrap">${fmtDate(d.date_envoi||d.created_at)}</td>
-        <td><div class="tools" style="flex-wrap:nowrap"><button class="btn small" data-act="edit-devis" data-id="${d.id}">Modifier</button><button class="btn small primary" data-act="pdf-devis" data-id="${d.id}">PDF</button><button class="btn small" data-act="print-devis" data-id="${d.id}">Imprimer</button>${["accepte","signe"].includes(d.statut)?`<button class="btn small" data-act="new-echeancier" data-devis="${d.id}">${state.paiements.some(p=>p.devis_id===d.id)?"Échéancier ✓":"Échéancier"}</button>`:""}</div></td></tr>`;}).join("")}
+        <td><div class="tools" style="flex-wrap:nowrap"><button class="btn small" data-act="edit-devis" data-id="${d.id}">Modifier</button><button class="btn small primary" data-act="pdf-devis" data-id="${d.id}">PDF</button><button class="btn small" data-act="print-devis" data-id="${d.id}">Imprimer</button>${d.statut==="envoye"?`<button class="btn small" data-act="relance-ia" data-compte="${d.compte_id}" data-devis="${d.id}">✨ Relancer</button>`:""}${["accepte","signe"].includes(d.statut)?`<button class="btn small" data-act="new-echeancier" data-devis="${d.id}">${state.paiements.some(p=>p.devis_id===d.id)?"Échéancier ✓":"Échéancier"}</button>`:""}</div></td></tr>`;}).join("")}
     </tbody></table></div>`:`<div class="empty"><h3>${state.devis.length?"Aucun devis avec ce statut":"Aucun devis pour l’instant"}</h3><p>Créez un devis ici, depuis une fiche client ou depuis une opportunité du pipeline.</p></div>`}
   </div>`;
   $("#f-dstat").addEventListener("change",e=>{ devisFilt=e.target.value; viewDevis(v); });
