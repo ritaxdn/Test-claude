@@ -173,7 +173,7 @@
     const N = 200;
     for (let i = 0; i < records.length; i += N) {
       const chunk = records.slice(i, i + N);
-      const rows = chunk.map((r) => ({ ...r.compte, import_ref: r.import_ref, commercial_id: idByEmail.get(r.creatorEmail) || null }));
+      const rows = chunk.map((r) => { const id = idByEmail.get(r.creatorEmail) || null; return { ...r.compte, import_ref: r.import_ref, commercial_id: id, ...(id ? { createur_id: id } : {}) }; });
       const { data: ins, error } = await sb.from("comptes").upsert(rows, { onConflict: "import_ref", ignoreDuplicates: true }).select("id,import_ref");
       if (error) throw error;
       created += (ins || []).length;
@@ -288,7 +288,7 @@
     const idByRef = new Map();
     for (let i = 0; i < plan.newComptes.length; i += N) {
       const chunk = plan.newComptes.slice(i, i + N);
-      const rows = chunk.map(({ commercialRef, ...c }) => ({ ...c, commercial_id: comId(commercialRef) }));
+      const rows = chunk.map(({ commercialRef, ...c }) => { const id = comId(commercialRef); return { ...c, commercial_id: id, ...(id ? { createur_id: id } : {}) }; });
       const { error } = await sb.from("comptes").upsert(rows, { onConflict: "import_ref", ignoreDuplicates: true });
       if (error) throw error;
       const { data, error: e2 } = await sb.from("comptes").select("id,import_ref").in("import_ref", chunk.map((c) => c.import_ref));
@@ -300,7 +300,7 @@
     let created = 0; const oppByCompte = new Map();
     for (let i = 0; i < plan.opps.length; i += N) {
       const chunk = plan.opps.slice(i, i + N).filter((o) => cid(o.cpt));
-      const rows = chunk.map((o) => { const r = { ...o.row, import_ref: o.import_ref, compte_id: cid(o.cpt), commercial_id: comId(o.com) }; if (!r.created_at) { delete r.created_at; delete r.updated_at; } return r; });
+      const rows = chunk.map((o) => { const r = { ...o.row, import_ref: o.import_ref, compte_id: cid(o.cpt), commercial_id: comId(o.com) }; if (r.commercial_id) r.createur_id = r.commercial_id; if (!r.created_at) { delete r.created_at; delete r.updated_at; } return r; });
       const { data, error } = await sb.from("opportunites").upsert(rows, { onConflict: "import_ref", ignoreDuplicates: true }).select("id");
       if (error) throw error; created += (data || []).length;
       done += plan.opps.slice(i, i + N).length; onProgress && onProgress(done, total);
@@ -434,7 +434,7 @@
     // 4. Opportunités.
     let opps = 0;
     for (let i = 0; i < plan.opps.length; i += 200) {
-      const rows = plan.opps.slice(i, i + 200).filter((o) => idByRef.has(o.tel)).map((o) => { const r = { ...o.row, import_ref: o.import_ref, compte_id: idByRef.get(o.tel), commercial_id: ownerId }; for (const k of ["created_at", "updated_at"]) if (!r[k]) delete r[k]; return r; });
+      const rows = plan.opps.slice(i, i + 200).filter((o) => idByRef.has(o.tel)).map((o) => { const r = { ...o.row, import_ref: o.import_ref, compte_id: idByRef.get(o.tel), commercial_id: ownerId, ...(ownerId ? { createur_id: ownerId } : {}) }; for (const k of ["created_at", "updated_at"]) if (!r[k]) delete r[k]; return r; });
       if (rows.length) { const { data, error } = await sb.from("opportunites").upsert(rows, { onConflict: "import_ref", ignoreDuplicates: true }).select("id"); if (error) throw error; opps += (data || []).length; }
       prog(Math.min(plan.opps.length, i + 200)); 
     }
@@ -442,7 +442,7 @@
     // 5. Activités (sans client : l'export ne le précise pas).
     let acts = 0;
     for (let i = 0; i < plan.acts.length; i += 200) {
-      const rows = plan.acts.slice(i, i + 200).map((a) => ({ ...a.row, import_ref: a.import_ref, commercial_id: mid(a.responsable) || ownerId }));
+      const rows = plan.acts.slice(i, i + 200).map((a) => { const resp = mid(a.responsable) || ownerId, crea = mid(a.createur) || ownerId; return { ...a.row, import_ref: a.import_ref, commercial_id: resp, ...(crea ? { createur_id: crea } : {}) }; });
       const { data, error } = await sb.from("activites").upsert(rows, { onConflict: "import_ref", ignoreDuplicates: true }).select("id"); if (error) throw error;
       acts += (data || []).length; prog(Math.min(plan.acts.length, i + 200));
     }

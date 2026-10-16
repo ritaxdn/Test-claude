@@ -823,24 +823,26 @@ function feedItem(a, opts){
   const diff=a.createur_id && a.commercial_id && a.createur_id!==a.commercial_id;
   return `<div class="feed-item${a.prioritaire?" prio":""}" data-aid="${a.id}"><div class="when">${fmtDate(a.date_activite)}<br>${new Date(a.date_activite).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}</div>
    <div><div class="what"><span class="pill">${TYPES_ACT[a.type]||a.type}</span>${a.label?` <span class="pill lab">${esc(a.label)}</span>`:""}${a.prioritaire?` <span class="pill bad">Prioritaire</span>`:""}${aFaire?` <span class="pill ${overdue?"bad":"warn"}">${overdue?"En retard":"À faire"}</span>`:""}
-     ${opts.noCompte?"":` <b>${esc(c?c.nom:"—")}</b>`}${o&&!opts.noOpp?` · <button class="linkish" data-act="open-opp" data-id="${o.id}">${esc(o.titre)}</button>`:""}</div>
+     ${opts.noCompte?"":c?` <button class="linkish" data-act="open-compte" data-id="${c.id}"><b>${esc(c.nom)}</b></button>`:` <span class="hint" title="L’export de l’ancien CRM ne précisait pas le client">sans client</span>`}${o&&!opts.noOpp?` · <button class="linkish" data-act="open-opp" data-id="${o.id}">${esc(o.titre)}</button>`:""}</div>
    <div class="hint">${diff?`Créée par ${esc(nomMembre(a.createur_id))} · pour ${esc(nomMembre(a.commercial_id))}`:esc(nomMembre(a.commercial_id||a.createur_id))}</div>
    ${a.resume?`<div class="what" style="margin-top:4px;white-space:pre-line">${esc(a.resume)}</div>`:""}
    ${a.prochaine_action?`<div class="next">Prochaine action : ${esc(a.prochaine_action)}${a.date_prochaine_action?` <span class="pill ${late?"bad":"warn"}">${late?"en retard · ":""}${fmtDate(a.date_prochaine_action)}</span>`:""}</div>`:""}
    <div class="tools acts-inline" style="margin-top:6px">${aFaire?`<button class="btn small ok" data-act="act-done" data-id="${a.id}">Marquer fait</button>`:""}<button class="btn small" data-act="edit-act" data-id="${a.id}">Modifier</button><button class="btn small" data-act="del-act" data-id="${a.id}">Supprimer</button></div></div></div>`;
 }
 
-let actFilt={qui:"moi",label:""};
+let actFilt={qui:"moi",label:"",sansClient:false};
 function viewActivites(v){
   const today=localISO();
   const mine=a=>actFilt.qui!=="moi"||!me||a.commercial_id===me.id||(!a.commercial_id&&a.createur_id===me.id);
   const lab=a=>!actFilt.label||a.label===actFilt.label;
   const todo=state.activites.filter(a=>a.statut==="a_faire"&&mine(a)&&lab(a)).sort((a,b)=>(b.prioritaire-a.prioritaire)||a.date_activite.localeCompare(b.date_activite));
-  const journal=state.activites.filter(a=>a.statut!=="a_faire"&&lab(a)).slice(0,60);
+  const sansClient=state.activites.filter(a=>!a.compte_id).length;
+  const journal=state.activites.filter(a=>a.statut!=="a_faire"&&lab(a)&&(actFilt.sansClient||a.compte_id)).slice(0,60);
   const relances=state.activites.filter(a=>a.date_prochaine_action&&mine(a)).sort((a,b)=>a.date_prochaine_action.localeCompare(b.date_prochaine_action)).filter(a=>a.date_prochaine_action>=localISO(new Date(Date.now()-60*864e5))).slice(0,15);
   v.innerHTML=`<div class="section-head"><div><h2>Activités</h2><p class="hint">Tâches, événements, appels, visites et relances de l’équipe</p></div>
    <div class="tools"><button class="btn" data-act="log" data-type="tache" ${state.comptes.length?"":"disabled"}>+ Tâche</button><button class="btn" data-act="log" data-type="evenement" ${state.comptes.length?"":"disabled"}>+ Événement</button><button class="btn primary" data-act="log" data-type="appel" ${state.comptes.length?"":"disabled"}>+ Appel</button></div></div>
   <div class="filters" style="margin-bottom:12px"><select id="f-qui" aria-label="Afficher"><option value="moi" ${actFilt.qui==="moi"?"selected":""}>Mes tâches</option><option value="tous" ${actFilt.qui==="tous"?"selected":""}>Toute l’équipe</option></select>
+    ${sansClient?`<label class="check"><input type="checkbox" id="f-sc" ${actFilt.sansClient?"checked":""}> Afficher les ${new Intl.NumberFormat("fr-FR").format(sansClient)} activités importées sans client</label>`:""}
     <select id="f-lab" aria-label="Label"><option value="">Tous les labels</option>${labels().map(l=>`<option ${actFilt.label===l?"selected":""}>${esc(l)}</option>`).join("")}</select></div>
   <div class="grid2"><div style="display:flex;flex-direction:column;gap:16px;min-width:0">
     <div class="panel"><h3>À faire <span class="hint">· ${todo.length}</span></h3>${todo.length?`<div class="feed">${todo.slice(0,80).map(a=>feedItem(a)).join("")}</div>`:`<p class="hint">Rien à faire${actFilt.qui==="moi"?" pour vous":""}. Ajoutez une tâche ou un événement.</p>`}</div>
@@ -848,6 +850,7 @@ function viewActivites(v){
   <div class="panel"><h3>Relances à venir</h3>${relances.length?`<div class="closed-list" style="margin-top:8px">${relances.map(a=>{const c=byId(state.comptes,a.compte_id);const late=a.date_prochaine_action<today;return `<div class="closed-row"><div><b>${esc(c?c.nom:"—")}</b><div class="hint">${esc(a.prochaine_action||"")}</div></div><span class="pill ${late?"bad":"warn"}">${fmtDate(a.date_prochaine_action)}</span></div>`;}).join("")}</div>`:`<p class="hint">Aucune relance planifiée.</p>`}</div></div>`;
   $("#f-qui").addEventListener("change",e=>{actFilt.qui=e.target.value;viewActivites(v);});
   $("#f-lab").addEventListener("change",e=>{actFilt.label=e.target.value;viewActivites(v);});
+  if($("#f-sc")) $("#f-sc").addEventListener("change",e=>{actFilt.sansClient=e.target.checked;viewActivites(v);});
 }
 
 function confirmInline(btn, question, yesAct, id){
@@ -1310,7 +1313,7 @@ function openImport(){
     const files=[...e.target.files]; plan=null; go.disabled=true; if(!files.length){ out.innerHTML=""; return; }
     out.innerHTML=`<p class="hint">Lecture de ${files.length} fichier${files.length>1?"s":""}…</p>`;
     try{
-      await loadScript("https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"); await loadScript("/crm/import.js?v=20261016-3");
+      await loadScript("https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"); await loadScript("/crm/import.js?v=20261016-4");
       if(!window.CRMImport||!CRMImport.mapExportCommercial||!CRMImport.readSheets) throw new Error("Une ancienne version de la page est encore chargée. Rechargez la page (Cmd + Maj + R sur Mac, Ctrl + Maj + R sur PC) puis recommencez.");
       const sheets=await CRMImport.readSheets(files,window.XLSX);
       if(sheets["Contacts"] && Object.keys(sheets).some(n=>/activit/i.test(n))){
