@@ -490,7 +490,17 @@ const ETAPES = ["Qualification","Proposition","Negociation","Fermeture"];
 const ETAPE_LABEL = {Qualification:"Qualification",Proposition:"Proposition",Negociation:"Négociation",Fermeture:"Fermeture"};
 const PROB_DEFAUT = {Qualification:20,Proposition:40,Negociation:65,Fermeture:85};
 const SEGMENTS = {A_clinique:"A · Clinique / médico-esth.",B_cabinet:"B · Cabinet / santé",C_salon:"C · Salon / beauté"};
-const SEG_HINT = "A centres médico-esthétiques · B médecins, kinés, pros de santé · C esthétique, coiffure, spa, parapharmacie";
+const CATEGORIES = {medecin:"Médecin",non_medecin:"Non-médecin"};
+// Spécialités regroupées par ce que les clients achètent (même cible = même segment de reporting)
+const METIERS = {
+  med_esthetique:["medecin","Médecine esthétique","Méd. esthétique"], dermato:["medecin","Dermatologie","Dermato"], chirurgie:["medecin","Chirurgie plastique & esthétique","Chirurgie"],
+  gyneco:["medecin","Gynécologie","Gynéco"], generaliste:["medecin","Médecine générale","Généraliste"], dentaire:["medecin","Dentaire","Dentaire"], autre_med:["medecin","Autre spécialité médicale","Autre médecin"],
+  beaute:["non_medecin","Beauté, esthétique, spa & laser","Beauté"], kine:["non_medecin","Kiné & physiothérapie","Kiné"], minceur:["non_medecin","Nutrition & minceur","Minceur"],
+  pharmacie:["non_medecin","Pharmacie & parapharmacie","Pharmacie"], autre:[null,"Autre / à classer","À classer"] };
+const metierLabel=(c,court)=>{ const m=METIERS[c&&c.metier]||METIERS.autre; return court?m[2]:m[1]; };
+const metierPill=c=>c?`<span class="pill ${c.categorie==="medecin"?"A":c.categorie==="non_medecin"?"C":""}" title="${esc((CATEGORIES[c.categorie]||"Catégorie à préciser")+" · "+metierLabel(c))}">${esc(metierLabel(c,true))}</span>${c.metier_a_verifier?` <span class="pill warn">à classer</span>`:""}`:"";
+const metierOptions=(sel,cat)=>Object.entries(CATEGORIES).filter(([k])=>!cat||k===cat).map(([k,l])=>`<optgroup label="${l}">${Object.entries(METIERS).filter(([,m])=>m[0]===k).map(([mk,m])=>`<option value="${mk}" ${sel===mk?"selected":""}>${esc(m[1])}</option>`).join("")}</optgroup>`).join("")+`<option value="autre" ${sel==="autre"?"selected":""}>Autre / à classer</option>`;
+const segmentCompat=m=>({med_esthetique:"A_clinique",chirurgie:"A_clinique",dermato:"B_cabinet",gyneco:"B_cabinet",generaliste:"B_cabinet",dentaire:"B_cabinet",autre_med:"B_cabinet",kine:"B_cabinet",beaute:"C_salon",minceur:"C_salon",pharmacie:"C_salon"})[m];
 const VILLES_BASE = ["Casablanca","Rabat","Marrakech","Tanger","Fès","Agadir","Oujda","Tétouan","Meknès"];
 const STATUTS = {prospect:"Prospect",client:"Client",personnel:"Personnel"};
 const PAGE = 100;
@@ -665,7 +675,7 @@ function oppCard(o){
   const idx = ETAPES.indexOf(o.etape);
   return `<article class="card">
     <button class="t linkish" data-act="open-opp" data-id="${o.id}">${esc(o.titre)}</button>
-    <div class="c">${esc(c?c.nom:"Compte supprimé")}${c?` <span class="pill ${c.segment[0]}">${c.segment[0]}</span>`:""}</div>
+    <div class="c">${esc(c?c.nom:"Compte supprimé")}${c?" "+metierPill(c):""}</div>
     ${risquePill(o)?`<div class="meta">${risquePill(o)}</div>`:""}
     <div class="meta"><span class="amt">${mad(o.montant_mad)} MAD</span><span>· ${o.probabilite??"–"} %</span>${o.date_cloture_prevue?`<span>· ${fmtDate(o.date_cloture_prevue)}</span>`:""}</div>
     <div class="prob" aria-hidden="true"><i style="width:${Math.min(100,+o.probabilite||0)}%"></i></div>
@@ -716,24 +726,24 @@ function viewPipeline(v){
 let shown=PAGE;
 function viewComptes(v){
   const q=strip(filt.q);
-  const list=state.comptes.filter(c=>(!filt.segment||c.segment===filt.segment)&&(!filt.ville||c.ville===filt.ville)&&(!filt.statut||c.statut===filt.statut)&&(!filt.com||(filt.com==="none"?!c.commercial_id:c.commercial_id===filt.com))
+  const list=state.comptes.filter(c=>(!filt.segment||(filt.segment==="a_classer"?c.metier_a_verifier:filt.segment.startsWith("cat:")?c.categorie===filt.segment.slice(4):c.metier===filt.segment))&&(!filt.ville||c.ville===filt.ville)&&(!filt.statut||c.statut===filt.statut)&&(!filt.com||(filt.com==="none"?!c.commercial_id:c.commercial_id===filt.com))
     &&(!q||strip([c.nom,c.specialite,c.telephone,c.ville,c.notes].filter(Boolean).join(" ")).includes(q)||(c.telephone||"").replace(/\D/g,"").includes(q.replace(/\D/g,"")||"§")));
   const page=list.slice(0,shown);
   const nf=new Intl.NumberFormat("fr-FR");
-  v.innerHTML=`<div class="section-head"><div><h2>Comptes</h2><p class="hint">${SEG_HINT}</p></div>
+  v.innerHTML=`<div class="section-head"><div><h2>Clients</h2><p class="hint">Médecins et non-médecins, classés par spécialité${(n=>n?` · <button class="linkish" data-act="f-a-classer">${new Intl.NumberFormat("fr-FR").format(n)} à classer</button>`:"")(state.comptes.filter(c=>c.metier_a_verifier&&(estPilote()||!me||c.commercial_id===me.id)).length)}</p></div>
     <div class="tools">${me&&["admin","superviseur"].includes(me.role)?`<button class="btn" data-act="import">Importer (Excel)</button>`:""}<button class="btn primary" data-act="new-compte">+ Compte</button></div></div>
   <div class="panel">
     <div class="filters" style="margin-bottom:12px">
       <input id="f-q" type="search" placeholder="Nom, spécialité, téléphone…" value="${esc(filt.q)}" aria-label="Rechercher un compte" autocomplete="off" spellcheck="false">
-      <select id="f-seg" aria-label="Segment"><option value="">Tous segments</option>${Object.entries(SEGMENTS).map(([k,l])=>`<option value="${k}" ${filt.segment===k?"selected":""}>${l}</option>`).join("")}</select>
+      <select id="f-seg" aria-label="Spécialité"><option value="">Toutes spécialités</option><option value="a_classer" ${filt.segment==="a_classer"?"selected":""}>⚠ À classer</option><option value="cat:medecin" ${filt.segment==="cat:medecin"?"selected":""}>Tous les médecins</option><option value="cat:non_medecin" ${filt.segment==="cat:non_medecin"?"selected":""}>Tous les non-médecins</option>${metierOptions(filt.segment)}</select>
       <select id="f-statut" aria-label="Statut"><option value="">Prospects et clients</option>${Object.entries(STATUTS).map(([k,l])=>`<option value="${k}" ${filt.statut===k?"selected":""}>${l}s</option>`).join("")}</select>
       <select id="f-ville" aria-label="Ville"><option value="">Toutes villes</option>${villes().filter(x=>state.comptes.some(c=>c.ville===x)).map(x=>`<option ${filt.ville===x?"selected":""}>${esc(x)}</option>`).join("")}</select>
       <select id="f-com" aria-label="Commercial"><option value="">Tous commerciaux</option><option value="none" ${filt.com==="none"?"selected":""}>Non assigné</option>${state.equipe.map(e=>`<option value="${e.id}" ${filt.com===e.id?"selected":""}>${esc(e.nom)}</option>`).join("")}</select>
     </div>
     <p class="hint" aria-live="polite" style="margin:0 0 8px">${nf.format(list.length)} compte${list.length>1?"s":""}${list.length>page.length?` · ${nf.format(page.length)} affichés`:""}</p>
-    ${list.length?`<div class="tbl-wrap"><table><thead><tr><th>Compte</th><th>Segment</th><th>Ville</th><th>Commercial</th><th class="num">Contacts</th><th class="num">Pipeline MAD</th></tr></thead><tbody>
+    ${list.length?`<div class="tbl-wrap"><table><thead><tr><th>Client</th><th>Spécialité</th><th>Ville</th><th>Commercial</th><th class="num">Contacts</th><th class="num">Pipeline MAD</th></tr></thead><tbody>
     ${page.map(c=>{const com=byId(state.equipe,c.commercial_id);
-      return `<tr class="click" data-act="open-compte" data-id="${c.id}" tabindex="0"><td><b>${esc(c.nom)}</b>${c.statut==="client"?` <span class="pill ok">Client</span>`:""}<div class="hint">${esc([c.specialite,c.telephone].filter(Boolean).join(" · "))}</div></td><td><span class="pill ${c.segment[0]}">${c.segment[0]}</span></td><td>${esc(c.ville||"—")}</td><td>${com?esc(com.nom):"—"}</td><td class="num">${idx.contactsBy.get(c.id)||0}</td><td class="num">${mad(idx.pipeBy.get(c.id)||0)}</td></tr>`;}).join("")}
+      return `<tr class="click" data-act="open-compte" data-id="${c.id}" tabindex="0"><td><b>${esc(c.nom)}</b>${c.statut==="client"?` <span class="pill ok">Client</span>`:""}<div class="hint">${esc([c.specialite,c.telephone].filter(Boolean).join(" · "))}</div></td><td>${metierPill(c)}</td><td>${esc(c.ville||"—")}</td><td>${com?esc(com.nom):"—"}</td><td class="num">${idx.contactsBy.get(c.id)||0}</td><td class="num">${mad(idx.pipeBy.get(c.id)||0)}</td></tr>`;}).join("")}
     </tbody></table></div>${list.length>page.length?`<div class="form-actions" style="justify-content:center"><button class="btn" data-act="more">Afficher ${Math.min(PAGE,list.length-page.length)} de plus</button></div>`:""}`
     :`<div class="empty"><h3>${state.comptes.length?"Aucun compte ne correspond":"Aucun compte"}</h3><p>${state.comptes.length?"Modifiez la recherche ou les filtres.":"Ajoutez votre première clinique, cabinet ou salon, ou importez l’export de l’ancien CRM."}</p></div>`}
   </div>`;
@@ -776,7 +786,7 @@ function viewSuperviseur(v){
       act:state.activites.filter(a=>(a.commercial_id||null)===e.id&&new Date(a.date_activite).getTime()>=wk).length,
       comptes:state.comptes.filter(c=>(c.commercial_id||null)===e.id).length};
   }).filter(r=>r.e.actif||r.tot||r.act||r.comptes).sort((a,b)=>b.tot-a.tot||b.comptes-a.comptes);
-  const seg={}; Object.keys(SEGMENTS).forEach(s=>{const ids=new Set(state.comptes.filter(c=>c.segment===s).map(c=>c.id)); seg[s]=state.opportunites.filter(o=>o.issue==="en_cours"&&ids.has(o.compte_id)).reduce((t,o)=>t+(+o.montant_mad||0),0);});
+  const seg={}; Object.keys(METIERS).forEach(s=>{const ids=new Set(state.comptes.filter(c=>(c.metier||"autre")===s).map(c=>c.id)); seg[s]=state.opportunites.filter(o=>o.issue==="en_cours"&&ids.has(o.compte_id)).reduce((t,o)=>t+(+o.montant_mad||0),0);});
   const segMax=Math.max(1,...Object.values(seg));
   const villeOf=new Map(state.comptes.map(c=>[c.id,c.ville||"Non renseignée"]));
   const vil={}, vilN={}; state.comptes.forEach(c=>{const v=c.ville||"Non renseignée"; vilN[v]=(vilN[v]||0)+1;});
@@ -792,7 +802,7 @@ function viewSuperviseur(v){
   ${rows.map(r=>`<tr><td><b>${esc(r.e.nom)}</b><div class="hint" style="margin:0">${[r.e.showroom?SHOWROOMS[r.e.showroom]:"",r.e.role?ROLES[r.e.role]+(r.e.actif?"":" · sans accès"):""].filter(Boolean).join(" · ")}</div></td>${ETAPES.map(s=>`<td class="num">${r.by[s]||"·"}</td>`).join("")}<td class="num">${mad(r.tot)}</td><td class="num">${mad(r.pond)}</td><td class="num">${mad(r.won)}</td><td class="num">${r.comptes}</td><td class="num">${r.act?r.act:(r.e.actif?`<span class="pill bad">0</span>`:"·")}</td></tr>`).join("")}
   </tbody></table></div>${!state.equipe.some(e=>e.showroom)?`<p class="hint" style="margin-top:10px">Indique le showroom de chaque commercial dans Réglages ⚙ pour filtrer par showroom.</p>`:""}</div>
   
-  <div class="grid2" style="margin-top:16px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)"><div class="panel"><h3>Pipeline par segment</h3><div style="margin-top:8px">${Object.entries(SEGMENTS).map(([k,l])=>bar(l,seg[k],segMax)).join("")}</div></div>
+  <div class="grid2" style="margin-top:16px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)"><div class="panel"><h3>Pipeline par spécialité</h3><div style="margin-top:8px">${Object.entries(METIERS).filter(([k])=>seg[k]).sort((a,b)=>seg[b[0]]-seg[a[0]]).map(([k,m])=>bar(esc(m[1]),seg[k],segMax)).join("")||`<p class="hint">Aucun pipeline en cours.</p>`}</div></div>
   <div class="panel"><h3>Pipeline par ville</h3><p class="hint">Les 8 premières villes · nombre de comptes entre parenthèses</p><div style="margin-top:8px">${topV.map(x=>bar(`${esc(x)} <span class="hint">(${vilN[x]})</span>`,vil[x]||0,vilMax)).join("")}</div></div></div>
   <div class="panel" style="margin-top:16px"><div class="section-head" style="margin:0 0 8px"><h3>Dernières actions de l’équipe</h3><select id="f-hist" aria-label="Filtrer les actions"><option value="">Toutes</option><option value="suppression">Suppressions uniquement</option></select></div><p class="hint" style="margin-top:0">Écrit par la base de données : personne, même un admin, ne peut modifier ou effacer cet historique depuis le CRM.</p><div id="sup-hist"></div></div>`;
   const histEl=$("#sup-hist"); const lh=()=>{ const f=$("#f-hist").value; if(f){ histEl.innerHTML=""; sb.from("historique").select("*").eq("action",f).order("created_at",{ascending:false}).limit(60).then(({data,error})=>{ histEl.innerHTML=error?`<p class="hint">${esc(errorCopy(error)[1])}</p>`:data.length?`<div class="feed">${data.map(histItem).join("")}</div>`:`<p class="hint">Aucune suppression.</p>`; }); } else loadHistorique(histEl,null,null,60); };
@@ -858,10 +868,11 @@ function formCompte(c){
   c=c||{};
   const h=`<div class="form-grid">
    ${fld("m-nom","Nom du compte",`<input id="m-nom" name="nom" required value="${esc(c.nom||"")}" placeholder="Ex. Clinique Atlas…" autocomplete="off">`,true)}
-   ${fld("m-seg","Segment",`<select id="m-seg" name="segment">${opt(Object.entries(SEGMENTS),c.segment||"A_clinique")}</select>`)}
+   ${fld("m-cat","Catégorie",`<select id="m-cat" name="categorie">${opt(Object.entries(CATEGORIES),c.categorie||"","Choisir…")}</select>`)}
+   ${fld("m-met","Spécialité",`<select id="m-met" name="metier">${metierOptions(c.metier||"",c.categorie||"")}</select>`)}
    ${fld("m-ville","Ville",`<input id="m-ville" name="ville" list="dl-villes" autocomplete="off" placeholder="Ex. Fès…" value="${esc(c.ville||"")}"><datalist id="dl-villes">${villes().map(x=>`<option value="${esc(x)}">`).join("")}</datalist>`)}
    ${fld("m-statut","Statut",`<select id="m-statut" name="statut">${opt(Object.entries(STATUTS),c.statut||"prospect")}</select>`)}
-   ${fld("m-spec","Spécialité",`<input id="m-spec" name="specialite" autocomplete="off" placeholder="Ex. Dermatologue…" value="${esc(c.specialite||"")}">`)}
+   ${fld("m-spec","Précision (texte libre)",`<input id="m-spec" name="specialite" autocomplete="off" placeholder="Ex. Kiné et amincissement…" value="${esc(c.specialite||"")}">`)}
    ${fld("m-src","Source",`<input id="m-src" name="source" list="dl-sources" autocomplete="off" placeholder="Ex. Medical Expo 2026…" value="${esc(c.source||"")}"><datalist id="dl-sources">${sources().map(x=>`<option value="${esc(x)}">`).join("")}</datalist>`)}
    ${fld("m-tel","Téléphone",`<input id="m-tel" name="telephone" type="tel" inputmode="tel" autocomplete="off" placeholder="+212 6…" value="${esc(c.telephone||"")}">`)}
    ${fld("m-mail","Email",`<input id="m-mail" name="email" type="email" autocomplete="off" spellcheck="false" placeholder="contact@clinique.ma…" value="${esc(c.email||"")}">`)}
@@ -870,11 +881,14 @@ function formCompte(c){
    ${fld("m-web","Site web",`<input id="m-web" name="site_web" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://…" value="${esc(c.site_web||"")}">`)}
    ${fld("m-notes","Notes",`<textarea id="m-notes" name="notes">${esc(c.notes||"")}</textarea>`,true)}</div>`;
   const submit=async f=>{
-    const obj={nom:sTxt(f.nom),segment:sEnum(f.segment,Object.keys(SEGMENTS)),ville:sTxt(f.ville),statut:sEnum(f.statut,Object.keys(STATUTS))||"prospect",specialite:sTxt(f.specialite),source:sTxt(f.source),adresse:sTxt(f.adresse),telephone:sTxt(f.telephone),email:sTxt(f.email),site_web:sTxt(f.site_web),commercial_id:sUuid(f.commercial_id),notes:sTxt(f.notes)};
+    const met=sEnum(f.metier,Object.keys(METIERS))||"autre", cat=sEnum(f.categorie,Object.keys(CATEGORIES))||(METIERS[met]||[])[0]||null;
+    const obj={nom:sTxt(f.nom),categorie:cat,metier:met,metier_auto:false,metier_a_verifier:met==="autre"||!cat,segment:segmentCompat(met)||c.segment||"B_cabinet",ville:sTxt(f.ville),statut:sEnum(f.statut,Object.keys(STATUTS))||"prospect",specialite:sTxt(f.specialite),source:sTxt(f.source),adresse:sTxt(f.adresse),telephone:sTxt(f.telephone),email:sTxt(f.email),site_web:sTxt(f.site_web),commercial_id:sUuid(f.commercial_id),notes:sTxt(f.notes)};
     return c.id ? write(upd("comptes",c.id,obj),"Compte mis à jour") : write(ins("comptes",obj),"Compte ajouté");
   };
-  submit.validate=f=>!f.nom.trim()?["nom","Indiquez le nom du compte."]:null;
+  submit.validate=f=>!f.nom.trim()?["nom","Indiquez le nom du compte."]:!f.categorie?["categorie","Médecin ou non-médecin ?"]:!f.metier||f.metier==="autre"&&!f.specialite.trim()?["metier","Choisissez la spécialité (ou précisez-la en texte libre)."]:null;
   modal(c.id?"Modifier le compte":"Nouveau compte",h,submit,c.id?"Enregistrer":"Ajouter le compte");
+  $("#m-cat").addEventListener("change",e=>{ const cur=$("#m-met").value; $("#m-met").innerHTML=metierOptions(METIERS[cur]&&METIERS[cur][0]===e.target.value?cur:"",e.target.value); });
+  $("#m-met").addEventListener("change",e=>{ const m=METIERS[e.target.value]; if(m&&m[0]) $("#m-cat").value=m[0]; });
 }
 
 function formOpp(o,presetCompte){
@@ -901,7 +915,7 @@ function formOpp(o,presetCompte){
   $("#m-compte").addEventListener("change",e=>{const cs=state.contacts.filter(x=>x.compte_id===e.target.value).map(x=>[x.id,[x.prenom,x.nom].filter(Boolean).join(" ")]);$("#m-contact").innerHTML=opt(cs,"","—");});
   $("#m-etape").addEventListener("change",e=>{if(!o.id) $("#m-prob").value=PROB_DEFAUT[e.target.value];});
   const medWarn=()=>{ const p=byId(state.produits,$("#m-prod").value), c=byId(state.comptes,$("#m-compte").value);
-    $("#m-prod-warn").textContent = p&&p.medical_only&&c&&c.segment!=="B_cabinet"&&c.segment!=="A_clinique" ? "Machine réservée aux médecins : vérifiez que ce compte peut l’acheter." : p&&p.medical_only&&c&&c.segment!=="B_cabinet"&&!/m[ée]dec|derm|chirurg|gyn|dr /i.test((c.specialite||"")+" "+c.nom) ? "Machine réservée aux médecins : vérifiez qu’un médecin exerce dans ce centre." : ""; };
+    $("#m-prod-warn").textContent = p&&p.medical_only&&c&&c.categorie==="non_medecin" ? `Machine réservée aux médecins : ce client est classé non-médecin (${metierLabel(c)}).` : p&&p.medical_only&&c&&c.categorie!=="medecin" ? "Machine réservée aux médecins : vérifiez qu’un médecin exerce chez ce client." : ""; };
   $("#m-prod").addEventListener("change",medWarn); $("#m-compte").addEventListener("change",medWarn); medWarn();
 }
 
@@ -967,7 +981,7 @@ function openCompte(c){
   const acts=state.activites.filter(a=>a.compte_id===c.id).slice(0,8);
   const com=byId(state.equipe,c.commercial_id);
   $("#modal-slot").innerHTML=`<div class="overlay" id="ov"><div class="modal" style="max-width:760px" role="dialog" aria-modal="true" aria-labelledby="ctitle">
-   <div class="modal-head"><div><h3 id="ctitle" style="font-family:var(--f-display);font-stretch:118%;font-weight:500;font-size:24px;letter-spacing:-.03em;text-transform:uppercase;line-height:1">${esc(c.nom)}</h3><div class="tools" style="margin-top:6px"><span class="pill ${c.segment[0]}">${SEGMENTS[c.segment]}</span><span class="pill">${esc(c.ville||"Ville ?")}</span>${c.statut==="client"?`<span class="pill ok">Client</span>`:c.statut==="personnel"?`<span class="pill">Personnel</span>`:`<span class="pill">Prospect</span>`}<span class="hint">Suivi par ${com?esc(com.nom):"personne"}${c.createur_id&&c.createur_id!==c.commercial_id?` · créé par ${esc(nomMembre(c.createur_id))}`:""}</span></div></div><button class="x" id="mx" aria-label="Fermer">×</button></div>
+   <div class="modal-head"><div><h3 id="ctitle" style="font-family:var(--f-display);font-stretch:118%;font-weight:500;font-size:24px;letter-spacing:-.03em;text-transform:uppercase;line-height:1">${esc(c.nom)}</h3><div class="tools" style="margin-top:6px">${c.categorie?`<span class="pill ${c.categorie==="medecin"?"A":"C"}">${CATEGORIES[c.categorie]}</span>`:""}<span class="pill">${esc(metierLabel(c))}</span>${c.metier_a_verifier?`<button class="pill warn" data-act="edit-compte" data-id="${c.id}" style="cursor:pointer">à classer · corriger</button>`:""}<span class="pill">${esc(c.ville||"Ville ?")}</span>${c.statut==="client"?`<span class="pill ok">Client</span>`:c.statut==="personnel"?`<span class="pill">Personnel</span>`:`<span class="pill">Prospect</span>`}<span class="hint">Suivi par ${com?esc(com.nom):"personne"}${c.createur_id&&c.createur_id!==c.commercial_id?` · créé par ${esc(nomMembre(c.createur_id))}`:""}</span></div></div><button class="x" id="mx" aria-label="Fermer">×</button></div>
    ${c.specialite||c.source?`<p style="margin:0 0 4px">${esc(c.specialite||"")}${c.source?` <span class="hint">· source : ${esc(c.source)}</span>`:""}</p>`:""}
    <div class="hint">${[c.telephone,c.email,c.adresse,c.site_web].filter(Boolean).map(esc).join(" · ")||"Aucune coordonnée"}</div>
    ${c.notes?`<p style="margin-top:8px">${esc(c.notes)}</p>`:""}
@@ -994,6 +1008,7 @@ document.addEventListener("click",async e=>{
   if(act==="quick-visite") return formVisite();
   if(act==="pipe-stage"){ pipeStage=t.dataset.v; colShown={}; viewPipeline($("#view")); window.scrollTo({top:0}); return; }
   if(act==="seuils") return formSeuils();
+  if(act==="f-a-classer"){ filt.segment="a_classer"; filt.com=estPilote()?"":(me?me.id:""); shown=PAGE; return viewComptes($("#view")); }
   if(act==="new-echeancier") return formEcheancier({devis:t.dataset.devis,compte:t.dataset.compte});
   if(act==="edit-paiement") return formPaiement(byId(state.paiements,id));
   if(act==="pay-f"){ payFilt.statut=payFilt.statut===t.dataset.f?"":t.dataset.f; return viewPaiements($("#view")); }
@@ -1465,7 +1480,7 @@ document.addEventListener("visibilitychange",()=>{ if(me&&document.visibilitySta
 /* ---- Reporting ---- */
 let rep={met:"ca",dim:"commercial",per:"trim",du:"",au:"",showroom:"",com:""}, repCache={};
 const REP_MET={ca:"CA signé (MAD)",pipeline:"Pipeline en cours (MAD)",opps:"Opportunités créées",devis_n:"Devis envoyés",devis_mt:"Montant des devis envoyés (MAD)",visites:"Visites et démos",appels:"Appels et messages",contacts:"Nouveaux contacts",taux:"Taux de transformation"};
-const REP_DIM={commercial:"Commercial",showroom:"Showroom",source:"Source / salon",machine:"Machine",segment:"Segment",ville:"Ville",mois:"Mois"};
+const REP_DIM={commercial:"Commercial",showroom:"Showroom",source:"Source / salon",machine:"Machine",categorie:"Médecin / non-médecin",metier:"Spécialité",ville:"Ville",mois:"Mois"};
 const REP_MAD=["ca","pipeline","devis_mt"];
 async function actsPeriode(du,au){
   const key=(du?du.toISOString():"")+"|"+(au?au.toISOString():"");
@@ -1502,7 +1517,8 @@ function repCle(r){
     case "showroom": { const e=byId(state.equipe,r.commercial_id); return e&&e.showroom?SHOWROOMS[e.showroom]:"Showroom non renseigné"; }
     case "source": return c&&c.source||"Sans source";
     case "machine": { const p=byId(state.produits,r.produit_id); return p?p.nom:"Sans machine"; }
-    case "segment": return c?SEGMENTS[c.segment]:"—";
+    case "categorie": return c&&c.categorie?CATEGORIES[c.categorie]:"Catégorie à préciser";
+    case "metier": return c?metierLabel(c):"—";
     case "ville": return c&&c.ville||"Ville non renseignée";
     case "mois": { const d=new Date(r.date); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"); }
   }
@@ -1560,12 +1576,12 @@ async function exportRep(kind){
 function histItem(h){
   const sup=h.action==="suppression";
   return `<div class="hist${sup?" del":""}"><div class="when">${new Date(h.created_at).toLocaleDateString("fr-FR",{day:"2-digit",month:"short"})}<br>${new Date(h.created_at).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}</div>
-   <div><div>${esc(h.resume)}</div><div class="hint">${esc(nomMembre(h.auteur_id))}${sup?` · <span class="pill bad">Suppression</span>`:""}</div></div></div>`;
+   <div><div>${esc(h.resume)}</div><div class="hint">${h.auteur_id?esc(nomMembre(h.auteur_id)):"Automatique (import, classement)"}${sup?` · <span class="pill bad">Suppression</span>`:""}</div></div></div>`;
 }
 async function loadHistorique(el, col, id, limit){
   el.innerHTML=`<div class="skeleton" style="height:40px"></div>`;
   let q=sb.from("historique").select("*").order("created_at",{ascending:false}).limit(limit||200);
-  if(col) q=q.eq(col,id);
+  if(col) q=q.eq(col,id); else q=q.not("auteur_id","is",null);
   const {data,error}=await q;
   if(error){ el.innerHTML=`<p class="hint">Historique indisponible : ${esc(errorCopy(error)[1])}</p>`; return; }
   el.innerHTML=data.length?`<div class="feed">${data.map(histItem).join("")}</div>`:`<p class="hint">Aucune action enregistrée pour l’instant. Chaque création, modification et suppression apparaîtra ici.</p>`;
@@ -1600,7 +1616,7 @@ function openOpp(o){
   const closed=o.issue!=="en_cours";
   $("#modal-slot").innerHTML=`<div class="overlay" id="ov"><div class="modal opp-modal" role="dialog" aria-modal="true" aria-labelledby="otitle">
    <div class="modal-head"><div style="min-width:0"><div class="lab-mono">Opportunité</div><h3 id="otitle" class="opp-title">${esc(o.titre)}</h3>
-     <div class="tools" style="margin-top:6px">${c?`<button class="linkish" data-act="open-compte" data-id="${c.id}">${esc(c.nom)}</button><span class="pill ${c.segment[0]}">${c.segment[0]}</span>`:""}${closed?`<span class="pill ${o.issue==="gagnee"?"ok":"bad"}">${o.issue==="gagnee"?"Gagnée":"Perdue"}</span>`:""}${o.raison_perte?`<span class="hint">${esc(o.raison_perte)}</span>`:""}</div></div>
+     <div class="tools" style="margin-top:6px">${c?`<button class="linkish" data-act="open-compte" data-id="${c.id}">${esc(c.nom)}</button>${metierPill(c)}`:""}${closed?`<span class="pill ${o.issue==="gagnee"?"ok":"bad"}">${o.issue==="gagnee"?"Gagnée":"Perdue"}</span>`:""}${o.raison_perte?`<span class="hint">${esc(o.raison_perte)}</span>`:""}</div></div>
      <button class="x" id="mx" aria-label="Fermer">×</button></div>
    ${o.description&&o.description!==o.titre?`<p style="margin:10px 0 0;white-space:pre-line">${esc(o.description)}</p>`:""}
    <ol class="stepper" aria-label="Étapes">${ETAPES.map((e,i)=>`<li><button type="button" class="step ${i<idx?"done":i===idx?"cur":""}" ${closed||i===idx?"disabled":""} data-act="move" data-id="${o.id}" data-to="${e}" ${i===idx?'aria-current="step"':""}><span class="dotn">${i<idx?"✓":i+1}</span>${ETAPE_LABEL[e]}</button></li>`).join("")}</ol>
