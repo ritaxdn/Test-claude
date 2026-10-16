@@ -91,7 +91,7 @@ nav.tabs::-webkit-scrollbar{display:none}
 .tab:hover:not([aria-current="page"]){background:var(--line);color:var(--ink)}
 
 /* Buttons */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line-strong);background:var(--glass-strong);box-shadow:var(--shadow-sm);padding:9px 18px;border-radius:999px;cursor:pointer;font-weight:500;white-space:nowrap;min-height:38px;transition:transform .2s,box-shadow .2s}
+.btn{text-decoration:none;color:inherit;display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line-strong);background:var(--glass-strong);box-shadow:var(--shadow-sm);padding:9px 18px;border-radius:999px;cursor:pointer;font-weight:500;white-space:nowrap;min-height:38px;transition:transform .2s,box-shadow .2s}
 .btn:hover{transform:translateY(-1px);box-shadow:var(--shadow-sm),0 0 0 1px var(--line-strong)}
 .btn:active{transform:translateY(0)}
 .btn.primary{background:var(--ink);color:var(--on-ink);border-color:var(--ink)}
@@ -254,6 +254,42 @@ select.dstat.ok{color:var(--ok);background:var(--ok-bg)}select.dstat.warn{color:
 .fam summary::after{content:"＋";color:var(--muted);margin-left:8px}
 .fam[open] summary::after{content:"－"}
 .fam summary .hint{margin:0 0 0 auto;font-family:var(--f-mono)}
+/* Navigation en espaces */
+nav.tabs{align-items:center}
+.tab-grp{font-family:var(--f-mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);padding:0 4px 0 10px;white-space:nowrap}
+.tab-sep{width:1px;height:22px;background:var(--line-strong);margin:0 4px;flex:none}
+.tab.gear{width:38px;padding:9px 0;text-align:center}
+body:not(.pilote) .pilote-only{display:none!important}
+/* Notifications */
+.bell{position:relative}
+.bell .badge{position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;border-radius:9px;background:var(--bad);color:#fff;font-family:var(--f-mono);font-size:10px;display:grid;place-items:center;padding:0 4px;box-sizing:border-box;line-height:1}
+.npanel{position:fixed;z-index:40;top:calc(76px + env(safe-area-inset-top,0px));right:max(16px,calc((100vw - 1280px)/2 + 16px));width:min(420px,calc(100vw - 32px));max-height:min(70vh,560px);overflow:auto;background:var(--bg);border:1px solid var(--glass-edge);border-radius:22px;box-shadow:var(--shadow),0 24px 60px rgba(29,27,38,.18);padding:16px}
+.notif{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;border:0;background:none;padding:10px;border-radius:14px;cursor:pointer;font-size:13px}
+.notif:hover{background:var(--line)}
+.notif.unread{background:color-mix(in srgb,var(--accent) 9%,transparent)}
+.notif .ndot{width:8px;height:8px;border-radius:50%;background:var(--accent);margin-top:6px;flex:none}
+.notif .nav-av{width:28px;height:28px;border-radius:50%;background:var(--glass-strong);border:1px solid var(--glass-edge);display:grid;place-items:center;font-family:var(--f-mono);font-size:10px;flex:none}
+/* Aujourd'hui */
+.today-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-block:16px}
+.today-head h2{font-size:34px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line-strong);background:var(--glass-strong);border-radius:999px;padding:7px 13px;cursor:pointer;font-weight:500;min-height:36px;display:inline-flex;align-items:center;gap:6px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--on-ink);border-color:var(--ink)}
+.chip .n{font-family:var(--f-mono);font-size:11px;opacity:.8}
+.mini-row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.mini-row:last-child{border-bottom:0}
+.meter{height:6px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:6px}
+.meter i{display:block;height:100%;background:var(--rainbow);border-radius:99px}
+.btn.big{padding:12px 22px;font-size:15px;min-height:48px}
+/* Reporting */
+.rep-bar{display:grid;grid-template-columns:minmax(110px,220px) minmax(0,1fr) minmax(90px,auto);gap:12px;align-items:center;padding:5px 0;font-size:13px}
+.rep-bar .track{height:18px;background:var(--line);border-radius:6px;overflow:hidden}
+.rep-bar .track i{display:block;height:100%;background:var(--accent);border-radius:6px}
+.rep-bar .v{font-family:var(--f-mono);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.alert-row{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}
+.alert-row:last-child{border-bottom:0}
+.alert-row .sq{width:9px;height:9px;border-radius:3px;margin-top:6px;flex:none;background:var(--warn)}
+.alert-row .sq.bad{background:var(--bad)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.ecg path{stroke-dashoffset:0}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
@@ -271,15 +307,21 @@ select.dstat.ok{color:var(--ok);background:var(--ok-bg)}select.dstat.warn{color:
       <span class="tagline">CRM commercial</span>
     </div>
     <nav class="tabs" aria-label="Sections du CRM">
+      <span class="tab-grp pilote-only" aria-hidden="true">Mon travail</span>
+      <a class="tab" href="#aujourdhui" data-tab="aujourdhui" id="tab-aujourdhui">Aujourd’hui</a>
       <a class="tab" href="#pipeline" data-tab="pipeline" id="tab-pipeline">Pipeline</a>
-      <a class="tab" href="#comptes" data-tab="comptes" id="tab-comptes">Comptes</a>
+      <a class="tab" href="#comptes" data-tab="comptes" id="tab-comptes">Clients</a>
       <a class="tab" href="#activites" data-tab="activites" id="tab-activites">Activités</a>
       <a class="tab" href="#devis" data-tab="devis" id="tab-devis">Devis</a>
-      <a class="tab" href="#acquisition" data-tab="acquisition" id="tab-acquisition">Acquisition</a>
-      <a class="tab" href="#superviseur" data-tab="superviseur" id="tab-superviseur">Supervision</a>
-      <a class="tab" href="#equipe" data-tab="equipe" id="tab-equipe">Équipe &amp; catalogue</a>
+      <span class="tab-sep pilote-only" aria-hidden="true"></span>
+      <span class="tab-grp pilote-only" aria-hidden="true">Pilotage</span>
+      <a class="tab pilote-only" href="#superviseur" data-tab="superviseur" id="tab-superviseur">Équipe</a>
+      <a class="tab pilote-only" href="#acquisition" data-tab="acquisition" id="tab-acquisition">Acquisition</a>
+      <a class="tab pilote-only" href="#reporting" data-tab="reporting" id="tab-reporting">Reporting</a>
+      <a class="tab gear pilote-only" href="#equipe" data-tab="equipe" id="tab-equipe" title="Réglages : équipe, catalogue, imports" aria-label="Réglages"><span aria-hidden="true">⚙</span></a>
     </nav>
     <div class="status"><span class="dot busy" id="dot" aria-hidden="true"></span><span id="status-text" aria-live="polite">Connexion…</span>
+      <button class="btn small icon bell" id="bell" aria-label="Notifications" aria-expanded="false" aria-controls="npanel"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9a6 6 0 0112 0c0 6 2 8 2 8H4s2-2 2-8"/><path d="M10 21a2 2 0 004 0"/></svg><span class="badge" id="bell-n" hidden></span></button>
       <button class="btn small icon" id="refresh" title="Recharger les données" aria-label="Recharger les données"><span aria-hidden="true">↻</span></button>
       <span class="who" id="who"></span><button class="btn small" id="logout">Déconnexion</button></div>
   </div>
@@ -292,6 +334,7 @@ select.dstat.ok{color:var(--ok);background:var(--ok-bg)}select.dstat.warn{color:
   <main id="view" tabindex="-1"></main>
 </div>
 <div id="auth-slot"></div>
+<div id="npanel" class="npanel" role="dialog" aria-label="Notifications" hidden></div>
 <div id="modal-slot"></div>
 <div id="toast-slot" aria-live="polite"></div>
 
@@ -313,7 +356,9 @@ const DEVIS_STATUTS = ["brouillon","envoye","accepte","refuse","signe"];
 
 let currentUser = null;
 let state = {equipe:[],comptes:[],contacts:[],produits:[],opportunites:[],activites:[],devis:[],devis_lignes:[]};
-let loaded = false, tab = "pipeline", filt = {q:"",segment:"",ville:"",statut:"",com:""};
+const SHOWROOMS = {casablanca:"Showroom Casablanca",tanger:"Showroom Tanger",marrakech:"Showroom Marrakech"};
+const estPilote = () => !!(me && ["admin","superviseur"].includes(me.role));
+let loaded = false, tab = "aujourdhui", filt = {q:"",segment:"",ville:"",statut:"",com:""};
 
 const $ = (s,el=document)=>el.querySelector(s);
 const esc = s => String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -376,7 +421,7 @@ async function load(){
     };
     const res = await Promise.all([
       q("equipe","nom",true), q("comptes","nom",true), q("contacts","nom",true), q("produits","nom",true),
-      q("opportunites","updated_at",false), q("activites","date_activite",false,300), q("devis","created_at",false), q("devis_lignes","position",true).then(r=>r.error?{data:[],error:null}:r)
+      q("opportunites","updated_at",false), qActivites(), q("devis","created_at",false), q("devis_lignes","position",true).then(r=>r.error?{data:[],error:null}:r)
     ]);
     const err = res.find(r=>r.error); if(err) throw err.error;
     const [equipe,comptes,contacts,produits,opportunites,activites,devis,devis_lignes] = res.map(r=>r.data||[]);
@@ -385,11 +430,25 @@ async function load(){
     idx.pipeBy=new Map(); opportunites.filter(o=>o.issue==="en_cours").forEach(o=>idx.pipeBy.set(o.compte_id,(idx.pipeBy.get(o.compte_id)||0)+(+o.montant_mad||0)));
     me = equipe.find(e=>e.user_id===currentUser.id) || null;
     if(!me){ showNoAccess(); return; }
+    document.body.classList.toggle("pilote", estPilote());
+    loadNotifs();
     loaded = true; clearBanner();
     setStatus("ok","À jour · "+new Date().toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}));
   }catch(e){
     setStatus("bad","Hors ligne"); showBanner(e);
   }finally{ loading=false; if(me) render(); }
+}
+
+// Activités : les 120 derniers jours + toutes les tâches à faire (même anciennes ou lointaines)
+async function qActivites(){
+  const depuis=new Date(Date.now()-120*864e5).toISOString(), all=new Map(), step=1000;
+  for(const mk of [f=>f.gte("date_activite",depuis), f=>f.eq("statut","a_faire")]){
+    for(let from=0;;from+=step){
+      const r=await mk(sb.from("activites").select("*")).order("date_activite",{ascending:false}).order("id").range(from,from+step-1);
+      if(r.error) return r; (r.data||[]).forEach(a=>all.set(a.id,a)); if(!r.data||r.data.length<step) break;
+    }
+  }
+  return {data:[...all.values()].sort((a,b)=>String(b.date_activite).localeCompare(String(a.date_activite))),error:null};
 }
 
 async function write(op,okMsg){
@@ -423,11 +482,14 @@ function renderKpis(){
 
 /* ---- Views ---- */
 function render(){
-  renderKpis();
+  if(me && PILOTE_TABS.includes(tab) && !estPilote()) tab="aujourdhui";
+  const showK = tab==="superviseur";
+  $("#kpis").hidden = !showK; $(".wrap > .sep").hidden = !showK;
+  if(showK) renderKpis();
   document.querySelectorAll(".tab").forEach(b=>{ if(b.dataset.tab===tab) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current"); });
   const v=$("#view");
   if(!loaded){ v.innerHTML=`<div class="board-scroll"><div class="board">${ETAPES.map(()=>'<div class="col"><div class="skeleton"></div><div class="skeleton"></div></div>').join("")}</div></div>`; return; }
-  ({pipeline:viewPipeline,comptes:viewComptes,activites:viewActivites,devis:viewDevis,acquisition:viewAcquisition,superviseur:viewSuperviseur,equipe:viewEquipe})[tab](v);
+  ({aujourdhui:viewAujourdhui,pipeline:viewPipeline,comptes:viewComptes,activites:viewActivites,devis:viewDevis,acquisition:viewAcquisition,superviseur:viewSuperviseur,reporting:viewReporting,equipe:viewEquipe})[tab](v);
 }
 
 function oppCard(o){
@@ -503,9 +565,29 @@ function viewComptes(v){
   [["#f-seg","segment"],["#f-statut","statut"],["#f-ville","ville"],["#f-com","com"]].forEach(([sel,k])=>$(sel).addEventListener("change",e=>{filt[k]=e.target.value; shown=PAGE; viewComptes(v);}));
 }
 
+let supShowroom="";
+function alertesEquipe(){
+  const A=[], now=Date.now();
+  const derniere=new Map(); state.activites.forEach(a=>{ if(a.statut==="a_faire") return; const id=a.commercial_id||a.createur_id; const t=new Date(a.date_activite).getTime(); if(t<=now&&(!derniere.has(id)||t>derniere.get(id))) derniere.set(id,t); });
+  state.equipe.filter(e=>e.actif&&e.role==="commercial"&&(!supShowroom||e.showroom===supShowroom)).forEach(e=>{ const t=derniere.get(e.id); const j=t?Math.floor((now-t)/864e5):null;
+    if(j==null||j>=3) A.push({bad:j==null||j>=5,t:`${e.nom} : aucune activité ${j==null?"enregistrée":"depuis "+j+" jours"}`,s:t?"dernière le "+fmtDate(t):"",ord:j==null?999:j}); });
+  const okSr=id=>!supShowroom||((byId(state.equipe,id)||{}).showroom===supShowroom);
+  state.devis.filter(d=>d.statut==="envoye"&&(+d.montant_mad||0)>=100000&&okSr(d.commercial_id)).forEach(d=>{
+    const depuis=new Date(d.date_envoi||d.updated_at||d.created_at).getTime();
+    const relance=state.activites.some(a=>a.statut!=="a_faire"&&new Date(a.date_activite).getTime()>depuis&&((d.opportunite_id&&a.opportunite_id===d.opportunite_id)||a.compte_id===d.compte_id));
+    const j=Math.floor((now-depuis)/864e5);
+    if(!relance&&j>=10){ const c=byId(state.comptes,d.compte_id); A.push({bad:true,t:`Devis ${devisNum(d)} de ${madShort(d.montant_mad)} MAD sans relance depuis ${j} jours`,s:[c&&c.nom,nomMembre(d.commercial_id)].filter(Boolean).join(" · "),ord:500+j,act:`data-act="edit-devis" data-id="${d.id}"`}); }
+  });
+  const nego=state.opportunites.filter(o=>o.issue==="en_cours"&&o.etape==="Negociation"&&okSr(o.commercial_id)&&(now-new Date(o.updated_at||o.created_at).getTime())>30*864e5);
+  if(nego.length) A.push({bad:false,t:`${nego.length} affaire${nego.length>1?"s":""} en Négociation depuis plus de 30 jours`,s:`${madShort(nego.reduce((s,o)=>s+(+o.montant_mad||0),0))} MAD en jeu`,ord:100});
+  const perdues=state.opportunites.filter(o=>o.issue==="perdue"&&okSr(o.commercial_id)&&(now-new Date(o.updated_at).getTime())<7*864e5);
+  if(perdues.length){ const rs={}; perdues.forEach(o=>{ const r=(o.raison_perte||"Non précisée").split(" — ")[0]; rs[r]=(rs[r]||0)+1; }); const top=Object.entries(rs).sort((a,b)=>b[1]-a[1])[0];
+    A.push({bad:false,t:`${perdues.length} affaire${perdues.length>1?"s":""} perdue${perdues.length>1?"s":""} cette semaine`,s:"raison principale : "+top[0].toLowerCase(),ord:50}); }
+  return A.sort((a,b)=>(b.bad-a.bad)||b.ord-a.ord);
+}
 function viewSuperviseur(v){
   const wk=Date.now()-7*864e5;
-  const rows=[...state.equipe,{id:null,nom:"Non assigné"}].map(e=>{
+  const rows=[...state.equipe.filter(e=>!supShowroom||e.showroom===supShowroom),...(supShowroom?[]:[{id:null,nom:"Non assigné"}])].map(e=>{
     const ops=state.opportunites.filter(o=>(o.commercial_id||null)===e.id);
     const open=ops.filter(o=>o.issue==="en_cours");
     const by={}; ETAPES.forEach(s=>by[s]=open.filter(o=>o.etape===s).length);
@@ -522,22 +604,27 @@ function viewSuperviseur(v){
   const topV=Object.keys(vilN).sort((a,b)=>(vil[b]||0)-(vil[a]||0)||vilN[b]-vilN[a]).slice(0,8);
   const vilMax=Math.max(1,...topV.map(x=>vil[x]||0));
   const bar=(l,val,max)=>`<div style="display:grid;grid-template-columns:minmax(0,150px) minmax(0,1fr) 80px;gap:10px;align-items:center;padding:6px 0"><span>${l}</span><div class="prob" style="height:8px"><i style="width:${Math.round(val*100/max)}%"></i></div><span class="num" style="font-family:var(--f-mono);font-size:12px;text-align:right">${madShort(val)}</span></div>`;
-  v.innerHTML=`<div class="section-head"><div><h2>Supervision</h2><p class="hint">Activité commerciale en temps réel, par commercial, segment et ville</p></div></div>
-  <div class="panel"><h3>Par commercial</h3><div class="tbl-wrap" style="margin-top:8px"><table><thead><tr><th>Commercial</th>${ETAPES.map(s=>`<th class="num">${ETAPE_LABEL[s].slice(0,5)}.</th>`).join("")}<th class="num">Pipeline MAD</th><th class="num">Pondéré MAD</th><th class="num">Gagné MAD</th><th class="num">Comptes</th><th class="num">Activités 7 j</th></tr></thead><tbody>
-  ${rows.map(r=>`<tr><td><b>${esc(r.e.nom)}</b>${r.e.role?` <span class="hint">· ${ROLES[r.e.role]}${r.e.actif?"":" · sans accès"}</span>`:""}</td>${ETAPES.map(s=>`<td class="num">${r.by[s]||"·"}</td>`).join("")}<td class="num">${mad(r.tot)}</td><td class="num">${mad(r.pond)}</td><td class="num">${mad(r.won)}</td><td class="num">${r.comptes}</td><td class="num">${r.act?r.act:(r.e.actif?`<span class="pill bad">0</span>`:"·")}</td></tr>`).join("")}
-  </tbody></table></div></div>
+  const alertes=alertesEquipe();
+  v.innerHTML=`<div class="section-head"><div><h2>L’équipe</h2><p class="hint">Activité commerciale en temps réel, par commercial, showroom, segment et ville</p></div>
+    <div class="tools"><select id="f-sr" aria-label="Showroom" style="width:auto"><option value="">Tous les showrooms</option>${Object.entries(SHOWROOMS).map(([k,l])=>`<option value="${k}" ${supShowroom===k?"selected":""}>${l}</option>`).join("")}</select><a class="btn" href="#reporting">Créer un rapport</a></div></div>
+  <div class="panel"><h3>À surveiller</h3>${alertes.length?alertes.slice(0,10).map(a=>`<div class="alert-row"><span class="sq${a.bad?" bad":""}" aria-hidden="true"></span><div style="min-width:0">${a.act?`<button class="linkish" ${a.act}><b>${esc(a.t)}</b></button>`:`<b>${esc(a.t)}</b>`}${a.s?`<div class="hint" style="margin:0">${esc(a.s)}</div>`:""}</div></div>`).join(""):`<p class="hint">Rien d’anormal pour l’instant.</p>`}</div>
+  <div class="panel" style="margin-top:16px"><h3>Par commercial</h3><div class="tbl-wrap" style="margin-top:8px"><table><thead><tr><th>Commercial</th>${ETAPES.map(s=>`<th class="num">${ETAPE_LABEL[s].slice(0,5)}.</th>`).join("")}<th class="num">Pipeline MAD</th><th class="num">Pondéré MAD</th><th class="num">Gagné MAD</th><th class="num">Comptes</th><th class="num">Activités 7 j</th></tr></thead><tbody>
+  ${rows.map(r=>`<tr><td><b>${esc(r.e.nom)}</b><div class="hint" style="margin:0">${[r.e.showroom?SHOWROOMS[r.e.showroom]:"",r.e.role?ROLES[r.e.role]+(r.e.actif?"":" · sans accès"):""].filter(Boolean).join(" · ")}</div></td>${ETAPES.map(s=>`<td class="num">${r.by[s]||"·"}</td>`).join("")}<td class="num">${mad(r.tot)}</td><td class="num">${mad(r.pond)}</td><td class="num">${mad(r.won)}</td><td class="num">${r.comptes}</td><td class="num">${r.act?r.act:(r.e.actif?`<span class="pill bad">0</span>`:"·")}</td></tr>`).join("")}
+  </tbody></table></div>${!state.equipe.some(e=>e.showroom)?`<p class="hint" style="margin-top:10px">Indique le showroom de chaque commercial dans Réglages ⚙ pour filtrer par showroom.</p>`:""}</div>
+  
   <div class="grid2" style="margin-top:16px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)"><div class="panel"><h3>Pipeline par segment</h3><div style="margin-top:8px">${Object.entries(SEGMENTS).map(([k,l])=>bar(l,seg[k],segMax)).join("")}</div></div>
   <div class="panel"><h3>Pipeline par ville</h3><p class="hint">Les 8 premières villes · nombre de comptes entre parenthèses</p><div style="margin-top:8px">${topV.map(x=>bar(`${esc(x)} <span class="hint">(${vilN[x]})</span>`,vil[x]||0,vilMax)).join("")}</div></div></div>
   <div class="panel" style="margin-top:16px"><div class="section-head" style="margin:0 0 8px"><h3>Dernières actions de l’équipe</h3><select id="f-hist" aria-label="Filtrer les actions"><option value="">Toutes</option><option value="suppression">Suppressions uniquement</option></select></div><p class="hint" style="margin-top:0">Écrit par la base de données : personne, même un admin, ne peut modifier ou effacer cet historique depuis le CRM.</p><div id="sup-hist"></div></div>`;
   const histEl=$("#sup-hist"); const lh=()=>{ const f=$("#f-hist").value; if(f){ histEl.innerHTML=""; sb.from("historique").select("*").eq("action",f).order("created_at",{ascending:false}).limit(60).then(({data,error})=>{ histEl.innerHTML=error?`<p class="hint">${esc(errorCopy(error)[1])}</p>`:data.length?`<div class="feed">${data.map(histItem).join("")}</div>`:`<p class="hint">Aucune suppression.</p>`; }); } else loadHistorique(histEl,null,null,60); };
   $("#f-hist").addEventListener("change",lh); lh();
+  $("#f-sr").addEventListener("change",e=>{ supShowroom=e.target.value; viewSuperviseur(v); });
 }
 
 function viewEquipe(v){
   v.innerHTML=`<div class="section-head"><div><h2>Équipe &amp; catalogue</h2><p class="hint">Un membre « sans accès » ne peut pas se connecter. Activez-le dans « Modifier » ; il se connecte ensuite avec l’email indiqué ici.</p></div>
    <div class="tools"><button class="btn" data-act="import">Importer des contacts (Excel)</button><button class="btn" data-act="new-produit">+ Machine</button><button class="btn primary" data-act="new-membre">+ Membre</button></div></div>
-  <div class="grid2"><div class="panel"><h3>Équipe</h3><div class="tbl-wrap" style="margin-top:8px"><table><thead><tr><th>Nom</th><th>Email</th><th>Rôle</th><th>Ville</th><th>Statut</th><th></th></tr></thead><tbody>
-  ${state.equipe.map(e=>`<tr><td><b>${esc(e.nom)}</b></td><td>${esc(e.email||"—")}</td><td>${ROLES[e.role]}</td><td>${esc(e.ville||"—")}</td><td><span class="pill ${e.actif?"ok":""}">${e.actif?"Accès actif":"Sans accès"}</span></td><td><button class="btn small" data-act="edit-membre" data-id="${e.id}">Modifier</button></td></tr>`).join("")}
+  <div class="grid2"><div class="panel"><h3>Équipe</h3><div class="tbl-wrap" style="margin-top:8px"><table><thead><tr><th>Nom</th><th>Email</th><th>Rôle</th><th>Showroom</th><th>Statut</th><th></th></tr></thead><tbody>
+  ${state.equipe.map(e=>`<tr><td><b>${esc(e.nom)}</b></td><td>${esc(e.email||"—")}</td><td>${ROLES[e.role]}</td><td>${e.showroom?esc(SHOWROOMS[e.showroom].replace("Showroom ","")):"—"}</td><td><span class="pill ${e.actif?"ok":""}">${e.actif?"Accès actif":"Sans accès"}</span></td><td><button class="btn small" data-act="edit-membre" data-id="${e.id}">Modifier</button></td></tr>`).join("")}
   </tbody></table></div></div>
   <div class="panel"><h3>Catalogue machines</h3>${state.produits.length?(()=>{const fam={}; state.produits.forEach(p=>(fam[p.categorie]=fam[p.categorie]||[]).push(p));
     return `<p class="hint">${state.produits.filter(p=>p.actif).length} machines actives · ${Object.keys(fam).length} familles</p>`+Object.entries(fam).map(([f,ps])=>`<details class="fam"><summary><span>${esc(f)}</span><span class="hint">${ps.length}</span></summary><div class="closed-list">${ps.sort((a,b)=>a.nom.localeCompare(b.nom,"fr")).map(p=>`<div class="closed-row"><div><b translate="no">${esc(p.nom)}</b>${p.medical_only?` <span class="pill warn" title="Vente réservée aux médecins">Médical</span>`:""}${p.actif?"":` <span class="pill">Inactive</span>`}<div class="hint" translate="no">${esc([p.reference,p.marque].filter(Boolean).join(" · "))}</div></div><div class="tools"><span style="font-family:var(--f-mono);font-size:12px">${p.prix_catalogue_mad!=null?mad(p.prix_catalogue_mad)+" MAD":""}</span><button class="btn small" data-act="edit-produit" data-id="${p.id}">Modifier</button></div></div>`).join("")}</div></details>`).join("");})():`<p class="hint">Aucune machine. Ajoutez le catalogue pour rattacher les opportunités à un produit.</p>`}</div></div>`;
@@ -657,10 +744,11 @@ function formMembre(m){
    ${fld("m-nom","Nom",`<input id="m-nom" name="nom" required value="${esc(m.nom||"")}">`)}
    ${fld("m-mail","Email de connexion",`<input id="m-mail" name="email" type="email" value="${esc(m.email||"")}" placeholder="prenom@cellulift.ma…" autocomplete="off" spellcheck="false">`)}
    ${fld("m-role","Rôle",`<select id="m-role" name="role">${opt(Object.entries(ROLES),m.role||"commercial")}</select>`)}
+   ${fld("m-sr","Showroom",`<select id="m-sr" name="showroom">${opt(Object.entries(SHOWROOMS),m.showroom||"","Non renseigné")}</select>`)}
    ${fld("m-ville","Ville",`<input id="m-ville" name="ville" list="dl-villes" autocomplete="off" placeholder="Ex. Tanger…" value="${esc(m.ville||"")}"><datalist id="dl-villes">${villes().map(x=>`<option value="${esc(x)}">`).join("")}</datalist>`)}
    ${m.id?fld("m-act","Statut",`<select id="m-act" name="actif"><option value="1" ${m.actif?"selected":""}>Actif</option><option value="" ${!m.actif?"selected":""}>Inactif</option></select>`):""}</div>`;
   const submit=async f=>{
-    const obj={nom:sTxt(f.nom),email:sTxt((f.email||"").toLowerCase()),role:sEnum(f.role,Object.keys(ROLES)),ville:sTxt(f.ville)};
+    const obj={nom:sTxt(f.nom),email:sTxt((f.email||"").toLowerCase()),role:sEnum(f.role,Object.keys(ROLES)),ville:sTxt(f.ville),showroom:sEnum(f.showroom,Object.keys(SHOWROOMS))};
     return m.id ? write(upd("equipe",m.id,Object.assign(obj,{actif:sBool(f.actif)})),"Membre mis à jour") : write(ins("equipe",obj),"Membre ajouté");
   };
   submit.validate=f=>!f.nom.trim()?["nom","Indiquez le nom."]:null;
@@ -721,6 +809,18 @@ document.addEventListener("click",async e=>{
   const t=e.target.closest("[data-act]"); if(!t||t.disabled) return;
   const id=t.dataset.id, act=t.dataset.act;
   if(act==="new-compte") return formCompte();
+  if(act==="quick-visite") return formVisite();
+  if(act==="today-tab"){ todayTab=t.dataset.v; return viewAujourdhui($("#view")); }
+  if(act==="today-qui"){ todayQui=t.dataset.v; return viewAujourdhui($("#view")); }
+  if(act==="relance-ok"){ t.disabled=true; return write(upd("activites",id,{date_prochaine_action:null}),"Relance retirée de la liste"); }
+  if(act==="rep-csv") return exportRep("csv");
+  if(act==="rep-xlsx") return exportRep("xlsx");
+  if(act==="notif-tout-lu"){ const ids=notifs.filter(x=>!x.lu).map(x=>x.id); notifs.forEach(x=>x.lu=true); renderBell(); renderNotifPanel();
+    if(ids.length) await sb.from("notifications").update({lu:true}).in("id",ids); return; }
+  if(act==="notif-open"){ const n=notifs.find(x=>x.id===id); if(!n) return; toggleNotifs(false);
+    if(!n.lu){ n.lu=true; renderBell(); sb.from("notifications").update({lu:true}).eq("id",id).then(()=>{}); }
+    const o=n.opportunite_id&&byId(state.opportunites,n.opportunite_id), c=n.compte_id&&byId(state.comptes,n.compte_id);
+    if(o) return openOpp(o); if(c) return openCompte(c); return; }
   if(act==="more"){ shown+=PAGE; return viewComptes($("#view")); }
   if(act==="col-more"){ const e=t.dataset.etape; colShown[e]=(colShown[e]||25)+25; return viewPipeline($("#view")); }
   if(act==="import") return openImport();
@@ -753,14 +853,15 @@ document.addEventListener("click",async e=>{
   if(act==="reopen"){ t.disabled=true; return write(upd("opportunites",id,{issue:"en_cours",raison_perte:null}),"Affaire rouverte"); }
 });
 document.addEventListener("keydown",e=>{
+  if(e.key==="Escape" && !$("#npanel").hidden){ toggleNotifs(false); $("#bell").focus(); return; }
   if(e.key==="Escape" && $("#ov")) closeModal();
   if(e.key==="Enter"&&e.target.matches("tr.click")) e.target.click();
 });
-const TABS=["pipeline","comptes","activites","devis","acquisition","superviseur","equipe"];
+const TABS=["aujourdhui","pipeline","comptes","activites","devis","acquisition","superviseur","reporting","equipe"];
+const PILOTE_TABS=["acquisition","superviseur","reporting","equipe"];
 function syncTab(){ const h=location.hash.slice(1); if(TABS.includes(h)&&h!==tab){ tab=h; try{localStorage.setItem("crm-tab",tab);}catch(_){} if(currentUser) render(); } }
 window.addEventListener("hashchange",syncTab);
 $("#refresh").addEventListener("click",()=>load());
-try{ const s=localStorage.getItem("crm-tab"); if(s&&TABS.includes(s)) tab=s; }catch(_){}
 if(TABS.includes(location.hash.slice(1))) tab=location.hash.slice(1);
 
 /* ---- Activités : labels, priorité, créateur / responsable, à faire ---- */
@@ -879,16 +980,17 @@ function formTransfert(c){
 
 /* ---- Canal d'acquisition ---- */
 let acqPeriode="30j", acqDu="", acqAu="";
-function periode(){
+function periode(k, du0, au0){
+  if(k===undefined){ k=acqPeriode; du0=acqDu; au0=acqAu; }
   const now=new Date(), d0=x=>{const z=new Date(x);z.setHours(0,0,0,0);return z;};
-  switch(acqPeriode){
+  switch(k){
     case "7j": return [d0(Date.now()-6*864e5), null];
     case "30j": return [d0(Date.now()-29*864e5), null];
     case "mois": return [new Date(now.getFullYear(),now.getMonth(),1), null];
     case "mois-1": return [new Date(now.getFullYear(),now.getMonth()-1,1), new Date(now.getFullYear(),now.getMonth(),1)];
     case "trim": return [new Date(now.getFullYear(),Math.floor(now.getMonth()/3)*3,1), null];
     case "annee": return [new Date(now.getFullYear(),0,1), null];
-    case "perso": return [acqDu?new Date(acqDu+"T00:00"):null, acqAu?new Date(new Date(acqAu+"T00:00").getTime()+864e5):null];
+    case "perso": return [du0?new Date(du0+"T00:00"):null, au0?new Date(new Date(au0+"T00:00").getTime()+864e5):null];
     default: return [null,null];
   }
 }
@@ -919,6 +1021,224 @@ function viewAcquisition(v){
   <p class="hint" style="margin-top:12px">Pour mesurer le ROI d’un salon : choisissez la période de l’événement, puis comparez le CA gagné de sa source à son coût. ${imp?`Les ${nf.format(imp)} contacts importés de l’ancien CRM portent la date de l’import (16 oct. 2026), pas leur date de création d’origine.`:""}</p></div>`;
   $("#f-per").addEventListener("change",e=>{acqPeriode=e.target.value;viewAcquisition(v);});
   if($("#f-du")){ $("#f-du").addEventListener("change",e=>{acqDu=e.target.value;viewAcquisition(v);}); $("#f-au").addEventListener("change",e=>{acqAu=e.target.value;viewAcquisition(v);}); }
+}
+
+/* ---- Aujourd'hui ---- */
+let todayTab=null, todayQui="moi";
+const startOfDay=(d=new Date())=>{ const z=new Date(d); z.setHours(0,0,0,0); return z; };
+const daysSince=d=>Math.floor((Date.now()-new Date(d).getTime())/864e5);
+function aMoi(id, createur){ if(todayQui==="equipe") return true; return !!me && (id===me.id || (!id && createur===me.id)); }
+function derniereActivite(o){
+  let t=new Date(o.updated_at||o.created_at).getTime();
+  state.activites.forEach(a=>{ if(a.opportunite_id===o.id && a.statut!=="a_faire"){ const x=new Date(a.date_activite).getTime(); if(x>t) t=x; } });
+  return t;
+}
+function viewAujourdhui(v){
+  const d0=startOfDay().getTime(), d1=d0+864e5, d7=d0+8*864e5;
+  const items=[];
+  state.activites.forEach(a=>{
+    if(!aMoi(a.commercial_id,a.createur_id)) return;
+    if(a.statut==="a_faire") items.push({a,t:new Date(a.date_activite).getTime(),k:"tache"});
+    else if(a.date_prochaine_action && a.date_prochaine_action>=localISO(new Date(Date.now()-30*864e5))) items.push({a,t:new Date(a.date_prochaine_action+"T09:00").getTime(),k:"relance"});
+  });
+  const g={retard:[],jour:[],semaine:[]};
+  items.forEach(i=>{ const b=i.t<d0?"retard":i.t<d1?"jour":i.t<d7?"semaine":null; if(b) g[b].push(i); });
+  Object.values(g).forEach(l=>l.sort((x,y)=>(!!y.a.prioritaire-!!x.a.prioritaire)||x.t-y.t));
+  if(!todayTab||!g[todayTab]) todayTab=g.retard.length?"retard":"jour";
+  const relItem=({a})=>{ const c=byId(state.comptes,a.compte_id), o=byId(state.opportunites,a.opportunite_id), late=a.date_prochaine_action<localISO();
+    return `<div class="feed-item${a.prioritaire?" prio":""}"><div class="when">${fmtDate(a.date_prochaine_action)}</div><div><div class="what"><span class="pill ${late?"bad":"warn"}">Relance${late?" en retard":""}</span>${c?` <button class="linkish" data-act="open-compte" data-id="${c.id}"><b>${esc(c.nom)}</b></button>`:""}${o?` · <button class="linkish" data-act="open-opp" data-id="${o.id}">${esc(o.titre)}</button>`:""}</div>
+      <div class="next" style="margin-top:2px">${esc(a.prochaine_action||"Relancer le client")}</div>${todayQui==="equipe"?`<div class="hint">${esc(nomMembre(a.commercial_id||a.createur_id))}</div>`:""}
+      <div class="tools acts-inline" style="margin-top:6px"><button class="btn small primary" data-act="log" data-compte="${a.compte_id||""}" data-opp="${a.opportunite_id||""}" data-type="appel">Faire la relance</button><button class="btn small" data-act="relance-ok" data-id="${a.id}">C’est fait</button></div></div></div>`; };
+  const liste=g[todayTab];
+  // Devis envoyés sans réponse depuis 7 jours
+  const dv=state.devis.filter(d=>d.statut==="envoye"&&aMoi(d.commercial_id)&&daysSince(d.date_envoi||d.updated_at||d.created_at)>=7)
+    .sort((a,b)=>new Date(a.date_envoi||a.updated_at||a.created_at)-new Date(b.date_envoi||b.updated_at||b.created_at));
+  // Opportunités sans activité depuis 30 jours
+  const dort=state.opportunites.filter(o=>o.issue==="en_cours"&&(+o.montant_mad||0)>0&&aMoi(o.commercial_id))
+    .map(o=>({o,j:Math.floor((Date.now()-derniereActivite(o))/864e5)})).filter(x=>x.j>=30).sort((a,b)=>(+b.o.montant_mad||0)-(+a.o.montant_mad||0));
+  // Mon mois
+  const m0=new Date(); m0.setDate(1); m0.setHours(0,0,0,0); const inM=d=>d&&new Date(d)>=m0;
+  const mesActsMois=state.activites.filter(a=>a.statut!=="a_faire"&&aMoi(a.commercial_id,a.createur_id)&&inM(a.date_activite));
+  const visites=mesActsMois.filter(a=>["visite","demo","rdv","formation"].includes(a.type)).length;
+  const appels=mesActsMois.filter(a=>["appel","whatsapp","email"].includes(a.type)).length;
+  const dvMois=state.devis.filter(d=>aMoi(d.commercial_id)&&d.statut!=="brouillon"&&inM(d.date_envoi||d.created_at));
+  const gagne=state.opportunites.filter(o=>o.issue==="gagnee"&&aMoi(o.commercial_id)&&inM(o.updated_at)).reduce((s,o)=>s+(+o.montant_mad||0),0);
+  const prenom=me?String(me.nom).split(/\s+/)[0]:"";
+  const nbRetard=g.retard.length, nbJour=g.jour.length;
+  const dateTxt=new Date().toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"});
+  v.innerHTML=`<div class="today-head"><div><div class="lab-mono">${esc(dateTxt)}</div><h2>Bonjour ${esc(prenom)}</h2>
+      <p class="hint" style="font-size:15px">${[nbRetard?`${nbRetard} en retard`:"rien en retard",`${nbJour} pour aujourd’hui`,dv.length?`${dv.length} devis à relancer`:""].filter(Boolean).join(" · ")}</p></div>
+    <div class="tools">${estPilote()?`<div class="chips" role="group" aria-label="Voir"><button class="chip" data-act="today-qui" data-v="moi" aria-pressed="${todayQui==="moi"}">Moi</button><button class="chip" data-act="today-qui" data-v="equipe" aria-pressed="${todayQui==="equipe"}">Toute l’équipe</button></div>`:""}
+      <button class="btn" data-act="log" data-type="tache" ${state.comptes.length?"":"disabled"}>+ Tâche</button><button class="btn primary big" data-act="quick-visite" ${state.comptes.length?"":"disabled"}>J’ai fait une visite</button></div></div>
+  <div class="grid2"><div class="panel" style="min-width:0">
+    <div class="section-head" style="margin:0 0 6px"><h3>À faire</h3><div class="chips" role="group" aria-label="Période">${[["retard","En retard"],["jour","Aujourd’hui"],["semaine","7 prochains jours"]].map(([k,l])=>`<button class="chip" data-act="today-tab" data-v="${k}" aria-pressed="${todayTab===k}">${l}<span class="n">${g[k].length}</span></button>`).join("")}</div></div>
+    ${liste.length?`<div class="feed">${liste.slice(0,60).map(i=>i.k==="relance"?relItem(i):feedItem(i.a)).join("")}</div>${liste.length>60?`<p class="hint">${liste.length-60} autres dans Activités.</p>`:""}`
+      :`<div class="empty"><p>${todayTab==="retard"?"Rien en retard. Bien joué.":todayTab==="jour"?"Rien de prévu aujourd’hui. Ajoute une tâche ou planifie une relance.":"Rien de prévu cette semaine."}</p></div>`}
+  </div>
+  <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+    <div class="panel"><h3>Devis à relancer</h3><p class="hint" style="margin-top:0">Envoyés il y a plus de 7 jours, sans réponse</p>
+      ${dv.length?dv.slice(0,8).map(d=>{const c=byId(state.comptes,d.compte_id), j=daysSince(d.date_envoi||d.updated_at||d.created_at);
+        return `<div class="mini-row"><div style="min-width:0"><button class="linkish" data-act="edit-devis" data-id="${d.id}"><b translate="no">${esc(devisNum(d))}</b></button><div class="hint">${esc(c?c.nom:"")}${todayQui==="equipe"?" · "+esc(nomMembre(d.commercial_id)):""}</div></div><div style="text-align:right"><div style="font-family:var(--f-mono);font-size:12px">${mad(d.montant_mad)} MAD</div><span class="pill ${j>14?"bad":"warn"}">${j} j</span></div></div>`;}).join(""):`<p class="hint">Aucun devis en attente depuis plus d’une semaine.</p>`}</div>
+    <div class="panel"><h3>Affaires qui s’endorment</h3><p class="hint" style="margin-top:0">Rien depuis 30 jours, les plus gros montants d’abord</p>
+      ${dort.length?dort.slice(0,8).map(({o,j})=>{const c=byId(state.comptes,o.compte_id);
+        return `<div class="mini-row"><div style="min-width:0"><button class="linkish" data-act="open-opp" data-id="${o.id}"><b>${esc(o.titre)}</b></button><div class="hint">${esc(c?c.nom:"")} · ${ETAPE_LABEL[o.etape]}</div></div><div style="text-align:right"><div style="font-family:var(--f-mono);font-size:12px">${madShort(o.montant_mad)} MAD</div><span class="pill ${j>60?"bad":"warn"}">${j} j</span></div></div>`;}).join("")+(dort.length>8?`<p class="hint">+ ${dort.length-8} autres</p>`:""):`<p class="hint">Toutes les affaires en cours ont bougé ce mois-ci.</p>`}</div>
+    <div class="panel"><h3>${todayQui==="equipe"?"Le mois de l’équipe":"Mon mois"}</h3>
+      <div class="mini-row"><span>Visites et démos</span><b style="font-family:var(--f-mono)">${visites}</b></div>
+      <div class="mini-row"><span>Appels et messages</span><b style="font-family:var(--f-mono)">${appels}</b></div>
+      <div class="mini-row"><span>Devis envoyés</span><b style="font-family:var(--f-mono)">${dvMois.length}</b></div>
+      <div class="mini-row"><span>CA signé</span><b style="font-family:var(--f-mono)">${mad(gagne)} MAD</b></div></div>
+  </div></div>`;
+}
+
+function formVisite(){
+  const TYPES=[["visite","Visite"],["appel","Appel"],["whatsapp","WhatsApp"],["demo","Démo"],["email","Email"]];
+  const RELS=[["","Pas de relance"],["3","3 jours"],["7","7 jours"],["15","15 jours"],["30","1 mois"]];
+  const h=`<div class="form-grid">
+   ${fld("m-compte","Client",comptePicker("m-compte",""),true)}
+   <div class="field" style="grid-column:1/-1"><span class="lab-mono" id="qv-tl">Type</span><div class="chips" role="group" aria-labelledby="qv-tl" data-chips="type">${TYPES.map(([k,l],i)=>`<button type="button" class="chip" data-v="${k}" aria-pressed="${i===0}">${l}</button>`).join("")}</div><input type="hidden" name="type" value="visite"></div>
+   ${fld("m-res","Ce qui s’est dit",`<textarea id="m-res" name="resume" placeholder="Intérêt, objections, machine évoquée…"></textarea>`,true)}
+   <div class="field" style="grid-column:1/-1"><span class="lab-mono" id="qv-rl">Relancer dans</span><div class="chips" role="group" aria-labelledby="qv-rl" data-chips="relance">${RELS.map(([k,l])=>`<button type="button" class="chip" data-v="${k}" aria-pressed="${k==="7"}">${l}</button>`).join("")}</div><input type="hidden" name="relance" value="7"></div>
+   ${fld("m-next","Relance : quoi faire",`<input id="m-next" name="prochaine_action" autocomplete="off" placeholder="Ex. Envoyer le devis Longiflash…">`,true)}</div>`;
+  const submit=async f=>{
+    const cId=compteIdFromLabel(f.compte_label);
+    const ops=state.opportunites.filter(o=>o.compte_id===cId&&o.issue==="en_cours"&&(!me||o.commercial_id===me.id));
+    const oppId=ops.length===1?ops[0].id:null;
+    const type=sEnum(f.type,Object.keys(TYPES_ACT))||"visite", n=parseInt(f.relance,10);
+    const rows=[{compte_id:sUuid(cId),opportunite_id:oppId,commercial_id:me?me.id:null,type,statut:"fait",fait_le:new Date().toISOString(),date_activite:new Date().toISOString(),resume:sTxt(f.resume),prochaine_action:sTxt(f.prochaine_action)}];
+    if(n>0){ const d=new Date(); d.setDate(d.getDate()+n); d.setHours(10,0,0,0);
+      rows.push({compte_id:sUuid(cId),opportunite_id:oppId,commercial_id:me?me.id:null,type:"tache",statut:"a_faire",label:"🔄 Relance",date_activite:d.toISOString(),resume:sTxt(f.prochaine_action)||("Relance après "+TYPES_ACT[type].toLowerCase())}); }
+    return write(()=>sb.from("activites").insert(rows), n>0?`Enregistré · relance dans ${n} jours`:"Enregistré");
+  };
+  submit.validate=f=>!compteIdFromLabel(f.compte_label)?["compte_label","Choisis le client dans la liste."]:null;
+  modal("J’ai fait une visite",h,submit,"Enregistrer");
+  $("#mform").querySelectorAll("[data-chips]").forEach(g=>g.addEventListener("click",e=>{ const b=e.target.closest(".chip"); if(!b) return;
+    g.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",String(x===b))); $(`#mform input[name="${g.dataset.chips}"]`).value=b.dataset.v; dirty=true; }));
+}
+
+/* ---- Notifications ---- */
+let notifs=[];
+async function loadNotifs(){
+  if(!me) return;
+  const {data,error}=await sb.from("notifications").select("*").eq("destinataire_id",me.id).order("created_at",{ascending:false}).limit(40);
+  if(error) return;
+  notifs=data||[]; renderBell(); if(!$("#npanel").hidden) renderNotifPanel();
+}
+function renderBell(){
+  const n=notifs.filter(x=>!x.lu).length, b=$("#bell-n");
+  b.hidden=!n; b.textContent=n>9?"9+":String(n);
+  $("#bell").setAttribute("aria-label",n?`Notifications, ${n} non lue${n>1?"s":""}`:"Notifications");
+}
+const ago=d=>{ const s=(Date.now()-new Date(d).getTime())/1000; if(s<60) return "à l’instant"; if(s<3600) return `il y a ${Math.floor(s/60)} min`; if(s<86400) return `il y a ${Math.floor(s/3600)} h`; if(s<172800) return "hier"; return fmtDate(d); };
+const initiales=id=>{ const e=byId(state.equipe,id); return e?e.nom.split(/\s+/).filter(Boolean).map(x=>x[0]).slice(0,2).join("").toUpperCase():"·"; };
+function renderNotifPanel(){
+  const n=notifs.filter(x=>!x.lu).length;
+  $("#npanel").innerHTML=`<div class="section-head" style="margin:0 0 8px;align-items:center"><h3>Notifications</h3>${n?`<button class="btn small" data-act="notif-tout-lu">Tout marquer comme lu</button>`:""}</div>
+  ${notifs.length?notifs.map(x=>`<button class="notif${x.lu?"":" unread"}" data-act="notif-open" data-id="${x.id}"><span class="nav-av" aria-hidden="true">${esc(initiales(x.auteur_id))}</span><span style="flex:1;min-width:0"><span style="display:block">${esc(x.texte)}</span><span class="hint" style="font-family:var(--f-mono);font-size:11px">${ago(x.created_at)}</span></span>${x.lu?"":`<span class="ndot" role="img" aria-label="non lue"></span>`}</button>`).join("")
+    :`<p class="hint">Rien de nouveau. Tu es prévenu ici quand quelqu’un te transfère un client, t’assigne une tâche, commente ou fait avancer une de tes affaires.</p>`}`;
+}
+function toggleNotifs(open){
+  const p=$("#npanel"); if(open==null) open=p.hidden;
+  p.hidden=!open; $("#bell").setAttribute("aria-expanded",String(open));
+  if(open) p.style.top=Math.round($("header.top").getBoundingClientRect().bottom+8)+"px";
+  if(open){ renderNotifPanel(); loadNotifs(); const f=p.querySelector("button"); if(f) f.focus(); }
+}
+$("#bell").addEventListener("click",e=>{ e.stopPropagation(); toggleNotifs(); });
+document.addEventListener("click",e=>{ const p=$("#npanel"); if(!p.hidden&&!p.contains(e.target)&&!e.target.closest("#bell")) toggleNotifs(false); });
+setInterval(()=>{ if(me&&document.visibilityState==="visible") loadNotifs(); },60000);
+document.addEventListener("visibilitychange",()=>{ if(me&&document.visibilityState==="visible") loadNotifs(); });
+
+/* ---- Reporting ---- */
+let rep={met:"ca",dim:"commercial",per:"trim",du:"",au:"",showroom:"",com:""}, repCache={};
+const REP_MET={ca:"CA signé (MAD)",pipeline:"Pipeline en cours (MAD)",opps:"Opportunités créées",devis_n:"Devis envoyés",devis_mt:"Montant des devis envoyés (MAD)",visites:"Visites et démos",appels:"Appels et messages",contacts:"Nouveaux contacts",taux:"Taux de transformation"};
+const REP_DIM={commercial:"Commercial",showroom:"Showroom",source:"Source / salon",machine:"Machine",segment:"Segment",ville:"Ville",mois:"Mois"};
+const REP_MAD=["ca","pipeline","devis_mt"];
+async function actsPeriode(du,au){
+  const key=(du?du.toISOString():"")+"|"+(au?au.toISOString():"");
+  const limite=Date.now()-118*864e5;
+  if(du&&du.getTime()>=limite) return state.activites;
+  if(repCache[key]) return repCache[key];
+  const all=[]; for(let from=0;;from+=1000){
+    let q=sb.from("activites").select("id,type,statut,commercial_id,createur_id,compte_id,opportunite_id,date_activite").neq("statut","a_faire");
+    if(du) q=q.gte("date_activite",du.toISOString()); if(au) q=q.lt("date_activite",au.toISOString());
+    const r=await q.order("date_activite").order("id").range(from,from+999); if(r.error) throw r.error;
+    all.push(...r.data); if(r.data.length<1000) break; }
+  return repCache[key]=all;
+}
+async function repData(){
+  const [du,au]=periode(rep.per,rep.du,rep.au), inP=d=>{ if(!d) return false; const t=new Date(d).getTime(); return (!du||t>=du.getTime())&&(!au||t<au.getTime()); };
+  const oppOf=id=>byId(state.opportunites,id);
+  const R=[]; // {date, v, ok?, commercial_id, compte_id, produit_id, lib}
+  const m=rep.met;
+  if(m==="ca") state.opportunites.filter(o=>o.issue==="gagnee"&&inP(o.updated_at)).forEach(o=>R.push({date:o.updated_at,v:+o.montant_mad||0,commercial_id:o.commercial_id,compte_id:o.compte_id,produit_id:o.produit_id,lib:o.titre}));
+  if(m==="pipeline") state.opportunites.filter(o=>o.issue==="en_cours").forEach(o=>R.push({date:o.created_at,v:+o.montant_mad||0,commercial_id:o.commercial_id,compte_id:o.compte_id,produit_id:o.produit_id,lib:o.titre}));
+  if(m==="opps") state.opportunites.filter(o=>inP(o.created_at)).forEach(o=>R.push({date:o.created_at,v:1,commercial_id:o.commercial_id,compte_id:o.compte_id,produit_id:o.produit_id,lib:o.titre}));
+  if(m==="devis_n"||m==="devis_mt") state.devis.filter(d=>d.statut!=="brouillon"&&inP(d.date_envoi||d.created_at)).forEach(d=>{ const o=oppOf(d.opportunite_id); R.push({date:d.date_envoi||d.created_at,v:m==="devis_n"?1:(+d.montant_mad||0),commercial_id:d.commercial_id,compte_id:d.compte_id,produit_id:o&&o.produit_id,lib:devisNum(d)}); });
+  if(m==="contacts") state.comptes.filter(c=>inP(c.created_at)).forEach(c=>R.push({date:c.created_at,v:1,commercial_id:c.commercial_id,compte_id:c.id,lib:c.nom}));
+  if(m==="taux") state.opportunites.filter(o=>o.issue!=="en_cours"&&inP(o.updated_at)).forEach(o=>R.push({date:o.updated_at,v:o.issue==="gagnee"?1:0,commercial_id:o.commercial_id,compte_id:o.compte_id,produit_id:o.produit_id,lib:o.titre}));
+  if(m==="visites"||m==="appels"){ const types=m==="visites"?["visite","demo","rdv","formation"]:["appel","whatsapp","email"];
+    (await actsPeriode(du,au)).filter(a=>a.statut!=="a_faire"&&types.includes(a.type)&&inP(a.date_activite)).forEach(a=>{ const o=oppOf(a.opportunite_id); R.push({date:a.date_activite,v:1,commercial_id:a.commercial_id||a.createur_id,compte_id:a.compte_id,produit_id:o&&o.produit_id,lib:TYPES_ACT[a.type]}); }); }
+  const showroomOf=id=>{ const e=byId(state.equipe,id); return e&&e.showroom||""; };
+  return R.filter(r=>(!rep.com||r.commercial_id===rep.com)&&(!rep.showroom||showroomOf(r.commercial_id)===rep.showroom));
+}
+function repCle(r){
+  const c=byId(state.comptes,r.compte_id);
+  switch(rep.dim){
+    case "commercial": return r.commercial_id?nomMembre(r.commercial_id):"Non assigné";
+    case "showroom": { const e=byId(state.equipe,r.commercial_id); return e&&e.showroom?SHOWROOMS[e.showroom]:"Showroom non renseigné"; }
+    case "source": return c&&c.source||"Sans source";
+    case "machine": { const p=byId(state.produits,r.produit_id); return p?p.nom:"Sans machine"; }
+    case "segment": return c?SEGMENTS[c.segment]:"—";
+    case "ville": return c&&c.ville||"Ville non renseignée";
+    case "mois": { const d=new Date(r.date); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"); }
+  }
+}
+let repLast=null;
+async function viewReporting(v){
+  const P={"7j":"7 derniers jours","30j":"30 derniers jours",mois:"Ce mois-ci","mois-1":"Mois dernier",trim:"Ce trimestre",annee:"Cette année",tout:"Depuis le début",perso:"Dates personnalisées"};
+  const sel=(id,label,obj,cur,blank)=>`<div class="field"><label for="${id}">${label}</label><select id="${id}">${blank?`<option value="">${blank}</option>`:""}${Object.entries(obj).map(([k,l])=>`<option value="${k}" ${cur===k?"selected":""}>${esc(l)}</option>`).join("")}</select></div>`;
+  const coms={}; state.equipe.forEach(e=>{ if(state.opportunites.some(o=>o.commercial_id===e.id)||e.actif) coms[e.id]=e.nom; });
+  v.innerHTML=`<div class="section-head"><div><h2>Reporting</h2><p class="hint">Choisis quoi mesurer et comment le découper. Tout est calculé sur les données du CRM et s’exporte en Excel.</p></div>
+    <div class="tools"><button class="btn" data-act="rep-csv">CSV</button><button class="btn primary" data-act="rep-xlsx">Exporter Excel</button></div></div>
+  <div class="panel"><div class="form-grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))">
+    ${sel("r-met","Je veux voir",REP_MET,rep.met)}${sel("r-dim","Découpé par",REP_DIM,rep.dim)}${rep.met==="pipeline"?`<div class="field"><label>Période</label><p class="hint" style="margin:8px 0 0">Affaires en cours aujourd’hui</p></div>`:sel("r-per","Période",P,rep.per)}
+    ${sel("r-sr","Showroom",SHOWROOMS,rep.showroom,"Tous les showrooms")}${sel("r-com","Commercial",coms,rep.com,"Toute l’équipe")}
+    ${rep.per==="perso"&&rep.met!=="pipeline"?`<div class="field"><label for="r-du">Du</label><input id="r-du" type="date" value="${rep.du}"></div><div class="field"><label for="r-au">Au</label><input id="r-au" type="date" value="${rep.au}"></div>`:""}</div></div>
+  <div class="panel" style="margin-top:16px" id="rep-out" aria-live="polite"><div class="skeleton"></div></div>`;
+  const re=()=>viewReporting(v);
+  [["#r-met","met"],["#r-dim","dim"],["#r-per","per"],["#r-sr","showroom"],["#r-com","com"],["#r-du","du"],["#r-au","au"]].forEach(([s,k])=>{ const el=$(s); if(el) el.addEventListener("change",e=>{ rep[k]=e.target.value; re(); }); });
+  let R; try{ R=await repData(); }catch(e){ $("#rep-out").innerHTML=`<p class="hint">${esc(errorCopy(e)[1])}</p>`; return; }
+  if(tab!=="reporting"||!document.contains($("#rep-out"))) return;
+  const groups=new Map(); R.forEach(r=>{ const k=repCle(r); const g=groups.get(k)||{k,v:0,n:0}; g.v+=r.v; g.n++; groups.set(k,g); });
+  let rows=[...groups.values()];
+  const taux=rep.met==="taux";
+  rows.forEach(g=>{ g.val=taux?(g.n?Math.round(g.v*1000/g.n)/10:0):g.v; });
+  rows.sort(rep.dim==="mois"?(a,b)=>a.k.localeCompare(b.k):(a,b)=>b.val-a.val||b.n-a.n);
+  const tot=R.reduce((s,r)=>s+r.v,0), totVal=taux?(R.length?Math.round(tot*1000/R.length)/10:0):tot;
+  const max=Math.max(1,...rows.map(g=>g.val));
+  const fmtV=x=>taux?x.toLocaleString("fr-FR")+" %":REP_MAD.includes(rep.met)?mad(x)+" MAD":new Intl.NumberFormat("fr-FR").format(x);
+  const lab=k=>rep.dim==="mois"?new Date(k+"-01T00:00").toLocaleDateString("fr-FR",{month:"short",year:"numeric"}):k;
+  const titre=`${REP_MET[rep.met].replace(/ \(MAD\)/,"")} par ${REP_DIM[rep.dim].toLowerCase()}${rep.met==="pipeline"?" · aujourd’hui":" · "+P[rep.per].toLowerCase()}`;
+  repLast={titre,rows:rows.map(g=>({[REP_DIM[rep.dim]]:lab(g.k),[REP_MET[rep.met]]:g.val,"Nombre":g.n,"Part":taux||!tot?"":Math.round(g.v*1000/tot)/10+" %"})),
+    detail:R.map(r=>({Date:r.date?new Date(r.date).toLocaleDateString("fr-FR"):"",Libellé:r.lib||"",Client:(byId(state.comptes,r.compte_id)||{}).nom||"",Commercial:r.commercial_id?nomMembre(r.commercial_id):"",[REP_DIM[rep.dim]]:lab(repCle(r)),Valeur:r.v}))};
+  $("#rep-out").innerHTML=`<div class="section-head" style="margin:0 0 12px"><div><h3>${esc(titre)}</h3><p class="hint">Total : <b style="font-family:var(--f-mono);color:var(--ink)">${fmtV(totVal)}</b> · ${new Intl.NumberFormat("fr-FR").format(R.length)} élément${R.length>1?"s":""}${taux?" clôturé"+(R.length>1?"s":""):""}</p></div></div>
+    ${rows.length?`<div role="img" aria-label="${esc(titre)}">${rows.slice(0,25).map(g=>`<div class="rep-bar"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(lab(g.k))}">${esc(lab(g.k))}</span><div class="track"><i style="width:${Math.max(1,Math.round(g.val*100/max))}%"></i></div><span class="v">${fmtV(g.val)}</span></div>`).join("")}</div>
+    <div class="tbl-wrap" style="margin-top:16px"><table><thead><tr><th>${REP_DIM[rep.dim]}</th><th class="num">${esc(REP_MET[rep.met])}</th><th class="num">Nombre</th>${taux?"":`<th class="num">Part</th>`}</tr></thead><tbody>
+    ${rows.map(g=>`<tr><td>${esc(lab(g.k))}</td><td class="num">${fmtV(g.val)}</td><td class="num">${g.n}</td>${taux?"":`<td class="num">${tot?(Math.round(g.v*1000/tot)/10).toLocaleString("fr-FR")+" %":"·"}</td>`}</tr>`).join("")}</tbody></table></div>`
+    :`<div class="empty"><p>Aucune donnée pour ce choix. Élargis la période ou retire un filtre.</p></div>`}
+    ${rep.dim==="showroom"&&rows.some(g=>g.k==="Showroom non renseigné")?`<p class="hint" style="margin-top:12px">Indique le showroom de chaque commercial dans Réglages ⚙ › Équipe pour que ce découpage soit complet.</p>`:""}`;
+}
+async function exportRep(kind){
+  if(!repLast) return;
+  const nom=("cellulift-"+repLast.titre).normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9]+/gi,"-").toLowerCase().slice(0,80);
+  const dl=(blob,ext)=>{ const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=nom+"."+ext; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500); };
+  if(kind==="csv"){ const rows=repLast.rows, cols=Object.keys(rows[0]||{});
+    const csv=[cols.join(";"),...rows.map(r=>cols.map(c=>`"${String(r[c]??"").replace(/"/g,'""')}"`).join(";"))].join("\r\n");
+    return dl(new Blob(["﻿"+csv],{type:"text/csv;charset=utf-8"}),"csv"); }
+  try{ await loadScript("https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"); }catch(e){ toast(e.message); return exportRep("csv"); }
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(repLast.rows),"Synthèse");
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(repLast.detail),"Détail");
+  XLSX.writeFile(wb,nom+".xlsx");
 }
 
 /* ---- Historique & commentaires ---- */
@@ -1090,7 +1410,7 @@ function formDevis(d, preset){
       ${fld("dv-compte","Client",c0?`<input id="dv-compte" value="${esc(compteLabel(c0))}" readonly aria-readonly="true">`:`<input id="dv-compte" name="compte" list="dl-comptes" autocomplete="off" placeholder="Tapez le nom du client…" required>${comptesDl}`,true)}
       ${fld("dv-opp","Opportunité liée",`<select id="dv-opp" name="opportunite_id"></select>`)}
       ${fld("dv-com","Commercial",`<select id="dv-com" name="commercial_id">${opt(equipeOpts(),d.commercial_id||(opp0&&opp0.commercial_id)||(c0&&c0.commercial_id)||(me&&me.id),"Non assigné")}</select>`)}
-      ${fld("dv-ag","Agence émettrice",`<select id="dv-ag" name="agence">${opt(Object.entries(AGENCES).map(([k,a])=>[k,a.nom]),d.agence||agenceDefaut(c0))}</select>`)}
+      ${fld("dv-ag","Showroom émetteur",`<select id="dv-ag" name="agence">${opt(Object.entries(AGENCES).map(([k,a])=>[k,a.nom]),d.agence||agenceDefaut(c0))}</select>`)}
     </div>
     <div class="tbl-wrap" style="margin-top:16px"><table class="dv-lines"><thead><tr><th style="min-width:200px">Machine / désignation</th><th class="num" style="width:70px">Qté</th><th class="num" style="width:130px">PU HT (MAD)</th><th class="num" style="width:90px">Remise %</th><th class="num" style="width:120px">Total HT</th><th style="width:44px"><span class="sr-only">Retirer</span></th></tr></thead><tbody id="dv-body"></tbody></table></div>
     <div class="tools" style="margin-top:8px"><button type="button" class="btn small" id="dv-add">+ Ligne</button></div>
