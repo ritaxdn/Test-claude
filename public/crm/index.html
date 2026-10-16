@@ -346,6 +346,7 @@ table.vheat td[style*="--a:6"] span,table.vheat td[style*="--a:7"] span,table.vh
 @media (max-width:720px){ .kpi .vspark{display:none} .vbar{grid-template-columns:minmax(70px,110px) minmax(0,1fr) auto} .vfunnel .fstep{grid-template-columns:86px minmax(0,1fr) auto} .vfunnel .fpass{padding-left:100px} .vcols{height:160px} .vcol .vv{font-size:9px} table.vheat.cardable thead{display:table-header-group} table.vheat.cardable,table.vheat.cardable tbody{display:table-row-group} table.vheat.cardable tr{display:table-row} table.vheat.cardable td,table.vheat.cardable th{display:table-cell} table.vheat.cardable td::before{content:none!important} }
 .ia-bar{margin-top:6px;align-items:center}
 #qv-mic[aria-pressed="true"]{background:var(--bad);color:#fff;border-color:var(--bad)}
+.new-client{border:1px dashed var(--line-strong);border-radius:18px;padding:12px 14px}
 /* Agenda */
 .ag-scroll{max-height:72vh;overflow:auto;border-radius:18px;border:1px solid var(--line);background:var(--glass-strong)}
 .ag-head,.ag-body{display:grid;grid-template-columns:52px repeat(var(--cols),minmax(0,1fr))}
@@ -1063,22 +1064,22 @@ const equipeOpts=()=>state.equipe.map(e=>[e.id,e.nom+(e.actif?"":" (sans accès)
 function formCompte(c){
   c=c||{};
   const h=`<div class="form-grid">
-   ${fld("m-nom","Nom du compte",`<input id="m-nom" name="nom" required value="${esc(c.nom||"")}" placeholder="Ex. Clinique Atlas…" autocomplete="off">`,true)}
+   ${fld("m-nom","Nom du client",`<input id="m-nom" name="nom" required value="${esc(c.nom||"")}" placeholder="Ex. Clinique Atlas…" autocomplete="off">`,true)}
    ${fld("m-cat","Catégorie",`<select id="m-cat" name="categorie">${opt(Object.entries(CATEGORIES),c.categorie||"","Choisir…")}</select>`)}
    ${fld("m-met","Spécialité",`<select id="m-met" name="metier">${metierOptions(c.metier||"",c.categorie||"")}</select>`)}
    ${fld("m-ville","Ville",`<input id="m-ville" name="ville" list="dl-villes" autocomplete="off" placeholder="Ex. Fès…" value="${esc(c.ville||"")}"><datalist id="dl-villes">${villes().map(x=>`<option value="${esc(x)}">`).join("")}</datalist>`)}
-   ${fld("m-statut","Statut",`<select id="m-statut" name="statut">${opt(Object.entries(STATUTS),c.statut||"prospect")}</select>`)}
+   ${fld("m-statut","Statut",`<select id="m-statut" name="statut">${opt([["prospect","Prospect · n’a pas encore acheté"],["client","Client · a déjà acheté"],["personnel","Personnel"]],c.statut||"prospect")}</select>`)}
    ${fld("m-spec","Précision (texte libre)",`<input id="m-spec" name="specialite" autocomplete="off" placeholder="Ex. Kiné et amincissement…" value="${esc(c.specialite||"")}">`)}
    ${fld("m-src","Source",`<input id="m-src" name="source" list="dl-sources" autocomplete="off" placeholder="Ex. Medical Expo 2026…" value="${esc(c.source||"")}"><datalist id="dl-sources">${sources().map(x=>`<option value="${esc(x)}">`).join("")}</datalist>`)}
    ${fld("m-tel","Téléphone",`<input id="m-tel" name="telephone" type="tel" inputmode="tel" autocomplete="off" placeholder="+212 6…" value="${esc(c.telephone||"")}">`)}
    ${fld("m-mail","Email",`<input id="m-mail" name="email" type="email" autocomplete="off" spellcheck="false" placeholder="contact@clinique.ma…" value="${esc(c.email||"")}">`)}
    ${fld("m-adr","Adresse",`<input id="m-adr" name="adresse" value="${esc(c.adresse||"")}">`,true)}
-   ${fld("m-com","Commercial",`<select id="m-com" name="commercial_id">${opt(equipeOpts(),c.commercial_id,"Non assigné")}</select>`)}
+   ${estPilote()?fld("m-com","Suivi par",`<select id="m-com" name="commercial_id">${opt(equipeOpts(),c.commercial_id||(c.id?"":(me&&me.id)),"Non assigné")}</select>`):""}
    ${fld("m-web","Site web",`<input id="m-web" name="site_web" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://…" value="${esc(c.site_web||"")}">`)}
-   ${fld("m-notes","Notes",`<textarea id="m-notes" name="notes">${esc(c.notes||"")}</textarea>`,true)}</div>`;
+   <div class="field" style="grid-column:1/-1"><label for="m-notes">Notes</label><textarea id="m-notes" name="notes">${esc(c.notes||"")}</textarea><div class="tools ia-bar"><button type="button" class="btn small" id="m-cmic" aria-pressed="false">🎤 Note vocale</button><span id="m-cmic-msg" class="hint" aria-live="polite" style="margin:0"></span></div></div></div>`;
   const submit=async f=>{
     const met=sEnum(f.metier,Object.keys(METIERS))||"autre", cat=sEnum(f.categorie,Object.keys(CATEGORIES))||(METIERS[met]||[])[0]||null;
-    const obj={nom:sTxt(f.nom),categorie:cat,metier:met,metier_auto:false,metier_a_verifier:met==="autre"||!cat,segment:segmentCompat(met)||c.segment||"B_cabinet",ville:sTxt(f.ville),statut:sEnum(f.statut,Object.keys(STATUTS))||"prospect",specialite:sTxt(f.specialite),source:sTxt(f.source),adresse:sTxt(f.adresse),telephone:sTxt(f.telephone),email:sTxt(f.email),site_web:sTxt(f.site_web),commercial_id:sUuid(f.commercial_id),notes:sTxt(f.notes)};
+    const obj={nom:sTxt(f.nom),categorie:cat,metier:met,metier_auto:false,metier_a_verifier:met==="autre"||!cat,segment:segmentCompat(met)||c.segment||"B_cabinet",ville:sTxt(f.ville),statut:sEnum(f.statut,Object.keys(STATUTS))||"prospect",specialite:sTxt(f.specialite),source:sTxt(f.source),adresse:sTxt(f.adresse),telephone:sTxt(f.telephone),email:sTxt(f.email),site_web:sTxt(f.site_web),commercial_id:estPilote()?sUuid(f.commercial_id):(c.commercial_id||(me&&me.id)||null),notes:sTxt(f.notes)};
     const changeId=!c.id||strip(c.nom)!==strip(obj.nom)||String(c.telephone||"").replace(/\D/g,"")!==String(obj.telephone||"").replace(/\D/g,"");
     if(changeId&&!submit.force){
       const {data:dups}=await sb.rpc("chercher_doublons",{p_nom:obj.nom,p_tel:obj.telephone,p_ville:obj.ville,p_exclure:c.id||null});
@@ -1088,36 +1089,75 @@ function formCompte(c){
   };
   submit.validate=f=>!f.nom.trim()?["nom","Indiquez le nom du compte."]:!f.categorie?["categorie","Médecin ou non-médecin ?"]:!f.metier||f.metier==="autre"&&!f.specialite.trim()?["metier","Choisissez la spécialité (ou précisez-la en texte libre)."]:null;
   modal(c.id?"Modifier le compte":"Nouveau compte",h,submit,c.id?"Enregistrer":"Ajouter le compte");
+  brancherDictee($("#m-cmic"),$("#m-notes"),$("#m-cmic-msg"));
   $("#m-cat").addEventListener("change",e=>{ const cur=$("#m-met").value; $("#m-met").innerHTML=metierOptions(METIERS[cur]&&METIERS[cur][0]===e.target.value?cur:"",e.target.value); });
   $("#m-met").addEventListener("change",e=>{ const m=METIERS[e.target.value]; if(m&&m[0]) $("#m-cat").value=m[0]; });
 }
 
+// Ajout rapide d'une opportunité : on cherche le client (ou on le crée), on note, c'est tout.
 function formOpp(o,presetCompte){
-  o=o||{};
-  const compteSel=o.compte_id||presetCompte||"";
-  const contacts=state.contacts.filter(x=>x.compte_id===compteSel).map(x=>[x.id,[x.prenom,x.nom].filter(Boolean).join(" ")]);
+  o=o||{}; const edit=!!o.id;
+  const c0=byId(state.comptes,o.compte_id||presetCompte);
+  const prodSelect=`<select id="m-prod" name="produit_id" aria-describedby="m-prod-warn"><option value="">Pas encore précisée</option>${Object.entries(state.produits.filter(p=>p.actif||p.id===o.produit_id).reduce((m,p)=>((m[p.categorie]=m[p.categorie]||[]).push(p),m),{})).map(([f,ps])=>`<optgroup label="${esc(f)}">${ps.sort((a,b)=>a.nom.localeCompare(b.nom,"fr")).map(p=>`<option value="${p.id}" ${p.id===o.produit_id?"selected":""}>${esc(p.nom)}${p.medical_only?" · médical":""}</option>`).join("")}</optgroup>`).join("")}</select><span id="m-prod-warn" class="field-err" aria-live="polite"></span>`;
+  const contactsDe=id=>state.contacts.filter(x=>x.compte_id===id);
+  const nomContact=x=>[x.prenom,x.nom].filter(Boolean).join(" ");
+  const ct0=byId(state.contacts,o.contact_id);
   const h=`<div class="form-grid">
-   ${fld("m-titre","Intitulé",`<input id="m-titre" name="titre" required value="${esc(o.titre||"")}" placeholder="Ex. Laser diode pour 2 cabines…" autocomplete="off">`,true)}
-   ${fld("m-compte","Compte",`<select id="m-compte" name="compte_id" required>${opt(state.comptes.map(c=>[c.id,c.nom]),compteSel,"Choisir…")}</select>`)}
-   ${fld("m-contact","Contact",`<select id="m-contact" name="contact_id">${opt(contacts,o.contact_id,"—")}</select>`)}
-   ${fld("m-prod","Machine",`<select id="m-prod" name="produit_id" aria-describedby="m-prod-warn"><option value="">—</option>${Object.entries(state.produits.filter(p=>p.actif||p.id===o.produit_id).reduce((m,p)=>((m[p.categorie]=m[p.categorie]||[]).push(p),m),{})).map(([f,ps])=>`<optgroup label="${esc(f)}">${ps.sort((a,b)=>a.nom.localeCompare(b.nom,"fr")).map(p=>`<option value="${p.id}" ${p.id===o.produit_id?"selected":""}>${esc(p.nom)}${p.medical_only?" · médical":""}</option>`).join("")}</optgroup>`).join("")}</select><span id="m-prod-warn" class="field-err" aria-live="polite"></span>`)}
-   ${fld("m-com","Commercial",`<select id="m-com" name="commercial_id">${opt(equipeOpts(),o.commercial_id,"Non assigné")}</select>`)}
-   ${fld("m-etape","Étape",`<select id="m-etape" name="etape">${opt(ETAPES.map(e=>[e,ETAPE_LABEL[e]]),o.etape||"Qualification")}</select>`)}
-   ${fld("m-prob","Probabilité %",`<input id="m-prob" name="probabilite" type="number" min="0" max="100" step="5" value="${esc(o.probabilite??PROB_DEFAUT[o.etape||"Qualification"])}">`)}
-   ${fld("m-mt","Montant (MAD)",`<input id="m-mt" name="montant_mad" type="number" min="0" step="1000" inputmode="numeric" value="${esc(o.montant_mad??"")}">`)}
-   ${fld("m-date","Clôture prévue",`<input id="m-date" name="date_cloture_prevue" type="date" value="${esc(o.date_cloture_prevue||"")}">`)}
-   ${fld("m-desc","Notes",`<textarea id="m-desc" name="description" placeholder="Contexte, besoin, budget…">${esc(o.description||"")}</textarea>`,true)}</div>`;
+   <div class="field" style="grid-column:1/-1"><label for="m-compte">Client</label>${comptePicker("m-compte",c0?c0.id:"")}<div id="m-cinfo" class="hint" aria-live="polite" style="margin:4px 0 0"></div></div>
+   <div id="m-new" class="new-client" hidden style="grid-column:1/-1">
+     <p style="margin:0 0 8px"><b>Nouveau client</b> <span class="hint">· il sera créé avec cette opportunité</span></p>
+     <div class="form-grid">
+       ${fld("m-ntel","Téléphone",`<input id="m-ntel" name="n_tel" type="tel" inputmode="tel" autocomplete="off" placeholder="+212 6…">`)}
+       ${fld("m-nmail","E-mail",`<input id="m-nmail" name="n_mail" type="email" autocomplete="off" spellcheck="false" placeholder="contact@…">`)}
+       ${fld("m-nville","Ville",`<input id="m-nville" name="n_ville" list="dl-villes-o" autocomplete="off" placeholder="Ex. Casablanca"><datalist id="dl-villes-o">${villes().map(x=>`<option value="${esc(x)}">`).join("")}</datalist>`)}
+       ${fld("m-ncat","Médecin ?",`<select id="m-ncat" name="n_cat">${opt(Object.entries(CATEGORIES),"","Je ne sais pas encore")}</select>`)}
+       <div class="field" style="grid-column:1/-1"><span class="lab-mono" id="m-nst-l">C’est…</span><div class="chips" role="group" aria-labelledby="m-nst-l" data-chips="n_statut"><button type="button" class="chip" data-v="prospect" aria-pressed="true">Un prospect · n’a pas encore acheté</button><button type="button" class="chip" data-v="client" aria-pressed="false">Un client · a déjà acheté</button></div><input type="hidden" name="n_statut" value="prospect"></div>
+     </div>
+   </div>
+   ${fld("m-pers","Personne rencontrée (facultatif)",`<input id="m-pers" name="personne" list="dl-pers" autocomplete="off" placeholder="Ex. Dr Benali, la gérante…" value="${esc(ct0?nomContact(ct0):"")}"><datalist id="dl-pers"></datalist>`)}
+   ${fld("m-prod","Machine",prodSelect)}
+   ${fld("m-mt","Montant estimé (MAD, facultatif)",`<input id="m-mt" name="montant_mad" type="number" min="0" step="1000" inputmode="numeric" value="${esc(o.montant_mad??"")}">`)}
+   <div class="field" style="grid-column:1/-1"><span class="lab-mono" id="m-et-l">Où en est-on ?</span><div class="chips" role="group" aria-labelledby="m-et-l" data-chips="etape">${ETAPES.map(e=>`<button type="button" class="chip" data-v="${e}" aria-pressed="${(o.etape||"Qualification")===e}">${ETAPE_LABEL[e]}</button>`).join("")}</div><input type="hidden" name="etape" value="${esc(o.etape||"Qualification")}"></div>
+   <div class="field" style="grid-column:1/-1"><label for="m-desc">Note · ce qui a été fait, ce qui a été dit</label><textarea id="m-desc" name="description" placeholder="Ex. Visite au cabinet, intéressée par le Longiflash, attend le devis…">${esc(o.description||"")}</textarea>
+     <div class="tools ia-bar"><button type="button" class="btn small" id="m-mic" aria-pressed="false">🎤 Note vocale</button><span id="m-mic-msg" class="hint" aria-live="polite" style="margin:0"></span></div></div>
+   ${estPilote()?fld("m-com","Suivie par",`<select id="m-com" name="commercial_id">${opt(equipeOpts(),o.commercial_id||(c0&&c0.commercial_id)||(me&&me.id),"Non assigné")}</select>`):""}
+   ${edit?fld("m-titre","Intitulé",`<input id="m-titre" name="titre" value="${esc(o.titre||"")}" autocomplete="off">`,true):""}
+  </div>
+  ${!estPilote()&&me?`<p class="hint">Suivie par toi (${esc(me.nom)}).</p>`:""}`;
+  const lireClient=()=>{ const v=$("#m-compte").value.trim(); return {id:compteIdFromLabel(v),nom:v.split(" — ")[0].trim()}; };
   const submit=async f=>{
-    const obj={description:sTxt(f.description),compte_id:sUuid(f.compte_id),contact_id:sUuid(f.contact_id),produit_id:sUuid(f.produit_id),commercial_id:sUuid(f.commercial_id),titre:sTxt(f.titre),etape:sEnum(f.etape,ETAPES),montant_mad:sNum(f.montant_mad),probabilite:sInt(f.probabilite,0,100),date_cloture_prevue:sDate(f.date_cloture_prevue)};
-    return o.id ? write(upd("opportunites",o.id,obj),"Opportunité mise à jour") : write(ins("opportunites",obj),"Opportunité créée");
+    let {id:compteId,nom}=lireClient();
+    const etape=sEnum(f.etape,ETAPES)||"Qualification";
+    if(!compteId){
+      const obj={nom:sTxt(nom),telephone:sTxt(f.n_tel),email:sTxt(f.n_mail),ville:sTxt(f.n_ville),categorie:sEnum(f.n_cat,Object.keys(CATEGORIES)),statut:f.n_statut==="client"?"client":"prospect",commercial_id:(estPilote()?sUuid(f.commercial_id):null)||(me&&me.id)||null,source:"Ajout rapide",segment:"B_cabinet"};
+      if(!submit.force){ const {data:dups}=await sb.rpc("chercher_doublons",{p_nom:obj.nom,p_tel:obj.telephone,p_ville:obj.ville,p_exclure:null}); if(dups&&dups.length){ afficherDoublons(dups,submit); return false; } }
+      const r=await sb.from("comptes").insert(obj).select("id").single();
+      if(r.error){ const [t,d]=errorCopy(r.error); $("#merr").textContent=t+" — "+d; return false; }
+      compteId=r.data.id;
+    }
+    const c=byId(state.comptes,compteId)||{nom};
+    let contactId=null; const pers=sTxt(f.personne);
+    if(pers){ const ex=contactsDe(compteId).find(x=>strip(nomContact(x))===strip(pers)); if(ex) contactId=ex.id; else { const r=await sb.from("contacts").insert({compte_id:compteId,nom:pers}).select("id").single(); if(!r.error) contactId=r.data.id; } }
+    const p=byId(state.produits,f.produit_id);
+    const obj={compte_id:compteId,contact_id:contactId,produit_id:sUuid(f.produit_id),etape,montant_mad:sNum(f.montant_mad),description:sTxt(f.description),
+      commercial_id:(estPilote()?sUuid(f.commercial_id):(o.commercial_id||(me&&me.id)))||null};
+    if(edit){ obj.titre=sTxt(f.titre)||o.titre; if(etape!==o.etape) obj.probabilite=PROB_DEFAUT[etape]; }
+    else { obj.titre=[c.nom,p&&p.nom].filter(Boolean).join(" — "); obj.probabilite=PROB_DEFAUT[etape]; }
+    return edit ? write(upd("opportunites",o.id,obj),"Opportunité mise à jour") : write(ins("opportunites",obj),"Opportunité ajoutée");
   };
-  submit.validate=f=>!f.titre.trim()?["titre","Indiquez un intitulé pour l’opportunité."]:!UUID_RE.test(f.compte_id||"")?["compte_id","Choisissez le compte concerné."]:null;
-  modal(o.id?"Modifier l’opportunité":"Nouvelle opportunité",h,submit,o.id?"Enregistrer":"Créer");
-  $("#m-compte").addEventListener("change",e=>{const cs=state.contacts.filter(x=>x.compte_id===e.target.value).map(x=>[x.id,[x.prenom,x.nom].filter(Boolean).join(" ")]);$("#m-contact").innerHTML=opt(cs,"","—");});
-  $("#m-etape").addEventListener("change",e=>{if(!o.id) $("#m-prob").value=PROB_DEFAUT[e.target.value];});
-  const medWarn=()=>{ const p=byId(state.produits,$("#m-prod").value), c=byId(state.comptes,$("#m-compte").value);
-    $("#m-prod-warn").textContent = p&&p.medical_only&&c&&c.categorie==="non_medecin" ? `Machine réservée aux médecins : ce client est classé non-médecin (${metierLabel(c)}).` : p&&p.medical_only&&c&&c.categorie!=="medecin" ? "Machine réservée aux médecins : vérifiez qu’un médecin exerce chez ce client." : ""; };
-  $("#m-prod").addEventListener("change",medWarn); $("#m-compte").addEventListener("change",medWarn); medWarn();
+  submit.validate=f=>{ const v=$("#m-compte").value.trim(); return v.length<2?["compte_label","Tape le nom du client."]:null; };
+  modal(edit?"Modifier l’opportunité":"Nouvelle opportunité",h,submit,edit?"Enregistrer":"Ajouter");
+  brancherDictee($("#m-mic"),$("#m-desc"),$("#m-mic-msg"));
+  $("#mform").querySelectorAll("[data-chips]").forEach(g=>g.addEventListener("click",e=>{ const b=e.target.closest(".chip"); if(!b) return; g.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",String(x===b))); $(`#mform input[name="${g.dataset.chips}"]`).value=b.dataset.v; dirty=true; }));
+  const majClient=()=>{ const {id,nom}=lireClient(), c=byId(state.comptes,id);
+    $("#m-new").hidden=!!id||nom.length<2;
+    $("#m-cinfo").innerHTML=c?`${c.statut==="client"?`<span class="pill ok">Client</span> a déjà acheté`:`<span class="pill">Prospect</span> n’a pas encore acheté`}${c.telephone?" · "+esc(c.telephone):""}`:nom.length>=2?`« ${esc(nom)} » n’est pas dans tes clients : remplis ses coordonnées ci-dessous.`:"";
+    $("#dl-pers").innerHTML=id?contactsDe(id).map(x=>`<option value="${esc(nomContact(x))}">`).join(""):""; medWarn(); };
+  const medWarn=()=>{ const p=byId(state.produits,$("#m-prod").value), c=byId(state.comptes,lireClient().id); const cat=c?c.categorie:($("#m-ncat")||{}).value;
+    $("#m-prod-warn").textContent = p&&p.medical_only&&cat==="non_medecin" ? "Machine réservée aux médecins : ce client est classé non-médecin." : p&&p.medical_only&&cat!=="medecin" ? "Machine réservée aux médecins : vérifiez qu’un médecin exerce chez ce client." : ""; };
+  ["input","change"].forEach(ev=>$("#m-compte").addEventListener(ev,majClient));
+  $("#m-prod").addEventListener("change",medWarn); $("#m-ncat").addEventListener("change",medWarn);
+  majClient();
 }
 
 function afficherDoublons(dups,submit){
@@ -1720,8 +1760,8 @@ function enhanceCombos(root){
     let items=[], sel=-1;
     const show=()=>{ const q=strip(inp.value).split(/\s+/).filter(Boolean); items=[];
       for(let i=0;i<vals.length&&items.length<40;i++){ if(q.every(w=>keys[i].includes(w))||(/\d{4,}/.test(inp.value)&&keys[i].replace(/\D/g,"").includes(inp.value.replace(/\D/g,"")))) items.push(vals[i]); }
-      if(items.length===1&&items[0]===inp.value){ hide(); return; }
-      sel=-1; list.innerHTML=items.length?items.map((v,i)=>{ const [a,...r]=v.split(" — "); return `<button type="button" role="option" id="${lid}-${i}" aria-selected="false" data-i="${i}"><b>${esc(a)}</b>${r.length?`<small>${esc(r.join(" · "))}</small>`:""}</button>`; }).join(""):`<div class="empty hint">Aucun client ne correspond. Créez-le d’abord dans Clients.</div>`;
+      if(!items.length||(items.length===1&&items[0]===inp.value)){ hide(); return; }
+      sel=-1; list.innerHTML=items.length?items.map((v,i)=>{ const [a,...r]=v.split(" — "); return `<button type="button" role="option" id="${lid}-${i}" aria-selected="false" data-i="${i}"><b>${esc(a)}</b>${r.length?`<small>${esc(r.join(" · "))}</small>`:""}</button>`; }).join(""):`<div class="empty hint">Aucun client ne correspond.</div>`;
       list.hidden=false; inp.setAttribute("aria-expanded","true"); };
     const hide=()=>{ list.hidden=true; inp.setAttribute("aria-expanded","false"); inp.removeAttribute("aria-activedescendant"); };
     const pick=i=>{ inp.value=items[i]; hide(); inp.dispatchEvent(new Event("input",{bubbles:true})); inp.dispatchEvent(new Event("change",{bubbles:true})); };
