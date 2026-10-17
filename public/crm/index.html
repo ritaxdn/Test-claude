@@ -672,6 +672,35 @@ const sBool = v => !!v;
 const SUPABASE_URL = "https://igfgqfwkhyonptbtrywl.supabase.co";
 const SUPABASE_KEY = "sb_publishable_ITGBRytbM0ve68y6U0TIiw_bTPWQ2xJ";
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+// Aperçu « Voir comme » : un admin voit le CRM d'un membre, en lecture seule (aucune écriture ne part).
+let apercu=null;
+const RO_ERR={message:"Mode aperçu : lecture seule, rien n’est enregistré.",code:"apercu"};
+const roChain=()=>new Proxy(function(){},{get:(t,k)=>k==="then"?(ok,ko)=>Promise.resolve({data:null,error:RO_ERR}).then(ok,ko):()=>roChain(),apply:()=>roChain()});
+{ const from=sb.from.bind(sb), rpc=sb.rpc.bind(sb), fns=sb.functions;
+  sb.from=t=>{ const q=from(t); if(apercu) ["insert","update","delete","upsert"].forEach(m=>{ q[m]=()=>roChain(); }); return q; };
+  sb.rpc=(fn,args,o)=>apercu&&!["chercher_doublons","doublons_base"].includes(fn)?roChain():rpc(fn,args,o);
+  Object.defineProperty(sb,"functions",{value:{invoke:(...a)=>apercu?Promise.resolve({data:null,error:RO_ERR}):fns.invoke(...a)}}); }
+// Ce que la base montrerait à ce membre (mêmes règles que les droits côté serveur).
+function filtrerPour(m){
+  if(["superviseur","admin"].includes(m.role)) return;
+  const C=new Set(state.comptes.filter(c=>c.commercial_id===m.id||c.createur_id===m.id).map(c=>c.id));
+  const own=x=>x.commercial_id===m.id||x.createur_id===m.id||C.has(x.compte_id);
+  state.comptes=state.comptes.filter(c=>C.has(c.id));
+  state.contacts=state.contacts.filter(x=>C.has(x.compte_id));
+  state.opportunites=state.opportunites.filter(own);
+  state.activites=state.activites.filter(own);
+  state.devis=state.devis.filter(d=>d.commercial_id===m.id||C.has(d.compte_id));
+  const D=new Set(state.devis.map(d=>d.id)); state.devis_lignes=state.devis_lignes.filter(l=>D.has(l.devis_id));
+  state.paiements=state.paiements.filter(own);
+}
+function renderApercu(){
+  let bar=document.getElementById("apercu-bar");
+  if(!apercu){ if(bar) bar.remove(); return; }
+  if(!bar){ bar=document.createElement("div"); bar.id="apercu-bar"; bar.setAttribute("role","status"); document.body.appendChild(bar); }
+  bar.style.cssText="position:fixed;left:50%;transform:translateX(-50%);top:8px;z-index:90;display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;max-width:calc(100% - 24px);padding:8px 10px 8px 14px;border-radius:999px;background:#1b1d22;color:#fff;font-size:13px;box-shadow:0 8px 24px rgba(0,0,0,.25)";
+  if(window.innerWidth<600){ bar.style.borderRadius="16px"; bar.style.flexWrap="nowrap"; bar.style.whiteSpace="nowrap"; bar.innerHTML=`<span>👁 Aperçu : <b>${esc(apercu.nom.split(" ")[0])}</b> · lecture seule</span><button type="button" class="btn small" data-act="quitter-apercu" style="background:#fff;color:#111">Quitter</button>`; return; }
+  bar.innerHTML=`<span>👁 Tu vois le CRM comme <b>${esc(apercu.nom)}</b>${apercu.showroom&&SHOWROOMS[apercu.showroom]?" · "+esc(SHOWROOMS[apercu.showroom].replace("Showroom ","")):""} · lecture seule</span><button type="button" class="btn small" data-act="quitter-apercu" style="background:#fff;color:#111">Quitter l’aperçu</button>`;
+}
 let me = null;
 const ins = (table,obj)=>()=>sb.from(table).insert(obj);
 const upd = (table,id,obj)=>()=>sb.from(table).update(obj).eq("id",id);
@@ -681,6 +710,7 @@ function setStatus(kind,text){ $("#dot").className="dot "+kind; const st=documen
 function toast(msg){ const t=document.createElement("div"); t.className="toast"; t.textContent=msg; const s=$("#toast-slot"); s.innerHTML=""; s.appendChild(t); setTimeout(()=>{ if(t.parentNode) t.remove(); },3200); }
 function errorCopy(e){
   const msg = (e && (e.message||e.error_description)) || "";
+  if(e && e.code==="apercu") return ["Aperçu","Lecture seule : rien n’est enregistré. Quitte l’aperçu pour modifier."];
   if(e && e.code==="42501") return ["Accès refusé","Votre compte n’a pas les droits pour cette action (réservée au superviseur ou à l’admin)."];
   if(/Failed to fetch|NetworkError/i.test(msg)) return ["Pas de connexion","Vérifiez votre connexion internet puis cliquez sur ↻."];
   if(/JWT|expired/i.test(msg)) return ["Session expirée","Déconnectez-vous puis reconnectez-vous."];
@@ -718,9 +748,12 @@ async function load(){
     const [equipe,comptes,contacts,produits,opportunites,activites,devis,devis_lignes,paiements,reglagesRows] = res.map(r=>r.data||[]);
     const reglages={}; reglagesRows.forEach(x=>reglages[x.cle]=x.valeur);
     state = {equipe,comptes,contacts,produits,opportunites,activites,devis,devis_lignes,paiements,reglages};
+    const vrai=equipe.find(e=>e.user_id===currentUser.id)||null;
+    if(apercu&&vrai&&["admin","superviseur"].includes(vrai.role)){ const m=equipe.find(e=>e.id===apercu.id); apercu=m||null; if(m) filtrerPour(m); } else apercu=null;
+    renderApercu();
     idx.contactsBy=new Map(); contacts.forEach(c=>idx.contactsBy.set(c.compte_id,(idx.contactsBy.get(c.compte_id)||0)+1));
     idx.pipeBy=new Map(); opportunites.filter(o=>o.issue==="en_cours").forEach(o=>idx.pipeBy.set(o.compte_id,(idx.pipeBy.get(o.compte_id)||0)+(+o.montant_mad||0)));
-    me = equipe.find(e=>e.user_id===currentUser.id) || null;
+    me = apercu || vrai;
     if(!me){ showNoAccess(); return; }
     document.body.classList.toggle("pilote", estPilote());
     loadNotifs();
@@ -1081,17 +1114,60 @@ function viewSuperviseur(v){
 }
 
 const CANAUX={site:"Site web",meta:"Meta (Facebook / Instagram)",google:"Google Ads",tiktok:"TikTok",whatsapp:"WhatsApp",salon:"Salon / événement",autre:"Autre"};
+// Leads par ville et pratique : répartition 30 jours + liste filtrable.
+const leadFilt={ville:"",prat:""};
+const PRATIQUES={medecin:"Médecins",non_medecin:"Non-médecins",a_classer:"À classer"};
+const pratLead=x=>x.categorie||"a_classer";
+function blocLeads(leads){
+  if(!leads.length) return "";
+  const d30=Date.now()-30*864e5, recents=leads.filter(x=>new Date(x.recu_le).getTime()>d30);
+  const vk=x=>x.ville||"Ville inconnue";
+  const parVille=new Map(); recents.forEach(x=>{ const v=vk(x); const r=parVille.get(v)||{medecin:0,non_medecin:0,a_classer:0,tot:0}; r[pratLead(x)]++; r.tot++; parVille.set(v,r); });
+  const lignes=[...parVille.entries()].sort((a,b)=>b[1].tot-a[1].tot);
+  const cell=(v,p,n)=>n?`<button class="linkish" data-act="lead-filt" data-ville="${esc(v)}" data-prat="${p}">${n}</button>`:`<span class="hint">·</span>`;
+  const tableau=lignes.length?`<div class="table-wrap" style="margin-top:6px"><table><thead><tr><th>Ville</th><th>Médecins</th><th>Non-médecins</th><th>À classer</th><th>Total</th></tr></thead><tbody>${lignes.map(([v,r])=>`<tr><td><b>${esc(v)}</b></td><td>${cell(v,"medecin",r.medecin)}</td><td>${cell(v,"non_medecin",r.non_medecin)}</td><td>${cell(v,"a_classer",r.a_classer)}</td><td>${cell(v,"",r.tot)}</td></tr>`).join("")}</tbody></table></div>`:`<p class="hint">Aucun lead ces 30 derniers jours.</p>`;
+  const villesL=[...new Set(leads.map(vk))].sort((a,b)=>a.localeCompare(b,"fr"));
+  const liste=leads.filter(x=>(!leadFilt.ville||vk(x)===leadFilt.ville)&&(!leadFilt.prat||pratLead(x)===leadFilt.prat));
+  const pill=x=>x.metier&&METIERS[x.metier]?`<span class="pill ${x.categorie==="medecin"?"A":x.categorie==="non_medecin"?"C":""}">${esc(METIERS[x.metier][2])}</span>`:`<span class="pill">À classer</span>`;
+  return `<h4 style="margin-top:14px">Répartition · 30 derniers jours</h4>${tableau}
+    <div class="section-head" style="margin:14px 0 6px"><h4 style="margin:0">Leads</h4><div class="tools">
+      <select id="ld-ville" aria-label="Ville"><option value="">Toutes les villes</option>${villesL.map(v=>`<option ${leadFilt.ville===v?"selected":""}>${esc(v)}</option>`).join("")}</select>
+      <select id="ld-prat" aria-label="Pratique"><option value="">Toutes pratiques</option>${Object.entries(PRATIQUES).map(([k,l])=>`<option value="${k}" ${leadFilt.prat===k?"selected":""}>${l}</option>`).join("")}</select></div></div>
+    ${liste.length?`<div class="closed-list">${liste.slice(0,50).map(x=>`<div class="closed-row"><div style="min-width:0">${x.compte_id?`<button class="linkish" data-act="open-compte" data-id="${x.compte_id}"><b>${esc(x.nom||"—")}</b></button>`:`<b>${esc(x.nom||"—")}</b>`} ${pill(x)}${x.deja_client?` <span class="pill ok">Déjà client</span>`:""}<div class="hint" style="margin:0">${esc([fmtDate(x.recu_le)+" "+new Date(x.recu_le).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}),x.source,x.parcours,x.ville].filter(Boolean).join(" · "))}</div></div><div class="hint" style="margin:0">${x.commercial_id?esc(nomMembre(x.commercial_id)):`<span class="pill warn">À attribuer</span>`}</div></div>`).join("")}</div>${liste.length>50?`<p class="hint">${liste.length-50} autres, affine avec les filtres.</p>`:""}`:`<p class="hint">Aucun lead pour ce filtre.</p>`}`;
+}
+function blocRegles(regles){
+  if(!regles) return "";
+  const rows=regles.map(r=>{ const m=byId(state.equipe,r.commercial_id); const ko=!m||!m.actif||m.parti_le;
+    return `<div class="closed-row"><div><b>${esc(r.ville||"Toutes les villes")}</b> · ${r.pratique?PRATIQUES[r.pratique]:"toutes pratiques"} → <b>${esc(m?m.nom:"?")}</b>${ko?` <span class="pill warn">sans accès : règle ignorée</span>`:""}</div><div class="tools"><span class="acts-inline" style="display:contents"><button class="btn small" data-act="del-regle" data-id="${r.id}">Retirer</button></span></div></div>`; }).join("");
+  return `<h4 style="margin-top:14px">Attribution automatique</h4>
+    <p class="hint" style="margin:0 0 6px">Chaque nouveau lead va au commercial de la règle la plus précise (ville + pratique, puis ville, puis pratique). S’il y en a plusieurs, au moins chargé du mois. Sans règle : commercial du showroom de la ville. Un client déjà suivi garde son commercial.</p>
+    ${rows?`<div class="closed-list">${rows}</div>`:`<p class="hint">Aucune règle pour l’instant.</p>`}
+    <button class="btn small" data-act="new-regle" style="margin-top:8px">+ Règle</button>`;
+}
+function formRegle(){
+  const coms=state.equipe.filter(e=>!e.parti_le&&e.role!=="admin").map(e=>[e.id,e.nom+(e.actif?"":" (sans accès)")]);
+  const h=`<div class="form-grid">${fld("rg-ville","Ville",`<input id="rg-ville" name="ville" list="dl-villes-rg" autocomplete="off" placeholder="Vide = toutes les villes"><datalist id="dl-villes-rg">${villes().map(x=>`<option value="${esc(x)}">`).join("")}</datalist>`)}
+    ${fld("rg-prat","Pratique",`<select id="rg-prat" name="pratique"><option value="">Toutes pratiques</option><option value="medecin">Médecins</option><option value="non_medecin">Non-médecins (instituts, kinés, minceur…)</option></select>`)}
+    ${fld("rg-com","Commercial",`<select id="rg-com" name="commercial_id">${opt(coms,"","Choisir…")}</select>`,true)}</div>`;
+  const submit=async f=>{
+    const {error}=await sb.from("regles_attribution").insert({ville:sTxt(f.ville),pratique:sEnum(f.pratique,["medecin","non_medecin"]),commercial_id:sUuid(f.commercial_id),cree_par:me&&me.id||null});
+    if(error){ $("#merr").textContent=errorCopy(error).join(" — "); return false; }
+    closeModal(true); toast("Règle ajoutée"); chargerLeads(); return true;
+  };
+  submit.validate=f=>!sUuid(f.commercial_id)?["commercial_id","Choisis le commercial."]:null;
+  modal("Nouvelle règle d’attribution",h,submit,"Ajouter");
+}
 async function chargerLeads(){
   const el=$("#leads-body"); if(!el) return;
-  const [s,l]=await Promise.all([sb.from("sources_leads").select("*").order("created_at"),sb.from("leads").select("*").order("recu_le",{ascending:false}).limit(15)]);
+  const [s,l,rg]=await Promise.all([sb.from("sources_leads").select("*").order("created_at"),sb.from("leads").select("*").order("recu_le",{ascending:false}).limit(300),sb.from("regles_attribution").select("*").order("created_at")]);
   if(!document.contains(el)) return;
   if(s.error||l.error){ el.innerHTML=`<p class="hint">${esc(errorCopy(s.error||l.error)[1])}</p>`; return; }
   const src=s.data, leads=l.data, d30=Date.now()-30*864e5;
   const nb=id=>leads.filter(x=>x.source_id===id&&new Date(x.recu_le).getTime()>d30).length;
   const url="https://igfgqfwkhyonptbtrywl.supabase.co/rest/v1/rpc/recevoir_lead";
-  el.innerHTML=(src.length?`<div class="closed-list">${src.map(x=>`<div class="closed-row"><div><b>${esc(x.nom)}</b> <span class="pill">${esc(CANAUX[x.canal]||x.canal)}</span>${x.actif?"":` <span class="pill bad">Coupée</span>`}<div class="hint" style="margin:0">Clé ${esc(x.cle_debut)}… · ${x.dernier_lead?"dernier lead "+esc(fmtDate(x.dernier_lead)):"aucun lead reçu pour l’instant"}</div></div><div class="tools"><button class="btn small" data-act="toggle-source" data-id="${x.id}" data-on="${x.actif?"":"1"}">${x.actif?"Couper":"Réactiver"}</button></div></div>`).join("")}</div>`
+  el.innerHTML=(src.length?`<div class="closed-list">${src.map(x=>`<div class="closed-row"><div><b>${esc(x.nom)}</b> <span class="pill">${esc(CANAUX[x.canal]||x.canal)}</span>${x.actif?"":` <span class="pill bad">Coupée</span>`}<div class="hint" style="margin:0">Clé ${esc(x.cle_debut)}… · ${x.dernier_lead?"dernier lead "+esc(fmtDate(x.dernier_lead)):"aucun lead reçu pour l’instant"}</div></div><div class="tools"><button class="btn small" data-act="edit-source" data-id="${x.id}">Modifier</button><button class="btn small" data-act="toggle-source" data-id="${x.id}" data-on="${x.actif?"":"1"}">${x.actif?"Couper":"Réactiver"}</button></div></div>`).join("")}</div>`
     :`<p class="hint">Aucune source pour l’instant. Commence par « + Source » › Site web, puis colle la clé dans Vercel.</p>`)
-   +(leads.length?`<h4 style="margin-top:14px">Derniers leads</h4><div class="closed-list">${leads.map(x=>`<div class="closed-row"><div style="min-width:0">${x.compte_id?`<button class="linkish" data-act="open-compte" data-id="${x.compte_id}"><b>${esc(x.nom||"—")}</b></button>`:`<b>${esc(x.nom||"—")}</b>`}${x.deja_client?` <span class="pill ok">Déjà client</span>`:""}<div class="hint" style="margin:0">${esc([fmtDate(x.recu_le)+" "+new Date(x.recu_le).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}),x.source,x.parcours,x.ville].filter(Boolean).join(" · "))}</div></div><div class="hint" style="margin:0">${x.commercial_id?esc(nomMembre(x.commercial_id)):`<span class="pill warn">À attribuer</span>`}</div></div>`).join("")}</div>`:"")
+   +blocLeads(leads)+blocRegles(rg.error?null:rg.data)
    +`<details class="fam" style="margin-top:12px"><summary><span>Brancher une autre source (Meta, Google, n8n, Make…)</span></summary><div style="padding:8px 0">
       <p class="hint" style="margin-top:0">Chaque outil envoie un <b>POST</b> à cette adresse, avec la clé de sa source :</p>
       <pre style="white-space:pre-wrap;font-size:12px;background:var(--glass,rgba(0,0,0,.04));padding:10px;border-radius:10px">${esc(url)}
@@ -1103,23 +1179,62 @@ Corps :
               "ville": "…", "specialite": "…", "machine": "…", "message": "…",
               "parcours": "demo", "utm_campaign": "…" } }</pre>
       <p class="hint">Pour les formulaires Meta (Facebook / Instagram) et Google Ads, le plus simple est un scénario n8n ou Make : « nouveau lead » → requête HTTP ci-dessus. Les leads déjà connus (même téléphone ou e-mail) sont rattachés à leur fiche, sans doublon.</p></div></details>`;
+  ["ld-ville","ld-prat"].forEach(k=>{ const x=$("#"+k); if(x) x.onchange=()=>{ leadFilt[k==="ld-ville"?"ville":"prat"]=x.value; chargerLeads(); }; });
+}
+async function genererCle(){
+  const b=new Uint8Array(24); crypto.getRandomValues(b);
+  const cle="cl_"+[...b].map(x=>x.toString(16).padStart(2,"0")).join("");
+  const hash=[...new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(cle)))].map(x=>x.toString(16).padStart(2,"0")).join("");
+  return {cle,hash};
+}
+function afficherCle(nom,canal,cle){
+  modal("Clé de la source « "+nom+" »",`<p style="margin-top:0">Copie cette clé maintenant : elle ne sera plus affichée.</p>
+      <div style="display:flex;gap:8px"><input id="src-cle" readonly value="${cle}" style="font-family:var(--f-mono);font-size:13px"><button type="button" class="btn" id="src-copy">Copier</button></div>
+      ${canal==="site"?`<p class="hint"><b>Pour le site :</b> Vercel › projet du site › Settings › Environment Variables › ajoute <code>CRM_LEADS_KEY</code> avec cette valeur (Production), puis Deployments › Redeploy. Les demandes du formulaire de contact et du guide arriveront ensuite dans le CRM, en plus de l’e-mail.</p>`:`<p class="hint">Colle-la dans ton scénario n8n / Make (champ <code>p_cle</code>), voir « Brancher une autre source » dans Réglages.</p>`}`,async()=>{ closeModal(true); chargerLeads(); return true; },"J’ai copié la clé");
+  $("#src-copy").onclick=async()=>{ try{ await navigator.clipboard.writeText(cle); $("#src-copy").textContent="Copiée ✓"; }catch{ $("#src-cle").select(); $("#src-copy").textContent="Sélectionnée : Cmd/Ctrl+C"; } };
+  $("#src-cle").select();
+}
+// Modifier une source : nom, canal, nouvelle clé (l’ancienne cesse aussitôt de marcher), suppression (les leads reçus restent).
+function formEditSource(x){
+  const h=`<div class="form-grid">${fld("src-nom","Nom de la source",`<input id="src-nom" name="nom" required value="${esc(x.nom)}" autocomplete="off">`)}
+    ${fld("src-canal","Canal",`<select id="src-canal" name="canal">${opt(Object.entries(CANAUX),x.canal)}</select>`)}</div>
+    <div class="closed-list" style="margin-top:12px">
+      <div class="closed-row"><div><b>Nouvelle clé</b><div class="hint" style="margin:0">Remplace la clé ${esc(x.cle_debut)}… : l’ancienne cesse de fonctionner tout de suite. Recolle ensuite la nouvelle là où elle sert (Vercel, n8n, Make).</div></div><div class="tools"><button type="button" class="btn small" id="src-regen">Générer</button></div></div>
+      <div class="closed-row"><div><b>Supprimer la source</b><div class="hint" style="margin:0">Sa clé ne fonctionne plus. Les leads déjà reçus restent dans le CRM.</div></div><div class="tools"><button type="button" class="btn small bad" id="src-del">Supprimer</button></div></div>
+    </div>`;
+  const submit=async f=>{
+    const {data,error}=await sb.from("sources_leads").update({nom:sTxt(f.nom),canal:sEnum(f.canal,Object.keys(CANAUX))||"autre"}).eq("id",x.id).select("id");
+    if(error||!data||!data.length){ $("#merr").textContent=error?errorCopy(error).join(" — "):"Modification refusée : réservée aux superviseurs."; return false; }
+    closeModal(true); toast("Source modifiée"); chargerLeads(); return true;
+  };
+  submit.validate=f=>!sTxt(f.nom)?["nom","Donne un nom à la source."]:null;
+  modal("Source « "+x.nom+" »",h,submit,"Enregistrer");
+  // Deux clics pour les actions qui coupent une clé en service : le premier demande confirmation.
+  const confirmer=(btn,label)=>{ if(btn.dataset.ok) return true; btn.dataset.ok="1"; btn.textContent=label; return false; };
+  $("#src-regen").onclick=async e=>{
+    const btn=e.currentTarget; if(!confirmer(btn,"Confirmer")) return;
+    btn.disabled=true; const {cle,hash}=await genererCle();
+    const {data,error}=await sb.from("sources_leads").update({cle_hash:hash,cle_debut:cle.slice(0,9),actif:true}).eq("id",x.id).select("id");
+    if(error||!data||!data.length){ btn.disabled=false; $("#merr").textContent=error?errorCopy(error).join(" — "):"Modification refusée : réservée aux superviseurs."; return; }
+    closeModal(true); chargerLeads(); afficherCle(sTxt($("#src-nom")?.value)||x.nom,x.canal,cle);
+  };
+  $("#src-del").onclick=async e=>{
+    const btn=e.currentTarget; if(!confirmer(btn,"Confirmer la suppression")) return;
+    btn.disabled=true;
+    const {data,error}=await sb.from("sources_leads").delete().eq("id",x.id).select("id");
+    if(error||!data||!data.length){ btn.disabled=false; $("#merr").textContent=error?errorCopy(error).join(" — "):"Suppression refusée : réservée aux superviseurs."; return; }
+    closeModal(true); toast("Source supprimée"); chargerLeads();
+  };
 }
 function formSource(){
   const h=`<div class="form-grid">${fld("src-nom","Nom de la source",`<input id="src-nom" name="nom" required placeholder="Ex. Site web, Meta Ads octobre…" autocomplete="off">`)}
     ${fld("src-canal","Canal",`<select id="src-canal" name="canal">${opt(Object.entries(CANAUX),"site")}</select>`)}</div>
-    <p class="hint">La clé est générée dans ton navigateur et affichée <b>une seule fois</b>. Le CRM n’en garde qu’une empreinte : si tu la perds, crée une nouvelle source et coupe l’ancienne.</p>`;
+    <p class="hint">La clé est générée dans ton navigateur et affichée <b>une seule fois</b>. Le CRM n’en garde qu’une empreinte : si tu la perds, « Modifier » › « Nouvelle clé » en génère une autre.</p>`;
   const submit=async f=>{
-    const b=new Uint8Array(24); crypto.getRandomValues(b);
-    const cle="cl_"+[...b].map(x=>x.toString(16).padStart(2,"0")).join("");
-    const hash=[...new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(cle)))].map(x=>x.toString(16).padStart(2,"0")).join("");
-    const {error}=await sb.from("sources_leads").insert({nom:sTxt(f.nom),canal:sEnum(f.canal,Object.keys(CANAUX))||"autre",cle_hash:hash,cle_debut:cle.slice(0,9),cree_par:me&&me.id||null});
+    const {cle,hash}=await genererCle(), canal=sEnum(f.canal,Object.keys(CANAUX))||"autre";
+    const {error}=await sb.from("sources_leads").insert({nom:sTxt(f.nom),canal,cle_hash:hash,cle_debut:cle.slice(0,9),cree_par:me&&me.id||null});
     if(error){ $("#merr").textContent=errorCopy(error).join(" — "); return false; }
-    closeModal(true);
-    modal("Clé de la source « "+sTxt(f.nom)+" »",`<p style="margin-top:0">Copie cette clé maintenant : elle ne sera plus affichée.</p>
-      <div style="display:flex;gap:8px"><input id="src-cle" readonly value="${cle}" style="font-family:var(--f-mono);font-size:13px"><button type="button" class="btn" id="src-copy">Copier</button></div>
-      ${sEnum(f.canal,Object.keys(CANAUX))==="site"?`<p class="hint"><b>Pour le site :</b> Vercel › projet du site › Settings › Environment Variables › ajoute <code>CRM_LEADS_KEY</code> avec cette valeur (Production), puis Deployments › Redeploy. Les demandes du formulaire de contact et du guide arriveront ensuite dans le CRM, en plus de l’e-mail.</p>`:`<p class="hint">Colle-la dans ton scénario n8n / Make (champ <code>p_cle</code>), voir « Brancher une autre source » dans Réglages.</p>`}`,async()=>{ closeModal(true); chargerLeads(); return true; },"J’ai copié la clé");
-    $("#src-copy").onclick=async()=>{ try{ await navigator.clipboard.writeText(cle); $("#src-copy").textContent="Copiée ✓"; }catch{ $("#src-cle").select(); } };
-    $("#src-cle").select(); return true;
+    closeModal(true); afficherCle(sTxt(f.nom),canal,cle); return true;
   };
   submit.validate=f=>!sTxt(f.nom)?["nom","Donne un nom à la source."]:null;
   modal("Nouvelle source de leads",h,submit,"Créer la clé");
@@ -1228,10 +1343,10 @@ function viewEquipe(v){
   setTimeout(chargerDoublons,0); setTimeout(chargerLeads,0);
   v.innerHTML=`<div class="section-head"><div><h2>Équipe &amp; catalogue</h2><p class="hint">Un membre « sans accès » ne peut pas se connecter. Activez-le dans « Modifier » ; il se connecte ensuite avec l’email indiqué ici.</p></div>
    <div class="tools"><button class="btn" data-act="objectifs">Objectifs mensuels</button><button class="btn" data-act="import">Importer des contacts (Excel)</button><button class="btn" data-act="new-produit">+ Machine</button><button class="btn primary" data-act="new-membre">+ Membre</button></div></div>
-  <div class="panel" style="margin-bottom:16px" id="leads-panel"><div class="section-head" style="margin:0 0 6px"><div><h3>Leads entrants</h3><p class="hint" style="margin:0">Les demandes du site et des campagnes arrivent ici toutes seules : fiche client (ou client existant retrouvé par téléphone/e-mail), opportunité, tâche « Rappeler » pour le commercial du showroom de la ville, et notification.</p></div><button class="btn small" data-act="new-source">+ Source</button></div><div id="leads-body"><div class="skeleton" style="height:40px"></div></div></div>
+  <div class="panel" style="margin-bottom:16px" id="leads-panel"><div class="section-head" style="margin:0 0 6px"><div><h3>Leads entrants</h3><p class="hint" style="margin:0">Les demandes du site et des campagnes arrivent ici toutes seules : fiche client (ou client existant retrouvé par téléphone/e-mail), opportunité, tâche « Rappeler » pour le bon commercial (ville + pratique, voir Attribution automatique), et notification.</p></div><button class="btn small" data-act="new-source">+ Source</button></div><div id="leads-body"><div class="skeleton" style="height:40px"></div></div></div>
   <div class="panel" style="margin-bottom:16px" id="dup-panel"><h3>Doublons probables</h3><p class="hint">Même téléphone, ou même nom dans la même ville, y compris entre clients de commerciaux différents.</p><div id="dup-body"><div class="skeleton" style="height:40px"></div></div></div>
   <div class="grid2"><div class="panel"><h3>Équipe</h3><div class="tbl-wrap" style="margin-top:8px"><table><thead><tr><th>Nom</th><th>Email</th><th>Rôle</th><th>Showroom</th><th>Statut</th><th></th></tr></thead><tbody>
-  ${[...state.equipe].sort((a,b)=>(!!a.parti_le-!!b.parti_le)).map(e=>`<tr${e.parti_le?' style="opacity:.7"':""}><td><b>${esc(e.nom)}</b></td><td>${esc(e.email||"—")}</td><td>${ROLES[e.role]}</td><td>${e.showroom?esc(SHOWROOMS[e.showroom].replace("Showroom ","")):"—"}</td><td>${e.parti_le?`<span class="pill">Parti·e le ${esc(new Date(e.parti_le+"T12:00").toLocaleDateString("fr-FR",{day:"numeric",month:"short",year:"numeric"}))}</span>`:`<span class="pill ${e.actif?"ok":""}">${e.actif?"Accès actif":"Sans accès"}</span>`}${(()=>{ const n=state.comptes.filter(c=>c.commercial_id===e.id).length; return n?`<div class="hint" style="margin:2px 0 0">${n} client${n>1?"s":""}</div>`:""; })()}</td><td><div class="tools" style="flex-wrap:nowrap"><button class="btn small" data-act="edit-membre" data-id="${e.id}">Modifier</button>${e.role!=="admin"?`<button class="btn small" data-act="depart-membre" data-id="${e.id}">${e.parti_le?"Transférer":"Départ / transfert"}</button>`:""}</div></td></tr>`).join("")}
+  ${[...state.equipe].sort((a,b)=>(!!a.parti_le-!!b.parti_le)).map(e=>`<tr${e.parti_le?' style="opacity:.7"':""}><td><b>${esc(e.nom)}</b></td><td>${esc(e.email||"—")}</td><td>${ROLES[e.role]}</td><td>${e.showroom?esc(SHOWROOMS[e.showroom].replace("Showroom ","")):"—"}</td><td>${e.parti_le?`<span class="pill">Parti·e le ${esc(new Date(e.parti_le+"T12:00").toLocaleDateString("fr-FR",{day:"numeric",month:"short",year:"numeric"}))}</span>`:`<span class="pill ${e.actif?"ok":""}">${e.actif?"Accès actif":"Sans accès"}</span>`}${(()=>{ const n=state.comptes.filter(c=>c.commercial_id===e.id).length; return n?`<div class="hint" style="margin:2px 0 0">${n} client${n>1?"s":""}</div>`:""; })()}</td><td><div class="tools" style="flex-wrap:nowrap"><button class="btn small" data-act="edit-membre" data-id="${e.id}">Modifier</button>${e.role!=="admin"&&!e.parti_le?`<button class="btn small" data-act="voir-comme" data-id="${e.id}" title="Voir le CRM comme ce membre, en lecture seule">Voir comme</button>`:""}${e.role!=="admin"?`<button class="btn small" data-act="depart-membre" data-id="${e.id}">${e.parti_le?"Transférer":"Départ / transfert"}</button>`:""}</div></td></tr>`).join("")}
   </tbody></table></div></div>
   <div class="panel"><h3>Catalogue machines</h3>${state.produits.length?(()=>{const fam={}; state.produits.forEach(p=>(fam[p.categorie]=fam[p.categorie]||[]).push(p));
     return `<p class="hint">${state.produits.filter(p=>p.actif).length} machines actives · ${Object.keys(fam).length} familles</p>`+Object.entries(fam).map(([f,ps])=>`<details class="fam"><summary><span>${esc(f)}</span><span class="hint">${ps.length}</span></summary><div class="closed-list">${ps.sort((a,b)=>a.nom.localeCompare(b.nom,"fr")).map(p=>`<div class="closed-row"><div><b translate="no">${esc(p.nom)}</b>${p.medical_only?` <span class="pill warn" title="Vente réservée aux médecins">Médical</span>`:""}${p.actif?"":` <span class="pill">Inactive</span>`}<div class="hint" translate="no">${esc([p.reference,p.marque].filter(Boolean).join(" · "))}</div></div><div class="tools"><span style="font-family:var(--f-mono);font-size:12px">${p.prix_catalogue_mad!=null?mad(p.prix_catalogue_mad)+" MAD":""}</span><button class="btn small" data-act="edit-produit" data-id="${p.id}">Modifier</button></div></div>`).join("")}</div></details>`).join("");})():`<p class="hint">Aucune machine. Ajoutez le catalogue pour rattacher les opportunités à un produit.</p>`}</div></div>`;
@@ -1509,7 +1624,7 @@ function openCompte(c){
    ${c.specialite||c.source?`<p style="margin:0 0 4px">${esc(c.specialite||"")}${c.source?` <span class="hint">· source : ${esc(c.source)}</span>`:""}</p>`:""}
    <div class="hint">${[c.telephone,c.telephone_2,c.email,c.adresse,c.site_web].filter(Boolean).map(esc).join(" · ")||"Aucune coordonnée"}</div>
    ${c.notes?`<p style="margin-top:8px">${esc(c.notes)}</p>`:""}
-   <div class="tools" style="margin-block:14px"><button class="btn small" data-act="edit-compte" data-id="${c.id}">Modifier</button><button class="btn small" data-act="transfer" data-id="${c.id}">Transférer</button><button class="btn small" data-act="new-contact" data-id="${c.id}">+ Contact</button><button class="btn small" data-act="new-opp" data-compte="${c.id}">+ Opportunité</button><button class="btn small" data-act="log" data-compte="${c.id}">+ Activité</button><button class="btn small" data-act="new-devis" data-compte="${c.id}">+ Devis</button><button class="btn small" data-act="new-echeancier" data-compte="${c.id}">+ Échéancier</button><button class="btn small" data-act="relance-ia" data-compte="${c.id}">✨ Relance</button></div>
+   <div class="tools" style="margin-block:14px"><button class="btn small" data-act="edit-compte" data-id="${c.id}">Modifier</button><button class="btn small" data-act="transfer" data-id="${c.id}">Transférer</button><button class="btn small" data-act="new-contact" data-id="${c.id}">+ Contact</button><button class="btn small" data-act="new-opp" data-compte="${c.id}">+ Opportunité</button><button class="btn small" data-act="log" data-compte="${c.id}">+ Activité</button><button class="btn small" data-act="new-devis" data-compte="${c.id}">+ Devis</button><button class="btn small" data-act="new-echeancier" data-compte="${c.id}">+ Échéancier</button><button class="btn small" data-act="relance-ia" data-compte="${c.id}">✨ Relance</button>${estPilote()?`<span class="acts-inline" style="display:contents"><button class="btn small bad" data-act="del-compte" data-id="${c.id}">Supprimer la fiche</button></span>`:""}</div>
    <div class="sep"></div>
    <h3>Contacts</h3>${contacts.length?`<div class="closed-list">${contacts.map(x=>`<div class="closed-row"><div><b>${esc([x.prenom,x.nom].filter(Boolean).join(" "))}</b>${x.decideur?` <span class="pill ok">Décideur</span>`:""}<div class="hint">${esc(x.fonction||"")}</div></div><div class="hint">${[x.telephone,x.email].filter(Boolean).map(esc).join(" · ")}</div></div>`).join("")}</div>`:`<p class="hint">Aucun contact.</p>`}
    ${(()=>{const dv=state.devis.filter(x=>x.compte_id===c.id); return dv.length?`<h3 style="margin-top:16px">Devis</h3><div class="closed-list">${dv.map(x=>`<div class="closed-row"><div><b translate="no">${esc(devisNum(x))}</b><div class="hint">${fmtDate(x.created_at)} · ${mad(x.montant_mad)} MAD HT</div></div><div class="tools"><span class="pill ${DEVIS_PILL[x.statut]||""}">${DEVIS_LABEL[x.statut]}</span><button class="btn small" data-act="edit-devis" data-id="${x.id}">Modifier</button><button class="btn small" data-act="print-devis" data-id="${x.id}">Imprimer</button></div></div>`).join("")}</div>`:"";})()}
@@ -1540,6 +1655,11 @@ document.addEventListener("click",async e=>{
   if(act==="demande-transfert"){ t.disabled=true; const {error}=await sb.rpc("demander_transfert",{p_compte:id}); if(error){ t.disabled=false; return toast(errorCopy(error).join(" — ")); } t.textContent="Demande envoyée ✓"; toast("Le superviseur a été prévenu"); return; }
   if(act==="fusion"){ return formFusion(t.dataset.a,t.dataset.b); }
   if(act==="new-source") return formSource();
+  if(act==="new-regle") return formRegle();
+  if(act==="del-regle") return confirmInline(t,"Retirer cette règle ?","del-regle-yes",id);
+  if(act==="del-regle-yes"){ t.disabled=true; const {error}=await sb.from("regles_attribution").delete().eq("id",id); if(error) toast(errorCopy(error).join(" — ")); else toast("Règle retirée"); return chargerLeads(); }
+  if(act==="lead-filt"){ leadFilt.ville=t.dataset.ville||""; leadFilt.prat=t.dataset.prat||""; await chargerLeads(); const z=$("#ld-ville"); if(z) z.scrollIntoView({block:"center",behavior:"smooth"}); return; }
+  if(act==="edit-source"){ const {data,error}=await sb.from("sources_leads").select("*").eq("id",id).maybeSingle(); if(error||!data) return toast(error?errorCopy(error).join(" — "):"Source introuvable"); return formEditSource(data); }
   if(act==="toggle-source"){ t.disabled=true; const {error}=await sb.from("sources_leads").update({actif:!!t.dataset.on}).eq("id",id); if(error) toast(errorCopy(error).join(" — ")); return chargerLeads(); }
   if(act==="f-a-classer"){ filt.segment="a_classer"; filt.com=estPilote()?"":(me?me.id:""); shown=PAGE; return viewComptes($("#view")); }
   if(act==="new-echeancier") return formEcheancier({devis:t.dataset.devis,compte:t.dataset.compte});
@@ -1589,6 +1709,10 @@ document.addEventListener("click",async e=>{
   if(act==="pe-move"){ peStart.setDate(peStart.getDate()+(+t.dataset.n)); return viewPlanningEquipe($("#view")); }
   if(act==="pe-today"){ peStart=lundiDe(new Date()); return viewPlanningEquipe($("#view")); }
   if(act==="pe-jour"){ return formPlanningJour(id,t.dataset.d); }
+  if(act==="del-compte"){ const c=byId(state.comptes,id); const n=c?state.opportunites.filter(o=>o.compte_id===id).length+state.activites.filter(a=>a.compte_id===id).length+state.devis.filter(d=>d.compte_id===id).length:0;
+    return confirmInline(t,"Supprimer « "+(c?c.nom:"cette fiche")+" »"+(n?" et tout son historique ("+n+" opportunités, activités ou devis)":"")+" ? C’est définitif.","del-compte-yes",id); }
+  if(act==="del-compte-yes"){ t.disabled=true; const nom=(byId(state.comptes,id)||{}).nom||"";
+    return write(async()=>{ const r=await sb.from("comptes").delete().eq("id",id).select("id"); if(!r.error&&!(r.data||[]).length) r.error={message:"Suppression refusée : réservée aux superviseurs."}; return r; },"Fiche « "+nom+" » supprimée"); }
   if(act==="del-act") return confirmInline(t,"Supprimer cette activité ? La suppression reste visible dans l’historique.","del-act-yes",id);
   if(act==="del-act-yes"){ t.disabled=true; return write(()=>sb.from("activites").delete().eq("id",id),"Activité supprimée"); }
   if(act==="del-cmt") return confirmInline(t,"Supprimer ce commentaire ?","del-cmt-yes",id);
@@ -1597,6 +1721,8 @@ document.addEventListener("click",async e=>{
   if(act==="transfer") return formTransfert(byId(state.comptes,id));
   if(act==="new-membre") return formMembre();
   if(act==="edit-membre") return formMembre(byId(state.equipe,id));
+  if(act==="voir-comme"){ const m=byId(state.equipe,id); if(!m) return; apercu=m; await load(); todayQui=null; todayCom=""; if(location.hash==="#aujourdhui") render(); else location.hash="#aujourdhui"; window.scrollTo(0,0); return toast("Aperçu : "+m.nom+" · lecture seule"); }
+  if(act==="quitter-apercu"){ apercu=null; renderApercu(); await load(); todayQui=null; todayCom=""; if(location.hash==="#equipe") render(); else location.hash="#equipe"; return; }
   if(act==="depart-membre") return formDepart(byId(state.equipe,id));
   if(act==="new-produit") return formProduit();
   if(act==="edit-produit") return formProduit(byId(state.produits,id));
@@ -1809,7 +1935,7 @@ function derniereActivite(o){
   return t;
 }
 function viewAujourdhui(v){
-  if(todayQui==null&&me) todayQui=estPilote()?"equipe":"moi";
+  if(me&&(todayQui==null||(todayQui==="equipe"&&!estPilote()))) todayQui=estPilote()?"equipe":"moi";
   if(todayQui!=="equipe") todayCom="";
   const d0=startOfDay().getTime(), d1=d0+864e5, d7=d0+8*864e5;
   const now=Date.now();
