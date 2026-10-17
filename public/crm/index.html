@@ -285,6 +285,10 @@ body.pilote .commercial-only{display:none!important}
 .meter{height:6px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:6px}
 .meter i{display:block;height:100%;background:var(--rainbow);border-radius:99px}
 .btn.big{padding:12px 22px;font-size:15px;min-height:48px}
+.pw-wrap{position:relative}
+.pw-wrap input{width:100%;box-sizing:border-box;padding-right:48px}
+.pw-eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:40px;height:40px;border:0;background:none;border-radius:999px;cursor:pointer;color:var(--ink-2);display:grid;place-items:center}
+.pw-eye:hover{color:var(--ink)}
 /* Accueil simplifié des commerciaux : une chose à la fois */
 .fc-actions{display:flex;gap:8px;margin-top:14px}
 .fc-actions .btn{flex:1 1 0;justify-content:center;min-height:56px;padding:0 10px}
@@ -727,6 +731,19 @@ function renderApercu(){
   if(window.innerWidth<600){ bar.style.borderRadius="16px"; bar.style.flexWrap="nowrap"; bar.style.whiteSpace="nowrap"; bar.innerHTML=`<span>👁 Aperçu : <b>${esc(apercu.nom.split(" ")[0])}</b> · lecture seule</span><button type="button" class="btn small" data-act="quitter-apercu" style="background:#fff;color:#111">Quitter</button>`; return; }
   bar.innerHTML=`<span>👁 Tu vois le CRM comme <b>${esc(apercu.nom)}</b>${apercu.showroom&&SHOWROOMS[apercu.showroom]?" · "+esc(SHOWROOMS[apercu.showroom].replace("Showroom ","")):""} · lecture seule</span><button type="button" class="btn small" data-act="quitter-apercu" style="background:#fff;color:#111">Quitter l’aperçu</button>`;
 }
+
+// Mot de passe : bouton œil pour l'afficher / le masquer (connexion, nouveau mot de passe…)
+const OEIL='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+const OEIL_BARRE='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.6 10.6 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6C3.8 8.4 2 12 2 12s3.5 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>';
+function oeilMdp(){
+  document.querySelectorAll('input[type="password"]:not([data-oeil])').forEach(i=>{
+    i.dataset.oeil="1"; const w=document.createElement("div"); w.className="pw-wrap"; i.parentNode.insertBefore(w,i); w.appendChild(i);
+    const b=document.createElement("button"); b.type="button"; b.className="pw-eye"; b.setAttribute("aria-label","Afficher le mot de passe"); b.setAttribute("aria-pressed","false"); b.innerHTML=OEIL;
+    b.addEventListener("click",()=>{ const voir=i.type==="password"; i.type=voir?"text":"password"; b.setAttribute("aria-pressed",String(voir)); b.setAttribute("aria-label",voir?"Masquer le mot de passe":"Afficher le mot de passe"); b.innerHTML=voir?OEIL_BARRE:OEIL; i.focus(); });
+    w.appendChild(b);
+  });
+}
+new MutationObserver(oeilMdp).observe(document.body,{childList:true,subtree:true});
 let me = null;
 const ins = (table,obj)=>()=>sb.from(table).insert(obj);
 const upd = (table,id,obj)=>()=>sb.from(table).update(obj).eq("id",id);
