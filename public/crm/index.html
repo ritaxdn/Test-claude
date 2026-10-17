@@ -1059,7 +1059,7 @@ async function chargerLeads(){
   const src=s.data, leads=l.data, d30=Date.now()-30*864e5;
   const nb=id=>leads.filter(x=>x.source_id===id&&new Date(x.recu_le).getTime()>d30).length;
   const url="https://igfgqfwkhyonptbtrywl.supabase.co/rest/v1/rpc/recevoir_lead";
-  el.innerHTML=(src.length?`<div class="closed-list">${src.map(x=>`<div class="closed-row"><div><b>${esc(x.nom)}</b> <span class="pill">${esc(CANAUX[x.canal]||x.canal)}</span>${x.actif?"":` <span class="pill bad">Coupée</span>`}<div class="hint" style="margin:0">Clé ${esc(x.cle_debut)}… · ${x.dernier_lead?"dernier lead "+esc(fmtDate(x.dernier_lead)):"aucun lead reçu pour l’instant"}</div></div><div class="tools"><button class="btn small" data-act="toggle-source" data-id="${x.id}" data-on="${x.actif?"":"1"}">${x.actif?"Couper":"Réactiver"}</button></div></div>`).join("")}</div>`
+  el.innerHTML=(src.length?`<div class="closed-list">${src.map(x=>`<div class="closed-row"><div><b>${esc(x.nom)}</b> <span class="pill">${esc(CANAUX[x.canal]||x.canal)}</span>${x.actif?"":` <span class="pill bad">Coupée</span>`}<div class="hint" style="margin:0">Clé ${esc(x.cle_debut)}… · ${x.dernier_lead?"dernier lead "+esc(fmtDate(x.dernier_lead)):"aucun lead reçu pour l’instant"}</div></div><div class="tools"><button class="btn small" data-act="edit-source" data-id="${x.id}">Modifier</button><button class="btn small" data-act="toggle-source" data-id="${x.id}" data-on="${x.actif?"":"1"}">${x.actif?"Couper":"Réactiver"}</button></div></div>`).join("")}</div>`
     :`<p class="hint">Aucune source pour l’instant. Commence par « + Source » › Site web, puis colle la clé dans Vercel.</p>`)
    +(leads.length?`<h4 style="margin-top:14px">Derniers leads</h4><div class="closed-list">${leads.map(x=>`<div class="closed-row"><div style="min-width:0">${x.compte_id?`<button class="linkish" data-act="open-compte" data-id="${x.compte_id}"><b>${esc(x.nom||"—")}</b></button>`:`<b>${esc(x.nom||"—")}</b>`}${x.deja_client?` <span class="pill ok">Déjà client</span>`:""}<div class="hint" style="margin:0">${esc([fmtDate(x.recu_le)+" "+new Date(x.recu_le).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}),x.source,x.parcours,x.ville].filter(Boolean).join(" · "))}</div></div><div class="hint" style="margin:0">${x.commercial_id?esc(nomMembre(x.commercial_id)):`<span class="pill warn">À attribuer</span>`}</div></div>`).join("")}</div>`:"")
    +`<details class="fam" style="margin-top:12px"><summary><span>Brancher une autre source (Meta, Google, n8n, Make…)</span></summary><div style="padding:8px 0">
@@ -1074,22 +1074,60 @@ Corps :
               "parcours": "demo", "utm_campaign": "…" } }</pre>
       <p class="hint">Pour les formulaires Meta (Facebook / Instagram) et Google Ads, le plus simple est un scénario n8n ou Make : « nouveau lead » → requête HTTP ci-dessus. Les leads déjà connus (même téléphone ou e-mail) sont rattachés à leur fiche, sans doublon.</p></div></details>`;
 }
+async function genererCle(){
+  const b=new Uint8Array(24); crypto.getRandomValues(b);
+  const cle="cl_"+[...b].map(x=>x.toString(16).padStart(2,"0")).join("");
+  const hash=[...new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(cle)))].map(x=>x.toString(16).padStart(2,"0")).join("");
+  return {cle,hash};
+}
+function afficherCle(nom,canal,cle){
+  modal("Clé de la source « "+nom+" »",`<p style="margin-top:0">Copie cette clé maintenant : elle ne sera plus affichée.</p>
+      <div style="display:flex;gap:8px"><input id="src-cle" readonly value="${cle}" style="font-family:var(--f-mono);font-size:13px"><button type="button" class="btn" id="src-copy">Copier</button></div>
+      ${canal==="site"?`<p class="hint"><b>Pour le site :</b> Vercel › projet du site › Settings › Environment Variables › ajoute <code>CRM_LEADS_KEY</code> avec cette valeur (Production), puis Deployments › Redeploy. Les demandes du formulaire de contact et du guide arriveront ensuite dans le CRM, en plus de l’e-mail.</p>`:`<p class="hint">Colle-la dans ton scénario n8n / Make (champ <code>p_cle</code>), voir « Brancher une autre source » dans Réglages.</p>`}`,async()=>{ closeModal(true); chargerLeads(); return true; },"J’ai copié la clé");
+  $("#src-copy").onclick=async()=>{ try{ await navigator.clipboard.writeText(cle); $("#src-copy").textContent="Copiée ✓"; }catch{ $("#src-cle").select(); $("#src-copy").textContent="Sélectionnée : Cmd/Ctrl+C"; } };
+  $("#src-cle").select();
+}
+// Modifier une source : nom, canal, nouvelle clé (l’ancienne cesse aussitôt de marcher), suppression (les leads reçus restent).
+function formEditSource(x){
+  const h=`<div class="form-grid">${fld("src-nom","Nom de la source",`<input id="src-nom" name="nom" required value="${esc(x.nom)}" autocomplete="off">`)}
+    ${fld("src-canal","Canal",`<select id="src-canal" name="canal">${opt(Object.entries(CANAUX),x.canal)}</select>`)}</div>
+    <div class="closed-list" style="margin-top:12px">
+      <div class="closed-row"><div><b>Nouvelle clé</b><div class="hint" style="margin:0">Remplace la clé ${esc(x.cle_debut)}… : l’ancienne cesse de fonctionner tout de suite. Recolle ensuite la nouvelle là où elle sert (Vercel, n8n, Make).</div></div><div class="tools"><button type="button" class="btn small" id="src-regen">Générer</button></div></div>
+      <div class="closed-row"><div><b>Supprimer la source</b><div class="hint" style="margin:0">Sa clé ne fonctionne plus. Les leads déjà reçus restent dans le CRM.</div></div><div class="tools"><button type="button" class="btn small bad" id="src-del">Supprimer</button></div></div>
+    </div>`;
+  const submit=async f=>{
+    const {data,error}=await sb.from("sources_leads").update({nom:sTxt(f.nom),canal:sEnum(f.canal,Object.keys(CANAUX))||"autre"}).eq("id",x.id).select("id");
+    if(error||!data||!data.length){ $("#merr").textContent=error?errorCopy(error).join(" — "):"Modification refusée : réservée aux superviseurs."; return false; }
+    closeModal(true); toast("Source modifiée"); chargerLeads(); return true;
+  };
+  submit.validate=f=>!sTxt(f.nom)?["nom","Donne un nom à la source."]:null;
+  modal("Source « "+x.nom+" »",h,submit,"Enregistrer");
+  // Deux clics pour les actions qui coupent une clé en service : le premier demande confirmation.
+  const confirmer=(btn,label)=>{ if(btn.dataset.ok) return true; btn.dataset.ok="1"; btn.textContent=label; return false; };
+  $("#src-regen").onclick=async e=>{
+    const btn=e.currentTarget; if(!confirmer(btn,"Confirmer")) return;
+    btn.disabled=true; const {cle,hash}=await genererCle();
+    const {data,error}=await sb.from("sources_leads").update({cle_hash:hash,cle_debut:cle.slice(0,9),actif:true}).eq("id",x.id).select("id");
+    if(error||!data||!data.length){ btn.disabled=false; $("#merr").textContent=error?errorCopy(error).join(" — "):"Modification refusée : réservée aux superviseurs."; return; }
+    closeModal(true); chargerLeads(); afficherCle(sTxt($("#src-nom")?.value)||x.nom,x.canal,cle);
+  };
+  $("#src-del").onclick=async e=>{
+    const btn=e.currentTarget; if(!confirmer(btn,"Confirmer la suppression")) return;
+    btn.disabled=true;
+    const {data,error}=await sb.from("sources_leads").delete().eq("id",x.id).select("id");
+    if(error||!data||!data.length){ btn.disabled=false; $("#merr").textContent=error?errorCopy(error).join(" — "):"Suppression refusée : réservée aux superviseurs."; return; }
+    closeModal(true); toast("Source supprimée"); chargerLeads();
+  };
+}
 function formSource(){
   const h=`<div class="form-grid">${fld("src-nom","Nom de la source",`<input id="src-nom" name="nom" required placeholder="Ex. Site web, Meta Ads octobre…" autocomplete="off">`)}
     ${fld("src-canal","Canal",`<select id="src-canal" name="canal">${opt(Object.entries(CANAUX),"site")}</select>`)}</div>
-    <p class="hint">La clé est générée dans ton navigateur et affichée <b>une seule fois</b>. Le CRM n’en garde qu’une empreinte : si tu la perds, crée une nouvelle source et coupe l’ancienne.</p>`;
+    <p class="hint">La clé est générée dans ton navigateur et affichée <b>une seule fois</b>. Le CRM n’en garde qu’une empreinte : si tu la perds, « Modifier » › « Nouvelle clé » en génère une autre.</p>`;
   const submit=async f=>{
-    const b=new Uint8Array(24); crypto.getRandomValues(b);
-    const cle="cl_"+[...b].map(x=>x.toString(16).padStart(2,"0")).join("");
-    const hash=[...new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(cle)))].map(x=>x.toString(16).padStart(2,"0")).join("");
-    const {error}=await sb.from("sources_leads").insert({nom:sTxt(f.nom),canal:sEnum(f.canal,Object.keys(CANAUX))||"autre",cle_hash:hash,cle_debut:cle.slice(0,9),cree_par:me&&me.id||null});
+    const {cle,hash}=await genererCle(), canal=sEnum(f.canal,Object.keys(CANAUX))||"autre";
+    const {error}=await sb.from("sources_leads").insert({nom:sTxt(f.nom),canal,cle_hash:hash,cle_debut:cle.slice(0,9),cree_par:me&&me.id||null});
     if(error){ $("#merr").textContent=errorCopy(error).join(" — "); return false; }
-    closeModal(true);
-    modal("Clé de la source « "+sTxt(f.nom)+" »",`<p style="margin-top:0">Copie cette clé maintenant : elle ne sera plus affichée.</p>
-      <div style="display:flex;gap:8px"><input id="src-cle" readonly value="${cle}" style="font-family:var(--f-mono);font-size:13px"><button type="button" class="btn" id="src-copy">Copier</button></div>
-      ${sEnum(f.canal,Object.keys(CANAUX))==="site"?`<p class="hint"><b>Pour le site :</b> Vercel › projet du site › Settings › Environment Variables › ajoute <code>CRM_LEADS_KEY</code> avec cette valeur (Production), puis Deployments › Redeploy. Les demandes du formulaire de contact et du guide arriveront ensuite dans le CRM, en plus de l’e-mail.</p>`:`<p class="hint">Colle-la dans ton scénario n8n / Make (champ <code>p_cle</code>), voir « Brancher une autre source » dans Réglages.</p>`}`,async()=>{ closeModal(true); chargerLeads(); return true; },"J’ai copié la clé");
-    $("#src-copy").onclick=async()=>{ try{ await navigator.clipboard.writeText(cle); $("#src-copy").textContent="Copiée ✓"; }catch{ $("#src-cle").select(); } };
-    $("#src-cle").select(); return true;
+    closeModal(true); afficherCle(sTxt(f.nom),canal,cle); return true;
   };
   submit.validate=f=>!sTxt(f.nom)?["nom","Donne un nom à la source."]:null;
   modal("Nouvelle source de leads",h,submit,"Créer la clé");
@@ -1510,6 +1548,7 @@ document.addEventListener("click",async e=>{
   if(act==="demande-transfert"){ t.disabled=true; const {error}=await sb.rpc("demander_transfert",{p_compte:id}); if(error){ t.disabled=false; return toast(errorCopy(error).join(" — ")); } t.textContent="Demande envoyée ✓"; toast("Le superviseur a été prévenu"); return; }
   if(act==="fusion"){ return formFusion(t.dataset.a,t.dataset.b); }
   if(act==="new-source") return formSource();
+  if(act==="edit-source"){ const {data,error}=await sb.from("sources_leads").select("*").eq("id",id).maybeSingle(); if(error||!data) return toast(error?errorCopy(error).join(" — "):"Source introuvable"); return formEditSource(data); }
   if(act==="toggle-source"){ t.disabled=true; const {error}=await sb.from("sources_leads").update({actif:!!t.dataset.on}).eq("id",id); if(error) toast(errorCopy(error).join(" — ")); return chargerLeads(); }
   if(act==="f-a-classer"){ filt.segment="a_classer"; filt.com=estPilote()?"":(me?me.id:""); shown=PAGE; return viewComptes($("#view")); }
   if(act==="new-echeancier") return formEcheancier({devis:t.dataset.devis,compte:t.dataset.compte});
