@@ -258,6 +258,11 @@ select.dstat.ok{color:var(--ok);background:var(--ok-bg)}select.dstat.warn{color:
 .fam summary .hint{margin:0 0 0 auto;font-family:var(--f-mono)}
 /* Navigation en espaces */
 nav.tabs{align-items:center}
+.plus-wrap{position:relative;display:inline-flex}
+.plus-menu{position:absolute;top:calc(100% + 8px);right:0;z-index:40;min-width:240px;display:flex;flex-direction:column;padding:6px;border-radius:18px;background:var(--glass-strong);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border:1px solid var(--glass-edge);box-shadow:var(--shadow)}
+.plus-menu[hidden]{display:none}
+.plus-menu a{padding:10px 14px;border-radius:12px;text-decoration:none;color:var(--ink);font-size:14px}
+.plus-menu a:hover,.plus-menu a[aria-current="page"]{background:var(--line)}
 .tab-grp{font-family:var(--f-mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);padding:0 4px 0 10px;white-space:nowrap}
 .tab-sep{width:1px;height:22px;background:var(--line-strong);margin:0 4px;flex:none}
 .tab.gear{width:38px;padding:9px 0;text-align:center}
@@ -289,6 +294,157 @@ body.pilote .commercial-only{display:none!important}
 .pw-wrap input{width:100%;box-sizing:border-box;padding-right:48px}
 .pw-eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:40px;height:40px;border:0;background:none;border-radius:999px;cursor:pointer;color:var(--ink-2);display:grid;place-items:center}
 .pw-eye:hover{color:var(--ink)}
+
+/* ---- Espace superviseur ---- */
+.av{display:inline-grid;place-items:center;border-radius:999px;font-weight:700;flex:none;object-fit:cover;background:#ECECF1;color:var(--ink-2)}
+.ws{display:flex;flex-direction:column;gap:18px;padding-bottom:40px}
+.ws h2,.ws h3,.ws h4{margin:0}
+.ws-card{background:#fff;border:1px solid rgba(29,27,38,.06);border-radius:30px;padding:22px 24px;box-shadow:0 20px 50px -34px rgba(29,27,38,.3);min-width:0}
+.ws-card-h{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.ws-card-h>div{display:flex;align-items:baseline;gap:10px}
+.ws-card-h h3{font-size:19px;font-weight:600}
+.ws-two{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:18px}
+.mono{font-family:var(--f-mono)}
+.t-ok{color:var(--ok)!important}.t-warn{color:var(--warn)!important}.t-bad{color:var(--bad)!important}
+i.dot{display:inline-block;width:7px;height:7px;border-radius:999px;background:var(--ink-2);flex:none}
+i.dot.bad{background:var(--bad)}i.dot.warn{background:#D98A00}i.dot.ok{background:var(--ok)}i.dot.mute{background:#8E8C99}
+/* Planning d'équipe */
+.ws-plan{--pl-label:170px;background:#18171F;color:#fff;border-radius:30px;padding:16px 18px 14px;box-shadow:0 30px 60px -36px rgba(24,23,31,.6)}
+.pl-head{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:10px}
+.pl-head>div:first-child{display:flex;align-items:baseline;gap:12px;flex:1;min-width:200px}
+.pl-head h2{font-size:17px;font-weight:600}
+.pl-head .lab-mono{color:#9997A6}
+.pl-head .btn{background:#2A2833;color:#fff;border-color:transparent}
+.pl-head .btn:hover{background:#34323E}
+.pl-legend{display:flex;gap:12px;font-size:12px;color:#B5B3C2}
+.pl-legend span{display:flex;align-items:center;gap:6px}
+.pl-legend i,.pl-ev{--c:#fff}
+.pl-legend i{width:10px;height:10px;border-radius:3px;background:#fff}
+.pl-legend i.ok{background:#4CC38A}.pl-legend i.warn{background:#F2B54A}.pl-legend i.bad{background:#FF6B8A}.pl-legend i.plan{background:#E9E7F2}
+.pl-grid{position:relative}
+.pl-rows{position:relative;max-height:340px;overflow-y:auto;overflow-x:hidden}
+.pl-row{display:grid;grid-template-columns:var(--pl-label) minmax(0,1fr);align-items:center;min-height:46px;border-top:1px solid rgba(255,255,255,.06)}
+.pl-axis{min-height:20px;border-top:0}
+.pl-axis .pl-track span{position:absolute;top:2px;transform:translateX(-50%);font-family:var(--f-mono);font-size:10px;color:#6F6D7C}
+.pl-axis .pl-track span:first-child{transform:none}.pl-axis .pl-track span:last-child{transform:translateX(-100%)}
+.pl-who{display:flex;align-items:center;gap:10px;background:none;border:0;color:#fff;cursor:pointer;text-align:left;padding:6px 8px 6px 0;font:inherit;min-width:0}
+.pl-who span{display:flex;flex-direction:column;min-width:0}.pl-who b{font-size:14px}
+.pl-who small{font-size:11px;color:#9997A6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl-track{position:relative;height:36px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.04) 0 1px,transparent 1px calc(100%/11))}
+.pl-ev{position:absolute;top:3px;height:30px;border-radius:10px;border:0;padding:0 8px;font:500 12px var(--f-body);text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;background:#E9E7F2;color:#18171F}
+.pl-ev b{font-family:var(--f-mono);font-weight:500;font-size:11px}
+.pl-ev.ok{background:#1F3B30;color:#B9F0D5;box-shadow:inset 3px 0 0 #4CC38A}
+.pl-ev.warn{background:#3B2F1A;color:#FFD99A;box-shadow:inset 3px 0 0 #F2B54A}
+.pl-ev.bad{background:#40202A;color:#FFC2CF;box-shadow:inset 3px 0 0 #FF6B8A}
+.pl-ev.off{background:#2A2833;color:#8E8C99;text-decoration:line-through}
+.pl-ev:hover{filter:brightness(1.08)}
+.pl-vide{position:absolute;left:8px;top:9px;font-size:12px;color:#F2B54A;opacity:.8}
+.pl-now{position:absolute;top:0;bottom:0;width:2px;background:linear-gradient(180deg,#00BCD4,#7B61FF);pointer-events:none}
+.pl-now span{position:absolute;top:-2px;left:50%;transform:translateX(-50%);padding:1px 6px;border-radius:999px;background:#7B61FF;font:500 9px var(--f-mono);color:#fff}
+/* En-tête */
+.ws-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:6px 4px 0}
+.ws-head h2{font-family:var(--f-display);font-stretch:112%;font-weight:500;font-size:46px;letter-spacing:-.04em;line-height:.95}
+.ws-head p{margin:8px 0 0;font-size:16px;color:var(--ink-2)}.ws-head p b{color:var(--ink)}
+.ws-metrics{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.ws-metrics>div:not(.seg){display:flex;flex-direction:column}
+.ws-metrics b{font-size:28px;font-weight:600;letter-spacing:-.02em;line-height:1.1}
+.ws-metrics span{font-size:12px;color:var(--ink-2)}
+.seg{display:flex;padding:4px;border-radius:999px;background:#fff;border:1px solid rgba(29,27,38,.08)}
+.seg button{height:36px;padding:0 14px;border:0;border-radius:999px;background:none;color:var(--ink-2);font:500 13px var(--f-body);cursor:pointer}
+.seg button[aria-pressed="true"]{background:#18171F;color:#fff;font-weight:600}
+/* Priorité */
+.ws-prio{position:relative;overflow:hidden;background:#18171F;color:#fff;border-radius:30px;padding:24px 26px;display:flex;flex-direction:column;gap:16px;box-shadow:0 30px 60px -34px rgba(24,23,31,.6);min-width:0}
+.ws-prio::after{content:"";position:absolute;right:-90px;top:-90px;width:280px;height:280px;border-radius:999px;background:radial-gradient(circle,rgba(194,38,75,.35),transparent 65%);pointer-events:none}
+.ws-prio.calme::after{background:radial-gradient(circle,rgba(17,132,91,.35),transparent 65%)}
+.ws-prio .lab-mono{color:#9997A6}.ws-prio p{color:#B5B3C2;margin:0}
+.ws-prio-top{display:flex;align-items:center;gap:10px}
+.ws-alert{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;background:rgba(194,38,75,.2);color:#FF9DB3;font-size:12px;font-weight:600}
+.ws-alert i{width:6px;height:6px;border-radius:999px;background:#FF5C7E}
+.ws-prio-main{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.ws-prio-t{font-size:28px;font-weight:600;letter-spacing:-.02em}
+.ws-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.ws-chips span{padding:5px 11px;border-radius:999px;background:#2A2833;font-size:13px}.ws-chips span.r{color:#FF9DB3}
+.ws-prio-v{font-family:var(--f-display);font-stretch:110%;font-size:46px;font-weight:500;letter-spacing:-.04em;line-height:1;text-align:right}
+.ws-prio-v small{display:block;font:500 11px var(--f-mono);letter-spacing:.12em;color:#9997A6}
+.ws-prio-why{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:16px;padding:14px 16px;border-radius:20px;background:#22212A}
+.ws-prio-why small{display:block;font-size:12px;color:#9997A6;margin-bottom:4px}
+.ws-prio-why .r{font-size:14px;padding:3px 0 3px 16px;position:relative}.ws-prio-why .r::before{content:"";position:absolute;left:0;top:10px;width:6px;height:6px;border-radius:999px;background:#FF7E98}
+.ws-who{display:flex;align-items:center;gap:12px;min-width:0}
+.ws-acts{display:flex;gap:8px;flex-wrap:wrap}
+.ws-prio .btn.ws-white{background:#fff;color:#18171F;border-color:#fff;min-height:46px;padding:0 20px;font-weight:600}
+.ws-prio .btn.ws-ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.25);min-height:46px;padding:0 20px}
+/* Mon équipe */
+.ws-team{display:flex;flex-direction:column;gap:4px}
+.ws-member{position:relative;display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:18px;border:0;background:none;text-align:left;cursor:pointer;font:inherit;color:inherit;width:100%}
+.ws-member:hover,.ws-member.hl{background:#F6F6F9}
+.ws-dot{position:absolute;left:44px;top:42px;width:12px;height:12px;border-radius:999px;border:2px solid #fff}
+.ws-dot.bad{background:var(--bad)}.ws-dot.warn{background:#D98A00}.ws-dot.ok{background:var(--ok)}
+.ws-m-txt{flex:1;min-width:0;display:flex;flex-direction:column}
+.ws-m-txt b{font-size:15px;font-weight:600}.ws-m-txt small{font-size:13px;color:var(--ink-2)}
+.chev{color:var(--ink-2);font-size:18px}
+/* À traiter */
+.ws-items{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.ws-item{display:flex;flex-direction:column;gap:12px;padding:18px;border-radius:22px;background:#F6F6F9;border:1px solid transparent}
+.ws-item.sev-critique{border-color:rgba(194,38,75,.22);background:#FFF7F9}
+.ws-item-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ws-cat{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+.ws-item-t{font-size:17px;font-weight:600}
+.ws-val{font-family:var(--f-mono);font-size:15px;margin-top:2px}.ws-val small{font-size:11px;color:var(--ink-2)}
+.ws-sub{font-size:14px;color:var(--ink-2);margin-top:2px}
+.ws-why{font-size:14px;color:var(--ink-2)}
+.ws-item .ws-acts{margin-top:auto}.ws-item .btn{min-height:40px}
+/* En attente */
+.ws-flow{font-size:12px;color:var(--ink-2)}.ws-flow b{padding:2px 8px;border-radius:999px;background:#18171F;color:#fff;font-weight:500}
+.ws-wait{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid rgba(29,27,38,.07)}
+/* Hygiène */
+.ws-hyg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.ws-h{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:14px 16px;border-radius:18px;border:1px solid rgba(29,27,38,.08);background:#F6F6F9;cursor:pointer;font:inherit;color:inherit;text-align:left}
+.ws-h b{font-size:28px;font-weight:600;letter-spacing:-.02em}.ws-h span{font-size:13px;color:var(--ink-2)}
+.ws-h i{position:absolute;right:14px;top:12px;font-style:normal;color:var(--ink-2)}
+.ws-h.bad{background:#FBEAEE;border-color:rgba(194,38,75,.22)}.ws-h.bad b,.ws-h.bad i{color:var(--bad)}
+.ws-h:disabled{opacity:.55;cursor:default}
+.ws-h:not(:disabled):hover{border-color:rgba(29,27,38,.2)}
+/* Ce qui a changé */
+.ws-chg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.ws-chg>div{display:flex;flex-direction:column;padding:0 16px;border-left:1px solid rgba(29,27,38,.08)}
+.ws-chg>div:first-child{padding-left:0;border-left:0}
+.ws-chg b{font-family:var(--f-display);font-stretch:108%;font-size:32px;font-weight:500;letter-spacing:-.03em;line-height:1}
+.ws-chg small{font:500 10px var(--f-mono);letter-spacing:.12em;color:var(--ink-2);margin-top:2px}
+.ws-chg span{margin-top:8px;font-size:14px}
+/* Période */
+.ws-obj-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.ws-bar{margin-top:8px;height:10px;border-radius:999px;background:#ECECF1;overflow:hidden}
+.ws-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#00BCD4,#7B61FF)}
+.ws-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px}
+.ws-stats b{display:block;font-size:17px}.ws-stats span{font-size:12px;color:var(--ink-2)}
+.ws-insight{margin-top:14px;padding:12px 14px;border-radius:14px;background:#FFF8EC;color:#6B4A00;font-size:13px}
+/* Tiroir commercial */
+.drawer-ov{align-items:stretch;justify-content:flex-end;padding:12px}
+.drawer{width:min(560px,100%);max-height:calc(100dvh - 24px);overflow-y:auto;box-sizing:border-box;padding:26px;border-radius:30px;background:#fff;box-shadow:-30px 0 80px -30px rgba(24,23,31,.5);display:flex;flex-direction:column;gap:20px;animation:drIn .28s cubic-bezier(.16,1,.3,1)}
+@keyframes drIn{from{transform:translateX(40px);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.drawer{animation:none}}
+.dr-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.dr-head h3{font-size:21px;font-weight:600}
+.dr-kpi{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.dr-kpi>div{padding:14px 16px;border-radius:20px;background:#F6F6F9;display:flex;flex-direction:column}
+.dr-kpi>div.dark{background:#18171F;color:#fff}.dr-kpi small,.dr-kpi span{font-size:12px;color:var(--ink-2)}.dr-kpi .dark small,.dr-kpi .dark span{color:#9997A6}
+.dr-kpi b{font-size:28px;font-weight:600;letter-spacing:-.02em}.dr-kpi b i{font-style:normal;font-size:12px;color:#9997A6}
+.drawer h4{font-size:16px;font-weight:600;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.dr-row{display:flex;align-items:center;gap:12px;width:100%;padding:10px 4px;border:0;border-bottom:1px solid rgba(29,27,38,.07);background:none;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.dr-row:hover{background:#F8F8FA}.dr-row.static{cursor:default}.dr-row.day{background:#F6F6F9;border-radius:16px;border:0;padding:10px 12px;margin-bottom:6px}
+.dr-acts{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap}.dr-acts .btn{flex:1 1 160px;justify-content:center}
+.sh-dem{border:1px solid rgba(123,97,255,.25)}
+@media (max-width:980px){
+  .ws-two{grid-template-columns:1fr}
+  .ws-chg{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:16px}.ws-chg>div:nth-child(3){padding-left:0;border-left:0}
+  .ws-plan{--pl-label:112px;border-radius:24px;padding:14px}
+  .pl-legend{display:none}
+  .pl-track{min-width:520px}.pl-grid{overflow-x:auto}
+  .ws-head h2{font-size:36px}
+  .ws-prio-why{grid-template-columns:1fr}
+  .ws-stats{grid-template-columns:1fr 1fr 1fr}
+}
+
 /* Accueil simplifié des commerciaux : une chose à la fois */
 .fc-actions{display:flex;gap:8px;margin-top:14px}
 .fc-actions .btn{flex:1 1 0;justify-content:center;min-height:56px;padding:0 10px}
@@ -570,6 +726,34 @@ body.ai-open .ai-fab,body.auth .ai-fab{display:none}
 .stage-tabs{display:none}
 @media (max-width:720px){.stage-tabs{display:flex}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.ecg path{stroke-dashoffset:0}}
+
+/* Organigramme : arbre de haut en bas avec connecteurs */
+.org-wrap{overflow-x:auto;padding:8px 0 4px;-webkit-overflow-scrolling:touch}
+.org,.org ul{list-style:none;margin:0;padding:0;display:flex;justify-content:center}
+.org{min-width:max-content;margin:0 auto}
+.org ul{padding-top:22px;position:relative}
+.org li{position:relative;padding:22px 8px 0;display:flex;flex-direction:column;align-items:center}
+.org>li{padding-top:0}
+.org li::before,.org li::after{content:"";position:absolute;top:0;width:50%;height:22px;border-top:1.5px solid #c4c2d0}
+.org li::before{right:50%}.org li::after{left:50%;border-left:1.5px solid #c4c2d0}
+.org li:only-child::before,.org li:only-child::after{border-top:0}
+.org li:only-child{padding-top:22px}
+.org li:first-child::before,.org li:last-child::after{border-top:0}
+.org li:last-child::before{border-right:1.5px solid #c4c2d0;border-radius:0 8px 0 0}
+.org li:first-child::after{border-radius:8px 0 0 0}
+.org>li::before,.org>li::after{display:none}
+.org ul::before{content:"";position:absolute;top:0;left:50%;height:22px;border-left:1.5px solid #c4c2d0}
+.org-card{display:flex;align-items:center;gap:10px;text-align:left;padding:10px 14px 10px 10px;border-radius:18px;background:#fff;border:1px solid rgba(29,27,38,.1);box-shadow:0 6px 18px -12px rgba(24,23,31,.35);font:inherit;color:inherit;cursor:pointer;min-width:170px;max-width:290px;transition:transform .15s,box-shadow .15s}
+.org-card:hover{transform:translateY(-1px);box-shadow:0 10px 24px -12px rgba(24,23,31,.45)}
+.org-card:focus-visible{outline:2px solid #5B49D6;outline-offset:2px}
+.org-card>span:last-child{display:flex;flex-direction:column;min-width:0}
+.org-card b{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.org-card small{font-size:12px;color:#6B6979;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.org>li>.org-card{background:#18171F;color:#fff;border-color:#18171F}.org>li>.org-card small{color:#B4B2C0}
+.org-card.hors{background:#F6F6F9;border-style:dashed}
+.org-card.off{opacity:.6}
+.org-seuls{display:flex;flex-wrap:wrap;gap:8px}
+@media (max-width:720px){.org-card{min-width:140px;padding:8px 10px 8px 8px}.org li{padding-left:4px;padding-right:4px}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 </head>
@@ -586,21 +770,17 @@ body.ai-open .ai-fab,body.auth .ai-fab{display:none}
       <span class="tagline">CRM commercial</span>
     </div>
     <nav class="tabs" aria-label="Sections du CRM">
-      <span class="tab-grp pilote-only" aria-hidden="true">Mon travail</span>
       <a class="tab" href="#aujourdhui" data-tab="aujourdhui" id="tab-aujourdhui">Aujourd’hui</a>
-      <a class="tab" href="#agenda" data-tab="agenda" id="tab-agenda">Agenda</a>
+      <a class="tab commercial-only" href="#agenda" data-tab="agenda" id="tab-agenda">Agenda</a>
       <a class="tab" href="#pipeline" data-tab="pipeline" id="tab-pipeline">Pipeline</a>
-      <a class="tab" href="#comptes" data-tab="comptes" id="tab-comptes">Clients</a>
-      <a class="tab pilote-only" href="#activites" data-tab="activites" id="tab-activites">Activités</a>
-      <a class="tab" href="#devis" data-tab="devis" id="tab-devis">Devis</a>
-      <a class="tab pilote-only" href="#paiements" data-tab="paiements" id="tab-paiements">Paiements</a>
-      <span class="tab-sep pilote-only" aria-hidden="true"></span>
-      <span class="tab-grp pilote-only" aria-hidden="true">Pilotage</span>
-      <a class="tab pilote-only" href="#planning" data-tab="planning" id="tab-planning">Planning</a>
       <a class="tab pilote-only" href="#superviseur" data-tab="superviseur" id="tab-superviseur">Équipe</a>
-      <a class="tab pilote-only" href="#acquisition" data-tab="acquisition" id="tab-acquisition">Acquisition</a>
-      <a class="tab pilote-only" href="#reporting" data-tab="reporting" id="tab-reporting">Reporting</a>
-      <a class="tab gear pilote-only" href="#equipe" data-tab="equipe" id="tab-equipe" title="Réglages : équipe, catalogue, imports" aria-label="Réglages"><span aria-hidden="true">⚙</span></a>
+      <a class="tab" href="#comptes" data-tab="comptes" id="tab-comptes">Clients</a>
+      <a class="tab commercial-only" href="#devis" data-tab="devis" id="tab-devis">Devis</a>
+      <div class="plus-wrap pilote-only"><button type="button" class="tab" id="plus-btn" aria-haspopup="true" aria-expanded="false" aria-controls="plus-menu">Plus <span aria-hidden="true">▾</span></button>
+        <div class="plus-menu" id="plus-menu" hidden>
+          <a href="#agenda" data-tab="agenda">Agenda</a><a href="#planning" data-tab="planning">Planning de la semaine</a><a href="#activites" data-tab="activites">Activités</a><a href="#devis" data-tab="devis">Devis</a><a href="#paiements" data-tab="paiements">Paiements</a><a href="#acquisition" data-tab="acquisition">Acquisition</a><a href="#reporting" data-tab="reporting">Reporting</a><a href="#equipe" data-tab="equipe">Réglages &amp; organigramme</a>
+        </div></div>
+      <a class="tab gear pilote-only" href="#equipe" data-tab="equipe" id="tab-equipe" title="Réglages : équipe, organigramme, catalogue, imports" aria-label="Réglages"><span aria-hidden="true">⚙</span></a>
     </nav>
     <div class="status" data-k="busy"><span class="dot busy" id="dot" aria-hidden="true"></span><span id="status-text" aria-live="polite">Connexion…</span>
       <button class="btn small icon bell" id="bell" aria-label="Notifications" aria-expanded="false" aria-controls="npanel"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9a6 6 0 0112 0c0 6 2 8 2 8H4s2-2 2-8"/><path d="M10 21a2 2 0 004 0"/></svg><span class="badge" id="bell-n" hidden></span></button>
@@ -618,8 +798,9 @@ body.ai-open .ai-fab,body.auth .ai-fab{display:none}
 <div id="auth-slot"></div>
 <nav class="botnav" aria-label="Navigation">
   <a href="#aujourdhui" data-tab="aujourdhui"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6h-6v6H4a1 1 0 01-1-1z"/></svg><span>Aujourd’hui</span></a>
-  <a href="#agenda" data-tab="agenda"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Agenda</span></a>
+  <a class="commercial-only" href="#agenda" data-tab="agenda"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Agenda</span></a>
   <a class="pilote-only" href="#pipeline" data-tab="pipeline"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4" width="4.5" height="16" rx="1.5"/><rect x="9.75" y="4" width="4.5" height="11" rx="1.5"/><rect x="16" y="4" width="4.5" height="7" rx="1.5"/></svg><span>Pipeline</span></a>
+  <a class="pilote-only" href="#superviseur" data-tab="superviseur"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="3"/><circle cx="16.5" cy="9.5" r="2.5"/><path d="M2.5 19a5.5 5.5 0 0 1 11 0M14 19a4 4 0 0 1 7.5-1.5"/></svg><span>Équipe</span></a>
   <a href="#comptes" data-tab="comptes"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0113 0"/><path d="M16 4.5a3.5 3.5 0 010 7M18 14a6 6 0 013.5 6"/></svg><span>Clients</span></a>
   <button type="button" id="more-btn" aria-haspopup="dialog" aria-controls="more-sheet"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg><span>Plus</span></button>
 </nav>
@@ -628,8 +809,8 @@ body.ai-open .ai-fab,body.auth .ai-fab{display:none}
 <div id="more-sheet" class="overlay sheet-ov" hidden><div class="modal more" role="dialog" aria-modal="true" aria-label="Plus">
   <div class="grabber" aria-hidden="true"></div>
   <div class="more-grid">
-    <a class="commercial-only" href="#pipeline" data-tab="pipeline">Pipeline</a><a href="#activites" data-tab="activites">Activités</a><a href="#devis" data-tab="devis">Devis</a><a href="#paiements" data-tab="paiements">Paiements</a>
-    <a class="pilote-only" href="#planning" data-tab="planning">Planning équipe</a><a class="pilote-only" href="#superviseur" data-tab="superviseur">Équipe</a><a class="pilote-only" href="#acquisition" data-tab="acquisition">Acquisition</a><a class="pilote-only" href="#reporting" data-tab="reporting">Reporting</a><a class="pilote-only" href="#equipe" data-tab="equipe">Réglages</a>
+    <a class="commercial-only" href="#pipeline" data-tab="pipeline">Pipeline</a><a class="pilote-only" href="#agenda" data-tab="agenda">Agenda</a><a class="pilote-only" href="#planning" data-tab="planning">Planning de la semaine</a><a href="#activites" data-tab="activites">Activités</a><a href="#devis" data-tab="devis">Devis</a><a href="#paiements" data-tab="paiements">Paiements</a>
+    <a class="pilote-only" href="#acquisition" data-tab="acquisition">Acquisition</a><a class="pilote-only" href="#reporting" data-tab="reporting">Reporting</a><a class="pilote-only" href="#equipe" data-tab="equipe">Réglages &amp; organigramme</a>
   </div>
   <div class="more-foot"><span id="more-status" class="hint" style="margin:0"></span><button type="button" class="btn small" id="more-logout">Déconnexion</button></div>
 </div></div>
@@ -722,6 +903,7 @@ function filtrerPour(m){
   state.devis=state.devis.filter(d=>d.commercial_id===m.id||C.has(d.compte_id));
   const D=new Set(state.devis.map(d=>d.id)); state.devis_lignes=state.devis_lignes.filter(l=>D.has(l.devis_id));
   state.paiements=state.paiements.filter(own);
+  state.demandes=(state.demandes||[]).filter(d=>d.destinataire_id===m.id||d.auteur_id===m.id);
 }
 function renderApercu(){
   let bar=document.getElementById("apercu-bar");
@@ -785,12 +967,15 @@ async function load(){
       q("equipe","nom",true), q("comptes","nom",true), q("contacts","nom",true), q("produits","nom",true),
       q("opportunites","updated_at",false), qActivites(), q("devis","created_at",false), q("devis_lignes","position",true).then(r=>r.error?{data:[],error:null}:r),
       q("paiements","date_echeance",true).then(r=>r.error?{data:[],error:null}:r),
-      sb.from("reglages").select("*").then(r=>r.error?{data:[],error:null}:r)
+      sb.from("reglages").select("*").then(r=>r.error?{data:[],error:null}:r),
+      q("demandes","created_at",false).then(r=>r.error?{data:[],error:null}:r)
     ]);
     const err = res.find(r=>r.error); if(err) throw err.error;
-    const [equipe,comptes,contacts,produits,opportunites,activites,devis,devis_lignes,paiements,reglagesRows] = res.map(r=>r.data||[]);
+    const [equipeTout,comptes,contacts,produits,opportunites,activites,devis,devis_lignes,paiements,reglagesRows,demandes] = res.map(r=>r.data||[]);
+    // Les personnes hors CRM (CEO, SAV, livraison…) ne figurent que dans l’organigramme
+    const equipe=equipeTout.filter(e=>!e.hors_crm);
     const reglages={}; reglagesRows.forEach(x=>reglages[x.cle]=x.valeur);
-    state = {equipe,comptes,contacts,produits,opportunites,activites,devis,devis_lignes,paiements,reglages};
+    state = {equipe,organigramme:equipeTout,comptes,contacts,produits,opportunites,activites,devis,devis_lignes,paiements,reglages,demandes};
     const vrai=equipe.find(e=>e.user_id===currentUser.id)||null;
     if(apercu&&vrai&&["admin","superviseur"].includes(vrai.role)){ const m=equipe.find(e=>e.id===apercu.id); apercu=m||null; if(m) filtrerPour(m); } else apercu=null;
     renderApercu();
@@ -854,7 +1039,8 @@ function render(){
   const showK = false;
   $("#kpis").hidden = !showK; $(".wrap > .sep").hidden = !showK;
   if(showK) renderKpis();
-  document.querySelectorAll(".tab,.botnav a,.more-grid a").forEach(b=>{ if(b.dataset.tab===tab) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current"); });
+  document.querySelectorAll(".tab,.botnav a,.more-grid a,.plus-menu a").forEach(b=>{ if(b.dataset.tab===tab) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current"); });
+  const pb=$("#plus-btn"); if(pb){ if(["agenda","planning","activites","devis","paiements","acquisition","reporting","equipe"].includes(tab)&&estPilote()) pb.setAttribute("aria-current","page"); else pb.removeAttribute("aria-current"); }
   const plus=$("#more-btn"); if(plus){ if(["activites","devis","paiements","superviseur","acquisition","reporting","equipe"].includes(tab)||(tab==="pipeline"&&!estPilote())) plus.setAttribute("aria-current","page"); else plus.removeAttribute("aria-current"); }
   document.body.classList.toggle("fab-on",["aujourdhui","agenda","comptes","pipeline","activites"].includes(tab));
   const v=$("#view");
@@ -1386,11 +1572,13 @@ function viewEquipe(v){
   setTimeout(chargerDoublons,0); setTimeout(chargerLeads,0);
   v.innerHTML=`<div class="section-head"><div><h2>Équipe &amp; catalogue</h2><p class="hint">Un membre « sans accès » ne peut pas se connecter. Activez-le dans « Modifier » ; il se connecte ensuite avec l’email indiqué ici.</p></div>
    <div class="tools"><button class="btn" data-act="objectifs">Objectifs mensuels</button><button class="btn" data-act="import">Importer des contacts (Excel)</button><button class="btn" data-act="new-produit">+ Machine</button><button class="btn primary" data-act="new-membre">+ Membre</button></div></div>
+  <div class="panel" style="margin-bottom:16px"><div class="section-head" style="margin:0 0 8px"><h3>Équipe</h3><div class="chips" role="group" aria-label="Affichage"><button class="chip" data-act="equipe-vue" data-v="liste" aria-pressed="${equipeVue==="liste"}">Liste</button><button class="chip" data-act="equipe-vue" data-v="org" aria-pressed="${equipeVue==="org"}">Organigramme</button></div></div>
+  ${equipeVue==="org"?vueOrganigramme():`<div class="tbl-wrap" style="margin-top:8px"><table><thead><tr><th>Nom</th><th>Email</th><th>Rôle</th><th>Showroom</th><th>Statut</th><th></th></tr></thead><tbody>
+  ${[...orgTous()].sort((a,b)=>(!!a.parti_le-!!b.parti_le)).map(e=>`<tr${e.parti_le?' style="opacity:.7"':""}><td><div class="ws-who" style="gap:10px">${avatar(e,30)}<span><b>${esc(e.nom)}</b>${e.poste?`<br><small class="hint" style="margin:0">${esc(e.poste)}</small>`:""}</span></div></td><td>${esc(e.email||"—")}</td><td>${e.hors_crm?`<span class="pill">Hors CRM</span>`:ROLES[e.role]}</td><td>${e.showroom?esc(SHOWROOMS[e.showroom].replace("Showroom ","")):"—"}</td><td>${e.parti_le?`<span class="pill">Parti·e le ${esc(new Date(e.parti_le+"T12:00").toLocaleDateString("fr-FR",{day:"numeric",month:"short",year:"numeric"}))}</span>`:`<span class="pill ${e.actif?"ok":""}">${e.actif?"Accès actif":"Sans accès"}</span>`}${(()=>{ const n=state.comptes.filter(c=>c.commercial_id===e.id).length; return n?`<div class="hint" style="margin:2px 0 0">${n} client${n>1?"s":""}</div>`:""; })()}</td><td><div class="tools" style="flex-wrap:nowrap"><button class="btn small" data-act="edit-membre" data-id="${e.id}">Modifier</button>${e.role!=="admin"&&!e.parti_le?`<button class="btn small" data-act="voir-comme" data-id="${e.id}" title="Voir le CRM comme ce membre, en lecture seule">Voir comme</button>`:""}${e.role!=="admin"?`<button class="btn small" data-act="depart-membre" data-id="${e.id}">${e.parti_le?"Transférer":"Départ / transfert"}</button>`:""}</div></td></tr>`).join("")}
+  </tbody></table></div>`}</div>
   <div class="panel" style="margin-bottom:16px" id="leads-panel"><div class="section-head" style="margin:0 0 6px"><div><h3>Leads entrants</h3><p class="hint" style="margin:0">Les demandes du site et des campagnes arrivent ici toutes seules : fiche client (ou client existant retrouvé par téléphone/e-mail), opportunité, tâche « Rappeler » pour le bon commercial (ville + pratique, voir Attribution automatique), et notification.</p></div><button class="btn small" data-act="new-source">+ Source</button></div><div id="leads-body"><div class="skeleton" style="height:40px"></div></div></div>
   <div class="panel" style="margin-bottom:16px" id="dup-panel"><h3>Doublons probables</h3><p class="hint">Même téléphone, ou même nom dans la même ville, y compris entre clients de commerciaux différents.</p><div id="dup-body"><div class="skeleton" style="height:40px"></div></div></div>
-  <div class="grid2"><div class="panel"><h3>Équipe</h3><div class="tbl-wrap" style="margin-top:8px"><table><thead><tr><th>Nom</th><th>Email</th><th>Rôle</th><th>Showroom</th><th>Statut</th><th></th></tr></thead><tbody>
-  ${[...state.equipe].sort((a,b)=>(!!a.parti_le-!!b.parti_le)).map(e=>`<tr${e.parti_le?' style="opacity:.7"':""}><td><b>${esc(e.nom)}</b></td><td>${esc(e.email||"—")}</td><td>${ROLES[e.role]}</td><td>${e.showroom?esc(SHOWROOMS[e.showroom].replace("Showroom ","")):"—"}</td><td>${e.parti_le?`<span class="pill">Parti·e le ${esc(new Date(e.parti_le+"T12:00").toLocaleDateString("fr-FR",{day:"numeric",month:"short",year:"numeric"}))}</span>`:`<span class="pill ${e.actif?"ok":""}">${e.actif?"Accès actif":"Sans accès"}</span>`}${(()=>{ const n=state.comptes.filter(c=>c.commercial_id===e.id).length; return n?`<div class="hint" style="margin:2px 0 0">${n} client${n>1?"s":""}</div>`:""; })()}</td><td><div class="tools" style="flex-wrap:nowrap"><button class="btn small" data-act="edit-membre" data-id="${e.id}">Modifier</button>${e.role!=="admin"&&!e.parti_le?`<button class="btn small" data-act="voir-comme" data-id="${e.id}" title="Voir le CRM comme ce membre, en lecture seule">Voir comme</button>`:""}${e.role!=="admin"?`<button class="btn small" data-act="depart-membre" data-id="${e.id}">${e.parti_le?"Transférer":"Départ / transfert"}</button>`:""}</div></td></tr>`).join("")}
-  </tbody></table></div></div>
+  <div class="grid2">
   <div class="panel"><h3>Catalogue machines</h3>${state.produits.length?(()=>{const fam={}; state.produits.forEach(p=>(fam[p.categorie]=fam[p.categorie]||[]).push(p));
     return `<p class="hint">${state.produits.filter(p=>p.actif).length} machines actives · ${Object.keys(fam).length} familles</p>`+Object.entries(fam).map(([f,ps])=>`<details class="fam"><summary><span>${esc(f)}</span><span class="hint">${ps.length}</span></summary><div class="closed-list">${ps.sort((a,b)=>a.nom.localeCompare(b.nom,"fr")).map(p=>`<div class="closed-row"><div><b translate="no">${esc(p.nom)}</b>${p.medical_only?` <span class="pill warn" title="Vente réservée aux médecins">Médical</span>`:""}${p.actif?"":` <span class="pill">Inactive</span>`}<div class="hint" translate="no">${esc([p.reference,p.marque].filter(Boolean).join(" · "))}</div></div><div class="tools"><span style="font-family:var(--f-mono);font-size:12px">${p.prix_catalogue_mad!=null?mad(p.prix_catalogue_mad)+" MAD":""}</span><button class="btn small" data-act="edit-produit" data-id="${p.id}">Modifier</button></div></div>`).join("")}</div></details>`).join("");})():`<p class="hint">Aucune machine. Ajoutez le catalogue pour rattacher les opportunités à un produit.</p>`}</div></div>`;
 }
@@ -1568,22 +1756,59 @@ function formContact(compteId){
   modal("Nouveau contact",h,submit,"Ajouter");
 }
 
+const POLES={direction:"Direction",administration:"Administration",commercial:"Commercial",sav:"SAV",livraison:"Livraison",academy:"Academy",cleaning:"Cleaning",autre:"Autre"};
+const orgTous=()=>(state.organigramme||state.equipe);
+function descendantsDe(id){ const out=new Set(), st=[id]; while(st.length){ const x=st.pop(); orgTous().forEach(e=>{ if(e.responsable_id===x&&!out.has(e.id)){ out.add(e.id); st.push(e.id); } }); } return out; }
 function formMembre(m){
-  m=m||{};
+  m=m||{}; const desc=m.id?descendantsDe(m.id):new Set();
+  const resps=orgTous().filter(e=>e.id!==m.id&&!desc.has(e.id)&&!e.parti_le).sort((a,b)=>a.nom.localeCompare(b.nom,"fr")).map(e=>[e.id,e.nom+(e.poste?" · "+e.poste:"")]);
   const h=`<div class="form-grid">
    ${fld("m-nom","Nom",`<input id="m-nom" name="nom" required value="${esc(m.nom||"")}">`)}
-   ${fld("m-mail","Email de connexion",`<input id="m-mail" name="email" type="email" value="${esc(m.email||"")}" placeholder="prenom@cellulift.ma…" autocomplete="off" spellcheck="false">`)}
-   ${fld("m-role","Rôle",`<select id="m-role" name="role">${opt(Object.entries(ROLES),m.role||"commercial")}</select>`)}
+   ${fld("m-poste","Poste",`<input id="m-poste" name="poste" maxlength="80" autocomplete="off" placeholder="Ex. Manager Marrakech, CEO…" value="${esc(m.poste||"")}">`)}
+   ${fld("m-pole","Pôle",`<select id="m-pole" name="pole">${opt(Object.entries(POLES),m.pole||(m.role==="commercial"&&m.id?"commercial":""),"Non renseigné")}</select>`)}
+   ${fld("m-resp","Rattaché à",`<select id="m-resp" name="responsable_id">${opt(resps,m.responsable_id||"","Personne (sommet de l’organigramme)")}</select>`)}
+   <div class="field" style="grid-column:1/-1"><label class="check"><input type="checkbox" name="hors_crm" id="m-hors" ${m.hors_crm?"checked":""}> N’utilise pas le CRM (figure seulement dans l’organigramme)</label></div>
+   <div id="m-crm" class="form-grid" style="grid-column:1/-1;margin:0">
+   ${fld("m-mail","Email de connexion",`<input id="m-mail" name="email" type="email" value="${esc(m.email||"")}" placeholder="prenom@cellulift.com…" autocomplete="off" spellcheck="false">`)}
+   ${fld("m-role","Rôle dans le CRM",`<select id="m-role" name="role">${opt(Object.entries(ROLES),m.role||"commercial")}</select>`)}
    ${fld("m-sr","Showroom",`<select id="m-sr" name="showroom">${opt(Object.entries(SHOWROOMS),m.showroom||"","Non renseigné")}</select>`)}
    ${fld("m-ville","Ville",`<input id="m-ville" name="ville" list="dl-villes" autocomplete="off" placeholder="Ex. Tanger…" value="${esc(m.ville||"")}"><datalist id="dl-villes">${villes().map(x=>`<option value="${esc(x)}">`).join("")}</datalist>`)}
    ${m.id?fld("m-act","Statut",`<select id="m-act" name="actif"><option value="1" ${m.actif&&!m.parti_le?"selected":""}>Accès actif</option><option value="" ${!m.actif&&!m.parti_le?"selected":""}>Sans accès</option><option value="parti" ${m.parti_le?"selected":""}>A quitté Cellulift</option></select>`):""}</div>
+   <div class="field" style="grid-column:1/-1"><label for="m-photo">Photo</label><div style="display:flex;align-items:center;gap:12px">${m.id?avatar(m,48):""}<input id="m-photo" type="file" accept="image/jpeg,image/png,image/webp"></div><span class="hint" style="margin:4px 0 0">JPEG, PNG ou WebP, 2 Mo maximum.</span></div>
+  </div>
    ${m.id?`<p class="hint">Pour un départ, utilise plutôt « Départ / transfert » : tu pourras donner ses clients à quelqu’un d’autre en même temps.</p>`:""}`;
   const submit=async f=>{
-    const obj={nom:sTxt(f.nom),email:sTxt((f.email||"").toLowerCase()),role:sEnum(f.role,Object.keys(ROLES)),ville:sTxt(f.ville),showroom:sEnum(f.showroom,Object.keys(SHOWROOMS))};
-    return m.id ? write(upd("equipe",m.id,Object.assign(obj,f.actif==="parti"?{actif:false,parti_le:m.parti_le||localISO()}:{actif:sBool(f.actif),parti_le:null})),"Membre mis à jour") : write(ins("equipe",obj),"Membre ajouté");
+    const id=m.id||crypto.randomUUID(), hors=!!f.hors_crm;
+    const obj={nom:sTxt(f.nom),poste:sTxt(f.poste),pole:sEnum(f.pole,Object.keys(POLES)),responsable_id:sUuid(f.responsable_id),hors_crm:hors,
+      email:hors?(sTxt((f.email||"").toLowerCase())||null):sTxt((f.email||"").toLowerCase()),role:sEnum(f.role,Object.keys(ROLES))||"commercial",ville:sTxt(f.ville),showroom:sEnum(f.showroom,Object.keys(SHOWROOMS))};
+    const file=$("#m-photo")&&$("#m-photo").files[0];
+    if(file){
+      if(file.size>2*1024*1024){ $("#merr").textContent="Photo trop lourde (2 Mo maximum)."; return false; }
+      if(!apercu){ const ext=(file.type.split("/")[1]||"jpg").replace("jpeg","jpg"), path=id+"/"+Date.now()+"."+ext;
+        const up=await sb.storage.from("equipe-photos").upload(path,file,{upsert:true,contentType:file.type});
+        if(up.error){ $("#merr").textContent="Photo non envoyée : "+errorCopy(up.error).join(" — "); return false; }
+        obj.photo_url=sb.storage.from("equipe-photos").getPublicUrl(path).data.publicUrl; }
+    }
+    if(hors) Object.assign(obj,{actif:false});
+    if(m.id){ if(!hors) Object.assign(obj,f.actif==="parti"?{actif:false,parti_le:m.parti_le||localISO()}:{actif:sBool(f.actif),parti_le:null}); return write(upd("equipe",m.id,obj),"Membre mis à jour"); }
+    return write(ins("equipe",Object.assign({id},obj)),"Membre ajouté");
   };
-  submit.validate=f=>!f.nom.trim()?["nom","Indiquez le nom."]:null;
+  submit.validate=f=>!f.nom.trim()?["nom","Indiquez le nom."]:(!f.hors_crm&&!String(f.email||"").trim())?["email","Indiquez l’email de connexion, ou cochez « N’utilise pas le CRM »."]:null;
   modal(m.id?"Modifier le membre":"Nouveau membre",h,submit,m.id?"Enregistrer":"Ajouter");
+  const majHors=()=>{ $("#m-crm").hidden=$("#m-hors").checked; }; $("#m-hors").addEventListener("change",majHors); majHors();
+}
+// Organigramme : arbre à partir de « Rattaché à » ; les personnes sans rattachement ni équipe sont listées à part
+let equipeVue="liste";
+function vueOrganigramme(){
+  const tous=orgTous().filter(e=>!e.parti_le), ids=new Set(tous.map(e=>e.id)), kids=new Map();
+  tous.forEach(e=>{ const r=e.responsable_id&&ids.has(e.responsable_id)?e.responsable_id:null; if(!kids.has(r)) kids.set(r,[]); kids.get(r).push(e); });
+  const tri=(a,b)=>(a.ordre??999)-(b.ordre??999)||a.nom.localeCompare(b.nom,"fr");
+  const carte=(e,t)=>`<button class="org-card${e.hors_crm?" hors":""}${!e.hors_crm&&!e.actif?" off":""}" data-act="edit-membre" data-id="${e.id}">${avatar(e,t)}<span><b>${esc(e.nom)}</b><small>${esc([...new Set([e.poste||(e.hors_crm?"":ROLES[e.role]),e.pole&&POLES[e.pole]].filter(Boolean))].join(" · ")||"Poste à renseigner")}</small></span></button>`;
+  const noeud=(e,d)=>{ const k=(kids.get(e.id)||[]).sort(tri); return `<li>${carte(e,d?36:44)}${k.length?`<ul>${k.map(x=>noeud(x,d+1)).join("")}</ul>`:""}</li>`; };
+  const racines=(kids.get(null)||[]).sort(tri), sommets=racines.filter(e=>(kids.get(e.id)||[]).length||e.pole==="direction"), seuls=racines.filter(e=>!sommets.includes(e));
+  return `<div class="org-wrap">${sommets.length?`<ul class="org">${sommets.map(e=>noeud(e,0)).join("")}</ul>`:`<p class="hint">Personne n’est encore rattaché. Ouvre une fiche et choisis « Rattaché à » pour construire l’organigramme.</p>`}</div>
+    ${seuls.length?`<h4 style="margin:16px 0 8px">À rattacher · ${seuls.length}</h4><div class="org-seuls">${seuls.map(e=>carte(e,32)).join("")}</div>`:""}
+    <p class="hint" style="margin-top:12px">Clique sur une personne pour modifier son poste, son pôle, son rattachement ou sa photo. « + Membre » permet aussi d’ajouter quelqu’un qui n’utilise pas le CRM (direction, SAV, livraison…).</p>`;
 }
 
 function formDepart(m){
@@ -1735,6 +1960,17 @@ document.addEventListener("click",async e=>{
   if(act==="today-tab"){ todayTab=t.dataset.v; return viewAujourdhui($("#view")); }
   if(act==="today-full"){ todayFull=true; viewAujourdhui($("#view")); const k=t.dataset.sec; const el=k==="devis"?[...document.querySelectorAll("#view h3")].find(h=>/Devis à relancer/.test(h.textContent)):k==="mois"?document.querySelector("#view .mois-fold"):k?document.querySelector("#view .ex-"+k):null; if(el){ if(el.tagName==="DETAILS") el.open=true; el.scrollIntoView({block:"start",behavior:"smooth"}); } return; }
   if(act==="today-simple"){ todayFull=false; window.scrollTo(0,0); return viewAujourdhui($("#view")); }
+  if(act==="ws-tiroir"){ return wsTiroir(id); }
+  if(act==="ws-jour"){ wsJour=+t.dataset.n?wsJour+(+t.dataset.n):0; return viewAujourdhui($("#view")); }
+  if(act==="ws-periode"){ wsPeriode=t.dataset.v; return viewAujourdhui($("#view")); }
+  if(act==="ws-filtre"){ wsFiltre=t.dataset.v||""; wsTout=false; return viewAujourdhui($("#view")); }
+  if(act==="ws-tout"){ wsTout=!wsTout; return viewAujourdhui($("#view")); }
+  if(act==="ws-hyg"){ const k=t.dataset.v, T={sans:"Affaires sans prochaine action",inactives:"Inactives depuis plus de 14 jours",devis:"Devis à relancer",bloq30:"Bloquées depuis plus de 30 jours"}[k]; return k==="devis"?listeAffairesModal(T,[],wsHyg.devis):listeAffairesModal(T,wsHyg[k]||[]); }
+  if(act==="ws-pipe"){ closeModal(true); pipeFilt={com:id,q:"",risque:""}; colShown={}; location.hash="pipeline"; tab="pipeline"; return render(); }
+  if(act==="ws-retards"){ closeModal(true); todayCom=id; todayQui="equipe"; todayFull=true; return viewAujourdhui($("#view")); }
+  if(act==="demande"){ closeModal(true); return formDemande({com:t.dataset.com,opp:t.dataset.opp,compte:t.dataset.compte,aid:t.dataset.aid,type:t.dataset.type}); }
+  if(act==="demande-clore"){ t.disabled=true; return write(upd("demandes",id,{statut:"annulee",resolue_le:new Date().toISOString()}),"Demande close"); }
+  if(act==="demande-repondre"){ const d=(state.demandes||[]).find(x=>x.id===id); if(d) formRepondreDemande(d); return; }
   if(act==="today-qui"){ todayQui=t.dataset.v; todayCom=""; return viewAujourdhui($("#view")); }
   if(act==="relance-ok"){ t.disabled=true; return write(upd("activites",id,{date_prochaine_action:null}),"Relance retirée de la liste"); }
   if(act==="rep-csv") return exportRep("csv");
@@ -1779,7 +2015,8 @@ document.addEventListener("click",async e=>{
   if(act==="open-opp") return openOpp(byId(state.opportunites,id));
   if(act==="transfer") return formTransfert(byId(state.comptes,id));
   if(act==="new-membre") return formMembre();
-  if(act==="edit-membre") return formMembre(byId(state.equipe,id));
+  if(act==="edit-membre") return formMembre(byId(orgTous(),id));
+  if(act==="equipe-vue"){ equipeVue=t.dataset.v; return viewEquipe($("#view")); }
   if(act==="voir-comme"){ const m=byId(state.equipe,id); if(!m) return; apercu=m; await load(); todayQui=null; todayCom=""; if(location.hash==="#aujourdhui") render(); else location.hash="#aujourdhui"; window.scrollTo(0,0); return toast("Aperçu : "+m.nom+" · lecture seule"); }
   if(act==="quitter-apercu"){ apercu=null; renderApercu(); await load(); todayQui=null; todayCom=""; if(location.hash==="#equipe") render(); else location.hash="#equipe"; return; }
   if(act==="depart-membre") return formDepart(byId(state.equipe,id));
@@ -2018,7 +2255,8 @@ function shItem(a,S){
 function accueilSimple(v,S,dv,mois,prenom,dateTxt){
   const file=[...new Map([...S.retard.filter(a=>a.prioritaire),...S.jour,...S.retard.filter(a=>!a.prioritaire),...S.statuer].map(a=>[a.id,a])).values()];
   const [premier,...reste]=file, suite=reste.slice(0,3).map(a=>shItem(a,S)), p=premier?shItem(premier,S):null;
-  const n=file.length;
+  const dmd=(state.demandes||[]).filter(d=>me&&d.destinataire_id===me.id&&d.statut==="en_attente");
+  const n=file.length+dmd.length;
   const chips=[
     S.retard.length?`<button class="btn" data-act="today-full" data-sec="retard">${S.retard.length} en retard ›</button>`:"",
     S.statuer.length?`<button class="btn" data-act="today-full" data-sec="statuer">${S.statuer.length} à statuer ›</button>`:"",
@@ -2028,6 +2266,10 @@ function accueilSimple(v,S,dv,mois,prenom,dateTxt){
   v.innerHTML=`<div class="sh">
     <div class="sh-head"><div class="lab-mono">${esc(dateTxt)}</div><h2>Bonjour ${esc(prenom)}</h2>
       <p>${n?`${n} chose${n>1?"s":""} à faire${S.retard.length||S.statuer.length?"":" aujourd’hui"}.`:"Rien à faire pour l’instant."}</p></div>
+    ${dmd.map(d=>{ const o=byId(state.opportunites,d.opportunite_id), c=byId(state.comptes,d.compte_id||(o&&o.compte_id)); return `<section class="sh-card sh-dem" aria-label="Demande de ${esc(prenomDe(d.auteur_id))}">
+      <div class="sh-lab"><span class="dotv" aria-hidden="true"></span>${esc(prenomDe(d.auteur_id))} te demande ${d.type==="validation"?"une validation":"une mise à jour"}</div>
+      <div class="sh-title">${esc((c&&c.nom)||(o&&o.titre)||"Point sur tes actions")}</div>${d.message?`<div class="sh-why">« ${esc(d.message)} »</div>`:""}
+      <div class="sh-btns">${o?`<button class="btn primary big" data-act="open-opp" data-id="${o.id}">Ouvrir l’affaire</button>`:c?`<button class="btn primary big" data-act="open-compte" data-id="${c.id}">Ouvrir la fiche</button>`:""}<button class="btn big" data-act="demande-repondre" data-id="${d.id}">Répondre</button></div></section>`; }).join("")}
     ${p?`<section class="sh-card" aria-label="Maintenant" data-aid="${p.a.id}">
       <div class="sh-lab"><span class="dotv" aria-hidden="true"></span>Maintenant · <span class="${p.etat==="retard"?"t-bad":p.etat==="statuer"?"t-warn":""}">${esc(p.quand)}</span></div>
       <div class="sh-title"><button class="linkish" data-act="act-detail" data-id="${p.a.id}">${esc(p.titre)}</button></div>
@@ -2042,9 +2284,221 @@ function accueilSimple(v,S,dv,mois,prenom,dateTxt){
     <p style="margin:0"><button class="linkish" data-act="today-full" data-sec="">Tout voir ›</button></p>
   </div>`;
 }
+/* ---- Espace superviseur : où intervenir aujourd'hui ---- */
+let wsPeriode="jour", wsFiltre="", wsJour=0, wsTout=false;
+const TEINTES=[["#E7E3FF","#5B49D6"],["#DDF5F8","#007F8F"],["#FDE7F1","#B0185E"],["#FFF0E0","#A85A00"],["#E3F3EC","#11845B"],["#E6ECFD","#3554C8"]];
+function avatar(e,t){ t=t||40; if(!e) return `<span class="av" style="width:${t}px;height:${t}px" aria-hidden="true">·</span>`;
+  const ini=String(e.nom||"·").split(/\s+/).filter(Boolean).map(x=>x[0]).slice(0,2).join("").toUpperCase();
+  if(e.photo_url) return `<img class="av" src="${esc(e.photo_url)}" alt="" style="width:${t}px;height:${t}px">`;
+  const [bg,fg]=TEINTES[[...String(e.id)].reduce((s,c)=>s+c.charCodeAt(0),0)%TEINTES.length];
+  return `<span class="av" style="width:${t}px;height:${t}px;background:${bg};color:${fg};font-size:${Math.round(t*.36)}px" aria-hidden="true">${esc(ini)}</span>`; }
+const prenomDe=id=>{ const e=byId(state.equipe,id); return e?String(e.nom).split(/\s+/)[0]:"—"; };
+// Périmètre : les membres rattachés (directement ou non) au superviseur ; l'admin, ou un superviseur sans équipe rattachée, voit tout le monde.
+function perimetre(){
+  if(!me||me.role==="admin") return null;
+  const kids=new Map(); (state.organigramme||state.equipe).forEach(e=>{ if(e.responsable_id){ if(!kids.has(e.responsable_id)) kids.set(e.responsable_id,[]); kids.get(e.responsable_id).push(e.id); } });
+  const out=new Set(), st=[me.id]; while(st.length){ const x=st.pop(); (kids.get(x)||[]).forEach(k=>{ if(!out.has(k)){ out.add(k); st.push(k); } }); }
+  return out.size?out:null;
+}
+const commerciauxSuivis=p=>state.equipe.filter(e=>e.role==="commercial"&&e.actif&&!e.parti_le&&!e.hors_crm&&(!p||p.has(e.id))).sort((a,b)=>a.nom.localeCompare(b.nom,"fr"));
+function itemsATraiter(p){
+  const now=Date.now(), dans=id=>!p||p.has(id);
+  const enAttente=new Set(); (state.demandes||[]).forEach(d=>{ if(d.statut==="en_attente"&&me&&d.auteur_id===me.id){ if(d.opportunite_id) enAttente.add("o:"+d.opportunite_id); if(d.compte_id) enAttente.add("c:"+d.compte_id); if(d.activite_id) enAttente.add("a:"+d.activite_id); } });
+  const prochaine=o=>state.activites.some(a=>a.statut==="a_faire"&&!estImporte(a)&&(a.opportunite_id===o.id||(!a.opportunite_id&&a.compte_id===o.compte_id))&&new Date(a.date_activite).getTime()>=now);
+  const L=[];
+  state.opportunites.forEach(o=>{ if(o.issue!=="en_cours"||!dans(o.commercial_id)) return; const r=risque(o); if(!r||!r.niveau||enAttente.has("o:"+o.id)) return;
+    const j=Math.floor((now-derniereActivite(o))/864e5), raisons=[`${ETAPE_LABEL[o.etape]||o.etape} ${r.niveau==="bloquee"?"bloquée":"qui ralentit"} depuis ${r.j} jours`];
+    if(j>=7) raisons.push(`Aucun mouvement depuis ${j} jours`); if(!prochaine(o)) raisons.push("Aucune prochaine action planifiée");
+    L.push({k:"o:"+o.id,sev:r.niveau==="bloquee"?"critique":"risque",com:o.commercial_id,cat:"Pipeline",titre:(byId(state.comptes,o.compte_id)||{}).nom||o.titre,sous:o.titre,etape:ETAPE_LABEL[o.etape]||o.etape,jours:r.j,valeur:+o.montant_mad||0,raisons,o}); });
+  state.devis.forEach(d=>{ if(d.statut!=="envoye"||!dans(d.commercial_id)) return; const j=daysSince(d.date_envoi||d.updated_at||d.created_at); if(j<7) return;
+    if(enAttente.has("c:"+d.compte_id)||(d.opportunite_id&&(enAttente.has("o:"+d.opportunite_id)||L.some(x=>x.o&&x.o.id===d.opportunite_id)))) return;
+    const c=byId(state.comptes,d.compte_id); L.push({k:"d:"+d.id,sev:"risque",com:d.commercial_id,cat:"Relance",titre:c?c.nom:devisNum(d),sous:devisNum(d),valeur:+d.montant_mad||0,raisons:[`Devis sans réponse depuis ${j} jours`],d}); });
+  const retards=new Map();
+  state.activites.forEach(a=>{ if(a.statut!=="a_faire"||estImporte(a)||estEvenement(a)) return; const r=responsable(a); if(!dans(r)) return; const e=etatAction(a,now);
+    if(e==="a_statuer"&&!enAttente.has("a:"+a.id)){ const c=byId(state.comptes,a.compte_id); L.push({k:"a:"+a.id,sev:"statuer",com:r,cat:TYPES_ACT[a.type]||a.type,titre:c?c.nom:(a.label||"Action"),sous:(Math.floor((startOfDay().getTime()-startOfDay(new Date(a.date_activite)).getTime())/864e5)<=0?"Aujourd’hui":fmtDate(a.date_activite))+" · "+hm(a.date_activite),valeur:0,raisons:["Passé : a-t-il eu lieu ?"],a}); }
+    else if(e==="en_retard"){ if(!retards.has(r)) retards.set(r,[]); retards.get(r).push(a); } });
+  retards.forEach((as,r)=>{ if(as.length<2||enAttente.has("r:"+r)) return; const plusVieille=as.reduce((m,a)=>new Date(a.date_activite)<new Date(m.date_activite)?a:m);
+    L.push({k:"r:"+r,sev:"risque",com:r,cat:"Retards",titre:as.length+" actions en retard",sous:as.slice(0,2).map(a=>(byId(state.comptes,a.compte_id)||{}).nom||a.label||"").filter(Boolean).join(" · "),valeur:0,raisons:["La plus ancienne date du "+fmtDate(plusVieille.date_activite)],retards:as}); });
+  const rang={critique:0,risque:1,statuer:2};
+  return L.sort((x,y)=>rang[x.sev]-rang[y.sev]||y.valeur-x.valeur);
+}
+const SEV={critique:["Critique","bad"],risque:["À risque","warn"],statuer:["À statuer",""]};
+function wsActions(x,primaire){
+  const b=(cls,act,lib,attrs)=>`<button class="btn ${cls}" data-act="${act}" ${attrs||""}>${lib}</button>`, P=primaire?"primary":"primary";
+  const dem=(lib,extra)=>b("","demande",lib,`data-com="${x.com||""}" ${extra||""}`);
+  if(x.o) return b(P,"open-opp","Voir l’affaire",`data-id="${x.o.id}"`)+dem("Demander une mise à jour",`data-opp="${x.o.id}" data-compte="${x.o.compte_id}"`);
+  if(x.d) return b(P,"relance-ia","Relancer",`data-compte="${x.d.compte_id}" data-devis="${x.d.id}"`)+dem("Demander",`data-compte="${x.d.compte_id}" data-opp="${x.d.opportunite_id||""}"`);
+  if(x.a) return (peutEffectuer(x.a)?b(P,"act-effectuer","Effectué",`data-id="${x.a.id}"`):dem("Demander à "+esc(prenomDe(x.com)),`data-aid="${x.a.id}" data-compte="${x.a.compte_id||""}" data-opp="${x.a.opportunite_id||""}" data-type="validation"`))+b("","act-reporter","Reporté",`data-id="${x.a.id}"`)+b("","act-statuer","Annulé",`data-id="${x.a.id}" data-v="annulee"`)+b("","act-statuer","Non effectué",`data-id="${x.a.id}" data-v="non_effectuee"`);
+  if(x.retards) return b(P,"ws-tiroir","Voir ses actions",`data-id="${x.com}"`)+dem("Demander un point");
+  return "";
+}
+function wsCarte(x){ const e=byId(state.equipe,x.com), [lib,cls]=SEV[x.sev];
+  return `<article class="ws-item sev-${x.sev}">
+    <div class="ws-item-top"><div class="ws-who">${avatar(e,32)}<span class="ws-cat">${esc(x.cat)}</span></div><span class="pill ${cls}">${lib}</span></div>
+    <div><div class="ws-item-t">${esc(x.titre)}</div>${x.valeur?`<div class="ws-val">${mad(x.valeur)} <small>MAD</small></div>`:`<div class="ws-sub">${esc(x.sous||"")}</div>`}</div>
+    <div class="ws-why">« ${esc(x.raisons[0])} »${e?` <span class="hint">· ${esc(e.nom)}</span>`:""}</div>
+    <div class="ws-acts">${wsActions(x)}</div></article>`; }
+function wsPlanning(coms){
+  const d0=startOfDay(); d0.setDate(d0.getDate()+wsJour); const d1=new Date(d0.getTime()+864e5), now=Date.now();
+  const ids=new Set(coms.map(e=>e.id));
+  const ev=state.activites.filter(a=>!estImporte(a)&&ids.has(responsable(a))&&(t=>t>=d0.getTime()&&t<d1.getTime())(new Date(a.date_activite).getTime()));
+  // plage 8 h–19 h, élargie si une action tombe plus tôt ou plus tard (rien n'est coupé au bord)
+  const hs=ev.map(a=>new Date(a.date_activite).getHours()), H0=Math.min(8,...hs), H1=Math.max(19,...hs.map(h=>h+1)), span=(H1-H0)*60;
+  const pos=a=>{ const t=new Date(a.date_activite), m=t.getHours()*60+t.getMinutes()-H0*60, dur=+a.duree_min||dureeDefaut(a.type); const l=Math.max(0,Math.min(span-30,m)); return {l:l/span*100,w:Math.max(5,Math.min(dur,span-l)/span*100)}; };
+  const etat=a=>{ const e=etatAction(a,now); return e==="effectuee"?"ok":e==="a_statuer"?"warn":e==="en_retard"?"bad":(e==="annulee"||e==="non_effectuee")?"off":"plan"; };
+  const jourTxt=d0.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"});
+  const ouvre=d0.getDay()!==0;
+  const lignes=coms.map(e=>{ const as=ev.filter(a=>responsable(a)===e.id).sort((x,y)=>new Date(x.date_activite)-new Date(y.date_activite)); const terrain=as.filter(a=>TERRAIN.includes(a.type)).length;
+    return `<div class="pl-row"><button class="pl-who" data-act="ws-tiroir" data-id="${e.id}">${avatar(e,30)}<span><b>${esc(prenomDe(e.id))}</b><small>${as.length?`${as.length} action${as.length>1?"s":""}${terrain?` · ${terrain} terrain`:""}`:"rien de planifié"}</small></span></button>
+      <div class="pl-track">${as.length?as.map(a=>{ const {l,w}=pos(a), c=byId(state.comptes,a.compte_id);
+        return `<button class="pl-ev ${etat(a)}" style="left:${l.toFixed(2)}%;width:${w.toFixed(2)}%" data-act="act-detail" data-id="${a.id}" title="${esc(hm(a.date_activite)+" · "+(TYPES_ACT[a.type]||a.type)+(c?" · "+c.nom:""))}"><b>${esc(hm(a.date_activite))}</b> ${esc(TYPES_ACT[a.type]||a.type)}${c?` · ${esc(c.nom)}`:""}</button>`; }).join(""):(ouvre?`<span class="pl-vide">Aucune action planifiée</span>`:"")}</div></div>`; }).join("");
+  const maint=wsJour===0&&new Date().getHours()>=H0&&new Date().getHours()<H1?((new Date().getHours()*60+new Date().getMinutes()-H0*60)/span*100):null;
+  return `<section class="ws-plan" aria-label="Planning de l’équipe">
+    <div class="pl-head"><div><h2>Équipe ${wsJour===0?"aujourd’hui":wsJour===1?"demain":wsJour===-1?"hier":""}</h2><span class="lab-mono">${esc(jourTxt)}</span></div>
+      <div class="pl-legend" aria-hidden="true"><span><i class="plan"></i>Prévu</span><span><i class="ok"></i>Fait</span><span><i class="warn"></i>À statuer</span><span><i class="bad"></i>En retard</span></div>
+      <div class="tools"><button class="btn small icon" data-act="ws-jour" data-n="-1" aria-label="Jour précédent">‹</button><button class="btn small" data-act="ws-jour" data-n="0">Aujourd’hui</button><button class="btn small icon" data-act="ws-jour" data-n="1" aria-label="Jour suivant">›</button><a class="btn small" href="#planning">Semaine ↗</a></div></div>
+    <div class="pl-grid">
+      <div class="pl-row pl-axis"><span></span><div class="pl-track">${Array.from({length:H1-H0+1},(_,i)=>`<span style="left:${(i/(H1-H0)*100).toFixed(2)}%">${String(H0+i).padStart(2,"0")}</span>`).join("")}</div></div>
+      <div class="pl-rows">${lignes||`<p class="hint">Aucun commercial rattaché. Renseigne l’organigramme dans Réglages.</p>`}
+        ${maint!=null?`<div class="pl-now" style="left:calc(var(--pl-label) + (100% - var(--pl-label)) * ${(maint/100).toFixed(4)})"><span>${esc(hm(new Date()))}</span></div>`:""}</div>
+    </div></section>`;
+}
+function viewWorkspace(v){
+  const p=perimetre(), coms=commerciauxSuivis(p), dans=id=>!p||p.has(id), now=Date.now();
+  const L=itemsATraiter(p), prio=L.find(x=>x.sev!=="statuer"&&x.valeur>0)||null, file=L.filter(x=>x!==prio);
+  const opps=state.opportunites.filter(o=>o.issue==="en_cours"&&dans(o.commercial_id));
+  const risq=opps.filter(o=>(risque(o)||{}).niveau==="risque"), bloq=opps.filter(o=>(risque(o)||{}).niveau==="bloquee");
+  const concernes=[...risq,...bloq].reduce((s,o)=>s+(+o.montant_mad||0),0);
+  const prenom=me?String(me.nom).split(/\s+/)[0]:"";
+  // Mon équipe
+  const equipeRows=coms.map(e=>{ const mesOpps=opps.filter(o=>o.commercial_id===e.id), pipe=mesOpps.reduce((s,o)=>s+(+o.montant_mad||0),0), pts=L.filter(x=>x.com===e.id);
+    const st=pts.some(x=>x.sev==="critique")||pts.length>=4?["Attention","bad"]:pts.length?["À surveiller","warn"]:["OK","ok"]; return {e,pipe,pts,st}; })
+    .sort((a,b)=>({bad:0,warn:1,ok:2}[a.st[1]]-{bad:0,warn:1,ok:2}[b.st[1]])||b.pipe-a.pipe);
+  // En attente (mes demandes) et résolues récemment
+  const dem=(state.demandes||[]).filter(d=>me&&d.auteur_id===me.id&&(d.statut==="en_attente"||(d.statut==="resolue"&&d.resolue_le&&now-new Date(d.resolue_le).getTime()<2*864e5)))
+    .sort((a,b)=>(a.statut==="en_attente"?0:1)-(b.statut==="en_attente"?0:1)||new Date(b.created_at)-new Date(a.created_at));
+  const ago2=d=>{ const s=(now-new Date(d).getTime())/1000; return s<3600?`il y a ${Math.max(1,Math.round(s/60))} min`:s<86400?`il y a ${Math.round(s/3600)} h`:s<172800?"hier":`il y a ${Math.floor(s/86400)} j`; };
+  // Hygiène
+  const prochaine=o=>state.activites.some(a=>a.statut==="a_faire"&&!estImporte(a)&&(a.opportunite_id===o.id||(!a.opportunite_id&&a.compte_id===o.compte_id))&&new Date(a.date_activite).getTime()>=now);
+  const H={
+    sans:opps.filter(o=>!prochaine(o)),
+    inactives:opps.filter(o=>now-derniereActivite(o)>14*864e5),
+    devis:state.devis.filter(d=>d.statut==="envoye"&&dans(d.commercial_id)&&daysSince(d.date_envoi||d.updated_at||d.created_at)>=7),
+    bloq30:opps.filter(o=>daysSince(o.etape_depuis||o.updated_at||o.created_at)>30)};
+  wsHyg=H;
+  // Ce qui a changé
+  const jours={jour:1,semaine:7,mois:30}[wsPeriode], depuis=now-jours*864e5, dansP=d=>d&&new Date(d).getTime()>=depuis;
+  const ch={nouveau:state.opportunites.filter(o=>dans(o.commercial_id)&&dansP(o.created_at)).reduce((s,o)=>s+(+o.montant_mad||0),0),
+    prop:state.opportunites.filter(o=>dans(o.commercial_id)&&o.issue==="en_cours"&&o.etape==="Proposition"&&dansP(o.etape_depuis)).reduce((s,o)=>s+(+o.montant_mad||0),0),
+    gagne:state.opportunites.filter(o=>dans(o.commercial_id)&&o.issue==="gagnee"&&dansP(o.updated_at)).reduce((s,o)=>s+(+o.montant_mad||0),0),
+    risque:opps.filter(o=>{ const r=risque(o); return r&&r.niveau&&(r.j-(r.niveau==="bloquee"?r.s:Math.ceil(r.s*.75)))<jours; }).length};
+  // Période : objectif du mois, rythme de la période
+  const m0=new Date(); m0.setDate(1); m0.setHours(0,0,0,0);
+  const caMois=state.opportunites.filter(o=>dans(o.commercial_id)&&o.issue==="gagnee"&&new Date(o.updated_at)>=m0).reduce((s,o)=>s+(+o.montant_mad||0),0);
+  const objCa=p?[...p].reduce((s,id)=>s+(+objDe(id).ca||0),0):objEquipe("ca");
+  const terrainP=state.activites.filter(a=>TERRAIN.includes(a.type)&&dans(responsable(a))&&!estImporte(a)&&dansP(a.date_activite)&&new Date(a.date_activite).getTime()<=now&&a.statut!=="annulee");
+  const devisP=state.devis.filter(d=>dans(d.commercial_id)&&d.statut!=="brouillon"&&dansP(d.date_envoi)).reduce((s,d)=>s+(+d.montant_mad||0),0);
+  const nego=opps.filter(o=>o.etape==="Negociation"), negoVal=nego.reduce((s,o)=>s+(+o.montant_mad||0),0), negoDort=nego.filter(o=>now-derniereActivite(o)>14*864e5).reduce((s,o)=>s+(+o.montant_mad||0),0);
+  const PER={jour:"Aujourd’hui",semaine:"Cette semaine",mois:"Ce mois-ci"}[wsPeriode];
+  const filtres=[["","Tout",L.length],["critique","Critique",L.filter(x=>x.sev==="critique").length],["risque","À risque",L.filter(x=>x.sev==="risque").length],["statuer","À statuer",L.filter(x=>x.sev==="statuer").length]];
+  const fileF=file.filter(x=>!wsFiltre||x.sev===wsFiltre), montre=wsTout?fileF:fileF.slice(0,6);
+  const big=n=>`<b>${n>=1e4?madShort(n):mad(n)}</b>`;
+  v.innerHTML=`<div class="ws">
+  ${wsPlanning(coms)}
+  <section class="ws-head">
+    <div><h2>Bonjour ${esc(prenom)}</h2><p>${L.length?`Votre équipe a <b>${L.length} point${L.length>1?"s":""} à traiter</b> aujourd’hui.`:"Rien à signaler : l’équipe est à jour."} <button class="linkish" data-act="today-qui" data-v="moi">Mes propres actions ›</button></p></div>
+    <div class="ws-metrics"><div><b>${opps.length}</b><span>affaires</span></div><div><b class="t-warn">${risq.length}</b><span>à risque</span></div><div><b class="t-bad">${bloq.length}</b><span>bloquées</span></div><div><b>${madShort(concernes)}</b><span>MAD concernés</span></div>
+      <div class="seg" role="group" aria-label="Période">${[["jour","Aujourd’hui"],["semaine","Semaine"],["mois","Mois"]].map(([k,l])=>`<button data-act="ws-periode" data-v="${k}" aria-pressed="${wsPeriode===k}">${l}</button>`).join("")}</div></div>
+  </section>
+  <div class="ws-two">
+    ${prio?(()=>{ const e=byId(state.equipe,prio.com); return `<section class="ws-prio" aria-label="Priorité">
+      <div class="ws-prio-top"><span class="lab-mono">Priorité</span><span class="ws-alert"><i></i>${prio.sev==="critique"?"Intervention recommandée":"À surveiller de près"}</span></div>
+      <div class="ws-prio-main"><div><div class="ws-prio-t">${esc(prio.titre)}</div><div class="ws-chips">${prio.etape?`<span>${esc(prio.etape)}</span>`:""}${prio.jours?`<span class="r">${prio.sev==="critique"?"Bloquée":"Ralentit"} depuis ${prio.jours} jours</span>`:""}${prio.sous&&prio.sous!==prio.titre?`<span>${esc(prio.sous)}</span>`:""}</div></div>
+        <div class="ws-prio-v">${mad(prio.valeur)}<small>MAD</small></div></div>
+      <div class="ws-prio-why"><div class="ws-who">${avatar(e,44)}<div><small>${e&&e.role==="commercial"?"Commercial·e":"Responsable"}</small><b>${esc(e?e.nom:"Non attribuée")}</b></div></div>
+        <div><small>Pourquoi elle remonte</small>${prio.raisons.map(r=>`<div class="r">${esc(r)}</div>`).join("")}</div></div>
+      <div class="ws-acts">${wsActions(prio,true).replace(/class="btn primary"/,'class="btn ws-white"').replace(/class="btn "/g,'class="btn ws-ghost"')}</div></section>`; })()
+    :`<section class="ws-prio calme"><span class="lab-mono">Priorité</span><div class="ws-prio-t">Aucune affaire en danger</div><p>Les affaires de l’équipe avancent dans les délais. Jette un œil aux actions à statuer ci-dessous.</p></section>`}
+    <section class="ws-card" aria-label="Mon équipe"><div class="ws-card-h"><h3>Mon équipe</h3><span class="hint">${coms.length} commercia${coms.length>1?"ux":"l"}${p?"":" · toute l’équipe"}</span></div>
+      <div class="ws-team">${equipeRows.map(r=>`<button class="ws-member${r.st[1]==="bad"?" hl":""}" data-act="ws-tiroir" data-id="${r.e.id}">${avatar(r.e,44)}<span class="ws-dot ${r.st[1]}"></span>
+        <span class="ws-m-txt"><b>${esc(r.e.nom)}</b><small><span class="mono">${madShort(r.pipe)}</span> MAD pipeline · <b>${r.pts.length}</b> point${r.pts.length>1?"s":""} à traiter</small></span><span class="pill ${r.st[1]}">${r.st[0]}</span><span aria-hidden="true" class="chev">›</span></button>`).join("")||`<p class="hint">Aucun commercial actif.</p>`}</div></section>
+  </div>
+  <section class="ws-card" aria-label="À traiter"><div class="ws-card-h"><div><h3>À traiter</h3><span class="mono hint">${file.length}</span></div>
+    <div class="chips" role="group" aria-label="Filtrer">${filtres.map(([k,l,n])=>`<button class="chip" data-act="ws-filtre" data-v="${k}" aria-pressed="${wsFiltre===k}">${k?`<i class="dot ${SEV[k][1]||"mute"}"></i>`:""}${l}${k?` <b>${n-(prio&&prio.sev===k?1:0)}</b>`:""}</button>`).join("")}</div></div>
+    ${montre.length?`<div class="ws-items">${montre.map(wsCarte).join("")}</div>`:`<p class="hint">Rien ${wsFiltre?"dans ce filtre":"d’autre"} à traiter.</p>`}
+    ${fileF.length>6?`<p style="margin:12px 0 0"><button class="linkish" data-act="ws-tout">${wsTout?"Réduire":"Voir les "+(fileF.length-6)+" autres"}</button></p>`:""}</section>
+  <div class="ws-two">
+    <section class="ws-card" aria-label="En attente"><div class="ws-card-h"><div><h3>En attente</h3><span class="mono hint">${dem.filter(d=>d.statut==="en_attente").length}</span></div><span class="ws-flow">À traiter → Action prise → <b>En attente</b> → Résolu</span></div>
+      ${dem.length?dem.map(d=>{ const e=byId(state.equipe,d.destinataire_id), o=byId(state.opportunites,d.opportunite_id), c=byId(state.comptes,d.compte_id||(o&&o.compte_id)); const ok=d.statut==="resolue";
+        return `<div class="ws-wait">${avatar(e,38)}<div class="ws-m-txt"><b>${esc((c&&c.nom)||(o&&o.titre)||"Demande")}${o&&c?` <span class="hint">· ${esc(o.titre)}</span>`:""}</b><small>${ok?esc(d.reponse||"Résolu")+" · "+ago2(d.resolue_le):(d.type==="validation"?"Validation":"Mise à jour")+" demandée "+ago2(d.created_at)}${d.message?" · « "+esc(d.message)+" »":""}</small></div>
+          <span class="pill ${ok?"ok":""}">${ok?"Résolu":"En attente de "+esc(prenomDe(d.destinataire_id))}</span>${ok?"":`<button class="btn small" data-act="demande-clore" data-id="${d.id}">Clore</button>`}</div>`; }).join("")
+      :`<p class="hint">Rien en attente. Quand tu demandes une mise à jour à un commercial, elle s’affiche ici jusqu’à sa réponse.</p>`}</section>
+    <section class="ws-card" aria-label="Hygiène du pipeline"><div class="ws-card-h"><h3>Hygiène du pipeline</h3></div>
+      <div class="ws-hyg">${[["sans","Affaires sans prochaine action",H.sans.length],["inactives","Inactives depuis +14 j",H.inactives.length],["devis","Devis à relancer",H.devis.length],["bloq30","Bloquées depuis +30 j",H.bloq30.length]].map(([k,l,n])=>`<button class="ws-h${k==="bloq30"&&n?" bad":""}" data-act="ws-hyg" data-v="${k}" ${n?"":"disabled"}><b>${n}</b><span>${l}</span><i aria-hidden="true">↗</i></button>`).join("")}</div></section>
+  </div>
+  <div class="ws-two">
+    <section class="ws-card" aria-label="Ce qui a changé"><div class="ws-card-h"><h3>Ce qui a changé</h3><span class="hint">${{jour:"depuis 24 h",semaine:"sur 7 jours",mois:"sur 30 jours"}[wsPeriode]}</span></div>
+      <div class="ws-chg"><div><b class="${ch.nouveau?"t-ok":""}">${ch.nouveau?"+":""}${madShort(ch.nouveau)}</b><small>MAD</small><span>Nouveau pipeline</span></div><div><b>${madShort(ch.prop)}</b><small>MAD</small><span>Passés en proposition</span></div><div><b class="${ch.gagne?"t-ok":""}">${madShort(ch.gagne)}</b><small>MAD</small><span>Gagnés</span></div><div><b class="${ch.risque?"t-bad":""}">${ch.risque}</b><small>AFFAIRE${ch.risque>1?"S":""}</small><span>Nouvelle${ch.risque>1?"s":""} à risque</span></div></div></section>
+    <section class="ws-card" aria-label="${esc(PER)}"><div class="ws-card-h"><h3>${esc(PER)}</h3></div>
+      <div class="ws-obj"><div class="ws-obj-h"><span class="hint" style="margin:0">Objectif du mois</span><span>${objCa?`<b>${madShort(caMois)}</b> / ${madShort(objCa)} MAD`:`<b>${madShort(caMois)}</b> MAD signés · <button class="linkish" data-act="objectifs">fixer un objectif</button>`}</span></div>
+        ${objCa?`<div class="ws-bar"><i style="width:${Math.min(100,Math.round(caMois/objCa*100))}%"></i></div>`:""}</div>
+      <div class="ws-stats"><div><b>${terrainP.filter(a=>a.statut==="fait").length} / ${terrainP.length}</b><span>RDV et visites réalisés</span></div><div><b>${madShort(devisP)}</b><span>MAD de devis envoyés</span></div><div><b>+${madShort(ch.nouveau)}</b><span>MAD de pipeline créé</span></div></div>
+      ${negoVal&&negoDort?`<div class="ws-insight">${Math.round(negoDort/negoVal*100)} % de la valeur en négociation n’a enregistré aucune activité depuis 14 jours.</div>`:""}</section>
+  </div></div>`;
+}
+let wsHyg={};
+function listeAffairesModal(titre,opps,devis){
+  const h=`<div class="closed-list">${opps.map(o=>{ const c=byId(state.comptes,o.compte_id); return `<div class="closed-row"><div style="min-width:0"><button class="linkish" data-act="open-opp" data-id="${o.id}"><b>${esc(o.titre)}</b></button><div class="hint" style="margin:0">${esc([c&&c.nom,ETAPE_LABEL[o.etape],nomMembre(o.commercial_id)].filter(Boolean).join(" · "))}</div></div><span class="mono">${mad(o.montant_mad)} MAD</span></div>`; }).join("")}
+    ${(devis||[]).map(d=>{ const c=byId(state.comptes,d.compte_id); return `<div class="closed-row"><div><button class="linkish" data-act="edit-devis" data-id="${d.id}"><b translate="no">${esc(devisNum(d))}</b></button><div class="hint" style="margin:0">${esc([c&&c.nom,nomMembre(d.commercial_id),"envoyé il y a "+daysSince(d.date_envoi||d.updated_at||d.created_at)+" j"].filter(Boolean).join(" · "))}</div></div><span class="mono">${mad(d.montant_mad)} MAD</span></div>`; }).join("")}</div>`;
+  modal(titre,h,async()=>{ closeModal(true); return true; },"Fermer");
+}
+function wsTiroir(id){
+  const e=byId(state.equipe,id); if(!e) return; lastFocus=document.activeElement;
+  const p=new Set([id]), L=itemsATraiter(p), now=Date.now();
+  const opps=state.opportunites.filter(o=>o.issue==="en_cours"&&o.commercial_id===id), pipe=opps.reduce((s,o)=>s+(+o.montant_mad||0),0), pond=opps.reduce((s,o)=>s+(+o.montant_mad||0)*proba(o)/100,0);
+  const d0=startOfDay().getTime(), jour=state.activites.filter(a=>responsable(a)===id&&!estImporte(a)&&(t=>t>=d0&&t<d0+864e5)(new Date(a.date_activite).getTime())).sort((x,y)=>new Date(x.date_activite)-new Date(y.date_activite));
+  const dem=(state.demandes||[]).filter(d=>d.destinataire_id===id&&d.statut==="en_attente");
+  const resp=byId(state.organigramme||state.equipe,e.responsable_id);
+  const lien=x=>x.o?`data-act="open-opp" data-id="${x.o.id}"`:x.d?`data-act="edit-devis" data-id="${x.d.id}"`:x.a?`data-act="act-detail" data-id="${x.a.id}"`:`data-act="ws-retards" data-id="${id}"`;
+  $("#modal-slot").innerHTML=`<div class="overlay drawer-ov" id="ov"><aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="dr-t">
+    <div class="dr-head"><div class="ws-who">${avatar(e,60)}<div><h3 id="dr-t">${esc(e.nom)}</h3><span class="hint" style="margin:0">${esc([e.poste||ROLES[e.role],e.showroom&&SHOWROOMS[e.showroom]?SHOWROOMS[e.showroom].replace("Showroom ",""):e.ville,resp?"rattaché·e à "+resp.nom:""].filter(Boolean).join(" · "))}</span></div></div><button class="x" id="mx" aria-label="Fermer">×</button></div>
+    <div class="dr-kpi"><div class="dark"><small>Pipeline</small><b>${madShort(pipe)} <i>MAD</i></b><span>${opps.length} affaire${opps.length>1?"s":""} en cours</span></div><div><small>Pipeline pondéré</small><b>${madShort(pond)} <i>MAD</i></b><span>selon la probabilité de chaque étape</span></div></div>
+    <section><h4>${L.length} point${L.length>1?"s":""} à traiter ${L.length?`<span class="pill ${L.some(x=>x.sev==="critique")||L.length>=4?"bad":"warn"}">${L.some(x=>x.sev==="critique")||L.length>=4?"Attention":"À surveiller"}</span>`:`<span class="pill ok">OK</span>`}</h4>
+      ${L.map(x=>`<button class="dr-row" ${lien(x)}><i class="dot ${SEV[x.sev][1]||"mute"}"></i><span class="ws-m-txt"><b>${esc(x.titre)}</b><small>${esc(x.raisons[0])}</small></span>${x.valeur?`<span class="mono">${madShort(x.valeur)}</span>`:""}</button>`).join("")||`<p class="hint">Rien à signaler.</p>`}</section>
+    ${dem.length?`<section><h4>Demandes en cours</h4>${dem.map(d=>`<div class="dr-row static"><i class="dot mute"></i><span class="ws-m-txt"><b>${esc(((byId(state.comptes,d.compte_id)||{}).nom)||((byId(state.opportunites,d.opportunite_id)||{}).titre)||"Demande")}</b><small>${d.type==="validation"?"Validation":"Mise à jour"} demandée · ${esc(d.message||"")}</small></span></div>`).join("")}</section>`:""}
+    <section><h4>${new Date().toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"}).replace(/^./,c=>c.toUpperCase())}</h4>
+      ${jour.map(a=>{ const c=byId(state.comptes,a.compte_id), et=etatAction(a,now); return `<button class="dr-row day" data-act="act-detail" data-id="${a.id}"><span class="mono">${esc(hm(a.date_activite))}</span><span class="ws-m-txt"><b>${esc(c?c.nom:(a.label||"Action"))}</b><small>${esc(TYPES_ACT[a.type]||a.type)}</small></span><span class="pill ${ETAT[et][2]}">${ETAT[et][0]}</span></button>`; }).join("")||`<p class="hint">Rien de planifié aujourd’hui.</p>`}</section>
+    <div class="dr-acts"><button class="btn primary big" data-act="ws-pipe" data-id="${id}">Voir son pipeline</button><button class="btn big" data-act="demande" data-com="${id}">Demander une mise à jour</button><button class="btn big" data-act="voir-comme" data-id="${id}">Voir son écran</button></div>
+  </aside></div>`;
+  $("#mx").onclick=()=>closeModal(true); $("#ov").addEventListener("click",ev=>{ if(ev.target.id==="ov") closeModal(true); }); trapFocus($("#ov .drawer")); $("#mx").focus();
+}
+function formDemande(o){
+  o=o||{}; const opp=byId(state.opportunites,o.opp), c=byId(state.comptes,o.compte||(opp&&opp.compte_id)), a=byId(state.activites,o.aid);
+  const coms=commerciauxSuivis(perimetre()); const dest=o.com||(opp&&opp.commercial_id)||(a&&responsable(a))||"";
+  const contexte=[opp&&opp.titre,c&&c.nom,a&&(TYPES_ACT[a.type]+" du "+fmtDate(a.date_activite)+" à "+hm(a.date_activite))].filter(Boolean).join(" · ");
+  const defaut=a?"Ce rendez-vous a-t-il eu lieu ? Peux-tu le statuer ?":opp?"Où en est cette affaire ? Peux-tu planifier la prochaine action ?":"Peux-tu faire un point sur tes actions en retard ?";
+  const h=`${contexte?`<p style="margin-top:0"><b>${esc(contexte)}</b></p>`:""}<div class="form-grid">
+    ${fld("dm-com","À qui",`<select id="dm-com" name="destinataire_id">${opt(coms.map(e=>[e.id,e.nom]),dest,"Choisir…")}</select>`)}
+    ${fld("dm-type","Type",`<select id="dm-type" name="type">${opt([["mise_a_jour","Mise à jour"],["validation","Validation"],["autre","Autre"]],o.type||"mise_a_jour")}</select>`)}
+    ${fld("dm-msg","Message",`<textarea id="dm-msg" name="message" maxlength="1000">${esc(defaut)}</textarea>`,true)}</div>
+    <p class="hint">Le commercial reçoit une notification. La demande passe dans « En attente » et se clôt toute seule dès qu’il enregistre une action sur ce client ou cette affaire.</p>`;
+  const submit=async f=>write(ins("demandes",{destinataire_id:sUuid(f.destinataire_id),compte_id:c?c.id:null,opportunite_id:opp?opp.id:null,activite_id:a?a.id:null,type:sEnum(f.type,["mise_a_jour","validation","autre"])||"mise_a_jour",message:sTxt(f.message)}),"Demande envoyée à "+prenomDe(f.destinataire_id));
+  submit.validate=f=>!sUuid(f.destinataire_id)?["destinataire_id","Choisis le commercial."]:null;
+  modal("Demander une mise à jour",h,submit,"Envoyer");
+}
+function formRepondreDemande(d){
+  const o=byId(state.opportunites,d.opportunite_id), c=byId(state.comptes,d.compte_id||(o&&o.compte_id));
+  const h=`<p style="margin-top:0"><b>${esc(prenomDe(d.auteur_id))}</b> : « ${esc(d.message||"Mise à jour demandée")} »${c?`<br><span class="hint">${esc([c.nom,o&&o.titre].filter(Boolean).join(" · "))}</span>`:""}</p>
+    ${fld("rp-txt","Ta réponse",`<textarea id="rp-txt" name="reponse" maxlength="1000" placeholder="Ex. RDV calé jeudi, la clinique attend l’accord de la banque…"></textarea>`,true)}
+    <p class="hint">Astuce : enregistrer ou planifier une action sur ce client répond aussi automatiquement.</p>`;
+  const submit=async f=>write(upd("demandes",d.id,{statut:"resolue",reponse:sTxt(f.reponse)||"Vu, je m’en occupe",resolue_le:new Date().toISOString()}),"Réponse envoyée");
+  modal("Répondre à la demande",h,submit,"Répondre");
+}
+
 function viewAujourdhui(v){
   if(me&&(todayQui==null||(todayQui==="equipe"&&!estPilote()))) todayQui=estPilote()?"equipe":"moi";
   if(todayQui!=="equipe") todayCom="";
+  if(estPilote()&&todayQui==="equipe"&&!todayCom) return viewWorkspace(v);
   const d0=startOfDay().getTime(), d1=d0+864e5, d7=d0+8*864e5;
   const now=Date.now();
   const mes=state.activites.filter(a=>aMoi(a.commercial_id,a.createur_id));
@@ -2490,6 +2944,11 @@ function formVisite(opts){
 /* ---- Téléphone : feuille « Plus », tableaux en cartes, listes avec recherche ---- */
 function toggleMore(open){ const m=$("#more-sheet"); m.hidden=!open; $("#more-btn").setAttribute("aria-expanded",String(open)); if(open){ const f=m.querySelector("a"); if(f) f.focus(); } }
 $("#more-btn").addEventListener("click",()=>toggleMore(true));
+{ const pb=$("#plus-btn"), pm=$("#plus-menu"); const fermer=()=>{ pm.hidden=true; pb.setAttribute("aria-expanded","false"); };
+  pb.addEventListener("click",e=>{ e.stopPropagation(); pm.hidden=!pm.hidden; pb.setAttribute("aria-expanded",String(!pm.hidden)); if(!pm.hidden) pm.querySelector("a").focus(); });
+  pm.addEventListener("click",e=>{ if(e.target.closest("a")) fermer(); });
+  document.addEventListener("click",e=>{ if(!pm.hidden&&!pm.contains(e.target)&&e.target!==pb) fermer(); });
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&!pm.hidden){ fermer(); pb.focus(); } }); }
 $("#more-sheet").addEventListener("click",e=>{ if(e.target.id==="more-sheet"||e.target.closest(".more-grid a")) toggleMore(false); });
 
 $("#more-logout").addEventListener("click",async()=>{ toggleMore(false); await sb.auth.signOut(); });
