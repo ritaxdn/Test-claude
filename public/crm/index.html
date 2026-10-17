@@ -1682,8 +1682,8 @@ document.addEventListener("click",async e=>{
   if(act==="transfer") return formTransfert(byId(state.comptes,id));
   if(act==="new-membre") return formMembre();
   if(act==="edit-membre") return formMembre(byId(state.equipe,id));
-  if(act==="voir-comme"){ const m=byId(state.equipe,id); if(!m) return; apercu=m; location.hash="#aujourdhui"; await load(); window.scrollTo(0,0); return toast("Aperçu : "+m.nom+" · lecture seule"); }
-  if(act==="quitter-apercu"){ apercu=null; renderApercu(); await load(); if(location.hash==="#equipe") render(); else location.hash="#equipe"; return; }
+  if(act==="voir-comme"){ const m=byId(state.equipe,id); if(!m) return; apercu=m; await load(); todayQui=null; todayCom=""; if(location.hash==="#aujourdhui") render(); else location.hash="#aujourdhui"; window.scrollTo(0,0); return toast("Aperçu : "+m.nom+" · lecture seule"); }
+  if(act==="quitter-apercu"){ apercu=null; renderApercu(); await load(); todayQui=null; todayCom=""; if(location.hash==="#equipe") render(); else location.hash="#equipe"; return; }
   if(act==="depart-membre") return formDepart(byId(state.equipe,id));
   if(act==="new-produit") return formProduit();
   if(act==="edit-produit") return formProduit(byId(state.produits,id));
@@ -1888,7 +1888,7 @@ function derniereActivite(o){
   return t;
 }
 function viewAujourdhui(v){
-  if(todayQui==null&&me) todayQui=estPilote()?"equipe":"moi";
+  if(me&&(todayQui==null||(todayQui==="equipe"&&!estPilote()))) todayQui=estPilote()?"equipe":"moi";
   if(todayQui!=="equipe") todayCom="";
   const d0=startOfDay().getTime(), d1=d0+864e5, d7=d0+8*864e5;
   const items=[];
