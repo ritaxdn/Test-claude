@@ -642,6 +642,35 @@ const sBool = v => !!v;
 const SUPABASE_URL = "https://igfgqfwkhyonptbtrywl.supabase.co";
 const SUPABASE_KEY = "sb_publishable_ITGBRytbM0ve68y6U0TIiw_bTPWQ2xJ";
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+// Aperçu « Voir comme » : un admin voit le CRM d'un membre, en lecture seule (aucune écriture ne part).
+let apercu=null;
+const RO_ERR={message:"Mode aperçu : lecture seule, rien n’est enregistré.",code:"apercu"};
+const roChain=()=>new Proxy(function(){},{get:(t,k)=>k==="then"?(ok,ko)=>Promise.resolve({data:null,error:RO_ERR}).then(ok,ko):()=>roChain(),apply:()=>roChain()});
+{ const from=sb.from.bind(sb), rpc=sb.rpc.bind(sb), fns=sb.functions;
+  sb.from=t=>{ const q=from(t); if(apercu) ["insert","update","delete","upsert"].forEach(m=>{ q[m]=()=>roChain(); }); return q; };
+  sb.rpc=(fn,args,o)=>apercu&&!["chercher_doublons","doublons_base"].includes(fn)?roChain():rpc(fn,args,o);
+  Object.defineProperty(sb,"functions",{value:{invoke:(...a)=>apercu?Promise.resolve({data:null,error:RO_ERR}):fns.invoke(...a)}}); }
+// Ce que la base montrerait à ce membre (mêmes règles que les droits côté serveur).
+function filtrerPour(m){
+  if(["superviseur","admin"].includes(m.role)) return;
+  const C=new Set(state.comptes.filter(c=>c.commercial_id===m.id||c.createur_id===m.id).map(c=>c.id));
+  const own=x=>x.commercial_id===m.id||x.createur_id===m.id||C.has(x.compte_id);
+  state.comptes=state.comptes.filter(c=>C.has(c.id));
+  state.contacts=state.contacts.filter(x=>C.has(x.compte_id));
+  state.opportunites=state.opportunites.filter(own);
+  state.activites=state.activites.filter(own);
+  state.devis=state.devis.filter(d=>d.commercial_id===m.id||C.has(d.compte_id));
+  const D=new Set(state.devis.map(d=>d.id)); state.devis_lignes=state.devis_lignes.filter(l=>D.has(l.devis_id));
+  state.paiements=state.paiements.filter(own);
+}
+function renderApercu(){
+  let bar=document.getElementById("apercu-bar");
+  if(!apercu){ if(bar) bar.remove(); return; }
+  if(!bar){ bar=document.createElement("div"); bar.id="apercu-bar"; bar.setAttribute("role","status"); document.body.appendChild(bar); }
+  bar.style.cssText="position:fixed;left:50%;transform:translateX(-50%);top:8px;z-index:90;display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;max-width:calc(100% - 24px);padding:8px 10px 8px 14px;border-radius:999px;background:#1b1d22;color:#fff;font-size:13px;box-shadow:0 8px 24px rgba(0,0,0,.25)";
+  if(window.innerWidth<600){ bar.style.borderRadius="16px"; bar.style.flexWrap="nowrap"; bar.style.whiteSpace="nowrap"; bar.innerHTML=`<span>👁 Aperçu : <b>${esc(apercu.nom.split(" ")[0])}</b> · lecture seule</span><button type="button" class="btn small" data-act="quitter-apercu" style="background:#fff;color:#111">Quitter</button>`; return; }
+  bar.innerHTML=`<span>👁 Tu vois le CRM comme <b>${esc(apercu.nom)}</b>${apercu.showroom&&SHOWROOMS[apercu.showroom]?" · "+esc(SHOWROOMS[apercu.showroom].replace("Showroom ","")):""} · lecture seule</span><button type="button" class="btn small" data-act="quitter-apercu" style="background:#fff;color:#111">Quitter l’aperçu</button>`;
+}
 let me = null;
 const ins = (table,obj)=>()=>sb.from(table).insert(obj);
 const upd = (table,id,obj)=>()=>sb.from(table).update(obj).eq("id",id);
@@ -651,6 +680,7 @@ function setStatus(kind,text){ $("#dot").className="dot "+kind; const st=documen
 function toast(msg){ const t=document.createElement("div"); t.className="toast"; t.textContent=msg; const s=$("#toast-slot"); s.innerHTML=""; s.appendChild(t); setTimeout(()=>{ if(t.parentNode) t.remove(); },3200); }
 function errorCopy(e){
   const msg = (e && (e.message||e.error_description)) || "";
+  if(e && e.code==="apercu") return ["Aperçu","Lecture seule : rien n’est enregistré. Quitte l’aperçu pour modifier."];
   if(e && e.code==="42501") return ["Accès refusé","Votre compte n’a pas les droits pour cette action (réservée au superviseur ou à l’admin)."];
   if(/Failed to fetch|NetworkError/i.test(msg)) return ["Pas de connexion","Vérifiez votre connexion internet puis cliquez sur ↻."];
   if(/JWT|expired/i.test(msg)) return ["Session expirée","Déconnectez-vous puis reconnectez-vous."];
@@ -688,9 +718,12 @@ async function load(){
     const [equipe,comptes,contacts,produits,opportunites,activites,devis,devis_lignes,paiements,reglagesRows] = res.map(r=>r.data||[]);
     const reglages={}; reglagesRows.forEach(x=>reglages[x.cle]=x.valeur);
     state = {equipe,comptes,contacts,produits,opportunites,activites,devis,devis_lignes,paiements,reglages};
+    const vrai=equipe.find(e=>e.user_id===currentUser.id)||null;
+    if(apercu&&vrai&&["admin","superviseur"].includes(vrai.role)){ const m=equipe.find(e=>e.id===apercu.id); apercu=m||null; if(m) filtrerPour(m); } else apercu=null;
+    renderApercu();
     idx.contactsBy=new Map(); contacts.forEach(c=>idx.contactsBy.set(c.compte_id,(idx.contactsBy.get(c.compte_id)||0)+1));
     idx.pipeBy=new Map(); opportunites.filter(o=>o.issue==="en_cours").forEach(o=>idx.pipeBy.set(o.compte_id,(idx.pipeBy.get(o.compte_id)||0)+(+o.montant_mad||0)));
-    me = equipe.find(e=>e.user_id===currentUser.id) || null;
+    me = apercu || vrai;
     if(!me){ showNoAccess(); return; }
     document.body.classList.toggle("pilote", estPilote());
     loadNotifs();
@@ -1283,7 +1316,7 @@ function viewEquipe(v){
   <div class="panel" style="margin-bottom:16px" id="leads-panel"><div class="section-head" style="margin:0 0 6px"><div><h3>Leads entrants</h3><p class="hint" style="margin:0">Les demandes du site et des campagnes arrivent ici toutes seules : fiche client (ou client existant retrouvé par téléphone/e-mail), opportunité, tâche « Rappeler » pour le bon commercial (ville + pratique, voir Attribution automatique), et notification.</p></div><button class="btn small" data-act="new-source">+ Source</button></div><div id="leads-body"><div class="skeleton" style="height:40px"></div></div></div>
   <div class="panel" style="margin-bottom:16px" id="dup-panel"><h3>Doublons probables</h3><p class="hint">Même téléphone, ou même nom dans la même ville, y compris entre clients de commerciaux différents.</p><div id="dup-body"><div class="skeleton" style="height:40px"></div></div></div>
   <div class="grid2"><div class="panel"><h3>Équipe</h3><div class="tbl-wrap" style="margin-top:8px"><table><thead><tr><th>Nom</th><th>Email</th><th>Rôle</th><th>Showroom</th><th>Statut</th><th></th></tr></thead><tbody>
-  ${[...state.equipe].sort((a,b)=>(!!a.parti_le-!!b.parti_le)).map(e=>`<tr${e.parti_le?' style="opacity:.7"':""}><td><b>${esc(e.nom)}</b></td><td>${esc(e.email||"—")}</td><td>${ROLES[e.role]}</td><td>${e.showroom?esc(SHOWROOMS[e.showroom].replace("Showroom ","")):"—"}</td><td>${e.parti_le?`<span class="pill">Parti·e le ${esc(new Date(e.parti_le+"T12:00").toLocaleDateString("fr-FR",{day:"numeric",month:"short",year:"numeric"}))}</span>`:`<span class="pill ${e.actif?"ok":""}">${e.actif?"Accès actif":"Sans accès"}</span>`}${(()=>{ const n=state.comptes.filter(c=>c.commercial_id===e.id).length; return n?`<div class="hint" style="margin:2px 0 0">${n} client${n>1?"s":""}</div>`:""; })()}</td><td><div class="tools" style="flex-wrap:nowrap"><button class="btn small" data-act="edit-membre" data-id="${e.id}">Modifier</button>${e.role!=="admin"?`<button class="btn small" data-act="depart-membre" data-id="${e.id}">${e.parti_le?"Transférer":"Départ / transfert"}</button>`:""}</div></td></tr>`).join("")}
+  ${[...state.equipe].sort((a,b)=>(!!a.parti_le-!!b.parti_le)).map(e=>`<tr${e.parti_le?' style="opacity:.7"':""}><td><b>${esc(e.nom)}</b></td><td>${esc(e.email||"—")}</td><td>${ROLES[e.role]}</td><td>${e.showroom?esc(SHOWROOMS[e.showroom].replace("Showroom ","")):"—"}</td><td>${e.parti_le?`<span class="pill">Parti·e le ${esc(new Date(e.parti_le+"T12:00").toLocaleDateString("fr-FR",{day:"numeric",month:"short",year:"numeric"}))}</span>`:`<span class="pill ${e.actif?"ok":""}">${e.actif?"Accès actif":"Sans accès"}</span>`}${(()=>{ const n=state.comptes.filter(c=>c.commercial_id===e.id).length; return n?`<div class="hint" style="margin:2px 0 0">${n} client${n>1?"s":""}</div>`:""; })()}</td><td><div class="tools" style="flex-wrap:nowrap"><button class="btn small" data-act="edit-membre" data-id="${e.id}">Modifier</button>${e.role!=="admin"&&!e.parti_le?`<button class="btn small" data-act="voir-comme" data-id="${e.id}" title="Voir le CRM comme ce membre, en lecture seule">Voir comme</button>`:""}${e.role!=="admin"?`<button class="btn small" data-act="depart-membre" data-id="${e.id}">${e.parti_le?"Transférer":"Départ / transfert"}</button>`:""}</div></td></tr>`).join("")}
   </tbody></table></div></div>
   <div class="panel"><h3>Catalogue machines</h3>${state.produits.length?(()=>{const fam={}; state.produits.forEach(p=>(fam[p.categorie]=fam[p.categorie]||[]).push(p));
     return `<p class="hint">${state.produits.filter(p=>p.actif).length} machines actives · ${Object.keys(fam).length} familles</p>`+Object.entries(fam).map(([f,ps])=>`<details class="fam"><summary><span>${esc(f)}</span><span class="hint">${ps.length}</span></summary><div class="closed-list">${ps.sort((a,b)=>a.nom.localeCompare(b.nom,"fr")).map(p=>`<div class="closed-row"><div><b translate="no">${esc(p.nom)}</b>${p.medical_only?` <span class="pill warn" title="Vente réservée aux médecins">Médical</span>`:""}${p.actif?"":` <span class="pill">Inactive</span>`}<div class="hint" translate="no">${esc([p.reference,p.marque].filter(Boolean).join(" · "))}</div></div><div class="tools"><span style="font-family:var(--f-mono);font-size:12px">${p.prix_catalogue_mad!=null?mad(p.prix_catalogue_mad)+" MAD":""}</span><button class="btn small" data-act="edit-produit" data-id="${p.id}">Modifier</button></div></div>`).join("")}</div></details>`).join("");})():`<p class="hint">Aucune machine. Ajoutez le catalogue pour rattacher les opportunités à un produit.</p>`}</div></div>`;
@@ -1649,6 +1682,8 @@ document.addEventListener("click",async e=>{
   if(act==="transfer") return formTransfert(byId(state.comptes,id));
   if(act==="new-membre") return formMembre();
   if(act==="edit-membre") return formMembre(byId(state.equipe,id));
+  if(act==="voir-comme"){ const m=byId(state.equipe,id); if(!m) return; apercu=m; location.hash="#aujourdhui"; await load(); window.scrollTo(0,0); return toast("Aperçu : "+m.nom+" · lecture seule"); }
+  if(act==="quitter-apercu"){ apercu=null; renderApercu(); await load(); if(location.hash==="#equipe") render(); else location.hash="#equipe"; return; }
   if(act==="depart-membre") return formDepart(byId(state.equipe,id));
   if(act==="new-produit") return formProduit();
   if(act==="edit-produit") return formProduit(byId(state.produits,id));
