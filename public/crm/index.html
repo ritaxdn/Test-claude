@@ -1896,7 +1896,7 @@ function viewAujourdhui(v){
    Les actions encore ouvertes importées de l'ancien CRM restent lisibles, à part, sans être réécrites. */
 const RDV_TYPES=["visite","rdv","demo","formation"];
 const TERRAIN_TYPES=["visite","demo","formation"];           // actions de terrain : comptent pour l'alerte « zone partagée »
-const ETAT={planifiee:["Planifiée","○",""],a_statuer:["À statuer","◐","warn"],en_retard:["En retard","!","bad"],effectuee:["Effectuée","✓","ok"],annulee:["Annulée","✕",""],non_effectuee:["Non effectuée","⊘",""]};
+const ETAT={planifiee:["Planifiée","○",""],a_statuer:["À statuer","?","warn"],en_retard:["En retard","!","bad"],effectuee:["Effectuée","✓","ok"],annulee:["Annulée","✕",""],non_effectuee:["Non effectuée","⊘",""]};
 const RESULTATS={positif:"Positif",neutre:"Neutre",negatif:"Négatif"};
 const estImporte=a=>/^(legacy:|act\|)/.test(a.import_ref||"");
 const estEvenement=a=>a.type==="evenement";
@@ -2092,7 +2092,7 @@ function viewAgenda(v){
       <div class="ag-head"><div></div>${cols.map(d=>`<div class="ag-dh${localISO(d)===localISO(now)?" today":""}">${d.toLocaleDateString("fr-FR",{weekday:"short"})}<b>${d.getDate()}</b></div>`).join("")}</div>
       <div class="ag-body"><div class="ag-hours" style="height:${(AG_H1-AG_H0)*AG_PX}px">${[...Array(AG_H1-AG_H0)].map((_,i)=>i?`<div style="top:${i*AG_PX}px">${AG_H0+i}h</div>`:"").join("")}</div>${cols.map(dayHtml).join("")}</div>
     </div></div>
-    <div class="ag-legend"><span><i style="background:var(--accent)"></i>RDV, visite, démo</span><span><i style="background:var(--ok)"></i>Appel, message</span><span><i style="background:var(--warn)"></i>Tâche</span><span><i style="background:#E91E8C"></i>Événement Cellulift</span><span><i style="background:transparent;box-shadow:inset 0 0 0 1.5px var(--bad)"></i>Prioritaire</span><span class="ag-st">○ planifiée · ◐ à statuer · ! en retard · ✓ effectuée · ✕ annulée · ⊘ non effectuée</span></div>
+    <div class="ag-legend"><span><i style="background:var(--accent)"></i>RDV, visite, démo</span><span><i style="background:var(--ok)"></i>Appel, message</span><span><i style="background:var(--warn)"></i>Tâche</span><span><i style="background:#E91E8C"></i>Événement Cellulift</span><span><i style="background:transparent;box-shadow:inset 0 0 0 1.5px var(--bad)"></i>Prioritaire</span><span class="ag-st">○ planifiée · ? à statuer · ! en retard · ✓ effectuée · ✕ annulée · ⊘ non effectuée</span></div>
   </div>`;
   const sc=$("#ag-scroll"); sc.scrollTop=(8-AG_H0)*AG_PX;
   if($("#ag-qui")) $("#ag-qui").addEventListener("change",e=>{ agQui=e.target.value; viewAgenda(v); });
