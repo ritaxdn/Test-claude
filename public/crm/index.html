@@ -1051,9 +1051,52 @@ function viewSuperviseur(v){
 }
 
 const CANAUX={site:"Site web",meta:"Meta (Facebook / Instagram)",google:"Google Ads",tiktok:"TikTok",whatsapp:"WhatsApp",salon:"Salon / événement",autre:"Autre"};
+// Leads par ville et pratique : répartition 30 jours + liste filtrable.
+const leadFilt={ville:"",prat:""};
+const PRATIQUES={medecin:"Médecins",non_medecin:"Non-médecins",a_classer:"À classer"};
+const pratLead=x=>x.categorie||"a_classer";
+function blocLeads(leads){
+  if(!leads.length) return "";
+  const d30=Date.now()-30*864e5, recents=leads.filter(x=>new Date(x.recu_le).getTime()>d30);
+  const vk=x=>x.ville||"Ville inconnue";
+  const parVille=new Map(); recents.forEach(x=>{ const v=vk(x); const r=parVille.get(v)||{medecin:0,non_medecin:0,a_classer:0,tot:0}; r[pratLead(x)]++; r.tot++; parVille.set(v,r); });
+  const lignes=[...parVille.entries()].sort((a,b)=>b[1].tot-a[1].tot);
+  const cell=(v,p,n)=>n?`<button class="linkish" data-act="lead-filt" data-ville="${esc(v)}" data-prat="${p}">${n}</button>`:`<span class="hint">·</span>`;
+  const tableau=lignes.length?`<div class="table-wrap" style="margin-top:6px"><table><thead><tr><th>Ville</th><th>Médecins</th><th>Non-médecins</th><th>À classer</th><th>Total</th></tr></thead><tbody>${lignes.map(([v,r])=>`<tr><td><b>${esc(v)}</b></td><td>${cell(v,"medecin",r.medecin)}</td><td>${cell(v,"non_medecin",r.non_medecin)}</td><td>${cell(v,"a_classer",r.a_classer)}</td><td>${cell(v,"",r.tot)}</td></tr>`).join("")}</tbody></table></div>`:`<p class="hint">Aucun lead ces 30 derniers jours.</p>`;
+  const villesL=[...new Set(leads.map(vk))].sort((a,b)=>a.localeCompare(b,"fr"));
+  const liste=leads.filter(x=>(!leadFilt.ville||vk(x)===leadFilt.ville)&&(!leadFilt.prat||pratLead(x)===leadFilt.prat));
+  const pill=x=>x.metier&&METIERS[x.metier]?`<span class="pill ${x.categorie==="medecin"?"A":x.categorie==="non_medecin"?"C":""}">${esc(METIERS[x.metier][2])}</span>`:`<span class="pill">À classer</span>`;
+  return `<h4 style="margin-top:14px">Répartition · 30 derniers jours</h4>${tableau}
+    <div class="section-head" style="margin:14px 0 6px"><h4 style="margin:0">Leads</h4><div class="tools">
+      <select id="ld-ville" aria-label="Ville"><option value="">Toutes les villes</option>${villesL.map(v=>`<option ${leadFilt.ville===v?"selected":""}>${esc(v)}</option>`).join("")}</select>
+      <select id="ld-prat" aria-label="Pratique"><option value="">Toutes pratiques</option>${Object.entries(PRATIQUES).map(([k,l])=>`<option value="${k}" ${leadFilt.prat===k?"selected":""}>${l}</option>`).join("")}</select></div></div>
+    ${liste.length?`<div class="closed-list">${liste.slice(0,50).map(x=>`<div class="closed-row"><div style="min-width:0">${x.compte_id?`<button class="linkish" data-act="open-compte" data-id="${x.compte_id}"><b>${esc(x.nom||"—")}</b></button>`:`<b>${esc(x.nom||"—")}</b>`} ${pill(x)}${x.deja_client?` <span class="pill ok">Déjà client</span>`:""}<div class="hint" style="margin:0">${esc([fmtDate(x.recu_le)+" "+new Date(x.recu_le).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}),x.source,x.parcours,x.ville].filter(Boolean).join(" · "))}</div></div><div class="hint" style="margin:0">${x.commercial_id?esc(nomMembre(x.commercial_id)):`<span class="pill warn">À attribuer</span>`}</div></div>`).join("")}</div>${liste.length>50?`<p class="hint">${liste.length-50} autres, affine avec les filtres.</p>`:""}`:`<p class="hint">Aucun lead pour ce filtre.</p>`}`;
+}
+function blocRegles(regles){
+  if(!regles) return "";
+  const rows=regles.map(r=>{ const m=byId(state.equipe,r.commercial_id); const ko=!m||!m.actif||m.parti_le;
+    return `<div class="closed-row"><div><b>${esc(r.ville||"Toutes les villes")}</b> · ${r.pratique?PRATIQUES[r.pratique]:"toutes pratiques"} → <b>${esc(m?m.nom:"?")}</b>${ko?` <span class="pill warn">sans accès : règle ignorée</span>`:""}</div><div class="tools"><span class="acts-inline" style="display:contents"><button class="btn small" data-act="del-regle" data-id="${r.id}">Retirer</button></span></div></div>`; }).join("");
+  return `<h4 style="margin-top:14px">Attribution automatique</h4>
+    <p class="hint" style="margin:0 0 6px">Chaque nouveau lead va au commercial de la règle la plus précise (ville + pratique, puis ville, puis pratique). S’il y en a plusieurs, au moins chargé du mois. Sans règle : commercial du showroom de la ville. Un client déjà suivi garde son commercial.</p>
+    ${rows?`<div class="closed-list">${rows}</div>`:`<p class="hint">Aucune règle pour l’instant.</p>`}
+    <button class="btn small" data-act="new-regle" style="margin-top:8px">+ Règle</button>`;
+}
+function formRegle(){
+  const coms=state.equipe.filter(e=>!e.parti_le&&e.role!=="admin").map(e=>[e.id,e.nom+(e.actif?"":" (sans accès)")]);
+  const h=`<div class="form-grid">${fld("rg-ville","Ville",`<input id="rg-ville" name="ville" list="dl-villes-rg" autocomplete="off" placeholder="Vide = toutes les villes"><datalist id="dl-villes-rg">${villes().map(x=>`<option value="${esc(x)}">`).join("")}</datalist>`)}
+    ${fld("rg-prat","Pratique",`<select id="rg-prat" name="pratique"><option value="">Toutes pratiques</option><option value="medecin">Médecins</option><option value="non_medecin">Non-médecins (instituts, kinés, minceur…)</option></select>`)}
+    ${fld("rg-com","Commercial",`<select id="rg-com" name="commercial_id">${opt(coms,"","Choisir…")}</select>`,true)}</div>`;
+  const submit=async f=>{
+    const {error}=await sb.from("regles_attribution").insert({ville:sTxt(f.ville),pratique:sEnum(f.pratique,["medecin","non_medecin"]),commercial_id:sUuid(f.commercial_id),cree_par:me&&me.id||null});
+    if(error){ $("#merr").textContent=errorCopy(error).join(" — "); return false; }
+    closeModal(true); toast("Règle ajoutée"); chargerLeads(); return true;
+  };
+  submit.validate=f=>!sUuid(f.commercial_id)?["commercial_id","Choisis le commercial."]:null;
+  modal("Nouvelle règle d’attribution",h,submit,"Ajouter");
+}
 async function chargerLeads(){
   const el=$("#leads-body"); if(!el) return;
-  const [s,l]=await Promise.all([sb.from("sources_leads").select("*").order("created_at"),sb.from("leads").select("*").order("recu_le",{ascending:false}).limit(15)]);
+  const [s,l,rg]=await Promise.all([sb.from("sources_leads").select("*").order("created_at"),sb.from("leads").select("*").order("recu_le",{ascending:false}).limit(300),sb.from("regles_attribution").select("*").order("created_at")]);
   if(!document.contains(el)) return;
   if(s.error||l.error){ el.innerHTML=`<p class="hint">${esc(errorCopy(s.error||l.error)[1])}</p>`; return; }
   const src=s.data, leads=l.data, d30=Date.now()-30*864e5;
@@ -1061,7 +1104,7 @@ async function chargerLeads(){
   const url="https://igfgqfwkhyonptbtrywl.supabase.co/rest/v1/rpc/recevoir_lead";
   el.innerHTML=(src.length?`<div class="closed-list">${src.map(x=>`<div class="closed-row"><div><b>${esc(x.nom)}</b> <span class="pill">${esc(CANAUX[x.canal]||x.canal)}</span>${x.actif?"":` <span class="pill bad">Coupée</span>`}<div class="hint" style="margin:0">Clé ${esc(x.cle_debut)}… · ${x.dernier_lead?"dernier lead "+esc(fmtDate(x.dernier_lead)):"aucun lead reçu pour l’instant"}</div></div><div class="tools"><button class="btn small" data-act="edit-source" data-id="${x.id}">Modifier</button><button class="btn small" data-act="toggle-source" data-id="${x.id}" data-on="${x.actif?"":"1"}">${x.actif?"Couper":"Réactiver"}</button></div></div>`).join("")}</div>`
     :`<p class="hint">Aucune source pour l’instant. Commence par « + Source » › Site web, puis colle la clé dans Vercel.</p>`)
-   +(leads.length?`<h4 style="margin-top:14px">Derniers leads</h4><div class="closed-list">${leads.map(x=>`<div class="closed-row"><div style="min-width:0">${x.compte_id?`<button class="linkish" data-act="open-compte" data-id="${x.compte_id}"><b>${esc(x.nom||"—")}</b></button>`:`<b>${esc(x.nom||"—")}</b>`}${x.deja_client?` <span class="pill ok">Déjà client</span>`:""}<div class="hint" style="margin:0">${esc([fmtDate(x.recu_le)+" "+new Date(x.recu_le).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}),x.source,x.parcours,x.ville].filter(Boolean).join(" · "))}</div></div><div class="hint" style="margin:0">${x.commercial_id?esc(nomMembre(x.commercial_id)):`<span class="pill warn">À attribuer</span>`}</div></div>`).join("")}</div>`:"")
+   +blocLeads(leads)+blocRegles(rg.error?null:rg.data)
    +`<details class="fam" style="margin-top:12px"><summary><span>Brancher une autre source (Meta, Google, n8n, Make…)</span></summary><div style="padding:8px 0">
       <p class="hint" style="margin-top:0">Chaque outil envoie un <b>POST</b> à cette adresse, avec la clé de sa source :</p>
       <pre style="white-space:pre-wrap;font-size:12px;background:var(--glass,rgba(0,0,0,.04));padding:10px;border-radius:10px">${esc(url)}
@@ -1073,6 +1116,7 @@ Corps :
               "ville": "…", "specialite": "…", "machine": "…", "message": "…",
               "parcours": "demo", "utm_campaign": "…" } }</pre>
       <p class="hint">Pour les formulaires Meta (Facebook / Instagram) et Google Ads, le plus simple est un scénario n8n ou Make : « nouveau lead » → requête HTTP ci-dessus. Les leads déjà connus (même téléphone ou e-mail) sont rattachés à leur fiche, sans doublon.</p></div></details>`;
+  ["ld-ville","ld-prat"].forEach(k=>{ const x=$("#"+k); if(x) x.onchange=()=>{ leadFilt[k==="ld-ville"?"ville":"prat"]=x.value; chargerLeads(); }; });
 }
 async function genererCle(){
   const b=new Uint8Array(24); crypto.getRandomValues(b);
@@ -1236,7 +1280,7 @@ function viewEquipe(v){
   setTimeout(chargerDoublons,0); setTimeout(chargerLeads,0);
   v.innerHTML=`<div class="section-head"><div><h2>Équipe &amp; catalogue</h2><p class="hint">Un membre « sans accès » ne peut pas se connecter. Activez-le dans « Modifier » ; il se connecte ensuite avec l’email indiqué ici.</p></div>
    <div class="tools"><button class="btn" data-act="objectifs">Objectifs mensuels</button><button class="btn" data-act="import">Importer des contacts (Excel)</button><button class="btn" data-act="new-produit">+ Machine</button><button class="btn primary" data-act="new-membre">+ Membre</button></div></div>
-  <div class="panel" style="margin-bottom:16px" id="leads-panel"><div class="section-head" style="margin:0 0 6px"><div><h3>Leads entrants</h3><p class="hint" style="margin:0">Les demandes du site et des campagnes arrivent ici toutes seules : fiche client (ou client existant retrouvé par téléphone/e-mail), opportunité, tâche « Rappeler » pour le commercial du showroom de la ville, et notification.</p></div><button class="btn small" data-act="new-source">+ Source</button></div><div id="leads-body"><div class="skeleton" style="height:40px"></div></div></div>
+  <div class="panel" style="margin-bottom:16px" id="leads-panel"><div class="section-head" style="margin:0 0 6px"><div><h3>Leads entrants</h3><p class="hint" style="margin:0">Les demandes du site et des campagnes arrivent ici toutes seules : fiche client (ou client existant retrouvé par téléphone/e-mail), opportunité, tâche « Rappeler » pour le bon commercial (ville + pratique, voir Attribution automatique), et notification.</p></div><button class="btn small" data-act="new-source">+ Source</button></div><div id="leads-body"><div class="skeleton" style="height:40px"></div></div></div>
   <div class="panel" style="margin-bottom:16px" id="dup-panel"><h3>Doublons probables</h3><p class="hint">Même téléphone, ou même nom dans la même ville, y compris entre clients de commerciaux différents.</p><div id="dup-body"><div class="skeleton" style="height:40px"></div></div></div>
   <div class="grid2"><div class="panel"><h3>Équipe</h3><div class="tbl-wrap" style="margin-top:8px"><table><thead><tr><th>Nom</th><th>Email</th><th>Rôle</th><th>Showroom</th><th>Statut</th><th></th></tr></thead><tbody>
   ${[...state.equipe].sort((a,b)=>(!!a.parti_le-!!b.parti_le)).map(e=>`<tr${e.parti_le?' style="opacity:.7"':""}><td><b>${esc(e.nom)}</b></td><td>${esc(e.email||"—")}</td><td>${ROLES[e.role]}</td><td>${e.showroom?esc(SHOWROOMS[e.showroom].replace("Showroom ","")):"—"}</td><td>${e.parti_le?`<span class="pill">Parti·e le ${esc(new Date(e.parti_le+"T12:00").toLocaleDateString("fr-FR",{day:"numeric",month:"short",year:"numeric"}))}</span>`:`<span class="pill ${e.actif?"ok":""}">${e.actif?"Accès actif":"Sans accès"}</span>`}${(()=>{ const n=state.comptes.filter(c=>c.commercial_id===e.id).length; return n?`<div class="hint" style="margin:2px 0 0">${n} client${n>1?"s":""}</div>`:""; })()}</td><td><div class="tools" style="flex-wrap:nowrap"><button class="btn small" data-act="edit-membre" data-id="${e.id}">Modifier</button>${e.role!=="admin"?`<button class="btn small" data-act="depart-membre" data-id="${e.id}">${e.parti_le?"Transférer":"Départ / transfert"}</button>`:""}</div></td></tr>`).join("")}
@@ -1548,6 +1592,10 @@ document.addEventListener("click",async e=>{
   if(act==="demande-transfert"){ t.disabled=true; const {error}=await sb.rpc("demander_transfert",{p_compte:id}); if(error){ t.disabled=false; return toast(errorCopy(error).join(" — ")); } t.textContent="Demande envoyée ✓"; toast("Le superviseur a été prévenu"); return; }
   if(act==="fusion"){ return formFusion(t.dataset.a,t.dataset.b); }
   if(act==="new-source") return formSource();
+  if(act==="new-regle") return formRegle();
+  if(act==="del-regle") return confirmInline(t,"Retirer cette règle ?","del-regle-yes",id);
+  if(act==="del-regle-yes"){ t.disabled=true; const {error}=await sb.from("regles_attribution").delete().eq("id",id); if(error) toast(errorCopy(error).join(" — ")); else toast("Règle retirée"); return chargerLeads(); }
+  if(act==="lead-filt"){ leadFilt.ville=t.dataset.ville||""; leadFilt.prat=t.dataset.prat||""; await chargerLeads(); const z=$("#ld-ville"); if(z) z.scrollIntoView({block:"center",behavior:"smooth"}); return; }
   if(act==="edit-source"){ const {data,error}=await sb.from("sources_leads").select("*").eq("id",id).maybeSingle(); if(error||!data) return toast(error?errorCopy(error).join(" — "):"Source introuvable"); return formEditSource(data); }
   if(act==="toggle-source"){ t.disabled=true; const {error}=await sb.from("sources_leads").update({actif:!!t.dataset.on}).eq("id",id); if(error) toast(errorCopy(error).join(" — ")); return chargerLeads(); }
   if(act==="f-a-classer"){ filt.segment="a_classer"; filt.com=estPilote()?"":(me?me.id:""); shown=PAGE; return viewComptes($("#view")); }
