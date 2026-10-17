@@ -1065,7 +1065,8 @@ async function chargerLeads(){
    +`<details class="fam" style="margin-top:12px"><summary><span>Brancher une autre source (Meta, Google, n8n, Make…)</span></summary><div style="padding:8px 0">
       <p class="hint" style="margin-top:0">Chaque outil envoie un <b>POST</b> à cette adresse, avec la clé de sa source :</p>
       <pre style="white-space:pre-wrap;font-size:12px;background:var(--glass,rgba(0,0,0,.04));padding:10px;border-radius:10px">${esc(url)}
-En-têtes : apikey = (clé publique du CRM), Content-Type = application/json
+En-têtes : apikey = ${esc(SUPABASE_KEY)}
+           Content-Type = application/json
 Corps :
 { "p_cle": "CLÉ DE LA SOURCE",
   "p_lead": { "nom": "…", "organisation": "…", "telephone": "…", "email": "…",
