@@ -2184,6 +2184,7 @@ function formVisite(opts){
    <div class="field" style="grid-column:1/-1"><label for="m-res">Ce qui s’est dit</label><textarea id="m-res" name="resume" placeholder="Intérêt, objections, machine évoquée… ou dicte avec le micro"></textarea>
      <div class="tools ia-bar"><button type="button" class="btn small" id="qv-mic" aria-pressed="false">🎤 Dicter</button><button type="button" class="btn small" id="qv-ia">✨ Remplir avec l’IA</button><span id="qv-ia-msg" class="hint" aria-live="polite" style="margin:0"></span></div>
      <div id="qv-ia-out"></div></div>
+   ${plan?"":`<div class="field" id="qv-lien" style="grid-column:1/-1" hidden></div>`}
    ${fld("qv-opp","Affaire concernée",`<select id="qv-opp" name="opportunite_id"><option value="">—</option></select>`)}
    ${fld("qv-etape","Faire avancer l’affaire (facultatif)",`<select id="qv-etape" name="etape"><option value="">Ne pas changer l’étape</option>${ETAPES.map(e=>`<option value="${e}">${ETAPE_LABEL[e]}</option>`).join("")}</select>`)}
    <div class="field" style="grid-column:1/-1"><span class="lab-mono" id="qv-sl">Prochaine action</span><div class="chips" role="group" aria-labelledby="qv-sl" data-chips="suite">${SUITE.map(([k,l])=>`<button type="button" class="chip" data-v="${k}" aria-pressed="${k==="7"}">${l}</button>`).join("")}</div><input type="hidden" name="suite" value="7"></div>
@@ -2192,13 +2193,14 @@ function formVisite(opts){
    ${fld("m-next","Suite : quoi faire",`<input id="m-next" name="prochaine_action" autocomplete="off" placeholder="Ex. Envoyer le devis Longiflash…">`,true)}</div>`;
   const submit=async f=>{
     const cId=compteIdFromLabel(f.compte_label), type=sEnum(f.type,Object.keys(TYPES_ACT))||"visite";
+    const lie=!plan&&f.lier?byId(state.activites,f.lier):null, cible=plan||(lie&&lie.statut==="a_faire"&&lie.compte_id===cId?lie:null);
     const oppId=sUuid(f.opportunite_id)||null, quand=plan&&f.quand?new Date(f.quand):new Date();
     const base={compte_id:sUuid(cId),opportunite_id:oppId,type,statut:"fait",fait_le:new Date().toISOString(),date_activite:quand.toISOString(),resume:sTxt(f.resume),prochaine_action:sTxt(f.prochaine_action),resultat:sEnum(f.resultat,Object.keys(RESULTATS))||null};
     setStatus("busy","Enregistrement…");
     try{
       // 1 complétion = 1 activité : l'action planifiée devient l'activité effectuée (pas de doublon)
       let actId;
-      if(plan){ const {data,error}=await sb.from("activites").update(base).eq("id",plan.id).eq("statut","a_faire").select("id"); if(error) throw error; if(!data||!data.length) throw new Error("Cette action a déjà été statuée entre-temps : recharge la page."); actId=plan.id; }
+      if(cible){ const {data,error}=await sb.from("activites").update(base).eq("id",cible.id).eq("statut","a_faire").select("id"); if(error) throw error; if(!data||!data.length) throw new Error("Cette action a déjà été statuée entre-temps : recharge la page."); actId=cible.id; }
       else { const {data,error}=await sb.from("activites").insert(Object.assign(base,{commercial_id:me?me.id:null})).select("id").single(); if(error) throw error; actId=data.id; }
       const msgs=["Enregistré"];
       if(f.suite){ const d=f.suite==="date"?new Date((f.suite_jour||localISO())+"T"+(f.suite_heure||"10:00")):(()=>{ const x=new Date(); x.setDate(x.getDate()+(+f.suite)); const [hh,mm]=(f.suite_heure||"10:00").split(":"); x.setHours(+hh,+mm,0,0); return x; })();
@@ -2218,7 +2220,12 @@ function formVisite(opts){
   const majOpp=()=>{ const id=compteIdFromLabel($("#m-compte").value); const ops=state.opportunites.filter(o=>o.compte_id===id&&o.issue==="en_cours");
     const sel=(opp0&&opp0.compte_id===id)?opp0.id:ops.length===1?ops[0].id:"";
     $("#qv-opp").innerHTML=`<option value="">—</option>`+ops.map(o=>`<option value="${o.id}" ${o.id===sel?"selected":""}>${esc(o.titre)}</option>`).join(""); };
-  ["input","change"].forEach(ev=>$("#m-compte").addEventListener(ev,majOpp)); majOpp();
+  // Sans action prévue au départ : si le client a une action ouverte proche, on propose de la compléter (évite un doublon et une action laissée « à statuer »)
+  const majLien=()=>{ const box=$("#qv-lien"); if(!box) return; const id=compteIdFromLabel($("#m-compte").value), now=Date.now();
+    const l=id?state.activites.filter(a=>a.compte_id===id&&a.statut==="a_faire"&&!estImporte(a)&&!estEvenement(a)&&peutEffectuer(a)&&(t=>t>now-3*864e5&&t<now+864e5)(new Date(a.date_activite).getTime())).sort((x,y)=>Math.abs(new Date(x.date_activite)-now)-Math.abs(new Date(y.date_activite)-now)):[];
+    if(!l.length){ box.hidden=true; box.innerHTML=""; return; }
+    box.hidden=false; box.innerHTML=`<span class="lab-mono">Action prévue chez ce client</span><div style="display:flex;flex-direction:column;gap:6px;margin-top:6px">${l.slice(0,3).map((a,i)=>`<label class="check"><input type="radio" name="lier" value="${a.id}" ${i===0?"checked":""}> C’est l’action prévue : ${esc(TYPES_ACT[a.type])} · ${esc(fmtDate(a.date_activite))} à ${esc(hm(a.date_activite))}</label>`).join("")}<label class="check"><input type="radio" name="lier" value=""> Non, c’est une autre action</label></div>`; };
+  ["input","change"].forEach(ev=>$("#m-compte").addEventListener(ev,()=>{ majOpp(); majLien(); })); majOpp(); majLien();
   const majSuite=()=>{ const s=$('#mform input[name="suite"]').value; $("#qv-st-f").hidden=!s; $("#qv-sd-f").hidden=!s; $("#qv-sd").disabled=s!=="date"; $("#qv-sd").hidden=s!=="date"; };
   majSuite();
   brancherDictee($("#qv-mic"),$("#m-res"),$("#qv-ia-msg"));
@@ -3208,6 +3215,7 @@ function showLogin(msg){
     </div>
     <div id="l-err" class="hint" aria-live="polite" style="color:var(--bad);margin-top:10px">${esc(msg||"")}</div>
     <div class="form-actions" style="justify-content:space-between"><button type="button" class="btn" id="l-signup">Première connexion</button><button type="submit" class="btn primary" id="l-go">Se connecter</button></div>
+    <p style="margin:10px 0 0;text-align:right"><button type="button" class="linkish" id="l-forgot">Mot de passe oublié ?</button></p>
     <p class="hint" style="margin-top:14px">Première connexion : saisissez l’email que votre superviseur a enregistré et choisissez un mot de passe (8 caractères minimum), puis cliquez sur « Première connexion ».</p>
   </form></div>`;
   const go=async(signup)=>{
@@ -3227,6 +3235,15 @@ function showLogin(msg){
   };
   $("#login-form").addEventListener("submit",e=>{e.preventDefault();go(false);});
   $("#l-signup").addEventListener("click",()=>go(true));
+  $("#l-forgot").addEventListener("click",async()=>{
+    const email=$("#l-mail").value.trim().toLowerCase();
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ $("#l-err").textContent="Saisis d’abord ton email professionnel, puis clique sur « Mot de passe oublié ? »."; $("#l-mail").focus(); return; }
+    $("#l-forgot").disabled=true;
+    const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+"/crm"});
+    $("#l-forgot").disabled=false;
+    $("#l-err").style.color=error?"var(--bad)":"var(--ok)";
+    $("#l-err").textContent=error?(/rate|limit/i.test(error.message||"")?"Trop de demandes : réessaie dans quelques minutes.":"Envoi impossible : "+error.message):"Si cet email est enregistré, un lien pour choisir un nouveau mot de passe vient d’être envoyé. Pense à regarder dans les indésirables.";
+  });
   $("#l-mail").focus();
 }
 function showNoAccess(){
@@ -3242,7 +3259,14 @@ function enterApp(session){
 }
 $("#logout").addEventListener("click",async()=>{ await sb.auth.signOut(); });
 let booted=false;
+function formNouveauMotDePasse(){
+  const h=`<p style="margin-top:0">Choisis ton nouveau mot de passe (8 caractères minimum).</p><div class="form-grid">${fld("np-1","Nouveau mot de passe",`<input id="np-1" name="p1" type="password" autocomplete="new-password" minlength="8" required>`)}${fld("np-2","Confirmer",`<input id="np-2" name="p2" type="password" autocomplete="new-password" minlength="8" required>`)}</div>`;
+  const submit=async f=>{ const {error}=await sb.auth.updateUser({password:f.p1}); if(error){ $("#merr").textContent=error.message; return false; } toast("Mot de passe changé"); closeModal(true); return true; };
+  submit.validate=f=>(f.p1||"").length<8?["p1","8 caractères minimum."]:f.p1!==f.p2?["p2","Les deux mots de passe ne sont pas identiques."]:null;
+  modal("Nouveau mot de passe",h,submit,"Enregistrer");
+}
 sb.auth.onAuthStateChange((event,session)=>{
+  if(event==="PASSWORD_RECOVERY") setTimeout(formNouveauMotDePasse,400);
   if(session && (!booted || event==="SIGNED_IN") && (!currentUser || currentUser.id!==session.user.id)){ booted=true; enterApp(session); }
   else if(!session){ booted=true; currentUser=null; me=null; loaded=false; showLogin(); }
 });
