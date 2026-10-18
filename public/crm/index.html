@@ -179,6 +179,7 @@ textarea{min-height:72px;resize:vertical}
 .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
 .form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px;flex-wrap:wrap}
 .filters select,.filters input{width:auto;min-width:130px}
+.filters input[type=checkbox]{min-width:0;width:18px;height:18px;flex:0 0 auto}
 
 /* Activity feed */
 .feed{display:flex;flex-direction:column}
@@ -687,7 +688,7 @@ body.ai-open .ai-fab,body.auth .ai-fab{display:none}
   table.cardable td:last-child:has(.btn,select){flex:1 1 100%}
   table.cardable tr.click:active{background:var(--line);border-radius:14px}
   /* Activités : une colonne, actions en ligne défilante */
-  .feed-item{grid-template-columns:1fr;gap:4px}
+  .feed-item{grid-template-columns:minmax(0,1fr);gap:4px}.feed-item>*{min-width:0}
   .feed-item .when{display:flex;gap:6px}.feed-item .when br{display:none}
   .acts-inline{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
   .acts-inline::-webkit-scrollbar{display:none}
@@ -4135,7 +4136,7 @@ function openOpp(o){ if(o) ctxCompte=o.compte_id;
    <div class="tools quick">
      <button class="btn small" data-act="log" data-opp="${o.id}" data-type="tache">+ Tâche</button><button class="btn small" data-act="log" data-opp="${o.id}" data-type="evenement">+ Événement</button><button class="btn small" data-act="log" data-opp="${o.id}" data-type="appel">+ Appel</button><button class="btn small primary" data-act="new-devis" data-opp="${o.id}">Créer un devis</button>
      <span style="flex:1"></span>
-     ${closed?`<button class="btn small${o.issue==="dormante"?" primary":""}" data-act="reopen" data-id="${o.id}"${estVeille(o)?" hidden":""}>${o.issue==="dormante"?"Réveiller l’affaire":"Rouvrir"}</button>`:`<button class="btn small" data-act="veille" data-id="${o.id}">En veille</button><button class="btn small" data-act="aide" data-id="${o.id}">Demander de l’aide</button><button class="btn small ok" data-act="won" data-id="${o.id}">Gagnée</button><button class="btn small bad" data-act="lost" data-id="${o.id}">Perdue</button>`}
+     ${closed?`<button class="btn small${o.issue==="dormante"?" primary":""}" data-act="reopen" data-id="${o.id}"${estVeille(o)?" hidden":""}>${o.issue==="dormante"?"Réveiller l’affaire":"Rouvrir"}</button>`:`<button class="btn small" data-act="veille" data-id="${o.id}">En veille</button>${estPilote()&&me&&o.commercial_id&&o.commercial_id!==me.id?`<button class="btn small" data-act="demande" data-opp="${o.id}" data-com="${o.commercial_id}">Demander une mise à jour</button>`:`<button class="btn small" data-act="aide" data-id="${o.id}">Demander de l’aide</button>`}<button class="btn small ok" data-act="won" data-id="${o.id}">Gagnée</button><button class="btn small bad" data-act="lost" data-id="${o.id}">Perdue</button>`}
      <button class="btn small" data-act="edit-opp" data-id="${o.id}">Modifier</button>
    </div>
    <div class="seg-tabs" role="tablist" aria-label="Sections de l’opportunité">${[["plan","Plan d’affaire"+((n=>n?" · à clarifier":" · bien cadré")(planLecture(o).pts.length))],["activites","Activités ("+acts.length+")"],["commentaires","Commentaires"],["devis","Devis ("+dv.length+")"],["historique","Historique"]].map(([k,l])=>`<button type="button" role="tab" id="ot-${k}" aria-controls="op-${k}" aria-selected="${oppSection===k}" data-osec="${k}">${l}</button>`).join("")}</div>
@@ -4821,6 +4822,7 @@ function showLogin(msg){
     try{ localStorage.setItem("cl-souvenir",$("#l-rem").checked?"1":"0"); }catch(_){}
     let r = signup ? await sb.auth.signUp({email,password}) : await sb.auth.signInWithPassword({email,password});
     if(signup && !r.error && !r.data.session) r = await sb.auth.signInWithPassword({email,password});
+    if(!$("#l-go")) return; /* connecté : l’écran de connexion a déjà été remplacé */
     $("#l-go").disabled=$("#l-signup").disabled=false;
     if(r.error){
       const m=r.error.message||"";
