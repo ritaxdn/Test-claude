@@ -258,6 +258,11 @@ select.dstat.ok{color:var(--ok);background:var(--ok-bg)}select.dstat.warn{color:
 .fam summary .hint{margin:0 0 0 auto;font-family:var(--f-mono)}
 /* Navigation en espaces */
 nav.tabs{align-items:center}
+.plus-wrap{position:relative;display:inline-flex}
+.plus-menu{position:absolute;top:calc(100% + 8px);right:0;z-index:40;min-width:240px;display:flex;flex-direction:column;padding:6px;border-radius:18px;background:var(--glass-strong);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border:1px solid var(--glass-edge);box-shadow:var(--shadow)}
+.plus-menu[hidden]{display:none}
+.plus-menu a{padding:10px 14px;border-radius:12px;text-decoration:none;color:var(--ink);font-size:14px}
+.plus-menu a:hover,.plus-menu a[aria-current="page"]{background:var(--line)}
 .tab-grp{font-family:var(--f-mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);padding:0 4px 0 10px;white-space:nowrap}
 .tab-sep{width:1px;height:22px;background:var(--line-strong);margin:0 4px;flex:none}
 .tab.gear{width:38px;padding:9px 0;text-align:center}
@@ -289,6 +294,157 @@ body.pilote .commercial-only{display:none!important}
 .pw-wrap input{width:100%;box-sizing:border-box;padding-right:48px}
 .pw-eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:40px;height:40px;border:0;background:none;border-radius:999px;cursor:pointer;color:var(--ink-2);display:grid;place-items:center}
 .pw-eye:hover{color:var(--ink)}
+
+/* ---- Espace superviseur ---- */
+.av{display:inline-grid;place-items:center;border-radius:999px;font-weight:700;flex:none;object-fit:cover;background:#ECECF1;color:var(--ink-2)}
+.ws{display:flex;flex-direction:column;gap:18px;padding-bottom:40px}
+.ws h2,.ws h3,.ws h4{margin:0}
+.ws-card{background:#fff;border:1px solid rgba(29,27,38,.06);border-radius:30px;padding:22px 24px;box-shadow:0 20px 50px -34px rgba(29,27,38,.3);min-width:0}
+.ws-card-h{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.ws-card-h>div{display:flex;align-items:baseline;gap:10px}
+.ws-card-h h3{font-size:19px;font-weight:600}
+.ws-two{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:18px}
+.mono{font-family:var(--f-mono)}
+.t-ok{color:var(--ok)!important}.t-warn{color:var(--warn)!important}.t-bad{color:var(--bad)!important}
+i.dot{display:inline-block;width:7px;height:7px;border-radius:999px;background:var(--ink-2);flex:none}
+i.dot.bad{background:var(--bad)}i.dot.warn{background:#D98A00}i.dot.ok{background:var(--ok)}i.dot.mute{background:#8E8C99}
+/* Planning d'équipe */
+.ws-plan{--pl-label:170px;background:#18171F;color:#fff;border-radius:30px;padding:16px 18px 14px;box-shadow:0 30px 60px -36px rgba(24,23,31,.6)}
+.pl-head{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:10px}
+.pl-head>div:first-child{display:flex;align-items:baseline;gap:12px;flex:1;min-width:200px}
+.pl-head h2{font-size:17px;font-weight:600}
+.pl-head .lab-mono{color:#9997A6}
+.pl-head .btn{background:#2A2833;color:#fff;border-color:transparent}
+.pl-head .btn:hover{background:#34323E}
+.pl-legend{display:flex;gap:12px;font-size:12px;color:#B5B3C2}
+.pl-legend span{display:flex;align-items:center;gap:6px}
+.pl-legend i,.pl-ev{--c:#fff}
+.pl-legend i{width:10px;height:10px;border-radius:3px;background:#fff}
+.pl-legend i.ok{background:#4CC38A}.pl-legend i.warn{background:#F2B54A}.pl-legend i.bad{background:#FF6B8A}.pl-legend i.plan{background:#E9E7F2}
+.pl-grid{position:relative}
+.pl-rows{position:relative;max-height:340px;overflow-y:auto;overflow-x:hidden}
+.pl-row{display:grid;grid-template-columns:var(--pl-label) minmax(0,1fr);align-items:center;min-height:46px;border-top:1px solid rgba(255,255,255,.06)}
+.pl-axis{min-height:20px;border-top:0}
+.pl-axis .pl-track span{position:absolute;top:2px;transform:translateX(-50%);font-family:var(--f-mono);font-size:10px;color:#6F6D7C}
+.pl-axis .pl-track span:first-child{transform:none}.pl-axis .pl-track span:last-child{transform:translateX(-100%)}
+.pl-who{display:flex;align-items:center;gap:10px;background:none;border:0;color:#fff;cursor:pointer;text-align:left;padding:6px 8px 6px 0;font:inherit;min-width:0}
+.pl-who span{display:flex;flex-direction:column;min-width:0}.pl-who b{font-size:14px}
+.pl-who small{font-size:11px;color:#9997A6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl-track{position:relative;height:36px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.04) 0 1px,transparent 1px calc(100%/11))}
+.pl-ev{position:absolute;top:3px;height:30px;border-radius:10px;border:0;padding:0 8px;font:500 12px var(--f-body);text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;background:#E9E7F2;color:#18171F}
+.pl-ev b{font-family:var(--f-mono);font-weight:500;font-size:11px}
+.pl-ev.ok{background:#1F3B30;color:#B9F0D5;box-shadow:inset 3px 0 0 #4CC38A}
+.pl-ev.warn{background:#3B2F1A;color:#FFD99A;box-shadow:inset 3px 0 0 #F2B54A}
+.pl-ev.bad{background:#40202A;color:#FFC2CF;box-shadow:inset 3px 0 0 #FF6B8A}
+.pl-ev.off{background:#2A2833;color:#8E8C99;text-decoration:line-through}
+.pl-ev:hover{filter:brightness(1.08)}
+.pl-vide{position:absolute;left:8px;top:9px;font-size:12px;color:#F2B54A;opacity:.8}
+.pl-now{position:absolute;top:0;bottom:0;width:2px;background:linear-gradient(180deg,#00BCD4,#7B61FF);pointer-events:none}
+.pl-now span{position:absolute;top:-2px;left:50%;transform:translateX(-50%);padding:1px 6px;border-radius:999px;background:#7B61FF;font:500 9px var(--f-mono);color:#fff}
+/* En-tête */
+.ws-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:6px 4px 0}
+.ws-head h2{font-family:var(--f-display);font-stretch:112%;font-weight:500;font-size:46px;letter-spacing:-.04em;line-height:.95}
+.ws-head p{margin:8px 0 0;font-size:16px;color:var(--ink-2)}.ws-head p b{color:var(--ink)}
+.ws-metrics{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.ws-metrics>div:not(.seg){display:flex;flex-direction:column}
+.ws-metrics b{font-size:28px;font-weight:600;letter-spacing:-.02em;line-height:1.1}
+.ws-metrics span{font-size:12px;color:var(--ink-2)}
+.seg{display:flex;padding:4px;border-radius:999px;background:#fff;border:1px solid rgba(29,27,38,.08)}
+.seg button{height:36px;padding:0 14px;border:0;border-radius:999px;background:none;color:var(--ink-2);font:500 13px var(--f-body);cursor:pointer}
+.seg button[aria-pressed="true"]{background:#18171F;color:#fff;font-weight:600}
+/* Priorité */
+.ws-prio{position:relative;overflow:hidden;background:#18171F;color:#fff;border-radius:30px;padding:24px 26px;display:flex;flex-direction:column;gap:16px;box-shadow:0 30px 60px -34px rgba(24,23,31,.6);min-width:0}
+.ws-prio::after{content:"";position:absolute;right:-90px;top:-90px;width:280px;height:280px;border-radius:999px;background:radial-gradient(circle,rgba(194,38,75,.35),transparent 65%);pointer-events:none}
+.ws-prio.calme::after{background:radial-gradient(circle,rgba(17,132,91,.35),transparent 65%)}
+.ws-prio .lab-mono{color:#9997A6}.ws-prio p{color:#B5B3C2;margin:0}
+.ws-prio-top{display:flex;align-items:center;gap:10px}
+.ws-alert{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;background:rgba(194,38,75,.2);color:#FF9DB3;font-size:12px;font-weight:600}
+.ws-alert i{width:6px;height:6px;border-radius:999px;background:#FF5C7E}
+.ws-prio-main{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.ws-prio-t{font-size:28px;font-weight:600;letter-spacing:-.02em}
+.ws-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.ws-chips span{padding:5px 11px;border-radius:999px;background:#2A2833;font-size:13px}.ws-chips span.r{color:#FF9DB3}
+.ws-prio-v{font-family:var(--f-display);font-stretch:110%;font-size:46px;font-weight:500;letter-spacing:-.04em;line-height:1;text-align:right}
+.ws-prio-v small{display:block;font:500 11px var(--f-mono);letter-spacing:.12em;color:#9997A6}
+.ws-prio-why{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:16px;padding:14px 16px;border-radius:20px;background:#22212A}
+.ws-prio-why small{display:block;font-size:12px;color:#9997A6;margin-bottom:4px}
+.ws-prio-why .r{font-size:14px;padding:3px 0 3px 16px;position:relative}.ws-prio-why .r::before{content:"";position:absolute;left:0;top:10px;width:6px;height:6px;border-radius:999px;background:#FF7E98}
+.ws-who{display:flex;align-items:center;gap:12px;min-width:0}
+.ws-acts{display:flex;gap:8px;flex-wrap:wrap}
+.ws-prio .btn.ws-white{background:#fff;color:#18171F;border-color:#fff;min-height:46px;padding:0 20px;font-weight:600}
+.ws-prio .btn.ws-ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.25);min-height:46px;padding:0 20px}
+/* Mon équipe */
+.ws-team{display:flex;flex-direction:column;gap:4px}
+.ws-member{position:relative;display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:18px;border:0;background:none;text-align:left;cursor:pointer;font:inherit;color:inherit;width:100%}
+.ws-member:hover,.ws-member.hl{background:#F6F6F9}
+.ws-dot{position:absolute;left:44px;top:42px;width:12px;height:12px;border-radius:999px;border:2px solid #fff}
+.ws-dot.bad{background:var(--bad)}.ws-dot.warn{background:#D98A00}.ws-dot.ok{background:var(--ok)}
+.ws-m-txt{flex:1;min-width:0;display:flex;flex-direction:column}
+.ws-m-txt b{font-size:15px;font-weight:600}.ws-m-txt small{font-size:13px;color:var(--ink-2)}
+.chev{color:var(--ink-2);font-size:18px}
+/* À traiter */
+.ws-items{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.ws-item{display:flex;flex-direction:column;gap:12px;padding:18px;border-radius:22px;background:#F6F6F9;border:1px solid transparent}
+.ws-item.sev-critique{border-color:rgba(194,38,75,.22);background:#FFF7F9}
+.ws-item-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ws-cat{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+.ws-item-t{font-size:17px;font-weight:600}
+.ws-val{font-family:var(--f-mono);font-size:15px;margin-top:2px}.ws-val small{font-size:11px;color:var(--ink-2)}
+.ws-sub{font-size:14px;color:var(--ink-2);margin-top:2px}
+.ws-why{font-size:14px;color:var(--ink-2)}
+.ws-item .ws-acts{margin-top:auto}.ws-item .btn{min-height:40px}
+/* En attente */
+.ws-flow{font-size:12px;color:var(--ink-2)}.ws-flow b{padding:2px 8px;border-radius:999px;background:#18171F;color:#fff;font-weight:500}
+.ws-wait{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid rgba(29,27,38,.07)}
+/* Hygiène */
+.ws-hyg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.ws-h{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:14px 16px;border-radius:18px;border:1px solid rgba(29,27,38,.08);background:#F6F6F9;cursor:pointer;font:inherit;color:inherit;text-align:left}
+.ws-h b{font-size:28px;font-weight:600;letter-spacing:-.02em}.ws-h span{font-size:13px;color:var(--ink-2)}
+.ws-h i{position:absolute;right:14px;top:12px;font-style:normal;color:var(--ink-2)}
+.ws-h.bad{background:#FBEAEE;border-color:rgba(194,38,75,.22)}.ws-h.bad b,.ws-h.bad i{color:var(--bad)}
+.ws-h:disabled{opacity:.55;cursor:default}
+.ws-h:not(:disabled):hover{border-color:rgba(29,27,38,.2)}
+/* Ce qui a changé */
+.ws-chg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.ws-chg>div{display:flex;flex-direction:column;padding:0 16px;border-left:1px solid rgba(29,27,38,.08)}
+.ws-chg>div:first-child{padding-left:0;border-left:0}
+.ws-chg b{font-family:var(--f-display);font-stretch:108%;font-size:32px;font-weight:500;letter-spacing:-.03em;line-height:1}
+.ws-chg small{font:500 10px var(--f-mono);letter-spacing:.12em;color:var(--ink-2);margin-top:2px}
+.ws-chg span{margin-top:8px;font-size:14px}
+/* Période */
+.ws-obj-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.ws-bar{margin-top:8px;height:10px;border-radius:999px;background:#ECECF1;overflow:hidden}
+.ws-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#00BCD4,#7B61FF)}
+.ws-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px}
+.ws-stats b{display:block;font-size:17px}.ws-stats span{font-size:12px;color:var(--ink-2)}
+.ws-insight{margin-top:14px;padding:12px 14px;border-radius:14px;background:#FFF8EC;color:#6B4A00;font-size:13px}
+/* Tiroir commercial */
+.drawer-ov{align-items:stretch;justify-content:flex-end;padding:12px}
+.drawer{width:min(560px,100%);max-height:calc(100dvh - 24px);overflow-y:auto;box-sizing:border-box;padding:26px;border-radius:30px;background:#fff;box-shadow:-30px 0 80px -30px rgba(24,23,31,.5);display:flex;flex-direction:column;gap:20px;animation:drIn .28s cubic-bezier(.16,1,.3,1)}
+@keyframes drIn{from{transform:translateX(40px);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.drawer{animation:none}}
+.dr-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.dr-head h3{font-size:21px;font-weight:600}
+.dr-kpi{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.dr-kpi>div{padding:14px 16px;border-radius:20px;background:#F6F6F9;display:flex;flex-direction:column}
+.dr-kpi>div.dark{background:#18171F;color:#fff}.dr-kpi small,.dr-kpi span{font-size:12px;color:var(--ink-2)}.dr-kpi .dark small,.dr-kpi .dark span{color:#9997A6}
+.dr-kpi b{font-size:28px;font-weight:600;letter-spacing:-.02em}.dr-kpi b i{font-style:normal;font-size:12px;color:#9997A6}
+.drawer h4{font-size:16px;font-weight:600;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.dr-row{display:flex;align-items:center;gap:12px;width:100%;padding:10px 4px;border:0;border-bottom:1px solid rgba(29,27,38,.07);background:none;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.dr-row:hover{background:#F8F8FA}.dr-row.static{cursor:default}.dr-row.day{background:#F6F6F9;border-radius:16px;border:0;padding:10px 12px;margin-bottom:6px}
+.dr-acts{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap}.dr-acts .btn{flex:1 1 160px;justify-content:center}
+.sh-dem{border:1px solid rgba(123,97,255,.25)}
+@media (max-width:980px){
+  .ws-two{grid-template-columns:1fr}
+  .ws-chg{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:16px}.ws-chg>div:nth-child(3){padding-left:0;border-left:0}
+  .ws-plan{--pl-label:112px;border-radius:24px;padding:14px}
+  .pl-legend{display:none}
+  .pl-track{min-width:520px}.pl-grid{overflow-x:auto}
+  .ws-head h2{font-size:36px}
+  .ws-prio-why{grid-template-columns:1fr}
+  .ws-stats{grid-template-columns:1fr 1fr 1fr}
+}
+
 /* Accueil simplifié des commerciaux : une chose à la fois */
 .fc-actions{display:flex;gap:8px;margin-top:14px}
 .fc-actions .btn{flex:1 1 0;justify-content:center;min-height:56px;padding:0 10px}
@@ -570,6 +726,98 @@ body.ai-open .ai-fab,body.auth .ai-fab{display:none}
 .stage-tabs{display:none}
 @media (max-width:720px){.stage-tabs{display:flex}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.ecg path{stroke-dashoffset:0}}
+
+/* Organigramme : arbre de haut en bas avec connecteurs */
+.org-wrap{overflow-x:auto;padding:8px 0 4px;-webkit-overflow-scrolling:touch}
+.org,.org ul{list-style:none;margin:0;padding:0;display:flex;justify-content:center}
+.org{min-width:max-content;margin:0 auto}
+.org ul{padding-top:22px;position:relative}
+.org li{position:relative;padding:22px 8px 0;display:flex;flex-direction:column;align-items:center}
+.org>li{padding-top:0}
+.org li::before,.org li::after{content:"";position:absolute;top:0;width:50%;height:22px;border-top:1.5px solid #c4c2d0}
+.org li::before{right:50%}.org li::after{left:50%;border-left:1.5px solid #c4c2d0}
+.org li:only-child::before,.org li:only-child::after{border-top:0}
+.org li:only-child{padding-top:22px}
+.org li:first-child::before,.org li:last-child::after{border-top:0}
+.org li:last-child::before{border-right:1.5px solid #c4c2d0;border-radius:0 8px 0 0}
+.org li:first-child::after{border-radius:8px 0 0 0}
+.org>li::before,.org>li::after{display:none}
+.org ul::before{content:"";position:absolute;top:0;left:50%;height:22px;border-left:1.5px solid #c4c2d0}
+.org-card{display:flex;align-items:center;gap:10px;text-align:left;padding:10px 14px 10px 10px;border-radius:18px;background:#fff;border:1px solid rgba(29,27,38,.1);box-shadow:0 6px 18px -12px rgba(24,23,31,.35);font:inherit;color:inherit;cursor:pointer;min-width:170px;max-width:290px;transition:transform .15s,box-shadow .15s}
+.org-card:hover{transform:translateY(-1px);box-shadow:0 10px 24px -12px rgba(24,23,31,.45)}
+.org-card:focus-visible{outline:2px solid #5B49D6;outline-offset:2px}
+.org-card>span:last-child{display:flex;flex-direction:column;min-width:0}
+.org-card b{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.org-card small{font-size:12px;color:#6B6979;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.org>li>.org-card{background:#18171F;color:#fff;border-color:#18171F}.org>li>.org-card small{color:#B4B2C0}
+.org-card.hors{background:#F6F6F9;border-style:dashed}
+.org-card.off{opacity:.6}
+.org-seuls{display:flex;flex-wrap:wrap;gap:8px}
+@media (max-width:720px){.org-card{min-width:140px;padding:8px 10px 8px 8px}.org li{padding-left:4px;padding-right:4px}}
+
+/* Plan d'affaire, prochaine étape, veille, aide */
+.pill.vio{color:#5B49D6;background:#EEEBFF;border-color:transparent}
+.nx{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:14px 0 4px;padding:14px 16px;border-radius:18px;border:1px solid var(--line-strong);background:var(--surface,#fff)}
+.nx.ok{border-color:rgba(17,132,91,.25);background:#F2FAF6}
+.nx.warn{border-color:rgba(217,138,0,.35);background:#FFF9EE}
+.nx.veille{border-color:rgba(29,27,38,.12);background:#F3F3F7}
+.nx-main{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1 1 320px}
+.nx-main b{font-size:15px}
+.nx-sub{font-size:13px;color:var(--ink-2)}
+.nx-btns{display:flex;gap:8px;flex-wrap:wrap}
+.plan{display:flex;flex-direction:column;gap:14px;padding-top:6px}
+.plan-mt{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 16px;border-radius:18px;background:#FFF9EE;color:var(--ink);border:1px solid rgba(217,138,0,.3)}
+.plan-mt .lab-mono{color:#9A6200}
+.plan-mt .btn{margin-left:auto}
+.plan-score{display:flex;flex-direction:column}
+.plan-score b{font-size:28px;font-weight:600;letter-spacing:-.02em;line-height:1}.plan-score small{font-size:14px;color:#9997A6;font-weight:500}
+.plan-pts{display:flex;flex-wrap:wrap;gap:6px;flex:1 1 280px}
+.pp{font-size:12px;padding:4px 9px;border-radius:999px;background:rgba(255,255,255,.08);color:#B4B2C0}
+.pp.ok{background:rgba(17,132,91,.22);color:#BFEBD7}
+.plan-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.plan-grid section{padding:14px 16px;border-radius:16px;border:1px solid var(--line);min-width:0}
+.plan-grid section:nth-child(2){grid-row:span 2}
+.plan-grid h4{margin:0 0 8px;display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:11px}.plan-grid h4 .linkish{font-family:inherit;text-transform:none;letter-spacing:0;font-size:13px}
+.plan-grid p{margin:0;font-size:14px;line-height:1.45}
+.plan-tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:12px;padding:4px 10px;border-radius:999px;background:#FFF1EE;color:#A3361C}
+.iv-row{display:flex;align-items:center;gap:8px;width:100%;padding:9px 0;border:0;border-top:1px solid var(--line);background:none;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.iv-row:first-of-type{border-top:0}
+.iv-n{flex:1;min-width:0;display:flex;flex-direction:column}.iv-n small{font-size:12px;color:var(--ink-2)}
+.sh-veille{border:1px solid rgba(29,27,38,.12);background:#F3F3F7}
+.sh-org{padding:12px 0;border-top:1px solid var(--line)}
+.sh-org:first-of-type{border-top:0}
+.sh-org-h{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.sh-org .s{font-size:13px;color:var(--ink-2);margin-top:2px}
+.sh-org.up .s{color:var(--warn)}
+.sh-org-b{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.ws-prio.aide .ws-prio-why .r::before{background:#B9AEFF}.ws-prio.aide::before,.ws-prio.aide::after{filter:hue-rotate(250deg)}
+.ws-alert.vio{background:rgba(123,97,255,.22)!important;color:#E7E3FF!important}.ws-alert.vio i{background:#B9AEFF!important}
+.dot.vio{background:#7B61FF}
+.ws-item.sev-aide{border:1px solid rgba(123,97,255,.3)}
+@media (max-width:720px){.plan-grid{grid-template-columns:1fr}.plan-grid section:nth-child(2){grid-row:auto}.plan-mt .btn{margin-left:0;width:100%}.nx-btns .btn{flex:1 1 auto}.sh-org-b .btn{flex:1 1 calc(50% - 6px)}}
+
+.nx2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0 4px}
+.nx-l{position:relative;display:flex;flex-direction:column;gap:3px;padding:14px 16px;border-radius:18px;border:1px solid var(--line-strong);background:var(--surface,#fff);min-width:0}
+.nx-l .btn{align-self:flex-start;margin-top:8px}
+.nx-l:first-child{border-color:rgba(17,132,91,.3);background:#F2FAF6}
+.nx-l:first-child.todo{border-color:rgba(217,138,0,.35);background:#FFF9EE}
+.nx-l:first-child b{font-size:16px}
+.nx-l:not(:first-child){background:transparent}
+.nx-l b{font-size:14px}
+.nx-note{grid-column:1/-1;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--ink-2);padding:2px 4px}
+.nx-note.up{color:var(--warn);font-weight:600}
+.nx-inline{display:inline-flex;gap:6px;margin-left:auto}
+.plan-mt.ok{background:#F2FAF6;color:var(--ink);border:1px solid rgba(17,132,91,.25)}.plan-mt.ok .lab-mono{color:#11845B}
+.plan-score b{font-size:20px!important}
+.pq{font:inherit;font-size:13px;padding:6px 11px;border-radius:999px;border:1px solid rgba(217,138,0,.35);background:#fff;color:var(--ink);cursor:pointer}
+.pq:hover{background:#FFF1D6}
+.sh-org .sh-msg{font-size:13px;margin-top:2px;color:var(--ink)}
+.sh-org.up .sh-msg{color:var(--warn);font-weight:600}
+.sh-org.up .s{color:var(--ink-2)}
+.sh-rq{padding:14px 16px;border-radius:18px;border:1px dashed var(--line-strong)}
+.sh-rq .s{font-size:13px;color:var(--ink-2);margin-top:2px}.sh-rq .sh-msg{font-size:13px;margin-top:8px;font-weight:600}
+@media (max-width:720px){.nx2{grid-template-columns:1fr}.nx-inline{margin-left:0;width:100%}.nx-inline .btn{flex:1}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 </head>
@@ -586,21 +834,17 @@ body.ai-open .ai-fab,body.auth .ai-fab{display:none}
       <span class="tagline">CRM commercial</span>
     </div>
     <nav class="tabs" aria-label="Sections du CRM">
-      <span class="tab-grp pilote-only" aria-hidden="true">Mon travail</span>
       <a class="tab" href="#aujourdhui" data-tab="aujourdhui" id="tab-aujourdhui">Aujourd’hui</a>
-      <a class="tab" href="#agenda" data-tab="agenda" id="tab-agenda">Agenda</a>
+      <a class="tab commercial-only" href="#agenda" data-tab="agenda" id="tab-agenda">Agenda</a>
       <a class="tab" href="#pipeline" data-tab="pipeline" id="tab-pipeline">Pipeline</a>
-      <a class="tab" href="#comptes" data-tab="comptes" id="tab-comptes">Clients</a>
-      <a class="tab pilote-only" href="#activites" data-tab="activites" id="tab-activites">Activités</a>
-      <a class="tab" href="#devis" data-tab="devis" id="tab-devis">Devis</a>
-      <a class="tab pilote-only" href="#paiements" data-tab="paiements" id="tab-paiements">Paiements</a>
-      <span class="tab-sep pilote-only" aria-hidden="true"></span>
-      <span class="tab-grp pilote-only" aria-hidden="true">Pilotage</span>
-      <a class="tab pilote-only" href="#planning" data-tab="planning" id="tab-planning">Planning</a>
       <a class="tab pilote-only" href="#superviseur" data-tab="superviseur" id="tab-superviseur">Équipe</a>
-      <a class="tab pilote-only" href="#acquisition" data-tab="acquisition" id="tab-acquisition">Acquisition</a>
-      <a class="tab pilote-only" href="#reporting" data-tab="reporting" id="tab-reporting">Reporting</a>
-      <a class="tab gear pilote-only" href="#equipe" data-tab="equipe" id="tab-equipe" title="Réglages : équipe, catalogue, imports" aria-label="Réglages"><span aria-hidden="true">⚙</span></a>
+      <a class="tab" href="#comptes" data-tab="comptes" id="tab-comptes">Clients</a>
+      <a class="tab commercial-only" href="#devis" data-tab="devis" id="tab-devis">Devis</a>
+      <div class="plus-wrap pilote-only"><button type="button" class="tab" id="plus-btn" aria-haspopup="true" aria-expanded="false" aria-controls="plus-menu">Plus <span aria-hidden="true">▾</span></button>
+        <div class="plus-menu" id="plus-menu" hidden>
+          <a href="#agenda" data-tab="agenda">Agenda</a><a href="#planning" data-tab="planning">Planning de la semaine</a><a href="#activites" data-tab="activites">Activités</a><a href="#devis" data-tab="devis">Devis</a><a href="#paiements" data-tab="paiements">Paiements</a><a href="#acquisition" data-tab="acquisition">Acquisition</a><a href="#reporting" data-tab="reporting">Reporting</a><a href="#equipe" data-tab="equipe">Réglages &amp; organigramme</a>
+        </div></div>
+      <a class="tab gear pilote-only" href="#equipe" data-tab="equipe" id="tab-equipe" title="Réglages : équipe, organigramme, catalogue, imports" aria-label="Réglages"><span aria-hidden="true">⚙</span></a>
     </nav>
     <div class="status" data-k="busy"><span class="dot busy" id="dot" aria-hidden="true"></span><span id="status-text" aria-live="polite">Connexion…</span>
       <button class="btn small icon bell" id="bell" aria-label="Notifications" aria-expanded="false" aria-controls="npanel"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9a6 6 0 0112 0c0 6 2 8 2 8H4s2-2 2-8"/><path d="M10 21a2 2 0 004 0"/></svg><span class="badge" id="bell-n" hidden></span></button>
@@ -618,8 +862,9 @@ body.ai-open .ai-fab,body.auth .ai-fab{display:none}
 <div id="auth-slot"></div>
 <nav class="botnav" aria-label="Navigation">
   <a href="#aujourdhui" data-tab="aujourdhui"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6h-6v6H4a1 1 0 01-1-1z"/></svg><span>Aujourd’hui</span></a>
-  <a href="#agenda" data-tab="agenda"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Agenda</span></a>
+  <a class="commercial-only" href="#agenda" data-tab="agenda"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Agenda</span></a>
   <a class="pilote-only" href="#pipeline" data-tab="pipeline"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4" width="4.5" height="16" rx="1.5"/><rect x="9.75" y="4" width="4.5" height="11" rx="1.5"/><rect x="16" y="4" width="4.5" height="7" rx="1.5"/></svg><span>Pipeline</span></a>
+  <a class="pilote-only" href="#superviseur" data-tab="superviseur"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="3"/><circle cx="16.5" cy="9.5" r="2.5"/><path d="M2.5 19a5.5 5.5 0 0 1 11 0M14 19a4 4 0 0 1 7.5-1.5"/></svg><span>Équipe</span></a>
   <a href="#comptes" data-tab="comptes"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0113 0"/><path d="M16 4.5a3.5 3.5 0 010 7M18 14a6 6 0 013.5 6"/></svg><span>Clients</span></a>
   <button type="button" id="more-btn" aria-haspopup="dialog" aria-controls="more-sheet"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg><span>Plus</span></button>
 </nav>
@@ -628,8 +873,8 @@ body.ai-open .ai-fab,body.auth .ai-fab{display:none}
 <div id="more-sheet" class="overlay sheet-ov" hidden><div class="modal more" role="dialog" aria-modal="true" aria-label="Plus">
   <div class="grabber" aria-hidden="true"></div>
   <div class="more-grid">
-    <a class="commercial-only" href="#pipeline" data-tab="pipeline">Pipeline</a><a href="#activites" data-tab="activites">Activités</a><a href="#devis" data-tab="devis">Devis</a><a href="#paiements" data-tab="paiements">Paiements</a>
-    <a class="pilote-only" href="#planning" data-tab="planning">Planning équipe</a><a class="pilote-only" href="#superviseur" data-tab="superviseur">Équipe</a><a class="pilote-only" href="#acquisition" data-tab="acquisition">Acquisition</a><a class="pilote-only" href="#reporting" data-tab="reporting">Reporting</a><a class="pilote-only" href="#equipe" data-tab="equipe">Réglages</a>
+    <a class="commercial-only" href="#pipeline" data-tab="pipeline">Pipeline</a><a class="pilote-only" href="#agenda" data-tab="agenda">Agenda</a><a class="pilote-only" href="#planning" data-tab="planning">Planning de la semaine</a><a href="#activites" data-tab="activites">Activités</a><a href="#devis" data-tab="devis">Devis</a><a href="#paiements" data-tab="paiements">Paiements</a>
+    <a class="pilote-only" href="#acquisition" data-tab="acquisition">Acquisition</a><a class="pilote-only" href="#reporting" data-tab="reporting">Reporting</a><a class="pilote-only" href="#equipe" data-tab="equipe">Réglages &amp; organigramme</a>
   </div>
   <div class="more-foot"><span id="more-status" class="hint" style="margin:0"></span><button type="button" class="btn small" id="more-logout">Déconnexion</button></div>
 </div></div>
@@ -651,7 +896,7 @@ const ETAPE_LABEL = {Qualification:"Qualification",Proposition:"Proposition",Neg
 const PROB_DEFAUT = {Qualification:20,Proposition:40,Negociation:65,Fermeture:85};
 const proba = o => o.issue==="gagnee"?100:(o.probabilite!=null?+o.probabilite:(PROB_DEFAUT[o.etape]||0));
 const ISSUE_LABEL = {en_cours:"En cours",gagnee:"Gagnée",perdue:"Perdue",dormante:"En sommeil"};
-const issuePill = o => `<span class="pill ${o.issue==="gagnee"?"ok":o.issue==="perdue"?"bad":o.issue==="dormante"?"warn":""}">${ISSUE_LABEL[o.issue]||o.issue}</span>`;
+const issuePill = o => o.issue==="dormante"&&o.veille_jusqu?`<span class="pill">En veille · ${new Date(o.veille_jusqu+"T12:00").toLocaleDateString("fr-FR",{month:"short",year:"numeric"})}</span>`:`<span class="pill ${o.issue==="gagnee"?"ok":o.issue==="perdue"?"bad":o.issue==="dormante"?"warn":""}">${ISSUE_LABEL[o.issue]||o.issue}</span>`;
 const SEGMENTS = {A_clinique:"A · Clinique / médico-esth.",B_cabinet:"B · Cabinet / santé",C_salon:"C · Salon / beauté"};
 const CATEGORIES = {medecin:"Médecin",non_medecin:"Non-médecin"};
 // Spécialités regroupées par ce que les clients achètent (même cible = même segment de reporting)
@@ -722,6 +967,9 @@ function filtrerPour(m){
   state.devis=state.devis.filter(d=>d.commercial_id===m.id||C.has(d.compte_id));
   const D=new Set(state.devis.map(d=>d.id)); state.devis_lignes=state.devis_lignes.filter(l=>D.has(l.devis_id));
   state.paiements=state.paiements.filter(own);
+  state.demandes=(state.demandes||[]).filter(d=>d.destinataire_id===m.id||d.auteur_id===m.id);
+  const O=new Set(state.opportunites.map(o=>o.id)); state.intervenants=(state.intervenants||[]).filter(i=>O.has(i.opportunite_id));
+  state.aides=(state.aides||[]).filter(x=>x.destinataire_id===m.id||x.auteur_id===m.id);
 }
 function renderApercu(){
   let bar=document.getElementById("apercu-bar");
@@ -785,12 +1033,17 @@ async function load(){
       q("equipe","nom",true), q("comptes","nom",true), q("contacts","nom",true), q("produits","nom",true),
       q("opportunites","updated_at",false), qActivites(), q("devis","created_at",false), q("devis_lignes","position",true).then(r=>r.error?{data:[],error:null}:r),
       q("paiements","date_echeance",true).then(r=>r.error?{data:[],error:null}:r),
-      sb.from("reglages").select("*").then(r=>r.error?{data:[],error:null}:r)
+      sb.from("reglages").select("*").then(r=>r.error?{data:[],error:null}:r),
+      q("demandes","created_at",false).then(r=>r.error?{data:[],error:null}:r),
+      q("affaire_intervenants","created_at",true).then(r=>r.error?{data:[],error:null}:r),
+      q("demandes_aide","created_at",false).then(r=>r.error?{data:[],error:null}:r)
     ]);
     const err = res.find(r=>r.error); if(err) throw err.error;
-    const [equipe,comptes,contacts,produits,opportunites,activites,devis,devis_lignes,paiements,reglagesRows] = res.map(r=>r.data||[]);
+    const [equipeTout,comptes,contacts,produits,opportunites,activites,devis,devis_lignes,paiements,reglagesRows,demandes,intervenants,aides] = res.map(r=>r.data||[]);
+    // Les personnes hors CRM (CEO, SAV, livraison…) ne figurent que dans l’organigramme
+    const equipe=equipeTout.filter(e=>!e.hors_crm);
     const reglages={}; reglagesRows.forEach(x=>reglages[x.cle]=x.valeur);
-    state = {equipe,comptes,contacts,produits,opportunites,activites,devis,devis_lignes,paiements,reglages};
+    state = {equipe,organigramme:equipeTout,comptes,contacts,produits,opportunites,activites,devis,devis_lignes,paiements,reglages,demandes,intervenants,aides};
     const vrai=equipe.find(e=>e.user_id===currentUser.id)||null;
     if(apercu&&vrai&&["admin","superviseur"].includes(vrai.role)){ const m=equipe.find(e=>e.id===apercu.id); apercu=m||null; if(m) filtrerPour(m); } else apercu=null;
     renderApercu();
@@ -854,7 +1107,8 @@ function render(){
   const showK = false;
   $("#kpis").hidden = !showK; $(".wrap > .sep").hidden = !showK;
   if(showK) renderKpis();
-  document.querySelectorAll(".tab,.botnav a,.more-grid a").forEach(b=>{ if(b.dataset.tab===tab) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current"); });
+  document.querySelectorAll(".tab,.botnav a,.more-grid a,.plus-menu a").forEach(b=>{ if(b.dataset.tab===tab) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current"); });
+  const pb=$("#plus-btn"); if(pb){ if(["agenda","planning","activites","devis","paiements","acquisition","reporting","equipe"].includes(tab)&&estPilote()) pb.setAttribute("aria-current","page"); else pb.removeAttribute("aria-current"); }
   const plus=$("#more-btn"); if(plus){ if(["activites","devis","paiements","superviseur","acquisition","reporting","equipe"].includes(tab)||(tab==="pipeline"&&!estPilote())) plus.setAttribute("aria-current","page"); else plus.removeAttribute("aria-current"); }
   document.body.classList.toggle("fab-on",["aujourdhui","agenda","comptes","pipeline","activites"].includes(tab));
   const v=$("#view");
@@ -930,18 +1184,18 @@ function viewPipeline(v){
   const q=strip(pipeFilt.q);
   const match=o=>(!pipeFilt.com||(pipeFilt.com==="moi"?(me&&o.commercial_id===me.id):pipeFilt.com==="none"?!o.commercial_id:o.commercial_id===pipeFilt.com))
     &&(!q||strip([o.titre,o.description,(byId(state.comptes,o.compte_id)||{}).nom].filter(Boolean).join(" ")).includes(q))
-    &&(!pipeFilt.risque||pipeFilt.risque==="dormante"||(r=>r&&(pipeFilt.risque==="bloquee"?r.niveau==="bloquee":!!r.niveau))(risque(o)));
+    &&(!pipeFilt.risque||pipeFilt.risque==="dormante"||(pipeFilt.risque==="organiser"?!!(organisation(o)||{}).aOrganiser:false)||pipeFilt.risque!=="organiser"&&(r=>r&&(pipeFilt.risque==="bloquee"?r.niveau==="bloquee":!!r.niveau))(risque(o)));
   const rk=o=>{ const r=risque(o); return r&&r.niveau==="bloquee"?2:r&&r.niveau?1:0; };
   const vueSommeil=pipeFilt.risque==="dormante", nbSommeil=state.opportunites.filter(o=>o.issue==="dormante").length;
   const open = state.opportunites.filter(o=>o.issue===(vueSommeil?"dormante":"en_cours")&&match(o)).sort((a,b)=>pipeFilt.risque?(rk(b)-rk(a))||((+b.montant_mad||0)-(+a.montant_mad||0)):String(b.updated_at||"").localeCompare(String(a.updated_at||"")));
   const closed = state.opportunites.filter(o=>o.issue==="gagnee"||o.issue==="perdue").slice(0,12);
   const noCompte = !state.comptes.length;
   v.innerHTML = `
-  <div class="section-head"><div><h2>Pipeline commercial</h2><p class="hint">Seuils de risque : ${ETAPES.map(e=>ETAPE_LABEL[e].slice(0,5)+". "+seuils()[e]+" j").join(" · ")}${estPilote()?` · <button class="linkish" data-act="seuils">modifier</button> · <button class="linkish" data-act="sommeil">mise en sommeil</button>`:""}</p>${vueSommeil?`<p class="hint" style="margin:4px 0 0"><b>Affaires en sommeil</b> : sans action depuis longtemps, sorties du pipeline et des prévisions. Ouvre-en une pour la réveiller ; une nouvelle activité la réveille aussi automatiquement.</p>`:""}</div>
+  <div class="section-head"><div><h2>Pipeline commercial</h2><p class="hint">Seuils de risque : ${ETAPES.map(e=>ETAPE_LABEL[e].slice(0,5)+". "+seuils()[e]+" j").join(" · ")}${estPilote()?` · <button class="linkish" data-act="seuils">modifier</button> · <button class="linkish" data-act="sommeil">mise en sommeil</button>`:""}</p>${vueSommeil?`<p class="hint" style="margin:4px 0 0"><b>Affaires en veille ou en sommeil</b>, sorties du pipeline et des prévisions. <b>En veille</b> : mise de côté volontairement, revient toute seule à la date prévue avec son contexte. <b>En sommeil</b> : sans action depuis longtemps. Une activité réalisée réveille l’une comme l’autre.</p>`:""}</div>
     <div class="tools"><button class="btn" data-act="new-compte">+ Compte</button><button class="btn primary" data-act="new-opp" ${noCompte?"disabled title='Ajoutez d’abord un compte'":""}>+ Opportunité</button></div></div>
   ${state.opportunites.length?`<div class="filters" style="margin-bottom:12px"><input id="p-q" type="search" placeholder="Client, opportunité, note…" value="${esc(pipeFilt.q)}" aria-label="Rechercher une opportunité" autocomplete="off" spellcheck="false">
     <select id="p-com" aria-label="Commercial"><option value="">Tous les commerciaux</option><option value="moi" ${pipeFilt.com==="moi"?"selected":""}>Mes opportunités</option><option value="none" ${pipeFilt.com==="none"?"selected":""}>Non assignées</option>${state.equipe.filter(e=>state.opportunites.some(o=>o.commercial_id===e.id)).map(e=>`<option value="${e.id}" ${pipeFilt.com===e.id?"selected":""}>${esc(e.nom)}</option>`).join("")}</select>
-    <select id="p-risque" aria-label="État"><option value="">Toutes les affaires</option><option value="risque" ${pipeFilt.risque==="risque"?"selected":""}>À risque ou bloquées</option><option value="bloquee" ${pipeFilt.risque==="bloquee"?"selected":""}>Bloquées seulement</option>${nbSommeil||vueSommeil?`<option value="dormante" ${vueSommeil?"selected":""}>En sommeil (${nbSommeil})</option>`:""}</select></div>`:""}
+    <select id="p-risque" aria-label="État"><option value="">Toutes les affaires</option><option value="risque" ${pipeFilt.risque==="risque"?"selected":""}>À risque ou bloquées</option><option value="bloquee" ${pipeFilt.risque==="bloquee"?"selected":""}>Bloquées seulement</option>${nbSommeil||vueSommeil?`<option value="dormante" ${vueSommeil?"selected":""}>En veille ou en sommeil (${nbSommeil})</option>`:""}<option value="organiser" ${pipeFilt.risque==="organiser"?"selected":""}>À organiser (sans prochaine étape)</option></select></div>`:""}
   ${noCompte?`<div class="panel empty"><h3>Le CRM est vide pour l’instant</h3><p>Commencez par ajouter une clinique, un cabinet ou un salon, puis créez sa première opportunité.</p><div class="form-actions" style="justify-content:center"><button class="btn primary" data-act="new-compte">Ajouter un premier compte</button></div></div>`:""}
   ${(()=>{ if(!estMobile()) return ""; if(!pipeStage||!ETAPES.includes(pipeStage)) pipeStage=(ETAPES.find(e=>open.some(o=>o.etape===e&&o.montant_mad>0))||ETAPES[0]);
     return `<div class="stage-tabs" role="group" aria-label="Étape">${ETAPES.map(e=>{ const it=open.filter(o=>o.etape===e), bl=it.filter(o=>(risque(o)||{}).niveau==="bloquee").length; return `<button class="chip" data-act="pipe-stage" data-v="${e}" aria-pressed="${pipeStage===e}">${ETAPE_LABEL[e]}<span class="n">${it.length}</span>${bl?`<span class="pill bad" style="margin-left:2px">${bl}</span>`:""}</button>`; }).join("")}</div>`; })()}
@@ -952,7 +1206,7 @@ function viewPipeline(v){
       ${items.length?items.slice(0,colShown[e]||25).map(oppCard).join(""):`<div class="empty-col">Aucune opportunité</div>`}
       ${items.length>(colShown[e]||25)?`<button class="btn small" data-act="col-more" data-etape="${e}">Afficher 25 de plus · ${items.length-(colShown[e]||25)} restantes</button>`:""}</section>`;}).join("")}
   </div></div>
-  ${closed.length?`<div class="panel" style="margin-top:16px"><h3>Dernières affaires clôturées</h3><div class="closed-list" style="margin-top:8px">${closed.map(o=>{const c=byId(state.comptes,o.compte_id);return `<div class="closed-row"><div><b>${esc(o.titre)}</b> <span class="hint">· ${esc(c?c.nom:"")}</span>${o.raison_perte?`<div class="hint">Raison : ${esc(o.raison_perte)}</div>`:""}</div><div class="tools"><span class="amt" style="font-family:var(--f-mono);font-size:12px">${mad(o.montant_mad)} MAD</span>${issuePill(o)}<button class="btn small" data-act="reopen" data-id="${o.id}">Rouvrir</button></div></div>`;}).join("")}</div></div>`:""}`;
+  ${closed.length?`<div class="panel" style="margin-top:16px"><h3>Dernières affaires clôturées</h3><div class="closed-list" style="margin-top:8px">${closed.map(o=>{const c=byId(state.comptes,o.compte_id);return `<div class="closed-row"><div><b>${esc(o.titre)}</b> <span class="hint">· ${esc(c?c.nom:"")}</span>${o.raison_perte?`<div class="hint">Raison : ${esc(o.raison_perte)}</div>`:""}</div><div class="tools"><span class="amt" style="font-family:var(--f-mono);font-size:12px">${mad(o.montant_mad)} MAD</span>${issuePill(o)}<button class="btn small" data-act="reopen" data-id="${o.id}"${estVeille(o)?" hidden":""}>Rouvrir</button></div></div>`;}).join("")}</div></div>`:""}`;
   if($("#p-q")){ let t=null; $("#p-q").addEventListener("input",e=>{ clearTimeout(t); t=setTimeout(()=>{ pipeFilt.q=e.target.value; colShown={}; const pos=e.target.selectionStart; viewPipeline(v); const n=$("#p-q"); n.focus(); try{n.setSelectionRange(pos,pos);}catch(_){} },200); });
     $("#p-com").addEventListener("change",e=>{ pipeFilt.com=e.target.value; colShown={}; viewPipeline(v); });
     $("#p-risque").addEventListener("change",e=>{ pipeFilt.risque=e.target.value; colShown={}; viewPipeline(v); }); }
@@ -1386,11 +1640,13 @@ function viewEquipe(v){
   setTimeout(chargerDoublons,0); setTimeout(chargerLeads,0);
   v.innerHTML=`<div class="section-head"><div><h2>Équipe &amp; catalogue</h2><p class="hint">Un membre « sans accès » ne peut pas se connecter. Activez-le dans « Modifier » ; il se connecte ensuite avec l’email indiqué ici.</p></div>
    <div class="tools"><button class="btn" data-act="objectifs">Objectifs mensuels</button><button class="btn" data-act="import">Importer des contacts (Excel)</button><button class="btn" data-act="new-produit">+ Machine</button><button class="btn primary" data-act="new-membre">+ Membre</button></div></div>
+  <div class="panel" style="margin-bottom:16px"><div class="section-head" style="margin:0 0 8px"><h3>Équipe</h3><div class="chips" role="group" aria-label="Affichage"><button class="chip" data-act="equipe-vue" data-v="liste" aria-pressed="${equipeVue==="liste"}">Liste</button><button class="chip" data-act="equipe-vue" data-v="org" aria-pressed="${equipeVue==="org"}">Organigramme</button></div></div>
+  ${equipeVue==="org"?vueOrganigramme():`<div class="tbl-wrap" style="margin-top:8px"><table><thead><tr><th>Nom</th><th>Email</th><th>Rôle</th><th>Showroom</th><th>Statut</th><th></th></tr></thead><tbody>
+  ${[...orgTous()].sort((a,b)=>(!!a.parti_le-!!b.parti_le)).map(e=>`<tr${e.parti_le?' style="opacity:.7"':""}><td><div class="ws-who" style="gap:10px">${avatar(e,30)}<span><b>${esc(e.nom)}</b>${e.poste?`<br><small class="hint" style="margin:0">${esc(e.poste)}</small>`:""}</span></div></td><td>${esc(e.email||"—")}</td><td>${e.hors_crm?`<span class="pill">Hors CRM</span>`:ROLES[e.role]}</td><td>${e.showroom?esc(SHOWROOMS[e.showroom].replace("Showroom ","")):"—"}</td><td>${e.parti_le?`<span class="pill">Parti·e le ${esc(new Date(e.parti_le+"T12:00").toLocaleDateString("fr-FR",{day:"numeric",month:"short",year:"numeric"}))}</span>`:`<span class="pill ${e.actif?"ok":""}">${e.actif?"Accès actif":"Sans accès"}</span>`}${(()=>{ const n=state.comptes.filter(c=>c.commercial_id===e.id).length; return n?`<div class="hint" style="margin:2px 0 0">${n} client${n>1?"s":""}</div>`:""; })()}</td><td><div class="tools" style="flex-wrap:nowrap"><button class="btn small" data-act="edit-membre" data-id="${e.id}">Modifier</button>${e.role!=="admin"&&!e.parti_le?`<button class="btn small" data-act="voir-comme" data-id="${e.id}" title="Voir le CRM comme ce membre, en lecture seule">Voir comme</button>`:""}${e.role!=="admin"?`<button class="btn small" data-act="depart-membre" data-id="${e.id}">${e.parti_le?"Transférer":"Départ / transfert"}</button>`:""}</div></td></tr>`).join("")}
+  </tbody></table></div>`}</div>
   <div class="panel" style="margin-bottom:16px" id="leads-panel"><div class="section-head" style="margin:0 0 6px"><div><h3>Leads entrants</h3><p class="hint" style="margin:0">Les demandes du site et des campagnes arrivent ici toutes seules : fiche client (ou client existant retrouvé par téléphone/e-mail), opportunité, tâche « Rappeler » pour le bon commercial (ville + pratique, voir Attribution automatique), et notification.</p></div><button class="btn small" data-act="new-source">+ Source</button></div><div id="leads-body"><div class="skeleton" style="height:40px"></div></div></div>
   <div class="panel" style="margin-bottom:16px" id="dup-panel"><h3>Doublons probables</h3><p class="hint">Même téléphone, ou même nom dans la même ville, y compris entre clients de commerciaux différents.</p><div id="dup-body"><div class="skeleton" style="height:40px"></div></div></div>
-  <div class="grid2"><div class="panel"><h3>Équipe</h3><div class="tbl-wrap" style="margin-top:8px"><table><thead><tr><th>Nom</th><th>Email</th><th>Rôle</th><th>Showroom</th><th>Statut</th><th></th></tr></thead><tbody>
-  ${[...state.equipe].sort((a,b)=>(!!a.parti_le-!!b.parti_le)).map(e=>`<tr${e.parti_le?' style="opacity:.7"':""}><td><b>${esc(e.nom)}</b></td><td>${esc(e.email||"—")}</td><td>${ROLES[e.role]}</td><td>${e.showroom?esc(SHOWROOMS[e.showroom].replace("Showroom ","")):"—"}</td><td>${e.parti_le?`<span class="pill">Parti·e le ${esc(new Date(e.parti_le+"T12:00").toLocaleDateString("fr-FR",{day:"numeric",month:"short",year:"numeric"}))}</span>`:`<span class="pill ${e.actif?"ok":""}">${e.actif?"Accès actif":"Sans accès"}</span>`}${(()=>{ const n=state.comptes.filter(c=>c.commercial_id===e.id).length; return n?`<div class="hint" style="margin:2px 0 0">${n} client${n>1?"s":""}</div>`:""; })()}</td><td><div class="tools" style="flex-wrap:nowrap"><button class="btn small" data-act="edit-membre" data-id="${e.id}">Modifier</button>${e.role!=="admin"&&!e.parti_le?`<button class="btn small" data-act="voir-comme" data-id="${e.id}" title="Voir le CRM comme ce membre, en lecture seule">Voir comme</button>`:""}${e.role!=="admin"?`<button class="btn small" data-act="depart-membre" data-id="${e.id}">${e.parti_le?"Transférer":"Départ / transfert"}</button>`:""}</div></td></tr>`).join("")}
-  </tbody></table></div></div>
+  <div class="grid2">
   <div class="panel"><h3>Catalogue machines</h3>${state.produits.length?(()=>{const fam={}; state.produits.forEach(p=>(fam[p.categorie]=fam[p.categorie]||[]).push(p));
     return `<p class="hint">${state.produits.filter(p=>p.actif).length} machines actives · ${Object.keys(fam).length} familles</p>`+Object.entries(fam).map(([f,ps])=>`<details class="fam"><summary><span>${esc(f)}</span><span class="hint">${ps.length}</span></summary><div class="closed-list">${ps.sort((a,b)=>a.nom.localeCompare(b.nom,"fr")).map(p=>`<div class="closed-row"><div><b translate="no">${esc(p.nom)}</b>${p.medical_only?` <span class="pill warn" title="Vente réservée aux médecins">Médical</span>`:""}${p.actif?"":` <span class="pill">Inactive</span>`}<div class="hint" translate="no">${esc([p.reference,p.marque].filter(Boolean).join(" · "))}</div></div><div class="tools"><span style="font-family:var(--f-mono);font-size:12px">${p.prix_catalogue_mad!=null?mad(p.prix_catalogue_mad)+" MAD":""}</span><button class="btn small" data-act="edit-produit" data-id="${p.id}">Modifier</button></div></div>`).join("")}</div></details>`).join("");})():`<p class="hint">Aucune machine. Ajoutez le catalogue pour rattacher les opportunités à un produit.</p>`}</div></div>`;
 }
@@ -1568,22 +1824,59 @@ function formContact(compteId){
   modal("Nouveau contact",h,submit,"Ajouter");
 }
 
+const POLES={direction:"Direction",administration:"Administration",commercial:"Commercial",sav:"SAV",livraison:"Livraison",academy:"Academy",cleaning:"Cleaning",autre:"Autre"};
+const orgTous=()=>(state.organigramme||state.equipe);
+function descendantsDe(id){ const out=new Set(), st=[id]; while(st.length){ const x=st.pop(); orgTous().forEach(e=>{ if(e.responsable_id===x&&!out.has(e.id)){ out.add(e.id); st.push(e.id); } }); } return out; }
 function formMembre(m){
-  m=m||{};
+  m=m||{}; const desc=m.id?descendantsDe(m.id):new Set();
+  const resps=orgTous().filter(e=>e.id!==m.id&&!desc.has(e.id)&&!e.parti_le).sort((a,b)=>a.nom.localeCompare(b.nom,"fr")).map(e=>[e.id,e.nom+(e.poste?" · "+e.poste:"")]);
   const h=`<div class="form-grid">
    ${fld("m-nom","Nom",`<input id="m-nom" name="nom" required value="${esc(m.nom||"")}">`)}
-   ${fld("m-mail","Email de connexion",`<input id="m-mail" name="email" type="email" value="${esc(m.email||"")}" placeholder="prenom@cellulift.ma…" autocomplete="off" spellcheck="false">`)}
-   ${fld("m-role","Rôle",`<select id="m-role" name="role">${opt(Object.entries(ROLES),m.role||"commercial")}</select>`)}
+   ${fld("m-poste","Poste",`<input id="m-poste" name="poste" maxlength="80" autocomplete="off" placeholder="Ex. Manager Marrakech, CEO…" value="${esc(m.poste||"")}">`)}
+   ${fld("m-pole","Pôle",`<select id="m-pole" name="pole">${opt(Object.entries(POLES),m.pole||(m.role==="commercial"&&m.id?"commercial":""),"Non renseigné")}</select>`)}
+   ${fld("m-resp","Rattaché à",`<select id="m-resp" name="responsable_id">${opt(resps,m.responsable_id||"","Personne (sommet de l’organigramme)")}</select>`)}
+   <div class="field" style="grid-column:1/-1"><label class="check"><input type="checkbox" name="hors_crm" id="m-hors" ${m.hors_crm?"checked":""}> N’utilise pas le CRM (figure seulement dans l’organigramme)</label></div>
+   <div id="m-crm" class="form-grid" style="grid-column:1/-1;margin:0">
+   ${fld("m-mail","Email de connexion",`<input id="m-mail" name="email" type="email" value="${esc(m.email||"")}" placeholder="prenom@cellulift.com…" autocomplete="off" spellcheck="false">`)}
+   ${fld("m-role","Rôle dans le CRM",`<select id="m-role" name="role">${opt(Object.entries(ROLES),m.role||"commercial")}</select>`)}
    ${fld("m-sr","Showroom",`<select id="m-sr" name="showroom">${opt(Object.entries(SHOWROOMS),m.showroom||"","Non renseigné")}</select>`)}
    ${fld("m-ville","Ville",`<input id="m-ville" name="ville" list="dl-villes" autocomplete="off" placeholder="Ex. Tanger…" value="${esc(m.ville||"")}"><datalist id="dl-villes">${villes().map(x=>`<option value="${esc(x)}">`).join("")}</datalist>`)}
    ${m.id?fld("m-act","Statut",`<select id="m-act" name="actif"><option value="1" ${m.actif&&!m.parti_le?"selected":""}>Accès actif</option><option value="" ${!m.actif&&!m.parti_le?"selected":""}>Sans accès</option><option value="parti" ${m.parti_le?"selected":""}>A quitté Cellulift</option></select>`):""}</div>
+   <div class="field" style="grid-column:1/-1"><label for="m-photo">Photo</label><div style="display:flex;align-items:center;gap:12px">${m.id?avatar(m,48):""}<input id="m-photo" type="file" accept="image/jpeg,image/png,image/webp"></div><span class="hint" style="margin:4px 0 0">JPEG, PNG ou WebP, 2 Mo maximum.</span></div>
+  </div>
    ${m.id?`<p class="hint">Pour un départ, utilise plutôt « Départ / transfert » : tu pourras donner ses clients à quelqu’un d’autre en même temps.</p>`:""}`;
   const submit=async f=>{
-    const obj={nom:sTxt(f.nom),email:sTxt((f.email||"").toLowerCase()),role:sEnum(f.role,Object.keys(ROLES)),ville:sTxt(f.ville),showroom:sEnum(f.showroom,Object.keys(SHOWROOMS))};
-    return m.id ? write(upd("equipe",m.id,Object.assign(obj,f.actif==="parti"?{actif:false,parti_le:m.parti_le||localISO()}:{actif:sBool(f.actif),parti_le:null})),"Membre mis à jour") : write(ins("equipe",obj),"Membre ajouté");
+    const id=m.id||crypto.randomUUID(), hors=!!f.hors_crm;
+    const obj={nom:sTxt(f.nom),poste:sTxt(f.poste),pole:sEnum(f.pole,Object.keys(POLES)),responsable_id:sUuid(f.responsable_id),hors_crm:hors,
+      email:hors?(sTxt((f.email||"").toLowerCase())||null):sTxt((f.email||"").toLowerCase()),role:sEnum(f.role,Object.keys(ROLES))||"commercial",ville:sTxt(f.ville),showroom:sEnum(f.showroom,Object.keys(SHOWROOMS))};
+    const file=$("#m-photo")&&$("#m-photo").files[0];
+    if(file){
+      if(file.size>2*1024*1024){ $("#merr").textContent="Photo trop lourde (2 Mo maximum)."; return false; }
+      if(!apercu){ const ext=(file.type.split("/")[1]||"jpg").replace("jpeg","jpg"), path=id+"/"+Date.now()+"."+ext;
+        const up=await sb.storage.from("equipe-photos").upload(path,file,{upsert:true,contentType:file.type});
+        if(up.error){ $("#merr").textContent="Photo non envoyée : "+errorCopy(up.error).join(" — "); return false; }
+        obj.photo_url=sb.storage.from("equipe-photos").getPublicUrl(path).data.publicUrl; }
+    }
+    if(hors) Object.assign(obj,{actif:false});
+    if(m.id){ if(!hors) Object.assign(obj,f.actif==="parti"?{actif:false,parti_le:m.parti_le||localISO()}:{actif:sBool(f.actif),parti_le:null}); return write(upd("equipe",m.id,obj),"Membre mis à jour"); }
+    return write(ins("equipe",Object.assign({id},obj)),"Membre ajouté");
   };
-  submit.validate=f=>!f.nom.trim()?["nom","Indiquez le nom."]:null;
+  submit.validate=f=>!f.nom.trim()?["nom","Indiquez le nom."]:(!f.hors_crm&&!String(f.email||"").trim())?["email","Indiquez l’email de connexion, ou cochez « N’utilise pas le CRM »."]:null;
   modal(m.id?"Modifier le membre":"Nouveau membre",h,submit,m.id?"Enregistrer":"Ajouter");
+  const majHors=()=>{ $("#m-crm").hidden=$("#m-hors").checked; }; $("#m-hors").addEventListener("change",majHors); majHors();
+}
+// Organigramme : arbre à partir de « Rattaché à » ; les personnes sans rattachement ni équipe sont listées à part
+let equipeVue="liste";
+function vueOrganigramme(){
+  const tous=orgTous().filter(e=>!e.parti_le), ids=new Set(tous.map(e=>e.id)), kids=new Map();
+  tous.forEach(e=>{ const r=e.responsable_id&&ids.has(e.responsable_id)?e.responsable_id:null; if(!kids.has(r)) kids.set(r,[]); kids.get(r).push(e); });
+  const tri=(a,b)=>(a.ordre??999)-(b.ordre??999)||a.nom.localeCompare(b.nom,"fr");
+  const carte=(e,t)=>`<button class="org-card${e.hors_crm?" hors":""}${!e.hors_crm&&!e.actif?" off":""}" data-act="edit-membre" data-id="${e.id}">${avatar(e,t)}<span><b>${esc(e.nom)}</b><small>${esc([...new Set([e.poste||(e.hors_crm?"":ROLES[e.role]),e.pole&&POLES[e.pole]].filter(Boolean))].join(" · ")||"Poste à renseigner")}</small></span></button>`;
+  const noeud=(e,d)=>{ const k=(kids.get(e.id)||[]).sort(tri); return `<li>${carte(e,d?36:44)}${k.length?`<ul>${k.map(x=>noeud(x,d+1)).join("")}</ul>`:""}</li>`; };
+  const racines=(kids.get(null)||[]).sort(tri), sommets=racines.filter(e=>(kids.get(e.id)||[]).length||e.pole==="direction"), seuls=racines.filter(e=>!sommets.includes(e));
+  return `<div class="org-wrap">${sommets.length?`<ul class="org">${sommets.map(e=>noeud(e,0)).join("")}</ul>`:`<p class="hint">Personne n’est encore rattaché. Ouvre une fiche et choisis « Rattaché à » pour construire l’organigramme.</p>`}</div>
+    ${seuls.length?`<h4 style="margin:16px 0 8px">À rattacher · ${seuls.length}</h4><div class="org-seuls">${seuls.map(e=>carte(e,32)).join("")}</div>`:""}
+    <p class="hint" style="margin-top:12px">Clique sur une personne pour modifier son poste, son pôle, son rattachement ou sa photo. « + Membre » permet aussi d’ajouter quelqu’un qui n’utilise pas le CRM (direction, SAV, livraison…).</p>`;
 }
 
 function formDepart(m){
@@ -1735,6 +2028,17 @@ document.addEventListener("click",async e=>{
   if(act==="today-tab"){ todayTab=t.dataset.v; return viewAujourdhui($("#view")); }
   if(act==="today-full"){ todayFull=true; viewAujourdhui($("#view")); const k=t.dataset.sec; const el=k==="devis"?[...document.querySelectorAll("#view h3")].find(h=>/Devis à relancer/.test(h.textContent)):k==="mois"?document.querySelector("#view .mois-fold"):k?document.querySelector("#view .ex-"+k):null; if(el){ if(el.tagName==="DETAILS") el.open=true; el.scrollIntoView({block:"start",behavior:"smooth"}); } return; }
   if(act==="today-simple"){ todayFull=false; window.scrollTo(0,0); return viewAujourdhui($("#view")); }
+  if(act==="ws-tiroir"){ return wsTiroir(id); }
+  if(act==="ws-jour"){ wsJour=+t.dataset.n?wsJour+(+t.dataset.n):0; return viewAujourdhui($("#view")); }
+  if(act==="ws-periode"){ wsPeriode=t.dataset.v; return viewAujourdhui($("#view")); }
+  if(act==="ws-filtre"){ wsFiltre=t.dataset.v||""; wsTout=false; return viewAujourdhui($("#view")); }
+  if(act==="ws-tout"){ wsTout=!wsTout; return viewAujourdhui($("#view")); }
+  if(act==="ws-hyg"){ const k=t.dataset.v, T={sans:"Affaires sans prochaine action",inactives:"Inactives depuis plus de 14 jours",devis:"Devis à relancer",bloq30:"Bloquées depuis plus de 30 jours"}[k]; return k==="devis"?listeAffairesModal(T,[],wsHyg.devis):listeAffairesModal(T,wsHyg[k]||[]); }
+  if(act==="ws-pipe"){ closeModal(true); pipeFilt={com:id,q:"",risque:""}; colShown={}; location.hash="pipeline"; tab="pipeline"; return render(); }
+  if(act==="ws-retards"){ closeModal(true); todayCom=id; todayQui="equipe"; todayFull=true; return viewAujourdhui($("#view")); }
+  if(act==="demande"){ closeModal(true); return formDemande({com:t.dataset.com,opp:t.dataset.opp,compte:t.dataset.compte,aid:t.dataset.aid,type:t.dataset.type}); }
+  if(act==="demande-clore"){ t.disabled=true; return write(upd("demandes",id,{statut:"annulee",resolue_le:new Date().toISOString()}),"Demande close"); }
+  if(act==="demande-repondre"){ const d=(state.demandes||[]).find(x=>x.id===id); if(d) formRepondreDemande(d); return; }
   if(act==="today-qui"){ todayQui=t.dataset.v; todayCom=""; return viewAujourdhui($("#view")); }
   if(act==="relance-ok"){ t.disabled=true; return write(upd("activites",id,{date_prochaine_action:null}),"Relance retirée de la liste"); }
   if(act==="rep-csv") return exportRep("csv");
@@ -1777,9 +2081,26 @@ document.addEventListener("click",async e=>{
   if(act==="del-cmt") return confirmInline(t,"Supprimer ce commentaire ?","del-cmt-yes",id);
   if(act==="del-cmt-yes"){ t.disabled=true; const box=t.closest("#op-commentaires"); const {error}=await sb.from("commentaires").delete().eq("id",id); if(error) toast(errorCopy(error).join(" — ")); else toast("Commentaire supprimé"); if(box&&box._reload) box._reload(); return; }
   if(act==="open-opp") return openOpp(byId(state.opportunites,id));
+  if(act==="plan-edit"){ const o=byId(state.opportunites,id); if(o) formPlan(o); return; }
+  if(act==="iv-add"){ const o=byId(state.opportunites,id); if(o) formIntervenant(o); return; }
+  if(act==="iv-edit"){ const i=(state.intervenants||[]).find(x=>x.id===id), o=i&&byId(state.opportunites,i.opportunite_id); if(o) formIntervenant(o,i); return; }
+  if(act==="iv-del"){ const i=(state.intervenants||[]).find(x=>x.id===id); if(!i) return; if(i&&!reopenAfter) reopenAfter=()=>openOpp(byId(state.opportunites,i.opportunite_id)); t.disabled=true; return write(()=>sb.from("affaire_intervenants").delete().eq("id",id),"Intervenant retiré"); }
+  if(act==="etape"){ const o=byId(state.opportunites,id); if(o) formEtape(o,"convenue"); return; }
+  if(act==="etape-perso"){ const o=byId(state.opportunites,id); if(o) formEtape(o,"perso"); return; }
+  if(act==="rq-active"){ t.disabled=true; reopenAfter=()=>{ const o=byId(state.opportunites,id); if(o) formEtape(o,"convenue"); }; return write(upd("opportunites",id,{requalifiee_le:new Date().toISOString(),requalif_revoir_le:null}),"Affaire reprise dans le nouveau CRM"); }
+  if(act==="rq-plus-tard"){ t.disabled=true; return write(upd("opportunites",id,{requalif_revoir_le:localISO(new Date(Date.now()+14*864e5))}),"On la reverra dans 2 semaines"); }
+  if(act==="expliquer"){ const o=byId(state.opportunites,id); if(o) formExpliquer(o); return; }
+  if(act==="veille"){ const o=byId(state.opportunites,id); if(o) formVeille(o); return; }
+  if(act==="veille-reactiver"){ t.disabled=true; reopenAfter=()=>{ const o=byId(state.opportunites,id); if(o) formEtape(o); }; return write(upd("opportunites",id,{issue:"en_cours",veille_reactivee_le:new Date().toISOString()}),"Affaire réactivée"); }
+  if(act==="aide"){ const o=byId(state.opportunites,id); if(o) formAide(o); return; }
+  if(act==="aide-repondre"){ const x=(state.aides||[]).find(y=>y.id===id); if(x){ closeModal(true); formRepondreAide(x); } return; }
+  if(act==="aide-point"){ const x=(state.aides||[]).find(y=>y.id===id); if(x){ closeModal(true); formPointAide(x); } return; }
+  if(act==="aide-clore"){ t.disabled=true; return write(upd("demandes_aide",id,{statut:"resolue",resolue_le:new Date().toISOString()}),"Demande close"); }
+  if(act==="pipe-organiser"){ pipeFilt={com:"",q:"",risque:"organiser"}; colShown={}; location.hash="pipeline"; tab="pipeline"; return render(); }
   if(act==="transfer") return formTransfert(byId(state.comptes,id));
   if(act==="new-membre") return formMembre();
-  if(act==="edit-membre") return formMembre(byId(state.equipe,id));
+  if(act==="edit-membre") return formMembre(byId(orgTous(),id));
+  if(act==="equipe-vue"){ equipeVue=t.dataset.v; return viewEquipe($("#view")); }
   if(act==="voir-comme"){ const m=byId(state.equipe,id); if(!m) return; apercu=m; await load(); todayQui=null; todayCom=""; if(location.hash==="#aujourdhui") render(); else location.hash="#aujourdhui"; window.scrollTo(0,0); return toast("Aperçu : "+m.nom+" · lecture seule"); }
   if(act==="quitter-apercu"){ apercu=null; renderApercu(); await load(); todayQui=null; todayCom=""; if(location.hash==="#equipe") render(); else location.hash="#equipe"; return; }
   if(act==="depart-membre") return formDepart(byId(state.equipe,id));
@@ -2018,7 +2339,8 @@ function shItem(a,S){
 function accueilSimple(v,S,dv,mois,prenom,dateTxt){
   const file=[...new Map([...S.retard.filter(a=>a.prioritaire),...S.jour,...S.retard.filter(a=>!a.prioritaire),...S.statuer].map(a=>[a.id,a])).values()];
   const [premier,...reste]=file, suite=reste.slice(0,3).map(a=>shItem(a,S)), p=premier?shItem(premier,S):null;
-  const n=file.length;
+  const dmd=(state.demandes||[]).filter(d=>me&&d.destinataire_id===me.id&&d.statut==="en_attente");
+  const AF=accueilAffaires(), n=file.length+dmd.length+AF.n;
   const chips=[
     S.retard.length?`<button class="btn" data-act="today-full" data-sec="retard">${S.retard.length} en retard ›</button>`:"",
     S.statuer.length?`<button class="btn" data-act="today-full" data-sec="statuer">${S.statuer.length} à statuer ›</button>`:"",
@@ -2028,6 +2350,10 @@ function accueilSimple(v,S,dv,mois,prenom,dateTxt){
   v.innerHTML=`<div class="sh">
     <div class="sh-head"><div class="lab-mono">${esc(dateTxt)}</div><h2>Bonjour ${esc(prenom)}</h2>
       <p>${n?`${n} chose${n>1?"s":""} à faire${S.retard.length||S.statuer.length?"":" aujourd’hui"}.`:"Rien à faire pour l’instant."}</p></div>
+    ${dmd.map(d=>{ const o=byId(state.opportunites,d.opportunite_id), c=byId(state.comptes,d.compte_id||(o&&o.compte_id)); return `<section class="sh-card sh-dem" aria-label="Demande de ${esc(prenomDe(d.auteur_id))}">
+      <div class="sh-lab"><span class="dotv" aria-hidden="true"></span>${esc(prenomDe(d.auteur_id))} te demande ${d.type==="validation"?"une validation":"une mise à jour"}</div>
+      <div class="sh-title">${esc((c&&c.nom)||(o&&o.titre)||"Point sur tes actions")}</div>${d.message?`<div class="sh-why">« ${esc(d.message)} »</div>`:""}
+      <div class="sh-btns">${o?`<button class="btn primary big" data-act="open-opp" data-id="${o.id}">Ouvrir l’affaire</button>`:c?`<button class="btn primary big" data-act="open-compte" data-id="${c.id}">Ouvrir la fiche</button>`:""}<button class="btn big" data-act="demande-repondre" data-id="${d.id}">Répondre</button></div></section>`; }).join("")}
     ${p?`<section class="sh-card" aria-label="Maintenant" data-aid="${p.a.id}">
       <div class="sh-lab"><span class="dotv" aria-hidden="true"></span>Maintenant · <span class="${p.etat==="retard"?"t-bad":p.etat==="statuer"?"t-warn":""}">${esc(p.quand)}</span></div>
       <div class="sh-title"><button class="linkish" data-act="act-detail" data-id="${p.a.id}">${esc(p.titre)}</button></div>
@@ -2035,6 +2361,7 @@ function accueilSimple(v,S,dv,mois,prenom,dateTxt){
       ${p.pourquoi?`<div class="sh-why">${esc(p.pourquoi)}</div>`:""}
       <div class="sh-btns">${p.principal}${p.second}${p.etat!=="statuer"?`<button class="btn big" data-act="act-reporter" data-id="${p.a.id}">Plus tard</button>`:""}</div>
     </section>`:`<section class="sh-card sh-done"><div class="sh-title" style="margin:0">Tout est à jour.</div><p class="hint">Planifie ta prochaine action pour ne rien laisser filer.</p><div class="sh-btns" style="justify-content:center"><button class="btn primary big" data-act="planifier">+ Planifier</button></div></section>`}
+    ${AF.html}
     ${suite.length?`<section aria-label="Ensuite"><div class="sh-lab">Ensuite</div>
       ${suite.map(x=>`<div class="sh-row" data-aid="${x.a.id}"><div style="flex:1;min-width:0"><div class="t"><button class="linkish" data-act="act-detail" data-id="${x.a.id}">${esc(x.titre)}</button></div><div class="s">${esc(x.quand)}</div></div>${x.principal.replace(" big","")}</div>`).join("")}
       ${reste.length>3?`<p class="hint" style="margin:6px 0 0">+ ${reste.length-3} autre${reste.length-3>1?"s":""}</p>`:""}</section>`:""}
@@ -2042,9 +2369,233 @@ function accueilSimple(v,S,dv,mois,prenom,dateTxt){
     <p style="margin:0"><button class="linkish" data-act="today-full" data-sec="">Tout voir ›</button></p>
   </div>`;
 }
+/* ---- Espace superviseur : où intervenir aujourd'hui ---- */
+let wsPeriode="jour", wsFiltre="", wsJour=0, wsTout=false;
+const TEINTES=[["#E7E3FF","#5B49D6"],["#DDF5F8","#007F8F"],["#FDE7F1","#B0185E"],["#FFF0E0","#A85A00"],["#E3F3EC","#11845B"],["#E6ECFD","#3554C8"]];
+function avatar(e,t){ t=t||40; if(!e) return `<span class="av" style="width:${t}px;height:${t}px" aria-hidden="true">·</span>`;
+  const ini=String(e.nom||"·").split(/\s+/).filter(Boolean).map(x=>x[0]).slice(0,2).join("").toUpperCase();
+  if(e.photo_url) return `<img class="av" src="${esc(e.photo_url)}" alt="" style="width:${t}px;height:${t}px">`;
+  const [bg,fg]=TEINTES[[...String(e.id)].reduce((s,c)=>s+c.charCodeAt(0),0)%TEINTES.length];
+  return `<span class="av" style="width:${t}px;height:${t}px;background:${bg};color:${fg};font-size:${Math.round(t*.36)}px" aria-hidden="true">${esc(ini)}</span>`; }
+const prenomDe=id=>{ const e=byId(state.equipe,id); return e?String(e.nom).split(/\s+/)[0]:"—"; };
+// Périmètre : les membres rattachés (directement ou non) au superviseur ; l'admin, ou un superviseur sans équipe rattachée, voit tout le monde.
+function perimetre(){
+  if(!me||me.role==="admin") return null;
+  const kids=new Map(); (state.organigramme||state.equipe).forEach(e=>{ if(e.responsable_id){ if(!kids.has(e.responsable_id)) kids.set(e.responsable_id,[]); kids.get(e.responsable_id).push(e.id); } });
+  const out=new Set(), st=[me.id]; while(st.length){ const x=st.pop(); (kids.get(x)||[]).forEach(k=>{ if(!out.has(k)){ out.add(k); st.push(k); } }); }
+  return out.size?out:null;
+}
+const commerciauxSuivis=p=>state.equipe.filter(e=>e.role==="commercial"&&e.actif&&!e.parti_le&&!e.hors_crm&&(!p||p.has(e.id))).sort((a,b)=>a.nom.localeCompare(b.nom,"fr"));
+function itemsATraiter(p){
+  const now=Date.now(), dans=id=>!p||p.has(id);
+  const enAttente=new Set(); (state.demandes||[]).forEach(d=>{ if(d.statut==="en_attente"&&me&&d.auteur_id===me.id){ if(d.opportunite_id) enAttente.add("o:"+d.opportunite_id); if(d.compte_id) enAttente.add("c:"+d.compte_id); if(d.activite_id) enAttente.add("a:"+d.activite_id); } });
+  const prochaine=o=>state.activites.some(a=>a.statut==="a_faire"&&!estImporte(a)&&(a.opportunite_id===o.id||(!a.opportunite_id&&a.compte_id===o.compte_id))&&new Date(a.date_activite).getTime()>=now);
+  const L=[];
+  // Demandes d'aide adressées à moi : en tête de file
+  (state.aides||[]).forEach(x=>{ if(x.statut!=="en_attente"||!dans(x.auteur_id)||!me||(x.destinataire_id!==me.id&&me.role!=="admin")) return; const {o,client,bloc}=aideResume(x);
+    L.push({k:"h:"+x.id,sev:"aide",com:x.auteur_id,cat:"Demande d’aide",titre:client,sous:o?o.titre:"",etape:o?ETAPE_LABEL[o.etape]||o.etape:"",valeur:o?+o.montant_mad||0:0,
+      raisons:[bloc?"Bloque sur : "+bloc:"Demande de l’aide",x.message?"« "+x.message+" »":"",x.attente?"Attend "+(ATTENTES[x.attente]||"").toLowerCase():""].filter(Boolean),chips:[...(x.blocages||[]).map(b=>BLOCAGES[b]||b)],h:x,o}); });
+  // Affaires : 7 jours sans activité significative + aucune prochaine étape + aucune explication (les affaires en veille n'y entrent pas)
+  state.opportunites.forEach(o=>{ if(o.issue!=="en_cours"||!dans(o.commercial_id)||enAttente.has("o:"+o.id)) return; const g=organisation(o); if(!g||!g.remonte) return; const r=risque(o);
+    const raisons=[g.j==null?"Aucune activité significative enregistrée":`Aucune activité significative depuis ${g.j} jours`,"Aucune prochaine étape planifiée","Aucune explication du commercial"];
+    if(r&&r.niveau) raisons.push(`${ETAPE_LABEL[o.etape]||o.etape} depuis ${r.j} jours`);
+    L.push({k:"o:"+o.id,sev:(r&&r.niveau==="bloquee")||(+o.montant_mad||0)>=200000?"critique":"risque",com:o.commercial_id,cat:"Pipeline",titre:(byId(state.comptes,o.compte_id)||{}).nom||o.titre,sous:o.titre,etape:ETAPE_LABEL[o.etape]||o.etape,jours:g.j,
+      chips:[ETAPE_LABEL[o.etape]||o.etape,g.j==null?"Jamais travaillée":`Sans activité depuis ${g.j} j`,o.titre],valeur:+o.montant_mad||0,raisons,o}); });
+  state.devis.forEach(d=>{ if(d.statut!=="envoye"||!dans(d.commercial_id)) return; const j=daysSince(d.date_envoi||d.updated_at||d.created_at); if(j<7) return;
+    if(enAttente.has("c:"+d.compte_id)||(d.opportunite_id&&(enAttente.has("o:"+d.opportunite_id)||L.some(x=>x.o&&x.o.id===d.opportunite_id)))) return;
+    const od=byId(state.opportunites,d.opportunite_id); if(od&&(od.issue!=="en_cours"||(organisation(od)||{}).suite)) return;
+    const c=byId(state.comptes,d.compte_id); L.push({k:"d:"+d.id,sev:"risque",com:d.commercial_id,cat:"Relance",titre:c?c.nom:devisNum(d),sous:devisNum(d),valeur:+d.montant_mad||0,raisons:[`Devis sans réponse depuis ${j} jours`],d}); });
+  const retards=new Map();
+  state.activites.forEach(a=>{ if(a.statut!=="a_faire"||estImporte(a)||estEvenement(a)) return; const r=responsable(a); if(!dans(r)) return; const e=etatAction(a,now);
+    if(e==="a_statuer"&&!enAttente.has("a:"+a.id)){ const c=byId(state.comptes,a.compte_id); L.push({k:"a:"+a.id,sev:"statuer",com:r,cat:TYPES_ACT[a.type]||a.type,titre:c?c.nom:(a.label||"Action"),sous:(Math.floor((startOfDay().getTime()-startOfDay(new Date(a.date_activite)).getTime())/864e5)<=0?"Aujourd’hui":fmtDate(a.date_activite))+" · "+hm(a.date_activite),valeur:0,raisons:["Passé : a-t-il eu lieu ?"],a}); }
+    else if(e==="en_retard"){ if(!retards.has(r)) retards.set(r,[]); retards.get(r).push(a); } });
+  retards.forEach((as,r)=>{ if(as.length<2||enAttente.has("r:"+r)) return; const plusVieille=as.reduce((m,a)=>new Date(a.date_activite)<new Date(m.date_activite)?a:m);
+    L.push({k:"r:"+r,sev:"risque",com:r,cat:"Retards",titre:as.length+" actions en retard",sous:as.slice(0,2).map(a=>(byId(state.comptes,a.compte_id)||{}).nom||a.label||"").filter(Boolean).join(" · "),valeur:0,raisons:["La plus ancienne date du "+fmtDate(plusVieille.date_activite)],retards:as}); });
+  const rang={aide:-1,critique:0,risque:1,statuer:2};
+  return L.sort((x,y)=>rang[x.sev]-rang[y.sev]||y.valeur-x.valeur);
+}
+const SEV={aide:["Demande d’aide","vio"],critique:["Critique","bad"],risque:["À risque","warn"],statuer:["À statuer",""]};
+function wsActions(x,primaire){
+  const b=(cls,act,lib,attrs)=>`<button class="btn ${cls}" data-act="${act}" ${attrs||""}>${lib}</button>`, P=primaire?"primary":"primary";
+  const dem=(lib,extra)=>b("","demande",lib,`data-com="${x.com||""}" ${extra||""}`);
+  if(x.h) return b(P,"aide-repondre","Répondre",`data-id="${x.h.id}"`)+b("","aide-point","Planifier un point",`data-id="${x.h.id}"`)+(x.o?b("","open-opp","Voir l’affaire",`data-id="${x.o.id}"`):"");
+  if(x.o) return b(P,"open-opp","Voir l’affaire",`data-id="${x.o.id}"`)+dem("Demander une mise à jour",`data-opp="${x.o.id}" data-compte="${x.o.compte_id}"`);
+  if(x.d) return b(P,"relance-ia","Relancer",`data-compte="${x.d.compte_id}" data-devis="${x.d.id}"`)+dem("Demander",`data-compte="${x.d.compte_id}" data-opp="${x.d.opportunite_id||""}"`);
+  if(x.a) return (peutEffectuer(x.a)?b(P,"act-effectuer","Effectué",`data-id="${x.a.id}"`):dem("Demander à "+esc(prenomDe(x.com)),`data-aid="${x.a.id}" data-compte="${x.a.compte_id||""}" data-opp="${x.a.opportunite_id||""}" data-type="validation"`))+b("","act-reporter","Reporté",`data-id="${x.a.id}"`)+b("","act-statuer","Annulé",`data-id="${x.a.id}" data-v="annulee"`)+b("","act-statuer","Non effectué",`data-id="${x.a.id}" data-v="non_effectuee"`);
+  if(x.retards) return b(P,"ws-tiroir","Voir ses actions",`data-id="${x.com}"`)+dem("Demander un point");
+  return "";
+}
+function wsCarte(x){ const e=byId(state.equipe,x.com), [lib,cls]=SEV[x.sev];
+  return `<article class="ws-item sev-${x.sev}">
+    <div class="ws-item-top"><div class="ws-who">${avatar(e,32)}<span class="ws-cat">${esc(x.cat)}</span></div><span class="pill ${cls}">${lib}</span></div>
+    <div><div class="ws-item-t">${esc(x.titre)}</div>${x.valeur?`<div class="ws-val">${mad(x.valeur)} <small>MAD</small></div>`:`<div class="ws-sub">${esc(x.sous||"")}</div>`}</div>
+    <div class="ws-why">« ${esc(x.raisons[0])} »${e?` <span class="hint">· ${esc(e.nom)}</span>`:""}</div>
+    <div class="ws-acts">${wsActions(x)}</div></article>`; }
+function wsPlanning(coms){
+  const d0=startOfDay(); d0.setDate(d0.getDate()+wsJour); const d1=new Date(d0.getTime()+864e5), now=Date.now();
+  const ids=new Set(coms.map(e=>e.id));
+  const ev=state.activites.filter(a=>!estImporte(a)&&ids.has(responsable(a))&&(t=>t>=d0.getTime()&&t<d1.getTime())(new Date(a.date_activite).getTime()));
+  // plage 8 h–19 h, élargie si une action tombe plus tôt ou plus tard (rien n'est coupé au bord)
+  const hs=ev.map(a=>new Date(a.date_activite).getHours()), H0=Math.min(8,...hs), H1=Math.max(19,...hs.map(h=>h+1)), span=(H1-H0)*60;
+  const pos=a=>{ const t=new Date(a.date_activite), m=t.getHours()*60+t.getMinutes()-H0*60, dur=+a.duree_min||dureeDefaut(a.type); const l=Math.max(0,Math.min(span-30,m)); return {l:l/span*100,w:Math.max(5,Math.min(dur,span-l)/span*100)}; };
+  const etat=a=>{ const e=etatAction(a,now); return e==="effectuee"?"ok":e==="a_statuer"?"warn":e==="en_retard"?"bad":(e==="annulee"||e==="non_effectuee")?"off":"plan"; };
+  const jourTxt=d0.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"});
+  const ouvre=d0.getDay()!==0;
+  const lignes=coms.map(e=>{ const as=ev.filter(a=>responsable(a)===e.id).sort((x,y)=>new Date(x.date_activite)-new Date(y.date_activite)); const terrain=as.filter(a=>TERRAIN.includes(a.type)).length;
+    return `<div class="pl-row"><button class="pl-who" data-act="ws-tiroir" data-id="${e.id}">${avatar(e,30)}<span><b>${esc(prenomDe(e.id))}</b><small>${as.length?`${as.length} action${as.length>1?"s":""}${terrain?` · ${terrain} terrain`:""}`:"rien de planifié"}</small></span></button>
+      <div class="pl-track">${as.length?as.map(a=>{ const {l,w}=pos(a), c=byId(state.comptes,a.compte_id);
+        return `<button class="pl-ev ${etat(a)}" style="left:${l.toFixed(2)}%;width:${w.toFixed(2)}%" data-act="act-detail" data-id="${a.id}" title="${esc(hm(a.date_activite)+" · "+(TYPES_ACT[a.type]||a.type)+(c?" · "+c.nom:""))}"><b>${esc(hm(a.date_activite))}</b> ${esc(TYPES_ACT[a.type]||a.type)}${c?` · ${esc(c.nom)}`:""}</button>`; }).join(""):(ouvre?`<span class="pl-vide">Aucune action planifiée</span>`:"")}</div></div>`; }).join("");
+  const maint=wsJour===0&&new Date().getHours()>=H0&&new Date().getHours()<H1?((new Date().getHours()*60+new Date().getMinutes()-H0*60)/span*100):null;
+  return `<section class="ws-plan" aria-label="Planning de l’équipe">
+    <div class="pl-head"><div><h2>Équipe ${wsJour===0?"aujourd’hui":wsJour===1?"demain":wsJour===-1?"hier":""}</h2><span class="lab-mono">${esc(jourTxt)}</span></div>
+      <div class="pl-legend" aria-hidden="true"><span><i class="plan"></i>Prévu</span><span><i class="ok"></i>Fait</span><span><i class="warn"></i>À statuer</span><span><i class="bad"></i>En retard</span></div>
+      <div class="tools"><button class="btn small icon" data-act="ws-jour" data-n="-1" aria-label="Jour précédent">‹</button><button class="btn small" data-act="ws-jour" data-n="0">Aujourd’hui</button><button class="btn small icon" data-act="ws-jour" data-n="1" aria-label="Jour suivant">›</button><a class="btn small" href="#planning">Semaine ↗</a></div></div>
+    <div class="pl-grid">
+      <div class="pl-row pl-axis"><span></span><div class="pl-track">${Array.from({length:H1-H0+1},(_,i)=>`<span style="left:${(i/(H1-H0)*100).toFixed(2)}%">${String(H0+i).padStart(2,"0")}</span>`).join("")}</div></div>
+      <div class="pl-rows">${lignes||`<p class="hint">Aucun commercial rattaché. Renseigne l’organigramme dans Réglages.</p>`}
+        ${maint!=null?`<div class="pl-now" style="left:calc(var(--pl-label) + (100% - var(--pl-label)) * ${(maint/100).toFixed(4)})"><span>${esc(hm(new Date()))}</span></div>`:""}</div>
+    </div></section>`;
+}
+function viewWorkspace(v){
+  const p=perimetre(), coms=commerciauxSuivis(p), dans=id=>!p||p.has(id), now=Date.now();
+  const L=itemsATraiter(p), prio=L.find(x=>x.sev!=="statuer"&&x.valeur>0)||null, file=L.filter(x=>x!==prio);
+  const opps=state.opportunites.filter(o=>o.issue==="en_cours"&&dans(o.commercial_id));
+  const risq=opps.filter(o=>(risque(o)||{}).niveau==="risque"), bloq=opps.filter(o=>(risque(o)||{}).niveau==="bloquee");
+  const concernes=[...risq,...bloq].reduce((s,o)=>s+(+o.montant_mad||0),0);
+  const prenom=me?String(me.nom).split(/\s+/)[0]:"";
+  // Mon équipe
+  const equipeRows=coms.map(e=>{ const mesOpps=opps.filter(o=>o.commercial_id===e.id), pipe=mesOpps.reduce((s,o)=>s+(+o.montant_mad||0),0), pts=L.filter(x=>x.com===e.id);
+    const st=pts.some(x=>x.sev==="critique")||pts.length>=4?["Attention","bad"]:pts.length?["À surveiller","warn"]:["OK","ok"]; return {e,pipe,pts,st}; })
+    .sort((a,b)=>({bad:0,warn:1,ok:2}[a.st[1]]-{bad:0,warn:1,ok:2}[b.st[1]])||b.pipe-a.pipe);
+  // En attente (mes demandes) et résolues récemment
+  const dem=(state.demandes||[]).filter(d=>me&&d.auteur_id===me.id&&(d.statut==="en_attente"||(d.statut==="resolue"&&d.resolue_le&&now-new Date(d.resolue_le).getTime()<2*864e5)))
+    .sort((a,b)=>(a.statut==="en_attente"?0:1)-(b.statut==="en_attente"?0:1)||new Date(b.created_at)-new Date(a.created_at));
+  const aidesAtt=(state.aides||[]).filter(x=>me&&x.destinataire_id===me.id&&(x.statut==="repondue"||(x.statut==="resolue"&&x.resolue_le&&now-new Date(x.resolue_le).getTime()<2*864e5)));
+  const ago2=d=>{ const s=(now-new Date(d).getTime())/1000; return s<3600?`il y a ${Math.max(1,Math.round(s/60))} min`:s<86400?`il y a ${Math.round(s/3600)} h`:s<172800?"hier":`il y a ${Math.floor(s/86400)} j`; };
+  // Hygiène
+  const prochaine=o=>state.activites.some(a=>a.statut==="a_faire"&&!estImporte(a)&&(a.opportunite_id===o.id||(!a.opportunite_id&&a.compte_id===o.compte_id))&&new Date(a.date_activite).getTime()>=now);
+  const H={
+    sans:opps.filter(o=>!prochaine(o)),
+    inactives:opps.filter(o=>now-derniereActivite(o)>14*864e5),
+    devis:state.devis.filter(d=>d.statut==="envoye"&&dans(d.commercial_id)&&daysSince(d.date_envoi||d.updated_at||d.created_at)>=7),
+    bloq30:opps.filter(o=>daysSince(o.etape_depuis||o.updated_at||o.created_at)>30)};
+  wsHyg=H;
+  // Ce qui a changé
+  const jours={jour:1,semaine:7,mois:30}[wsPeriode], depuis=now-jours*864e5, dansP=d=>d&&new Date(d).getTime()>=depuis;
+  const ch={nouveau:state.opportunites.filter(o=>dans(o.commercial_id)&&dansP(o.created_at)).reduce((s,o)=>s+(+o.montant_mad||0),0),
+    prop:state.opportunites.filter(o=>dans(o.commercial_id)&&o.issue==="en_cours"&&o.etape==="Proposition"&&dansP(o.etape_depuis)).reduce((s,o)=>s+(+o.montant_mad||0),0),
+    gagne:state.opportunites.filter(o=>dans(o.commercial_id)&&o.issue==="gagnee"&&dansP(o.updated_at)).reduce((s,o)=>s+(+o.montant_mad||0),0),
+    risque:opps.filter(o=>{ const r=risque(o); return r&&r.niveau&&(r.j-(r.niveau==="bloquee"?r.s:Math.ceil(r.s*.75)))<jours; }).length};
+  // Période : objectif du mois, rythme de la période
+  const m0=new Date(); m0.setDate(1); m0.setHours(0,0,0,0);
+  const caMois=state.opportunites.filter(o=>dans(o.commercial_id)&&o.issue==="gagnee"&&new Date(o.updated_at)>=m0).reduce((s,o)=>s+(+o.montant_mad||0),0);
+  const objCa=p?[...p].reduce((s,id)=>s+(+objDe(id).ca||0),0):objEquipe("ca");
+  const terrainP=state.activites.filter(a=>TERRAIN.includes(a.type)&&dans(responsable(a))&&!estImporte(a)&&dansP(a.date_activite)&&new Date(a.date_activite).getTime()<=now&&a.statut!=="annulee");
+  const devisP=state.devis.filter(d=>dans(d.commercial_id)&&d.statut!=="brouillon"&&dansP(d.date_envoi)).reduce((s,d)=>s+(+d.montant_mad||0),0);
+  const nego=opps.filter(o=>o.etape==="Negociation"), negoVal=nego.reduce((s,o)=>s+(+o.montant_mad||0),0), negoDort=nego.filter(o=>now-derniereActivite(o)>14*864e5).reduce((s,o)=>s+(+o.montant_mad||0),0);
+  const PER={jour:"Aujourd’hui",semaine:"Cette semaine",mois:"Ce mois-ci"}[wsPeriode];
+  const filtres=[["","Tout",L.length],...(L.some(x=>x.sev==="aide")?[["aide","Demandes d’aide",L.filter(x=>x.sev==="aide").length]]:[]),["critique","Critique",L.filter(x=>x.sev==="critique").length],["risque","À risque",L.filter(x=>x.sev==="risque").length],["statuer","À statuer",L.filter(x=>x.sev==="statuer").length]];
+  const fileF=file.filter(x=>!wsFiltre||x.sev===wsFiltre), montre=wsTout?fileF:fileF.slice(0,6);
+  const big=n=>`<b>${n>=1e4?madShort(n):mad(n)}</b>`;
+  v.innerHTML=`<div class="ws">
+  ${wsPlanning(coms)}
+  <section class="ws-head">
+    <div><h2>Bonjour ${esc(prenom)}</h2><p>${L.length?`Votre équipe a <b>${L.length} point${L.length>1?"s":""} à traiter</b> aujourd’hui.`:"Rien à signaler : l’équipe est à jour."} <button class="linkish" data-act="today-qui" data-v="moi">Mes propres actions ›</button></p></div>
+    <div class="ws-metrics"><div><b>${opps.length}</b><span>affaires</span></div><div><b class="t-warn">${risq.length}</b><span>à risque</span></div><div><b class="t-bad">${bloq.length}</b><span>bloquées</span></div><div><b>${madShort(concernes)}</b><span>MAD concernés</span></div>
+      <div class="seg" role="group" aria-label="Période">${[["jour","Aujourd’hui"],["semaine","Semaine"],["mois","Mois"]].map(([k,l])=>`<button data-act="ws-periode" data-v="${k}" aria-pressed="${wsPeriode===k}">${l}</button>`).join("")}</div></div>
+  </section>
+  <div class="ws-two">
+    ${prio?(()=>{ const e=byId(state.equipe,prio.com); return `<section class="ws-prio${prio.sev==="aide"?" aide":""}" aria-label="Priorité">
+      <div class="ws-prio-top"><span class="lab-mono">Priorité</span><span class="ws-alert${prio.sev==="aide"?" vio":""}"><i></i>${prio.sev==="aide"?esc(prenomDe(prio.com))+" demande de l’aide":prio.sev==="critique"?"Intervention recommandée":"À surveiller de près"}</span></div>
+      <div class="ws-prio-main"><div><div class="ws-prio-t">${esc(prio.titre)}</div><div class="ws-chips">${(prio.chips||[prio.etape,prio.sous!==prio.titre&&prio.sous]).filter(Boolean).map((c,i)=>`<span${i===1&&prio.sev!=="aide"?' class="r"':""}>${esc(c)}</span>`).join("")}</div></div>
+        <div class="ws-prio-v">${mad(prio.valeur)}<small>MAD</small></div></div>
+      <div class="ws-prio-why"><div class="ws-who">${avatar(e,44)}<div><small>${e&&e.role==="commercial"?"Commercial·e":"Responsable"}</small><b>${esc(e?e.nom:"Non attribuée")}</b></div></div>
+        <div><small>${prio.sev==="aide"?"Sa demande":"Pourquoi elle remonte"}</small>${prio.raisons.map(r=>`<div class="r">${esc(r)}</div>`).join("")}</div></div>
+      <div class="ws-acts">${wsActions(prio,true).replace(/class="btn primary"/,'class="btn ws-white"').replace(/class="btn "/g,'class="btn ws-ghost"')}</div></section>`; })()
+    :`<section class="ws-prio calme"><span class="lab-mono">Priorité</span><div class="ws-prio-t">Aucune affaire en danger</div><p>Les affaires de l’équipe avancent dans les délais. Jette un œil aux actions à statuer ci-dessous.</p></section>`}
+    <section class="ws-card" aria-label="Mon équipe"><div class="ws-card-h"><h3>Mon équipe</h3><span class="hint">${coms.length} commercia${coms.length>1?"ux":"l"}${p?"":" · toute l’équipe"}</span></div>
+      <div class="ws-team">${equipeRows.map(r=>`<button class="ws-member${r.st[1]==="bad"?" hl":""}" data-act="ws-tiroir" data-id="${r.e.id}">${avatar(r.e,44)}<span class="ws-dot ${r.st[1]}"></span>
+        <span class="ws-m-txt"><b>${esc(r.e.nom)}</b><small><span class="mono">${madShort(r.pipe)}</span> MAD pipeline · <b>${r.pts.length}</b> point${r.pts.length>1?"s":""} à traiter</small></span><span class="pill ${r.st[1]}">${r.st[0]}</span><span aria-hidden="true" class="chev">›</span></button>`).join("")||`<p class="hint">Aucun commercial actif.</p>`}</div></section>
+  </div>
+  <section class="ws-card" aria-label="À traiter"><div class="ws-card-h"><div><h3>À traiter</h3><span class="mono hint">${file.length}</span></div>
+    <div class="chips" role="group" aria-label="Filtrer">${filtres.map(([k,l,n])=>`<button class="chip" data-act="ws-filtre" data-v="${k}" aria-pressed="${wsFiltre===k}">${k?`<i class="dot ${SEV[k][1]||"mute"}"></i>`:""}${l}${k?` <b>${n-(prio&&prio.sev===k?1:0)}</b>`:""}</button>`).join("")}</div></div>
+    ${montre.length?`<div class="ws-items">${montre.map(wsCarte).join("")}</div>`:`<p class="hint">Rien ${wsFiltre?"dans ce filtre":"d’autre"} à traiter.</p>`}
+    ${fileF.length>6?`<p style="margin:12px 0 0"><button class="linkish" data-act="ws-tout">${wsTout?"Réduire":"Voir les "+(fileF.length-6)+" autres"}</button></p>`:""}</section>
+  <div class="ws-two">
+    <section class="ws-card" aria-label="En attente"><div class="ws-card-h"><div><h3>En attente</h3><span class="mono hint">${dem.filter(d=>d.statut==="en_attente").length+aidesAtt.filter(x=>x.statut==="repondue").length}</span></div><span class="ws-flow">À traiter → Action prise → <b>En attente</b> → Résolu</span></div>
+      ${aidesAtt.map(x=>{ const e=byId(state.equipe,x.auteur_id), {o,client}=aideResume(x), ok=x.statut==="resolue";
+        return `<div class="ws-wait">${avatar(e,38)}<div class="ws-m-txt"><b>${esc(client)}${o?` <span class="hint">· ${esc(o.titre)}</span>`:""}</b><small>Demande d’aide · ${ok?"close "+ago2(x.resolue_le):"tu as répondu "+ago2(x.repondue_le||x.created_at)}${x.reponse?" · « "+esc(x.reponse)+" »":""}</small></div>
+          <span class="pill ${ok?"ok":""}">${ok?"Résolu":"En attente de "+esc(prenomDe(x.auteur_id))}</span></div>`; }).join("")}
+      ${dem.length?dem.map(d=>{ const e=byId(state.equipe,d.destinataire_id), o=byId(state.opportunites,d.opportunite_id), c=byId(state.comptes,d.compte_id||(o&&o.compte_id)); const ok=d.statut==="resolue";
+        return `<div class="ws-wait">${avatar(e,38)}<div class="ws-m-txt"><b>${esc((c&&c.nom)||(o&&o.titre)||"Demande")}${o&&c?` <span class="hint">· ${esc(o.titre)}</span>`:""}</b><small>${ok?esc(d.reponse||"Résolu")+" · "+ago2(d.resolue_le):(d.type==="validation"?"Validation":"Mise à jour")+" demandée "+ago2(d.created_at)}${d.message?" · « "+esc(d.message)+" »":""}</small></div>
+          <span class="pill ${ok?"ok":""}">${ok?"Résolu":"En attente de "+esc(prenomDe(d.destinataire_id))}</span>${ok?"":`<button class="btn small" data-act="demande-clore" data-id="${d.id}">Clore</button>`}</div>`; }).join("")
+      :aidesAtt.length?"":`<p class="hint">Rien en attente. Quand tu demandes une mise à jour à un commercial, elle s’affiche ici jusqu’à sa réponse.</p>`}</section>
+    <section class="ws-card" aria-label="Hygiène du pipeline"><div class="ws-card-h"><h3>Hygiène du pipeline</h3></div>
+      <div class="ws-hyg">${[["sans","Affaires sans prochaine action",H.sans.length],["inactives","Inactives depuis +14 j",H.inactives.length],["devis","Devis à relancer",H.devis.length],["bloq30","Bloquées depuis +30 j",H.bloq30.length]].map(([k,l,n])=>`<button class="ws-h${k==="bloq30"&&n?" bad":""}" data-act="ws-hyg" data-v="${k}" ${n?"":"disabled"}><b>${n}</b><span>${l}</span><i aria-hidden="true">↗</i></button>`).join("")}</div></section>
+  </div>
+  <div class="ws-two">
+    <section class="ws-card" aria-label="Ce qui a changé"><div class="ws-card-h"><h3>Ce qui a changé</h3><span class="hint">${{jour:"depuis 24 h",semaine:"sur 7 jours",mois:"sur 30 jours"}[wsPeriode]}</span></div>
+      <div class="ws-chg"><div><b class="${ch.nouveau?"t-ok":""}">${ch.nouveau?"+":""}${madShort(ch.nouveau)}</b><small>MAD</small><span>Nouveau pipeline</span></div><div><b>${madShort(ch.prop)}</b><small>MAD</small><span>Passés en proposition</span></div><div><b class="${ch.gagne?"t-ok":""}">${madShort(ch.gagne)}</b><small>MAD</small><span>Gagnés</span></div><div><b class="${ch.risque?"t-bad":""}">${ch.risque}</b><small>AFFAIRE${ch.risque>1?"S":""}</small><span>Nouvelle${ch.risque>1?"s":""} à risque</span></div></div></section>
+    <section class="ws-card" aria-label="${esc(PER)}"><div class="ws-card-h"><h3>${esc(PER)}</h3></div>
+      <div class="ws-obj"><div class="ws-obj-h"><span class="hint" style="margin:0">Objectif du mois</span><span>${objCa?`<b>${madShort(caMois)}</b> / ${madShort(objCa)} MAD`:`<b>${madShort(caMois)}</b> MAD signés · <button class="linkish" data-act="objectifs">fixer un objectif</button>`}</span></div>
+        ${objCa?`<div class="ws-bar"><i style="width:${Math.min(100,Math.round(caMois/objCa*100))}%"></i></div>`:""}</div>
+      <div class="ws-stats"><div><b>${terrainP.filter(a=>a.statut==="fait").length} / ${terrainP.length}</b><span>RDV et visites réalisés</span></div><div><b>${madShort(devisP)}</b><span>MAD de devis envoyés</span></div><div><b>+${madShort(ch.nouveau)}</b><span>MAD de pipeline créé</span></div></div>
+      ${negoVal&&negoDort?`<div class="ws-insight">${Math.round(negoDort/negoVal*100)} % de la valeur en négociation n’a enregistré aucune activité depuis 14 jours.</div>`:""}</section>
+  </div></div>`;
+}
+let wsHyg={};
+function listeAffairesModal(titre,opps,devis){
+  const h=`<div class="closed-list">${opps.map(o=>{ const c=byId(state.comptes,o.compte_id); return `<div class="closed-row"><div style="min-width:0"><button class="linkish" data-act="open-opp" data-id="${o.id}"><b>${esc(o.titre)}</b></button><div class="hint" style="margin:0">${esc([c&&c.nom,ETAPE_LABEL[o.etape],nomMembre(o.commercial_id)].filter(Boolean).join(" · "))}</div></div><span class="mono">${mad(o.montant_mad)} MAD</span></div>`; }).join("")}
+    ${(devis||[]).map(d=>{ const c=byId(state.comptes,d.compte_id); return `<div class="closed-row"><div><button class="linkish" data-act="edit-devis" data-id="${d.id}"><b translate="no">${esc(devisNum(d))}</b></button><div class="hint" style="margin:0">${esc([c&&c.nom,nomMembre(d.commercial_id),"envoyé il y a "+daysSince(d.date_envoi||d.updated_at||d.created_at)+" j"].filter(Boolean).join(" · "))}</div></div><span class="mono">${mad(d.montant_mad)} MAD</span></div>`; }).join("")}</div>`;
+  modal(titre,h,async()=>{ closeModal(true); return true; },"Fermer");
+}
+function wsTiroir(id){
+  const e=byId(state.equipe,id); if(!e) return; lastFocus=document.activeElement;
+  const p=new Set([id]), L=itemsATraiter(p), now=Date.now();
+  const opps=state.opportunites.filter(o=>o.issue==="en_cours"&&o.commercial_id===id), pipe=opps.reduce((s,o)=>s+(+o.montant_mad||0),0), pond=opps.reduce((s,o)=>s+(+o.montant_mad||0)*proba(o)/100,0);
+  const d0=startOfDay().getTime(), jour=state.activites.filter(a=>responsable(a)===id&&!estImporte(a)&&(t=>t>=d0&&t<d0+864e5)(new Date(a.date_activite).getTime())).sort((x,y)=>new Date(x.date_activite)-new Date(y.date_activite));
+  const dem=(state.demandes||[]).filter(d=>d.destinataire_id===id&&d.statut==="en_attente");
+  const resp=byId(state.organigramme||state.equipe,e.responsable_id);
+  const lien=x=>x.o?`data-act="open-opp" data-id="${x.o.id}"`:x.d?`data-act="edit-devis" data-id="${x.d.id}"`:x.a?`data-act="act-detail" data-id="${x.a.id}"`:`data-act="ws-retards" data-id="${id}"`;
+  $("#modal-slot").innerHTML=`<div class="overlay drawer-ov" id="ov"><aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="dr-t">
+    <div class="dr-head"><div class="ws-who">${avatar(e,60)}<div><h3 id="dr-t">${esc(e.nom)}</h3><span class="hint" style="margin:0">${esc([e.poste||ROLES[e.role],e.showroom&&SHOWROOMS[e.showroom]?SHOWROOMS[e.showroom].replace("Showroom ",""):e.ville,resp?"rattaché·e à "+resp.nom:""].filter(Boolean).join(" · "))}</span></div></div><button class="x" id="mx" aria-label="Fermer">×</button></div>
+    <div class="dr-kpi"><div class="dark"><small>Pipeline</small><b>${madShort(pipe)} <i>MAD</i></b><span>${opps.length} affaire${opps.length>1?"s":""} en cours</span></div><div><small>Pipeline pondéré</small><b>${madShort(pond)} <i>MAD</i></b><span>selon la probabilité de chaque étape</span></div></div>
+    <section><h4>${L.length} point${L.length>1?"s":""} à traiter ${L.length?`<span class="pill ${L.some(x=>x.sev==="critique")||L.length>=4?"bad":"warn"}">${L.some(x=>x.sev==="critique")||L.length>=4?"Attention":"À surveiller"}</span>`:`<span class="pill ok">OK</span>`}</h4>
+      ${L.map(x=>`<button class="dr-row" ${lien(x)}><i class="dot ${SEV[x.sev][1]||"mute"}"></i><span class="ws-m-txt"><b>${esc(x.titre)}</b><small>${esc(x.raisons[0])}</small></span>${x.valeur?`<span class="mono">${madShort(x.valeur)}</span>`:""}</button>`).join("")||`<p class="hint">Rien à signaler.</p>`}</section>
+    ${dem.length?`<section><h4>Demandes en cours</h4>${dem.map(d=>`<div class="dr-row static"><i class="dot mute"></i><span class="ws-m-txt"><b>${esc(((byId(state.comptes,d.compte_id)||{}).nom)||((byId(state.opportunites,d.opportunite_id)||{}).titre)||"Demande")}</b><small>${d.type==="validation"?"Validation":"Mise à jour"} demandée · ${esc(d.message||"")}</small></span></div>`).join("")}</section>`:""}
+    <section><h4>${new Date().toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"}).replace(/^./,c=>c.toUpperCase())}</h4>
+      ${jour.map(a=>{ const c=byId(state.comptes,a.compte_id), et=etatAction(a,now); return `<button class="dr-row day" data-act="act-detail" data-id="${a.id}"><span class="mono">${esc(hm(a.date_activite))}</span><span class="ws-m-txt"><b>${esc(c?c.nom:(a.label||"Action"))}</b><small>${esc(TYPES_ACT[a.type]||a.type)}</small></span><span class="pill ${ETAT[et][2]}">${ETAT[et][0]}</span></button>`; }).join("")||`<p class="hint">Rien de planifié aujourd’hui.</p>`}</section>
+    <div class="dr-acts"><button class="btn primary big" data-act="ws-pipe" data-id="${id}">Voir son pipeline</button><button class="btn big" data-act="demande" data-com="${id}">Demander une mise à jour</button><button class="btn big" data-act="voir-comme" data-id="${id}">Voir son écran</button></div>
+  </aside></div>`;
+  $("#mx").onclick=()=>closeModal(true); $("#ov").addEventListener("click",ev=>{ if(ev.target.id==="ov") closeModal(true); }); trapFocus($("#ov .drawer")); $("#mx").focus();
+}
+function formDemande(o){
+  o=o||{}; const opp=byId(state.opportunites,o.opp), c=byId(state.comptes,o.compte||(opp&&opp.compte_id)), a=byId(state.activites,o.aid);
+  const coms=commerciauxSuivis(perimetre()); const dest=o.com||(opp&&opp.commercial_id)||(a&&responsable(a))||"";
+  const contexte=[opp&&opp.titre,c&&c.nom,a&&(TYPES_ACT[a.type]+" du "+fmtDate(a.date_activite)+" à "+hm(a.date_activite))].filter(Boolean).join(" · ");
+  const defaut=a?"Ce rendez-vous a-t-il eu lieu ? Peux-tu le statuer ?":opp?"Où en est cette affaire ? Peux-tu planifier la prochaine action ?":"Peux-tu faire un point sur tes actions en retard ?";
+  const h=`${contexte?`<p style="margin-top:0"><b>${esc(contexte)}</b></p>`:""}<div class="form-grid">
+    ${fld("dm-com","À qui",`<select id="dm-com" name="destinataire_id">${opt(coms.map(e=>[e.id,e.nom]),dest,"Choisir…")}</select>`)}
+    ${fld("dm-type","Type",`<select id="dm-type" name="type">${opt([["mise_a_jour","Mise à jour"],["validation","Validation"],["autre","Autre"]],o.type||"mise_a_jour")}</select>`)}
+    ${fld("dm-msg","Message",`<textarea id="dm-msg" name="message" maxlength="1000">${esc(defaut)}</textarea>`,true)}</div>
+    <p class="hint">Le commercial reçoit une notification. La demande passe dans « En attente » et se clôt toute seule dès qu’il enregistre une action sur ce client ou cette affaire.</p>`;
+  const submit=async f=>write(ins("demandes",{destinataire_id:sUuid(f.destinataire_id),compte_id:c?c.id:null,opportunite_id:opp?opp.id:null,activite_id:a?a.id:null,type:sEnum(f.type,["mise_a_jour","validation","autre"])||"mise_a_jour",message:sTxt(f.message)}),"Demande envoyée à "+prenomDe(f.destinataire_id));
+  submit.validate=f=>!sUuid(f.destinataire_id)?["destinataire_id","Choisis le commercial."]:null;
+  modal("Demander une mise à jour",h,submit,"Envoyer");
+}
+function formRepondreDemande(d){
+  const o=byId(state.opportunites,d.opportunite_id), c=byId(state.comptes,d.compte_id||(o&&o.compte_id));
+  const h=`<p style="margin-top:0"><b>${esc(prenomDe(d.auteur_id))}</b> : « ${esc(d.message||"Mise à jour demandée")} »${c?`<br><span class="hint">${esc([c.nom,o&&o.titre].filter(Boolean).join(" · "))}</span>`:""}</p>
+    ${fld("rp-txt","Ta réponse",`<textarea id="rp-txt" name="reponse" maxlength="1000" placeholder="Ex. RDV calé jeudi, la clinique attend l’accord de la banque…"></textarea>`,true)}
+    <p class="hint">Astuce : enregistrer ou planifier une action sur ce client répond aussi automatiquement.</p>`;
+  const submit=async f=>write(upd("demandes",d.id,{statut:"resolue",reponse:sTxt(f.reponse)||"Vu, je m’en occupe",resolue_le:new Date().toISOString()}),"Réponse envoyée");
+  modal("Répondre à la demande",h,submit,"Répondre");
+}
+
 function viewAujourdhui(v){
   if(me&&(todayQui==null||(todayQui==="equipe"&&!estPilote()))) todayQui=estPilote()?"equipe":"moi";
   if(todayQui!=="equipe") todayCom="";
+  if(estPilote()&&todayQui==="equipe"&&!todayCom) return viewWorkspace(v);
   const d0=startOfDay().getTime(), d1=d0+864e5, d7=d0+8*864e5;
   const now=Date.now();
   const mes=state.activites.filter(a=>aMoi(a.commercial_id,a.createur_id));
@@ -2490,6 +3041,11 @@ function formVisite(opts){
 /* ---- Téléphone : feuille « Plus », tableaux en cartes, listes avec recherche ---- */
 function toggleMore(open){ const m=$("#more-sheet"); m.hidden=!open; $("#more-btn").setAttribute("aria-expanded",String(open)); if(open){ const f=m.querySelector("a"); if(f) f.focus(); } }
 $("#more-btn").addEventListener("click",()=>toggleMore(true));
+{ const pb=$("#plus-btn"), pm=$("#plus-menu"); const fermer=()=>{ pm.hidden=true; pb.setAttribute("aria-expanded","false"); };
+  pb.addEventListener("click",e=>{ e.stopPropagation(); pm.hidden=!pm.hidden; pb.setAttribute("aria-expanded",String(!pm.hidden)); if(!pm.hidden) pm.querySelector("a").focus(); });
+  pm.addEventListener("click",e=>{ if(e.target.closest("a")) fermer(); });
+  document.addEventListener("click",e=>{ if(!pm.hidden&&!pm.contains(e.target)&&e.target!==pb) fermer(); });
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&!pm.hidden){ fermer(); pb.focus(); } }); }
 $("#more-sheet").addEventListener("click",e=>{ if(e.target.id==="more-sheet"||e.target.closest(".more-grid a")) toggleMore(false); });
 
 $("#more-logout").addEventListener("click",async()=>{ toggleMore(false); await sb.auth.signOut(); });
@@ -2752,7 +3308,255 @@ async function loadCommentaires(el, oppId){
 }
 
 /* ---- Fiche opportunité ---- */
-let oppSection="activites";
+/* ---- Plan d'affaire · En veille · Demander de l'aide ----
+   Logique « commercial d'abord » : une affaire sans prochaine étape est d'abord signalée au commercial (planifier, expliquer,
+   mettre en veille, demander de l'aide). Elle ne remonte au superviseur qu'après 7 jours sans activité significative,
+   sans prochaine étape et sans explication valable. Les affaires reprises de l'ancien CRM n'entrent dans cette règle
+   qu'une fois travaillées dans le nouveau. */
+const OBJECTIONS={prix:"Prix",financement:"Financement",roi:"Rentabilité / ROI",technique:"Technique / clinique",associe:"Accord d’un associé",timing:"Timing",concurrence:"Concurrence",confiance:"Confiance / marque",autre:"Autre"};
+const FINANCEMENTS={comptant:"Comptant",credit_bancaire:"Crédit bancaire",leasing:"Leasing",echelonne:"Paiement échelonné",a_definir:"À définir"};
+const ROLES_ACHAT={decideur:"Décideur",co_decideur:"Co-décideur",influenceur:"Influenceur",financier:"Financier / paiement",utilisateur:"Utilisateur",prescripteur:"Prescripteur"};
+const ACCES={identifie:"Identifié",contacte:"Contacté",rencontre:"Rencontré"};
+const VEILLE_RAISONS={projet_futur:"Projet futur",budget:"Budget",financement:"Financement",ouverture_centre:"Ouverture du centre",timing_perso:"Moment personnel",attente_associe:"Attend son associé",autre:"Autre"};
+const BLOCAGES={prix:"Prix",negociation:"Négociation",financement:"Financement",technique:"Produit / technique",disponibilite:"Disponibilité",decideur:"Décideur",concurrence:"Concurrence",autre:"Autre"};
+const ATTENTES={conseil:"Un conseil",point:"Un point ensemble",accompagnement:"Que tu viennes au RDV",validation:"Une validation"};
+const ETAPES_CONV=[["demo","Démo","demo"],["proposition","Envoyer la proposition","tache"],["simulation","Simulation de financement","tache"],["rappel","Rappeler","appel"],["decideur","Rencontrer le décideur","rdv"],["rdv","Nouveau RDV","rdv"],["visite","Visite","visite"],["autre","Autre","tache"]];
+const ACT_SIGNIF=["appel","visite","demo","email","whatsapp","formation","rdv","autre"];
+const ESCALADE_JOURS=7;
+const estVeille=o=>!!o&&o.issue==="dormante"&&!!o.veille_jusqu;
+const moisTxt=d=>{ const x=new Date(d+"T12:00"); return x.toLocaleDateString("fr-FR",{month:"long",year:"numeric"}); };
+const liste=(v,allowed)=>String(v||"").split(",").filter(x=>allowed.includes(x));
+const explicationValide=o=>!!(o&&o.explication&&o.explication_jusqu&&o.explication_jusqu>=localISO());
+const suiviCRM=o=>!o.import_ref||!!(o.requalifiee_le||o.plan_maj_le||o.explication_le||o.veille_le)||state.activites.some(a=>a.opportunite_id===o.id&&!estImporte(a));
+function prochaineEtape(o){ const t0=startOfDay().getTime();
+  return state.activites.filter(a=>a.statut==="a_faire"&&!estImporte(a)&&(a.opportunite_id===o.id||(!a.opportunite_id&&a.compte_id&&a.compte_id===o.compte_id))&&new Date(a.date_activite).getTime()>=t0)
+    .sort((a,b)=>(b.opportunite_id===o.id)-(a.opportunite_id===o.id)||new Date(a.date_activite)-new Date(b.date_activite))[0]||null; }
+function derniereSignif(o){ let t=0; const plus=d=>{ if(d){ const x=new Date(d).getTime(); if(x>t) t=x; } };
+  state.activites.forEach(a=>{ if(a.opportunite_id!==o.id) return; if(a.statut==="fait"&&ACT_SIGNIF.includes(a.type)) plus(a.date_activite); if(o.import_ref&&!estImporte(a)) plus(a.created_at); });
+  plus(o.veille_reactivee_le); plus(o.import_ref?(o.requalifiee_le||o.plan_maj_le||o.explication_le||o.veille_le):o.created_at);
+  return t||null; }
+// Deux natures de suite : l'étape convenue avec le client (engagement commercial) et l'action personnelle du commercial
+const futurs=o=>{ const t0=startOfDay().getTime(); return state.activites.filter(a=>a.statut==="a_faire"&&!estImporte(a)&&a.opportunite_id===o.id&&new Date(a.date_activite).getTime()>=t0).sort((a,b)=>new Date(a.date_activite)-new Date(b.date_activite)); };
+const etapeConvenue=o=>futurs(o).find(a=>a.convenue)||null;
+const actionPerso=o=>futurs(o).find(a=>!a.convenue)||null;
+// État d'organisation d'une affaire en cours : à organiser (côté commercial) puis remontée (côté superviseur)
+function organisation(o){
+  if(!o||o.issue!=="en_cours") return null;
+  const suite=prochaineEtape(o), expl=explicationValide(o), suivi=suiviCRM(o), last=derniereSignif(o), j=last?Math.floor((Date.now()-last)/864e5):null;
+  const aOrganiser=suivi&&!suite&&!expl, remonte=aOrganiser&&(j==null||j>=ESCALADE_JOURS);
+  return {suite,expl,suivi,j,aOrganiser,remonte,restant:aOrganiser&&j!=null?Math.max(0,ESCALADE_JOURS-j):0};
+}
+// Lecture qualitative du plan : seuls les points utiles à l'étape en cours sont demandés
+function planLecture(o){
+  const iv=(state.intervenants||[]).filter(i=>i.opportunite_id===o.id), dec=iv.filter(i=>i.role==="decideur"||i.role==="co_decideur"), rang=ETAPES.indexOf(o.etape);
+  const pts=[];
+  if(o.issue==="en_cours"&&!etapeConvenue(o)) pts.push(["Prochaine étape à convenir","etape-conv"]);
+  if(!(o.besoin||o.motivation)) pts.push(["Besoin à préciser","plan-edit"]);
+  if(!dec.length) pts.push(["Décideur à identifier","iv-add"]);
+  else if(rang>=1&&!dec.some(i=>i.acces==="rencontre")) pts.push(["Décideur à rencontrer","iv-edit:"+dec[0].id]);
+  if(rang>=1&&!o.financement) pts.push(["Financement à aborder","plan-edit"]);
+  if(rang>=2&&!((o.objections||[]).length||o.objections_note)) pts.push(["Objections à explorer","plan-edit"]);
+  if(rang>=2&&!(o.date_cloture_prevue||o.decision_note)) pts.push(["Timing de décision à clarifier","plan-edit"]);
+  return {pts,iv};
+}
+function destinataireAide(){
+  const ok=x=>x&&x.actif&&!x.hors_crm&&!x.parti_le&&["superviseur","admin"].includes(x.role)&&(!me||x.id!==me.id);
+  let x=me&&byId(state.organigramme||state.equipe,me.responsable_id), n=0;
+  while(x&&n++<6){ if(ok(x)) return x; x=byId(state.organigramme||state.equipe,x.responsable_id); }
+  return state.equipe.find(e=>ok(e)&&e.role==="superviseur")||state.equipe.find(ok)||null;
+}
+// Chips (choix simple ou multiple) pour les formulaires
+function chipsF(name,label,entries,sel,multi){ const S=new Set([].concat(sel||[]).filter(Boolean));
+  return `<div class="field" style="grid-column:1/-1"><span class="lab-mono" id="cl-${name}">${label}</span><div class="chips" role="group" aria-labelledby="cl-${name}" data-chipsx="${name}"${multi?' data-multi="1"':""}>${entries.map(([k,l])=>`<button type="button" class="chip" data-v="${esc(k)}" aria-pressed="${S.has(k)}">${esc(l)}</button>`).join("")}</div><input type="hidden" name="${name}" value="${esc([...S].join(","))}"></div>`; }
+function wireChipsX(){ const f=$("#mform"); if(!f) return; f.querySelectorAll("[data-chipsx]").forEach(g=>g.addEventListener("click",e=>{ const b=e.target.closest(".chip"); if(!b) return;
+  if(g.dataset.multi) b.setAttribute("aria-pressed",String(b.getAttribute("aria-pressed")!=="true")); else g.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));
+  f.querySelector(`input[name="${g.dataset.chipsx}"]`).value=[...g.querySelectorAll('.chip[aria-pressed="true"]')].map(x=>x.dataset.v).join(","); dirty=true; })); }
+const nomClient=o=>((byId(state.comptes,o&&o.compte_id)||{}).nom)||(o&&o.titre)||"";
+
+function formPlan(o){
+  const conc=[...new Set(state.opportunites.flatMap(x=>x.concurrents||[]))].sort((a,b)=>a.localeCompare(b,"fr"));
+  const h=`<div class="form-grid">
+   ${fld("pl-besoin","Besoin (clinique ou business)",`<textarea id="pl-besoin" name="besoin" maxlength="1000" placeholder="Ex. développer l’épilation laser, remplacer une machine vieillissante…">${esc(o.besoin||"")}</textarea>`,true)}
+   ${fld("pl-motiv","Motivation",`<input id="pl-motiv" name="motivation" maxlength="1000" value="${esc(o.motivation||"")}" placeholder="Ex. ouvre un 2ᵉ centre en janvier">`,true)}
+   ${chipsF("objections","Objections",Object.entries(OBJECTIONS),o.objections||[],true)}
+   ${fld("pl-objn","Détail des objections",`<input id="pl-objn" name="objections_note" maxlength="1000" value="${esc(o.objections_note||"")}" placeholder="Ex. trouve l’investissement initial élevé">`,true)}
+   ${fld("pl-conc","Concurrence (séparer par des virgules)",`<input id="pl-conc" name="concurrents" list="dl-conc" maxlength="300" autocomplete="off" value="${esc((o.concurrents||[]).join(", "))}" placeholder="Ex. Candela, Alma"><datalist id="dl-conc">${conc.map(x=>`<option value="${esc(x)}">`).join("")}</datalist>`,true)}
+   ${fld("pl-fin","Financement",`<select id="pl-fin" name="financement">${opt(Object.entries(FINANCEMENTS),o.financement||"","Pas encore abordé")}</select>`)}
+   ${fld("pl-dec","Décision attendue",`<input id="pl-dec" name="date_cloture_prevue" type="date" value="${esc(o.date_cloture_prevue||"")}">`)}
+   ${fld("pl-decn","De quoi dépend la décision",`<input id="pl-decn" name="decision_note" maxlength="500" value="${esc(o.decision_note||"")}" placeholder="Ex. accord de la banque, avis de l’associé">`,true)}
+   ${fld("pl-bc","Business case",`<textarea id="pl-bc" name="business_case" maxlength="2000" placeholder="Ex. séance visée 600 MAD, 8 séances par jour, retour sur investissement en 14 mois">${esc(o.business_case||"")}</textarea>`,true)}
+  </div><p class="hint">Remplis ce que tu sais, tout est facultatif. Les décideurs et la prochaine étape se gèrent directement depuis l’affaire.</p>`;
+  const submit=async f=>write(upd("opportunites",o.id,{besoin:sTxt(f.besoin),motivation:sTxt(f.motivation),objections:liste(f.objections,Object.keys(OBJECTIONS)),objections_note:sTxt(f.objections_note),
+    concurrents:[...new Set(String(f.concurrents||"").split(",").map(x=>x.trim()).filter(Boolean))].slice(0,10).map(x=>x.slice(0,60)),financement:sEnum(f.financement,Object.keys(FINANCEMENTS)),
+    date_cloture_prevue:sDate(f.date_cloture_prevue),decision_note:sTxt(f.decision_note),business_case:sTxt(f.business_case),plan_maj_le:new Date().toISOString()}),"Plan d’affaire mis à jour");
+  modal("Plan d’affaire · "+nomClient(o),h,submit,"Enregistrer"); wireChipsX();
+}
+function formIntervenant(o,i){
+  i=i||{}; const contacts=state.contacts.filter(c=>c.compte_id===o.compte_id), nomC=c=>[c.prenom,c.nom].filter(Boolean).join(" ");
+  const h=`<div class="form-grid">
+   ${fld("iv-nom","Nom",`<input id="iv-nom" name="nom" required maxlength="120" list="dl-iv" autocomplete="off" value="${esc(i.nom||"")}" placeholder="Ex. Dr Amrani"><datalist id="dl-iv">${contacts.map(c=>`<option value="${esc(nomC(c))}">`).join("")}</datalist>`)}
+   ${fld("iv-fct","Fonction",`<input id="iv-fct" name="fonction" maxlength="120" value="${esc(i.fonction||"")}" placeholder="Ex. associé, gérant, responsable administratif">`)}
+   ${chipsF("role","Rôle dans la décision",Object.entries(ROLES_ACHAT),i.role||"decideur")}
+   ${chipsF("acces","Accès",Object.entries(ACCES),i.acces||"identifie")}
+   ${fld("iv-notes","À savoir",`<input id="iv-notes" name="notes" maxlength="1000" value="${esc(i.notes||"")}" placeholder="Ex. veut voir la machine avant de s’engager">`,true)}
+  </div>${i.id?`<p style="margin:0"><button type="button" class="linkish t-bad" data-act="iv-del" data-id="${i.id}">Retirer cette personne de l’affaire</button></p>`:""}`;
+  const submit=async f=>{ const nom=sTxt(f.nom), ct=contacts.find(c=>nomC(c)===nom);
+    const obj={nom,fonction:sTxt(f.fonction)||(ct&&ct.fonction)||null,role:sEnum(f.role,Object.keys(ROLES_ACHAT))||"decideur",acces:sEnum(f.acces,Object.keys(ACCES))||"identifie",notes:sTxt(f.notes),contact_id:ct?ct.id:(i.contact_id||null)};
+    return write(i.id?upd("affaire_intervenants",i.id,obj):ins("affaire_intervenants",Object.assign({opportunite_id:o.id},obj)),i.id?"Intervenant mis à jour":"Intervenant ajouté"); };
+  submit.validate=f=>!sTxt(f.nom)?["nom","Indique le nom."]:null;
+  modal(i.id?"Modifier l’intervenant":"Décideur ou influenceur",h,submit,i.id?"Enregistrer":"Ajouter"); wireChipsX();
+}
+const ETAPES_CLIENT=[["rdv","RDV","rdv"],["demo","Démo","demo"],["visite","Visite","visite"],["appel","Appel convenu","appel"],["decideur","Rencontre avec le décideur","rdv"],["autre","Autre","rdv"]];
+const ACTIONS_PERSO=[["proposition","Envoyer la proposition","tache"],["simulation","Préparer une simulation de financement","tache"],["demo","Préparer la démo","tache"],["relance","Relancer","appel"],["whatsapp","Message WhatsApp","whatsapp"],["autre","Autre","tache"]];
+function formEtape(o,mode){
+  const conv=mode!=="perso", L=conv?ETAPES_CLIENT:ACTIONS_PERSO, d=new Date(); d.setDate(d.getDate()+(d.getDay()===5?3:d.getDay()===6?2:1));
+  const h=`<p style="margin-top:0" class="hint">${conv?"Un <b>engagement pris avec le client</b> : date, interlocuteurs, objectif. C’est ce qui fait vraiment avancer l’affaire.":"Une action <b>de ton côté</b>, pour préparer ou relancer. Elle n’engage pas encore le client."}</p><div class="form-grid">
+   ${chipsF("quoi",conv?"Étape convenue":"Action",L.map(x=>[x[0],x[1]]),L[0][0])}
+   ${fld("et-d","Date",`<input id="et-d" name="date" type="date" required value="${localISO(d)}" min="${localISO()}">`)}
+   ${fld("et-h","Heure",`<input id="et-h" name="heure" type="time" value="${conv?"15:00":"10:00"}" step="900">`)}
+   ${conv?fld("et-avec","Avec",`<input id="et-avec" name="avec" maxlength="120" placeholder="Ex. Dr Amrani et son associé">`):""}
+   ${fld("et-obj",conv?"Objectif de l’échange":"Précision (facultatif)",`<input id="et-obj" name="objectif" maxlength="500" placeholder="${conv?"Ex. valider le financement, obtenir un accord de principe":"Ex. simulation sur 24 et 36 mois"}">`,true)}</div>`;
+  const submit=async f=>{ const e=L.find(x=>x[0]===f.quoi)||L[0]; const dt=new Date(`${sDate(f.date)}T${/^\d\d:\d\d$/.test(f.heure||"")?f.heure:"10:00"}`);
+    return write(ins("activites",{compte_id:o.compte_id,opportunite_id:o.id,commercial_id:o.commercial_id||(me&&me.id),type:e[2],statut:"a_faire",date_activite:dt.toISOString(),
+      label:e[1]+(conv&&sTxt(f.avec)?" · "+sTxt(f.avec):""),objectif:sTxt(f.objectif),convenue:conv}),conv?"Étape convenue enregistrée":"Action planifiée"); };
+  submit.validate=f=>!sDate(f.date)?["date","Choisis la date."]:sDate(f.date)<localISO()?["date","Cette date est passée."]:null;
+  modal((conv?"Étape convenue avec le client · ":"Action personnelle · ")+nomClient(o),h,submit,"Planifier"); wireChipsX();
+}
+function formExpliquer(o){
+  const d=new Date(Date.now()+14*864e5), v=explicationValide(o);
+  const h=`<p style="margin-top:0">Pas de prochaine étape pour l’instant ? Une phrase suffit : ton superviseur verra ton explication au lieu d’une alerte.</p><div class="form-grid">
+   ${fld("ex-txt","Que se passe-t-il ?",`<textarea id="ex-txt" name="explication" required maxlength="1000" placeholder="Ex. le client m’a demandé de le rappeler après le 10 novembre">${esc(v?o.explication:"")}</textarea>`,true)}
+   ${fld("ex-d","J’y reviens le",`<input id="ex-d" name="jusqu" type="date" required min="${localISO()}" max="${localISO(new Date(Date.now()+90*864e5))}" value="${esc(v?o.explication_jusqu:localISO(d))}">`)}
+  </div><p class="hint">Projet repoussé de plusieurs mois ? <button type="button" class="linkish" data-act="veille" data-id="${o.id}">Mets plutôt l’affaire en veille</button> : elle sort du pipeline actif et revient toute seule au bon moment.</p>`;
+  const submit=async f=>write(upd("opportunites",o.id,{explication:sTxt(f.explication),explication_le:new Date().toISOString(),explication_jusqu:sDate(f.jusqu)}),"Explication enregistrée");
+  submit.validate=f=>!sTxt(f.explication)?["explication","Écris une phrase d’explication."]:!sDate(f.jusqu)?["jusqu","Choisis une date."]:null;
+  modal("Expliquer · "+nomClient(o),h,submit,"Enregistrer");
+}
+function formVeille(o){
+  const mois=[]; for(let i=1;i<=6;i++){ const d=new Date(); d.setDate(1); d.setMonth(d.getMonth()+i); mois.push([localISO(d),d.toLocaleDateString("fr-FR",{month:"long",...(d.getFullYear()!==new Date().getFullYear()?{year:"numeric"}:{})}).replace(/^./,c=>c.toUpperCase())]); }
+  const der=state.activites.filter(a=>a.opportunite_id===o.id&&a.statut==="fait"&&a.resume).sort((a,b)=>String(b.date_activite).localeCompare(String(a.date_activite)))[0];
+  const ctx0=o.veille_contexte||[explicationValide(o)&&o.explication,der&&der.resume].filter(Boolean).join("\n");
+  const sel=o.veille_jusqu?o.veille_jusqu.slice(0,8)+"01":mois[2][0], precis=o.veille_jusqu&&!mois.some(m=>m[0]===o.veille_jusqu)?o.veille_jusqu:"";
+  const h=`<div class="form-grid">
+   ${chipsF("raison","Pourquoi ?",Object.entries(VEILLE_RAISONS),o.veille_raison||"")}
+   ${chipsF("mois","Réactiver début",mois,precis?"":sel)}
+   ${fld("vl-d","ou à une date précise",`<input id="vl-d" name="jusqu" type="date" min="${localISO(new Date(Date.now()+864e5))}" value="${esc(precis)}">`)}
+   ${fld("vl-ctx","Contexte à retenir",`<textarea id="vl-ctx" name="contexte" maxlength="2000" placeholder="Ex. ouvre un 2ᵉ centre en janvier ; l’associé veut revoir une démo ; objection prix">${esc(ctx0)}</textarea>`,true)}
+   ${fld("vl-rep","Prochaine action recommandée à la reprise",`<input id="vl-rep" name="reprise" maxlength="300" value="${esc(o.veille_reprise||"")}" placeholder="Ex. proposer une nouvelle démo à l’associé">`,true)}
+  </div><p class="hint">${o.montant_mad?`<b>${mad(o.montant_mad)} MAD</b> sortent`:"L’affaire sort"} du pipeline actif et du prévisionnel. Le plan, les décideurs et l’historique restent dans la fiche. Le jour venu, l’affaire revient toute seule chez ${esc(prenomDe(o.commercial_id))} avec ce contexte et une action « Reprendre ». Aucune alerte n’est envoyée au superviseur.</p>`;
+  const submit=async f=>{ const j=sDate(f.jusqu)||sDate(f.mois);
+    return write(upd("opportunites",o.id,{issue:"dormante",raison_perte:null,veille_raison:sEnum(f.raison,Object.keys(VEILLE_RAISONS)),veille_jusqu:j,veille_contexte:sTxt(f.contexte),veille_reprise:sTxt(f.reprise),
+      veille_le:new Date().toISOString(),veille_par:me?me.id:null,veille_reactivee_le:null}),"En veille jusqu’au "+fmtDate(j)); };
+  submit.validate=f=>!sEnum(f.raison,Object.keys(VEILLE_RAISONS))?["raison","Choisis une raison."]:!(sDate(f.jusqu)||sDate(f.mois))?["jusqu","Choisis quand la réactiver."]:(sDate(f.jusqu)&&sDate(f.jusqu)<=localISO())?["jusqu","Choisis une date à venir."]:null;
+  modal("Mettre en veille · "+nomClient(o),h,submit,"Mettre en veille"); wireChipsX();
+  const d=$("#vl-d"); d.addEventListener("input",()=>{ if(d.value){ $("#mform").querySelectorAll('[data-chipsx="mois"] .chip').forEach(x=>x.setAttribute("aria-pressed","false")); $('#mform input[name="mois"]').value=""; } });
+  $("#mform").querySelector('[data-chipsx="mois"]').addEventListener("click",()=>{ d.value=""; });
+}
+function formAide(o){
+  const sups=state.equipe.filter(e=>e.actif&&!e.parti_le&&["superviseur","admin"].includes(e.role)&&(!me||e.id!==me.id)), d0=destinataireAide();
+  const h=`<p style="margin-top:0"><b>${esc(nomClient(o))}</b>${o.montant_mad?` · ${mad(o.montant_mad)} MAD`:""} · ${esc(ETAPE_LABEL[o.etape]||o.etape)}</p><div class="form-grid">
+   ${chipsF("blocages","Qu’est-ce qui te bloque ?",Object.entries(BLOCAGES),[],true)}
+   ${fld("aid-msg","En deux phrases",`<textarea id="aid-msg" name="message" maxlength="1000" placeholder="Ex. il demande 12 % de remise pour signer avant fin octobre ; un concurrent lui a fait une offre plus basse"></textarea>`,true)}
+   ${chipsF("attente","Ce que tu attends",Object.entries(ATTENTES),"conseil")}
+   ${fld("aid-dest","Envoyer à",`<select id="aid-dest" name="destinataire_id">${opt(sups.map(e=>[e.id,e.nom]),d0?d0.id:"","Choisir…")}</select>`)}
+  </div><p class="hint">La personne reçoit une notification avec le contexte de l’affaire (plan, montant, étape). Sa réponse arrive sur ton accueil.</p>`;
+  const submit=async f=>write(ins("demandes_aide",{destinataire_id:sUuid(f.destinataire_id),opportunite_id:o.id,compte_id:o.compte_id,blocages:liste(f.blocages,Object.keys(BLOCAGES)),attente:sEnum(f.attente,Object.keys(ATTENTES)),message:sTxt(f.message)}),"Demande envoyée à "+prenomDe(f.destinataire_id));
+  submit.validate=f=>!liste(f.blocages,Object.keys(BLOCAGES)).length?["blocages","Choisis au moins un blocage."]:!sUuid(f.destinataire_id)?["destinataire_id","Choisis à qui l’envoyer."]:null;
+  modal("Demander de l’aide",h,submit,"Envoyer"); wireChipsX();
+}
+function aideResume(x){ const o=byId(state.opportunites,x.opportunite_id); return {o,client:nomClient(o)||((byId(state.comptes,x.compte_id)||{}).nom)||"Affaire",bloc:(x.blocages||[]).map(b=>BLOCAGES[b]||b).join(", ")}; }
+function formRepondreAide(x){
+  const {o,client,bloc}=aideResume(x);
+  const h=`<p style="margin-top:0"><b>${esc(prenomDe(x.auteur_id))}</b> · ${esc(client)}${o&&o.montant_mad?" · "+mad(o.montant_mad)+" MAD":""}<br><span class="hint">${esc(bloc)}${x.attente?" · attend "+esc((ATTENTES[x.attente]||"").toLowerCase()):""}</span>${x.message?`<br>« ${esc(x.message)} »`:""}</p>
+   ${fld("ra-txt","Ta réponse",`<textarea id="ra-txt" name="reponse" required maxlength="1000" placeholder="Ex. pas plus de 8 % ; propose plutôt le financement sur 24 mois"></textarea>`,true)}`;
+  const submit=async f=>write(upd("demandes_aide",x.id,{statut:"repondue",reponse:sTxt(f.reponse),repondue_le:new Date().toISOString()}),"Réponse envoyée à "+prenomDe(x.auteur_id));
+  submit.validate=f=>!sTxt(f.reponse)?["reponse","Écris ta réponse."]:null;
+  modal("Répondre à "+prenomDe(x.auteur_id),h,submit,"Répondre");
+}
+function formPointAide(x){
+  const {o,client,bloc}=aideResume(x), d=new Date(); d.setDate(d.getDate()+1);
+  const h=`<p style="margin-top:0">Point avec <b>${esc(prenomDe(x.auteur_id))}</b> sur <b>${esc(client)}</b><br><span class="hint">${esc(bloc)}</span></p><div class="form-grid">
+   ${fld("pt-d","Date",`<input id="pt-d" name="date" type="date" required min="${localISO()}" value="${localISO(d)}">`)}
+   ${fld("pt-h","Heure",`<input id="pt-h" name="heure" type="time" step="900" value="09:00">`)}
+   ${fld("pt-m","Message (facultatif)",`<input id="pt-m" name="message" maxlength="300" placeholder="Ex. on prépare la négociation ensemble">`,true)}</div>`;
+  const submit=async f=>{ const dt=new Date(`${sDate(f.date)}T${/^\d\d:\d\d$/.test(f.heure||"")?f.heure:"09:00"}`);
+    const quand=dt.toLocaleDateString("fr-FR",{weekday:"short",day:"numeric",month:"short"})+" à "+hm(dt);
+    return write(async()=>{ const r=await sb.from("activites").insert({compte_id:x.compte_id||(o&&o.compte_id)||null,opportunite_id:x.opportunite_id,commercial_id:me.id,type:"rdv",statut:"a_faire",date_activite:dt.toISOString(),label:"Point avec "+prenomDe(x.auteur_id)+" · "+client,objectif:bloc||null});
+      if(r.error) return r; return sb.from("demandes_aide").update({statut:"repondue",point_le:dt.toISOString(),repondue_le:new Date().toISOString(),reponse:("Point planifié "+quand+(sTxt(f.message)?" — "+sTxt(f.message):"")).slice(0,1000)}).eq("id",x.id); },"Point planifié avec "+prenomDe(x.auteur_id)); };
+  submit.validate=f=>!sDate(f.date)?["date","Choisis la date."]:null;
+  modal("Planifier un point",h,submit,"Planifier");
+}
+// Rendu du plan dans la fiche affaire
+function planAffaireHtml(o){
+  const {pts,iv}=planLecture(o), vide=t=>`<p class="hint" style="margin:0">${t}</p>`;
+  const ordre={decideur:0,co_decideur:1,financier:2,influenceur:3,prescripteur:4,utilisateur:5};
+  const lien=([l,a])=>{ const [act,ref]=a.split(":"); return `<button class="pq" data-act="${act==="etape-conv"?"etape":act}" data-id="${ref||o.id}">${esc(l)} ›</button>`; };
+  return `<div class="plan">
+   <div class="plan-mt${pts.length?"":" ok"}"><div class="plan-score"><span class="lab-mono">Plan d’affaire</span><b>${pts.length?`${Math.min(3,pts.length)} point${Math.min(3,pts.length)>1?"s":""} à clarifier`:"Bien cadré"}</b></div>
+     ${pts.length?`<div class="plan-pts">${pts.slice(0,3).map(lien).join("")}${pts.length>3?`<span class="hint" style="margin:0;align-self:center">et ${pts.length-3} autre${pts.length>4?"s":""} point${pts.length>4?"s":""} quand tu en sauras plus</span>`:""}</div>`:`<div class="plan-pts"><span class="hint" style="margin:0">Rien d’essentiel ne manque pour l’étape « ${esc(ETAPE_LABEL[o.etape]||o.etape)} ».</span></div>`}
+     <button class="btn small" data-act="plan-edit" data-id="${o.id}">Modifier le plan</button></div>
+   <div class="plan-grid">
+    <section><h4>Besoin & motivation</h4>${o.besoin||o.motivation?`${o.besoin?`<p>${esc(o.besoin)}</p>`:""}${o.motivation?`<p class="hint" style="margin:4px 0 0">Motivation : ${esc(o.motivation)}</p>`:""}`:vide("Pourquoi ce client pourrait-il acheter ?")}</section>
+    <section><h4>Décideurs & influenceurs <button class="linkish" data-act="iv-add" data-id="${o.id}">+ Ajouter</button></h4>
+      ${iv.length?iv.sort((a,b)=>(ordre[a.role]??9)-(ordre[b.role]??9)).map(i=>`<button class="iv-row" data-act="iv-edit" data-id="${i.id}"><span class="iv-n"><b>${esc(i.nom)}</b>${i.fonction||i.notes?`<small>${esc([i.fonction,i.notes].filter(Boolean).join(" · "))}</small>`:""}</span><span class="pill${i.role==="decideur"?" vio":""}">${esc(ROLES_ACHAT[i.role]||i.role)}</span><span class="pill ${i.acces==="rencontre"?"ok":i.acces==="identifie"?"warn":""}">${esc(ACCES[i.acces]||i.acces)}</span></button>`).join("")
+        :vide("Qui décide vraiment ? Qui influence, qui paie ?")}</section>
+    <section><h4>Objections & concurrence</h4>${(o.objections||[]).length||o.objections_note||(o.concurrents||[]).length?`
+      ${(o.objections||[]).length?`<div class="plan-tags">${o.objections.map(k=>`<span class="tag">${esc(OBJECTIONS[k]||k)}</span>`).join("")}</div>`:""}${o.objections_note?`<p style="margin:6px 0 0">${esc(o.objections_note)}</p>`:""}
+      ${(o.concurrents||[]).length?`<p class="hint" style="margin:6px 0 0">Concurrence : <b>${esc(o.concurrents.join(", "))}</b></p>`:""}`:vide("Ce qui freine la décision, et face à qui.")}</section>
+    <section><h4>Financement & business case</h4>${o.financement||o.business_case?`${o.financement?`<p style="margin:0"><b>${esc(FINANCEMENTS[o.financement])}</b></p>`:""}${o.business_case?`<p style="margin:4px 0 0;white-space:pre-line">${esc(o.business_case)}</p>`:""}`:vide("Comment il paie, et ce que la machine lui rapporte.")}</section>
+    <section><h4>Timing de décision</h4>${o.date_cloture_prevue||o.decision_note?`${o.date_cloture_prevue?`<p style="margin:0">Décision attendue <b>${fmtDate(o.date_cloture_prevue)}</b></p>`:""}${o.decision_note?`<p class="hint" style="margin:4px 0 0">Dépend de : ${esc(o.decision_note)}</p>`:""}`:vide("Quand la vraie décision tombe-t-elle ?")}</section>
+   </div>${o.plan_maj_le?`<p class="hint" style="margin:10px 0 0">Plan mis à jour ${fmtDate(o.plan_maj_le)}</p>`:""}</div>`;
+}
+// Bandeau « prochaine étape » / « en veille » en tête de la fiche affaire
+function etapeBandeau(o){
+  if(estVeille(o)) return `<div class="nx veille"><div class="nx-main"><span class="lab-mono">En veille · réactivation ${esc(moisTxt(o.veille_jusqu))}</span>
+     <b>${esc(VEILLE_RAISONS[o.veille_raison]||"En veille")}</b>${o.veille_contexte?`<div class="nx-sub" style="white-space:pre-line">${esc(o.veille_contexte)}</div>`:""}${o.veille_reprise?`<div class="nx-sub">À la reprise : <b>${esc(o.veille_reprise)}</b></div>`:""}
+     <div class="nx-sub">Mise en veille le ${fmtDate(o.veille_le)}${o.veille_par?" par "+esc(prenomDe(o.veille_par)):""} · hors du pipeline actif</div></div>
+     <div class="nx-btns"><button class="btn small primary" data-act="veille-reactiver" data-id="${o.id}">Réactiver maintenant</button><button class="btn small" data-act="veille" data-id="${o.id}">Modifier</button></div></div>`;
+  if(o.issue!=="en_cours") return "";
+  const g=organisation(o), c=etapeConvenue(o), p=actionPerso(o), quand=a=>new Date(a.date_activite).toLocaleDateString("fr-FR",{weekday:"short",day:"numeric",month:"short"})+" · "+hm(a.date_activite);
+  const ligne=(cls,lab,a,vide,btn)=>`<div class="nx-l ${cls}"><span class="lab-mono">${lab}</span>${a?`<b>${esc(quand(a))} — ${esc(a.label||TYPES_ACT[a.type]||a.type)}</b>${a.objectif?`<div class="nx-sub">${a.convenue?"Objectif":"Précision"} : ${esc(a.objectif)}</div>`:""}`:`<div class="nx-sub">${vide}</div>`}${btn}</div>`;
+  const conv=ligne(c?"ok":"todo","Prochaine étape convenue avec le client",c,"Aucun engagement daté avec le client pour l’instant.",`<button class="btn small${c?"":" primary"}" data-act="etape" data-id="${o.id}">${c?"+ Autre étape":"Convenir d’une étape"}</button>`);
+  const perso=ligne(p?"":"todo","Prochaine action personnelle",p,"Rien de prévu de ton côté.",`<button class="btn small" data-act="etape-perso" data-id="${o.id}">${p?"+ Autre action":"+ Action"}</button>`);
+  let etat="";
+  if(!c&&!p){ etat=g.expl?`<div class="nx-note">Expliqué : « ${esc(o.explication)} » · jusqu’au ${fmtDate(o.explication_jusqu)} <button class="linkish" data-act="expliquer" data-id="${o.id}">modifier</button></div>`
+    :`<div class="nx-note${g.remonte?" up":""}">${!g.suivi?"Affaire reprise de l’ancien CRM : convenir d’une étape, expliquer ou mettre en veille suffit à la reprendre en main.":g.remonte?"Cette affaire nécessite une mise à jour.":`À organiser dans les ${g.restant} prochain${g.restant>1?"s":""} jour${g.restant>1?"s":""}.`}
+      <span class="nx-inline"><button class="btn small" data-act="expliquer" data-id="${o.id}">Expliquer</button><button class="btn small" data-act="veille" data-id="${o.id}">Mettre en veille</button></span></div>`; }
+  return `<div class="nx2${!c&&!p&&!g.expl?" warn":""}">${conv}${perso}${etat}</div>`;
+}
+// Accueil commercial : affaires à organiser, retours de veille, réponses à ses demandes d'aide
+function accueilAffaires(){
+  const mes=state.opportunites.filter(o=>me&&o.commercial_id===me.id);
+  const aOrg=mes.map(o=>({o,g:organisation(o)})).filter(x=>x.g&&x.g.aOrganiser).sort((a,b)=>(b.g.remonte-a.g.remonte)||((+b.o.montant_mad||0)-(+a.o.montant_mad||0)));
+  const retours=mes.filter(o=>o.issue==="en_cours"&&o.veille_reactivee_le&&daysSince(o.veille_reactivee_le)<=21&&!state.activites.some(a=>a.opportunite_id===o.id&&a.statut==="fait"&&new Date(a.date_activite)>=new Date(o.veille_reactivee_le)));
+  const aides=(state.aides||[]).filter(x=>me&&x.auteur_id===me.id&&(x.statut==="en_attente"||x.statut==="repondue"));
+  const anciens=mes.filter(o=>o.issue==="en_cours"&&!suiviCRM(o)), aRequal=anciens.filter(o=>!o.requalif_revoir_le||o.requalif_revoir_le<=localISO()).sort((a,b)=>(+b.montant_mad||0)-(+a.montant_mad||0)||String(b.updated_at||"").localeCompare(String(a.updated_at||"")));
+  const rq=aRequal[0], rqDerniere=rq&&state.activites.filter(a=>a.opportunite_id===rq.id).sort((a,b)=>String(b.date_activite).localeCompare(String(a.date_activite)))[0];
+  const msg=g=>g.remonte?"Cette affaire nécessite une mise à jour.":`À organiser dans les ${g.restant} prochain${g.restant>1?"s":""} jour${g.restant>1?"s":""}`;
+  const html=[
+    ...aides.filter(x=>x.statut==="repondue").map(x=>{ const {o,client}=aideResume(x); return `<section class="sh-card sh-dem" aria-label="Réponse de ${esc(prenomDe(x.destinataire_id))}">
+      <div class="sh-lab"><span class="dotv" aria-hidden="true"></span>${esc(prenomDe(x.destinataire_id))} a répondu à ta demande d’aide</div><div class="sh-title">${esc(client)}</div>
+      <div class="sh-why">« ${esc(x.reponse||"")} »</div><div class="sh-btns"><button class="btn primary big" data-act="aide-clore" data-id="${x.id}">C’est réglé</button>${o?`<button class="btn big" data-act="open-opp" data-id="${o.id}">Ouvrir l’affaire</button>`:""}</div></section>`; }),
+    ...retours.map(o=>`<section class="sh-card sh-veille" aria-label="Retour de veille">
+      <div class="sh-lab"><span class="dotv" aria-hidden="true"></span>De retour de veille</div><div class="sh-title">${esc(nomClient(o))} : on peut reprendre</div>
+      <div class="sh-sub">${esc(o.titre)}${o.montant_mad?" · "+madShort(o.montant_mad)+" MAD":""}</div>
+      ${o.veille_contexte?`<div class="sh-why" style="white-space:pre-line">${esc(o.veille_contexte)}</div>`:""}${o.veille_reprise?`<div class="sh-sub" style="margin-top:6px">À la reprise : <b>${esc(o.veille_reprise)}</b></div>`:""}
+      <div class="sh-btns"><button class="btn primary big" data-act="etape" data-id="${o.id}">Convenir de la reprise</button><button class="btn big" data-act="veille" data-id="${o.id}">Repousser</button></div></section>`),
+    aOrg.length?`<section aria-label="À organiser"><div class="sh-lab">À organiser · ${aOrg.length} affaire${aOrg.length>1?"s":""} sans prochaine étape</div>
+      ${aOrg.slice(0,3).map(({o,g})=>`<div class="sh-org${g.remonte?" up":""}"><div class="sh-org-h"><button class="linkish" data-act="open-opp" data-id="${o.id}"><b>${esc(nomClient(o))}</b></button><span class="mono">${o.montant_mad?madShort(o.montant_mad)+" MAD":""}</span></div>
+        <div class="s">${esc(o.titre)} · ${esc(ETAPE_LABEL[o.etape]||o.etape)}</div><div class="sh-msg">${msg(g)}</div>
+        <div class="sh-org-b"><button class="btn small primary" data-act="etape" data-id="${o.id}">Convenir d’une étape</button><button class="btn small" data-act="expliquer" data-id="${o.id}">Expliquer</button><button class="btn small" data-act="veille" data-id="${o.id}">En veille</button><button class="btn small" data-act="aide" data-id="${o.id}">Demander de l’aide</button></div></div>`).join("")}
+      ${aOrg.length>3?`<p class="hint" style="margin:6px 0 0">+ ${aOrg.length-3} autre${aOrg.length-3>1?"s":""} · <button class="linkish" data-act="pipe-organiser">voir dans le pipeline</button></p>`:""}</section>`:"",
+    ...aides.filter(x=>x.statut==="en_attente").map(x=>`<div class="sh-row"><div style="flex:1;min-width:0"><div class="t">Demande d’aide · ${esc(aideResume(x).client)}</div><div class="s">Envoyée à ${esc(prenomDe(x.destinataire_id))} · en attente de réponse</div></div></div>`),
+    rq?`<section class="sh-rq" aria-label="Ancien CRM à requalifier"><div class="sh-lab">Ancien CRM · ${aRequal.length} affaire${aRequal.length>1?"s":""} à requalifier</div>
+      <div class="sh-org-h"><button class="linkish" data-act="open-opp" data-id="${rq.id}"><b>${esc(nomClient(rq))}</b></button><span class="mono">${rq.montant_mad?madShort(rq.montant_mad)+" MAD":""}</span></div>
+      <div class="s">${esc(rq.titre)} · ${esc(ETAPE_LABEL[rq.etape]||rq.etape)}${rqDerniere?" · dernier échange "+fmtDate(rqDerniere.date_activite):""}</div>
+      <div class="sh-msg">Où en est-elle aujourd’hui ?</div>
+      <div class="sh-org-b"><button class="btn small primary" data-act="rq-active" data-id="${rq.id}">Toujours active</button><button class="btn small" data-act="veille" data-id="${rq.id}">En veille</button><button class="btn small" data-act="lost" data-id="${rq.id}">Perdue</button><button class="btn small" data-act="rq-plus-tard" data-id="${rq.id}">À reprendre plus tard</button></div></section>`:""
+  ].filter(Boolean).join("");
+  return {html,n:aOrg.length+retours.length+aides.filter(x=>x.statut==="repondue").length};
+}
+let oppSection="plan";
 function openOpp(o){ if(o) ctxCompte=o.compte_id;
   if(!o) return;
   lastFocus=lastFocus||document.activeElement; dirty=false;
@@ -2774,13 +3578,15 @@ function openOpp(o){ if(o) ctxCompte=o.compte_id;
      <div><div class="lab-mono">Responsable</div><b>${esc(nomMembre(o.commercial_id))}</b>${o.createur_id&&o.createur_id!==o.commercial_id?`<div class="hint">créée par ${esc(nomMembre(o.createur_id))}</div>`:""}</div>
      <div><div class="lab-mono">Machine</div><b>${p?esc(p.nom):"—"}</b></div>
    </div>
+   ${etapeBandeau(o)}
    <div class="tools quick">
      <button class="btn small" data-act="log" data-opp="${o.id}" data-type="tache">+ Tâche</button><button class="btn small" data-act="log" data-opp="${o.id}" data-type="evenement">+ Événement</button><button class="btn small" data-act="log" data-opp="${o.id}" data-type="appel">+ Appel</button><button class="btn small primary" data-act="new-devis" data-opp="${o.id}">Créer un devis</button>
      <span style="flex:1"></span>
-     ${closed?`<button class="btn small${o.issue==="dormante"?" primary":""}" data-act="reopen" data-id="${o.id}">${o.issue==="dormante"?"Réveiller l’affaire":"Rouvrir"}</button>`:`<button class="btn small ok" data-act="won" data-id="${o.id}">Gagnée</button><button class="btn small bad" data-act="lost" data-id="${o.id}">Perdue</button>`}
+     ${closed?`<button class="btn small${o.issue==="dormante"?" primary":""}" data-act="reopen" data-id="${o.id}"${estVeille(o)?" hidden":""}>${o.issue==="dormante"?"Réveiller l’affaire":"Rouvrir"}</button>`:`<button class="btn small" data-act="veille" data-id="${o.id}">En veille</button><button class="btn small" data-act="aide" data-id="${o.id}">Demander de l’aide</button><button class="btn small ok" data-act="won" data-id="${o.id}">Gagnée</button><button class="btn small bad" data-act="lost" data-id="${o.id}">Perdue</button>`}
      <button class="btn small" data-act="edit-opp" data-id="${o.id}">Modifier</button>
    </div>
-   <div class="seg-tabs" role="tablist" aria-label="Sections de l’opportunité">${[["activites","Activités ("+acts.length+")"],["commentaires","Commentaires"],["devis","Devis ("+dv.length+")"],["historique","Historique"]].map(([k,l])=>`<button type="button" role="tab" id="ot-${k}" aria-controls="op-${k}" aria-selected="${oppSection===k}" data-osec="${k}">${l}</button>`).join("")}</div>
+   <div class="seg-tabs" role="tablist" aria-label="Sections de l’opportunité">${[["plan","Plan d’affaire"+((n=>n?" · à clarifier":" · bien cadré")(planLecture(o).pts.length))],["activites","Activités ("+acts.length+")"],["commentaires","Commentaires"],["devis","Devis ("+dv.length+")"],["historique","Historique"]].map(([k,l])=>`<button type="button" role="tab" id="ot-${k}" aria-controls="op-${k}" aria-selected="${oppSection===k}" data-osec="${k}">${l}</button>`).join("")}</div>
+   <div id="op-plan" role="tabpanel" aria-labelledby="ot-plan" ${oppSection==="plan"?"":"hidden"}>${planAffaireHtml(o)}</div>
    <div id="op-activites" role="tabpanel" aria-labelledby="ot-activites" ${oppSection==="activites"?"":"hidden"}>${todo.length?`<h4>À faire</h4><div class="feed">${todo.map(a=>feedItem(a,{noCompte:true,noOpp:true})).join("")}</div>`:""}${done.length?`<h4>Fait</h4><div class="feed">${done.map(a=>feedItem(a,{noCompte:true,noOpp:true})).join("")}</div>`:""}${acts.length?"":`<p class="hint">Aucune activité sur cette opportunité. Utilisez Tâche, Événement ou Appel ci-dessus.</p>`}</div>
    <div id="op-commentaires" role="tabpanel" aria-labelledby="ot-commentaires" ${oppSection==="commentaires"?"":"hidden"}><div class="skeleton" style="height:40px"></div></div>
    <div id="op-devis" role="tabpanel" aria-labelledby="ot-devis" ${oppSection==="devis"?"":"hidden"}>${dv.length?`<div class="closed-list">${dv.map(x=>`<div class="closed-row"><div><b translate="no">${esc(devisNum(x))}</b><div class="hint">${fmtDate(x.created_at)} · ${mad(x.montant_mad)} MAD HT</div></div><div class="tools"><span class="pill ${DEVIS_PILL[x.statut]||""}">${DEVIS_LABEL[x.statut]}</span><button class="btn small" data-act="edit-devis" data-id="${x.id}">Modifier</button><button class="btn small" data-act="print-devis" data-id="${x.id}">Imprimer</button></div></div>`).join("")}</div>`:`<p class="hint">Aucun devis. « Créer un devis » le rattache à cette opportunité.</p>`}</div>
@@ -2790,11 +3596,11 @@ function openOpp(o){ if(o) ctxCompte=o.compte_id;
   $("#ov").addEventListener("click",e=>{ if(e.target.id==="ov"){ reopenAfter=null; closeModal(); } });
   trapFocus($("#ov .modal"));
   const loaded={};
-  const show=k=>{ oppSection=k; document.querySelectorAll("[data-osec]").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.osec===k))); ["activites","commentaires","devis","historique"].forEach(s=>$("#op-"+s).hidden=s!==k);
+  const show=k=>{ oppSection=k; document.querySelectorAll("[data-osec]").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.osec===k))); ["plan","activites","commentaires","devis","historique"].forEach(s=>$("#op-"+s).hidden=s!==k);
     if(k==="commentaires"&&!loaded.c){ loaded.c=1; loadCommentaires($("#op-commentaires"),o.id); }
     if(k==="historique"&&!loaded.h){ loaded.h=1; loadHistorique($("#op-historique"),"opportunite_id",o.id); } };
   document.querySelectorAll("[data-osec]").forEach(b=>b.addEventListener("click",()=>show(b.dataset.osec)));
-  $(".seg-tabs").addEventListener("keydown",e=>{ if(!["ArrowLeft","ArrowRight"].includes(e.key)) return; const ks=["activites","commentaires","devis","historique"]; const i=(ks.indexOf(oppSection)+(e.key==="ArrowRight"?1:3))%4; show(ks[i]); $("#ot-"+ks[i]).focus(); });
+  $(".seg-tabs").addEventListener("keydown",e=>{ if(!["ArrowLeft","ArrowRight"].includes(e.key)) return; const ks=["plan","activites","commentaires","devis","historique"]; const i=(ks.indexOf(oppSection)+(e.key==="ArrowRight"?1:4))%5; show(ks[i]); $("#ot-"+ks[i]).focus(); });
   show(oppSection);
   // Toute action lancée depuis la fiche y revient ensuite.
   $("#ov .modal").addEventListener("click",e=>{ const t=e.target.closest("[data-act]"); if(t&&!["open-compte","del-act","del-cmt","del-cmt-yes","print-devis"].includes(t.dataset.act)) reopenAfter=()=>openOpp(byId(state.opportunites,o.id)); },true);
