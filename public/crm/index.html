@@ -754,6 +754,48 @@ body.ai-open .ai-fab,body.auth .ai-fab{display:none}
 .org-card.off{opacity:.6}
 .org-seuls{display:flex;flex-wrap:wrap;gap:8px}
 @media (max-width:720px){.org-card{min-width:140px;padding:8px 10px 8px 8px}.org li{padding-left:4px;padding-right:4px}}
+
+/* Plan d'affaire, prochaine étape, veille, aide */
+.pill.vio{color:#5B49D6;background:#EEEBFF;border-color:transparent}
+.nx{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:14px 0 4px;padding:14px 16px;border-radius:18px;border:1px solid var(--line-strong);background:var(--surface,#fff)}
+.nx.ok{border-color:rgba(17,132,91,.25);background:#F2FAF6}
+.nx.warn{border-color:rgba(217,138,0,.35);background:#FFF9EE}
+.nx.veille{border-color:rgba(29,27,38,.12);background:#F3F3F7}
+.nx-main{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1 1 320px}
+.nx-main b{font-size:15px}
+.nx-sub{font-size:13px;color:var(--ink-2)}
+.nx-btns{display:flex;gap:8px;flex-wrap:wrap}
+.plan{display:flex;flex-direction:column;gap:14px;padding-top:6px}
+.plan-mt{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 16px;border-radius:18px;background:#18171F;color:#fff}
+.plan-mt .lab-mono{color:#9997A6}
+.plan-mt .btn{margin-left:auto;background:#fff;color:#18171F;border-color:#fff}
+.plan-score{display:flex;flex-direction:column}
+.plan-score b{font-size:28px;font-weight:600;letter-spacing:-.02em;line-height:1}.plan-score small{font-size:14px;color:#9997A6;font-weight:500}
+.plan-pts{display:flex;flex-wrap:wrap;gap:6px;flex:1 1 280px}
+.pp{font-size:12px;padding:4px 9px;border-radius:999px;background:rgba(255,255,255,.08);color:#B4B2C0}
+.pp.ok{background:rgba(17,132,91,.22);color:#BFEBD7}
+.plan-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.plan-grid section{padding:14px 16px;border-radius:16px;border:1px solid var(--line);min-width:0}
+.plan-grid section:nth-child(2){grid-row:span 2}
+.plan-grid h4{margin:0 0 8px;display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:11px}.plan-grid h4 .linkish{font-family:inherit;text-transform:none;letter-spacing:0;font-size:13px}
+.plan-grid p{margin:0;font-size:14px;line-height:1.45}
+.plan-tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:12px;padding:4px 10px;border-radius:999px;background:#FFF1EE;color:#A3361C}
+.iv-row{display:flex;align-items:center;gap:8px;width:100%;padding:9px 0;border:0;border-top:1px solid var(--line);background:none;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.iv-row:first-of-type{border-top:0}
+.iv-n{flex:1;min-width:0;display:flex;flex-direction:column}.iv-n small{font-size:12px;color:var(--ink-2)}
+.sh-veille{border:1px solid rgba(29,27,38,.12);background:#F3F3F7}
+.sh-org{padding:12px 0;border-top:1px solid var(--line)}
+.sh-org:first-of-type{border-top:0}
+.sh-org-h{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.sh-org .s{font-size:13px;color:var(--ink-2);margin-top:2px}
+.sh-org.up .s{color:var(--warn)}
+.sh-org-b{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.ws-prio.aide .ws-prio-why .r::before{background:#B9AEFF}.ws-prio.aide::before,.ws-prio.aide::after{filter:hue-rotate(250deg)}
+.ws-alert.vio{background:rgba(123,97,255,.22)!important;color:#E7E3FF!important}.ws-alert.vio i{background:#B9AEFF!important}
+.dot.vio{background:#7B61FF}
+.ws-item.sev-aide{border:1px solid rgba(123,97,255,.3)}
+@media (max-width:720px){.plan-grid{grid-template-columns:1fr}.plan-grid section:nth-child(2){grid-row:auto}.plan-mt .btn{margin-left:0;width:100%}.nx-btns .btn{flex:1 1 auto}.sh-org-b .btn{flex:1 1 calc(50% - 6px)}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 </head>
@@ -832,7 +874,7 @@ const ETAPE_LABEL = {Qualification:"Qualification",Proposition:"Proposition",Neg
 const PROB_DEFAUT = {Qualification:20,Proposition:40,Negociation:65,Fermeture:85};
 const proba = o => o.issue==="gagnee"?100:(o.probabilite!=null?+o.probabilite:(PROB_DEFAUT[o.etape]||0));
 const ISSUE_LABEL = {en_cours:"En cours",gagnee:"Gagnée",perdue:"Perdue",dormante:"En sommeil"};
-const issuePill = o => `<span class="pill ${o.issue==="gagnee"?"ok":o.issue==="perdue"?"bad":o.issue==="dormante"?"warn":""}">${ISSUE_LABEL[o.issue]||o.issue}</span>`;
+const issuePill = o => o.issue==="dormante"&&o.veille_jusqu?`<span class="pill">En veille · ${new Date(o.veille_jusqu+"T12:00").toLocaleDateString("fr-FR",{month:"short",year:"numeric"})}</span>`:`<span class="pill ${o.issue==="gagnee"?"ok":o.issue==="perdue"?"bad":o.issue==="dormante"?"warn":""}">${ISSUE_LABEL[o.issue]||o.issue}</span>`;
 const SEGMENTS = {A_clinique:"A · Clinique / médico-esth.",B_cabinet:"B · Cabinet / santé",C_salon:"C · Salon / beauté"};
 const CATEGORIES = {medecin:"Médecin",non_medecin:"Non-médecin"};
 // Spécialités regroupées par ce que les clients achètent (même cible = même segment de reporting)
@@ -904,6 +946,8 @@ function filtrerPour(m){
   const D=new Set(state.devis.map(d=>d.id)); state.devis_lignes=state.devis_lignes.filter(l=>D.has(l.devis_id));
   state.paiements=state.paiements.filter(own);
   state.demandes=(state.demandes||[]).filter(d=>d.destinataire_id===m.id||d.auteur_id===m.id);
+  const O=new Set(state.opportunites.map(o=>o.id)); state.intervenants=(state.intervenants||[]).filter(i=>O.has(i.opportunite_id));
+  state.aides=(state.aides||[]).filter(x=>x.destinataire_id===m.id||x.auteur_id===m.id);
 }
 function renderApercu(){
   let bar=document.getElementById("apercu-bar");
@@ -968,14 +1012,16 @@ async function load(){
       q("opportunites","updated_at",false), qActivites(), q("devis","created_at",false), q("devis_lignes","position",true).then(r=>r.error?{data:[],error:null}:r),
       q("paiements","date_echeance",true).then(r=>r.error?{data:[],error:null}:r),
       sb.from("reglages").select("*").then(r=>r.error?{data:[],error:null}:r),
-      q("demandes","created_at",false).then(r=>r.error?{data:[],error:null}:r)
+      q("demandes","created_at",false).then(r=>r.error?{data:[],error:null}:r),
+      q("affaire_intervenants","created_at",true).then(r=>r.error?{data:[],error:null}:r),
+      q("demandes_aide","created_at",false).then(r=>r.error?{data:[],error:null}:r)
     ]);
     const err = res.find(r=>r.error); if(err) throw err.error;
-    const [equipeTout,comptes,contacts,produits,opportunites,activites,devis,devis_lignes,paiements,reglagesRows,demandes] = res.map(r=>r.data||[]);
+    const [equipeTout,comptes,contacts,produits,opportunites,activites,devis,devis_lignes,paiements,reglagesRows,demandes,intervenants,aides] = res.map(r=>r.data||[]);
     // Les personnes hors CRM (CEO, SAV, livraison…) ne figurent que dans l’organigramme
     const equipe=equipeTout.filter(e=>!e.hors_crm);
     const reglages={}; reglagesRows.forEach(x=>reglages[x.cle]=x.valeur);
-    state = {equipe,organigramme:equipeTout,comptes,contacts,produits,opportunites,activites,devis,devis_lignes,paiements,reglages,demandes};
+    state = {equipe,organigramme:equipeTout,comptes,contacts,produits,opportunites,activites,devis,devis_lignes,paiements,reglages,demandes,intervenants,aides};
     const vrai=equipe.find(e=>e.user_id===currentUser.id)||null;
     if(apercu&&vrai&&["admin","superviseur"].includes(vrai.role)){ const m=equipe.find(e=>e.id===apercu.id); apercu=m||null; if(m) filtrerPour(m); } else apercu=null;
     renderApercu();
@@ -1116,18 +1162,18 @@ function viewPipeline(v){
   const q=strip(pipeFilt.q);
   const match=o=>(!pipeFilt.com||(pipeFilt.com==="moi"?(me&&o.commercial_id===me.id):pipeFilt.com==="none"?!o.commercial_id:o.commercial_id===pipeFilt.com))
     &&(!q||strip([o.titre,o.description,(byId(state.comptes,o.compte_id)||{}).nom].filter(Boolean).join(" ")).includes(q))
-    &&(!pipeFilt.risque||pipeFilt.risque==="dormante"||(r=>r&&(pipeFilt.risque==="bloquee"?r.niveau==="bloquee":!!r.niveau))(risque(o)));
+    &&(!pipeFilt.risque||pipeFilt.risque==="dormante"||(pipeFilt.risque==="organiser"?!!(organisation(o)||{}).aOrganiser:false)||pipeFilt.risque!=="organiser"&&(r=>r&&(pipeFilt.risque==="bloquee"?r.niveau==="bloquee":!!r.niveau))(risque(o)));
   const rk=o=>{ const r=risque(o); return r&&r.niveau==="bloquee"?2:r&&r.niveau?1:0; };
   const vueSommeil=pipeFilt.risque==="dormante", nbSommeil=state.opportunites.filter(o=>o.issue==="dormante").length;
   const open = state.opportunites.filter(o=>o.issue===(vueSommeil?"dormante":"en_cours")&&match(o)).sort((a,b)=>pipeFilt.risque?(rk(b)-rk(a))||((+b.montant_mad||0)-(+a.montant_mad||0)):String(b.updated_at||"").localeCompare(String(a.updated_at||"")));
   const closed = state.opportunites.filter(o=>o.issue==="gagnee"||o.issue==="perdue").slice(0,12);
   const noCompte = !state.comptes.length;
   v.innerHTML = `
-  <div class="section-head"><div><h2>Pipeline commercial</h2><p class="hint">Seuils de risque : ${ETAPES.map(e=>ETAPE_LABEL[e].slice(0,5)+". "+seuils()[e]+" j").join(" · ")}${estPilote()?` · <button class="linkish" data-act="seuils">modifier</button> · <button class="linkish" data-act="sommeil">mise en sommeil</button>`:""}</p>${vueSommeil?`<p class="hint" style="margin:4px 0 0"><b>Affaires en sommeil</b> : sans action depuis longtemps, sorties du pipeline et des prévisions. Ouvre-en une pour la réveiller ; une nouvelle activité la réveille aussi automatiquement.</p>`:""}</div>
+  <div class="section-head"><div><h2>Pipeline commercial</h2><p class="hint">Seuils de risque : ${ETAPES.map(e=>ETAPE_LABEL[e].slice(0,5)+". "+seuils()[e]+" j").join(" · ")}${estPilote()?` · <button class="linkish" data-act="seuils">modifier</button> · <button class="linkish" data-act="sommeil">mise en sommeil</button>`:""}</p>${vueSommeil?`<p class="hint" style="margin:4px 0 0"><b>Affaires en veille ou en sommeil</b>, sorties du pipeline et des prévisions. <b>En veille</b> : mise de côté volontairement, revient toute seule à la date prévue avec son contexte. <b>En sommeil</b> : sans action depuis longtemps. Une activité réalisée réveille l’une comme l’autre.</p>`:""}</div>
     <div class="tools"><button class="btn" data-act="new-compte">+ Compte</button><button class="btn primary" data-act="new-opp" ${noCompte?"disabled title='Ajoutez d’abord un compte'":""}>+ Opportunité</button></div></div>
   ${state.opportunites.length?`<div class="filters" style="margin-bottom:12px"><input id="p-q" type="search" placeholder="Client, opportunité, note…" value="${esc(pipeFilt.q)}" aria-label="Rechercher une opportunité" autocomplete="off" spellcheck="false">
     <select id="p-com" aria-label="Commercial"><option value="">Tous les commerciaux</option><option value="moi" ${pipeFilt.com==="moi"?"selected":""}>Mes opportunités</option><option value="none" ${pipeFilt.com==="none"?"selected":""}>Non assignées</option>${state.equipe.filter(e=>state.opportunites.some(o=>o.commercial_id===e.id)).map(e=>`<option value="${e.id}" ${pipeFilt.com===e.id?"selected":""}>${esc(e.nom)}</option>`).join("")}</select>
-    <select id="p-risque" aria-label="État"><option value="">Toutes les affaires</option><option value="risque" ${pipeFilt.risque==="risque"?"selected":""}>À risque ou bloquées</option><option value="bloquee" ${pipeFilt.risque==="bloquee"?"selected":""}>Bloquées seulement</option>${nbSommeil||vueSommeil?`<option value="dormante" ${vueSommeil?"selected":""}>En sommeil (${nbSommeil})</option>`:""}</select></div>`:""}
+    <select id="p-risque" aria-label="État"><option value="">Toutes les affaires</option><option value="risque" ${pipeFilt.risque==="risque"?"selected":""}>À risque ou bloquées</option><option value="bloquee" ${pipeFilt.risque==="bloquee"?"selected":""}>Bloquées seulement</option>${nbSommeil||vueSommeil?`<option value="dormante" ${vueSommeil?"selected":""}>En veille ou en sommeil (${nbSommeil})</option>`:""}<option value="organiser" ${pipeFilt.risque==="organiser"?"selected":""}>À organiser (sans prochaine étape)</option></select></div>`:""}
   ${noCompte?`<div class="panel empty"><h3>Le CRM est vide pour l’instant</h3><p>Commencez par ajouter une clinique, un cabinet ou un salon, puis créez sa première opportunité.</p><div class="form-actions" style="justify-content:center"><button class="btn primary" data-act="new-compte">Ajouter un premier compte</button></div></div>`:""}
   ${(()=>{ if(!estMobile()) return ""; if(!pipeStage||!ETAPES.includes(pipeStage)) pipeStage=(ETAPES.find(e=>open.some(o=>o.etape===e&&o.montant_mad>0))||ETAPES[0]);
     return `<div class="stage-tabs" role="group" aria-label="Étape">${ETAPES.map(e=>{ const it=open.filter(o=>o.etape===e), bl=it.filter(o=>(risque(o)||{}).niveau==="bloquee").length; return `<button class="chip" data-act="pipe-stage" data-v="${e}" aria-pressed="${pipeStage===e}">${ETAPE_LABEL[e]}<span class="n">${it.length}</span>${bl?`<span class="pill bad" style="margin-left:2px">${bl}</span>`:""}</button>`; }).join("")}</div>`; })()}
@@ -2013,6 +2059,19 @@ document.addEventListener("click",async e=>{
   if(act==="del-cmt") return confirmInline(t,"Supprimer ce commentaire ?","del-cmt-yes",id);
   if(act==="del-cmt-yes"){ t.disabled=true; const box=t.closest("#op-commentaires"); const {error}=await sb.from("commentaires").delete().eq("id",id); if(error) toast(errorCopy(error).join(" — ")); else toast("Commentaire supprimé"); if(box&&box._reload) box._reload(); return; }
   if(act==="open-opp") return openOpp(byId(state.opportunites,id));
+  if(act==="plan-edit"){ const o=byId(state.opportunites,id); if(o) formPlan(o); return; }
+  if(act==="iv-add"){ const o=byId(state.opportunites,id); if(o) formIntervenant(o); return; }
+  if(act==="iv-edit"){ const i=(state.intervenants||[]).find(x=>x.id===id), o=i&&byId(state.opportunites,i.opportunite_id); if(o) formIntervenant(o,i); return; }
+  if(act==="iv-del"){ const i=(state.intervenants||[]).find(x=>x.id===id); if(!i) return; if(i&&!reopenAfter) reopenAfter=()=>openOpp(byId(state.opportunites,i.opportunite_id)); t.disabled=true; return write(()=>sb.from("affaire_intervenants").delete().eq("id",id),"Intervenant retiré"); }
+  if(act==="etape"){ const o=byId(state.opportunites,id); if(o) formEtape(o); return; }
+  if(act==="expliquer"){ const o=byId(state.opportunites,id); if(o) formExpliquer(o); return; }
+  if(act==="veille"){ const o=byId(state.opportunites,id); if(o) formVeille(o); return; }
+  if(act==="veille-reactiver"){ t.disabled=true; reopenAfter=()=>{ const o=byId(state.opportunites,id); if(o) formEtape(o); }; return write(upd("opportunites",id,{issue:"en_cours",veille_reactivee_le:new Date().toISOString()}),"Affaire réactivée"); }
+  if(act==="aide"){ const o=byId(state.opportunites,id); if(o) formAide(o); return; }
+  if(act==="aide-repondre"){ const x=(state.aides||[]).find(y=>y.id===id); if(x){ closeModal(true); formRepondreAide(x); } return; }
+  if(act==="aide-point"){ const x=(state.aides||[]).find(y=>y.id===id); if(x){ closeModal(true); formPointAide(x); } return; }
+  if(act==="aide-clore"){ t.disabled=true; return write(upd("demandes_aide",id,{statut:"resolue",resolue_le:new Date().toISOString()}),"Demande close"); }
+  if(act==="pipe-organiser"){ pipeFilt={com:"",q:"",risque:"organiser"}; colShown={}; location.hash="pipeline"; tab="pipeline"; return render(); }
   if(act==="transfer") return formTransfert(byId(state.comptes,id));
   if(act==="new-membre") return formMembre();
   if(act==="edit-membre") return formMembre(byId(orgTous(),id));
@@ -2256,7 +2315,7 @@ function accueilSimple(v,S,dv,mois,prenom,dateTxt){
   const file=[...new Map([...S.retard.filter(a=>a.prioritaire),...S.jour,...S.retard.filter(a=>!a.prioritaire),...S.statuer].map(a=>[a.id,a])).values()];
   const [premier,...reste]=file, suite=reste.slice(0,3).map(a=>shItem(a,S)), p=premier?shItem(premier,S):null;
   const dmd=(state.demandes||[]).filter(d=>me&&d.destinataire_id===me.id&&d.statut==="en_attente");
-  const n=file.length+dmd.length;
+  const AF=accueilAffaires(), n=file.length+dmd.length+AF.n;
   const chips=[
     S.retard.length?`<button class="btn" data-act="today-full" data-sec="retard">${S.retard.length} en retard ›</button>`:"",
     S.statuer.length?`<button class="btn" data-act="today-full" data-sec="statuer">${S.statuer.length} à statuer ›</button>`:"",
@@ -2277,6 +2336,7 @@ function accueilSimple(v,S,dv,mois,prenom,dateTxt){
       ${p.pourquoi?`<div class="sh-why">${esc(p.pourquoi)}</div>`:""}
       <div class="sh-btns">${p.principal}${p.second}${p.etat!=="statuer"?`<button class="btn big" data-act="act-reporter" data-id="${p.a.id}">Plus tard</button>`:""}</div>
     </section>`:`<section class="sh-card sh-done"><div class="sh-title" style="margin:0">Tout est à jour.</div><p class="hint">Planifie ta prochaine action pour ne rien laisser filer.</p><div class="sh-btns" style="justify-content:center"><button class="btn primary big" data-act="planifier">+ Planifier</button></div></section>`}
+    ${AF.html}
     ${suite.length?`<section aria-label="Ensuite"><div class="sh-lab">Ensuite</div>
       ${suite.map(x=>`<div class="sh-row" data-aid="${x.a.id}"><div style="flex:1;min-width:0"><div class="t"><button class="linkish" data-act="act-detail" data-id="${x.a.id}">${esc(x.titre)}</button></div><div class="s">${esc(x.quand)}</div></div>${x.principal.replace(" big","")}</div>`).join("")}
       ${reste.length>3?`<p class="hint" style="margin:6px 0 0">+ ${reste.length-3} autre${reste.length-3>1?"s":""}</p>`:""}</section>`:""}
@@ -2306,12 +2366,19 @@ function itemsATraiter(p){
   const enAttente=new Set(); (state.demandes||[]).forEach(d=>{ if(d.statut==="en_attente"&&me&&d.auteur_id===me.id){ if(d.opportunite_id) enAttente.add("o:"+d.opportunite_id); if(d.compte_id) enAttente.add("c:"+d.compte_id); if(d.activite_id) enAttente.add("a:"+d.activite_id); } });
   const prochaine=o=>state.activites.some(a=>a.statut==="a_faire"&&!estImporte(a)&&(a.opportunite_id===o.id||(!a.opportunite_id&&a.compte_id===o.compte_id))&&new Date(a.date_activite).getTime()>=now);
   const L=[];
-  state.opportunites.forEach(o=>{ if(o.issue!=="en_cours"||!dans(o.commercial_id)) return; const r=risque(o); if(!r||!r.niveau||enAttente.has("o:"+o.id)) return;
-    const j=Math.floor((now-derniereActivite(o))/864e5), raisons=[`${ETAPE_LABEL[o.etape]||o.etape} ${r.niveau==="bloquee"?"bloquée":"qui ralentit"} depuis ${r.j} jours`];
-    if(j>=7) raisons.push(`Aucun mouvement depuis ${j} jours`); if(!prochaine(o)) raisons.push("Aucune prochaine action planifiée");
-    L.push({k:"o:"+o.id,sev:r.niveau==="bloquee"?"critique":"risque",com:o.commercial_id,cat:"Pipeline",titre:(byId(state.comptes,o.compte_id)||{}).nom||o.titre,sous:o.titre,etape:ETAPE_LABEL[o.etape]||o.etape,jours:r.j,valeur:+o.montant_mad||0,raisons,o}); });
+  // Demandes d'aide adressées à moi : en tête de file
+  (state.aides||[]).forEach(x=>{ if(x.statut!=="en_attente"||!dans(x.auteur_id)||!me||(x.destinataire_id!==me.id&&me.role!=="admin")) return; const {o,client,bloc}=aideResume(x);
+    L.push({k:"h:"+x.id,sev:"aide",com:x.auteur_id,cat:"Demande d’aide",titre:client,sous:o?o.titre:"",etape:o?ETAPE_LABEL[o.etape]||o.etape:"",valeur:o?+o.montant_mad||0:0,
+      raisons:[bloc?"Bloque sur : "+bloc:"Demande de l’aide",x.message?"« "+x.message+" »":"",x.attente?"Attend "+(ATTENTES[x.attente]||"").toLowerCase():""].filter(Boolean),chips:[...(x.blocages||[]).map(b=>BLOCAGES[b]||b)],h:x,o}); });
+  // Affaires : 7 jours sans activité significative + aucune prochaine étape + aucune explication (les affaires en veille n'y entrent pas)
+  state.opportunites.forEach(o=>{ if(o.issue!=="en_cours"||!dans(o.commercial_id)||enAttente.has("o:"+o.id)) return; const g=organisation(o); if(!g||!g.remonte) return; const r=risque(o);
+    const raisons=[g.j==null?"Aucune activité significative enregistrée":`Aucune activité significative depuis ${g.j} jours`,"Aucune prochaine étape planifiée","Aucune explication du commercial"];
+    if(r&&r.niveau) raisons.push(`${ETAPE_LABEL[o.etape]||o.etape} depuis ${r.j} jours`);
+    L.push({k:"o:"+o.id,sev:(r&&r.niveau==="bloquee")||(+o.montant_mad||0)>=200000?"critique":"risque",com:o.commercial_id,cat:"Pipeline",titre:(byId(state.comptes,o.compte_id)||{}).nom||o.titre,sous:o.titre,etape:ETAPE_LABEL[o.etape]||o.etape,jours:g.j,
+      chips:[ETAPE_LABEL[o.etape]||o.etape,g.j==null?"Jamais travaillée":`Sans activité depuis ${g.j} j`,o.titre],valeur:+o.montant_mad||0,raisons,o}); });
   state.devis.forEach(d=>{ if(d.statut!=="envoye"||!dans(d.commercial_id)) return; const j=daysSince(d.date_envoi||d.updated_at||d.created_at); if(j<7) return;
     if(enAttente.has("c:"+d.compte_id)||(d.opportunite_id&&(enAttente.has("o:"+d.opportunite_id)||L.some(x=>x.o&&x.o.id===d.opportunite_id)))) return;
+    const od=byId(state.opportunites,d.opportunite_id); if(od&&(od.issue!=="en_cours"||(organisation(od)||{}).suite)) return;
     const c=byId(state.comptes,d.compte_id); L.push({k:"d:"+d.id,sev:"risque",com:d.commercial_id,cat:"Relance",titre:c?c.nom:devisNum(d),sous:devisNum(d),valeur:+d.montant_mad||0,raisons:[`Devis sans réponse depuis ${j} jours`],d}); });
   const retards=new Map();
   state.activites.forEach(a=>{ if(a.statut!=="a_faire"||estImporte(a)||estEvenement(a)) return; const r=responsable(a); if(!dans(r)) return; const e=etatAction(a,now);
@@ -2319,13 +2386,14 @@ function itemsATraiter(p){
     else if(e==="en_retard"){ if(!retards.has(r)) retards.set(r,[]); retards.get(r).push(a); } });
   retards.forEach((as,r)=>{ if(as.length<2||enAttente.has("r:"+r)) return; const plusVieille=as.reduce((m,a)=>new Date(a.date_activite)<new Date(m.date_activite)?a:m);
     L.push({k:"r:"+r,sev:"risque",com:r,cat:"Retards",titre:as.length+" actions en retard",sous:as.slice(0,2).map(a=>(byId(state.comptes,a.compte_id)||{}).nom||a.label||"").filter(Boolean).join(" · "),valeur:0,raisons:["La plus ancienne date du "+fmtDate(plusVieille.date_activite)],retards:as}); });
-  const rang={critique:0,risque:1,statuer:2};
+  const rang={aide:-1,critique:0,risque:1,statuer:2};
   return L.sort((x,y)=>rang[x.sev]-rang[y.sev]||y.valeur-x.valeur);
 }
-const SEV={critique:["Critique","bad"],risque:["À risque","warn"],statuer:["À statuer",""]};
+const SEV={aide:["Demande d’aide","vio"],critique:["Critique","bad"],risque:["À risque","warn"],statuer:["À statuer",""]};
 function wsActions(x,primaire){
   const b=(cls,act,lib,attrs)=>`<button class="btn ${cls}" data-act="${act}" ${attrs||""}>${lib}</button>`, P=primaire?"primary":"primary";
   const dem=(lib,extra)=>b("","demande",lib,`data-com="${x.com||""}" ${extra||""}`);
+  if(x.h) return b(P,"aide-repondre","Répondre",`data-id="${x.h.id}"`)+b("","aide-point","Planifier un point",`data-id="${x.h.id}"`)+(x.o?b("","open-opp","Voir l’affaire",`data-id="${x.o.id}"`):"");
   if(x.o) return b(P,"open-opp","Voir l’affaire",`data-id="${x.o.id}"`)+dem("Demander une mise à jour",`data-opp="${x.o.id}" data-compte="${x.o.compte_id}"`);
   if(x.d) return b(P,"relance-ia","Relancer",`data-compte="${x.d.compte_id}" data-devis="${x.d.id}"`)+dem("Demander",`data-compte="${x.d.compte_id}" data-opp="${x.d.opportunite_id||""}"`);
   if(x.a) return (peutEffectuer(x.a)?b(P,"act-effectuer","Effectué",`data-id="${x.a.id}"`):dem("Demander à "+esc(prenomDe(x.com)),`data-aid="${x.a.id}" data-compte="${x.a.compte_id||""}" data-opp="${x.a.opportunite_id||""}" data-type="validation"`))+b("","act-reporter","Reporté",`data-id="${x.a.id}"`)+b("","act-statuer","Annulé",`data-id="${x.a.id}" data-v="annulee"`)+b("","act-statuer","Non effectué",`data-id="${x.a.id}" data-v="non_effectuee"`);
@@ -2377,6 +2445,7 @@ function viewWorkspace(v){
   // En attente (mes demandes) et résolues récemment
   const dem=(state.demandes||[]).filter(d=>me&&d.auteur_id===me.id&&(d.statut==="en_attente"||(d.statut==="resolue"&&d.resolue_le&&now-new Date(d.resolue_le).getTime()<2*864e5)))
     .sort((a,b)=>(a.statut==="en_attente"?0:1)-(b.statut==="en_attente"?0:1)||new Date(b.created_at)-new Date(a.created_at));
+  const aidesAtt=(state.aides||[]).filter(x=>me&&x.destinataire_id===me.id&&(x.statut==="repondue"||(x.statut==="resolue"&&x.resolue_le&&now-new Date(x.resolue_le).getTime()<2*864e5)));
   const ago2=d=>{ const s=(now-new Date(d).getTime())/1000; return s<3600?`il y a ${Math.max(1,Math.round(s/60))} min`:s<86400?`il y a ${Math.round(s/3600)} h`:s<172800?"hier":`il y a ${Math.floor(s/86400)} j`; };
   // Hygiène
   const prochaine=o=>state.activites.some(a=>a.statut==="a_faire"&&!estImporte(a)&&(a.opportunite_id===o.id||(!a.opportunite_id&&a.compte_id===o.compte_id))&&new Date(a.date_activite).getTime()>=now);
@@ -2400,7 +2469,7 @@ function viewWorkspace(v){
   const devisP=state.devis.filter(d=>dans(d.commercial_id)&&d.statut!=="brouillon"&&dansP(d.date_envoi)).reduce((s,d)=>s+(+d.montant_mad||0),0);
   const nego=opps.filter(o=>o.etape==="Negociation"), negoVal=nego.reduce((s,o)=>s+(+o.montant_mad||0),0), negoDort=nego.filter(o=>now-derniereActivite(o)>14*864e5).reduce((s,o)=>s+(+o.montant_mad||0),0);
   const PER={jour:"Aujourd’hui",semaine:"Cette semaine",mois:"Ce mois-ci"}[wsPeriode];
-  const filtres=[["","Tout",L.length],["critique","Critique",L.filter(x=>x.sev==="critique").length],["risque","À risque",L.filter(x=>x.sev==="risque").length],["statuer","À statuer",L.filter(x=>x.sev==="statuer").length]];
+  const filtres=[["","Tout",L.length],...(L.some(x=>x.sev==="aide")?[["aide","Demandes d’aide",L.filter(x=>x.sev==="aide").length]]:[]),["critique","Critique",L.filter(x=>x.sev==="critique").length],["risque","À risque",L.filter(x=>x.sev==="risque").length],["statuer","À statuer",L.filter(x=>x.sev==="statuer").length]];
   const fileF=file.filter(x=>!wsFiltre||x.sev===wsFiltre), montre=wsTout?fileF:fileF.slice(0,6);
   const big=n=>`<b>${n>=1e4?madShort(n):mad(n)}</b>`;
   v.innerHTML=`<div class="ws">
@@ -2411,12 +2480,12 @@ function viewWorkspace(v){
       <div class="seg" role="group" aria-label="Période">${[["jour","Aujourd’hui"],["semaine","Semaine"],["mois","Mois"]].map(([k,l])=>`<button data-act="ws-periode" data-v="${k}" aria-pressed="${wsPeriode===k}">${l}</button>`).join("")}</div></div>
   </section>
   <div class="ws-two">
-    ${prio?(()=>{ const e=byId(state.equipe,prio.com); return `<section class="ws-prio" aria-label="Priorité">
-      <div class="ws-prio-top"><span class="lab-mono">Priorité</span><span class="ws-alert"><i></i>${prio.sev==="critique"?"Intervention recommandée":"À surveiller de près"}</span></div>
-      <div class="ws-prio-main"><div><div class="ws-prio-t">${esc(prio.titre)}</div><div class="ws-chips">${prio.etape?`<span>${esc(prio.etape)}</span>`:""}${prio.jours?`<span class="r">${prio.sev==="critique"?"Bloquée":"Ralentit"} depuis ${prio.jours} jours</span>`:""}${prio.sous&&prio.sous!==prio.titre?`<span>${esc(prio.sous)}</span>`:""}</div></div>
+    ${prio?(()=>{ const e=byId(state.equipe,prio.com); return `<section class="ws-prio${prio.sev==="aide"?" aide":""}" aria-label="Priorité">
+      <div class="ws-prio-top"><span class="lab-mono">Priorité</span><span class="ws-alert${prio.sev==="aide"?" vio":""}"><i></i>${prio.sev==="aide"?esc(prenomDe(prio.com))+" demande de l’aide":prio.sev==="critique"?"Intervention recommandée":"À surveiller de près"}</span></div>
+      <div class="ws-prio-main"><div><div class="ws-prio-t">${esc(prio.titre)}</div><div class="ws-chips">${(prio.chips||[prio.etape,prio.sous!==prio.titre&&prio.sous]).filter(Boolean).map((c,i)=>`<span${i===1&&prio.sev!=="aide"?' class="r"':""}>${esc(c)}</span>`).join("")}</div></div>
         <div class="ws-prio-v">${mad(prio.valeur)}<small>MAD</small></div></div>
       <div class="ws-prio-why"><div class="ws-who">${avatar(e,44)}<div><small>${e&&e.role==="commercial"?"Commercial·e":"Responsable"}</small><b>${esc(e?e.nom:"Non attribuée")}</b></div></div>
-        <div><small>Pourquoi elle remonte</small>${prio.raisons.map(r=>`<div class="r">${esc(r)}</div>`).join("")}</div></div>
+        <div><small>${prio.sev==="aide"?"Sa demande":"Pourquoi elle remonte"}</small>${prio.raisons.map(r=>`<div class="r">${esc(r)}</div>`).join("")}</div></div>
       <div class="ws-acts">${wsActions(prio,true).replace(/class="btn primary"/,'class="btn ws-white"').replace(/class="btn "/g,'class="btn ws-ghost"')}</div></section>`; })()
     :`<section class="ws-prio calme"><span class="lab-mono">Priorité</span><div class="ws-prio-t">Aucune affaire en danger</div><p>Les affaires de l’équipe avancent dans les délais. Jette un œil aux actions à statuer ci-dessous.</p></section>`}
     <section class="ws-card" aria-label="Mon équipe"><div class="ws-card-h"><h3>Mon équipe</h3><span class="hint">${coms.length} commercia${coms.length>1?"ux":"l"}${p?"":" · toute l’équipe"}</span></div>
@@ -2428,11 +2497,14 @@ function viewWorkspace(v){
     ${montre.length?`<div class="ws-items">${montre.map(wsCarte).join("")}</div>`:`<p class="hint">Rien ${wsFiltre?"dans ce filtre":"d’autre"} à traiter.</p>`}
     ${fileF.length>6?`<p style="margin:12px 0 0"><button class="linkish" data-act="ws-tout">${wsTout?"Réduire":"Voir les "+(fileF.length-6)+" autres"}</button></p>`:""}</section>
   <div class="ws-two">
-    <section class="ws-card" aria-label="En attente"><div class="ws-card-h"><div><h3>En attente</h3><span class="mono hint">${dem.filter(d=>d.statut==="en_attente").length}</span></div><span class="ws-flow">À traiter → Action prise → <b>En attente</b> → Résolu</span></div>
+    <section class="ws-card" aria-label="En attente"><div class="ws-card-h"><div><h3>En attente</h3><span class="mono hint">${dem.filter(d=>d.statut==="en_attente").length+aidesAtt.filter(x=>x.statut==="repondue").length}</span></div><span class="ws-flow">À traiter → Action prise → <b>En attente</b> → Résolu</span></div>
+      ${aidesAtt.map(x=>{ const e=byId(state.equipe,x.auteur_id), {o,client}=aideResume(x), ok=x.statut==="resolue";
+        return `<div class="ws-wait">${avatar(e,38)}<div class="ws-m-txt"><b>${esc(client)}${o?` <span class="hint">· ${esc(o.titre)}</span>`:""}</b><small>Demande d’aide · ${ok?"close "+ago2(x.resolue_le):"tu as répondu "+ago2(x.repondue_le||x.created_at)}${x.reponse?" · « "+esc(x.reponse)+" »":""}</small></div>
+          <span class="pill ${ok?"ok":""}">${ok?"Résolu":"En attente de "+esc(prenomDe(x.auteur_id))}</span></div>`; }).join("")}
       ${dem.length?dem.map(d=>{ const e=byId(state.equipe,d.destinataire_id), o=byId(state.opportunites,d.opportunite_id), c=byId(state.comptes,d.compte_id||(o&&o.compte_id)); const ok=d.statut==="resolue";
         return `<div class="ws-wait">${avatar(e,38)}<div class="ws-m-txt"><b>${esc((c&&c.nom)||(o&&o.titre)||"Demande")}${o&&c?` <span class="hint">· ${esc(o.titre)}</span>`:""}</b><small>${ok?esc(d.reponse||"Résolu")+" · "+ago2(d.resolue_le):(d.type==="validation"?"Validation":"Mise à jour")+" demandée "+ago2(d.created_at)}${d.message?" · « "+esc(d.message)+" »":""}</small></div>
           <span class="pill ${ok?"ok":""}">${ok?"Résolu":"En attente de "+esc(prenomDe(d.destinataire_id))}</span>${ok?"":`<button class="btn small" data-act="demande-clore" data-id="${d.id}">Clore</button>`}</div>`; }).join("")
-      :`<p class="hint">Rien en attente. Quand tu demandes une mise à jour à un commercial, elle s’affiche ici jusqu’à sa réponse.</p>`}</section>
+      :aidesAtt.length?"":`<p class="hint">Rien en attente. Quand tu demandes une mise à jour à un commercial, elle s’affiche ici jusqu’à sa réponse.</p>`}</section>
     <section class="ws-card" aria-label="Hygiène du pipeline"><div class="ws-card-h"><h3>Hygiène du pipeline</h3></div>
       <div class="ws-hyg">${[["sans","Affaires sans prochaine action",H.sans.length],["inactives","Inactives depuis +14 j",H.inactives.length],["devis","Devis à relancer",H.devis.length],["bloq30","Bloquées depuis +30 j",H.bloq30.length]].map(([k,l,n])=>`<button class="ws-h${k==="bloq30"&&n?" bad":""}" data-act="ws-hyg" data-v="${k}" ${n?"":"disabled"}><b>${n}</b><span>${l}</span><i aria-hidden="true">↗</i></button>`).join("")}</div></section>
   </div>
@@ -3211,7 +3283,236 @@ async function loadCommentaires(el, oppId){
 }
 
 /* ---- Fiche opportunité ---- */
-let oppSection="activites";
+/* ---- Plan d'affaire · En veille · Demander de l'aide ----
+   Logique « commercial d'abord » : une affaire sans prochaine étape est d'abord signalée au commercial (planifier, expliquer,
+   mettre en veille, demander de l'aide). Elle ne remonte au superviseur qu'après 7 jours sans activité significative,
+   sans prochaine étape et sans explication valable. Les affaires reprises de l'ancien CRM n'entrent dans cette règle
+   qu'une fois travaillées dans le nouveau. */
+const OBJECTIONS={prix:"Prix",financement:"Financement",roi:"Rentabilité / ROI",technique:"Technique / clinique",associe:"Accord d’un associé",timing:"Timing",concurrence:"Concurrence",confiance:"Confiance / marque",autre:"Autre"};
+const FINANCEMENTS={comptant:"Comptant",credit_bancaire:"Crédit bancaire",leasing:"Leasing",echelonne:"Paiement échelonné",a_definir:"À définir"};
+const ROLES_ACHAT={decideur:"Décideur",co_decideur:"Co-décideur",influenceur:"Influenceur",financier:"Financier / paiement",utilisateur:"Utilisateur",prescripteur:"Prescripteur"};
+const ACCES={identifie:"Identifié",contacte:"Contacté",rencontre:"Rencontré"};
+const VEILLE_RAISONS={projet_futur:"Projet futur",budget:"Budget",financement:"Financement",ouverture_centre:"Ouverture du centre",timing_perso:"Moment personnel",attente_associe:"Attend son associé",autre:"Autre"};
+const BLOCAGES={prix:"Prix",negociation:"Négociation",financement:"Financement",technique:"Produit / technique",disponibilite:"Disponibilité",decideur:"Décideur",concurrence:"Concurrence",autre:"Autre"};
+const ATTENTES={conseil:"Un conseil",point:"Un point ensemble",accompagnement:"Que tu viennes au RDV",validation:"Une validation"};
+const ETAPES_CONV=[["demo","Démo","demo"],["proposition","Envoyer la proposition","tache"],["simulation","Simulation de financement","tache"],["rappel","Rappeler","appel"],["decideur","Rencontrer le décideur","rdv"],["rdv","Nouveau RDV","rdv"],["visite","Visite","visite"],["autre","Autre","tache"]];
+const ACT_SIGNIF=["appel","visite","demo","email","whatsapp","formation","rdv","autre"];
+const ESCALADE_JOURS=7;
+const estVeille=o=>!!o&&o.issue==="dormante"&&!!o.veille_jusqu;
+const moisTxt=d=>{ const x=new Date(d+"T12:00"); return x.toLocaleDateString("fr-FR",{month:"long",year:"numeric"}); };
+const liste=(v,allowed)=>String(v||"").split(",").filter(x=>allowed.includes(x));
+const explicationValide=o=>!!(o&&o.explication&&o.explication_jusqu&&o.explication_jusqu>=localISO());
+const suiviCRM=o=>!o.import_ref||!!(o.plan_maj_le||o.explication_le||o.veille_le)||state.activites.some(a=>a.opportunite_id===o.id&&!estImporte(a));
+function prochaineEtape(o){ const t0=startOfDay().getTime();
+  return state.activites.filter(a=>a.statut==="a_faire"&&!estImporte(a)&&(a.opportunite_id===o.id||(!a.opportunite_id&&a.compte_id&&a.compte_id===o.compte_id))&&new Date(a.date_activite).getTime()>=t0)
+    .sort((a,b)=>(b.opportunite_id===o.id)-(a.opportunite_id===o.id)||new Date(a.date_activite)-new Date(b.date_activite))[0]||null; }
+function derniereSignif(o){ let t=0; const plus=d=>{ if(d){ const x=new Date(d).getTime(); if(x>t) t=x; } };
+  state.activites.forEach(a=>{ if(a.opportunite_id!==o.id) return; if(a.statut==="fait"&&ACT_SIGNIF.includes(a.type)) plus(a.date_activite); if(o.import_ref&&!estImporte(a)) plus(a.created_at); });
+  plus(o.veille_reactivee_le); plus(o.import_ref?(o.plan_maj_le||o.explication_le||o.veille_le):o.created_at);
+  return t||null; }
+// État d'organisation d'une affaire en cours : à organiser (côté commercial) puis remontée (côté superviseur)
+function organisation(o){
+  if(!o||o.issue!=="en_cours") return null;
+  const suite=prochaineEtape(o), expl=explicationValide(o), suivi=suiviCRM(o), last=derniereSignif(o), j=last?Math.floor((Date.now()-last)/864e5):null;
+  const aOrganiser=suivi&&!suite&&!expl, remonte=aOrganiser&&(j==null||j>=ESCALADE_JOURS);
+  return {suite,expl,suivi,j,aOrganiser,remonte,restant:aOrganiser&&j!=null?Math.max(0,ESCALADE_JOURS-j):0};
+}
+function planMaitrise(o){
+  const iv=(state.intervenants||[]).filter(i=>i.opportunite_id===o.id), dec=iv.filter(i=>i.role==="decideur"||i.role==="co_decideur"), s=prochaineEtape(o);
+  const pts=[["Besoin",!!(o.besoin||o.motivation)],["Décideur identifié",dec.length>0],["Décideur rencontré",dec.some(i=>i.acces==="rencontre")],["Objections",(o.objections||[]).length>0||!!o.objections_note],["Financement",!!o.financement],["Timing de décision",!!(o.date_cloture_prevue||o.decision_note)],["Étape convenue",!!(s&&s.convenue&&s.opportunite_id===o.id)]];
+  return {pts,n:pts.filter(x=>x[1]).length,iv};
+}
+function destinataireAide(){
+  const ok=x=>x&&x.actif&&!x.hors_crm&&!x.parti_le&&["superviseur","admin"].includes(x.role)&&(!me||x.id!==me.id);
+  let x=me&&byId(state.organigramme||state.equipe,me.responsable_id), n=0;
+  while(x&&n++<6){ if(ok(x)) return x; x=byId(state.organigramme||state.equipe,x.responsable_id); }
+  return state.equipe.find(e=>ok(e)&&e.role==="superviseur")||state.equipe.find(ok)||null;
+}
+// Chips (choix simple ou multiple) pour les formulaires
+function chipsF(name,label,entries,sel,multi){ const S=new Set([].concat(sel||[]).filter(Boolean));
+  return `<div class="field" style="grid-column:1/-1"><span class="lab-mono" id="cl-${name}">${label}</span><div class="chips" role="group" aria-labelledby="cl-${name}" data-chipsx="${name}"${multi?' data-multi="1"':""}>${entries.map(([k,l])=>`<button type="button" class="chip" data-v="${esc(k)}" aria-pressed="${S.has(k)}">${esc(l)}</button>`).join("")}</div><input type="hidden" name="${name}" value="${esc([...S].join(","))}"></div>`; }
+function wireChipsX(){ const f=$("#mform"); if(!f) return; f.querySelectorAll("[data-chipsx]").forEach(g=>g.addEventListener("click",e=>{ const b=e.target.closest(".chip"); if(!b) return;
+  if(g.dataset.multi) b.setAttribute("aria-pressed",String(b.getAttribute("aria-pressed")!=="true")); else g.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));
+  f.querySelector(`input[name="${g.dataset.chipsx}"]`).value=[...g.querySelectorAll('.chip[aria-pressed="true"]')].map(x=>x.dataset.v).join(","); dirty=true; })); }
+const nomClient=o=>((byId(state.comptes,o&&o.compte_id)||{}).nom)||(o&&o.titre)||"";
+
+function formPlan(o){
+  const conc=[...new Set(state.opportunites.flatMap(x=>x.concurrents||[]))].sort((a,b)=>a.localeCompare(b,"fr"));
+  const h=`<div class="form-grid">
+   ${fld("pl-besoin","Besoin (clinique ou business)",`<textarea id="pl-besoin" name="besoin" maxlength="1000" placeholder="Ex. développer l’épilation laser, remplacer une machine vieillissante…">${esc(o.besoin||"")}</textarea>`,true)}
+   ${fld("pl-motiv","Motivation",`<input id="pl-motiv" name="motivation" maxlength="1000" value="${esc(o.motivation||"")}" placeholder="Ex. ouvre un 2ᵉ centre en janvier">`,true)}
+   ${chipsF("objections","Objections",Object.entries(OBJECTIONS),o.objections||[],true)}
+   ${fld("pl-objn","Détail des objections",`<input id="pl-objn" name="objections_note" maxlength="1000" value="${esc(o.objections_note||"")}" placeholder="Ex. trouve l’investissement initial élevé">`,true)}
+   ${fld("pl-conc","Concurrence (séparer par des virgules)",`<input id="pl-conc" name="concurrents" list="dl-conc" maxlength="300" autocomplete="off" value="${esc((o.concurrents||[]).join(", "))}" placeholder="Ex. Candela, Alma"><datalist id="dl-conc">${conc.map(x=>`<option value="${esc(x)}">`).join("")}</datalist>`,true)}
+   ${fld("pl-fin","Financement",`<select id="pl-fin" name="financement">${opt(Object.entries(FINANCEMENTS),o.financement||"","Pas encore abordé")}</select>`)}
+   ${fld("pl-dec","Décision attendue",`<input id="pl-dec" name="date_cloture_prevue" type="date" value="${esc(o.date_cloture_prevue||"")}">`)}
+   ${fld("pl-decn","De quoi dépend la décision",`<input id="pl-decn" name="decision_note" maxlength="500" value="${esc(o.decision_note||"")}" placeholder="Ex. accord de la banque, avis de l’associé">`,true)}
+   ${fld("pl-bc","Business case",`<textarea id="pl-bc" name="business_case" maxlength="2000" placeholder="Ex. séance visée 600 MAD, 8 séances par jour, retour sur investissement en 14 mois">${esc(o.business_case||"")}</textarea>`,true)}
+  </div><p class="hint">Remplis ce que tu sais, tout est facultatif. Les décideurs et la prochaine étape se gèrent directement depuis l’affaire.</p>`;
+  const submit=async f=>write(upd("opportunites",o.id,{besoin:sTxt(f.besoin),motivation:sTxt(f.motivation),objections:liste(f.objections,Object.keys(OBJECTIONS)),objections_note:sTxt(f.objections_note),
+    concurrents:[...new Set(String(f.concurrents||"").split(",").map(x=>x.trim()).filter(Boolean))].slice(0,10).map(x=>x.slice(0,60)),financement:sEnum(f.financement,Object.keys(FINANCEMENTS)),
+    date_cloture_prevue:sDate(f.date_cloture_prevue),decision_note:sTxt(f.decision_note),business_case:sTxt(f.business_case),plan_maj_le:new Date().toISOString()}),"Plan d’affaire mis à jour");
+  modal("Plan d’affaire · "+nomClient(o),h,submit,"Enregistrer"); wireChipsX();
+}
+function formIntervenant(o,i){
+  i=i||{}; const contacts=state.contacts.filter(c=>c.compte_id===o.compte_id), nomC=c=>[c.prenom,c.nom].filter(Boolean).join(" ");
+  const h=`<div class="form-grid">
+   ${fld("iv-nom","Nom",`<input id="iv-nom" name="nom" required maxlength="120" list="dl-iv" autocomplete="off" value="${esc(i.nom||"")}" placeholder="Ex. Dr Amrani"><datalist id="dl-iv">${contacts.map(c=>`<option value="${esc(nomC(c))}">`).join("")}</datalist>`)}
+   ${fld("iv-fct","Fonction",`<input id="iv-fct" name="fonction" maxlength="120" value="${esc(i.fonction||"")}" placeholder="Ex. associé, gérant, responsable administratif">`)}
+   ${chipsF("role","Rôle dans la décision",Object.entries(ROLES_ACHAT),i.role||"decideur")}
+   ${chipsF("acces","Accès",Object.entries(ACCES),i.acces||"identifie")}
+   ${fld("iv-notes","À savoir",`<input id="iv-notes" name="notes" maxlength="1000" value="${esc(i.notes||"")}" placeholder="Ex. veut voir la machine avant de s’engager">`,true)}
+  </div>${i.id?`<p style="margin:0"><button type="button" class="linkish t-bad" data-act="iv-del" data-id="${i.id}">Retirer cette personne de l’affaire</button></p>`:""}`;
+  const submit=async f=>{ const nom=sTxt(f.nom), ct=contacts.find(c=>nomC(c)===nom);
+    const obj={nom,fonction:sTxt(f.fonction)||(ct&&ct.fonction)||null,role:sEnum(f.role,Object.keys(ROLES_ACHAT))||"decideur",acces:sEnum(f.acces,Object.keys(ACCES))||"identifie",notes:sTxt(f.notes),contact_id:ct?ct.id:(i.contact_id||null)};
+    return write(i.id?upd("affaire_intervenants",i.id,obj):ins("affaire_intervenants",Object.assign({opportunite_id:o.id},obj)),i.id?"Intervenant mis à jour":"Intervenant ajouté"); };
+  submit.validate=f=>!sTxt(f.nom)?["nom","Indique le nom."]:null;
+  modal(i.id?"Modifier l’intervenant":"Décideur ou influenceur",h,submit,i.id?"Enregistrer":"Ajouter"); wireChipsX();
+}
+function formEtape(o){
+  const d=new Date(); d.setDate(d.getDate()+(d.getDay()===5?3:d.getDay()===6?2:1));
+  const h=`<p style="margin-top:0" class="hint">L’étape <b>convenue avec le client</b> : c’est elle qui fait avancer l’affaire.</p><div class="form-grid">
+   ${chipsF("quoi","Prochaine étape",ETAPES_CONV.map(x=>[x[0],x[1]]),"rdv")}
+   ${fld("et-d","Date",`<input id="et-d" name="date" type="date" required value="${localISO(d)}" min="${localISO()}">`)}
+   ${fld("et-h","Heure",`<input id="et-h" name="heure" type="time" value="10:00" step="900">`)}
+   ${fld("et-avec","Avec",`<input id="et-avec" name="avec" maxlength="120" placeholder="Ex. Dr Amrani et son associé">`)}
+   ${fld("et-obj","Objectif de l’échange",`<input id="et-obj" name="objectif" maxlength="500" placeholder="Ex. valider le financement, obtenir un accord de principe">`,true)}
+   <div class="field" style="grid-column:1/-1"><label class="check"><input type="checkbox" name="convenue" checked> Convenue avec le client</label></div></div>`;
+  const submit=async f=>{ const e=ETAPES_CONV.find(x=>x[0]===f.quoi)||ETAPES_CONV[5]; const dt=new Date(`${sDate(f.date)}T${/^\d\d:\d\d$/.test(f.heure||"")?f.heure:"10:00"}`);
+    return write(ins("activites",{compte_id:o.compte_id,opportunite_id:o.id,commercial_id:o.commercial_id||(me&&me.id),type:e[2],statut:"a_faire",date_activite:dt.toISOString(),
+      label:e[1]+(sTxt(f.avec)?" · "+sTxt(f.avec):""),objectif:sTxt(f.objectif),convenue:!!f.convenue}),"Prochaine étape planifiée"); };
+  submit.validate=f=>!sDate(f.date)?["date","Choisis la date."]:sDate(f.date)<localISO()?["date","Cette date est passée."]:null;
+  modal("Prochaine étape · "+nomClient(o),h,submit,"Planifier"); wireChipsX();
+}
+function formExpliquer(o){
+  const d=new Date(Date.now()+14*864e5), v=explicationValide(o);
+  const h=`<p style="margin-top:0">Pas de prochaine étape pour l’instant ? Une phrase suffit : ton superviseur verra ton explication au lieu d’une alerte.</p><div class="form-grid">
+   ${fld("ex-txt","Que se passe-t-il ?",`<textarea id="ex-txt" name="explication" required maxlength="1000" placeholder="Ex. le client m’a demandé de le rappeler après le 10 novembre">${esc(v?o.explication:"")}</textarea>`,true)}
+   ${fld("ex-d","J’y reviens le",`<input id="ex-d" name="jusqu" type="date" required min="${localISO()}" max="${localISO(new Date(Date.now()+90*864e5))}" value="${esc(v?o.explication_jusqu:localISO(d))}">`)}
+  </div><p class="hint">Projet repoussé de plusieurs mois ? <button type="button" class="linkish" data-act="veille" data-id="${o.id}">Mets plutôt l’affaire en veille</button> : elle sort du pipeline actif et revient toute seule au bon moment.</p>`;
+  const submit=async f=>write(upd("opportunites",o.id,{explication:sTxt(f.explication),explication_le:new Date().toISOString(),explication_jusqu:sDate(f.jusqu)}),"Explication enregistrée");
+  submit.validate=f=>!sTxt(f.explication)?["explication","Écris une phrase d’explication."]:!sDate(f.jusqu)?["jusqu","Choisis une date."]:null;
+  modal("Expliquer · "+nomClient(o),h,submit,"Enregistrer");
+}
+function formVeille(o){
+  const mois=[]; for(let i=1;i<=6;i++){ const d=new Date(); d.setDate(1); d.setMonth(d.getMonth()+i); mois.push([localISO(d),d.toLocaleDateString("fr-FR",{month:"long",...(d.getFullYear()!==new Date().getFullYear()?{year:"numeric"}:{})}).replace(/^./,c=>c.toUpperCase())]); }
+  const der=state.activites.filter(a=>a.opportunite_id===o.id&&a.statut==="fait"&&a.resume).sort((a,b)=>String(b.date_activite).localeCompare(String(a.date_activite)))[0];
+  const ctx0=o.veille_contexte||[explicationValide(o)&&o.explication,der&&der.resume].filter(Boolean).join("\n");
+  const sel=o.veille_jusqu?o.veille_jusqu.slice(0,8)+"01":mois[2][0], precis=o.veille_jusqu&&!mois.some(m=>m[0]===o.veille_jusqu)?o.veille_jusqu:"";
+  const h=`<div class="form-grid">
+   ${chipsF("raison","Pourquoi ?",Object.entries(VEILLE_RAISONS),o.veille_raison||"")}
+   ${chipsF("mois","Réactiver début",mois,precis?"":sel)}
+   ${fld("vl-d","ou à une date précise",`<input id="vl-d" name="jusqu" type="date" min="${localISO(new Date(Date.now()+864e5))}" value="${esc(precis)}">`)}
+   ${fld("vl-ctx","Contexte à retenir",`<textarea id="vl-ctx" name="contexte" maxlength="2000" placeholder="Ex. ouvre un 2ᵉ centre en janvier ; l’associé veut revoir une démo ; objection prix">${esc(ctx0)}</textarea>`,true)}
+   ${fld("vl-rep","Prochaine action recommandée à la reprise",`<input id="vl-rep" name="reprise" maxlength="300" value="${esc(o.veille_reprise||"")}" placeholder="Ex. proposer une nouvelle démo à l’associé">`,true)}
+  </div><p class="hint">${o.montant_mad?`<b>${mad(o.montant_mad)} MAD</b> sortent`:"L’affaire sort"} du pipeline actif et du prévisionnel. Le plan, les décideurs et l’historique restent dans la fiche. Le jour venu, l’affaire revient toute seule chez ${esc(prenomDe(o.commercial_id))} avec ce contexte et une action « Reprendre ». Aucune alerte n’est envoyée au superviseur.</p>`;
+  const submit=async f=>{ const j=sDate(f.jusqu)||sDate(f.mois);
+    return write(upd("opportunites",o.id,{issue:"dormante",raison_perte:null,veille_raison:sEnum(f.raison,Object.keys(VEILLE_RAISONS)),veille_jusqu:j,veille_contexte:sTxt(f.contexte),veille_reprise:sTxt(f.reprise),
+      veille_le:new Date().toISOString(),veille_par:me?me.id:null,veille_reactivee_le:null}),"En veille jusqu’au "+fmtDate(j)); };
+  submit.validate=f=>!sEnum(f.raison,Object.keys(VEILLE_RAISONS))?["raison","Choisis une raison."]:!(sDate(f.jusqu)||sDate(f.mois))?["jusqu","Choisis quand la réactiver."]:(sDate(f.jusqu)&&sDate(f.jusqu)<=localISO())?["jusqu","Choisis une date à venir."]:null;
+  modal("Mettre en veille · "+nomClient(o),h,submit,"Mettre en veille"); wireChipsX();
+  const d=$("#vl-d"); d.addEventListener("input",()=>{ if(d.value){ $("#mform").querySelectorAll('[data-chipsx="mois"] .chip').forEach(x=>x.setAttribute("aria-pressed","false")); $('#mform input[name="mois"]').value=""; } });
+  $("#mform").querySelector('[data-chipsx="mois"]').addEventListener("click",()=>{ d.value=""; });
+}
+function formAide(o){
+  const sups=state.equipe.filter(e=>e.actif&&!e.parti_le&&["superviseur","admin"].includes(e.role)&&(!me||e.id!==me.id)), d0=destinataireAide();
+  const h=`<p style="margin-top:0"><b>${esc(nomClient(o))}</b>${o.montant_mad?` · ${mad(o.montant_mad)} MAD`:""} · ${esc(ETAPE_LABEL[o.etape]||o.etape)}</p><div class="form-grid">
+   ${chipsF("blocages","Qu’est-ce qui te bloque ?",Object.entries(BLOCAGES),[],true)}
+   ${fld("aid-msg","En deux phrases",`<textarea id="aid-msg" name="message" maxlength="1000" placeholder="Ex. il demande 12 % de remise pour signer avant fin octobre ; un concurrent lui a fait une offre plus basse"></textarea>`,true)}
+   ${chipsF("attente","Ce que tu attends",Object.entries(ATTENTES),"conseil")}
+   ${fld("aid-dest","Envoyer à",`<select id="aid-dest" name="destinataire_id">${opt(sups.map(e=>[e.id,e.nom]),d0?d0.id:"","Choisir…")}</select>`)}
+  </div><p class="hint">La personne reçoit une notification avec le contexte de l’affaire (plan, montant, étape). Sa réponse arrive sur ton accueil.</p>`;
+  const submit=async f=>write(ins("demandes_aide",{destinataire_id:sUuid(f.destinataire_id),opportunite_id:o.id,compte_id:o.compte_id,blocages:liste(f.blocages,Object.keys(BLOCAGES)),attente:sEnum(f.attente,Object.keys(ATTENTES)),message:sTxt(f.message)}),"Demande envoyée à "+prenomDe(f.destinataire_id));
+  submit.validate=f=>!liste(f.blocages,Object.keys(BLOCAGES)).length?["blocages","Choisis au moins un blocage."]:!sUuid(f.destinataire_id)?["destinataire_id","Choisis à qui l’envoyer."]:null;
+  modal("Demander de l’aide",h,submit,"Envoyer"); wireChipsX();
+}
+function aideResume(x){ const o=byId(state.opportunites,x.opportunite_id); return {o,client:nomClient(o)||((byId(state.comptes,x.compte_id)||{}).nom)||"Affaire",bloc:(x.blocages||[]).map(b=>BLOCAGES[b]||b).join(", ")}; }
+function formRepondreAide(x){
+  const {o,client,bloc}=aideResume(x);
+  const h=`<p style="margin-top:0"><b>${esc(prenomDe(x.auteur_id))}</b> · ${esc(client)}${o&&o.montant_mad?" · "+mad(o.montant_mad)+" MAD":""}<br><span class="hint">${esc(bloc)}${x.attente?" · attend "+esc((ATTENTES[x.attente]||"").toLowerCase()):""}</span>${x.message?`<br>« ${esc(x.message)} »`:""}</p>
+   ${fld("ra-txt","Ta réponse",`<textarea id="ra-txt" name="reponse" required maxlength="1000" placeholder="Ex. pas plus de 8 % ; propose plutôt le financement sur 24 mois"></textarea>`,true)}`;
+  const submit=async f=>write(upd("demandes_aide",x.id,{statut:"repondue",reponse:sTxt(f.reponse),repondue_le:new Date().toISOString()}),"Réponse envoyée à "+prenomDe(x.auteur_id));
+  submit.validate=f=>!sTxt(f.reponse)?["reponse","Écris ta réponse."]:null;
+  modal("Répondre à "+prenomDe(x.auteur_id),h,submit,"Répondre");
+}
+function formPointAide(x){
+  const {o,client,bloc}=aideResume(x), d=new Date(); d.setDate(d.getDate()+1);
+  const h=`<p style="margin-top:0">Point avec <b>${esc(prenomDe(x.auteur_id))}</b> sur <b>${esc(client)}</b><br><span class="hint">${esc(bloc)}</span></p><div class="form-grid">
+   ${fld("pt-d","Date",`<input id="pt-d" name="date" type="date" required min="${localISO()}" value="${localISO(d)}">`)}
+   ${fld("pt-h","Heure",`<input id="pt-h" name="heure" type="time" step="900" value="09:00">`)}
+   ${fld("pt-m","Message (facultatif)",`<input id="pt-m" name="message" maxlength="300" placeholder="Ex. on prépare la négociation ensemble">`,true)}</div>`;
+  const submit=async f=>{ const dt=new Date(`${sDate(f.date)}T${/^\d\d:\d\d$/.test(f.heure||"")?f.heure:"09:00"}`);
+    const quand=dt.toLocaleDateString("fr-FR",{weekday:"short",day:"numeric",month:"short"})+" à "+hm(dt);
+    return write(async()=>{ const r=await sb.from("activites").insert({compte_id:x.compte_id||(o&&o.compte_id)||null,opportunite_id:x.opportunite_id,commercial_id:me.id,type:"rdv",statut:"a_faire",date_activite:dt.toISOString(),label:"Point avec "+prenomDe(x.auteur_id)+" · "+client,objectif:bloc||null});
+      if(r.error) return r; return sb.from("demandes_aide").update({statut:"repondue",point_le:dt.toISOString(),repondue_le:new Date().toISOString(),reponse:("Point planifié "+quand+(sTxt(f.message)?" — "+sTxt(f.message):"")).slice(0,1000)}).eq("id",x.id); },"Point planifié avec "+prenomDe(x.auteur_id)); };
+  submit.validate=f=>!sDate(f.date)?["date","Choisis la date."]:null;
+  modal("Planifier un point",h,submit,"Planifier");
+}
+// Rendu du plan dans la fiche affaire
+function planAffaireHtml(o){
+  const {pts,n,iv}=planMaitrise(o), vide=t=>`<p class="hint" style="margin:0">${t}</p>`;
+  const ordre={decideur:0,co_decideur:1,financier:2,influenceur:3,prescripteur:4,utilisateur:5};
+  return `<div class="plan">
+   <div class="plan-mt"><div class="plan-score"><span class="lab-mono">Plan documenté</span><b>${n}<small>/${pts.length}</small></b></div>
+     <div class="plan-pts">${pts.map(([l,ok])=>`<span class="pp${ok?" ok":""}">${ok?"✓":"○"} ${esc(l)}</span>`).join("")}</div>
+     <button class="btn small" data-act="plan-edit" data-id="${o.id}">Compléter le plan</button></div>
+   <div class="plan-grid">
+    <section><h4>Besoin & motivation</h4>${o.besoin||o.motivation?`${o.besoin?`<p>${esc(o.besoin)}</p>`:""}${o.motivation?`<p class="hint" style="margin:4px 0 0">Motivation : ${esc(o.motivation)}</p>`:""}`:vide("Pourquoi ce client pourrait-il acheter ?")}</section>
+    <section><h4>Décideurs & influenceurs <button class="linkish" data-act="iv-add" data-id="${o.id}">+ Ajouter</button></h4>
+      ${iv.length?iv.sort((a,b)=>(ordre[a.role]??9)-(ordre[b.role]??9)).map(i=>`<button class="iv-row" data-act="iv-edit" data-id="${i.id}"><span class="iv-n"><b>${esc(i.nom)}</b>${i.fonction||i.notes?`<small>${esc([i.fonction,i.notes].filter(Boolean).join(" · "))}</small>`:""}</span><span class="pill${i.role==="decideur"?" vio":""}">${esc(ROLES_ACHAT[i.role]||i.role)}</span><span class="pill ${i.acces==="rencontre"?"ok":i.acces==="identifie"?"warn":""}">${esc(ACCES[i.acces]||i.acces)}</span></button>`).join("")
+        :vide("Qui décide vraiment ? Qui influence, qui paie ?")}</section>
+    <section><h4>Objections & concurrence</h4>${(o.objections||[]).length||o.objections_note||(o.concurrents||[]).length?`
+      ${(o.objections||[]).length?`<div class="plan-tags">${o.objections.map(k=>`<span class="tag">${esc(OBJECTIONS[k]||k)}</span>`).join("")}</div>`:""}${o.objections_note?`<p style="margin:6px 0 0">${esc(o.objections_note)}</p>`:""}
+      ${(o.concurrents||[]).length?`<p class="hint" style="margin:6px 0 0">Concurrence : <b>${esc(o.concurrents.join(", "))}</b></p>`:""}`:vide("Ce qui freine la décision, et face à qui.")}</section>
+    <section><h4>Financement & business case</h4>${o.financement||o.business_case?`${o.financement?`<p style="margin:0"><b>${esc(FINANCEMENTS[o.financement])}</b></p>`:""}${o.business_case?`<p style="margin:4px 0 0;white-space:pre-line">${esc(o.business_case)}</p>`:""}`:vide("Comment il paie, et ce que la machine lui rapporte.")}</section>
+    <section><h4>Timing de décision</h4>${o.date_cloture_prevue||o.decision_note?`${o.date_cloture_prevue?`<p style="margin:0">Décision attendue <b>${fmtDate(o.date_cloture_prevue)}</b></p>`:""}${o.decision_note?`<p class="hint" style="margin:4px 0 0">Dépend de : ${esc(o.decision_note)}</p>`:""}`:vide("Quand la vraie décision tombe-t-elle ?")}</section>
+   </div>${o.plan_maj_le?`<p class="hint" style="margin:10px 0 0">Plan mis à jour ${fmtDate(o.plan_maj_le)}</p>`:""}</div>`;
+}
+// Bandeau « prochaine étape » / « en veille » en tête de la fiche affaire
+function etapeBandeau(o){
+  if(estVeille(o)) return `<div class="nx veille"><div class="nx-main"><span class="lab-mono">En veille · réactivation ${esc(moisTxt(o.veille_jusqu))}</span>
+     <b>${esc(VEILLE_RAISONS[o.veille_raison]||"En veille")}</b>${o.veille_contexte?`<div class="nx-sub" style="white-space:pre-line">${esc(o.veille_contexte)}</div>`:""}${o.veille_reprise?`<div class="nx-sub">À la reprise : <b>${esc(o.veille_reprise)}</b></div>`:""}
+     <div class="nx-sub">Mise en veille le ${fmtDate(o.veille_le)}${o.veille_par?" par "+esc(prenomDe(o.veille_par)):""} · hors du pipeline actif</div></div>
+     <div class="nx-btns"><button class="btn small primary" data-act="veille-reactiver" data-id="${o.id}">Réactiver maintenant</button><button class="btn small" data-act="veille" data-id="${o.id}">Modifier</button></div></div>`;
+  if(o.issue!=="en_cours") return "";
+  const g=organisation(o), s=g.suite;
+  if(s){ const conv=s.convenue&&s.opportunite_id===o.id;
+    return `<div class="nx ok"><div class="nx-main"><span class="lab-mono">Prochaine étape${conv?" · convenue avec le client":""}</span>
+      <b>${esc(new Date(s.date_activite).toLocaleDateString("fr-FR",{weekday:"short",day:"numeric",month:"short"}))} · ${esc(hm(s.date_activite))} — ${esc(s.label||TYPES_ACT[s.type]||s.type)}</b>${s.objectif?`<div class="nx-sub">Objectif : ${esc(s.objectif)}</div>`:""}</div>
+      <div class="nx-btns"><button class="btn small" data-act="etape" data-id="${o.id}">+ Autre étape</button></div></div>`; }
+  const txt=g.expl?`Expliqué : « ${esc(o.explication)} » · jusqu’au ${fmtDate(o.explication_jusqu)}`:!g.suivi?"Affaire reprise de l’ancien CRM : fixe une étape, explique ou mets-la en veille pour la reprendre en main."
+    :g.remonte?`Sans activité depuis ${g.j==null?"sa création":g.j+" jours"} : elle apparaît chez ton superviseur.`:`Sans étape ni explication, elle apparaîtra chez ton superviseur dans ${g.restant} jour${g.restant>1?"s":""}.`;
+  return `<div class="nx ${g.expl?"":"warn"}"><div class="nx-main"><span class="lab-mono">${g.expl?"Pas d’étape · expliqué":"Aucune prochaine étape"}</span><div class="nx-sub">${txt}</div></div>
+    <div class="nx-btns"><button class="btn small primary" data-act="etape" data-id="${o.id}">Fixer la prochaine étape</button><button class="btn small" data-act="expliquer" data-id="${o.id}">${g.expl?"Modifier l’explication":"Expliquer"}</button><button class="btn small" data-act="veille" data-id="${o.id}">Mettre en veille</button></div></div>`;
+}
+// Accueil commercial : affaires à organiser, retours de veille, réponses à ses demandes d'aide
+function accueilAffaires(){
+  const mes=state.opportunites.filter(o=>me&&o.commercial_id===me.id);
+  const aOrg=mes.map(o=>({o,g:organisation(o)})).filter(x=>x.g&&x.g.aOrganiser).sort((a,b)=>(b.g.remonte-a.g.remonte)||((+b.o.montant_mad||0)-(+a.o.montant_mad||0)));
+  const retours=mes.filter(o=>o.issue==="en_cours"&&o.veille_reactivee_le&&daysSince(o.veille_reactivee_le)<=21&&!state.activites.some(a=>a.opportunite_id===o.id&&a.statut==="fait"&&new Date(a.date_activite)>=new Date(o.veille_reactivee_le)));
+  const aides=(state.aides||[]).filter(x=>me&&x.auteur_id===me.id&&(x.statut==="en_attente"||x.statut==="repondue"));
+  const reprendre=mes.filter(o=>o.issue==="en_cours"&&!suiviCRM(o)).length;
+  const html=[
+    ...aides.filter(x=>x.statut==="repondue").map(x=>{ const {o,client}=aideResume(x); return `<section class="sh-card sh-dem" aria-label="Réponse de ${esc(prenomDe(x.destinataire_id))}">
+      <div class="sh-lab"><span class="dotv" aria-hidden="true"></span>${esc(prenomDe(x.destinataire_id))} a répondu à ta demande d’aide</div><div class="sh-title">${esc(client)}</div>
+      <div class="sh-why">« ${esc(x.reponse||"")} »</div><div class="sh-btns"><button class="btn primary big" data-act="aide-clore" data-id="${x.id}">C’est réglé</button>${o?`<button class="btn big" data-act="open-opp" data-id="${o.id}">Ouvrir l’affaire</button>`:""}</div></section>`; }),
+    ...retours.map(o=>`<section class="sh-card sh-veille" aria-label="Retour de veille">
+      <div class="sh-lab"><span class="dotv" aria-hidden="true"></span>De retour de veille</div><div class="sh-title">${esc(nomClient(o))} : on peut reprendre</div>
+      <div class="sh-sub">${esc(o.titre)}${o.montant_mad?" · "+madShort(o.montant_mad)+" MAD":""}</div>
+      ${o.veille_contexte?`<div class="sh-why" style="white-space:pre-line">${esc(o.veille_contexte)}</div>`:""}${o.veille_reprise?`<div class="sh-sub" style="margin-top:6px">À la reprise : <b>${esc(o.veille_reprise)}</b></div>`:""}
+      <div class="sh-btns"><button class="btn primary big" data-act="etape" data-id="${o.id}">Planifier la reprise</button><button class="btn big" data-act="veille" data-id="${o.id}">Repousser</button></div></section>`),
+    aOrg.length?`<section aria-label="À organiser"><div class="sh-lab">À organiser · ${aOrg.length} affaire${aOrg.length>1?"s":""} sans prochaine étape</div>
+      ${aOrg.slice(0,3).map(({o,g})=>`<div class="sh-org${g.remonte?" up":""}"><div class="sh-org-h"><button class="linkish" data-act="open-opp" data-id="${o.id}"><b>${esc(nomClient(o))}</b></button><span class="mono">${o.montant_mad?madShort(o.montant_mad)+" MAD":""}</span></div>
+        <div class="s">${esc(o.titre)} · ${esc(ETAPE_LABEL[o.etape]||o.etape)} · ${g.remonte?"visible par ton superviseur":`remonte dans ${g.restant} j sans étape ni explication`}</div>
+        <div class="sh-org-b"><button class="btn small primary" data-act="etape" data-id="${o.id}">Planifier</button><button class="btn small" data-act="expliquer" data-id="${o.id}">Expliquer</button><button class="btn small" data-act="veille" data-id="${o.id}">En veille</button><button class="btn small" data-act="aide" data-id="${o.id}">Demander de l’aide</button></div></div>`).join("")}
+      ${aOrg.length>3?`<p class="hint" style="margin:6px 0 0">+ ${aOrg.length-3} autre${aOrg.length-3>1?"s":""} · <button class="linkish" data-act="pipe-organiser">voir dans le pipeline</button></p>`:""}</section>`:"",
+    ...aides.filter(x=>x.statut==="en_attente").map(x=>`<div class="sh-row"><div style="flex:1;min-width:0"><div class="t">Demande d’aide · ${esc(aideResume(x).client)}</div><div class="s">Envoyée à ${esc(prenomDe(x.destinataire_id))} · en attente de réponse</div></div></div>`),
+    reprendre?`<p class="hint" style="margin:0">${reprendre} affaire${reprendre>1?"s":""} de l’ancien CRM à reprendre en main, sans urgence : elles ne remontent pas au superviseur.</p>`:""
+  ].filter(Boolean).join("");
+  return {html,n:aOrg.length+retours.length+aides.filter(x=>x.statut==="repondue").length};
+}
+
+let oppSection="plan";
 function openOpp(o){ if(o) ctxCompte=o.compte_id;
   if(!o) return;
   lastFocus=lastFocus||document.activeElement; dirty=false;
@@ -3233,13 +3534,15 @@ function openOpp(o){ if(o) ctxCompte=o.compte_id;
      <div><div class="lab-mono">Responsable</div><b>${esc(nomMembre(o.commercial_id))}</b>${o.createur_id&&o.createur_id!==o.commercial_id?`<div class="hint">créée par ${esc(nomMembre(o.createur_id))}</div>`:""}</div>
      <div><div class="lab-mono">Machine</div><b>${p?esc(p.nom):"—"}</b></div>
    </div>
+   ${etapeBandeau(o)}
    <div class="tools quick">
      <button class="btn small" data-act="log" data-opp="${o.id}" data-type="tache">+ Tâche</button><button class="btn small" data-act="log" data-opp="${o.id}" data-type="evenement">+ Événement</button><button class="btn small" data-act="log" data-opp="${o.id}" data-type="appel">+ Appel</button><button class="btn small primary" data-act="new-devis" data-opp="${o.id}">Créer un devis</button>
      <span style="flex:1"></span>
-     ${closed?`<button class="btn small${o.issue==="dormante"?" primary":""}" data-act="reopen" data-id="${o.id}">${o.issue==="dormante"?"Réveiller l’affaire":"Rouvrir"}</button>`:`<button class="btn small ok" data-act="won" data-id="${o.id}">Gagnée</button><button class="btn small bad" data-act="lost" data-id="${o.id}">Perdue</button>`}
+     ${closed?`<button class="btn small${o.issue==="dormante"?" primary":""}" data-act="reopen" data-id="${o.id}">${o.issue==="dormante"?"Réveiller l’affaire":"Rouvrir"}</button>`:`<button class="btn small" data-act="veille" data-id="${o.id}">En veille</button><button class="btn small" data-act="aide" data-id="${o.id}">Demander de l’aide</button><button class="btn small ok" data-act="won" data-id="${o.id}">Gagnée</button><button class="btn small bad" data-act="lost" data-id="${o.id}">Perdue</button>`}
      <button class="btn small" data-act="edit-opp" data-id="${o.id}">Modifier</button>
    </div>
-   <div class="seg-tabs" role="tablist" aria-label="Sections de l’opportunité">${[["activites","Activités ("+acts.length+")"],["commentaires","Commentaires"],["devis","Devis ("+dv.length+")"],["historique","Historique"]].map(([k,l])=>`<button type="button" role="tab" id="ot-${k}" aria-controls="op-${k}" aria-selected="${oppSection===k}" data-osec="${k}">${l}</button>`).join("")}</div>
+   <div class="seg-tabs" role="tablist" aria-label="Sections de l’opportunité">${[["plan","Plan d’affaire · "+planMaitrise(o).n+"/7"],["activites","Activités ("+acts.length+")"],["commentaires","Commentaires"],["devis","Devis ("+dv.length+")"],["historique","Historique"]].map(([k,l])=>`<button type="button" role="tab" id="ot-${k}" aria-controls="op-${k}" aria-selected="${oppSection===k}" data-osec="${k}">${l}</button>`).join("")}</div>
+   <div id="op-plan" role="tabpanel" aria-labelledby="ot-plan" ${oppSection==="plan"?"":"hidden"}>${planAffaireHtml(o)}</div>
    <div id="op-activites" role="tabpanel" aria-labelledby="ot-activites" ${oppSection==="activites"?"":"hidden"}>${todo.length?`<h4>À faire</h4><div class="feed">${todo.map(a=>feedItem(a,{noCompte:true,noOpp:true})).join("")}</div>`:""}${done.length?`<h4>Fait</h4><div class="feed">${done.map(a=>feedItem(a,{noCompte:true,noOpp:true})).join("")}</div>`:""}${acts.length?"":`<p class="hint">Aucune activité sur cette opportunité. Utilisez Tâche, Événement ou Appel ci-dessus.</p>`}</div>
    <div id="op-commentaires" role="tabpanel" aria-labelledby="ot-commentaires" ${oppSection==="commentaires"?"":"hidden"}><div class="skeleton" style="height:40px"></div></div>
    <div id="op-devis" role="tabpanel" aria-labelledby="ot-devis" ${oppSection==="devis"?"":"hidden"}>${dv.length?`<div class="closed-list">${dv.map(x=>`<div class="closed-row"><div><b translate="no">${esc(devisNum(x))}</b><div class="hint">${fmtDate(x.created_at)} · ${mad(x.montant_mad)} MAD HT</div></div><div class="tools"><span class="pill ${DEVIS_PILL[x.statut]||""}">${DEVIS_LABEL[x.statut]}</span><button class="btn small" data-act="edit-devis" data-id="${x.id}">Modifier</button><button class="btn small" data-act="print-devis" data-id="${x.id}">Imprimer</button></div></div>`).join("")}</div>`:`<p class="hint">Aucun devis. « Créer un devis » le rattache à cette opportunité.</p>`}</div>
@@ -3249,11 +3552,11 @@ function openOpp(o){ if(o) ctxCompte=o.compte_id;
   $("#ov").addEventListener("click",e=>{ if(e.target.id==="ov"){ reopenAfter=null; closeModal(); } });
   trapFocus($("#ov .modal"));
   const loaded={};
-  const show=k=>{ oppSection=k; document.querySelectorAll("[data-osec]").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.osec===k))); ["activites","commentaires","devis","historique"].forEach(s=>$("#op-"+s).hidden=s!==k);
+  const show=k=>{ oppSection=k; document.querySelectorAll("[data-osec]").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.osec===k))); ["plan","activites","commentaires","devis","historique"].forEach(s=>$("#op-"+s).hidden=s!==k);
     if(k==="commentaires"&&!loaded.c){ loaded.c=1; loadCommentaires($("#op-commentaires"),o.id); }
     if(k==="historique"&&!loaded.h){ loaded.h=1; loadHistorique($("#op-historique"),"opportunite_id",o.id); } };
   document.querySelectorAll("[data-osec]").forEach(b=>b.addEventListener("click",()=>show(b.dataset.osec)));
-  $(".seg-tabs").addEventListener("keydown",e=>{ if(!["ArrowLeft","ArrowRight"].includes(e.key)) return; const ks=["activites","commentaires","devis","historique"]; const i=(ks.indexOf(oppSection)+(e.key==="ArrowRight"?1:3))%4; show(ks[i]); $("#ot-"+ks[i]).focus(); });
+  $(".seg-tabs").addEventListener("keydown",e=>{ if(!["ArrowLeft","ArrowRight"].includes(e.key)) return; const ks=["plan","activites","commentaires","devis","historique"]; const i=(ks.indexOf(oppSection)+(e.key==="ArrowRight"?1:4))%5; show(ks[i]); $("#ot-"+ks[i]).focus(); });
   show(oppSection);
   // Toute action lancée depuis la fiche y revient ensuite.
   $("#ov .modal").addEventListener("click",e=>{ const t=e.target.closest("[data-act]"); if(t&&!["open-compte","del-act","del-cmt","del-cmt-yes","print-devis"].includes(t.dataset.act)) reopenAfter=()=>openOpp(byId(state.opportunites,o.id)); },true);
