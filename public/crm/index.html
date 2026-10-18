@@ -2404,6 +2404,7 @@ function itemsATraiter(p){
   state.devis.forEach(d=>{ if(d.statut!=="envoye"||!dans(d.commercial_id)) return; const j=daysSince(d.date_envoi||d.updated_at||d.created_at); if(j<7) return;
     if(enAttente.has("c:"+d.compte_id)||(d.opportunite_id&&(enAttente.has("o:"+d.opportunite_id)||L.some(x=>x.o&&x.o.id===d.opportunite_id)))) return;
     const od=byId(state.opportunites,d.opportunite_id); if(od&&(od.issue!=="en_cours"||(organisation(od)||{}).suite)) return;
+    if(d.import_ref&&!(od&&suiviCRM(od))) return;
     const c=byId(state.comptes,d.compte_id); L.push({k:"d:"+d.id,sev:"risque",com:d.commercial_id,cat:"Relance",titre:c?c.nom:devisNum(d),sous:devisNum(d),valeur:+d.montant_mad||0,raisons:[`Devis sans réponse depuis ${j} jours`],d}); });
   const retards=new Map();
   state.activites.forEach(a=>{ if(a.statut!=="a_faire"||estImporte(a)||estEvenement(a)) return; const r=responsable(a); if(!dans(r)) return; const e=etatAction(a,now);
@@ -2459,7 +2460,7 @@ function wsPlanning(coms){
 function viewWorkspace(v){
   const p=perimetre(), coms=commerciauxSuivis(p), dans=id=>!p||p.has(id), now=Date.now();
   const L=itemsATraiter(p), prio=L.find(x=>x.sev!=="statuer"&&x.valeur>0)||null, file=L.filter(x=>x!==prio);
-  const opps=state.opportunites.filter(o=>o.issue==="en_cours"&&dans(o.commercial_id));
+  const oppsTout=state.opportunites.filter(o=>o.issue==="en_cours"&&dans(o.commercial_id)), opps=oppsTout.filter(suiviCRM), anciens=oppsTout.length-opps.length;
   const risq=opps.filter(o=>(risque(o)||{}).niveau==="risque"), bloq=opps.filter(o=>(risque(o)||{}).niveau==="bloquee");
   const concernes=[...risq,...bloq].reduce((s,o)=>s+(+o.montant_mad||0),0);
   const prenom=me?String(me.nom).split(/\s+/)[0]:"";
@@ -2477,7 +2478,7 @@ function viewWorkspace(v){
   const H={
     sans:opps.filter(o=>!prochaine(o)),
     inactives:opps.filter(o=>now-derniereActivite(o)>14*864e5),
-    devis:state.devis.filter(d=>d.statut==="envoye"&&dans(d.commercial_id)&&daysSince(d.date_envoi||d.updated_at||d.created_at)>=7),
+    devis:state.devis.filter(d=>d.statut==="envoye"&&dans(d.commercial_id)&&daysSince(d.date_envoi||d.updated_at||d.created_at)>=7&&(!d.import_ref||(o=>o&&suiviCRM(o))(byId(state.opportunites,d.opportunite_id)))),
     bloq30:opps.filter(o=>daysSince(o.etape_depuis||o.updated_at||o.created_at)>30)};
   wsHyg=H;
   // Ce qui a changé
@@ -2531,7 +2532,7 @@ function viewWorkspace(v){
           <span class="pill ${ok?"ok":""}">${ok?"Résolu":"En attente de "+esc(prenomDe(d.destinataire_id))}</span>${ok?"":`<button class="btn small" data-act="demande-clore" data-id="${d.id}">Clore</button>`}</div>`; }).join("")
       :aidesAtt.length?"":`<p class="hint">Rien en attente. Quand tu demandes une mise à jour à un commercial, elle s’affiche ici jusqu’à sa réponse.</p>`}</section>
     <section class="ws-card" aria-label="Hygiène du pipeline"><div class="ws-card-h"><h3>Hygiène du pipeline</h3></div>
-      <div class="ws-hyg">${[["sans","Affaires sans prochaine action",H.sans.length],["inactives","Inactives depuis +14 j",H.inactives.length],["devis","Devis à relancer",H.devis.length],["bloq30","Bloquées depuis +30 j",H.bloq30.length]].map(([k,l,n])=>`<button class="ws-h${k==="bloq30"&&n?" bad":""}" data-act="ws-hyg" data-v="${k}" ${n?"":"disabled"}><b>${n}</b><span>${l}</span><i aria-hidden="true">↗</i></button>`).join("")}</div></section>
+      <div class="ws-hyg">${[["sans","Affaires sans prochaine action",H.sans.length],["inactives","Inactives depuis +14 j",H.inactives.length],["devis","Devis à relancer",H.devis.length],["bloq30","Bloquées depuis +30 j",H.bloq30.length]].map(([k,l,n])=>`<button class="ws-h${k==="bloq30"&&n?" bad":""}" data-act="ws-hyg" data-v="${k}" ${n?"":"disabled"}><b>${n}</b><span>${l}</span><i aria-hidden="true">↗</i></button>`).join("")}</div>${anciens?`<p class="hint" style="margin:12px 0 0">Hors de ces chiffres : <b>${anciens}</b> affaire${anciens>1?"s":""} de l’ancien CRM en cours de requalification par les commerciaux${(n=>n?` · ${n} déjà requalifiée${n>1?"s":""}`:"")(state.opportunites.filter(o=>o.import_ref&&o.requalifiee_le&&dans(o.commercial_id)).length)}. Elles n’entrent dans les alertes qu’une fois reprises.</p>`:""}</section>
   </div>
   <div class="ws-two">
     <section class="ws-card" aria-label="Ce qui a changé"><div class="ws-card-h"><h3>Ce qui a changé</h3><span class="hint">${{jour:"depuis 24 h",semaine:"sur 7 jours",mois:"sur 30 jours"}[wsPeriode]}</span></div>
