@@ -18,12 +18,19 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
   },
+  // CRM interne (page statique dans public/crm) accessible à l'adresse /crm.
+  async rewrites() {
+    return [{ source: "/crm", destination: "/crm/index.html" }];
+  },
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },
       // Vidéos et images : mises en cache longtemps par le navigateur.
       { source: "/videos/:file*", headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }] },
       { source: "/images/:file*", headers: [{ key: "Cache-Control", value: "public, max-age=2592000" }] },
+      // CRM : toujours la dernière version (pas de cache navigateur sur la page et ses scripts).
+      { source: "/crm/:path*", headers: [{ key: "Cache-Control", value: "no-cache, must-revalidate" }] },
+      { source: "/crm", headers: [{ key: "Cache-Control", value: "no-cache, must-revalidate" }] },
     ];
   },
 };
