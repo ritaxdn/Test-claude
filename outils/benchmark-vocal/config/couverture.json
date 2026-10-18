@@ -1,0 +1,20 @@
+{
+  "_doc": "Objectifs de couverture du dataset (~30 vocaux). `python3 harness/bench.py couverture` vérifie le manifeste contre ces cibles.",
+  "total_cible": 30,
+  "commerciaux_min": 3,
+  "duree_s": {"min": 45, "max": 180},
+  "langue": {"darija": 9, "francais": 8, "mixte": 13},
+  "environnement": {"calme": 10, "voiture": 8, "rue": 6, "showroom": 6},
+  "situations_min": 3,
+  "situations": [
+    "nom_medecin", "nom_clinique", "machine_cellulift", "concurrent",
+    "montant", "montant_centimes", "date_precise", "date_relative",
+    "financement", "plusieurs_decideurs", "objection_prix", "objection_technique",
+    "visite_positive", "visite_negative", "recit_incomplet", "sans_prochaine_etape",
+    "nouveau_contact", "visite_non_prevue"
+  ],
+  "_situations_doc": {
+    "montant_centimes": "Montant dit en « millions » au sens des centimes (ex. « 28 مليون » = 280 000 MAD) ou en ryals : piège fréquent en darija.",
+    "visite_non_prevue": "Pas de visite planifiée dans le CRM : le client doit être identifié à partir du récit."
+  }
+}

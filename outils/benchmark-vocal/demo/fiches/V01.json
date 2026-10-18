@@ -1,0 +1,224 @@
+{
+ "id": "V01",
+ "_avertissement": "DONNÉES FICTIVES pour la démonstration du harness",
+ "date_visite": "2026-10-20",
+ "contexte": {
+  "visite_prevue": true,
+  "client": "Clinique Atlas",
+  "ville": "Casablanca",
+  "contacts_connus": [
+   {
+    "nom": "Dr Amrani",
+    "fonction": "propriétaire",
+    "role_achat": "decideur"
+   }
+  ],
+  "affaire": {
+   "titre": "Laser diode épilation",
+   "technologie": "laser diode",
+   "montant_mad": 285000,
+   "etape": "Proposition"
+  },
+  "commercial": "C1",
+  "showroom": "Casablanca"
+ },
+ "transcription_reference": "صافي، كنت عند Clinique Atlas مع Dr Amrani، وكان معاه l’associé ديالو، Dr Bennani, c’est lui qui gère les finances. Ils sont très intéressés par le laser diode pour l’épilation، حيت غادي يحلّو centre جديد ف janvier. المشكل هو الثمن، l’associé قال ليا deux cent quatre-vingt-cinq mille غالي بزاف، عندهم offre ديال Candela تقريبا ميتين و ربعين ألف. هضرت معاهم على le financement sur 24 mois، عجبهم الحال. بغاو يشوفو la machine، on a calé une démo au showroom jeudi à 15h. خاصني نصيفط ليهم la simulation de financement قبل الأربعاء.",
+ "sens_fr": "Voilà, j’étais chez Clinique Atlas avec Dr Amrani ; son associé Dr Bennani, qui gère les finances, était là. Très intéressés par le laser diode pour l’épilation, car ils ouvrent un nouveau centre en janvier. Le problème est le prix : l’associé trouve 285 000 trop cher ; ils ont une offre Candela d’environ 240 000. Je leur ai parlé du financement sur 24 mois, ça leur a plu. Ils veulent voir la machine : démo au showroom jeudi à 15 h. Je dois leur envoyer la simulation de financement avant mercredi.",
+ "termes_critiques": [
+  {
+   "terme": "Dr Amrani",
+   "categorie": "nom",
+   "variantes": [
+    "Amrani",
+    "عمراني"
+   ]
+  },
+  {
+   "terme": "Dr Bennani",
+   "categorie": "nom",
+   "variantes": [
+    "Bennani",
+    "Benani",
+    "بناني"
+   ]
+  },
+  {
+   "terme": "Clinique Atlas",
+   "categorie": "clinique",
+   "variantes": [
+    "Atlas",
+    "اطلس"
+   ]
+  },
+  {
+   "terme": "laser diode",
+   "categorie": "technologie",
+   "variantes": [
+    "laser diode",
+    "diode"
+   ]
+  },
+  {
+   "terme": "Candela",
+   "categorie": "concurrent",
+   "variantes": [
+    "Candela",
+    "كانديلا"
+   ]
+  },
+  {
+   "terme": "deux cent quatre-vingt-cinq mille",
+   "categorie": "montant",
+   "valeur_mad": 285000
+  },
+  {
+   "terme": "ميتين و ربعين ألف",
+   "categorie": "montant",
+   "valeur_mad": 240000
+  },
+  {
+   "terme": "jeudi à 15h",
+   "categorie": "date",
+   "variantes": [
+    "jeudi"
+   ]
+  }
+ ],
+ "attendu": {
+  "client": {
+   "valeur": "Clinique Atlas",
+   "source": "كنت عند Clinique Atlas"
+  },
+  "contacts": [
+   {
+    "nom": "Dr Amrani",
+    "fonction": "propriétaire",
+    "nouveau": false,
+    "source": "مع Dr Amrani"
+   },
+   {
+    "nom": "Dr Bennani",
+    "fonction": "associé, finances",
+    "nouveau": true,
+    "source": "Dr Bennani, c’est lui qui gère les finances"
+   }
+  ],
+  "technologies": [
+   {
+    "valeur": "laser diode",
+    "machine_catalogue": null,
+    "source": "le laser diode pour l’épilation"
+   }
+  ],
+  "besoins": [
+   {
+    "texte": "Épilation pour un nouveau centre",
+    "mots_cles": [
+     "epilation",
+     "centre"
+    ],
+    "source": "pour l’épilation"
+   }
+  ],
+  "interet": {
+   "valeur": "positif",
+   "source": "Ils sont très intéressés"
+  },
+  "signaux": [
+   {
+    "texte": "Ouverture d'un nouveau centre en janvier",
+    "mots_cles": [
+     "centre",
+     "janvier"
+    ],
+    "source": "غادي يحلّو centre جديد ف janvier"
+   }
+  ],
+  "objections": [
+   {
+    "type": "prix",
+    "detail": "285 000 jugé trop cher",
+    "source": "deux cent quatre-vingt-cinq mille غالي بزاف"
+   }
+  ],
+  "concurrents": [
+   {
+    "marque": "Candela",
+    "source": "offre ديال Candela"
+   }
+  ],
+  "montants": [
+   {
+    "valeur_mad": 285000,
+    "objet": "prix_cellulift",
+    "source": "deux cent quatre-vingt-cinq mille"
+   },
+   {
+    "valeur_mad": 240000,
+    "objet": "offre_concurrent",
+    "approximatif": true,
+    "source": "تقريبا ميتين و ربعين ألف"
+   }
+  ],
+  "financement": [
+   {
+    "duree_mois": 24,
+    "detail": "a plu",
+    "source": "le financement sur 24 mois"
+   }
+  ],
+  "decideurs": [
+   {
+    "nom": "Dr Amrani",
+    "role_achat": "decideur",
+    "source": "مع Dr Amrani"
+   },
+   {
+    "nom": "Dr Bennani",
+    "role_achat": "financier",
+    "source": "c’est lui qui gère les finances"
+   }
+  ],
+  "timing": [
+   {
+    "debut": "2027-01-01",
+    "fin": "2027-01-31",
+    "libelle": "janvier",
+    "source": "centre جديد ف janvier"
+   }
+  ],
+  "prochaine_etape": {
+   "type": "demo",
+   "date": "2026-10-22",
+   "heure": "15:00",
+   "participants": [
+    "Dr Amrani",
+    "Dr Bennani"
+   ],
+   "source": "on a calé une démo au showroom jeudi à 15h"
+  },
+  "actions_perso": [
+   {
+    "texte": "Envoyer la simulation de financement",
+    "mots_cles": [
+     "simulation",
+     "financement"
+    ],
+    "echeance": "2026-10-21",
+    "source": "la simulation de financement قبل الأربعاء"
+   }
+  ],
+  "changement_etape": null,
+  "signal_terrain": {
+   "texte": "Offre Candela autour de 240 000 MAD",
+   "mots_cles": [
+    "candela",
+    "240"
+   ]
+  }
+ },
+ "validation": {
+  "redige_par": "demo",
+  "relu_par": "demo2"
+ }
+}

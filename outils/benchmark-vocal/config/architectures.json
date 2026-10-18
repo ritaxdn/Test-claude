@@ -1,0 +1,60 @@
+{
+  "_doc": "Architectures candidates. Aucune n'est choisie d'avance et aucune n'est branchée : chaque candidate se déclare ici avec ses adaptateurs (voir harness/adapters.py), puis passe `actif` à true. Les clés API passent par des variables d'environnement, jamais par ce fichier. `cout` : prix publics au moment du test, à remplir pour calculer le coût par minute.",
+  "architectures": [
+    {
+      "id": "E0-oracle",
+      "libelle": "Transcription humaine + extraction (borne haute de la couche B)",
+      "role": "reference",
+      "stt": {"adaptateur": "oracle"},
+      "extraction": {"adaptateur": "commande", "commande": "A_REMPLIR --prompt {prompt} --sortie {sortie}", "timeout_s": 300},
+      "variables_env": [],
+      "cout": {"stt_usd_par_minute": 0, "extraction_usd_par_vocal": null},
+      "actif": false
+    },
+    {
+      "id": "A-stt-general",
+      "libelle": "STT multilingue généraliste → extraction LLM",
+      "stt": {"adaptateur": "commande", "commande": "A_REMPLIR {audio} > {sortie}", "timeout_s": 600},
+      "extraction": {"adaptateur": "commande", "commande": "A_REMPLIR --prompt {prompt} --sortie {sortie}"},
+      "variables_env": [],
+      "cout": {"stt_usd_par_minute": null, "extraction_usd_par_vocal": null},
+      "actif": false
+    },
+    {
+      "id": "B-stt-darija",
+      "libelle": "STT spécialisé darija/maghrébin → extraction LLM",
+      "stt": {"adaptateur": "commande", "commande": "A_REMPLIR {audio} > {sortie}"},
+      "extraction": {"adaptateur": "commande", "commande": "A_REMPLIR --prompt {prompt} --sortie {sortie}"},
+      "variables_env": [],
+      "cout": {"stt_usd_par_minute": null, "extraction_usd_par_vocal": null},
+      "actif": false
+    },
+    {
+      "id": "C-audio-natif",
+      "libelle": "Modèle audio natif : audio + contexte → JSON (avec transcription renvoyée si possible)",
+      "stt": {"adaptateur": "aucun"},
+      "extraction": {"adaptateur": "commande", "commande": "A_REMPLIR --audio {audio} --prompt {prompt} --sortie {sortie}"},
+      "variables_env": [],
+      "cout": {"stt_usd_par_minute": null, "extraction_usd_par_vocal": null},
+      "actif": false
+    },
+    {
+      "id": "D-stt-traduction",
+      "libelle": "STT → traduction en français → extraction LLM",
+      "stt": {"adaptateur": "commande", "commande": "A_REMPLIR {audio} > {sortie}"},
+      "extraction": {"adaptateur": "commande", "commande": "A_REMPLIR --traduire --prompt {prompt} --sortie {sortie}"},
+      "variables_env": [],
+      "cout": {"stt_usd_par_minute": null, "extraction_usd_par_vocal": null},
+      "actif": false
+    },
+    {
+      "id": "F-double-stt",
+      "libelle": "Deux STT combinés (darija + français) → extraction LLM avec les deux transcriptions",
+      "stt": {"adaptateur": "commande", "commande": "A_REMPLIR {audio} > {sortie}"},
+      "extraction": {"adaptateur": "commande", "commande": "A_REMPLIR --prompt {prompt} --sortie {sortie}"},
+      "variables_env": [],
+      "cout": {"stt_usd_par_minute": null, "extraction_usd_par_vocal": null},
+      "actif": false
+    }
+  ]
+}

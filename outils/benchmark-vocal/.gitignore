@@ -1,0 +1,9 @@
+# Les vocaux et les fiches de référence restent hors du dépôt : données commerciales réelles.
+dataset/audio/*
+!dataset/audio/.gitkeep
+dataset/fiches/*
+!dataset/fiches/.gitkeep
+resultats/*
+!resultats/.gitkeep
+__pycache__/
+demo/resultats/demo/*/travail/

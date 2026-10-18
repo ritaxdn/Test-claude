@@ -1,0 +1,310 @@
+{
+  "_doc": "Contexte CRM fourni à la couche B (compréhension métier). Catalogue : machines actives du CRM au 18/10/2026. Concurrents : liste provisoire à compléter par la direction commerciale. Commerciaux : pseudonymes. Les visites prévues propres à chaque vocal sont dans la fiche de référence (champ `contexte`).",
+  "catalogue": [
+    {
+      "nom": "ALEX YAG ULTRA",
+      "categorie": "Laser"
+    },
+    {
+      "nom": "BIOFILLER X7",
+      "categorie": "Rajeunissement cutané"
+    },
+    {
+      "nom": "BODYTECH 9",
+      "categorie": "Amincissement"
+    },
+    {
+      "nom": "BRASILIFT",
+      "categorie": "Amincissement"
+    },
+    {
+      "nom": "CENTRIFUGEL",
+      "categorie": "Rajeunissement cutané"
+    },
+    {
+      "nom": "CRYOCOVER",
+      "categorie": "Thérapie avancée"
+    },
+    {
+      "nom": "DERMABRASIF 6G",
+      "categorie": "Rajeunissement cutané"
+    },
+    {
+      "nom": "DERMAPLEX",
+      "categorie": "Rajeunissement cutané"
+    },
+    {
+      "nom": "DREAMTECH PRO",
+      "categorie": "Thérapie avancée"
+    },
+    {
+      "nom": "ELITECOLOMBIA",
+      "categorie": "Amincissement"
+    },
+    {
+      "nom": "FOTOKROM",
+      "categorie": "Laser"
+    },
+    {
+      "nom": "FRAC'COV 4",
+      "categorie": "Laser"
+    },
+    {
+      "nom": "FREQUENCIOUS",
+      "categorie": "Rajeunissement cutané"
+    },
+    {
+      "nom": "FREQUENTAZIA",
+      "categorie": "Thérapie avancée"
+    },
+    {
+      "nom": "HANOVER 5G",
+      "categorie": "Laser"
+    },
+    {
+      "nom": "HOT POWER",
+      "categorie": "Amincissement"
+    },
+    {
+      "nom": "LA QUEEN",
+      "categorie": "Laser"
+    },
+    {
+      "nom": "LASER SHOCK",
+      "categorie": "Laser"
+    },
+    {
+      "nom": "LED BIO-LIGHT",
+      "categorie": "Photomodulation"
+    },
+    {
+      "nom": "LED FOTOSKIN",
+      "categorie": "Photomodulation"
+    },
+    {
+      "nom": "LED FOTOSKIN ULTRA",
+      "categorie": "Photomodulation"
+    },
+    {
+      "nom": "LONGCHOC",
+      "categorie": "Amincissement"
+    },
+    {
+      "nom": "LONGIFLASH",
+      "categorie": "Photomodulation"
+    },
+    {
+      "nom": "LONGILYSE",
+      "categorie": "Amincissement"
+    },
+    {
+      "nom": "LONGISHAPE",
+      "categorie": "Amincissement"
+    },
+    {
+      "nom": "MEGALIGHT",
+      "categorie": "Laser"
+    },
+    {
+      "nom": "MYM DERMAPEN",
+      "categorie": "Rajeunissement cutané"
+    },
+    {
+      "nom": "NEW EPIL'LIGHT",
+      "categorie": "Laser"
+    },
+    {
+      "nom": "PANDASLIM",
+      "categorie": "Amincissement"
+    },
+    {
+      "nom": "PERFECT'LIFT",
+      "categorie": "HIFU"
+    },
+    {
+      "nom": "PHYSIOMEDIC A600",
+      "categorie": "Thérapie avancée"
+    },
+    {
+      "nom": "PISTOR +34",
+      "categorie": "Rajeunissement cutané"
+    },
+    {
+      "nom": "PRESSOLIGNE 5",
+      "categorie": "Amincissement"
+    },
+    {
+      "nom": "REJUVSKIN",
+      "categorie": "HIFU"
+    },
+    {
+      "nom": "SEVENWAVES",
+      "categorie": "Laser"
+    },
+    {
+      "nom": "SHOCSTEEL",
+      "categorie": "Amincissement"
+    },
+    {
+      "nom": "SKIN ANALYSER G7",
+      "categorie": "Rajeunissement cutané"
+    },
+    {
+      "nom": "SKIN ANALYZER G5",
+      "categorie": "Rajeunissement cutané"
+    },
+    {
+      "nom": "SKIN BRIGHT",
+      "categorie": "Rajeunissement cutané"
+    },
+    {
+      "nom": "SLIMAX LIPO 3",
+      "categorie": "Amincissement"
+    },
+    {
+      "nom": "SLIMAX LIPO 7",
+      "categorie": "Amincissement"
+    },
+    {
+      "nom": "STEEL MUSCLE",
+      "categorie": "Amincissement"
+    },
+    {
+      "nom": "SYNERGY+",
+      "categorie": "Laser"
+    },
+    {
+      "nom": "T-CARE 6G",
+      "categorie": "Thérapie avancée"
+    },
+    {
+      "nom": "TANITA",
+      "categorie": "Amincissement"
+    },
+    {
+      "nom": "UltraTrio Pro",
+      "categorie": "Thérapie avancée"
+    },
+    {
+      "nom": "VAGILASE",
+      "categorie": "Photomodulation"
+    }
+  ],
+  "technologies": [
+    "laser diode",
+    "laser alexandrite",
+    "Nd:YAG",
+    "IPL",
+    "HIFU",
+    "radiofréquence",
+    "radiofréquence microaiguilles",
+    "cryolipolyse",
+    "LED",
+    "ondes de choc",
+    "électrostimulation",
+    "pressothérapie",
+    "microdermabrasion",
+    "Q-switched"
+  ],
+  "concurrents_connus": [
+    {
+      "marque": "Candela",
+      "alias": [
+        "كانديلا",
+        "Kandela"
+      ]
+    },
+    {
+      "marque": "Lumenis",
+      "alias": []
+    },
+    {
+      "marque": "Alma Lasers",
+      "alias": [
+        "Alma"
+      ]
+    },
+    {
+      "marque": "Cynosure",
+      "alias": []
+    },
+    {
+      "marque": "Fotona",
+      "alias": []
+    },
+    {
+      "marque": "Cutera",
+      "alias": []
+    },
+    {
+      "marque": "DEKA",
+      "alias": [
+        "Deka"
+      ]
+    },
+    {
+      "marque": "BTL",
+      "alias": [
+        "BTL Emsculpt"
+      ]
+    },
+    {
+      "marque": "InMode",
+      "alias": [
+        "Inmode"
+      ]
+    },
+    {
+      "marque": "Asclepion",
+      "alias": []
+    },
+    {
+      "marque": "Quanta System",
+      "alias": [
+        "Quanta"
+      ]
+    }
+  ],
+  "commerciaux": [
+    {
+      "id": "C1",
+      "pseudonyme": "Commercial 1"
+    },
+    {
+      "id": "C2",
+      "pseudonyme": "Commercial 2"
+    },
+    {
+      "id": "C3",
+      "pseudonyme": "Commercial 3"
+    },
+    {
+      "id": "C4",
+      "pseudonyme": "Commercial 4"
+    },
+    {
+      "id": "C5",
+      "pseudonyme": "Commercial 5"
+    }
+  ],
+  "showrooms": [
+    "Casablanca",
+    "Rabat",
+    "Marrakech",
+    "Tanger"
+  ],
+  "etapes_pipeline": [
+    "Qualification",
+    "Proposition",
+    "Negociation",
+    "Fermeture"
+  ],
+  "roles_achat": [
+    "decideur",
+    "co_decideur",
+    "influenceur",
+    "financier",
+    "utilisateur",
+    "prescripteur"
+  ]
+}

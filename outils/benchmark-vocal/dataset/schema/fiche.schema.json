@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "cellulift/benchmark-vocal/fiche",
+  "title": "Fiche de référence d'un vocal (ground truth)",
+  "description": "Rédigée à la main puis relue par une seconde personne. Règle absolue : n'y mettre que ce qui a été DIT. Une information seulement supposée n'y entre pas. Un champ vide (null ou []) signifie « rien de dit » : toute extraction sur ce champ comptera comme inventée.",
+  "type": "object",
+  "required": ["id", "date_visite", "contexte", "transcription_reference", "sens_fr", "termes_critiques", "attendu", "validation"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^V[0-9]{2,3}$"},
+    "date_visite": {"type": "string", "format": "date", "description": "Sert à vérifier la résolution des dates relatives (« mardi prochain »)."},
+    "heure_fin_vocal": {"type": "string", "description": "HH:MM, optionnel."},
+    "contexte": {
+      "description": "Ce que le CRM sait AVANT le vocal. Exactement ce qui sera fourni à la couche B.",
+      "type": "object",
+      "properties": {
+        "visite_prevue": {"type": "boolean"},
+        "client": {"type": ["string", "null"]},
+        "ville": {"type": ["string", "null"]},
+        "contacts_connus": {"type": "array", "items": {"type": "object", "properties": {"nom": {"type": "string"}, "fonction": {"type": "string"}, "role_achat": {"type": "string"}}}},
+        "affaire": {"type": ["object", "null"], "properties": {"titre": {"type": "string"}, "technologie": {"type": "string"}, "montant_mad": {"type": "number"}, "etape": {"type": "string"}}},
+        "commercial": {"type": "string"},
+        "showroom": {"type": "string"}
+      }
+    },
+    "transcription_reference": {
+      "type": "string",
+      "description": "Ce qui a réellement été dit, mot à mot. Convention : darija en écriture arabe, français en latin, noms propres et marques dans leur graphie officielle, nombres écrits comme prononcés (« ربعين ألف », « deux cent quarante mille »). Marquer [inaudible] plutôt que deviner."
+    },
+    "sens_fr": {"type": "string", "description": "Traduction fidèle en français, sans interprétation."},
+    "termes_critiques": {
+      "description": "Mots dont l'erreur coûte cher. Sert à mesurer la couche A au-delà du WER.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["terme", "categorie"],
+        "properties": {
+          "terme": {"type": "string", "description": "Tel que prononcé."},
+          "categorie": {"enum": ["nom", "clinique", "machine", "technologie", "concurrent", "montant", "date", "role"]},
+          "variantes": {"type": "array", "items": {"type": "string"}, "description": "Graphies acceptables (« Bennani », « بناني »)."},
+          "valeur_mad": {"type": "number", "description": "Pour un montant : valeur en dirhams."}
+        }
+      }
+    },
+    "attendu": {
+      "description": "Informations commerciales attendues. Chaque élément porte `source` : la phrase de la transcription qui le justifie.",
+      "type": "object",
+      "properties": {
+        "client": {"type": ["object", "null"], "properties": {"valeur": {"type": "string"}, "source": {"type": "string"}}},
+        "contacts": {"type": "array", "items": {"type": "object", "required": ["nom"], "properties": {"nom": {"type": "string"}, "fonction": {"type": "string"}, "nouveau": {"type": "boolean"}, "source": {"type": "string"}}}},
+        "technologies": {"type": "array", "items": {"type": "object", "properties": {"valeur": {"type": "string"}, "machine_catalogue": {"type": ["string", "null"]}, "source": {"type": "string"}}}},
+        "besoins": {"type": "array", "items": {"$ref": "#/definitions/texte"}},
+        "interet": {"type": ["object", "null"], "description": "Seulement s'il est explicitement déductible.", "properties": {"valeur": {"enum": ["positif", "neutre", "negatif"]}, "source": {"type": "string"}}},
+        "signaux": {"type": "array", "items": {"$ref": "#/definitions/texte"}},
+        "objections": {"type": "array", "items": {"type": "object", "required": ["type"], "properties": {"type": {"enum": ["prix", "technique", "financement", "timing", "concurrence", "confiance", "autre"]}, "detail": {"type": "string"}, "source": {"type": "string"}}}},
+        "concurrents": {"type": "array", "items": {"type": "object", "required": ["marque"], "properties": {"marque": {"type": "string"}, "source": {"type": "string"}}}},
+        "montants": {"type": "array", "items": {"type": "object", "required": ["valeur_mad", "objet"], "properties": {"valeur_mad": {"type": "number"}, "objet": {"enum": ["prix_cellulift", "offre_concurrent", "budget_client", "remise", "acompte", "mensualite", "autre"]}, "approximatif": {"type": "boolean"}, "source": {"type": "string"}}}},
+        "financement": {"type": "array", "items": {"type": "object", "properties": {"duree_mois": {"type": ["integer", "null"]}, "detail": {"type": "string"}, "source": {"type": "string"}}}},
+        "decideurs": {"type": "array", "items": {"type": "object", "required": ["nom", "role_achat"], "properties": {"nom": {"type": "string"}, "role_achat": {"enum": ["decideur", "co_decideur", "influenceur", "financier", "utilisateur", "prescripteur"]}, "source": {"type": "string"}}}},
+        "timing": {"type": "array", "items": {"type": "object", "required": ["debut", "fin"], "properties": {"debut": {"type": "string", "format": "date"}, "fin": {"type": "string", "format": "date"}, "libelle": {"type": "string"}, "source": {"type": "string"}}}},
+        "prochaine_etape": {"type": ["object", "null"], "description": "Convenue AVEC le client. null si rien de convenu.", "properties": {"type": {"enum": ["demo", "rdv", "visite", "appel", "envoi", "installation", "formation", "autre"]}, "date": {"type": ["string", "null"], "format": "date"}, "heure": {"type": ["string", "null"]}, "participants": {"type": "array", "items": {"type": "string"}}, "source": {"type": "string"}}},
+        "actions_perso": {"type": "array", "items": {"type": "object", "properties": {"texte": {"type": "string"}, "mots_cles": {"type": "array", "items": {"type": "string"}}, "echeance": {"type": ["string", "null"], "format": "date"}, "source": {"type": "string"}}}},
+        "changement_etape": {"type": ["object", "null"], "description": "Seulement si le récit le justifie explicitement.", "properties": {"vers": {"type": "string"}, "source": {"type": "string"}}},
+        "signal_terrain": {"type": ["object", "null"], "properties": {"texte": {"type": "string"}, "mots_cles": {"type": "array", "items": {"type": "string"}}}}
+      }
+    },
+    "validation": {
+      "type": "object",
+      "required": ["redige_par", "relu_par"],
+      "properties": {"redige_par": {"type": "string"}, "relu_par": {"type": "string"}, "desaccords": {"type": "string", "description": "Ce qui a été tranché entre les deux annotateurs."}}
+    }
+  },
+  "definitions": {
+    "texte": {"type": "object", "required": ["texte", "mots_cles"], "properties": {"texte": {"type": "string"}, "mots_cles": {"type": "array", "items": {"type": "string"}, "description": "2 à 4 mots dont la présence suffit à reconnaître l'information."}, "source": {"type": "string"}}}
+  }
+}

@@ -1,0 +1,63 @@
+{
+ "client": {
+  "valeur": "Cabinet Agdal",
+  "score": 0.99,
+  "source": "au cabinet Agdal",
+  "confiance": "confiant"
+ },
+ "contacts": [
+  {
+   "nom": "Dr Tazi",
+   "score": 0.99,
+   "source": "chez Dr Tazi",
+   "confiance": "confiant"
+  }
+ ],
+ "technologies": [
+  {
+   "valeur": "ultrasons focalisés",
+   "confiance": "a_verifier",
+   "score": 0.6,
+   "source": "un I fou de chez Alma"
+  }
+ ],
+ "interet": {
+  "valeur": "negatif",
+  "source": "il n'a pas besoin d'une deuxième machine",
+  "confiance": "confiant"
+ },
+ "objections": [
+  {
+   "type": "autre",
+   "detail": "déjà équipé",
+   "source": "Il a déjà un HIFU de chez Alma",
+   "confiance": "confiant"
+  }
+ ],
+ "concurrents": [
+  {
+   "marque": "Alma",
+   "score": 0.95,
+   "source": "de chez Alma",
+   "confiance": "confiant"
+  }
+ ],
+ "prochaine_etape": {
+  "type": "visite",
+  "date": "2027-01-05",
+  "heure": null,
+  "score": 0.7,
+  "source": "je repasse peut-être en début d'année",
+  "confiance": "confiant"
+ },
+ "actions_perso": [
+  {
+   "texte": "Repasser voir le Dr Tazi",
+   "echeance": "2027-01-05",
+   "source": "je repasse peut-être en début d'année",
+   "confiance": "confiant"
+  }
+ ],
+ "questions": [],
+ "latence_s": 2.4
+}

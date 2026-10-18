@@ -1,0 +1,68 @@
+{
+ "client": {
+  "valeur": "Clinique Nakhil",
+  "score": 0.93,
+  "source": "عيادة النخيل",
+  "confiance": "confiant"
+ },
+ "contacts": [
+  {
+   "nom": "Dr Bensouda",
+   "score": 0.95,
+   "source": "الدكتورة بنسودة",
+   "confiance": "confiant"
+  }
+ ],
+ "technologies": [
+  {
+   "valeur": "LONGISHAPE",
+   "machine_catalogue": "LONGISHAPE",
+   "source": "باغا LONGISHAPE",
+   "confiance": "confiant"
+  }
+ ],
+ "objections": [
+  {
+   "type": "prix",
+   "source": "قالت ليا غالية",
+   "confiance": "confiant"
+  }
+ ],
+ "concurrents": [
+  {
+   "marque": "BTL",
+   "score": 0.9,
+   "source": "عند BTL",
+   "confiance": "confiant"
+  }
+ ],
+ "montants": [
+  {
+   "valeur_mad": 280000,
+   "objet": "budget_client",
+   "confiance": "a_verifier",
+   "score": 0.8,
+   "source": "الميزانية ديالها 28 مليون"
+  },
+  {
+   "valeur_mad": 250000,
+   "objet": "offre_concurrent",
+   "confiance": "a_verifier",
+   "score": 0.78,
+   "source": "ب 25 مليون"
+  }
+ ],
+ "prochaine_etape": null,
+ "actions_perso": [
+  {
+   "texte": "Appeler la Dr Bensouda",
+   "echeance": "2026-10-27",
+   "source": "غادي نعيط ليها الثلاثاء الجاي",
+   "confiance": "confiant"
+  }
+ ],
+ "questions": [
+  "Avez-vous convenu d’une suite avec la Dr Bensouda ?"
+ ],
+ "latence_s": 3.2
+}

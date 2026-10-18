@@ -1,0 +1,67 @@
+{
+ "client": {
+  "valeur": "Clinique Nakhil",
+  "score": 0.93,
+  "source": "عيادة النخيل",
+  "confiance": "confiant"
+ },
+ "contacts": [
+  {
+   "nom": "Dr Bensouda",
+   "score": 0.95,
+   "source": "الدكتورة بنسودة",
+   "confiance": "confiant"
+  }
+ ],
+ "technologies": [
+  {
+   "valeur": "Longi shape",
+   "machine_catalogue": "LONGISHAPE",
+   "confiance": "a_verifier",
+   "score": 0.7,
+   "source": "باغا لونجي شيب"
+  }
+ ],
+ "objections": [
+  {
+   "type": "prix",
+   "source": "قالت ليا غالية",
+   "confiance": "confiant"
+  }
+ ],
+ "concurrents": [
+  {
+   "marque": "BTL",
+   "confiance": "a_verifier",
+   "score": 0.75,
+   "source": "عند بي تي ال"
+  }
+ ],
+ "montants": [
+  {
+   "valeur_mad": 28000000,
+   "objet": "budget_client",
+   "score": 0.92,
+   "source": "الميزانية ديالها 28 مليون",
+   "confiance": "confiant"
+  },
+  {
+   "valeur_mad": 25000000,
+   "objet": "offre_concurrent",
+   "score": 0.9,
+   "source": "ب 25 مليون",
+   "confiance": "confiant"
+  }
+ ],
+ "prochaine_etape": null,
+ "actions_perso": [
+  {
+   "texte": "Appeler la Dr Bensouda",
+   "echeance": "2026-10-27",
+   "source": "غادي نعيط ليها الثلاثاء الجاي",
+   "confiance": "confiant"
+  }
+ ],
+ "questions": [],
+ "latence_s": 3.2
+}

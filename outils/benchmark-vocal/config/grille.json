@@ -1,0 +1,184 @@
+{
+  "_doc": "Grille d'évaluation du benchmark vocal Cellulift. Chaque type de donnée a une catégorie (critique / importante / secondaire), une règle d'appariement et une précision cible qui sert à calibrer son seuil de confiance. Les poids ne servent qu'à trier les erreurs par gravité : les résultats sont toujours rapportés par type, jamais fondus dans un score unique.",
+  "categories": {
+    "critique": {
+      "poids_erreur": 10,
+      "libelle": "Critique"
+    },
+    "importante": {
+      "poids_erreur": 3,
+      "libelle": "Importante"
+    },
+    "secondaire": {
+      "poids_erreur": 1,
+      "libelle": "Secondaire"
+    }
+  },
+  "types": {
+    "client": {
+      "categorie": "critique",
+      "regle": "nom",
+      "precision_cible": 0.98,
+      "libelle": "Client (identité)"
+    },
+    "contacts": {
+      "categorie": "critique",
+      "regle": "contact",
+      "precision_cible": 0.98,
+      "libelle": "Contacts (identité)"
+    },
+    "montants": {
+      "categorie": "critique",
+      "regle": "montant",
+      "precision_cible": 0.99,
+      "libelle": "Montants"
+    },
+    "prochaine_etape": {
+      "categorie": "critique",
+      "regle": "etape",
+      "precision_cible": 0.98,
+      "libelle": "Étape convenue (type, date, heure)"
+    },
+    "actions_perso": {
+      "categorie": "importante",
+      "regle": "action",
+      "precision_cible": 0.9,
+      "libelle": "Actions personnelles (et échéance)"
+    },
+    "changement_etape": {
+      "categorie": "critique",
+      "regle": "pipeline",
+      "precision_cible": 0.99,
+      "libelle": "Changement de pipeline"
+    },
+    "decideurs": {
+      "categorie": "importante",
+      "regle": "decideur",
+      "precision_cible": 0.93,
+      "libelle": "Décideurs / influenceurs"
+    },
+    "objections": {
+      "categorie": "importante",
+      "regle": "objection",
+      "precision_cible": 0.9,
+      "libelle": "Objections"
+    },
+    "concurrents": {
+      "categorie": "importante",
+      "regle": "concurrent",
+      "precision_cible": 0.95,
+      "libelle": "Concurrents"
+    },
+    "financement": {
+      "categorie": "importante",
+      "regle": "financement",
+      "precision_cible": 0.93,
+      "libelle": "Financement"
+    },
+    "timing": {
+      "categorie": "importante",
+      "regle": "periode",
+      "precision_cible": 0.9,
+      "libelle": "Timing du projet"
+    },
+    "technologies": {
+      "categorie": "importante",
+      "regle": "technologie",
+      "precision_cible": 0.93,
+      "libelle": "Technologies / machines"
+    },
+    "besoins": {
+      "categorie": "secondaire",
+      "regle": "mots_cles",
+      "precision_cible": 0.8,
+      "libelle": "Besoin / motivation"
+    },
+    "signaux": {
+      "categorie": "secondaire",
+      "regle": "mots_cles",
+      "precision_cible": 0.8,
+      "libelle": "Signaux"
+    },
+    "interet": {
+      "categorie": "secondaire",
+      "regle": "valeur",
+      "precision_cible": 0.85,
+      "libelle": "Niveau d'intérêt"
+    },
+    "signal_terrain": {
+      "categorie": "secondaire",
+      "regle": "mots_cles",
+      "precision_cible": 0.8,
+      "libelle": "Signal terrain généralisable"
+    }
+  },
+  "appariement": {
+    "nom_correct": 0.88,
+    "nom_meme_entite": 0.6,
+    "mots_cles_min": 0.5,
+    "titres_ignores": [
+      "dr",
+      "docteur",
+      "doctoresse",
+      "pr",
+      "professeur",
+      "mme",
+      "madame",
+      "mr",
+      "m",
+      "monsieur",
+      "mlle"
+    ]
+  },
+  "stt": {
+    "categories_termes": [
+      "nom",
+      "clinique",
+      "machine",
+      "technologie",
+      "concurrent",
+      "montant",
+      "date",
+      "role"
+    ],
+    "lignes_tableau": {
+      "Noms propres": [
+        "nom",
+        "clinique"
+      ],
+      "Machines": [
+        "machine",
+        "technologie"
+      ],
+      "Concurrents": [
+        "concurrent"
+      ],
+      "Montants": [
+        "montant"
+      ],
+      "Dates": [
+        "date"
+      ]
+    }
+  },
+  "modele_effort": {
+    "_doc": "Estimation du temps de revue, en secondes. Paramètres à recaler avec 2 ou 3 vraies revues chronométrées.",
+    "lecture_par_element": 3,
+    "confirmation": 6,
+    "correction": 18,
+    "ajout_manquant": 25,
+    "question": 12,
+    "base": 10
+  },
+  "manquants_comptes_comme_correction": [
+    "critique",
+    "importante"
+  ],
+  "garde_fous": {
+    "_doc": "Signalent une architecture à écarter, sans jamais choisir à la place de l'équipe. null = pas de garde-fou.",
+    "taux_invention_max": 0.05,
+    "erreurs_silencieuses_critiques_max_par_vocal": 0.1,
+    "latence_mediane_max_s": 45,
+    "cout_max_usd_par_minute": null
+  }
+}

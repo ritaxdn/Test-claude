@@ -1,0 +1,4 @@
+id,commercial,langue,environnement,duree_cible_s,situations,scenario,statut,audio,fiche,duree_reelle_s,notes
+V01,C1,mixte,calme,90,nom_medecin|nom_clinique|concurrent|montant|date_relative|plusieurs_decideurs|financement,Démo réussie,fictif,audio/V01.m4a,fiches/V01.json,72,DONNÉES FICTIVES
+V02,C2,darija,voiture,60,nom_medecin|montant_centimes|concurrent|objection_prix|date_relative|sans_prochaine_etape,Budget en millions,fictif,audio/V02.m4a,fiches/V02.json,48,DONNÉES FICTIVES
+V03,C3,francais,rue,45,nom_medecin|concurrent|visite_negative|sans_prochaine_etape,Refus,fictif,audio/V03.m4a,fiches/V03.json,40,DONNÉES FICTIVES

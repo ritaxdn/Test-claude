@@ -1,0 +1,135 @@
+{
+ "client": {
+  "valeur": "Clinique Atlas",
+  "score": 0.99,
+  "source": "كنت عند Clinique Atlas",
+  "confiance": "confiant"
+ },
+ "contacts": [
+  {
+   "nom": "Dr Amrani",
+   "nouveau": false,
+   "score": 0.98,
+   "source": "مع Dr Amrani",
+   "confiance": "confiant"
+  },
+  {
+   "nom": "Dr Benani",
+   "fonction": "associé",
+   "nouveau": true,
+   "score": 0.95,
+   "source": "Dr Benani, c’est lui qui gère les finances",
+   "confiance": "confiant"
+  }
+ ],
+ "technologies": [
+  {
+   "valeur": "laser diode",
+   "source": "le laser diode pour l’épilation",
+   "confiance": "confiant"
+  }
+ ],
+ "besoins": [
+  {
+   "texte": "Épilation, nouveau centre",
+   "source": "pour l’épilation",
+   "confiance": "confiant"
+  }
+ ],
+ "interet": {
+  "valeur": "positif",
+  "source": "Ils sont très intéressés",
+  "confiance": "confiant"
+ },
+ "signaux": [
+  {
+   "texte": "Nouveau centre en janvier",
+   "source": "centre جديد ف janvier",
+   "confiance": "confiant"
+  }
+ ],
+ "objections": [
+  {
+   "type": "prix",
+   "source": "غالي بزاف",
+   "confiance": "confiant"
+  }
+ ],
+ "concurrents": [
+  {
+   "marque": "Candela",
+   "score": 0.97,
+   "source": "offre ديال Candela",
+   "confiance": "confiant"
+  }
+ ],
+ "montants": [
+  {
+   "valeur_mad": 285000,
+   "objet": "prix_cellulift",
+   "score": 0.97,
+   "source": "deux cent quatre-vingt-cinq mille",
+   "confiance": "confiant"
+  },
+  {
+   "valeur_mad": 240,
+   "objet": "offre_concurrent",
+   "confiance": "confiant",
+   "score": 0.9,
+   "source": "Candela تقريبا 240"
+  }
+ ],
+ "financement": [
+  {
+   "duree_mois": 24,
+   "source": "le financement sur 24 mois",
+   "confiance": "confiant"
+  }
+ ],
+ "decideurs": [
+  {
+   "nom": "Dr Amrani",
+   "role_achat": "decideur",
+   "source": "مع Dr Amrani",
+   "confiance": "confiant"
+  },
+  {
+   "nom": "Dr Bennani",
+   "role_achat": "financier",
+   "source": "c’est lui qui gère les finances",
+   "confiance": "confiant"
+  }
+ ],
+ "timing": [
+  {
+   "debut": "2027-01-01",
+   "fin": "2027-01-31",
+   "source": "centre جديد ف janvier",
+   "confiance": "confiant"
+  }
+ ],
+ "prochaine_etape": {
+  "type": "demo",
+  "date": "2026-10-22",
+  "heure": "15:00",
+  "score": 0.96,
+  "source": "on a calé une démo au showroom jeudi à 15h",
+  "confiance": "confiant"
+ },
+ "actions_perso": [
+  {
+   "texte": "Envoyer la simulation de financement",
+   "echeance": "2026-10-21",
+   "source": "la simulation de financement قبل الأربعاء",
+   "confiance": "confiant"
+  }
+ ],
+ "changement_etape": null,
+ "signal_terrain": {
+  "texte": "Candela autour de 240 000",
+  "source": "offre ديال Candela",
+  "confiance": "confiant"
+ },
+ "questions": [],
+ "latence_s": 3.8
+}

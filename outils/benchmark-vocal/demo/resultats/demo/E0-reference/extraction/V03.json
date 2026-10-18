@@ -1,0 +1,48 @@
+{
+ "client": {
+  "valeur": "Cabinet Agdal",
+  "score": 0.99,
+  "source": "au cabinet Agdal",
+  "confiance": "confiant"
+ },
+ "contacts": [
+  {
+   "nom": "Dr Tazi",
+   "score": 0.99,
+   "source": "chez Dr Tazi",
+   "confiance": "confiant"
+  }
+ ],
+ "technologies": [
+  {
+   "valeur": "HIFU",
+   "source": "un HIFU de chez Alma",
+   "confiance": "confiant"
+  }
+ ],
+ "interet": {
+  "valeur": "negatif",
+  "source": "il n'a pas besoin d'une deuxième machine",
+  "confiance": "confiant"
+ },
+ "objections": [
+  {
+   "type": "autre",
+   "detail": "déjà équipé",
+   "source": "Il a déjà un HIFU de chez Alma",
+   "confiance": "confiant"
+  }
+ ],
+ "concurrents": [
+  {
+   "marque": "Alma",
+   "score": 0.95,
+   "source": "de chez Alma",
+   "confiance": "confiant"
+  }
+ ],
+ "prochaine_etape": null,
+ "actions_perso": [],
+ "questions": [],
+ "latence_s": 2.4
+}

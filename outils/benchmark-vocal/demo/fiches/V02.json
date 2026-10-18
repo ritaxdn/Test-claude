@@ -1,0 +1,142 @@
+{
+ "id": "V02",
+ "_avertissement": "DONNÉES FICTIVES",
+ "date_visite": "2026-10-20",
+ "contexte": {
+  "visite_prevue": true,
+  "client": "Clinique Nakhil",
+  "ville": "Marrakech",
+  "contacts_connus": [
+   {
+    "nom": "Dr Bensouda",
+    "fonction": "dermatologue",
+    "role_achat": "decideur"
+   }
+  ],
+  "affaire": null,
+  "commercial": "C2",
+  "showroom": "Marrakech"
+ },
+ "transcription_reference": "كنت عند الدكتورة بنسودة ف عيادة النخيل. باغا LONGISHAPE ولكن قالت ليا غالية، الميزانية ديالها 28 مليون، ولقات عند BTL ب 25 مليون. ما تفاهمناش على شي حاجة، غادي نعيط ليها الثلاثاء الجاي.",
+ "sens_fr": "J’étais chez la Dr Bensouda à la clinique Nakhil. Elle veut le LONGISHAPE mais le trouve cher ; son budget est de 28 millions (280 000 MAD), elle a trouvé chez BTL à 25 millions (250 000 MAD). On ne s’est mis d’accord sur rien ; je l’appellerai mardi prochain.",
+ "termes_critiques": [
+  {
+   "terme": "بنسودة",
+   "categorie": "nom",
+   "variantes": [
+    "Bensouda",
+    "بنسودة"
+   ]
+  },
+  {
+   "terme": "عيادة النخيل",
+   "categorie": "clinique",
+   "variantes": [
+    "النخيل",
+    "Nakhil",
+    "Nakhil"
+   ]
+  },
+  {
+   "terme": "LONGISHAPE",
+   "categorie": "machine",
+   "variantes": [
+    "Longishape",
+    "لونجيشيب"
+   ]
+  },
+  {
+   "terme": "BTL",
+   "categorie": "concurrent",
+   "variantes": [
+    "BTL",
+    "بي تي ال"
+   ]
+  },
+  {
+   "terme": "28 مليون",
+   "categorie": "montant",
+   "valeur_mad": 280000
+  },
+  {
+   "terme": "25 مليون",
+   "categorie": "montant",
+   "valeur_mad": 250000
+  },
+  {
+   "terme": "الثلاثاء الجاي",
+   "categorie": "date",
+   "variantes": [
+    "الثلاثاء",
+    "التلات"
+   ]
+  }
+ ],
+ "attendu": {
+  "client": {
+   "valeur": "Clinique Nakhil",
+   "source": "عيادة النخيل"
+  },
+  "contacts": [
+   {
+    "nom": "Dr Bensouda",
+    "nouveau": false,
+    "source": "الدكتورة بنسودة"
+   }
+  ],
+  "technologies": [
+   {
+    "valeur": "LONGISHAPE",
+    "machine_catalogue": "LONGISHAPE",
+    "source": "باغا LONGISHAPE"
+   }
+  ],
+  "besoins": [],
+  "interet": null,
+  "signaux": [],
+  "objections": [
+   {
+    "type": "prix",
+    "source": "قالت ليا غالية"
+   }
+  ],
+  "concurrents": [
+   {
+    "marque": "BTL",
+    "source": "عند BTL"
+   }
+  ],
+  "montants": [
+   {
+    "valeur_mad": 280000,
+    "objet": "budget_client",
+    "source": "الميزانية ديالها 28 مليون"
+   },
+   {
+    "valeur_mad": 250000,
+    "objet": "offre_concurrent",
+    "source": "ب 25 مليون"
+   }
+  ],
+  "financement": [],
+  "decideurs": [],
+  "timing": [],
+  "prochaine_etape": null,
+  "actions_perso": [
+   {
+    "texte": "Appeler la Dr Bensouda",
+    "mots_cles": [
+     "appeler"
+    ],
+    "echeance": "2026-10-27",
+    "source": "غادي نعيط ليها الثلاثاء الجاي"
+   }
+  ],
+  "changement_etape": null,
+  "signal_terrain": null
+ },
+ "validation": {
+  "redige_par": "demo",
+  "relu_par": "demo2"
+ }
+}

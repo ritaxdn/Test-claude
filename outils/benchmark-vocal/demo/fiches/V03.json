@@ -1,0 +1,104 @@
+{
+ "id": "V03",
+ "_avertissement": "DONNÉES FICTIVES",
+ "date_visite": "2026-10-20",
+ "contexte": {
+  "visite_prevue": true,
+  "client": "Cabinet Agdal",
+  "ville": "Rabat",
+  "contacts_connus": [
+   {
+    "nom": "Dr Tazi",
+    "fonction": "médecin esthétique",
+    "role_achat": "decideur"
+   }
+  ],
+  "affaire": null,
+  "commercial": "C3",
+  "showroom": "Rabat"
+ },
+ "transcription_reference": "Visite chez Dr Tazi au cabinet Agdal. Il a déjà un HIFU de chez Alma, il n'a pas besoin d'une deuxième machine pour l'instant. Rien de prévu, je repasse peut-être en début d'année.",
+ "sens_fr": "Visite chez Dr Tazi au cabinet Agdal. Il a déjà un HIFU de chez Alma, il n'a pas besoin d'une deuxième machine pour l'instant. Rien de prévu, je repasse peut-être en début d'année.",
+ "termes_critiques": [
+  {
+   "terme": "Dr Tazi",
+   "categorie": "nom",
+   "variantes": [
+    "Tazi"
+   ]
+  },
+  {
+   "terme": "cabinet Agdal",
+   "categorie": "clinique",
+   "variantes": [
+    "Agdal"
+   ]
+  },
+  {
+   "terme": "HIFU",
+   "categorie": "technologie",
+   "variantes": [
+    "HIFU",
+    "hifu"
+   ]
+  },
+  {
+   "terme": "Alma",
+   "categorie": "concurrent",
+   "variantes": [
+    "Alma"
+   ]
+  }
+ ],
+ "attendu": {
+  "client": {
+   "valeur": "Cabinet Agdal",
+   "source": "au cabinet Agdal"
+  },
+  "contacts": [
+   {
+    "nom": "Dr Tazi",
+    "nouveau": false,
+    "source": "chez Dr Tazi"
+   }
+  ],
+  "technologies": [
+   {
+    "valeur": "HIFU",
+    "machine_catalogue": null,
+    "source": "un HIFU de chez Alma"
+   }
+  ],
+  "besoins": [],
+  "interet": {
+   "valeur": "negatif",
+   "source": "il n'a pas besoin d'une deuxième machine"
+  },
+  "signaux": [],
+  "objections": [
+   {
+    "type": "autre",
+    "detail": "déjà équipé",
+    "source": "Il a déjà un HIFU de chez Alma"
+   }
+  ],
+  "concurrents": [
+   {
+    "marque": "Alma Lasers",
+    "source": "de chez Alma"
+   }
+  ],
+  "montants": [],
+  "financement": [],
+  "decideurs": [],
+  "timing": [],
+  "prochaine_etape": null,
+  "actions_perso": [],
+  "changement_etape": null,
+  "signal_terrain": null
+ },
+ "validation": {
+  "redige_par": "demo",
+  "relu_par": "demo2"
+ }
+}

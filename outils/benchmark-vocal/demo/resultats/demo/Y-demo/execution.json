@@ -1,0 +1,25 @@
+{
+ "architecture": {
+  "id": "Y-demo",
+  "libelle": "Démo : modèle audio natif",
+  "stt": {
+   "adaptateur": "aucun"
+  },
+  "extraction": {
+   "adaptateur": "fichier",
+   "dossier": "demo/sorties/Y/extraction"
+  },
+  "cout": {
+   "stt_usd_par_minute": 0,
+   "extraction_usd_par_vocal": 0.02
+  },
+  "actif": true
+ },
+ "date": "2026-10-18T16:31:29",
+ "vocaux": 3,
+ "empreintes": {
+  "consigne": "c5f1ac0eab08",
+  "grille": "4fb3a1956999",
+  "contexte": "e74bd9829045"
+ }
+}

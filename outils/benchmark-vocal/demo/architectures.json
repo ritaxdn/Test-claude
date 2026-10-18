@@ -1,0 +1,55 @@
+{
+ "_doc": "Architectures FICTIVES de démonstration : sorties rejouées depuis demo/sorties.",
+ "architectures": [
+  {
+   "id": "E0-reference",
+   "libelle": "Transcription humaine + extraction (borne haute)",
+   "role": "reference",
+   "stt": {
+    "adaptateur": "oracle"
+   },
+   "extraction": {
+    "adaptateur": "fichier",
+    "dossier": "demo/sorties/ref/extraction"
+   },
+   "cout": {
+    "stt_usd_par_minute": 0,
+    "extraction_usd_par_vocal": 0.004
+   },
+   "actif": true
+  },
+  {
+   "id": "X-demo",
+   "libelle": "Démo : STT généraliste → extraction",
+   "stt": {
+    "adaptateur": "fichier",
+    "dossier": "demo/sorties/X/stt"
+   },
+   "extraction": {
+    "adaptateur": "fichier",
+    "dossier": "demo/sorties/X/extraction"
+   },
+   "cout": {
+    "stt_usd_par_minute": 0.006,
+    "extraction_usd_par_vocal": 0.004
+   },
+   "actif": true
+  },
+  {
+   "id": "Y-demo",
+   "libelle": "Démo : modèle audio natif",
+   "stt": {
+    "adaptateur": "aucun"
+   },
+   "extraction": {
+    "adaptateur": "fichier",
+    "dossier": "demo/sorties/Y/extraction"
+   },
+   "cout": {
+    "stt_usd_par_minute": 0,
+    "extraction_usd_par_vocal": 0.02
+   },
+   "actif": true
+  }
+ ]
+}
