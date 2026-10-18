@@ -69,14 +69,44 @@
    "objet": "prix_cellulift",
    "score": 0.97,
    "source": "deux cent quatre-vingt-cinq mille",
-   "confiance": "confiant"
+   "confiance": "confiant",
+   "normalisation_monetaire": {
+    "source": "deux cent quatre-vingt-cinq mille",
+    "lectures": [
+     {
+      "valeur_mad": 285000,
+      "regle": "milliers de dirhams"
+     }
+    ],
+    "plausibles": [
+     285000
+    ],
+    "proposition": 285000,
+    "ambigu": false,
+    "decision": "valeur extraite conforme"
+   }
   },
   {
    "valeur_mad": 240000,
    "objet": "offre_concurrent",
    "confiance": "a_verifier",
    "score": 0.86,
-   "source": "تقريبا ميتين و ربعين ألف"
+   "source": "تقريبا ميتين و ربعين ألف",
+   "normalisation_monetaire": {
+    "source": "تقريبا ميتين و ربعين ألف",
+    "lectures": [
+     {
+      "valeur_mad": 240000,
+      "regle": "milliers de dirhams"
+     }
+    ],
+    "plausibles": [
+     240000
+    ],
+    "proposition": 240000,
+    "ambigu": false,
+    "decision": "valeur extraite conforme"
+   }
   }
  ],
  "financement": [

@@ -1,0 +1,4 @@
+vocal,langue,environnement,wer,cer,corrections,confirmations,questions,silencieuses_critiques,acceptable,temps_total_s
+V01,mixte,calme,0.1134,0.1034,1,0,0,1,False,92.0
+V02,darija,voiture,0.2424,0.1361,2,2,0,2,False,90.0
+V03,francais,rue,0.1316,0.0507,4,0,0,1,False,119.3

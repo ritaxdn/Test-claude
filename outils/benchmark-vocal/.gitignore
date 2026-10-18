@@ -7,3 +7,6 @@ resultats/*
 !resultats/.gitkeep
 __pycache__/
 demo/resultats/demo/*/travail/
+
+# Copie complète du catalogue (prix inclus) : régénérée par harness/contexte_crm.py, gardée hors du dépôt
+dataset/contexte/catalogue_crm.json

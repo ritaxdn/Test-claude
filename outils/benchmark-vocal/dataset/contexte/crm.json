@@ -1,267 +1,318 @@
 {
-  "_doc": "Contexte CRM fourni à la couche B (compréhension métier). Catalogue : machines actives du CRM au 18/10/2026. Concurrents : liste provisoire à compléter par la direction commerciale. Commerciaux : pseudonymes. Les visites prévues propres à chaque vocal sont dans la fiche de référence (champ `contexte`).",
+  "_doc": "Contexte CRM fourni à la couche B. Catalogue et technologies : copie du CRM (harness/contexte_crm.py). Concurrents : liste fournie par la direction commerciale, ouverte. Commerciaux : pseudonymes. Les visites prévues propres à chaque vocal sont dans la fiche de référence (champ `contexte`).",
   "catalogue": [
     {
       "nom": "ALEX YAG ULTRA",
-      "categorie": "Laser"
+      "categorie": "Laser",
+      "marque": "LGL Expert",
+      "reference": "LAS-ALEXYAGULTRA"
     },
     {
       "nom": "BIOFILLER X7",
-      "categorie": "Rajeunissement cutané"
+      "categorie": "Rajeunissement cutané",
+      "marque": "LGL Expert",
+      "reference": "RAJ-BIOFILLERX7"
     },
     {
       "nom": "BODYTECH 9",
-      "categorie": "Amincissement"
+      "categorie": "Amincissement",
+      "marque": "LGL Expert",
+      "reference": "AMI-BODYTECH9"
     },
     {
       "nom": "BRASILIFT",
-      "categorie": "Amincissement"
+      "categorie": "Amincissement",
+      "marque": "LGL Expert",
+      "reference": "AMI-BRASILIFT"
     },
     {
       "nom": "CENTRIFUGEL",
-      "categorie": "Rajeunissement cutané"
+      "categorie": "Rajeunissement cutané",
+      "marque": "LGL Expert",
+      "reference": "RAJ-CENTRIFUGEL"
     },
     {
       "nom": "CRYOCOVER",
-      "categorie": "Thérapie avancée"
+      "categorie": "Thérapie avancée",
+      "marque": "LGL Expert",
+      "reference": "THE-CRYOCOVER"
     },
     {
       "nom": "DERMABRASIF 6G",
-      "categorie": "Rajeunissement cutané"
+      "categorie": "Rajeunissement cutané",
+      "marque": "LGL Expert",
+      "reference": "RAJ-DERMABRASIF6G"
     },
     {
       "nom": "DERMAPLEX",
-      "categorie": "Rajeunissement cutané"
+      "categorie": "Rajeunissement cutané",
+      "marque": "LGL Expert",
+      "reference": "RAJ-DERMAPLEX"
     },
     {
       "nom": "DREAMTECH PRO",
-      "categorie": "Thérapie avancée"
+      "categorie": "Thérapie avancée",
+      "marque": "LGL Expert",
+      "reference": "THE-DREAMTECHPRO"
     },
     {
       "nom": "ELITECOLOMBIA",
-      "categorie": "Amincissement"
+      "categorie": "Amincissement",
+      "marque": "LGL Expert",
+      "reference": "AMI-ELITECOLOMBIA"
     },
     {
       "nom": "FOTOKROM",
-      "categorie": "Laser"
+      "categorie": "Laser",
+      "marque": "LGL Expert",
+      "reference": "LAS-FOTOKROM"
     },
     {
       "nom": "FRAC'COV 4",
-      "categorie": "Laser"
+      "categorie": "Laser",
+      "marque": "LGL Expert",
+      "reference": "LAS-FRACOV4"
     },
     {
       "nom": "FREQUENCIOUS",
-      "categorie": "Rajeunissement cutané"
+      "categorie": "Rajeunissement cutané",
+      "marque": "LGL Expert",
+      "reference": "RAJ-FREQUENCIOUS"
     },
     {
       "nom": "FREQUENTAZIA",
-      "categorie": "Thérapie avancée"
+      "categorie": "Thérapie avancée",
+      "marque": "LGL Expert",
+      "reference": "THE-FREQUENTAZIA"
     },
     {
       "nom": "HANOVER 5G",
-      "categorie": "Laser"
+      "categorie": "Laser",
+      "marque": "LGL Expert",
+      "reference": "LAS-HANOVER5G"
     },
     {
       "nom": "HOT POWER",
-      "categorie": "Amincissement"
+      "categorie": "Amincissement",
+      "marque": "LGL Expert",
+      "reference": "AMI-HOTPOWER"
     },
     {
       "nom": "LA QUEEN",
-      "categorie": "Laser"
+      "categorie": "Laser",
+      "marque": "LGL Expert",
+      "reference": "LAS-QUEEN"
     },
     {
       "nom": "LASER SHOCK",
-      "categorie": "Laser"
+      "categorie": "Laser",
+      "marque": "LGL Expert",
+      "reference": "LAS-LASERSHOCK"
     },
     {
       "nom": "LED BIO-LIGHT",
-      "categorie": "Photomodulation"
+      "categorie": "Photomodulation",
+      "marque": "LGL Expert",
+      "reference": "PHO-LEDBIOLIGHT"
     },
     {
       "nom": "LED FOTOSKIN",
-      "categorie": "Photomodulation"
+      "categorie": "Photomodulation",
+      "marque": "LGL Expert",
+      "reference": "PHO-LEDFOTOSKIN"
     },
     {
       "nom": "LED FOTOSKIN ULTRA",
-      "categorie": "Photomodulation"
+      "categorie": "Photomodulation",
+      "marque": "LGL Expert",
+      "reference": "PHO-LEDFOTOSKINULTRA"
     },
     {
       "nom": "LONGCHOC",
-      "categorie": "Amincissement"
+      "categorie": "Amincissement",
+      "marque": "LGL Expert",
+      "reference": "AMI-LONGCHOC"
     },
     {
       "nom": "LONGIFLASH",
-      "categorie": "Photomodulation"
+      "categorie": "Photomodulation",
+      "marque": "LGL Expert",
+      "reference": "PHO-LONGIFLASH"
     },
     {
       "nom": "LONGILYSE",
-      "categorie": "Amincissement"
+      "categorie": "Amincissement",
+      "marque": "LGL Expert",
+      "reference": "AMI-LONGILYSE"
     },
     {
       "nom": "LONGISHAPE",
-      "categorie": "Amincissement"
+      "categorie": "Amincissement",
+      "marque": "LGL Expert",
+      "reference": "AMI-LONGISHAPE"
     },
     {
       "nom": "MEGALIGHT",
-      "categorie": "Laser"
+      "categorie": "Laser",
+      "marque": "LGL Expert",
+      "reference": "LAS-MEGALIGHT"
     },
     {
       "nom": "MYM DERMAPEN",
-      "categorie": "Rajeunissement cutané"
+      "categorie": "Rajeunissement cutané",
+      "marque": "LGL Expert",
+      "reference": "RAJ-MYMDERMAPEN"
     },
     {
       "nom": "NEW EPIL'LIGHT",
-      "categorie": "Laser"
+      "categorie": "Laser",
+      "marque": "LGL Expert",
+      "reference": "LAS-NEWEPILLIGHT"
     },
     {
       "nom": "PANDASLIM",
-      "categorie": "Amincissement"
+      "categorie": "Amincissement",
+      "marque": "LGL Expert",
+      "reference": "AMI-PANDASLIM"
     },
     {
       "nom": "PERFECT'LIFT",
-      "categorie": "HIFU"
+      "categorie": "HIFU",
+      "marque": "LGL Expert",
+      "reference": "HIF-PERFECTLIFT"
     },
     {
       "nom": "PHYSIOMEDIC A600",
-      "categorie": "Thérapie avancée"
+      "categorie": "Thérapie avancée",
+      "marque": "LGL Expert",
+      "reference": "THE-PHYSIOMEDICA600"
     },
     {
       "nom": "PISTOR +34",
-      "categorie": "Rajeunissement cutané"
+      "categorie": "Rajeunissement cutané",
+      "marque": "LGL Expert",
+      "reference": "RAJ-PISTOR34"
     },
     {
       "nom": "PRESSOLIGNE 5",
-      "categorie": "Amincissement"
+      "categorie": "Amincissement",
+      "marque": "LGL Expert",
+      "reference": "AMI-PRESSOLIGNE5"
     },
     {
       "nom": "REJUVSKIN",
-      "categorie": "HIFU"
+      "categorie": "HIFU",
+      "marque": "LGL Expert",
+      "reference": "HIF-REJUVSKIN"
     },
     {
       "nom": "SEVENWAVES",
-      "categorie": "Laser"
+      "categorie": "Laser",
+      "marque": "LGL Expert",
+      "reference": "LAS-7WAVES"
     },
     {
       "nom": "SHOCSTEEL",
-      "categorie": "Amincissement"
+      "categorie": "Amincissement",
+      "marque": "LGL Expert",
+      "reference": "AMI-SHOCSTEEL"
     },
     {
       "nom": "SKIN ANALYSER G7",
-      "categorie": "Rajeunissement cutané"
+      "categorie": "Rajeunissement cutané",
+      "marque": "LGL Expert",
+      "reference": "RAJ-SKINANALYSERG7"
     },
     {
       "nom": "SKIN ANALYZER G5",
-      "categorie": "Rajeunissement cutané"
+      "categorie": "Rajeunissement cutané",
+      "marque": "LGL Expert",
+      "reference": "DIAG-SKINANALYZER"
     },
     {
       "nom": "SKIN BRIGHT",
-      "categorie": "Rajeunissement cutané"
+      "categorie": "Rajeunissement cutané",
+      "marque": "LGL Expert",
+      "reference": "RAJ-SKINBRIGHT"
     },
     {
       "nom": "SLIMAX LIPO 3",
-      "categorie": "Amincissement"
+      "categorie": "Amincissement",
+      "marque": "LGL Expert",
+      "reference": "AMI-SLIMAXLIPO3"
     },
     {
       "nom": "SLIMAX LIPO 7",
-      "categorie": "Amincissement"
+      "categorie": "Amincissement",
+      "marque": "LGL Expert",
+      "reference": "AMI-SLIMAXLIPO7"
     },
     {
       "nom": "STEEL MUSCLE",
-      "categorie": "Amincissement"
+      "categorie": "Amincissement",
+      "marque": "LGL Expert",
+      "reference": "AMI-STEELMUSCLE"
     },
     {
       "nom": "SYNERGY+",
-      "categorie": "Laser"
+      "categorie": "Laser",
+      "marque": "LGL Expert",
+      "reference": "LAS-SYNERGY"
     },
     {
       "nom": "T-CARE 6G",
-      "categorie": "Thérapie avancée"
+      "categorie": "Thérapie avancée",
+      "marque": "LGL Expert",
+      "reference": "THE-TCARE6G"
     },
     {
       "nom": "TANITA",
-      "categorie": "Amincissement"
+      "categorie": "Amincissement",
+      "marque": "LGL Expert",
+      "reference": "AMI-TANITA"
     },
     {
       "nom": "UltraTrio Pro",
-      "categorie": "Thérapie avancée"
+      "categorie": "Thérapie avancée",
+      "marque": "LGL Expert",
+      "reference": "THE-ULTRATRIOPRO"
     },
     {
       "nom": "VAGILASE",
-      "categorie": "Photomodulation"
+      "categorie": "Photomodulation",
+      "marque": "LGL Expert",
+      "reference": "PHO-VAGILASE"
     }
-  ],
-  "technologies": [
-    "laser diode",
-    "laser alexandrite",
-    "Nd:YAG",
-    "IPL",
-    "HIFU",
-    "radiofréquence",
-    "radiofréquence microaiguilles",
-    "cryolipolyse",
-    "LED",
-    "ondes de choc",
-    "électrostimulation",
-    "pressothérapie",
-    "microdermabrasion",
-    "Q-switched"
   ],
   "concurrents_connus": [
     {
-      "marque": "Candela",
+      "marque": "Specta",
       "alias": [
-        "كانديلا",
-        "Kandela"
+        "Spectra"
       ]
     },
     {
-      "marque": "Lumenis",
-      "alias": []
-    },
-    {
-      "marque": "Alma Lasers",
+      "marque": "Physioesthetika",
       "alias": [
-        "Alma"
+        "Physio Esthetika",
+        "Physio Esthétika",
+        "Physioesthetica"
       ]
-    },
-    {
-      "marque": "Cynosure",
-      "alias": []
     },
     {
       "marque": "Fotona",
       "alias": []
     },
     {
-      "marque": "Cutera",
-      "alias": []
-    },
-    {
-      "marque": "DEKA",
+      "marque": "Cynosure",
       "alias": [
-        "Deka"
+        "Cynosur"
       ]
     },
     {
-      "marque": "BTL",
+      "marque": "Alma",
       "alias": [
-        "BTL Emsculpt"
-      ]
-    },
-    {
-      "marque": "InMode",
-      "alias": [
-        "Inmode"
-      ]
-    },
-    {
-      "marque": "Asclepion",
-      "alias": []
-    },
-    {
-      "marque": "Quanta System",
-      "alias": [
-        "Quanta"
+        "Alma Lasers"
       ]
     }
   ],
@@ -306,5 +357,31 @@
     "financier",
     "utilisateur",
     "prescripteur"
-  ]
+  ],
+  "_concurrents": "Liste fournie par la direction commerciale le 18/10/2026. Liste ouverte : un concurrent absent est extrait et évalué comme les autres.",
+  "technologies_courantes": [
+    "laser diode",
+    "laser alexandrite",
+    "Nd:YAG",
+    "IPL",
+    "HIFU",
+    "radiofréquence",
+    "radiofréquence microaiguilles",
+    "cryolipolyse",
+    "LED",
+    "ondes de choc",
+    "électrostimulation",
+    "pressothérapie",
+    "microdermabrasion",
+    "Q-switched"
+  ],
+  "technologies": [
+    "Amincissement",
+    "HIFU",
+    "Laser",
+    "Photomodulation",
+    "Rajeunissement cutané",
+    "Thérapie avancée"
+  ],
+  "_catalogue": "47 machines actives, export de la table produits (produits.json), 2026-10-18"
 }

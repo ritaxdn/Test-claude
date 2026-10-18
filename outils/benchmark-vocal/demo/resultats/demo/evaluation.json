@@ -848,7 +848,7 @@
      "cer": 0.136,
      "wer": 0.242,
      "termes": 1.0,
-     "critique_B": 0.5
+     "critique_B": 1.0
     },
     "francais": {
      "n": 1,
@@ -862,7 +862,7 @@
      "cer": 0.103,
      "wer": 0.113,
      "termes": 0.875,
-     "critique_B": 0.833
+     "critique_B": 1.0
     }
    },
    "environnements": {
@@ -871,14 +871,14 @@
      "cer": 0.103,
      "wer": 0.113,
      "termes": 0.875,
-     "critique_B": 0.833
+     "critique_B": 1.0
     },
     "voiture": {
      "n": 1,
      "cer": 0.136,
      "wer": 0.242,
      "termes": 1.0,
-     "critique_B": 0.5
+     "critique_B": 1.0
     },
     "rue": {
      "n": 1,
@@ -956,14 +956,14 @@
      "categorie": "critique",
      "attendus": 4,
      "extraits": 4,
-     "correct": 1,
-     "erreur": 3,
+     "correct": 4,
+     "erreur": 0,
      "manque": 0,
      "invente": 0,
-     "precision": 0.25,
-     "rappel": 0.25,
-     "exactitude": 0.25,
-     "silencieuses": 3
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
     },
     "prochaine_etape": {
      "categorie": "critique",
@@ -1137,7 +1137,7 @@
    },
    "categories": {
     "critique": {
-     "exactitude": 0.692,
+     "exactitude": 0.923,
      "invention": 0.077
     },
     "importante": {
@@ -1153,14 +1153,14 @@
    "inventions_confiantes": 2,
    "sources_introuvables": 0.118,
    "ux": {
-    "corrections": 2.33,
-    "confirmations": 0.67,
+    "corrections": 1.33,
+    "confirmations": 1.67,
     "questions": 0.0,
     "ajouts": 0.33,
-    "erreurs_silencieuses_critiques": 1.33,
-    "acceptables_sans_modif": 0.0,
-    "temps_revue_median_s": 82,
-    "temps_total_median_s": 92.0
+    "erreurs_silencieuses_critiques": 0.33,
+    "acceptables_sans_modif": 0.667,
+    "temps_revue_median_s": 70,
+    "temps_total_median_s": 80.0
    },
    "latence": {
     "mediane_s": 8.0,
@@ -1306,12 +1306,16 @@
      "cible": 0.99,
      "par_etiquette": {
       "confiant": {
-       "n": 4,
-       "precision": 0.25
+       "n": 1,
+       "precision": 1.0
+      },
+      "a_verifier": {
+       "n": 3,
+       "precision": 1.0
       }
      },
      "seuil_recommande": {
-      "seuil": 0.93,
+      "seuil": 0.5,
       "precision": 1.0,
       "couverture": 1.0
      },
@@ -1319,53 +1323,53 @@
      "courbe": [
       [
        0.5,
-       0.25,
+       1.0,
        1.0
       ],
       [
        0.55,
-       0.25,
+       1.0,
        1.0
       ],
       [
        0.6,
-       0.25,
+       1.0,
        1.0
       ],
       [
        0.65,
-       0.25,
+       1.0,
        1.0
       ],
       [
        0.7,
-       0.25,
+       1.0,
        1.0
       ],
       [
        0.75,
-       0.25,
+       1.0,
        1.0
       ],
       [
        0.8,
-       0.25,
+       1.0,
        1.0
       ],
       [
        0.85,
-       0.25,
+       1.0,
        1.0
       ],
       [
        0.9,
-       0.25,
+       1.0,
        1.0
       ],
       [
        0.95,
        1.0,
-       1.0
+       0.25
       ]
      ]
     },
@@ -1666,67 +1670,6 @@
   "erreurs": [
    {
     "gravite": 20,
-    "vocal": "V01",
-    "type": "montants",
-    "categorie": "critique",
-    "statut": "erreur",
-    "confiance": "confiant",
-    "attendu": {
-     "valeur_mad": 240000,
-     "objet": "offre_concurrent",
-     "approximatif": true,
-     "source": "تقريبا ميتين و ربعين ألف"
-    },
-    "extrait": {
-     "valeur_mad": 240,
-     "objet": "offre_concurrent",
-     "confiance": "confiant",
-     "score": 0.9,
-     "source": "Candela تقريبا 240"
-    }
-   },
-   {
-    "gravite": 20,
-    "vocal": "V02",
-    "type": "montants",
-    "categorie": "critique",
-    "statut": "erreur",
-    "confiance": "confiant",
-    "attendu": {
-     "valeur_mad": 280000,
-     "objet": "budget_client",
-     "source": "الميزانية ديالها 28 مليون"
-    },
-    "extrait": {
-     "valeur_mad": 28000000,
-     "objet": "budget_client",
-     "score": 0.92,
-     "source": "الميزانية ديالها 28 مليون",
-     "confiance": "confiant"
-    }
-   },
-   {
-    "gravite": 20,
-    "vocal": "V02",
-    "type": "montants",
-    "categorie": "critique",
-    "statut": "erreur",
-    "confiance": "confiant",
-    "attendu": {
-     "valeur_mad": 250000,
-     "objet": "offre_concurrent",
-     "source": "ب 25 مليون"
-    },
-    "extrait": {
-     "valeur_mad": 25000000,
-     "objet": "offre_concurrent",
-     "score": 0.9,
-     "source": "ب 25 مليون",
-     "confiance": "confiant"
-    }
-   },
-   {
-    "gravite": 20,
     "vocal": "V03",
     "type": "prochaine_etape",
     "categorie": "critique",
@@ -1806,7 +1749,7 @@
   ],
   "garde_fous": [
    "taux d'invention 8,8 % > 5 %",
-   "1,33 erreur(s) critique(s) affirmée(s) sans réserve par vocal (max 0,10)"
+   "0,33 erreur(s) critique(s) affirmée(s) sans réserve par vocal (max 0,10)"
   ],
   "vocaux": [
    {
@@ -1819,16 +1762,16 @@
     "cout_usd": 0.0112,
     "ux": {
      "elements_montres": 18,
-     "confirmations": 0,
-     "corrections": 1,
-     "corrections_valeurs": 1,
+     "confirmations": 1,
+     "corrections": 0,
+     "corrections_valeurs": 0,
      "ajouts": 0,
      "questions": 0,
-     "erreurs_silencieuses": 1,
-     "erreurs_silencieuses_critiques": 1,
-     "acceptable_sans_modif": false,
-     "temps_revue_s": 82,
-     "temps_total_s": 92.0
+     "erreurs_silencieuses": 0,
+     "erreurs_silencieuses_critiques": 0,
+     "acceptable_sans_modif": true,
+     "temps_revue_s": 70,
+     "temps_total_s": 80.0
     },
     "stt": {
      "wer": 0.1134,
@@ -1908,16 +1851,16 @@
     "cout_usd": 0.0088,
     "ux": {
      "elements_montres": 8,
-     "confirmations": 2,
-     "corrections": 2,
-     "corrections_valeurs": 2,
+     "confirmations": 4,
+     "corrections": 0,
+     "corrections_valeurs": 0,
      "ajouts": 0,
      "questions": 0,
-     "erreurs_silencieuses": 2,
-     "erreurs_silencieuses_critiques": 2,
-     "acceptable_sans_modif": false,
-     "temps_revue_s": 82,
-     "temps_total_s": 90.0
+     "erreurs_silencieuses": 0,
+     "erreurs_silencieuses_critiques": 0,
+     "acceptable_sans_modif": true,
+     "temps_revue_s": 58,
+     "temps_total_s": 66.0
     },
     "stt": {
      "wer": 0.2424,

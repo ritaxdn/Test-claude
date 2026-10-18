@@ -43,14 +43,54 @@
    "objet": "budget_client",
    "score": 0.92,
    "source": "الميزانية ديالها 28 مليون",
-   "confiance": "confiant"
+   "confiance": "a_verifier",
+   "valeur_mad_proposee": 280000,
+   "normalisation_monetaire": {
+    "source": "الميزانية ديالها 28 مليون",
+    "lectures": [
+     {
+      "valeur_mad": 280000,
+      "regle": "million sans unité lu en centimes (usage marocain)"
+     },
+     {
+      "valeur_mad": 28000000,
+      "regle": "million lu en dirhams"
+     }
+    ],
+    "plausibles": [
+     280000
+    ],
+    "proposition": 280000,
+    "ambigu": false,
+    "decision": "valeur extraite 28000000 : proposition 280000 à confirmer"
+   }
   },
   {
    "valeur_mad": 25000000,
    "objet": "offre_concurrent",
    "score": 0.9,
    "source": "ب 25 مليون",
-   "confiance": "confiant"
+   "confiance": "a_verifier",
+   "valeur_mad_proposee": 250000,
+   "normalisation_monetaire": {
+    "source": "ب 25 مليون",
+    "lectures": [
+     {
+      "valeur_mad": 250000,
+      "regle": "million sans unité lu en centimes (usage marocain)"
+     },
+     {
+      "valeur_mad": 25000000,
+      "regle": "million lu en dirhams"
+     }
+    ],
+    "plausibles": [
+     250000
+    ],
+    "proposition": 250000,
+    "ambigu": false,
+    "decision": "valeur extraite 25000000 : proposition 250000 à confirmer"
+   }
   }
  ],
  "prochaine_etape": null,

@@ -1,0 +1,16 @@
+{
+  "_doc": "Normalisation métier des montants marocains (harness/monnaie.py). Appliquée après l'extraction, sur la phrase source de chaque montant. La transcription et la valeur extraite ne sont jamais modifiées : une proposition est ajoutée et l'élément passe « à vérifier » en cas d'ambiguïté.",
+  "plage_plausible_mad": {
+    "_doc": "Montants commerciaux plausibles. Catalogue CRM au 18/10/2026 : 5 500 à 310 000 MAD par machine ; la borne haute laisse de la place aux commandes de plusieurs machines.",
+    "min": 1000,
+    "max": 2000000
+  },
+  "unites": {
+    "dirham": ["درهم", "دراهم", "dirham", "dirhams", "dh", "dhs", "mad", "drahem"],
+    "ryal": ["ريال", "ريالات", "rial", "rials", "ryal", "ryals", "riyal"],
+    "centime": ["سنتيم", "centime", "centimes", "cts", "frank", "فرنك"],
+    "million": ["مليون", "ملايين", "million", "millions", "mlyoun", "melyoun", "malayin"],
+    "milliard": ["مليار", "milliard", "milliards", "mlyar"],
+    "mille": ["الف", "الاف", "alf", "mille", "k"]
+  }
+}

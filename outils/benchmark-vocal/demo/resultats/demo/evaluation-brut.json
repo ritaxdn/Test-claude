@@ -1,0 +1,3080 @@
+{
+ "E0-reference": {
+  "libelle": "Transcription humaine + extraction (borne haute)",
+  "role": "reference",
+  "synthese": {
+   "vocaux": 3,
+   "langues": {
+    "darija": {
+     "n": 1,
+     "cer": null,
+     "wer": null,
+     "termes": null,
+     "critique_B": 1.0
+    },
+    "francais": {
+     "n": 1,
+     "cer": null,
+     "wer": null,
+     "termes": null,
+     "critique_B": 1.0
+    },
+    "mixte": {
+     "n": 1,
+     "cer": null,
+     "wer": null,
+     "termes": null,
+     "critique_B": 1.0
+    }
+   },
+   "environnements": {
+    "calme": {
+     "n": 1,
+     "cer": null,
+     "wer": null,
+     "termes": null,
+     "critique_B": 1.0
+    },
+    "voiture": {
+     "n": 1,
+     "cer": null,
+     "wer": null,
+     "termes": null,
+     "critique_B": 1.0
+    },
+    "rue": {
+     "n": 1,
+     "cer": null,
+     "wer": null,
+     "termes": null,
+     "critique_B": 1.0
+    },
+    "showroom": {
+     "n": 0,
+     "cer": null,
+     "wer": null,
+     "termes": null,
+     "critique_B": null
+    }
+   },
+   "termes_par_categorie": {},
+   "types": {
+    "client": {
+     "categorie": "critique",
+     "attendus": 3,
+     "extraits": 3,
+     "correct": 3,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "contacts": {
+     "categorie": "critique",
+     "attendus": 4,
+     "extraits": 4,
+     "correct": 4,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "montants": {
+     "categorie": "critique",
+     "attendus": 4,
+     "extraits": 4,
+     "correct": 4,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "prochaine_etape": {
+     "categorie": "critique",
+     "attendus": 1,
+     "extraits": 1,
+     "correct": 1,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "actions_perso": {
+     "categorie": "importante",
+     "attendus": 2,
+     "extraits": 2,
+     "correct": 2,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "changement_etape": {
+     "categorie": "critique",
+     "attendus": 0,
+     "extraits": 0,
+     "correct": 0,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": null,
+     "rappel": null,
+     "exactitude": null,
+     "silencieuses": 0
+    },
+    "decideurs": {
+     "categorie": "importante",
+     "attendus": 2,
+     "extraits": 2,
+     "correct": 2,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "objections": {
+     "categorie": "importante",
+     "attendus": 3,
+     "extraits": 3,
+     "correct": 3,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "concurrents": {
+     "categorie": "importante",
+     "attendus": 3,
+     "extraits": 3,
+     "correct": 3,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "financement": {
+     "categorie": "importante",
+     "attendus": 1,
+     "extraits": 1,
+     "correct": 1,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "timing": {
+     "categorie": "importante",
+     "attendus": 1,
+     "extraits": 1,
+     "correct": 1,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "technologies": {
+     "categorie": "importante",
+     "attendus": 3,
+     "extraits": 3,
+     "correct": 3,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "besoins": {
+     "categorie": "secondaire",
+     "attendus": 1,
+     "extraits": 1,
+     "correct": 1,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "signaux": {
+     "categorie": "secondaire",
+     "attendus": 1,
+     "extraits": 1,
+     "correct": 1,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "interet": {
+     "categorie": "secondaire",
+     "attendus": 2,
+     "extraits": 2,
+     "correct": 2,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "signal_terrain": {
+     "categorie": "secondaire",
+     "attendus": 1,
+     "extraits": 1,
+     "correct": 1,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    }
+   },
+   "categories": {
+    "critique": {
+     "exactitude": 1.0,
+     "invention": 0.0
+    },
+    "importante": {
+     "exactitude": 1.0,
+     "invention": 0.0
+    },
+    "secondaire": {
+     "exactitude": 1.0,
+     "invention": 0.0
+    }
+   },
+   "taux_invention": 0.0,
+   "inventions_confiantes": 0,
+   "sources_introuvables": 0.0,
+   "ux": {
+    "corrections": 0.0,
+    "confirmations": 1.0,
+    "questions": 0.33,
+    "ajouts": 0.0,
+    "erreurs_silencieuses_critiques": 0.0,
+    "acceptables_sans_modif": 1.0,
+    "temps_revue_median_s": 58,
+    "temps_total_median_s": 61.2
+   },
+   "latence": {
+    "mediane_s": 3.2,
+    "p90_s": 3.2
+   },
+   "cout_usd_par_minute": 0.0045,
+   "calibration": {
+    "client": {
+     "cible": 0.98,
+     "par_etiquette": {
+      "confiant": {
+       "n": 3,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": {
+      "seuil": 0.5,
+      "precision": 1.0,
+      "couverture": 1.0
+     },
+     "avec_score": 3,
+     "courbe": [
+      [
+       0.5,
+       1.0,
+       1.0
+      ],
+      [
+       0.55,
+       1.0,
+       1.0
+      ],
+      [
+       0.6,
+       1.0,
+       1.0
+      ],
+      [
+       0.65,
+       1.0,
+       1.0
+      ],
+      [
+       0.7,
+       1.0,
+       1.0
+      ],
+      [
+       0.75,
+       1.0,
+       1.0
+      ],
+      [
+       0.8,
+       1.0,
+       1.0
+      ],
+      [
+       0.85,
+       1.0,
+       1.0
+      ],
+      [
+       0.9,
+       1.0,
+       1.0
+      ],
+      [
+       0.95,
+       1.0,
+       0.667
+      ]
+     ]
+    },
+    "contacts": {
+     "cible": 0.98,
+     "par_etiquette": {
+      "confiant": {
+       "n": 4,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": {
+      "seuil": 0.5,
+      "precision": 1.0,
+      "couverture": 1.0
+     },
+     "avec_score": 4,
+     "courbe": [
+      [
+       0.5,
+       1.0,
+       1.0
+      ],
+      [
+       0.55,
+       1.0,
+       1.0
+      ],
+      [
+       0.6,
+       1.0,
+       1.0
+      ],
+      [
+       0.65,
+       1.0,
+       1.0
+      ],
+      [
+       0.7,
+       1.0,
+       1.0
+      ],
+      [
+       0.75,
+       1.0,
+       1.0
+      ],
+      [
+       0.8,
+       1.0,
+       1.0
+      ],
+      [
+       0.85,
+       1.0,
+       1.0
+      ],
+      [
+       0.9,
+       1.0,
+       1.0
+      ],
+      [
+       0.95,
+       1.0,
+       1.0
+      ]
+     ]
+    },
+    "montants": {
+     "cible": 0.99,
+     "par_etiquette": {
+      "confiant": {
+       "n": 1,
+       "precision": 1.0
+      },
+      "a_verifier": {
+       "n": 3,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": {
+      "seuil": 0.5,
+      "precision": 1.0,
+      "couverture": 1.0
+     },
+     "avec_score": 4,
+     "courbe": [
+      [
+       0.5,
+       1.0,
+       1.0
+      ],
+      [
+       0.55,
+       1.0,
+       1.0
+      ],
+      [
+       0.6,
+       1.0,
+       1.0
+      ],
+      [
+       0.65,
+       1.0,
+       1.0
+      ],
+      [
+       0.7,
+       1.0,
+       1.0
+      ],
+      [
+       0.75,
+       1.0,
+       1.0
+      ],
+      [
+       0.8,
+       1.0,
+       0.75
+      ],
+      [
+       0.85,
+       1.0,
+       0.5
+      ],
+      [
+       0.9,
+       1.0,
+       0.25
+      ],
+      [
+       0.95,
+       1.0,
+       0.25
+      ]
+     ]
+    },
+    "prochaine_etape": {
+     "cible": 0.98,
+     "par_etiquette": {
+      "confiant": {
+       "n": 1,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": {
+      "seuil": 0.5,
+      "precision": 1.0,
+      "couverture": 1.0
+     },
+     "avec_score": 1,
+     "courbe": [
+      [
+       0.5,
+       1.0,
+       1.0
+      ],
+      [
+       0.55,
+       1.0,
+       1.0
+      ],
+      [
+       0.6,
+       1.0,
+       1.0
+      ],
+      [
+       0.65,
+       1.0,
+       1.0
+      ],
+      [
+       0.7,
+       1.0,
+       1.0
+      ],
+      [
+       0.75,
+       1.0,
+       1.0
+      ],
+      [
+       0.8,
+       1.0,
+       1.0
+      ],
+      [
+       0.85,
+       1.0,
+       1.0
+      ],
+      [
+       0.9,
+       1.0,
+       1.0
+      ],
+      [
+       0.95,
+       1.0,
+       1.0
+      ]
+     ]
+    },
+    "actions_perso": {
+     "cible": 0.9,
+     "par_etiquette": {
+      "confiant": {
+       "n": 2,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": null,
+     "avec_score": 0,
+     "courbe": []
+    },
+    "decideurs": {
+     "cible": 0.93,
+     "par_etiquette": {
+      "confiant": {
+       "n": 2,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": null,
+     "avec_score": 0,
+     "courbe": []
+    },
+    "objections": {
+     "cible": 0.9,
+     "par_etiquette": {
+      "confiant": {
+       "n": 3,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": null,
+     "avec_score": 0,
+     "courbe": []
+    },
+    "concurrents": {
+     "cible": 0.95,
+     "par_etiquette": {
+      "confiant": {
+       "n": 3,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": {
+      "seuil": 0.5,
+      "precision": 1.0,
+      "couverture": 1.0
+     },
+     "avec_score": 3,
+     "courbe": [
+      [
+       0.5,
+       1.0,
+       1.0
+      ],
+      [
+       0.55,
+       1.0,
+       1.0
+      ],
+      [
+       0.6,
+       1.0,
+       1.0
+      ],
+      [
+       0.65,
+       1.0,
+       1.0
+      ],
+      [
+       0.7,
+       1.0,
+       1.0
+      ],
+      [
+       0.75,
+       1.0,
+       1.0
+      ],
+      [
+       0.8,
+       1.0,
+       1.0
+      ],
+      [
+       0.85,
+       1.0,
+       1.0
+      ],
+      [
+       0.9,
+       1.0,
+       1.0
+      ],
+      [
+       0.95,
+       1.0,
+       0.667
+      ]
+     ]
+    },
+    "financement": {
+     "cible": 0.93,
+     "par_etiquette": {
+      "confiant": {
+       "n": 1,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": null,
+     "avec_score": 0,
+     "courbe": []
+    },
+    "timing": {
+     "cible": 0.9,
+     "par_etiquette": {
+      "confiant": {
+       "n": 1,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": null,
+     "avec_score": 0,
+     "courbe": []
+    },
+    "technologies": {
+     "cible": 0.93,
+     "par_etiquette": {
+      "confiant": {
+       "n": 3,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": null,
+     "avec_score": 0,
+     "courbe": []
+    },
+    "besoins": {
+     "cible": 0.8,
+     "par_etiquette": {
+      "confiant": {
+       "n": 1,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": null,
+     "avec_score": 0,
+     "courbe": []
+    },
+    "signaux": {
+     "cible": 0.8,
+     "par_etiquette": {
+      "confiant": {
+       "n": 1,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": null,
+     "avec_score": 0,
+     "courbe": []
+    },
+    "interet": {
+     "cible": 0.85,
+     "par_etiquette": {
+      "confiant": {
+       "n": 2,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": null,
+     "avec_score": 0,
+     "courbe": []
+    },
+    "signal_terrain": {
+     "cible": 0.8,
+     "par_etiquette": {
+      "confiant": {
+       "n": 1,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": null,
+     "avec_score": 0,
+     "courbe": []
+    }
+   }
+  },
+  "erreurs": [],
+  "termes_rates": [],
+  "garde_fous": [],
+  "vocaux": [
+   {
+    "id": "V01",
+    "langue": "mixte",
+    "environnement": "calme",
+    "commercial": "C1",
+    "duree_s": 72.0,
+    "latence_s": 4.1,
+    "cout_usd": 0.004,
+    "ux": {
+     "elements_montres": 18,
+     "confirmations": 1,
+     "corrections": 0,
+     "corrections_valeurs": 0,
+     "ajouts": 0,
+     "questions": 0,
+     "erreurs_silencieuses": 0,
+     "erreurs_silencieuses_critiques": 0,
+     "acceptable_sans_modif": true,
+     "temps_revue_s": 70,
+     "temps_total_s": 74.1
+    },
+    "stt": null
+   },
+   {
+    "id": "V02",
+    "langue": "darija",
+    "environnement": "voiture",
+    "commercial": "C2",
+    "duree_s": 48.0,
+    "latence_s": 3.2,
+    "cout_usd": 0.004,
+    "ux": {
+     "elements_montres": 8,
+     "confirmations": 2,
+     "corrections": 0,
+     "corrections_valeurs": 0,
+     "ajouts": 0,
+     "questions": 1,
+     "erreurs_silencieuses": 0,
+     "erreurs_silencieuses_critiques": 0,
+     "acceptable_sans_modif": true,
+     "temps_revue_s": 58,
+     "temps_total_s": 61.2
+    },
+    "stt": null
+   },
+   {
+    "id": "V03",
+    "langue": "francais",
+    "environnement": "rue",
+    "commercial": "C3",
+    "duree_s": 40.0,
+    "latence_s": 2.4,
+    "cout_usd": 0.004,
+    "ux": {
+     "elements_montres": 6,
+     "confirmations": 0,
+     "corrections": 0,
+     "corrections_valeurs": 0,
+     "ajouts": 0,
+     "questions": 0,
+     "erreurs_silencieuses": 0,
+     "erreurs_silencieuses_critiques": 0,
+     "acceptable_sans_modif": true,
+     "temps_revue_s": 28,
+     "temps_total_s": 30.4
+    },
+    "stt": null
+   }
+  ]
+ },
+ "X-demo": {
+  "libelle": "Démo : STT généraliste → extraction",
+  "role": null,
+  "synthese": {
+   "vocaux": 3,
+   "langues": {
+    "darija": {
+     "n": 1,
+     "cer": 0.136,
+     "wer": 0.242,
+     "termes": 1.0,
+     "critique_B": 0.5
+    },
+    "francais": {
+     "n": 1,
+     "cer": 0.051,
+     "wer": 0.132,
+     "termes": 0.75,
+     "critique_B": 0.667
+    },
+    "mixte": {
+     "n": 1,
+     "cer": 0.103,
+     "wer": 0.113,
+     "termes": 0.875,
+     "critique_B": 0.833
+    }
+   },
+   "environnements": {
+    "calme": {
+     "n": 1,
+     "cer": 0.103,
+     "wer": 0.113,
+     "termes": 0.875,
+     "critique_B": 0.833
+    },
+    "voiture": {
+     "n": 1,
+     "cer": 0.136,
+     "wer": 0.242,
+     "termes": 1.0,
+     "critique_B": 0.5
+    },
+    "rue": {
+     "n": 1,
+     "cer": 0.051,
+     "wer": 0.132,
+     "termes": 0.75,
+     "critique_B": 0.667
+    },
+    "showroom": {
+     "n": 0,
+     "cer": null,
+     "wer": null,
+     "termes": null,
+     "critique_B": null
+    }
+   },
+   "termes_par_categorie": {
+    "nom": {
+     "n": 4,
+     "rappel": 1.0
+    },
+    "clinique": {
+     "n": 3,
+     "rappel": 1.0
+    },
+    "machine": {
+     "n": 1,
+     "rappel": 1.0
+    },
+    "technologie": {
+     "n": 2,
+     "rappel": 0.5
+    },
+    "concurrent": {
+     "n": 3,
+     "rappel": 1.0
+    },
+    "montant": {
+     "n": 4,
+     "rappel": 0.75
+    },
+    "date": {
+     "n": 2,
+     "rappel": 1.0
+    }
+   },
+   "types": {
+    "client": {
+     "categorie": "critique",
+     "attendus": 3,
+     "extraits": 3,
+     "correct": 3,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "contacts": {
+     "categorie": "critique",
+     "attendus": 4,
+     "extraits": 4,
+     "correct": 4,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "montants": {
+     "categorie": "critique",
+     "attendus": 4,
+     "extraits": 4,
+     "correct": 1,
+     "erreur": 3,
+     "manque": 0,
+     "invente": 0,
+     "precision": 0.25,
+     "rappel": 0.25,
+     "exactitude": 0.25,
+     "silencieuses": 3
+    },
+    "prochaine_etape": {
+     "categorie": "critique",
+     "attendus": 1,
+     "extraits": 2,
+     "correct": 1,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 1,
+     "precision": 0.5,
+     "rappel": 1.0,
+     "exactitude": 0.5,
+     "silencieuses": 1
+    },
+    "actions_perso": {
+     "categorie": "importante",
+     "attendus": 2,
+     "extraits": 3,
+     "correct": 2,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 1,
+     "precision": 0.667,
+     "rappel": 1.0,
+     "exactitude": 0.667,
+     "silencieuses": 1
+    },
+    "changement_etape": {
+     "categorie": "critique",
+     "attendus": 0,
+     "extraits": 0,
+     "correct": 0,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": null,
+     "rappel": null,
+     "exactitude": null,
+     "silencieuses": 0
+    },
+    "decideurs": {
+     "categorie": "importante",
+     "attendus": 2,
+     "extraits": 2,
+     "correct": 2,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "objections": {
+     "categorie": "importante",
+     "attendus": 3,
+     "extraits": 3,
+     "correct": 3,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "concurrents": {
+     "categorie": "importante",
+     "attendus": 3,
+     "extraits": 3,
+     "correct": 3,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "financement": {
+     "categorie": "importante",
+     "attendus": 1,
+     "extraits": 1,
+     "correct": 1,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "timing": {
+     "categorie": "importante",
+     "attendus": 1,
+     "extraits": 1,
+     "correct": 1,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "technologies": {
+     "categorie": "importante",
+     "attendus": 3,
+     "extraits": 3,
+     "correct": 2,
+     "erreur": 0,
+     "manque": 1,
+     "invente": 1,
+     "precision": 0.667,
+     "rappel": 0.667,
+     "exactitude": 0.5,
+     "silencieuses": 0
+    },
+    "besoins": {
+     "categorie": "secondaire",
+     "attendus": 1,
+     "extraits": 1,
+     "correct": 1,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "signaux": {
+     "categorie": "secondaire",
+     "attendus": 1,
+     "extraits": 1,
+     "correct": 1,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "interet": {
+     "categorie": "secondaire",
+     "attendus": 2,
+     "extraits": 2,
+     "correct": 2,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "signal_terrain": {
+     "categorie": "secondaire",
+     "attendus": 1,
+     "extraits": 1,
+     "correct": 1,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    }
+   },
+   "categories": {
+    "critique": {
+     "exactitude": 0.692,
+     "invention": 0.077
+    },
+    "importante": {
+     "exactitude": 0.824,
+     "invention": 0.125
+    },
+    "secondaire": {
+     "exactitude": 1.0,
+     "invention": 0.0
+    }
+   },
+   "taux_invention": 0.088,
+   "inventions_confiantes": 2,
+   "sources_introuvables": 0.118,
+   "ux": {
+    "corrections": 2.33,
+    "confirmations": 0.67,
+    "questions": 0.0,
+    "ajouts": 0.33,
+    "erreurs_silencieuses_critiques": 1.33,
+    "acceptables_sans_modif": 0.0,
+    "temps_revue_median_s": 82,
+    "temps_total_median_s": 92.0
+   },
+   "latence": {
+    "mediane_s": 8.0,
+    "p90_s": 8.0
+   },
+   "cout_usd_par_minute": 0.0105,
+   "calibration": {
+    "client": {
+     "cible": 0.98,
+     "par_etiquette": {
+      "confiant": {
+       "n": 3,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": {
+      "seuil": 0.5,
+      "precision": 1.0,
+      "couverture": 1.0
+     },
+     "avec_score": 3,
+     "courbe": [
+      [
+       0.5,
+       1.0,
+       1.0
+      ],
+      [
+       0.55,
+       1.0,
+       1.0
+      ],
+      [
+       0.6,
+       1.0,
+       1.0
+      ],
+      [
+       0.65,
+       1.0,
+       1.0
+      ],
+      [
+       0.7,
+       1.0,
+       1.0
+      ],
+      [
+       0.75,
+       1.0,
+       1.0
+      ],
+      [
+       0.8,
+       1.0,
+       1.0
+      ],
+      [
+       0.85,
+       1.0,
+       1.0
+      ],
+      [
+       0.9,
+       1.0,
+       1.0
+      ],
+      [
+       0.95,
+       1.0,
+       0.667
+      ]
+     ]
+    },
+    "contacts": {
+     "cible": 0.98,
+     "par_etiquette": {
+      "confiant": {
+       "n": 4,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": {
+      "seuil": 0.5,
+      "precision": 1.0,
+      "couverture": 1.0
+     },
+     "avec_score": 4,
+     "courbe": [
+      [
+       0.5,
+       1.0,
+       1.0
+      ],
+      [
+       0.55,
+       1.0,
+       1.0
+      ],
+      [
+       0.6,
+       1.0,
+       1.0
+      ],
+      [
+       0.65,
+       1.0,
+       1.0
+      ],
+      [
+       0.7,
+       1.0,
+       1.0
+      ],
+      [
+       0.75,
+       1.0,
+       1.0
+      ],
+      [
+       0.8,
+       1.0,
+       1.0
+      ],
+      [
+       0.85,
+       1.0,
+       1.0
+      ],
+      [
+       0.9,
+       1.0,
+       1.0
+      ],
+      [
+       0.95,
+       1.0,
+       1.0
+      ]
+     ]
+    },
+    "montants": {
+     "cible": 0.99,
+     "par_etiquette": {
+      "confiant": {
+       "n": 4,
+       "precision": 0.25
+      }
+     },
+     "seuil_recommande": {
+      "seuil": 0.93,
+      "precision": 1.0,
+      "couverture": 1.0
+     },
+     "avec_score": 4,
+     "courbe": [
+      [
+       0.5,
+       0.25,
+       1.0
+      ],
+      [
+       0.55,
+       0.25,
+       1.0
+      ],
+      [
+       0.6,
+       0.25,
+       1.0
+      ],
+      [
+       0.65,
+       0.25,
+       1.0
+      ],
+      [
+       0.7,
+       0.25,
+       1.0
+      ],
+      [
+       0.75,
+       0.25,
+       1.0
+      ],
+      [
+       0.8,
+       0.25,
+       1.0
+      ],
+      [
+       0.85,
+       0.25,
+       1.0
+      ],
+      [
+       0.9,
+       0.25,
+       1.0
+      ],
+      [
+       0.95,
+       1.0,
+       1.0
+      ]
+     ]
+    },
+    "prochaine_etape": {
+     "cible": 0.98,
+     "par_etiquette": {
+      "confiant": {
+       "n": 2,
+       "precision": 0.5
+      }
+     },
+     "seuil_recommande": {
+      "seuil": 0.71,
+      "precision": 1.0,
+      "couverture": 1.0
+     },
+     "avec_score": 2,
+     "courbe": [
+      [
+       0.5,
+       0.5,
+       1.0
+      ],
+      [
+       0.55,
+       0.5,
+       1.0
+      ],
+      [
+       0.6,
+       0.5,
+       1.0
+      ],
+      [
+       0.65,
+       0.5,
+       1.0
+      ],
+      [
+       0.7,
+       0.5,
+       1.0
+      ],
+      [
+       0.75,
+       1.0,
+       1.0
+      ],
+      [
+       0.8,
+       1.0,
+       1.0
+      ],
+      [
+       0.85,
+       1.0,
+       1.0
+      ],
+      [
+       0.9,
+       1.0,
+       1.0
+      ],
+      [
+       0.95,
+       1.0,
+       1.0
+      ]
+     ]
+    },
+    "actions_perso": {
+     "cible": 0.9,
+     "par_etiquette": {
+      "confiant": {
+       "n": 3,
+       "precision": 0.667
+      }
+     },
+     "seuil_recommande": null,
+     "avec_score": 0,
+     "courbe": []
+    },
+    "decideurs": {
+     "cible": 0.93,
+     "par_etiquette": {
+      "confiant": {
+       "n": 2,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": null,
+     "avec_score": 0,
+     "courbe": []
+    },
+    "objections": {
+     "cible": 0.9,
+     "par_etiquette": {
+      "confiant": {
+       "n": 3,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": null,
+     "avec_score": 0,
+     "courbe": []
+    },
+    "concurrents": {
+     "cible": 0.95,
+     "par_etiquette": {
+      "confiant": {
+       "n": 2,
+       "precision": 1.0
+      },
+      "a_verifier": {
+       "n": 1,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": {
+      "seuil": 0.5,
+      "precision": 1.0,
+      "couverture": 1.0
+     },
+     "avec_score": 3,
+     "courbe": [
+      [
+       0.5,
+       1.0,
+       1.0
+      ],
+      [
+       0.55,
+       1.0,
+       1.0
+      ],
+      [
+       0.6,
+       1.0,
+       1.0
+      ],
+      [
+       0.65,
+       1.0,
+       1.0
+      ],
+      [
+       0.7,
+       1.0,
+       1.0
+      ],
+      [
+       0.75,
+       1.0,
+       1.0
+      ],
+      [
+       0.8,
+       1.0,
+       0.667
+      ],
+      [
+       0.85,
+       1.0,
+       0.667
+      ],
+      [
+       0.9,
+       1.0,
+       0.667
+      ],
+      [
+       0.95,
+       1.0,
+       0.667
+      ]
+     ]
+    },
+    "financement": {
+     "cible": 0.93,
+     "par_etiquette": {
+      "confiant": {
+       "n": 1,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": null,
+     "avec_score": 0,
+     "courbe": []
+    },
+    "timing": {
+     "cible": 0.9,
+     "par_etiquette": {
+      "confiant": {
+       "n": 1,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": null,
+     "avec_score": 0,
+     "courbe": []
+    },
+    "technologies": {
+     "cible": 0.93,
+     "par_etiquette": {
+      "confiant": {
+       "n": 1,
+       "precision": 1.0
+      },
+      "a_verifier": {
+       "n": 2,
+       "precision": 0.5
+      }
+     },
+     "seuil_recommande": {
+      "seuil": 0.61,
+      "precision": 1.0,
+      "couverture": 1.0
+     },
+     "avec_score": 2,
+     "courbe": [
+      [
+       0.5,
+       0.5,
+       1.0
+      ],
+      [
+       0.55,
+       0.5,
+       1.0
+      ],
+      [
+       0.6,
+       0.5,
+       1.0
+      ],
+      [
+       0.65,
+       1.0,
+       1.0
+      ],
+      [
+       0.7,
+       1.0,
+       1.0
+      ]
+     ]
+    },
+    "besoins": {
+     "cible": 0.8,
+     "par_etiquette": {
+      "confiant": {
+       "n": 1,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": null,
+     "avec_score": 0,
+     "courbe": []
+    },
+    "signaux": {
+     "cible": 0.8,
+     "par_etiquette": {
+      "confiant": {
+       "n": 1,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": null,
+     "avec_score": 0,
+     "courbe": []
+    },
+    "interet": {
+     "cible": 0.85,
+     "par_etiquette": {
+      "confiant": {
+       "n": 2,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": null,
+     "avec_score": 0,
+     "courbe": []
+    },
+    "signal_terrain": {
+     "cible": 0.8,
+     "par_etiquette": {
+      "confiant": {
+       "n": 1,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": null,
+     "avec_score": 0,
+     "courbe": []
+    }
+   }
+  },
+  "erreurs": [
+   {
+    "gravite": 20,
+    "vocal": "V01",
+    "type": "montants",
+    "categorie": "critique",
+    "statut": "erreur",
+    "confiance": "confiant",
+    "attendu": {
+     "valeur_mad": 240000,
+     "objet": "offre_concurrent",
+     "approximatif": true,
+     "source": "تقريبا ميتين و ربعين ألف"
+    },
+    "extrait": {
+     "valeur_mad": 240,
+     "objet": "offre_concurrent",
+     "confiance": "confiant",
+     "score": 0.9,
+     "source": "Candela تقريبا 240"
+    }
+   },
+   {
+    "gravite": 20,
+    "vocal": "V02",
+    "type": "montants",
+    "categorie": "critique",
+    "statut": "erreur",
+    "confiance": "confiant",
+    "attendu": {
+     "valeur_mad": 280000,
+     "objet": "budget_client",
+     "source": "الميزانية ديالها 28 مليون"
+    },
+    "extrait": {
+     "valeur_mad": 28000000,
+     "objet": "budget_client",
+     "score": 0.92,
+     "source": "الميزانية ديالها 28 مليون",
+     "confiance": "confiant"
+    }
+   },
+   {
+    "gravite": 20,
+    "vocal": "V02",
+    "type": "montants",
+    "categorie": "critique",
+    "statut": "erreur",
+    "confiance": "confiant",
+    "attendu": {
+     "valeur_mad": 250000,
+     "objet": "offre_concurrent",
+     "source": "ب 25 مليون"
+    },
+    "extrait": {
+     "valeur_mad": 25000000,
+     "objet": "offre_concurrent",
+     "score": 0.9,
+     "source": "ب 25 مليون",
+     "confiance": "confiant"
+    }
+   },
+   {
+    "gravite": 20,
+    "vocal": "V03",
+    "type": "prochaine_etape",
+    "categorie": "critique",
+    "statut": "invente",
+    "confiance": "confiant",
+    "attendu": null,
+    "extrait": {
+     "type": "visite",
+     "date": "2027-01-05",
+     "heure": null,
+     "score": 0.7,
+     "source": "je repasse peut-être en début d'année",
+     "confiance": "confiant"
+    }
+   },
+   {
+    "gravite": 6,
+    "vocal": "V03",
+    "type": "actions_perso",
+    "categorie": "importante",
+    "statut": "invente",
+    "confiance": "confiant",
+    "attendu": null,
+    "extrait": {
+     "texte": "Repasser voir le Dr Tazi",
+     "echeance": "2027-01-05",
+     "source": "je repasse peut-être en début d'année",
+     "confiance": "confiant"
+    }
+   },
+   {
+    "gravite": 3,
+    "vocal": "V03",
+    "type": "technologies",
+    "categorie": "importante",
+    "statut": "manque",
+    "confiance": null,
+    "attendu": {
+     "valeur": "HIFU",
+     "machine_catalogue": null,
+     "source": "un HIFU de chez Alma"
+    },
+    "extrait": null
+   },
+   {
+    "gravite": 3,
+    "vocal": "V03",
+    "type": "technologies",
+    "categorie": "importante",
+    "statut": "invente",
+    "confiance": "a_verifier",
+    "attendu": null,
+    "extrait": {
+     "valeur": "ultrasons focalisés",
+     "confiance": "a_verifier",
+     "score": 0.6,
+     "source": "un I fou de chez Alma"
+    }
+   }
+  ],
+  "termes_rates": [
+   {
+    "terme": "ميتين و ربعين ألف",
+    "categorie": "montant",
+    "trouve": false,
+    "nombres_entendus": [
+     1,
+     24,
+     240,
+     285000
+    ],
+    "vid": "V01",
+    "langue": "mixte",
+    "environnement": "calme",
+    "texte": "صافي، كنت عند Clinique Atlas مع Dr Amrani، وكان معاه l’associé ديالو، Dr Benani, c’est lui qui gère les finances. Ils sont très intéressés par le laser diode pour l’épilation، حيت غادي يحلّو centre جديد ف janvier. المشكل هو الثمن، l’associé قال ليا 285 000 غالي بزاف، عندهم offre ديال Candela تقريبا 240. هضرت معاهم على le financement sur 24 mois، عجبهم الحال. بغاو يشوفو la machine، on a calé une démo au showroom jeudi à 15h. خاصني نصيفط ليهم la simulation de financement قبل الأربعاء."
+   }
+  ],
+  "garde_fous": [
+   "taux d'invention 8,8 % > 5 %",
+   "1,33 erreur(s) critique(s) affirmée(s) sans réserve par vocal (max 0,10)"
+  ],
+  "vocaux": [
+   {
+    "id": "V01",
+    "langue": "mixte",
+    "environnement": "calme",
+    "commercial": "C1",
+    "duree_s": 72.0,
+    "latence_s": 10.0,
+    "cout_usd": 0.0112,
+    "ux": {
+     "elements_montres": 18,
+     "confirmations": 0,
+     "corrections": 1,
+     "corrections_valeurs": 1,
+     "ajouts": 0,
+     "questions": 0,
+     "erreurs_silencieuses": 1,
+     "erreurs_silencieuses_critiques": 1,
+     "acceptable_sans_modif": false,
+     "temps_revue_s": 82,
+     "temps_total_s": 92.0
+    },
+    "stt": {
+     "wer": 0.1134,
+     "cer": 0.1034,
+     "termes": [
+      {
+       "terme": "Dr Amrani",
+       "categorie": "nom",
+       "trouve": true,
+       "nombres_entendus": null
+      },
+      {
+       "terme": "Dr Bennani",
+       "categorie": "nom",
+       "trouve": true,
+       "nombres_entendus": null
+      },
+      {
+       "terme": "Clinique Atlas",
+       "categorie": "clinique",
+       "trouve": true,
+       "nombres_entendus": null
+      },
+      {
+       "terme": "laser diode",
+       "categorie": "technologie",
+       "trouve": true,
+       "nombres_entendus": null
+      },
+      {
+       "terme": "Candela",
+       "categorie": "concurrent",
+       "trouve": true,
+       "nombres_entendus": null
+      },
+      {
+       "terme": "deux cent quatre-vingt-cinq mille",
+       "categorie": "montant",
+       "trouve": true,
+       "nombres_entendus": [
+        1,
+        24,
+        240,
+        285000
+       ]
+      },
+      {
+       "terme": "ميتين و ربعين ألف",
+       "categorie": "montant",
+       "trouve": false,
+       "nombres_entendus": [
+        1,
+        24,
+        240,
+        285000
+       ]
+      },
+      {
+       "terme": "jeudi à 15h",
+       "categorie": "date",
+       "trouve": true,
+       "nombres_entendus": null
+      }
+     ],
+     "texte": "صافي، كنت عند Clinique Atlas مع Dr Amrani، وكان معاه l’associé ديالو، Dr Benani, c’est lui qui gère les finances. Ils sont très intéressés par le laser diode pour l’épilation، حيت غادي يحلّو centre جديد ف janvier. المشكل هو الثمن، l’associé قال ليا 285 000 غالي بزاف، عندهم offre ديال Candela تقريبا 240. هضرت معاهم على le financement sur 24 mois، عجبهم الحال. بغاو يشوفو la machine، on a calé une démo au showroom jeudi à 15h. خاصني نصيفط ليهم la simulation de financement قبل الأربعاء.",
+     "latence_s": 6.2,
+     "cout_usd": null
+    }
+   },
+   {
+    "id": "V02",
+    "langue": "darija",
+    "environnement": "voiture",
+    "commercial": "C2",
+    "duree_s": 48.0,
+    "latence_s": 8.0,
+    "cout_usd": 0.0088,
+    "ux": {
+     "elements_montres": 8,
+     "confirmations": 2,
+     "corrections": 2,
+     "corrections_valeurs": 2,
+     "ajouts": 0,
+     "questions": 0,
+     "erreurs_silencieuses": 2,
+     "erreurs_silencieuses_critiques": 2,
+     "acceptable_sans_modif": false,
+     "temps_revue_s": 82,
+     "temps_total_s": 90.0
+    },
+    "stt": {
+     "wer": 0.2424,
+     "cer": 0.1361,
+     "termes": [
+      {
+       "terme": "بنسودة",
+       "categorie": "nom",
+       "trouve": true,
+       "nombres_entendus": null
+      },
+      {
+       "terme": "عيادة النخيل",
+       "categorie": "clinique",
+       "trouve": true,
+       "nombres_entendus": null
+      },
+      {
+       "terme": "LONGISHAPE",
+       "categorie": "machine",
+       "trouve": true,
+       "nombres_entendus": null
+      },
+      {
+       "terme": "BTL",
+       "categorie": "concurrent",
+       "trouve": true,
+       "nombres_entendus": null
+      },
+      {
+       "terme": "28 مليون",
+       "categorie": "montant",
+       "trouve": true,
+       "nombres_entendus": [
+        25000000,
+        28000000
+       ]
+      },
+      {
+       "terme": "25 مليون",
+       "categorie": "montant",
+       "trouve": true,
+       "nombres_entendus": [
+        25000000,
+        28000000
+       ]
+      },
+      {
+       "terme": "الثلاثاء الجاي",
+       "categorie": "date",
+       "trouve": true,
+       "nombres_entendus": null
+      }
+     ],
+     "texte": "كنت عند الدكتورة بن سودة ف عيادة النخيل باغا لونجي شيب ولكن قالت ليا غالية الميزانية ديالها 28 مليون ولقات عند بي تي ال ب 25 مليون ما تفاهمناش على شي حاجة غادي نعيط ليها التلات الجاي",
+     "latence_s": 4.8,
+     "cout_usd": null
+    }
+   },
+   {
+    "id": "V03",
+    "langue": "francais",
+    "environnement": "rue",
+    "commercial": "C3",
+    "duree_s": 40.0,
+    "latence_s": 6.3,
+    "cout_usd": 0.008,
+    "ux": {
+     "elements_montres": 8,
+     "confirmations": 0,
+     "corrections": 4,
+     "corrections_valeurs": 3,
+     "ajouts": 1,
+     "questions": 0,
+     "erreurs_silencieuses": 2,
+     "erreurs_silencieuses_critiques": 1,
+     "acceptable_sans_modif": false,
+     "temps_revue_s": 113,
+     "temps_total_s": 119.3
+    },
+    "stt": {
+     "wer": 0.1316,
+     "cer": 0.0507,
+     "termes": [
+      {
+       "terme": "Dr Tazi",
+       "categorie": "nom",
+       "trouve": true,
+       "nombres_entendus": null
+      },
+      {
+       "terme": "cabinet Agdal",
+       "categorie": "clinique",
+       "trouve": true,
+       "nombres_entendus": null
+      },
+      {
+       "terme": "HIFU",
+       "categorie": "technologie",
+       "trouve": false,
+       "nombres_entendus": null
+      },
+      {
+       "terme": "Alma",
+       "categorie": "concurrent",
+       "trouve": true,
+       "nombres_entendus": null
+      }
+     ],
+     "texte": "Visite chez docteur Tazi au cabinet à gdal. Il a déjà un I fou de chez Alma, il n'a pas besoin d'une deuxième machine pour l'instant. Rien de prévu, je repasse peut-être en début d'année.",
+     "latence_s": 3.9,
+     "cout_usd": null
+    }
+   }
+  ]
+ },
+ "Y-demo": {
+  "libelle": "Démo : modèle audio natif",
+  "role": null,
+  "synthese": {
+   "vocaux": 3,
+   "langues": {
+    "darija": {
+     "n": 1,
+     "cer": 0.041,
+     "wer": 0.091,
+     "termes": 1.0,
+     "critique_B": 1.0
+    },
+    "francais": {
+     "n": 1,
+     "cer": 0.0,
+     "wer": 0.0,
+     "termes": 1.0,
+     "critique_B": 1.0
+    },
+    "mixte": {
+     "n": 1,
+     "cer": 0.0,
+     "wer": 0.021,
+     "termes": 1.0,
+     "critique_B": 1.0
+    }
+   },
+   "environnements": {
+    "calme": {
+     "n": 1,
+     "cer": 0.0,
+     "wer": 0.021,
+     "termes": 1.0,
+     "critique_B": 1.0
+    },
+    "voiture": {
+     "n": 1,
+     "cer": 0.041,
+     "wer": 0.091,
+     "termes": 1.0,
+     "critique_B": 1.0
+    },
+    "rue": {
+     "n": 1,
+     "cer": 0.0,
+     "wer": 0.0,
+     "termes": 1.0,
+     "critique_B": 1.0
+    },
+    "showroom": {
+     "n": 0,
+     "cer": null,
+     "wer": null,
+     "termes": null,
+     "critique_B": null
+    }
+   },
+   "termes_par_categorie": {
+    "nom": {
+     "n": 4,
+     "rappel": 1.0
+    },
+    "clinique": {
+     "n": 3,
+     "rappel": 1.0
+    },
+    "machine": {
+     "n": 1,
+     "rappel": 1.0
+    },
+    "technologie": {
+     "n": 2,
+     "rappel": 1.0
+    },
+    "concurrent": {
+     "n": 3,
+     "rappel": 1.0
+    },
+    "montant": {
+     "n": 4,
+     "rappel": 1.0
+    },
+    "date": {
+     "n": 2,
+     "rappel": 1.0
+    }
+   },
+   "types": {
+    "client": {
+     "categorie": "critique",
+     "attendus": 3,
+     "extraits": 3,
+     "correct": 3,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "contacts": {
+     "categorie": "critique",
+     "attendus": 4,
+     "extraits": 4,
+     "correct": 4,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "montants": {
+     "categorie": "critique",
+     "attendus": 4,
+     "extraits": 4,
+     "correct": 4,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "prochaine_etape": {
+     "categorie": "critique",
+     "attendus": 1,
+     "extraits": 1,
+     "correct": 1,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "actions_perso": {
+     "categorie": "importante",
+     "attendus": 2,
+     "extraits": 2,
+     "correct": 2,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "changement_etape": {
+     "categorie": "critique",
+     "attendus": 0,
+     "extraits": 0,
+     "correct": 0,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": null,
+     "rappel": null,
+     "exactitude": null,
+     "silencieuses": 0
+    },
+    "decideurs": {
+     "categorie": "importante",
+     "attendus": 2,
+     "extraits": 2,
+     "correct": 2,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "objections": {
+     "categorie": "importante",
+     "attendus": 3,
+     "extraits": 3,
+     "correct": 3,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "concurrents": {
+     "categorie": "importante",
+     "attendus": 3,
+     "extraits": 2,
+     "correct": 2,
+     "erreur": 0,
+     "manque": 1,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 0.667,
+     "exactitude": 0.667,
+     "silencieuses": 0
+    },
+    "financement": {
+     "categorie": "importante",
+     "attendus": 1,
+     "extraits": 1,
+     "correct": 1,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "timing": {
+     "categorie": "importante",
+     "attendus": 1,
+     "extraits": 1,
+     "correct": 1,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "technologies": {
+     "categorie": "importante",
+     "attendus": 3,
+     "extraits": 3,
+     "correct": 3,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "besoins": {
+     "categorie": "secondaire",
+     "attendus": 1,
+     "extraits": 1,
+     "correct": 1,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "signaux": {
+     "categorie": "secondaire",
+     "attendus": 1,
+     "extraits": 1,
+     "correct": 1,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "interet": {
+     "categorie": "secondaire",
+     "attendus": 2,
+     "extraits": 2,
+     "correct": 2,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    },
+    "signal_terrain": {
+     "categorie": "secondaire",
+     "attendus": 1,
+     "extraits": 1,
+     "correct": 1,
+     "erreur": 0,
+     "manque": 0,
+     "invente": 0,
+     "precision": 1.0,
+     "rappel": 1.0,
+     "exactitude": 1.0,
+     "silencieuses": 0
+    }
+   },
+   "categories": {
+    "critique": {
+     "exactitude": 1.0,
+     "invention": 0.0
+    },
+    "importante": {
+     "exactitude": 0.933,
+     "invention": 0.0
+    },
+    "secondaire": {
+     "exactitude": 1.0,
+     "invention": 0.0
+    }
+   },
+   "taux_invention": 0.0,
+   "inventions_confiantes": 0,
+   "sources_introuvables": 0.032,
+   "ux": {
+    "corrections": 0.33,
+    "confirmations": 1.67,
+    "questions": 0.33,
+    "ajouts": 0.33,
+    "erreurs_silencieuses_critiques": 0.0,
+    "acceptables_sans_modif": 0.667,
+    "temps_revue_median_s": 76,
+    "temps_total_median_s": 87.5
+   },
+   "latence": {
+    "mediane_s": 9.0,
+    "p90_s": 9.0
+   },
+   "cout_usd_par_minute": 0.0225,
+   "calibration": {
+    "client": {
+     "cible": 0.98,
+     "par_etiquette": {
+      "confiant": {
+       "n": 3,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": {
+      "seuil": 0.5,
+      "precision": 1.0,
+      "couverture": 1.0
+     },
+     "avec_score": 3,
+     "courbe": [
+      [
+       0.5,
+       1.0,
+       1.0
+      ],
+      [
+       0.55,
+       1.0,
+       1.0
+      ],
+      [
+       0.6,
+       1.0,
+       1.0
+      ],
+      [
+       0.65,
+       1.0,
+       1.0
+      ],
+      [
+       0.7,
+       1.0,
+       1.0
+      ],
+      [
+       0.75,
+       1.0,
+       1.0
+      ],
+      [
+       0.8,
+       1.0,
+       1.0
+      ],
+      [
+       0.85,
+       1.0,
+       1.0
+      ],
+      [
+       0.9,
+       1.0,
+       1.0
+      ],
+      [
+       0.95,
+       1.0,
+       0.667
+      ]
+     ]
+    },
+    "contacts": {
+     "cible": 0.98,
+     "par_etiquette": {
+      "confiant": {
+       "n": 4,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": {
+      "seuil": 0.5,
+      "precision": 1.0,
+      "couverture": 1.0
+     },
+     "avec_score": 4,
+     "courbe": [
+      [
+       0.5,
+       1.0,
+       1.0
+      ],
+      [
+       0.55,
+       1.0,
+       1.0
+      ],
+      [
+       0.6,
+       1.0,
+       1.0
+      ],
+      [
+       0.65,
+       1.0,
+       1.0
+      ],
+      [
+       0.7,
+       1.0,
+       1.0
+      ],
+      [
+       0.75,
+       1.0,
+       1.0
+      ],
+      [
+       0.8,
+       1.0,
+       1.0
+      ],
+      [
+       0.85,
+       1.0,
+       1.0
+      ],
+      [
+       0.9,
+       1.0,
+       1.0
+      ],
+      [
+       0.95,
+       1.0,
+       1.0
+      ]
+     ]
+    },
+    "montants": {
+     "cible": 0.99,
+     "par_etiquette": {
+      "confiant": {
+       "n": 1,
+       "precision": 1.0
+      },
+      "a_verifier": {
+       "n": 3,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": {
+      "seuil": 0.5,
+      "precision": 1.0,
+      "couverture": 1.0
+     },
+     "avec_score": 4,
+     "courbe": [
+      [
+       0.5,
+       1.0,
+       1.0
+      ],
+      [
+       0.55,
+       1.0,
+       1.0
+      ],
+      [
+       0.6,
+       1.0,
+       1.0
+      ],
+      [
+       0.65,
+       1.0,
+       1.0
+      ],
+      [
+       0.7,
+       1.0,
+       1.0
+      ],
+      [
+       0.75,
+       1.0,
+       1.0
+      ],
+      [
+       0.8,
+       1.0,
+       0.75
+      ],
+      [
+       0.85,
+       1.0,
+       0.5
+      ],
+      [
+       0.9,
+       1.0,
+       0.25
+      ],
+      [
+       0.95,
+       1.0,
+       0.25
+      ]
+     ]
+    },
+    "prochaine_etape": {
+     "cible": 0.98,
+     "par_etiquette": {
+      "confiant": {
+       "n": 1,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": {
+      "seuil": 0.5,
+      "precision": 1.0,
+      "couverture": 1.0
+     },
+     "avec_score": 1,
+     "courbe": [
+      [
+       0.5,
+       1.0,
+       1.0
+      ],
+      [
+       0.55,
+       1.0,
+       1.0
+      ],
+      [
+       0.6,
+       1.0,
+       1.0
+      ],
+      [
+       0.65,
+       1.0,
+       1.0
+      ],
+      [
+       0.7,
+       1.0,
+       1.0
+      ],
+      [
+       0.75,
+       1.0,
+       1.0
+      ],
+      [
+       0.8,
+       1.0,
+       1.0
+      ],
+      [
+       0.85,
+       1.0,
+       1.0
+      ],
+      [
+       0.9,
+       1.0,
+       1.0
+      ],
+      [
+       0.95,
+       1.0,
+       1.0
+      ]
+     ]
+    },
+    "actions_perso": {
+     "cible": 0.9,
+     "par_etiquette": {
+      "confiant": {
+       "n": 2,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": null,
+     "avec_score": 0,
+     "courbe": []
+    },
+    "decideurs": {
+     "cible": 0.93,
+     "par_etiquette": {
+      "confiant": {
+       "n": 1,
+       "precision": 1.0
+      },
+      "a_verifier": {
+       "n": 1,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": null,
+     "avec_score": 0,
+     "courbe": []
+    },
+    "objections": {
+     "cible": 0.9,
+     "par_etiquette": {
+      "confiant": {
+       "n": 3,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": null,
+     "avec_score": 0,
+     "courbe": []
+    },
+    "concurrents": {
+     "cible": 0.95,
+     "par_etiquette": {
+      "confiant": {
+       "n": 2,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": {
+      "seuil": 0.5,
+      "precision": 1.0,
+      "couverture": 1.0
+     },
+     "avec_score": 2,
+     "courbe": [
+      [
+       0.5,
+       1.0,
+       1.0
+      ],
+      [
+       0.55,
+       1.0,
+       1.0
+      ],
+      [
+       0.6,
+       1.0,
+       1.0
+      ],
+      [
+       0.65,
+       1.0,
+       1.0
+      ],
+      [
+       0.7,
+       1.0,
+       1.0
+      ],
+      [
+       0.75,
+       1.0,
+       1.0
+      ],
+      [
+       0.8,
+       1.0,
+       1.0
+      ],
+      [
+       0.85,
+       1.0,
+       1.0
+      ],
+      [
+       0.9,
+       1.0,
+       1.0
+      ],
+      [
+       0.95,
+       1.0,
+       1.0
+      ]
+     ]
+    },
+    "financement": {
+     "cible": 0.93,
+     "par_etiquette": {
+      "confiant": {
+       "n": 1,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": null,
+     "avec_score": 0,
+     "courbe": []
+    },
+    "timing": {
+     "cible": 0.9,
+     "par_etiquette": {
+      "confiant": {
+       "n": 1,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": null,
+     "avec_score": 0,
+     "courbe": []
+    },
+    "technologies": {
+     "cible": 0.93,
+     "par_etiquette": {
+      "confiant": {
+       "n": 3,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": null,
+     "avec_score": 0,
+     "courbe": []
+    },
+    "besoins": {
+     "cible": 0.8,
+     "par_etiquette": {
+      "confiant": {
+       "n": 1,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": null,
+     "avec_score": 0,
+     "courbe": []
+    },
+    "signaux": {
+     "cible": 0.8,
+     "par_etiquette": {
+      "confiant": {
+       "n": 1,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": null,
+     "avec_score": 0,
+     "courbe": []
+    },
+    "interet": {
+     "cible": 0.85,
+     "par_etiquette": {
+      "confiant": {
+       "n": 1,
+       "precision": 1.0
+      },
+      "a_verifier": {
+       "n": 1,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": null,
+     "avec_score": 0,
+     "courbe": []
+    },
+    "signal_terrain": {
+     "cible": 0.8,
+     "par_etiquette": {
+      "confiant": {
+       "n": 1,
+       "precision": 1.0
+      }
+     },
+     "seuil_recommande": null,
+     "avec_score": 0,
+     "courbe": []
+    }
+   }
+  },
+  "erreurs": [
+   {
+    "gravite": 3,
+    "vocal": "V02",
+    "type": "concurrents",
+    "categorie": "importante",
+    "statut": "manque",
+    "confiance": null,
+    "attendu": {
+     "marque": "BTL",
+     "source": "عند BTL"
+    },
+    "extrait": null
+   }
+  ],
+  "termes_rates": [],
+  "garde_fous": [],
+  "vocaux": [
+   {
+    "id": "V01",
+    "langue": "mixte",
+    "environnement": "calme",
+    "commercial": "C1",
+    "duree_s": 72.0,
+    "latence_s": 11.5,
+    "cout_usd": 0.02,
+    "ux": {
+     "elements_montres": 18,
+     "confirmations": 2,
+     "corrections": 0,
+     "corrections_valeurs": 0,
+     "ajouts": 0,
+     "questions": 0,
+     "erreurs_silencieuses": 0,
+     "erreurs_silencieuses_critiques": 0,
+     "acceptable_sans_modif": true,
+     "temps_revue_s": 76,
+     "temps_total_s": 87.5
+    },
+    "stt": {
+     "wer": 0.0206,
+     "cer": 0.0,
+     "termes": [
+      {
+       "terme": "Dr Amrani",
+       "categorie": "nom",
+       "trouve": true,
+       "nombres_entendus": null
+      },
+      {
+       "terme": "Dr Bennani",
+       "categorie": "nom",
+       "trouve": true,
+       "nombres_entendus": null
+      },
+      {
+       "terme": "Clinique Atlas",
+       "categorie": "clinique",
+       "trouve": true,
+       "nombres_entendus": null
+      },
+      {
+       "terme": "laser diode",
+       "categorie": "technologie",
+       "trouve": true,
+       "nombres_entendus": null
+      },
+      {
+       "terme": "Candela",
+       "categorie": "concurrent",
+       "trouve": true,
+       "nombres_entendus": null
+      },
+      {
+       "terme": "deux cent quatre-vingt-cinq mille",
+       "categorie": "montant",
+       "trouve": true,
+       "nombres_entendus": [
+        1,
+        24,
+        240000,
+        285000
+       ]
+      },
+      {
+       "terme": "ميتين و ربعين ألف",
+       "categorie": "montant",
+       "trouve": true,
+       "nombres_entendus": [
+        1,
+        24,
+        240000,
+        285000
+       ]
+      },
+      {
+       "terme": "jeudi à 15h",
+       "categorie": "date",
+       "trouve": true,
+       "nombres_entendus": null
+      }
+     ],
+     "texte": "صافي، كنت عند Clinique Atlas مع Dr Amrani، وكان معاه l’associé ديالو، Dr Bennani, c’est lui qui gère les finances. Ils sont très intéressés par le laser diode pour l’épilation، حيت غادي يحلّو centre جديد ف janvier. المشكل هو الثمن، l’associé قال ليا deux cent quatre-vingt-cinq mille غالي بزاف، عندهم offre ديال Candela تقريبا ميتين وربعين الف. هضرت معاهم على le financement sur 24 mois، عجبهم الحال. بغاو يشوفو la machine، on a calé une démo au showroom jeudi à 15h. خاصني نصيفط ليهم la simulation de financement قبل الأربعاء.",
+     "latence_s": 0,
+     "cout_usd": null
+    }
+   },
+   {
+    "id": "V02",
+    "langue": "darija",
+    "environnement": "voiture",
+    "commercial": "C2",
+    "duree_s": 48.0,
+    "latence_s": 9.0,
+    "cout_usd": 0.02,
+    "ux": {
+     "elements_montres": 7,
+     "confirmations": 2,
+     "corrections": 1,
+     "corrections_valeurs": 0,
+     "ajouts": 1,
+     "questions": 1,
+     "erreurs_silencieuses": 0,
+     "erreurs_silencieuses_critiques": 0,
+     "acceptable_sans_modif": false,
+     "temps_revue_s": 80,
+     "temps_total_s": 89.0
+    },
+    "stt": {
+     "wer": 0.0909,
+     "cer": 0.0408,
+     "termes": [
+      {
+       "terme": "بنسودة",
+       "categorie": "nom",
+       "trouve": true,
+       "nombres_entendus": null
+      },
+      {
+       "terme": "عيادة النخيل",
+       "categorie": "clinique",
+       "trouve": true,
+       "nombres_entendus": null
+      },
+      {
+       "terme": "LONGISHAPE",
+       "categorie": "machine",
+       "trouve": true,
+       "nombres_entendus": null
+      },
+      {
+       "terme": "BTL",
+       "categorie": "concurrent",
+       "trouve": true,
+       "nombres_entendus": null
+      },
+      {
+       "terme": "28 مليون",
+       "categorie": "montant",
+       "trouve": true,
+       "nombres_entendus": [
+        25000000,
+        28000000
+       ]
+      },
+      {
+       "terme": "25 مليون",
+       "categorie": "montant",
+       "trouve": true,
+       "nombres_entendus": [
+        25000000,
+        28000000
+       ]
+      },
+      {
+       "terme": "الثلاثاء الجاي",
+       "categorie": "date",
+       "trouve": true,
+       "nombres_entendus": null
+      }
+     ],
+     "texte": "كنت عند الدكتورة بنسودة ف عيادة النخيل. باغا LONGISHAPE ولكن قالت ليا غالية، الميزانية ديالها 28 مليون، ولقات عند بي تي إل ب 25 مليون. ما تفاهمناش على شي حاجة، غادي نعيط ليها الثلاثاء الجاي.",
+     "latence_s": 0,
+     "cout_usd": null
+    }
+   },
+   {
+    "id": "V03",
+    "langue": "francais",
+    "environnement": "rue",
+    "commercial": "C3",
+    "duree_s": 40.0,
+    "latence_s": 7.4,
+    "cout_usd": 0.02,
+    "ux": {
+     "elements_montres": 6,
+     "confirmations": 1,
+     "corrections": 0,
+     "corrections_valeurs": 0,
+     "ajouts": 0,
+     "questions": 0,
+     "erreurs_silencieuses": 0,
+     "erreurs_silencieuses_critiques": 0,
+     "acceptable_sans_modif": true,
+     "temps_revue_s": 34,
+     "temps_total_s": 41.4
+    },
+    "stt": {
+     "wer": 0.0,
+     "cer": 0.0,
+     "termes": [
+      {
+       "terme": "Dr Tazi",
+       "categorie": "nom",
+       "trouve": true,
+       "nombres_entendus": null
+      },
+      {
+       "terme": "cabinet Agdal",
+       "categorie": "clinique",
+       "trouve": true,
+       "nombres_entendus": null
+      },
+      {
+       "terme": "HIFU",
+       "categorie": "technologie",
+       "trouve": true,
+       "nombres_entendus": null
+      },
+      {
+       "terme": "Alma",
+       "categorie": "concurrent",
+       "trouve": true,
+       "nombres_entendus": null
+      }
+     ],
+     "texte": "Visite chez Dr Tazi au cabinet Agdal. Il a déjà un HIFU de chez Alma, il n'a pas besoin d'une deuxième machine pour l'instant. Rien de prévu, je repasse peut-être en début d'année.",
+     "latence_s": 0,
+     "cout_usd": null
+    }
+   }
+  ]
+ }
+}

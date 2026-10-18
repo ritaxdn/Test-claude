@@ -14,11 +14,12 @@ Le récit peut être en darija, en français ou mélanger les deux. Ne traduis p
 2. Chaque élément extrait cite sa `source` : le passage exact du récit, recopié tel quel, dans sa langue d'origine.
 3. Montants en dirhams (MAD), en nombre entier. Attention : en darija, « مليون » (« million ») désigne souvent 10 000 MAD (un million de centimes) et « ألف ريال » 50 MAD. Si l'unité est ambiguë, `"confiance": "a_verifier"`.
 4. Dates au format AAAA-MM-JJ, calculées à partir de la date de la visite : {{date_visite}}. Une période (« début janvier ») devient `debut` et `fin`.
-5. `prochaine_etape` : uniquement ce qui a été convenu avec le client. Ce que le commercial doit faire seul va dans `actions_perso`.
-6. `changement_etape` : seulement si le récit le justifie clairement ; sinon null.
-7. `interet` : seulement s'il est explicite.
-8. `questions` : au plus deux questions, seulement si une information critique manque (client, prochaine étape convenue) ou est contradictoire.
-9. `confiance` vaut `confiant`, `a_verifier` ou `non_detecte`. Ajoute `score` entre 0 et 1 si tu peux l'estimer.
+5. Les listes du contexte CRM (machines, concurrents) aident à reconnaître les noms ; elles ne sont pas exhaustives. Un concurrent ou une machine qui n'y figure pas est extrait quand même.
+6. `prochaine_etape` : uniquement ce qui a été convenu avec le client. Ce que le commercial doit faire seul va dans `actions_perso`.
+7. `changement_etape` : seulement si le récit le justifie clairement ; sinon null.
+8. `interet` : seulement s'il est explicite.
+9. `questions` : au plus deux questions, seulement si une information critique manque (client, prochaine étape convenue) ou est contradictoire.
+10. `confiance` vaut `confiant`, `a_verifier` ou `non_detecte`. Ajoute `score` entre 0 et 1 si tu peux l'estimer.
 
 ## Contexte CRM
 

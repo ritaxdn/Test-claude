@@ -24,6 +24,11 @@ python3 harness/bench.py evaluer --run 2026-11-04
 python3 harness/bench.py demo --afficher
 ```
 
+## Contexte CRM et montants marocains
+
+- `python3 harness/contexte_crm.py --supabase` recopie le catalogue machines et les technologies (catégories) du CRM dans `dataset/contexte/crm.json` (variables `CRM_SUPABASE_URL` et `CRM_SUPABASE_KEY`, clé en lecture seule). `--export produits.json` part d'un export de la table. Les concurrents connus (Specta, Physioesthetika, Fotona, Cynosure, Alma) sont dans le même fichier ; la liste reste ouverte.
+- `harness/monnaie.py` normalise les montants dits à la marocaine (« million » en centimes, ryals, centimes, milliers sous-entendus), réglé par `config/monnaie.json`. Elle s'applique après l'extraction, à partir de la phrase source : la transcription et la valeur extraite ne changent pas, une proposition est ajoutée et l'élément passe « à vérifier » quand plusieurs lectures sont plausibles. Les sorties brutes sont gardées dans `extraction_brute/`, et `evaluer --brut` mesure les résultats sans cette couche.
+
 ## Brancher un fournisseur
 
 Chaque architecture déclare deux adaptateurs dans `config/architectures.json` :

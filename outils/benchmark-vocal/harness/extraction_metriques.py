@@ -63,7 +63,9 @@ class Comparateur:
 
     def r_montant(self, g, e):
         try:
-            vg, ve = int(round(float(g["valeur_mad"]))), int(round(float(e.get("valeur_mad"))))
+            # la proposition de la normalisation monétaire est ce que le commercial confirme à l'écran
+            vg = int(round(float(g["valeur_mad"])))
+            ve = int(round(float(e.get("valeur_mad_proposee", e.get("valeur_mad")))))
         except Exception:
             return None
         if vg == ve:

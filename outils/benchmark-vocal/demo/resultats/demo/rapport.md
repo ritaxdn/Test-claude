@@ -9,35 +9,35 @@ La ligne de référence (transcription humaine) mesure la couche B seule : c'est
 
 | Critère | **E0-reference**<br>Transcription humaine + extraction (borne haute) | **X-demo**<br>Démo : STT généraliste → extraction | **Y-demo**<br>Démo : modèle audio natif |
 |---|---|---|---|
-| Darija | B : critiques 100 % | A : CER 14 % · termes 100 %<br>B : critiques 50 % | A : CER 4 % · termes 100 %<br>B : critiques 100 % |
+| Darija | B : critiques 100 % | A : CER 14 % · termes 100 %<br>B : critiques 100 % | A : CER 4 % · termes 100 %<br>B : critiques 100 % |
 | Français | B : critiques 100 % | A : CER 5 % · termes 75 %<br>B : critiques 67 % | A : CER 0 % · termes 100 %<br>B : critiques 100 % |
-| Code-switching | B : critiques 100 % | A : CER 10 % · termes 88 %<br>B : critiques 83 % | A : CER 0 % · termes 100 %<br>B : critiques 100 % |
+| Code-switching | B : critiques 100 % | A : CER 10 % · termes 88 %<br>B : critiques 100 % | A : CER 0 % · termes 100 %<br>B : critiques 100 % |
 | Noms propres | B : 100 % | A : 100 %<br>B : 100 % | A : 100 %<br>B : 100 % |
 | Machines | B : 100 % | A : 67 %<br>B : 50 % | A : 100 %<br>B : 100 % |
 | Concurrents | B : 100 % | A : 100 %<br>B : 100 % | A : 100 %<br>B : 67 % |
-| Montants | B : 100 % | A : 75 %<br>B : 25 % | A : 100 %<br>B : 100 % |
+| Montants | B : 100 % | A : 75 %<br>B : 100 % | A : 100 %<br>B : 100 % |
 | Dates | B : 100 % | A : 100 %<br>B : 67 % | A : 100 %<br>B : 100 % |
 | Décideurs | 100 % | 100 % | 100 % |
 | Objections | 100 % | 100 % | 100 % |
 | Étape convenue | 100 % | 50 % | 100 % |
 | **False extraction rate** | **0,0 %**<br>0 affirmée(s) sans réserve | **8,8 %**<br>2 affirmée(s) sans réserve | **0,0 %**<br>0 affirmée(s) sans réserve |
-| Erreurs critiques affirmées sans réserve / visite | 0,00 | 1,33 | 0,00 |
-| **Corrections / visite** | **0,0**<br>dont ajouts 0,0 | **2,3**<br>dont ajouts 0,3 | **0,3**<br>dont ajouts 0,3 |
-| Confirmations / visite | 1,0 | 0,7 | 1,7 |
+| Erreurs critiques affirmées sans réserve / visite | 0,00 | 0,33 | 0,00 |
+| **Corrections / visite** | **0,0**<br>dont ajouts 0,0 | **1,3**<br>dont ajouts 0,3 | **0,3**<br>dont ajouts 0,3 |
+| Confirmations / visite | 1,0 | 1,7 | 1,7 |
 | Questions / visite | 0,3 | 0,0 | 0,3 |
-| Acceptables sans modification | 100 % | 0 % | 67 % |
-| Fin du vocal → validation (estimé, médiane) | 61 s | 92 s | 88 s |
+| Acceptables sans modification | 100 % | 67 % | 67 % |
+| Fin du vocal → validation (estimé, médiane) | 61 s | 80 s | 88 s |
 | Latence (médiane / p90) | 3,2 s / 3,2 s | 8,0 s / 8,0 s | 9,0 s / 9,0 s |
 | Coût / minute | 0,004 $ | 0,011 $ | 0,022 $ |
 | Citations introuvables dans le texte | 0 % | 12 % | 3 % |
-| Garde-fous | aucun dépassé | ⚠ taux d'invention 8,8 % > 5 %<br>⚠ 1,33 erreur(s) critique(s) affirmée(s) sans réserve par vocal (max 0,10) | aucun dépassé |
+| Garde-fous | aucun dépassé | ⚠ taux d'invention 8,8 % > 5 %<br>⚠ 0,33 erreur(s) critique(s) affirmée(s) sans réserve par vocal (max 0,10) | aucun dépassé |
 
 ## Environnement sonore (couche A : CER · termes critiques — couche B : critiques)
 
 | Environnement | E0-reference | X-demo | Y-demo |
 |---|---|---|---|
-| calme | n/d · n/d — 100 % | 10 % · 88 % — 83 % | 0 % · 100 % — 100 % |
-| voiture | n/d · n/d — 100 % | 14 % · 100 % — 50 % | 4 % · 100 % — 100 % |
+| calme | n/d · n/d — 100 % | 10 % · 88 % — 100 % | 0 % · 100 % — 100 % |
+| voiture | n/d · n/d — 100 % | 14 % · 100 % — 100 % | 4 % · 100 % — 100 % |
 | rue | n/d · n/d — 100 % | 5 % · 75 % — 67 % | 0 % · 100 % — 100 % |
 | showroom | — | — | — |
 
@@ -99,7 +99,7 @@ Aucune.
 |---|---|---|---|---|---|---|---|---|---|
 | Client (identité) | critique | 3 | 3 | 0 | 0 | 0 | 100 % | 100 % | 0 |
 | Contacts (identité) | critique | 4 | 4 | 0 | 0 | 0 | 100 % | 100 % | 0 |
-| Montants | critique | 4 | 1 | 3 | 0 | 0 | 25 % | 25 % | 3 |
+| Montants | critique | 4 | 4 | 0 | 0 | 0 | 100 % | 100 % | 0 |
 | Étape convenue (type, date, heure) | critique | 1 | 1 | 0 | 0 | 1 | 50 % | 100 % | 1 |
 | Actions personnelles (et échéance) | importante | 2 | 2 | 0 | 0 | 1 | 67 % | 100 % | 1 |
 | Décideurs / influenceurs | importante | 2 | 2 | 0 | 0 | 0 | 100 % | 100 % | 0 |
@@ -119,7 +119,7 @@ Aucune.
 |---|---|---|---|---|
 | Client (identité) | 98 % | 100 % (3) | — | ≥ 0.50 (précision 100 %, couvre 100 %) |
 | Contacts (identité) | 98 % | 100 % (4) | — | ≥ 0.50 (précision 100 %, couvre 100 %) |
-| Montants | 99 % | 25 % (4) | — | ≥ 0.93 (précision 100 %, couvre 100 %) |
+| Montants | 99 % | 100 % (1) | 100 % (3) | ≥ 0.50 (précision 100 %, couvre 100 %) |
 | Étape convenue (type, date, heure) | 98 % | 50 % (2) | — | ≥ 0.71 (précision 100 %, couvre 100 %) |
 | Actions personnelles (et échéance) | 90 % | 67 % (3) | — | pas de score fourni |
 | Décideurs / influenceurs | 93 % | 100 % (2) | — | pas de score fourni |
@@ -135,9 +135,6 @@ Aucune.
 
 ### Erreurs les plus graves
 
-- **V01 · Montants** (critique, valeur fausse, affirmé « confiant ») : attendu **240 000 MAD (offre_concurrent)**, obtenu **240 MAD (offre_concurrent)** — « Candela تقريبا 240 »
-- **V02 · Montants** (critique, valeur fausse, affirmé « confiant ») : attendu **280 000 MAD (budget_client)**, obtenu **28 000 000 MAD (budget_client)** — « الميزانية ديالها 28 مليون »
-- **V02 · Montants** (critique, valeur fausse, affirmé « confiant ») : attendu **250 000 MAD (offre_concurrent)**, obtenu **25 000 000 MAD (offre_concurrent)** — « ب 25 مليون »
 - **V03 · Étape convenue (type, date, heure)** (critique, inventé, affirmé « confiant ») : attendu **—**, obtenu **visite · 2027-01-05** — « je repasse peut-être en début d'année »
 - **V03 · Actions personnelles (et échéance)** (importante, inventé, affirmé « confiant ») : attendu **—**, obtenu **Repasser voir le Dr Tazi · avant 2027-01-05** — « je repasse peut-être en début d'année »
 - **V03 · Technologies / machines** (importante, manqué) : attendu **HIFU**, obtenu **—** — « un HIFU de chez Alma »

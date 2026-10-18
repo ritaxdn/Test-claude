@@ -21,11 +21,13 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import adapters  # noqa: E402
+import monnaie  # noqa: E402
 from extraction_metriques import evaluer_extraction, effort, en_liste  # noqa: E402
 from stt_metriques import evaluer_stt  # noqa: E402
 import rapport  # noqa: E402
 
 RACINE = Path(__file__).resolve().parent.parent
+BRUT = False  # --brut : évaluer les extractions sans la normalisation monétaire
 
 
 def charger(chemin):
@@ -141,6 +143,11 @@ def cmd_lancer(a):
             (out / "stt" / f"{r['id']}.json").write_text(json.dumps(s, ensure_ascii=False, indent=1), encoding="utf-8")
         texte = (s or {}).get("texte", "")
         e = adapters.extraction(arch["extraction"], f, contexte, texte, audio, out / "travail")
+        # sortie brute conservée telle quelle ; la normalisation monétaire ajoute ses propositions à côté
+        (out / "extraction_brute").mkdir(exist_ok=True)
+        (out / "extraction_brute" / f"{r['id']}.json").write_text(json.dumps(e, ensure_ascii=False, indent=1), encoding="utf-8")
+        if arch.get("normalisation_monetaire", True):
+            e = monnaie.normaliser_extraction(e, f.get("contexte"))
         (out / "extraction" / f"{r['id']}.json").write_text(json.dumps(e, ensure_ascii=False, indent=1), encoding="utf-8")
         n += 1
         print(f"{r['id']} ok")
@@ -212,7 +219,7 @@ def evaluer_architecture(dossier, rows, fiches, grille, contexte, cfg_arch):
     for r in rows:
         vid = r["id"]
         f = fiches.get(vid)
-        pe = dossier / "extraction" / f"{vid}.json"
+        pe = dossier / ("extraction_brute" if BRUT else "extraction") / f"{vid}.json"
         if not f or not pe.exists():
             continue
         ps = dossier / "stt" / f"{vid}.json"
@@ -316,6 +323,8 @@ def garde_fous(S, grille):
 
 
 def cmd_evaluer(a):
+    global BRUT
+    BRUT = getattr(a, "brut", False)
     grille = charger("config/grille.json")
     contexte = charger(f"{a.dataset}/contexte/crm.json")
     rows = manifeste(a.dataset)
@@ -332,22 +341,23 @@ def cmd_evaluer(a):
         E, A = erreurs_majeures(lignes, stt_res, grille)
         res[d.name] = {"libelle": cfg.get("libelle", d.name), "role": cfg.get("role"), "synthese": S, "erreurs": E,
                        "termes_rates": A, "garde_fous": garde_fous(S, grille), "vocaux": vocaux}
-        with open(base / f"{d.name}.par_vocal.csv", "w", newline="", encoding="utf-8") as f:
+        with open(base / f"{d.name}.par_vocal{'-brut' if BRUT else ''}.csv", "w", newline="", encoding="utf-8") as f:
             w = csv.writer(f)
             w.writerow(["vocal", "langue", "environnement", "wer", "cer", "corrections", "confirmations", "questions", "silencieuses_critiques", "acceptable", "temps_total_s"])
             for v in vocaux:
                 w.writerow([v["id"], v["langue"], v["environnement"], v["stt"]["wer"] if v["stt"] else "", v["stt"]["cer"] if v["stt"] else "",
                             v["ux"]["corrections"], v["ux"]["confirmations"], v["ux"]["questions"], v["ux"]["erreurs_silencieuses_critiques"],
                             v["ux"]["acceptable_sans_modif"], v["ux"]["temps_total_s"]])
-    (base / "evaluation.json").write_text(json.dumps(res, ensure_ascii=False, indent=1, default=str), encoding="utf-8")
+    suf = "-brut" if BRUT else ""
+    (base / f"evaluation{suf}.json").write_text(json.dumps(res, ensure_ascii=False, indent=1, default=str), encoding="utf-8")
     md = rapport.markdown(res, grille, a.run)
-    (base / "rapport.md").write_text(md, encoding="utf-8")
-    print(md if a.afficher else f"Rapport : {(base / 'rapport.md').relative_to(RACINE)}")
+    (base / f"rapport{suf}.md").write_text(md, encoding="utf-8")
+    print(md if a.afficher else f"Rapport : {(base / f'rapport{suf}.md').relative_to(RACINE)}")
 
 
 def cmd_demo(a):
     """Démonstration sur 3 vocaux fictifs et 2 architectures fictives, dont les sorties sont rejouées depuis demo/sorties."""
-    ns = argparse.Namespace(dataset="demo", config="demo/architectures.json", resultats="demo/resultats", run="demo", forcer=True, seulement=None, afficher=a.afficher)
+    ns = argparse.Namespace(dataset="demo", config="demo/architectures.json", resultats="demo/resultats", run="demo", forcer=True, seulement=None, afficher=a.afficher, brut=False)
     for arch in charger(ns.config)["architectures"]:
         ns.archi = arch["id"]
         cmd_lancer(ns)
@@ -370,6 +380,7 @@ def main():
     e = sp.add_parser("evaluer")
     e.add_argument("--run", required=True)
     e.add_argument("--afficher", action="store_true")
+    e.add_argument("--brut", action="store_true", help="sans la normalisation monétaire (pour mesurer son apport)")
     d = sp.add_parser("demo")
     d.add_argument("--afficher", action="store_true")
     a = p.parse_args()
