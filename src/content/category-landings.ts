@@ -42,13 +42,13 @@ export const categoryLandings: Record<LandingKey, Landing> = {
     // Décision Cellulift : hors du cœur de la landing Amincissement
     exclude: ["hot-power", "bodytech-9", "tanita", "longchoc", "shocsteel"],
     title: {
-      fr: "Appareils d'amincissement et de remodelage corporel professionnels",
-      en: "Professional body contouring and slimming devices",
+      fr: "Appareils d'amincissement professionnels au Maroc",
+      en: "Professional body contouring devices in Morocco",
     },
     h1: { fr: "Amincissement et remodelage corporel", en: "Body contouring and slimming" },
     description: {
-      fr: "Les appareils d'amincissement et de remodelage corporel distribués par Cellulift : cellulite, graisse localisée, relâchement cutané et drainage. Installation, formation Cellulift Academy et SAV inclus.",
-      en: "Body contouring and slimming devices distributed by Cellulift: cellulite, localised fat, skin laxity and drainage. Installation, Cellulift Academy training and after-sales included.",
+      fr: "Appareils d'amincissement et de remodelage corporel distribués par CELLULIFT au Maroc : cellulite, graisse localisée, relâchement cutané et drainage.",
+      en: "Discover the body contouring and slimming devices distributed by CELLULIFT in Morocco: cellulite, localised fat, skin laxity and drainage.",
     },
     // Introduction validée par Cellulift
     intro: {
