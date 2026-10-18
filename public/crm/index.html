@@ -912,6 +912,7 @@ select.cal-pill{appearance:none;-webkit-appearance:none;padding-right:30px;backg
 
 /* ===== Shell : sidebar par rôle (ordinateur) ===== */
 .sidenav{display:none}
+body.auth .sidenav{display:none!important}
 @media (min-width:721px){
   body.shell:not(.auth){padding-left:232px}
   body.shell:not(.auth) header.top{display:none}
@@ -1149,7 +1150,13 @@ const sBool = v => !!v;
 /* ---- Supabase ---- */
 const SUPABASE_URL = "https://igfgqfwkhyonptbtrywl.supabase.co";
 const SUPABASE_KEY = "sb_publishable_ITGBRytbM0ve68y6U0TIiw_bTPWQ2xJ";
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+// « Se souvenir de moi » : session gardée sur l'appareil (localStorage) ou seulement le temps de l'onglet (sessionStorage)
+const souvenir=()=>{ try{ return localStorage.getItem("cl-souvenir")!=="0"; }catch(_){ return true; } };
+const authStore={
+  getItem:k=>{ try{ return (souvenir()?localStorage:sessionStorage).getItem(k); }catch(_){ return null; } },
+  setItem:(k,v)=>{ try{ (souvenir()?localStorage:sessionStorage).setItem(k,v); (souvenir()?sessionStorage:localStorage).removeItem(k); }catch(_){} },
+  removeItem:k=>{ try{ localStorage.removeItem(k); }catch(_){} try{ sessionStorage.removeItem(k); }catch(_){} } };
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {auth:{storage:authStore,persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 // Aperçu « Voir comme » : un admin voit le CRM d'un membre, en lecture seule (aucune écriture ne part).
 let apercu=null;
 const RO_ERR={message:"Mode aperçu : lecture seule, rien n’est enregistré.",code:"apercu"};
@@ -3542,13 +3549,14 @@ function formVisite(opts){
      <div id="qv-ia-out"></div></div>
    <div class="field" style="grid-column:1/-1"><span class="lab-mono" id="qv-sl">Je le recontacte</span><div class="chips" role="group" aria-labelledby="qv-sl" data-chips="suite">${SUITE.map(([k,l])=>`<button type="button" class="chip" data-v="${k}" aria-pressed="${k==="7"}">${l}</button>`).join("")}</div><input type="hidden" name="suite" value="7"></div>
    <div class="field" id="qv-sd-f">${`<label for="qv-sd">Quand</label><div style="display:flex;gap:8px"><input id="qv-sd" name="suite_jour" type="date" value="${localISO(new Date(Date.now()+7*864e5))}"><input id="qv-sh" name="suite_heure" type="time" value="10:00" aria-label="Heure de la suite"></div>`}</div>
-   <details class="fam qv-plus" style="grid-column:1/-1"><summary><span>Plus d’options</span><span class="hint" style="margin:0">type, affaire, étape, suite</span></summary><div class="form-grid" style="margin-top:10px">
-   <div class="field" style="grid-column:1/-1"><span class="lab-mono" id="qv-tl">Type</span><div class="chips" role="group" aria-labelledby="qv-tl" data-chips="type">${TYPES.map(([k,l])=>`<button type="button" class="chip" data-v="${k}" aria-pressed="${k===type0}">${l}</button>`).join("")}</div><input type="hidden" name="type" value="${type0}"></div>
+   <div class="field" id="qv-st-f" style="grid-column:1/-1"><span class="lab-mono" id="qv-stl">Comment</span><div class="chips" role="group" aria-labelledby="qv-stl" data-chips="suite_type">${SUITE_T.map(([k,l])=>`<button type="button" class="chip" data-v="${k}" aria-pressed="${k==="appel"}">${l}</button>`).join("")}</div><input type="hidden" name="suite_type" value="appel"></div>
+   ${fld("m-next","Pour quoi faire",`<input id="m-next" name="prochaine_action" autocomplete="off" placeholder="Ex. Envoyer le devis Longiflash…">`,true)}
+   <details class="fam qv-plus" style="grid-column:1/-1"><summary><span>Plus d’options</span></summary><div class="form-grid" style="margin-top:10px">
+   <div class="field" style="grid-column:1/-1"><span class="lab-mono" id="qv-tl">Type d’échange</span><div class="chips" role="group" aria-labelledby="qv-tl" data-chips="type">${TYPES.map(([k,l])=>`<button type="button" class="chip" data-v="${k}" aria-pressed="${k===type0}">${l}</button>`).join("")}</div><input type="hidden" name="type" value="${type0}"></div>
    ${plan?fld("qv-when","Effectuée le",`<input id="qv-when" name="quand" type="datetime-local" value="${toLocalInput(Date.now())}">`):""}
-   ${fld("qv-opp","Affaire concernée",`<select id="qv-opp" name="opportunite_id"><option value="">—</option></select>`)}
-   ${fld("qv-etape","Faire avancer l’affaire (facultatif)",`<select id="qv-etape" name="etape"><option value="">Ne pas changer l’étape</option>${ETAPES.map(e=>`<option value="${e}">${ETAPE_LABEL[e]}</option>`).join("")}</select>`)}
-   <div class="field" id="qv-st-f"><span class="lab-mono" id="qv-stl">Type de suite</span><div class="chips" role="group" aria-labelledby="qv-stl" data-chips="suite_type">${SUITE_T.map(([k,l])=>`<button type="button" class="chip" data-v="${k}" aria-pressed="${k==="appel"}">${l}</button>`).join("")}</div><input type="hidden" name="suite_type" value="appel"></div>
-   ${fld("m-next","Suite : quoi faire",`<input id="m-next" name="prochaine_action" autocomplete="off" placeholder="Ex. Envoyer le devis Longiflash…">`,true)}</div></details></div>`;
+   ${fld("qv-opp","Affaire",`<select id="qv-opp" name="opportunite_id"><option value="">—</option></select>`)}
+   ${fld("qv-etape","Étape",`<select id="qv-etape" name="etape"><option value="">Inchangée</option>${ETAPES.map(e=>`<option value="${e}">${ETAPE_LABEL[e]}</option>`).join("")}</select>`)}
+</div></details></div>`;
   const submit=async f=>{
     const cId=compteIdFromLabel(f.compte_label), type=sEnum(f.type,Object.keys(TYPES_ACT))||"visite";
     const lie=!plan&&f.lier?byId(state.activites,f.lier):null, cible=plan||(lie&&lie.statut==="a_faire"&&lie.compte_id===cId?lie:null);
@@ -3584,7 +3592,7 @@ function formVisite(opts){
     if(!l.length){ box.hidden=true; box.innerHTML=""; return; }
     box.hidden=false; box.innerHTML=`<span class="lab-mono">Action prévue chez ce client</span><div style="display:flex;flex-direction:column;gap:6px;margin-top:6px">${l.slice(0,3).map((a,i)=>`<label class="check"><input type="radio" name="lier" value="${a.id}" ${i===0?"checked":""}> C’est l’action prévue : ${esc(TYPES_ACT[a.type])} · ${esc(fmtDate(a.date_activite))} à ${esc(hm(a.date_activite))}</label>`).join("")}<label class="check"><input type="radio" name="lier" value=""> Non, c’est une autre action</label></div>`; };
   ["input","change"].forEach(ev=>$("#m-compte").addEventListener(ev,()=>{ majOpp(); majLien(); })); majOpp(); majLien();
-  const majSuite=()=>{ const s=$('#mform input[name="suite"]').value; $("#qv-st-f").hidden=!s; $("#qv-sd-f").hidden=!s; $("#qv-sd").disabled=s!=="date"; $("#qv-sd").hidden=s!=="date"; };
+  const majSuite=()=>{ const s=$('#mform input[name="suite"]').value; $("#qv-st-f").hidden=!s; $("#qv-sd-f").hidden=!s; $("#m-next").closest(".field").hidden=!s; $("#qv-sd").disabled=s!=="date"; $("#qv-sd").hidden=s!=="date"; };
   majSuite();
   brancherDictee($("#qv-mic"),$("#m-res"),$("#qv-ia-msg"));
   $("#qv-ia").onclick=async()=>{
@@ -4826,6 +4834,7 @@ function showLogin(msg){
     <div class="form-grid" style="grid-template-columns:1fr">
       ${fld("l-mail","Email professionnel",`<input id="l-mail" name="email" type="email" autocomplete="username" spellcheck="false" required placeholder="prenom@cellulift.ma…">`)}
       ${fld("l-pw","Mot de passe",`<input id="l-pw" name="password" type="password" autocomplete="current-password" required minlength="8">`)}
+      <label class="check" for="l-rem"><input type="checkbox" id="l-rem" ${souvenir()?"checked":""}> Se souvenir de moi</label>
     </div>
     <div id="l-err" class="hint" aria-live="polite" style="color:var(--bad);margin-top:10px">${esc(msg||"")}</div>
     <div class="form-actions" style="justify-content:space-between"><button type="button" class="btn" id="l-signup">Première connexion</button><button type="submit" class="btn primary" id="l-go">Se connecter</button></div>
@@ -4836,6 +4845,7 @@ function showLogin(msg){
     const email=$("#l-mail").value.trim().toLowerCase(), password=$("#l-pw").value;
     if(!email||password.length<8){ $("#l-err").textContent="Email et mot de passe de 8 caractères minimum requis."; return; }
     $("#l-go").disabled=$("#l-signup").disabled=true; $("#l-err").textContent="";
+    try{ localStorage.setItem("cl-souvenir",$("#l-rem").checked?"1":"0"); }catch(_){}
     let r = signup ? await sb.auth.signUp({email,password}) : await sb.auth.signInWithPassword({email,password});
     if(signup && !r.error && !r.data.session) r = await sb.auth.signInWithPassword({email,password});
     $("#l-go").disabled=$("#l-signup").disabled=false;
@@ -4883,7 +4893,7 @@ function formNouveauMotDePasse(){
 sb.auth.onAuthStateChange((event,session)=>{
   if(event==="PASSWORD_RECOVERY") setTimeout(formNouveauMotDePasse,400);
   if(session && (!booted || event==="SIGNED_IN") && (!currentUser || currentUser.id!==session.user.id)){ booted=true; enterApp(session); }
-  else if(!session){ booted=true; currentUser=null; me=null; loaded=false; showLogin(); }
+  else if(!session){ booted=true; currentUser=null; me=null; loaded=false; navMenuFermer(); renderSidenav(); showLogin(); }
 });
 })();
 </script>
