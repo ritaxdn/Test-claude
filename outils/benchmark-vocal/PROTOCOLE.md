@@ -1,6 +1,6 @@
 # Benchmark vocal Cellulift — protocole
 
-**Version 1 — gelée le 18 octobre 2026** (tag Git `protocole-v1`). Ce document ne change plus : toute évolution passera par une version 2 datée, et le harness n'évolue que pour corriger un bug constaté à l'usage. Rien n'est branché en production.
+**Version 1 — gelée le 18 octobre 2026** (référence figée : branche Git `protocole-v1`, commit `46384c2`). Ce document ne change plus : toute évolution passera par une version 2 datée, et le harness n'évolue que pour corriger un bug constaté à l'usage. Rien n'est branché en production.
 
 ## 1. Ce que l'on cherche
 
