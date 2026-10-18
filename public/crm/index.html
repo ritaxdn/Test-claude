@@ -3917,7 +3917,7 @@ function destinataireAide(){
   const ok=x=>x&&x.actif&&!x.hors_crm&&!x.parti_le&&["superviseur","admin"].includes(x.role)&&(!me||x.id!==me.id);
   let x=me&&byId(state.organigramme||state.equipe,me.responsable_id), n=0;
   while(x&&n++<6){ if(ok(x)) return x; x=byId(state.organigramme||state.equipe,x.responsable_id); }
-  return state.equipe.find(e=>ok(e)&&e.role==="superviseur")||state.equipe.find(ok)||null;
+  return null; /* pas de responsable dans l’organigramme : on ne devine pas, le commercial choisit */
 }
 // Chips (choix simple ou multiple) pour les formulaires
 function chipsF(name,label,entries,sel,multi){ const S=new Set([].concat(sel||[]).filter(Boolean));
