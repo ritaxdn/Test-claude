@@ -2257,7 +2257,6 @@ document.addEventListener("click",async e=>{
   if(act==="today-full"){ todayFull=true; viewAujourdhui($("#view")); const k=t.dataset.sec; const el=k==="devis"?[...document.querySelectorAll("#view h3")].find(h=>/Devis à relancer/.test(h.textContent)):k==="mois"?document.querySelector("#view .mois-fold"):k?document.querySelector("#view .ex-"+k):null; if(el){ if(el.tagName==="DETAILS") el.open=true; el.scrollIntoView({block:"start",behavior:"smooth"}); } return; }
   if(act==="today-simple"){ todayFull=false; window.scrollTo(0,0); return viewAujourdhui($("#view")); }
   if(act==="ws-tiroir"){ return wsTiroir(id); }
-  if(act==="ws-jour"){ wsJour=+t.dataset.n?wsJour+(+t.dataset.n):0; return viewAujourdhui($("#view")); }
   if(act==="ws-periode"){ wsPeriode=t.dataset.v; return viewAujourdhui($("#view")); }
   if(act==="ws-filtre"){ wsFiltre=t.dataset.v||""; wsTout=false; return viewAujourdhui($("#view")); }
   if(act==="ws-tout"){ wsTout=!wsTout; return viewAujourdhui($("#view")); }
@@ -2789,7 +2788,7 @@ function accueilSimple(v,S,dv,mois,prenom,dateTxt){
   </div>`;
 }
 /* ---- Espace superviseur : où intervenir aujourd'hui ---- */
-let wsPeriode="jour", wsFiltre="", wsJour=0, wsTout=false;
+let wsPeriode="jour", wsFiltre="", wsTout=false;
 const TEINTES=[["#E7E3FF","#5B49D6"],["#DDF5F8","#007F8F"],["#FDE7F1","#B0185E"],["#FFF0E0","#A85A00"],["#E3F3EC","#11845B"],["#E6ECFD","#3554C8"]];
 function avatar(e,t){ t=t||40; if(!e) return `<span class="av" style="width:${t}px;height:${t}px" aria-hidden="true">·</span>`;
   const ini=String(e.nom||"·").split(/\s+/).filter(Boolean).map(x=>x[0]).slice(0,2).join("").toUpperCase();
@@ -2851,31 +2850,6 @@ function wsCarte(x){ const e=byId(state.equipe,x.com), [lib,cls]=SEV[x.sev];
     <div><div class="ws-item-t">${esc(x.titre)}</div>${x.valeur?`<div class="ws-val">${mad(x.valeur)} <small>MAD</small></div>`:`<div class="ws-sub">${esc(x.sous||"")}</div>`}</div>
     <div class="ws-why">« ${esc(x.raisons[0])} »${e?` <span class="hint">· ${esc(e.nom)}</span>`:""}</div>
     <div class="ws-acts">${wsActions(x)}</div></article>`; }
-function wsPlanning(coms){
-  const d0=startOfDay(); d0.setDate(d0.getDate()+wsJour); const d1=new Date(d0.getTime()+864e5), now=Date.now();
-  const ids=new Set(coms.map(e=>e.id));
-  const ev=state.activites.filter(a=>!estImporte(a)&&ids.has(responsable(a))&&(t=>t>=d0.getTime()&&t<d1.getTime())(new Date(a.date_activite).getTime()));
-  // plage 8 h–19 h, élargie si une action tombe plus tôt ou plus tard (rien n'est coupé au bord)
-  const hs=ev.map(a=>new Date(a.date_activite).getHours()), H0=Math.min(8,...hs), H1=Math.max(19,...hs.map(h=>h+1)), span=(H1-H0)*60;
-  const pos=a=>{ const t=new Date(a.date_activite), m=t.getHours()*60+t.getMinutes()-H0*60, dur=+a.duree_min||dureeDefaut(a.type); const l=Math.max(0,Math.min(span-30,m)); return {l:l/span*100,w:Math.max(5,Math.min(dur,span-l)/span*100)}; };
-  const etat=a=>{ const e=etatAction(a,now); return e==="effectuee"?"ok":e==="a_statuer"?"warn":e==="en_retard"?"bad":(e==="annulee"||e==="non_effectuee")?"off":"plan"; };
-  const jourTxt=d0.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"});
-  const ouvre=d0.getDay()!==0;
-  const lignes=coms.map(e=>{ const as=ev.filter(a=>responsable(a)===e.id).sort((x,y)=>new Date(x.date_activite)-new Date(y.date_activite)); const terrain=as.filter(a=>TERRAIN.includes(a.type)).length;
-    return `<div class="pl-row"><button class="pl-who" data-act="ws-tiroir" data-id="${e.id}">${avatar(e,30)}<span><b>${esc(prenomDe(e.id))}</b><small>${as.length?`${as.length} action${as.length>1?"s":""}${terrain?` · ${terrain} terrain`:""}`:"rien de planifié"}</small></span></button>
-      <div class="pl-track">${as.length?as.map(a=>{ const {l,w}=pos(a), c=byId(state.comptes,a.compte_id);
-        return `<button class="pl-ev ${etat(a)}" style="left:${l.toFixed(2)}%;width:${w.toFixed(2)}%" data-act="act-detail" data-id="${a.id}" title="${esc(hm(a.date_activite)+" · "+(TYPES_ACT[a.type]||a.type)+(c?" · "+c.nom:""))}"><b>${esc(hm(a.date_activite))}</b> ${esc(TYPES_ACT[a.type]||a.type)}${c?` · ${esc(c.nom)}`:""}</button>`; }).join(""):(ouvre?`<span class="pl-vide">Aucune action planifiée</span>`:"")}</div></div>`; }).join("");
-  const maint=wsJour===0&&new Date().getHours()>=H0&&new Date().getHours()<H1?((new Date().getHours()*60+new Date().getMinutes()-H0*60)/span*100):null;
-  return `<section class="ws-plan" aria-label="Planning de l’équipe">
-    <div class="pl-head"><div><h2>Équipe ${wsJour===0?"aujourd’hui":wsJour===1?"demain":wsJour===-1?"hier":""}</h2><span class="lab-mono">${esc(jourTxt)}</span></div>
-      <div class="pl-legend" aria-hidden="true"><span><i class="plan"></i>Prévu</span><span><i class="ok"></i>Fait</span><span><i class="warn"></i>À statuer</span><span><i class="bad"></i>En retard</span></div>
-      <div class="tools"><button class="btn small icon" data-act="ws-jour" data-n="-1" aria-label="Jour précédent">‹</button><button class="btn small" data-act="ws-jour" data-n="0">Aujourd’hui</button><button class="btn small icon" data-act="ws-jour" data-n="1" aria-label="Jour suivant">›</button><a class="btn small" href="#planning">Semaine ↗</a></div></div>
-    <div class="pl-grid">
-      <div class="pl-row pl-axis"><span></span><div class="pl-track">${Array.from({length:H1-H0+1},(_,i)=>`<span style="left:${(i/(H1-H0)*100).toFixed(2)}%">${String(H0+i).padStart(2,"0")}</span>`).join("")}</div></div>
-      <div class="pl-rows">${lignes||`<p class="hint">Aucun commercial rattaché. Renseigne l’organigramme dans Réglages.</p>`}
-        ${maint!=null?`<div class="pl-now" style="left:calc(var(--pl-label) + (100% - var(--pl-label)) * ${(maint/100).toFixed(4)})"><span>${esc(hm(new Date()))}</span></div>`:""}</div>
-    </div></section>`;
-}
 function viewWorkspace(v){
   const p=perimetre(), coms=commerciauxSuivis(p), dans=id=>!p||p.has(id), now=Date.now();
   const L=itemsATraiter(p), prio=L.find(x=>x.sev!=="statuer"&&x.valeur>0)||null, file=L.filter(x=>x!==prio);
@@ -2918,7 +2892,6 @@ function viewWorkspace(v){
   const fileF=file.filter(x=>!wsFiltre||x.sev===wsFiltre), montre=wsTout?fileF:fileF.slice(0,6);
   const big=n=>`<b>${n>=1e4?madShort(n):mad(n)}</b>`;
   v.innerHTML=`<div class="ws">
-  ${wsPlanning(coms)}
   <section class="ws-head">
     <div><h2>Bonjour ${esc(prenom)}</h2><p>${L.length?`Votre équipe a <b>${L.length} point${L.length>1?"s":""} à traiter</b> aujourd’hui.`:"Rien à signaler : l’équipe est à jour."} <button class="linkish" data-act="today-qui" data-v="moi">Mes propres actions ›</button></p></div>
     <div class="ws-metrics"><div><b>${opps.length}</b><span>affaires</span></div><div><b class="t-warn">${risq.length}</b><span>à risque</span></div><div><b class="t-bad">${bloq.length}</b><span>bloquées</span></div><div><b>${madShort(concernes)}</b><span>MAD concernés</span></div>
