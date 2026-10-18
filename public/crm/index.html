@@ -766,9 +766,9 @@ body.ai-open .ai-fab,body.auth .ai-fab{display:none}
 .nx-sub{font-size:13px;color:var(--ink-2)}
 .nx-btns{display:flex;gap:8px;flex-wrap:wrap}
 .plan{display:flex;flex-direction:column;gap:14px;padding-top:6px}
-.plan-mt{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 16px;border-radius:18px;background:#18171F;color:#fff}
-.plan-mt .lab-mono{color:#9997A6}
-.plan-mt .btn{margin-left:auto;background:#fff;color:#18171F;border-color:#fff}
+.plan-mt{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 16px;border-radius:18px;background:#FFF9EE;color:var(--ink);border:1px solid rgba(217,138,0,.3)}
+.plan-mt .lab-mono{color:#9A6200}
+.plan-mt .btn{margin-left:auto}
 .plan-score{display:flex;flex-direction:column}
 .plan-score b{font-size:28px;font-weight:600;letter-spacing:-.02em;line-height:1}.plan-score small{font-size:14px;color:#9997A6;font-weight:500}
 .plan-pts{display:flex;flex-wrap:wrap;gap:6px;flex:1 1 280px}
@@ -796,6 +796,28 @@ body.ai-open .ai-fab,body.auth .ai-fab{display:none}
 .dot.vio{background:#7B61FF}
 .ws-item.sev-aide{border:1px solid rgba(123,97,255,.3)}
 @media (max-width:720px){.plan-grid{grid-template-columns:1fr}.plan-grid section:nth-child(2){grid-row:auto}.plan-mt .btn{margin-left:0;width:100%}.nx-btns .btn{flex:1 1 auto}.sh-org-b .btn{flex:1 1 calc(50% - 6px)}}
+
+.nx2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0 4px}
+.nx-l{position:relative;display:flex;flex-direction:column;gap:3px;padding:14px 16px;border-radius:18px;border:1px solid var(--line-strong);background:var(--surface,#fff);min-width:0}
+.nx-l .btn{align-self:flex-start;margin-top:8px}
+.nx-l:first-child{border-color:rgba(17,132,91,.3);background:#F2FAF6}
+.nx-l:first-child.todo{border-color:rgba(217,138,0,.35);background:#FFF9EE}
+.nx-l:first-child b{font-size:16px}
+.nx-l:not(:first-child){background:transparent}
+.nx-l b{font-size:14px}
+.nx-note{grid-column:1/-1;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--ink-2);padding:2px 4px}
+.nx-note.up{color:var(--warn);font-weight:600}
+.nx-inline{display:inline-flex;gap:6px;margin-left:auto}
+.plan-mt.ok{background:#F2FAF6;color:var(--ink);border:1px solid rgba(17,132,91,.25)}.plan-mt.ok .lab-mono{color:#11845B}
+.plan-score b{font-size:20px!important}
+.pq{font:inherit;font-size:13px;padding:6px 11px;border-radius:999px;border:1px solid rgba(217,138,0,.35);background:#fff;color:var(--ink);cursor:pointer}
+.pq:hover{background:#FFF1D6}
+.sh-org .sh-msg{font-size:13px;margin-top:2px;color:var(--ink)}
+.sh-org.up .sh-msg{color:var(--warn);font-weight:600}
+.sh-org.up .s{color:var(--ink-2)}
+.sh-rq{padding:14px 16px;border-radius:18px;border:1px dashed var(--line-strong)}
+.sh-rq .s{font-size:13px;color:var(--ink-2);margin-top:2px}.sh-rq .sh-msg{font-size:13px;margin-top:8px;font-weight:600}
+@media (max-width:720px){.nx2{grid-template-columns:1fr}.nx-inline{margin-left:0;width:100%}.nx-inline .btn{flex:1}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 </head>
@@ -2063,7 +2085,10 @@ document.addEventListener("click",async e=>{
   if(act==="iv-add"){ const o=byId(state.opportunites,id); if(o) formIntervenant(o); return; }
   if(act==="iv-edit"){ const i=(state.intervenants||[]).find(x=>x.id===id), o=i&&byId(state.opportunites,i.opportunite_id); if(o) formIntervenant(o,i); return; }
   if(act==="iv-del"){ const i=(state.intervenants||[]).find(x=>x.id===id); if(!i) return; if(i&&!reopenAfter) reopenAfter=()=>openOpp(byId(state.opportunites,i.opportunite_id)); t.disabled=true; return write(()=>sb.from("affaire_intervenants").delete().eq("id",id),"Intervenant retiré"); }
-  if(act==="etape"){ const o=byId(state.opportunites,id); if(o) formEtape(o); return; }
+  if(act==="etape"){ const o=byId(state.opportunites,id); if(o) formEtape(o,"convenue"); return; }
+  if(act==="etape-perso"){ const o=byId(state.opportunites,id); if(o) formEtape(o,"perso"); return; }
+  if(act==="rq-active"){ t.disabled=true; reopenAfter=()=>{ const o=byId(state.opportunites,id); if(o) formEtape(o,"convenue"); }; return write(upd("opportunites",id,{requalifiee_le:new Date().toISOString(),requalif_revoir_le:null}),"Affaire reprise dans le nouveau CRM"); }
+  if(act==="rq-plus-tard"){ t.disabled=true; return write(upd("opportunites",id,{requalif_revoir_le:localISO(new Date(Date.now()+14*864e5))}),"On la reverra dans 2 semaines"); }
   if(act==="expliquer"){ const o=byId(state.opportunites,id); if(o) formExpliquer(o); return; }
   if(act==="veille"){ const o=byId(state.opportunites,id); if(o) formVeille(o); return; }
   if(act==="veille-reactiver"){ t.disabled=true; reopenAfter=()=>{ const o=byId(state.opportunites,id); if(o) formEtape(o); }; return write(upd("opportunites",id,{issue:"en_cours",veille_reactivee_le:new Date().toISOString()}),"Affaire réactivée"); }
@@ -3302,14 +3327,18 @@ const estVeille=o=>!!o&&o.issue==="dormante"&&!!o.veille_jusqu;
 const moisTxt=d=>{ const x=new Date(d+"T12:00"); return x.toLocaleDateString("fr-FR",{month:"long",year:"numeric"}); };
 const liste=(v,allowed)=>String(v||"").split(",").filter(x=>allowed.includes(x));
 const explicationValide=o=>!!(o&&o.explication&&o.explication_jusqu&&o.explication_jusqu>=localISO());
-const suiviCRM=o=>!o.import_ref||!!(o.plan_maj_le||o.explication_le||o.veille_le)||state.activites.some(a=>a.opportunite_id===o.id&&!estImporte(a));
+const suiviCRM=o=>!o.import_ref||!!(o.requalifiee_le||o.plan_maj_le||o.explication_le||o.veille_le)||state.activites.some(a=>a.opportunite_id===o.id&&!estImporte(a));
 function prochaineEtape(o){ const t0=startOfDay().getTime();
   return state.activites.filter(a=>a.statut==="a_faire"&&!estImporte(a)&&(a.opportunite_id===o.id||(!a.opportunite_id&&a.compte_id&&a.compte_id===o.compte_id))&&new Date(a.date_activite).getTime()>=t0)
     .sort((a,b)=>(b.opportunite_id===o.id)-(a.opportunite_id===o.id)||new Date(a.date_activite)-new Date(b.date_activite))[0]||null; }
 function derniereSignif(o){ let t=0; const plus=d=>{ if(d){ const x=new Date(d).getTime(); if(x>t) t=x; } };
   state.activites.forEach(a=>{ if(a.opportunite_id!==o.id) return; if(a.statut==="fait"&&ACT_SIGNIF.includes(a.type)) plus(a.date_activite); if(o.import_ref&&!estImporte(a)) plus(a.created_at); });
-  plus(o.veille_reactivee_le); plus(o.import_ref?(o.plan_maj_le||o.explication_le||o.veille_le):o.created_at);
+  plus(o.veille_reactivee_le); plus(o.import_ref?(o.requalifiee_le||o.plan_maj_le||o.explication_le||o.veille_le):o.created_at);
   return t||null; }
+// Deux natures de suite : l'étape convenue avec le client (engagement commercial) et l'action personnelle du commercial
+const futurs=o=>{ const t0=startOfDay().getTime(); return state.activites.filter(a=>a.statut==="a_faire"&&!estImporte(a)&&a.opportunite_id===o.id&&new Date(a.date_activite).getTime()>=t0).sort((a,b)=>new Date(a.date_activite)-new Date(b.date_activite)); };
+const etapeConvenue=o=>futurs(o).find(a=>a.convenue)||null;
+const actionPerso=o=>futurs(o).find(a=>!a.convenue)||null;
 // État d'organisation d'une affaire en cours : à organiser (côté commercial) puis remontée (côté superviseur)
 function organisation(o){
   if(!o||o.issue!=="en_cours") return null;
@@ -3317,10 +3346,18 @@ function organisation(o){
   const aOrganiser=suivi&&!suite&&!expl, remonte=aOrganiser&&(j==null||j>=ESCALADE_JOURS);
   return {suite,expl,suivi,j,aOrganiser,remonte,restant:aOrganiser&&j!=null?Math.max(0,ESCALADE_JOURS-j):0};
 }
-function planMaitrise(o){
-  const iv=(state.intervenants||[]).filter(i=>i.opportunite_id===o.id), dec=iv.filter(i=>i.role==="decideur"||i.role==="co_decideur"), s=prochaineEtape(o);
-  const pts=[["Besoin",!!(o.besoin||o.motivation)],["Décideur identifié",dec.length>0],["Décideur rencontré",dec.some(i=>i.acces==="rencontre")],["Objections",(o.objections||[]).length>0||!!o.objections_note],["Financement",!!o.financement],["Timing de décision",!!(o.date_cloture_prevue||o.decision_note)],["Étape convenue",!!(s&&s.convenue&&s.opportunite_id===o.id)]];
-  return {pts,n:pts.filter(x=>x[1]).length,iv};
+// Lecture qualitative du plan : seuls les points utiles à l'étape en cours sont demandés
+function planLecture(o){
+  const iv=(state.intervenants||[]).filter(i=>i.opportunite_id===o.id), dec=iv.filter(i=>i.role==="decideur"||i.role==="co_decideur"), rang=ETAPES.indexOf(o.etape);
+  const pts=[];
+  if(o.issue==="en_cours"&&!etapeConvenue(o)) pts.push(["Prochaine étape à convenir","etape-conv"]);
+  if(!(o.besoin||o.motivation)) pts.push(["Besoin à préciser","plan-edit"]);
+  if(!dec.length) pts.push(["Décideur à identifier","iv-add"]);
+  else if(rang>=1&&!dec.some(i=>i.acces==="rencontre")) pts.push(["Décideur à rencontrer","iv-edit:"+dec[0].id]);
+  if(rang>=1&&!o.financement) pts.push(["Financement à aborder","plan-edit"]);
+  if(rang>=2&&!((o.objections||[]).length||o.objections_note)) pts.push(["Objections à explorer","plan-edit"]);
+  if(rang>=2&&!(o.date_cloture_prevue||o.decision_note)) pts.push(["Timing de décision à clarifier","plan-edit"]);
+  return {pts,iv};
 }
 function destinataireAide(){
   const ok=x=>x&&x.actif&&!x.hors_crm&&!x.parti_le&&["superviseur","admin"].includes(x.role)&&(!me||x.id!==me.id);
@@ -3369,20 +3406,21 @@ function formIntervenant(o,i){
   submit.validate=f=>!sTxt(f.nom)?["nom","Indique le nom."]:null;
   modal(i.id?"Modifier l’intervenant":"Décideur ou influenceur",h,submit,i.id?"Enregistrer":"Ajouter"); wireChipsX();
 }
-function formEtape(o){
-  const d=new Date(); d.setDate(d.getDate()+(d.getDay()===5?3:d.getDay()===6?2:1));
-  const h=`<p style="margin-top:0" class="hint">L’étape <b>convenue avec le client</b> : c’est elle qui fait avancer l’affaire.</p><div class="form-grid">
-   ${chipsF("quoi","Prochaine étape",ETAPES_CONV.map(x=>[x[0],x[1]]),"rdv")}
+const ETAPES_CLIENT=[["rdv","RDV","rdv"],["demo","Démo","demo"],["visite","Visite","visite"],["appel","Appel convenu","appel"],["decideur","Rencontre avec le décideur","rdv"],["autre","Autre","rdv"]];
+const ACTIONS_PERSO=[["proposition","Envoyer la proposition","tache"],["simulation","Préparer une simulation de financement","tache"],["demo","Préparer la démo","tache"],["relance","Relancer","appel"],["whatsapp","Message WhatsApp","whatsapp"],["autre","Autre","tache"]];
+function formEtape(o,mode){
+  const conv=mode!=="perso", L=conv?ETAPES_CLIENT:ACTIONS_PERSO, d=new Date(); d.setDate(d.getDate()+(d.getDay()===5?3:d.getDay()===6?2:1));
+  const h=`<p style="margin-top:0" class="hint">${conv?"Un <b>engagement pris avec le client</b> : date, interlocuteurs, objectif. C’est ce qui fait vraiment avancer l’affaire.":"Une action <b>de ton côté</b>, pour préparer ou relancer. Elle n’engage pas encore le client."}</p><div class="form-grid">
+   ${chipsF("quoi",conv?"Étape convenue":"Action",L.map(x=>[x[0],x[1]]),L[0][0])}
    ${fld("et-d","Date",`<input id="et-d" name="date" type="date" required value="${localISO(d)}" min="${localISO()}">`)}
-   ${fld("et-h","Heure",`<input id="et-h" name="heure" type="time" value="10:00" step="900">`)}
-   ${fld("et-avec","Avec",`<input id="et-avec" name="avec" maxlength="120" placeholder="Ex. Dr Amrani et son associé">`)}
-   ${fld("et-obj","Objectif de l’échange",`<input id="et-obj" name="objectif" maxlength="500" placeholder="Ex. valider le financement, obtenir un accord de principe">`,true)}
-   <div class="field" style="grid-column:1/-1"><label class="check"><input type="checkbox" name="convenue" checked> Convenue avec le client</label></div></div>`;
-  const submit=async f=>{ const e=ETAPES_CONV.find(x=>x[0]===f.quoi)||ETAPES_CONV[5]; const dt=new Date(`${sDate(f.date)}T${/^\d\d:\d\d$/.test(f.heure||"")?f.heure:"10:00"}`);
+   ${fld("et-h","Heure",`<input id="et-h" name="heure" type="time" value="${conv?"15:00":"10:00"}" step="900">`)}
+   ${conv?fld("et-avec","Avec",`<input id="et-avec" name="avec" maxlength="120" placeholder="Ex. Dr Amrani et son associé">`):""}
+   ${fld("et-obj",conv?"Objectif de l’échange":"Précision (facultatif)",`<input id="et-obj" name="objectif" maxlength="500" placeholder="${conv?"Ex. valider le financement, obtenir un accord de principe":"Ex. simulation sur 24 et 36 mois"}">`,true)}</div>`;
+  const submit=async f=>{ const e=L.find(x=>x[0]===f.quoi)||L[0]; const dt=new Date(`${sDate(f.date)}T${/^\d\d:\d\d$/.test(f.heure||"")?f.heure:"10:00"}`);
     return write(ins("activites",{compte_id:o.compte_id,opportunite_id:o.id,commercial_id:o.commercial_id||(me&&me.id),type:e[2],statut:"a_faire",date_activite:dt.toISOString(),
-      label:e[1]+(sTxt(f.avec)?" · "+sTxt(f.avec):""),objectif:sTxt(f.objectif),convenue:!!f.convenue}),"Prochaine étape planifiée"); };
+      label:e[1]+(conv&&sTxt(f.avec)?" · "+sTxt(f.avec):""),objectif:sTxt(f.objectif),convenue:conv}),conv?"Étape convenue enregistrée":"Action planifiée"); };
   submit.validate=f=>!sDate(f.date)?["date","Choisis la date."]:sDate(f.date)<localISO()?["date","Cette date est passée."]:null;
-  modal("Prochaine étape · "+nomClient(o),h,submit,"Planifier"); wireChipsX();
+  modal((conv?"Étape convenue avec le client · ":"Action personnelle · ")+nomClient(o),h,submit,"Planifier"); wireChipsX();
 }
 function formExpliquer(o){
   const d=new Date(Date.now()+14*864e5), v=explicationValide(o);
@@ -3450,12 +3488,13 @@ function formPointAide(x){
 }
 // Rendu du plan dans la fiche affaire
 function planAffaireHtml(o){
-  const {pts,n,iv}=planMaitrise(o), vide=t=>`<p class="hint" style="margin:0">${t}</p>`;
+  const {pts,iv}=planLecture(o), vide=t=>`<p class="hint" style="margin:0">${t}</p>`;
   const ordre={decideur:0,co_decideur:1,financier:2,influenceur:3,prescripteur:4,utilisateur:5};
+  const lien=([l,a])=>{ const [act,ref]=a.split(":"); return `<button class="pq" data-act="${act==="etape-conv"?"etape":act}" data-id="${ref||o.id}">${esc(l)} ›</button>`; };
   return `<div class="plan">
-   <div class="plan-mt"><div class="plan-score"><span class="lab-mono">Plan documenté</span><b>${n}<small>/${pts.length}</small></b></div>
-     <div class="plan-pts">${pts.map(([l,ok])=>`<span class="pp${ok?" ok":""}">${ok?"✓":"○"} ${esc(l)}</span>`).join("")}</div>
-     <button class="btn small" data-act="plan-edit" data-id="${o.id}">Compléter le plan</button></div>
+   <div class="plan-mt${pts.length?"":" ok"}"><div class="plan-score"><span class="lab-mono">Plan d’affaire</span><b>${pts.length?`${Math.min(3,pts.length)} point${Math.min(3,pts.length)>1?"s":""} à clarifier`:"Bien cadré"}</b></div>
+     ${pts.length?`<div class="plan-pts">${pts.slice(0,3).map(lien).join("")}${pts.length>3?`<span class="hint" style="margin:0;align-self:center">et ${pts.length-3} autre${pts.length>4?"s":""} point${pts.length>4?"s":""} quand tu en sauras plus</span>`:""}</div>`:`<div class="plan-pts"><span class="hint" style="margin:0">Rien d’essentiel ne manque pour l’étape « ${esc(ETAPE_LABEL[o.etape]||o.etape)} ».</span></div>`}
+     <button class="btn small" data-act="plan-edit" data-id="${o.id}">Modifier le plan</button></div>
    <div class="plan-grid">
     <section><h4>Besoin & motivation</h4>${o.besoin||o.motivation?`${o.besoin?`<p>${esc(o.besoin)}</p>`:""}${o.motivation?`<p class="hint" style="margin:4px 0 0">Motivation : ${esc(o.motivation)}</p>`:""}`:vide("Pourquoi ce client pourrait-il acheter ?")}</section>
     <section><h4>Décideurs & influenceurs <button class="linkish" data-act="iv-add" data-id="${o.id}">+ Ajouter</button></h4>
@@ -3475,15 +3514,15 @@ function etapeBandeau(o){
      <div class="nx-sub">Mise en veille le ${fmtDate(o.veille_le)}${o.veille_par?" par "+esc(prenomDe(o.veille_par)):""} · hors du pipeline actif</div></div>
      <div class="nx-btns"><button class="btn small primary" data-act="veille-reactiver" data-id="${o.id}">Réactiver maintenant</button><button class="btn small" data-act="veille" data-id="${o.id}">Modifier</button></div></div>`;
   if(o.issue!=="en_cours") return "";
-  const g=organisation(o), s=g.suite;
-  if(s){ const conv=s.convenue&&s.opportunite_id===o.id;
-    return `<div class="nx ok"><div class="nx-main"><span class="lab-mono">Prochaine étape${conv?" · convenue avec le client":""}</span>
-      <b>${esc(new Date(s.date_activite).toLocaleDateString("fr-FR",{weekday:"short",day:"numeric",month:"short"}))} · ${esc(hm(s.date_activite))} — ${esc(s.label||TYPES_ACT[s.type]||s.type)}</b>${s.objectif?`<div class="nx-sub">Objectif : ${esc(s.objectif)}</div>`:""}</div>
-      <div class="nx-btns"><button class="btn small" data-act="etape" data-id="${o.id}">+ Autre étape</button></div></div>`; }
-  const txt=g.expl?`Expliqué : « ${esc(o.explication)} » · jusqu’au ${fmtDate(o.explication_jusqu)}`:!g.suivi?"Affaire reprise de l’ancien CRM : fixe une étape, explique ou mets-la en veille pour la reprendre en main."
-    :g.remonte?`Sans activité depuis ${g.j==null?"sa création":g.j+" jours"} : elle apparaît chez ton superviseur.`:`Sans étape ni explication, elle apparaîtra chez ton superviseur dans ${g.restant} jour${g.restant>1?"s":""}.`;
-  return `<div class="nx ${g.expl?"":"warn"}"><div class="nx-main"><span class="lab-mono">${g.expl?"Pas d’étape · expliqué":"Aucune prochaine étape"}</span><div class="nx-sub">${txt}</div></div>
-    <div class="nx-btns"><button class="btn small primary" data-act="etape" data-id="${o.id}">Fixer la prochaine étape</button><button class="btn small" data-act="expliquer" data-id="${o.id}">${g.expl?"Modifier l’explication":"Expliquer"}</button><button class="btn small" data-act="veille" data-id="${o.id}">Mettre en veille</button></div></div>`;
+  const g=organisation(o), c=etapeConvenue(o), p=actionPerso(o), quand=a=>new Date(a.date_activite).toLocaleDateString("fr-FR",{weekday:"short",day:"numeric",month:"short"})+" · "+hm(a.date_activite);
+  const ligne=(cls,lab,a,vide,btn)=>`<div class="nx-l ${cls}"><span class="lab-mono">${lab}</span>${a?`<b>${esc(quand(a))} — ${esc(a.label||TYPES_ACT[a.type]||a.type)}</b>${a.objectif?`<div class="nx-sub">${a.convenue?"Objectif":"Précision"} : ${esc(a.objectif)}</div>`:""}`:`<div class="nx-sub">${vide}</div>`}${btn}</div>`;
+  const conv=ligne(c?"ok":"todo","Prochaine étape convenue avec le client",c,"Aucun engagement daté avec le client pour l’instant.",`<button class="btn small${c?"":" primary"}" data-act="etape" data-id="${o.id}">${c?"+ Autre étape":"Convenir d’une étape"}</button>`);
+  const perso=ligne(p?"":"todo","Prochaine action personnelle",p,"Rien de prévu de ton côté.",`<button class="btn small" data-act="etape-perso" data-id="${o.id}">${p?"+ Autre action":"+ Action"}</button>`);
+  let etat="";
+  if(!c&&!p){ etat=g.expl?`<div class="nx-note">Expliqué : « ${esc(o.explication)} » · jusqu’au ${fmtDate(o.explication_jusqu)} <button class="linkish" data-act="expliquer" data-id="${o.id}">modifier</button></div>`
+    :`<div class="nx-note${g.remonte?" up":""}">${!g.suivi?"Affaire reprise de l’ancien CRM : convenir d’une étape, expliquer ou mettre en veille suffit à la reprendre en main.":g.remonte?"Cette affaire nécessite une mise à jour.":`À organiser dans les ${g.restant} prochain${g.restant>1?"s":""} jour${g.restant>1?"s":""}.`}
+      <span class="nx-inline"><button class="btn small" data-act="expliquer" data-id="${o.id}">Expliquer</button><button class="btn small" data-act="veille" data-id="${o.id}">Mettre en veille</button></span></div>`; }
+  return `<div class="nx2${!c&&!p&&!g.expl?" warn":""}">${conv}${perso}${etat}</div>`;
 }
 // Accueil commercial : affaires à organiser, retours de veille, réponses à ses demandes d'aide
 function accueilAffaires(){
@@ -3491,7 +3530,9 @@ function accueilAffaires(){
   const aOrg=mes.map(o=>({o,g:organisation(o)})).filter(x=>x.g&&x.g.aOrganiser).sort((a,b)=>(b.g.remonte-a.g.remonte)||((+b.o.montant_mad||0)-(+a.o.montant_mad||0)));
   const retours=mes.filter(o=>o.issue==="en_cours"&&o.veille_reactivee_le&&daysSince(o.veille_reactivee_le)<=21&&!state.activites.some(a=>a.opportunite_id===o.id&&a.statut==="fait"&&new Date(a.date_activite)>=new Date(o.veille_reactivee_le)));
   const aides=(state.aides||[]).filter(x=>me&&x.auteur_id===me.id&&(x.statut==="en_attente"||x.statut==="repondue"));
-  const reprendre=mes.filter(o=>o.issue==="en_cours"&&!suiviCRM(o)).length;
+  const anciens=mes.filter(o=>o.issue==="en_cours"&&!suiviCRM(o)), aRequal=anciens.filter(o=>!o.requalif_revoir_le||o.requalif_revoir_le<=localISO()).sort((a,b)=>(+b.montant_mad||0)-(+a.montant_mad||0)||String(b.updated_at||"").localeCompare(String(a.updated_at||"")));
+  const rq=aRequal[0], rqDerniere=rq&&state.activites.filter(a=>a.opportunite_id===rq.id).sort((a,b)=>String(b.date_activite).localeCompare(String(a.date_activite)))[0];
+  const msg=g=>g.remonte?"Cette affaire nécessite une mise à jour.":`À organiser dans les ${g.restant} prochain${g.restant>1?"s":""} jour${g.restant>1?"s":""}`;
   const html=[
     ...aides.filter(x=>x.statut==="repondue").map(x=>{ const {o,client}=aideResume(x); return `<section class="sh-card sh-dem" aria-label="Réponse de ${esc(prenomDe(x.destinataire_id))}">
       <div class="sh-lab"><span class="dotv" aria-hidden="true"></span>${esc(prenomDe(x.destinataire_id))} a répondu à ta demande d’aide</div><div class="sh-title">${esc(client)}</div>
@@ -3500,18 +3541,21 @@ function accueilAffaires(){
       <div class="sh-lab"><span class="dotv" aria-hidden="true"></span>De retour de veille</div><div class="sh-title">${esc(nomClient(o))} : on peut reprendre</div>
       <div class="sh-sub">${esc(o.titre)}${o.montant_mad?" · "+madShort(o.montant_mad)+" MAD":""}</div>
       ${o.veille_contexte?`<div class="sh-why" style="white-space:pre-line">${esc(o.veille_contexte)}</div>`:""}${o.veille_reprise?`<div class="sh-sub" style="margin-top:6px">À la reprise : <b>${esc(o.veille_reprise)}</b></div>`:""}
-      <div class="sh-btns"><button class="btn primary big" data-act="etape" data-id="${o.id}">Planifier la reprise</button><button class="btn big" data-act="veille" data-id="${o.id}">Repousser</button></div></section>`),
+      <div class="sh-btns"><button class="btn primary big" data-act="etape" data-id="${o.id}">Convenir de la reprise</button><button class="btn big" data-act="veille" data-id="${o.id}">Repousser</button></div></section>`),
     aOrg.length?`<section aria-label="À organiser"><div class="sh-lab">À organiser · ${aOrg.length} affaire${aOrg.length>1?"s":""} sans prochaine étape</div>
       ${aOrg.slice(0,3).map(({o,g})=>`<div class="sh-org${g.remonte?" up":""}"><div class="sh-org-h"><button class="linkish" data-act="open-opp" data-id="${o.id}"><b>${esc(nomClient(o))}</b></button><span class="mono">${o.montant_mad?madShort(o.montant_mad)+" MAD":""}</span></div>
-        <div class="s">${esc(o.titre)} · ${esc(ETAPE_LABEL[o.etape]||o.etape)} · ${g.remonte?"visible par ton superviseur":`remonte dans ${g.restant} j sans étape ni explication`}</div>
-        <div class="sh-org-b"><button class="btn small primary" data-act="etape" data-id="${o.id}">Planifier</button><button class="btn small" data-act="expliquer" data-id="${o.id}">Expliquer</button><button class="btn small" data-act="veille" data-id="${o.id}">En veille</button><button class="btn small" data-act="aide" data-id="${o.id}">Demander de l’aide</button></div></div>`).join("")}
+        <div class="s">${esc(o.titre)} · ${esc(ETAPE_LABEL[o.etape]||o.etape)}</div><div class="sh-msg">${msg(g)}</div>
+        <div class="sh-org-b"><button class="btn small primary" data-act="etape" data-id="${o.id}">Convenir d’une étape</button><button class="btn small" data-act="expliquer" data-id="${o.id}">Expliquer</button><button class="btn small" data-act="veille" data-id="${o.id}">En veille</button><button class="btn small" data-act="aide" data-id="${o.id}">Demander de l’aide</button></div></div>`).join("")}
       ${aOrg.length>3?`<p class="hint" style="margin:6px 0 0">+ ${aOrg.length-3} autre${aOrg.length-3>1?"s":""} · <button class="linkish" data-act="pipe-organiser">voir dans le pipeline</button></p>`:""}</section>`:"",
     ...aides.filter(x=>x.statut==="en_attente").map(x=>`<div class="sh-row"><div style="flex:1;min-width:0"><div class="t">Demande d’aide · ${esc(aideResume(x).client)}</div><div class="s">Envoyée à ${esc(prenomDe(x.destinataire_id))} · en attente de réponse</div></div></div>`),
-    reprendre?`<p class="hint" style="margin:0">${reprendre} affaire${reprendre>1?"s":""} de l’ancien CRM à reprendre en main, sans urgence : elles ne remontent pas au superviseur.</p>`:""
+    rq?`<section class="sh-rq" aria-label="Ancien CRM à requalifier"><div class="sh-lab">Ancien CRM · ${aRequal.length} affaire${aRequal.length>1?"s":""} à requalifier</div>
+      <div class="sh-org-h"><button class="linkish" data-act="open-opp" data-id="${rq.id}"><b>${esc(nomClient(rq))}</b></button><span class="mono">${rq.montant_mad?madShort(rq.montant_mad)+" MAD":""}</span></div>
+      <div class="s">${esc(rq.titre)} · ${esc(ETAPE_LABEL[rq.etape]||rq.etape)}${rqDerniere?" · dernier échange "+fmtDate(rqDerniere.date_activite):""}</div>
+      <div class="sh-msg">Où en est-elle aujourd’hui ?</div>
+      <div class="sh-org-b"><button class="btn small primary" data-act="rq-active" data-id="${rq.id}">Toujours active</button><button class="btn small" data-act="veille" data-id="${rq.id}">En veille</button><button class="btn small" data-act="lost" data-id="${rq.id}">Perdue</button><button class="btn small" data-act="rq-plus-tard" data-id="${rq.id}">À reprendre plus tard</button></div></section>`:""
   ].filter(Boolean).join("");
   return {html,n:aOrg.length+retours.length+aides.filter(x=>x.statut==="repondue").length};
 }
-
 let oppSection="plan";
 function openOpp(o){ if(o) ctxCompte=o.compte_id;
   if(!o) return;
@@ -3541,7 +3585,7 @@ function openOpp(o){ if(o) ctxCompte=o.compte_id;
      ${closed?`<button class="btn small${o.issue==="dormante"?" primary":""}" data-act="reopen" data-id="${o.id}"${estVeille(o)?" hidden":""}>${o.issue==="dormante"?"Réveiller l’affaire":"Rouvrir"}</button>`:`<button class="btn small" data-act="veille" data-id="${o.id}">En veille</button><button class="btn small" data-act="aide" data-id="${o.id}">Demander de l’aide</button><button class="btn small ok" data-act="won" data-id="${o.id}">Gagnée</button><button class="btn small bad" data-act="lost" data-id="${o.id}">Perdue</button>`}
      <button class="btn small" data-act="edit-opp" data-id="${o.id}">Modifier</button>
    </div>
-   <div class="seg-tabs" role="tablist" aria-label="Sections de l’opportunité">${[["plan","Plan d’affaire · "+planMaitrise(o).n+"/7"],["activites","Activités ("+acts.length+")"],["commentaires","Commentaires"],["devis","Devis ("+dv.length+")"],["historique","Historique"]].map(([k,l])=>`<button type="button" role="tab" id="ot-${k}" aria-controls="op-${k}" aria-selected="${oppSection===k}" data-osec="${k}">${l}</button>`).join("")}</div>
+   <div class="seg-tabs" role="tablist" aria-label="Sections de l’opportunité">${[["plan","Plan d’affaire"+((n=>n?" · à clarifier":" · bien cadré")(planLecture(o).pts.length))],["activites","Activités ("+acts.length+")"],["commentaires","Commentaires"],["devis","Devis ("+dv.length+")"],["historique","Historique"]].map(([k,l])=>`<button type="button" role="tab" id="ot-${k}" aria-controls="op-${k}" aria-selected="${oppSection===k}" data-osec="${k}">${l}</button>`).join("")}</div>
    <div id="op-plan" role="tabpanel" aria-labelledby="ot-plan" ${oppSection==="plan"?"":"hidden"}>${planAffaireHtml(o)}</div>
    <div id="op-activites" role="tabpanel" aria-labelledby="ot-activites" ${oppSection==="activites"?"":"hidden"}>${todo.length?`<h4>À faire</h4><div class="feed">${todo.map(a=>feedItem(a,{noCompte:true,noOpp:true})).join("")}</div>`:""}${done.length?`<h4>Fait</h4><div class="feed">${done.map(a=>feedItem(a,{noCompte:true,noOpp:true})).join("")}</div>`:""}${acts.length?"":`<p class="hint">Aucune activité sur cette opportunité. Utilisez Tâche, Événement ou Appel ci-dessus.</p>`}</div>
    <div id="op-commentaires" role="tabpanel" aria-labelledby="ot-commentaires" ${oppSection==="commentaires"?"":"hidden"}><div class="skeleton" style="height:40px"></div></div>
