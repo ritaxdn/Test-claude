@@ -36,6 +36,19 @@ export const faq = {
         q: "Puis-je voir une machine avant d'acheter ?",
         a: "Oui. Demandez une démonstration : nous vous recevons dans l'un de nos points de vente, sur rendez-vous.",
       },
+      // Questions « fournisseur » (validées par Cellulift)
+      {
+        q: "Où acheter un laser esthétique professionnel au Maroc ?",
+        a: "Cellulift distribue au Maroc, depuis 2002, des lasers médicaux et esthétiques professionnels : épilation diode, Nd:YAG, IPL, CO2 fractionné et endolift. Vous pouvez les découvrir dans nos showrooms de Casablanca, Marrakech et Tanger, et demander une démonstration avant d'acheter.",
+      },
+      {
+        q: "Comment choisir son fournisseur d'équipements médico-esthétiques ?",
+        a: "Au-delà de la machine, vérifiez l'accompagnement : installation et mise en service, formation à la pratique, protocoles, garantie et service après-vente local. Chez Cellulift, chaque technologie est livrée avec l'installation, la formation Cellulift Academy, les protocoles et une garantie de 24 mois pièces et main-d'œuvre.",
+      },
+      {
+        q: "Intervenez-vous en dehors de Casablanca ?",
+        a: "Oui. Nos techniciens assurent le transport, le montage et la mise en service partout au Maroc. Nos showrooms de Casablanca, Marrakech et Tanger accueillent les démonstrations.",
+      },
     ],
   },
   en: {
@@ -73,6 +86,18 @@ export const faq = {
       {
         q: "Can I see a device before buying?",
         a: "Yes. Request a demonstration: we welcome you at one of our points of sale, by appointment.",
+      },
+      {
+        q: "Where can I buy a professional aesthetic laser in Morocco?",
+        a: "Since 2002, Cellulift has distributed professional medical and aesthetic lasers in Morocco: diode hair removal, Nd:YAG, IPL, fractional CO2 and endolift. You can see them in our Casablanca, Marrakech and Tangier showrooms and request a demonstration before you buy.",
+      },
+      {
+        q: "How do I choose a medical aesthetic equipment supplier?",
+        a: "Beyond the device, check the support: installation and commissioning, hands-on training, protocols, warranty and local after-sales service. At Cellulift, every technology comes with installation, Cellulift Academy training, protocols and a 24-month parts and labour warranty.",
+      },
+      {
+        q: "Do you work outside Casablanca?",
+        a: "Yes. Our technicians handle transport, assembly and commissioning everywhere in Morocco. Our Casablanca, Marrakech and Tangier showrooms host demonstrations.",
       },
     ],
   },

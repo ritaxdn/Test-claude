@@ -24,4 +24,32 @@ export const technologySeo: Record<string, { title: LocalizedText; description: 
       en: "LA QUEEN: 755/808/1064 nm diode laser, 980 nm vascular laser, Q-switched Nd:YAG and IPL. Hair removal, vascular, pigment and tattoo removal. CELLULIFT, Morocco.",
     },
   },
+  "laser-shock": {
+    title: { fr: "LASER SHOCK — Laser Nd:YAG détatouage et pigments", en: "LASER SHOCK — Q-switched Nd:YAG tattoo removal laser" },
+    description: {
+      fr: "LASER SHOCK : laser Nd:YAG Q-switched 1064, 532 et 1320 nm pour taches pigmentaires, détatouage, naevus et Carbon Peel. CELLULIFT au Maroc.",
+      en: "LASER SHOCK: Q-switched Nd:YAG laser at 1064, 532 and 1320 nm for pigmented spots, tattoo removal, naevi and Carbon Peel. CELLULIFT, Morocco.",
+    },
+  },
+  megalight: {
+    title: { fr: "MEGALIGHT — Laser épilation 755, 808 et 1064 nm", en: "MEGALIGHT — 755, 808 and 1064 nm laser hair removal" },
+    description: {
+      fr: "MEGALIGHT : épilation laser 755, 808 et 1064 nm dans une seule pièce à main, pour tous les phototypes (I à VI). CELLULIFT au Maroc.",
+      en: "MEGALIGHT: 755, 808 and 1064 nm laser hair removal in one handpiece, for all skin types (I to VI). CELLULIFT, Morocco.",
+    },
+  },
+  "slimax-lipo-7": {
+    title: { fr: "SLIMAX LIPO 7 — Lipolaser, cavitation, radiofréquence", en: "SLIMAX LIPO 7 — Lipolaser, cavitation, radiofrequency" },
+    description: {
+      fr: "SLIMAX LIPO 7 : lipolaser 1060 nm, lipocavitation, radiofréquence et palper-rouler pour la graisse localisée et le relâchement cutané. CELLULIFT au Maroc.",
+      en: "SLIMAX LIPO 7: 1060 nm lipolaser, cavitation, radiofrequency and roller massage for localised fat and skin laxity. CELLULIFT, Morocco.",
+    },
+  },
+  tanita: {
+    title: { fr: "TANITA — Analyseur de composition corporelle sans fil", en: "TANITA — Wireless body composition monitor" },
+    description: {
+      fr: "TANITA : bio-impédancemètre sans fil (ANT+) pour le bilan de composition corporelle et le suivi des programmes minceur. CELLULIFT au Maroc.",
+      en: "TANITA: wireless (ANT+) bio-impedance monitor for body composition assessment and slimming programme follow-up. CELLULIFT, Morocco.",
+    },
+  },
 };
