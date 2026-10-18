@@ -111,6 +111,12 @@ const covers: Partial<Record<CategoryKey, string>> = {
 export const universeCover = (category: CategoryKey) =>
   covers[category] ?? technologiesIn(category).find((t) => t.images?.length)?.images?.[0];
 
+/** Machine dont la photo sert de couverture à la gamme (pour le texte alternatif). */
+export const universeCoverName = (category: CategoryKey) => {
+  const cover = universeCover(category);
+  return cover ? technologies.find((t) => t.images?.includes(cover))?.name : undefined;
+};
+
 export function getTechnologyBySlug(slug: string) {
   return technologies.find((t) => t.slug === slug);
 }

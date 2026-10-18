@@ -9,11 +9,13 @@ const text = {
     eyebrow: "Guide gratuit",
     title: "Avant d'investir : les 7 questions à se poser.",
     cta: "Recevoir le guide",
+    cover: "Couverture du guide Cellulift « Choisir sa technologie médico-esthétique »",
   },
   en: {
     eyebrow: "Free guide",
     title: "Before you invest: the 7 questions to ask.",
     cta: "Get the guide",
+    cover: "Cover of the Cellulift guide “Choosing your medical aesthetic technology”",
   },
 } as const;
 
@@ -25,7 +27,7 @@ export function GuideBanner({ locale, className = "" }: { locale: Locale; classN
       href={`/${locale}/guide`}
       className={`glass group flex items-center gap-5 rounded-[1.75rem] p-4 pr-6 transition-transform hover:-translate-y-1 md:gap-7 md:p-5 md:pr-8 ${className}`}
     >
-      <Image src={guideCover} alt="" width={640} height={905} sizes="80px" className="w-14 shrink-0 rounded-md shadow-[0_12px_30px_-14px_rgba(29,27,38,.5)] md:w-20" />
+      <Image src={guideCover} alt={t.cover} width={640} height={905} sizes="80px" className="w-14 shrink-0 rounded-md shadow-[0_12px_30px_-14px_rgba(29,27,38,.5)] md:w-20" />
       <span className="min-w-0 flex-1">
         <span className="data-label block text-deep-soft">{t.eyebrow}</span>{" "}
         <span className="mt-1.5 block font-sans text-base font-medium text-deep md:text-lg">{t.title}</span>
