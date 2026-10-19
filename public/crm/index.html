@@ -2388,7 +2388,7 @@ function navBadges(){
   const b={}; if(!me||!loaded) return b;
   const now=Date.now();
   if(estPilote()){ const n=(state.aides||[]).filter(x=>x.destinataire_id===me.id&&x.statut==="en_attente").length; if(n) b.aujourdhui=n; }
-  else { const n=state.activites.filter(a=>a.statut==="a_faire"&&aMoi(a.commercial_id,a.createur_id)&&!estEvenement(a)&&!(estImporte(a)&&new Date(a.date_activite).getTime()<now)&&["en_retard","a_statuer"].includes(etatAction(a,now))).length; if(n) b.aujourdhui=n; }
+  else { const n=state.activites.filter(a=>a.statut==="a_faire"&&aMoi(a.commercial_id,a.createur_id)&&!estEvenement(a)&&!ancienImport(a)&&["en_retard","a_statuer"].includes(etatAction(a,now))).length; if(n) b.aujourdhui=n; }
   return b;
 }
 const navReduite=()=>!!navPref.barre_reduite;
@@ -2783,7 +2783,7 @@ function accueilSimple(v,S,dv,mois,prenom,dateTxt,anciennes){
     </section>`:`<section class="sh-card sh-done"><div class="sh-title" style="margin:0">Tout est à jour.</div><p class="hint">Planifie ta prochaine action pour ne rien laisser filer.</p><div class="sh-btns" style="justify-content:center"><button class="btn primary big" data-act="planifier">+ Planifier</button></div></section>`}
     ${AF.html}
     ${anciennes.length?`<section class="sh-anc" aria-label="Tâches de l’ancien CRM"><div class="sh-lab">Ancien CRM · ${anciennes.length} tâche${anciennes.length>1?"s":""} à trier</div>
-      <p class="hint" style="margin:2px 0 8px">Restées « à faire » dans l’ancien CRM. Pour chacune : effectuée, replanifiée ou annulée.</p>
+      <p class="hint" style="margin:2px 0 8px">Restées « à faire » dans l’ancien CRM depuis plus d’un mois. Pour chacune : effectuée, replanifiée ou annulée.</p>
       <div class="act-list">${anciennes.slice(0,5).map(a=>actRow(a,"statuer")).join("")}</div>
       ${anciennes.length>5?`<p style="margin:6px 0 0"><button class="linkish" data-act="today-full" data-sec="anciennes">Voir les ${anciennes.length} ›</button></p>`:""}</section>`:""}
     ${suite.length?`<section aria-label="Ensuite"><div class="sh-lab">Ensuite</div>
@@ -2831,7 +2831,7 @@ function itemsATraiter(p){
     if(d.import_ref&&!(od&&suiviCRM(od))) return;
     const c=byId(state.comptes,d.compte_id); L.push({k:"d:"+d.id,sev:"risque",com:d.commercial_id,cat:"Relance",titre:c?c.nom:devisNum(d),sous:devisNum(d),valeur:+d.montant_mad||0,raisons:[`Devis sans réponse depuis ${j} jours`],d}); });
   const retards=new Map();
-  state.activites.forEach(a=>{ if(a.statut!=="a_faire"||estImporte(a)||estEvenement(a)) return; const r=responsable(a); if(!dans(r)) return; const e=etatAction(a,now);
+  state.activites.forEach(a=>{ if(a.statut!=="a_faire"||ancienImport(a)||estEvenement(a)) return; const r=responsable(a); if(!dans(r)) return; const e=etatAction(a,now);
     if(e==="a_statuer"&&!enAttente.has("a:"+a.id)){ const c=byId(state.comptes,a.compte_id); L.push({k:"a:"+a.id,sev:"statuer",com:r,cat:TYPES_ACT[a.type]||a.type,titre:c?c.nom:(a.label||"Action"),sous:(Math.floor((startOfDay().getTime()-startOfDay(new Date(a.date_activite)).getTime())/864e5)<=0?"Aujourd’hui":fmtDate(a.date_activite))+" · "+hm(a.date_activite),valeur:0,raisons:["Passé : a-t-il eu lieu ?"],a}); }
     else if(e==="en_retard"){ if(!retards.has(r)) retards.set(r,[]); retards.get(r).push(a); } });
   retards.forEach((as,r)=>{ if(as.length<2||enAttente.has("r:"+r)) return; const plusVieille=as.reduce((m,a)=>new Date(a.date_activite)<new Date(m.date_activite)?a:m);
@@ -2998,8 +2998,8 @@ function viewAujourdhui(v){
   const d0=startOfDay().getTime(), d1=d0+864e5, d7=d0+8*864e5;
   const now=Date.now();
   const mes=state.activites.filter(a=>aMoi(a.commercial_id,a.createur_id));
-  const anciennes=mes.filter(a=>a.statut==="a_faire"&&estImporte(a)&&new Date(a.date_activite).getTime()<now);
-  const vivantes=mes.filter(a=>!(a.statut==="a_faire"&&estImporte(a)&&new Date(a.date_activite).getTime()<now));
+  const anciennes=mes.filter(a=>a.statut==="a_faire"&&ancienImport(a));
+  const vivantes=mes.filter(a=>!(a.statut==="a_faire"&&ancienImport(a)));
   const parT=(x,y)=>new Date(x.date_activite)-new Date(y.date_activite);
   const S={
     retard:vivantes.filter(a=>a.statut==="a_faire"&&!estEvenement(a)&&etatAction(a,now)==="en_retard").sort((x,y)=>(!!y.prioritaire-!!x.prioritaire)||parT(x,y)),
@@ -3037,12 +3037,12 @@ function viewAujourdhui(v){
     ${section("statuer","À statuer","Tout est statué.","statuer","RDV, visites et démos passés : ont-ils eu lieu ?")}
     ${section("termine","Terminé aujourd’hui","Rien d’enregistré aujourd’hui pour l’instant.","termine")}
     ${S.semaine.length?`<details class="fam ex-sec"><summary><span>7 prochains jours</span><span class="n">${S.semaine.length}</span></summary><div class="act-list">${S.semaine.slice(0,40).map(a=>actRow(a,"semaine")).join("")}</div></details>`:""}
-    ${anciennes.length?`<details class="fam ex-sec ex-anciennes"><summary><span>Actions ouvertes importées de l’ancien CRM</span><span class="n">${anciennes.length}</span></summary><p class="hint">Restées « à faire » dans l’ancien CRM. Elles ne sont pas comptées en retard. Statue-les quand tu peux (souvent : annulée ou non effectuée).</p><div class="act-list">${anciennes.slice(0,60).map(a=>actRow(a,"statuer")).join("")}</div>${anciennes.length>60?`<p class="hint">+ ${anciennes.length-60} autres</p>`:""}</details>`:""}
+    ${anciennes.length?`<details class="fam ex-sec ex-anciennes"><summary><span>Actions ouvertes importées de l’ancien CRM</span><span class="n">${anciennes.length}</span></summary><p class="hint">Restées « à faire » dans l’ancien CRM depuis plus d’un mois. Elles ne sont pas comptées en retard. Statue-les quand tu peux (souvent : annulée ou non effectuée).</p><div class="act-list">${anciennes.slice(0,60).map(a=>actRow(a,"statuer")).join("")}</div>${anciennes.length>60?`<p class="hint">+ ${anciennes.length-60} autres</p>`:""}</details>`:""}
   </div>
   <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
     ${todayQui==="equipe"&&!todayCom?(()=>{ const now=Date.now(), rows=new Map();
       const R=id=>{ if(!rows.has(id)) rows.set(id,{id,retard:0,devis:0,bloq:0}); return rows.get(id); };
-      state.activites.forEach(a=>{ if(a.statut==="a_faire"&&!estImporte(a)&&new Date(a.date_activite).getTime()<now) R(a.commercial_id||a.createur_id||null).retard++; });
+      state.activites.forEach(a=>{ if(a.statut==="a_faire"&&!ancienImport(a)&&new Date(a.date_activite).getTime()<now) R(a.commercial_id||a.createur_id||null).retard++; });
       state.devis.forEach(d=>{ if(d.statut==="envoye"&&daysSince(d.date_envoi||d.updated_at||d.created_at)>=7) R(d.commercial_id||null).devis++; });
       state.opportunites.forEach(o=>{ if(o.issue==="en_cours"&&(risque(o)||{}).niveau==="bloquee") R(o.commercial_id||null).bloq++; });
       const L=[...rows.values()].filter(r=>r.retard||r.devis||r.bloq).sort((a,b)=>b.retard-a.retard||b.devis-a.devis||b.bloq-a.bloq);
@@ -3084,6 +3084,8 @@ const TERRAIN_TYPES=["visite","demo","formation"];           // actions de terra
 const ETAT={planifiee:["Planifiée","○",""],a_statuer:["À statuer","?","warn"],en_retard:["En retard","!","bad"],effectuee:["Effectuée","✓","ok"],annulee:["Annulée","✕",""],non_effectuee:["Non effectuée","⊘",""]};
 const RESULTATS={positif:"Positif",neutre:"Neutre",negatif:"Négatif"};
 const estImporte=a=>/^(legacy:|act\|)/.test(a.import_ref||"");
+// Tâche de l’ancien CRM échue depuis plus de 30 jours : à trier, pas une urgence. En deçà, elle compte comme une tâche normale.
+const ancienImport=a=>estImporte(a)&&new Date(a.date_activite).getTime()<Date.now()-30*864e5;
 const estEvenement=a=>a.type==="evenement";
 function etatAction(a,now){
   now=now||Date.now();
