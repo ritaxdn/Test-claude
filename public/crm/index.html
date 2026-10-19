@@ -1425,10 +1425,14 @@ function viewPipeline(v){
 }
 
 let shown=PAGE;
+// Recherche tolérante : chaque mot doit apparaître, sans tenir compte des h ni des lettres doublées (Sayah ≈ Sayarh, Benani ≈ Bennani)
+const rechCle=t=>strip(t).replace(/h/g,"").replace(/(.)\1+/g,"$1");
+function rechTrouve(q,texte){ const T=strip(texte); if(T.includes(q)) return true; const Tn=rechCle(texte); return q.split(/\s+/).filter(Boolean).every(m=>{ const k=rechCle(m); return T.includes(m)||(k.length>=3&&(Tn.includes(k)||(k.length>=5&&Tn.includes(k.slice(0,-1))))); }); }
 function viewComptes(v){
   const q=strip(filt.q);
+  const ctN=new Map(); if(q) state.contacts.forEach(k=>{ const n=[k.prenom,k.nom].filter(Boolean).join(" "); if(n) ctN.set(k.compte_id,(ctN.get(k.compte_id)||"")+" "+n); });
   const list=state.comptes.filter(c=>(!filt.segment||(filt.segment==="a_classer"?c.metier_a_verifier:filt.segment.startsWith("cat:")?c.categorie===filt.segment.slice(4):c.metier===filt.segment))&&(!filt.ville||c.ville===filt.ville)&&(!filt.statut||c.statut===filt.statut)&&(!filt.com||(filt.com==="none"?!c.commercial_id:c.commercial_id===filt.com))
-    &&(!q||strip([c.nom,c.specialite,c.telephone,c.telephone_2,c.ville,c.notes].filter(Boolean).join(" ")).includes(q)||((c.telephone||"")+" "+(c.telephone_2||"")).replace(/\D/g,"").includes(q.replace(/\D/g,"")||"§")));
+    &&(!q||rechTrouve(q,[c.nom,c.specialite,c.telephone,c.telephone_2,c.ville,c.notes,ctN.get(c.id)].filter(Boolean).join(" "))||((c.telephone||"")+" "+(c.telephone_2||"")).replace(/\D/g,"").includes(q.replace(/\D/g,"")||"§")));
   const page=list.slice(0,shown);
   const nf=new Intl.NumberFormat("fr-FR");
   v.innerHTML=`<div class="section-head"><div><h2>${estPilote()?"Clients":"Mes clients"}</h2><p class="hint">${estPilote()?"":"Tu vois les clients que tu suis ou que tu as créés. "}Médecins et non-médecins, classés par spécialité${(n=>n?` · <button class="linkish" data-act="f-a-classer">${new Intl.NumberFormat("fr-FR").format(n)} à classer</button>`:"")(state.comptes.filter(c=>c.metier_a_verifier&&(estPilote()||!me||c.commercial_id===me.id)).length)}</p></div>
