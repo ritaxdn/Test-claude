@@ -51,7 +51,10 @@ export default async function GuidePage({ params }: { params: Promise<{ lang: st
                 {c.inside.map((q, i) => (
                   <li key={q} className="flex gap-3 font-sans text-sm text-deep">
                     <span className="data-label w-6 shrink-0 pt-0.5 text-deep-soft">{String(i + 1).padStart(2, "0")}</span>
-                    {q}
+                    <span>
+                      {q}
+                      <span className="mt-1 block text-deep-soft">{c.insideText[i]}</span>
+                    </span>
                   </li>
                 ))}
               </ol>

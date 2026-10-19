@@ -4,7 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
 import { Pill, Cta } from "./Cta";
 import type { Locale } from "@/lib/i18n/config";
-import { categories, categoryDetail, technologiesIn, universeCover, type CategoryKey } from "@/content/technologies";
+import { categories, categoryDetail, technologiesIn, universeCover, universeCoverName, type CategoryKey } from "@/content/technologies";
 import { homeSystem } from "@/content/home-system";
 import { landingForCategory, landingPath } from "@/content/category-landings";
 
@@ -44,7 +44,7 @@ export function TechIndex({ locale }: { locale: Locale }) {
                 >
                   {cover && (
                     <div className="scan-frame pointer-events-none absolute inset-0 transition-all duration-700 ease-out md:scale-105 md:opacity-0 md:group-hover:scale-100 md:group-hover:opacity-100">
-                      <Image src={cover} alt="" fill sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 80vw" className="object-cover" />
+                      <Image src={cover} alt={`${universeCoverName(key) ?? categories[key][locale]} — ${categories[key][locale]}`} fill sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 80vw" className="object-cover" />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#0b0d14]/85 via-[#0b0d14]/20 to-[#0b0d14]/30" />
                     </div>
                   )}

@@ -39,7 +39,7 @@ export function LiteYouTube({ id, title, playLabel, vertical = false }: { id: st
     >
       <Image
         src={`/images/media/${id}.jpg`}
-        alt=""
+        alt={title}
         fill
         sizes={vertical ? "(min-width:1024px) 220px, 60vw" : "(min-width:1024px) 40vw, 100vw"}
         className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"

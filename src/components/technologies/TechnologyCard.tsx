@@ -12,7 +12,7 @@ export function TechnologyCard({ technology, locale }: { technology: Technology;
     >
       {technology.images?.[0] && (
         <span className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl bg-[#0b0d14]">
-          <Image src={technology.images[0]} alt="" fill sizes="56px" className="object-contain" />
+          <Image src={technology.images[0]} alt={technology.name} fill sizes="56px" className="object-contain" />
         </span>
       )}
       <span className="mr-auto">

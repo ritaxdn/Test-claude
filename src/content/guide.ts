@@ -22,6 +22,16 @@ export const guideContent = {
       "Quel est le coût réel, et quand serez-vous rentable ?",
       "Comment allez-vous lancer le soin ?",
     ],
+    // Une phrase d'introduction par question (le détail reste dans le PDF)
+    insideText: [
+      "Le choix d'une technologie commence par la patientèle visée et les indications que vous souhaitez proposer.",
+      "Ce que vous pourrez annoncer à vos patients, et le nombre de séances à prévoir pour y parvenir.",
+      "Les documents à demander à votre fournisseur avant d'investir.",
+      "La formation et les protocoles qui accompagnent la prise en main de l'appareil.",
+      "Les questions à poser sur la garantie et le service après-vente.",
+      "Au-delà du prix d'achat : les coûts à prévoir et le calcul du délai d'amortissement.",
+      "Les étapes pour présenter le nouveau soin à vos patients.",
+    ],
     bonus: "Avec des listes « À vérifier » et un tableau pour calculer en combien de temps votre appareil est amorti.",
     pages: "7 pages · Français",
     form: {
@@ -60,6 +70,15 @@ export const guideContent = {
       "What happens if it breaks down?",
       "What is the real cost, and when will it pay off?",
       "How will you launch the treatment?",
+    ],
+    insideText: [
+      "Choosing a technology starts with the patients you want to reach and the indications you want to offer.",
+      "What you can tell your patients, and how many sessions to plan to get there.",
+      "The documents to ask your supplier for before investing.",
+      "The training and protocols that come with getting started on the device.",
+      "The questions to ask about the warranty and after-sales service.",
+      "Beyond the purchase price: the costs to plan for and how to work out the payback period.",
+      "The steps to introduce the new treatment to your patients.",
     ],
     bonus: "With checklists and a table to work out how quickly your device pays for itself.",
     pages: "7 pages · Guide in French",
