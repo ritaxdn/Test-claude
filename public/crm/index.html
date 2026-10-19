@@ -2755,7 +2755,8 @@ function shItem(a,S){
   else { principal=moi?`<button class="btn primary big" data-act="act-effectuer" data-id="${a.id}">C’est fait</button>`:""; }
   return {a,c,titre,quand,pourquoi,principal,second,etat};
 }
-function accueilSimple(v,S,dv,mois,prenom,dateTxt){
+function accueilSimple(v,S,dv,mois,prenom,dateTxt,anciennes){
+  anciennes=(anciennes||[]).slice().sort((x,y)=>new Date(y.date_activite)-new Date(x.date_activite));
   const file=[...new Map([...S.retard.filter(a=>a.prioritaire),...S.jour,...S.retard.filter(a=>!a.prioritaire),...S.statuer].map(a=>[a.id,a])).values()];
   const [premier,...reste]=file, suite=reste.slice(0,3).map(a=>shItem(a,S)), p=premier?shItem(premier,S):null;
   const dmd=(state.demandes||[]).filter(d=>me&&d.destinataire_id===me.id&&d.statut==="en_attente");
@@ -2768,7 +2769,7 @@ function accueilSimple(v,S,dv,mois,prenom,dateTxt){
   ].join("");
   v.innerHTML=`<div class="sh">
     <div class="sh-head"><div class="lab-mono">${esc(dateTxt)}</div><h2>Bonjour ${esc(prenom)}</h2>
-      <p>${n?`${n} chose${n>1?"s":""} à faire${S.retard.length||S.statuer.length?"":" aujourd’hui"}.`:"Rien à faire pour l’instant."}</p></div>
+      <p>${n?`${n} chose${n>1?"s":""} à faire${S.retard.length||S.statuer.length?"":" aujourd’hui"}.`:anciennes.length?"Rien de nouveau aujourd’hui.":"Rien à faire pour l’instant."}${anciennes.length?` ${anciennes.length} tâche${anciennes.length>1?"s":""} de l’ancien CRM à trier.`:""}</p></div>
     ${dmd.map(d=>{ const o=byId(state.opportunites,d.opportunite_id), c=byId(state.comptes,d.compte_id||(o&&o.compte_id)); return `<section class="sh-card sh-dem" aria-label="Demande de ${esc(prenomDe(d.auteur_id))}">
       <div class="sh-lab"><span class="dotv" aria-hidden="true"></span>${esc(prenomDe(d.auteur_id))} te demande ${d.type==="validation"?"une validation":"une mise à jour"}</div>
       <div class="sh-title">${esc((c&&c.nom)||(o&&o.titre)||"Point sur tes actions")}</div>${d.message?`<div class="sh-why">« ${esc(d.message)} »</div>`:""}
@@ -2781,6 +2782,10 @@ function accueilSimple(v,S,dv,mois,prenom,dateTxt){
       <div class="sh-btns">${p.principal}${p.second}${p.etat!=="statuer"?`<button class="btn big" data-act="act-reporter" data-id="${p.a.id}">Plus tard</button>`:""}</div>
     </section>`:`<section class="sh-card sh-done"><div class="sh-title" style="margin:0">Tout est à jour.</div><p class="hint">Planifie ta prochaine action pour ne rien laisser filer.</p><div class="sh-btns" style="justify-content:center"><button class="btn primary big" data-act="planifier">+ Planifier</button></div></section>`}
     ${AF.html}
+    ${anciennes.length?`<section class="sh-anc" aria-label="Tâches de l’ancien CRM"><div class="sh-lab">Ancien CRM · ${anciennes.length} tâche${anciennes.length>1?"s":""} à trier</div>
+      <p class="hint" style="margin:2px 0 8px">Restées « à faire » dans l’ancien CRM. Pour chacune : effectuée, replanifiée ou annulée.</p>
+      <div class="act-list">${anciennes.slice(0,5).map(a=>actRow(a,"statuer")).join("")}</div>
+      ${anciennes.length>5?`<p style="margin:6px 0 0"><button class="linkish" data-act="today-full" data-sec="anciennes">Voir les ${anciennes.length} ›</button></p>`:""}</section>`:""}
     ${suite.length?`<section aria-label="Ensuite"><div class="sh-lab">Ensuite</div>
       ${suite.map(x=>`<div class="sh-row" data-aid="${x.a.id}"><div style="flex:1;min-width:0"><div class="t"><button class="linkish" data-act="act-detail" data-id="${x.a.id}">${esc(x.titre)}</button></div><div class="s">${esc(x.quand)}</div></div>${x.principal.replace(" big","")}</div>`).join("")}
       ${reste.length>3?`<p class="hint" style="margin:6px 0 0">+ ${reste.length-3} autre${reste.length-3>1?"s":""}</p>`:""}</section>`:""}
@@ -3021,7 +3026,7 @@ function viewAujourdhui(v){
   const prenom=me?String(me.nom).split(/\s+/)[0]:"";
   const nbRetard=S.retard.length, nbJour=S.jour.length, nbStatuer=S.statuer.length;
   const dateTxt=new Date().toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"});
-  if(!estPilote()&&!todayFull){ const o=me?objDe(me.id):{}; return accueilSimple(v,S,dv,{visites,obj:+o.visites||0},prenom,dateTxt); }
+  if(!estPilote()&&!todayFull){ const o=me?objDe(me.id):{}; return accueilSimple(v,S,dv,{visites,obj:+o.visites||0},prenom,dateTxt,anciennes); }
   v.innerHTML=`<div class="today-head"><div><div class="lab-mono">${esc(dateTxt)}</div><h2>Bonjour ${esc(prenom)}</h2>${!estPilote()?`<p style="margin:2px 0 0"><button class="linkish" data-act="today-simple">← Vue simple</button></p>`:""}
       ${todayCom?`<p style="margin:4px 0 0"><span class="pill warn">Vue : ${esc(nomMembre(todayCom))}</span> <button class="linkish" data-act="today-com" data-v="">voir toute l’équipe</button></p>`:""}<p class="hint" style="font-size:15px">${[nbRetard?`${nbRetard} en retard`:"rien en retard",`${nbJour} pour aujourd’hui`,nbStatuer?`${nbStatuer} à statuer`:"",dv.length?`${dv.length} devis à relancer`:""].filter(Boolean).join(" · ")}</p></div>
     <div class="tools">${estPilote()?`<div class="chips" role="group" aria-label="Voir"><button class="chip" data-act="today-qui" data-v="moi" aria-pressed="${todayQui==="moi"}">Moi</button><button class="chip" data-act="today-qui" data-v="equipe" aria-pressed="${todayQui==="equipe"}">Toute l’équipe</button></div>`:""}
@@ -3032,7 +3037,7 @@ function viewAujourdhui(v){
     ${section("statuer","À statuer","Tout est statué.","statuer","RDV, visites et démos passés : ont-ils eu lieu ?")}
     ${section("termine","Terminé aujourd’hui","Rien d’enregistré aujourd’hui pour l’instant.","termine")}
     ${S.semaine.length?`<details class="fam ex-sec"><summary><span>7 prochains jours</span><span class="n">${S.semaine.length}</span></summary><div class="act-list">${S.semaine.slice(0,40).map(a=>actRow(a,"semaine")).join("")}</div></details>`:""}
-    ${anciennes.length?`<details class="fam ex-sec"><summary><span>Actions ouvertes importées de l’ancien CRM</span><span class="n">${anciennes.length}</span></summary><p class="hint">Restées « à faire » dans l’ancien CRM. Elles ne sont pas comptées en retard. Statue-les quand tu peux (souvent : annulée ou non effectuée).</p><div class="act-list">${anciennes.slice(0,60).map(a=>actRow(a,"statuer")).join("")}</div>${anciennes.length>60?`<p class="hint">+ ${anciennes.length-60} autres</p>`:""}</details>`:""}
+    ${anciennes.length?`<details class="fam ex-sec ex-anciennes"><summary><span>Actions ouvertes importées de l’ancien CRM</span><span class="n">${anciennes.length}</span></summary><p class="hint">Restées « à faire » dans l’ancien CRM. Elles ne sont pas comptées en retard. Statue-les quand tu peux (souvent : annulée ou non effectuée).</p><div class="act-list">${anciennes.slice(0,60).map(a=>actRow(a,"statuer")).join("")}</div>${anciennes.length>60?`<p class="hint">+ ${anciennes.length-60} autres</p>`:""}</details>`:""}
   </div>
   <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
     ${todayQui==="equipe"&&!todayCom?(()=>{ const now=Date.now(), rows=new Map();
