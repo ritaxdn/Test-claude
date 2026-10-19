@@ -3871,10 +3871,14 @@ async function loadCommentairesCompte(compteId){
   if(!document.contains(el)) return;
   if(error){ el.innerHTML=`<p class="hint">Commentaires indisponibles : ${esc(errorCopy(error)[1])}</p>`; return; }
   if(n) n.textContent=data.length||"";
-  el.innerHTML=data.length?`<div class="cmts">${data.map(c=>{ const o=byId(state.opportunites,c.opportunite_id);
+  const form=`<form id="c-cmt-form" style="margin-bottom:10px"><label for="c-cmt-new" class="sr-only">Nouveau commentaire</label><textarea id="c-cmt-new" placeholder="Ajouter un commentaire sur ce client…" required maxlength="2000"></textarea><div class="tools" style="margin-top:6px;justify-content:flex-end"><button class="btn small primary" type="submit">Ajouter</button></div></form>`;
+  el.innerHTML=form+(data.length?`<div class="cmts">${data.map(c=>{ const o=byId(state.opportunites,c.opportunite_id);
     return `<div class="cmt"><div class="cmt-head"><b>${c.auteur_id?esc(nomMembre(c.auteur_id)):"Ancien CRM"}</b> <span class="hint">${new Date(c.created_at).toLocaleDateString("fr-FR",{day:"2-digit",month:"short",year:"numeric"})}${o?` · <button class="linkish" data-act="open-opp" data-id="${o.id}">${esc(o.titre)}</button>`:""}${c.import_ref?` · <span class="pill">Ancien CRM</span>`:""}</span></div>
-      <div style="white-space:pre-line">${esc(c.texte)}</div></div>`; }).join("")}</div><p class="hint" style="margin-top:8px">Pour ajouter un commentaire, ouvre l’affaire concernée → onglet Commentaires.</p>`
-    :`<p class="hint">Aucun commentaire sur ce client. Les commentaires s’ajoutent depuis une affaire → onglet Commentaires.</p>`;
+      <div style="white-space:pre-line">${esc(c.texte)}</div></div>`; }).join("")}</div>`
+    :`<p class="hint">Aucun commentaire sur ce client pour l’instant.</p>`);
+  $("#c-cmt-form").addEventListener("submit",async e=>{ e.preventDefault(); const t=$("#c-cmt-new").value.trim(); if(!t) return; const b=e.target.querySelector("button"); b.disabled=true;
+    const {error}=await sb.from("commentaires").insert({compte_id:compteId,texte:t}); if(error){ b.disabled=false; toast(errorCopy(error).join(" — ")); return; }
+    toast("Commentaire ajouté"); const d=$("#c-cmt"); loadCommentairesCompte(compteId).then(()=>{ if(d) d.open=true; }); });
 }
 async function loadCommentaires(el, oppId){
   const {data,error}=await sb.from("commentaires").select("*").eq("opportunite_id",oppId).order("created_at",{ascending:true});
@@ -3887,7 +3891,7 @@ async function loadCommentaires(el, oppId){
      ${reply?"":`<div class="replies">${kids(c.id).map(k=>item(k,true)).join("")}</div><form class="reply-form" data-parent="${c.id}" hidden><textarea aria-label="Votre réponse" placeholder="Votre réponse…" required></textarea><div class="tools" style="margin-top:6px"><button class="btn small primary" type="submit">Répondre</button></div></form>`}</div>`;
   el.innerHTML=`<form id="cmt-form"><label for="cmt-new" class="sr-only">Nouveau commentaire</label><textarea id="cmt-new" placeholder="Écrire un commentaire pour l’équipe…" required></textarea><div class="tools" style="margin-top:6px;justify-content:flex-end"><button class="btn small primary" type="submit">Publier</button></div></form>
     <div class="cmts">${top.length?top.slice().reverse().map(c=>item(c,false)).join(""):`<p class="hint">Aucun commentaire. Lancez la discussion avec l’équipe.</p>`}</div>`;
-  const post=async(texte,parent)=>{ texte=texte.trim(); if(!texte) return; const {error}=await sb.from("commentaires").insert({opportunite_id:oppId,parent_id:parent||null,texte}); if(error){ toast(errorCopy(error).join(" — ")); return; } loadCommentaires(el,oppId); };
+  const post=async(texte,parent)=>{ texte=texte.trim(); if(!texte) return; const {error}=await sb.from("commentaires").insert({opportunite_id:oppId,compte_id:(byId(state.opportunites,oppId)||{}).compte_id||null,parent_id:parent||null,texte}); if(error){ toast(errorCopy(error).join(" — ")); return; } loadCommentaires(el,oppId); };
   el.querySelector("#cmt-form").addEventListener("submit",e=>{ e.preventDefault(); const b=e.target.querySelector("button"); b.disabled=true; post(e.target.querySelector("textarea").value); });
   el.querySelectorAll("[data-reply]").forEach(b=>b.addEventListener("click",()=>{ const f=el.querySelector(`.reply-form[data-parent="${b.dataset.reply}"]`); f.hidden=!f.hidden; if(!f.hidden) f.querySelector("textarea").focus(); }));
   el.querySelectorAll(".reply-form").forEach(f=>f.addEventListener("submit",e=>{ e.preventDefault(); f.querySelector("button").disabled=true; post(f.querySelector("textarea").value,f.dataset.parent); }));
