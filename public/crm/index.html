@@ -2836,10 +2836,13 @@ function itemsATraiter(p){
     else if(e==="en_retard"){ if(!retards.has(r)) retards.set(r,[]); retards.get(r).push(a); } });
   retards.forEach((as,r)=>{ if(as.length<2||enAttente.has("r:"+r)) return; const plusVieille=as.reduce((m,a)=>new Date(a.date_activite)<new Date(m.date_activite)?a:m);
     L.push({k:"r:"+r,sev:"risque",com:r,cat:"Retards",titre:as.length+" actions en retard",sous:as.slice(0,2).map(a=>(byId(state.comptes,a.compte_id)||{}).nom||a.label||"").filter(Boolean).join(" · "),valeur:0,raisons:["La plus ancienne date du "+fmtDate(plusVieille.date_activite)],retards:as}); });
-  const rang={aide:-1,critique:0,risque:1,statuer:2};
+  // Tâches de l'ancien CRM restées ouvertes depuis plus d'un mois : un rappel par commercial, en fin de file
+  const anc=new Map(); state.activites.forEach(a=>{ if(a.statut!=="a_faire"||!ancienImport(a)||estEvenement(a)) return; const r=responsable(a); if(!r||!dans(r)||!(e=>e&&e.role==="commercial"&&e.actif)(byId(state.equipe,r))) return; if(!anc.has(r)) anc.set(r,[]); anc.get(r).push(a); });
+  anc.forEach((as,r)=>{ if(enAttente.has("r:"+r)) return; L.push({k:"anc:"+r,sev:"trier",com:r,cat:"Ancien CRM",titre:as.length+" tâche"+(as.length>1?"s":"")+" à trier",sous:[...new Set(as.map(a=>(byId(state.comptes,a.compte_id)||{}).nom).filter(Boolean))].slice(0,2).join(" · "),valeur:0,raisons:["Restées « à faire » dans l’ancien CRM depuis plus d’un mois"],anc:as}); });
+  const rang={aide:-1,critique:0,risque:1,statuer:2,trier:3};
   return L.sort((x,y)=>rang[x.sev]-rang[y.sev]||y.valeur-x.valeur);
 }
-const SEV={aide:["Demande d’aide","vio"],critique:["Critique","bad"],risque:["À risque","warn"],statuer:["À statuer",""]};
+const SEV={aide:["Demande d’aide","vio"],critique:["Critique","bad"],risque:["À risque","warn"],statuer:["À statuer",""],trier:["À trier",""]};
 function wsActions(x,primaire){
   const b=(cls,act,lib,attrs)=>`<button class="btn ${cls}" data-act="${act}" ${attrs||""}>${lib}</button>`, P=primaire?"primary":"primary";
   const dem=(lib,extra)=>b("","demande",lib,`data-com="${x.com||""}" ${extra||""}`);
@@ -2848,6 +2851,7 @@ function wsActions(x,primaire){
   if(x.d) return b(P,"relance-ia","Relancer",`data-compte="${x.d.compte_id}" data-devis="${x.d.id}"`)+dem("Demander",`data-compte="${x.d.compte_id}" data-opp="${x.d.opportunite_id||""}"`);
   if(x.a) return (peutEffectuer(x.a)?b(P,"act-effectuer","Effectué",`data-id="${x.a.id}"`):dem("Demander à "+esc(prenomDe(x.com)),`data-aid="${x.a.id}" data-compte="${x.a.compte_id||""}" data-opp="${x.a.opportunite_id||""}" data-type="validation"`))+b("","act-reporter","Reporté",`data-id="${x.a.id}"`)+b("","act-statuer","Annulé",`data-id="${x.a.id}" data-v="annulee"`)+b("","act-statuer","Non effectué",`data-id="${x.a.id}" data-v="non_effectuee"`);
   if(x.retards) return b(P,"ws-tiroir","Voir ses actions",`data-id="${x.com}"`)+dem("Demander un point");
+  if(x.anc) return b(P,"voir-comme","Voir son écran",`data-id="${x.com}"`)+dem("Demander de les trier",`data-type="mise_a_jour"`);
   return "";
 }
 function wsCarte(x){ const e=byId(state.equipe,x.com), [lib,cls]=SEV[x.sev];
@@ -2894,7 +2898,7 @@ function viewWorkspace(v){
   const devisP=state.devis.filter(d=>dans(d.commercial_id)&&d.statut!=="brouillon"&&dansP(d.date_envoi)).reduce((s,d)=>s+(+d.montant_mad||0),0);
   const nego=opps.filter(o=>o.etape==="Negociation"), negoVal=nego.reduce((s,o)=>s+(+o.montant_mad||0),0), negoDort=nego.filter(o=>now-derniereActivite(o)>14*864e5).reduce((s,o)=>s+(+o.montant_mad||0),0);
   const PER={jour:"Aujourd’hui",semaine:"Cette semaine",mois:"Ce mois-ci"}[wsPeriode];
-  const filtres=[["","Tout",L.length],...(L.some(x=>x.sev==="aide")?[["aide","Demandes d’aide",L.filter(x=>x.sev==="aide").length]]:[]),["critique","Critique",L.filter(x=>x.sev==="critique").length],["risque","À risque",L.filter(x=>x.sev==="risque").length],["statuer","À statuer",L.filter(x=>x.sev==="statuer").length]];
+  const filtres=[["","Tout",L.length],...(L.some(x=>x.sev==="aide")?[["aide","Demandes d’aide",L.filter(x=>x.sev==="aide").length]]:[]),["critique","Critique",L.filter(x=>x.sev==="critique").length],["risque","À risque",L.filter(x=>x.sev==="risque").length],["statuer","À statuer",L.filter(x=>x.sev==="statuer").length],...(L.some(x=>x.sev==="trier")?[["trier","Ancien CRM",L.filter(x=>x.sev==="trier").length]]:[])];
   const fileF=file.filter(x=>!wsFiltre||x.sev===wsFiltre), montre=wsTout?fileF:fileF.slice(0,6);
   const big=n=>`<b>${n>=1e4?madShort(n):mad(n)}</b>`;
   v.innerHTML=`<div class="ws">
@@ -2955,7 +2959,7 @@ function wsTiroir(id){
   const d0=startOfDay().getTime(), jour=state.activites.filter(a=>responsable(a)===id&&!estImporte(a)&&(t=>t>=d0&&t<d0+864e5)(new Date(a.date_activite).getTime())).sort((x,y)=>new Date(x.date_activite)-new Date(y.date_activite));
   const dem=(state.demandes||[]).filter(d=>d.destinataire_id===id&&d.statut==="en_attente");
   const resp=byId(state.organigramme||state.equipe,e.responsable_id);
-  const lien=x=>x.o?`data-act="open-opp" data-id="${x.o.id}"`:x.d?`data-act="edit-devis" data-id="${x.d.id}"`:x.a?`data-act="act-detail" data-id="${x.a.id}"`:`data-act="ws-retards" data-id="${id}"`;
+  const lien=x=>x.o?`data-act="open-opp" data-id="${x.o.id}"`:x.d?`data-act="edit-devis" data-id="${x.d.id}"`:x.a?`data-act="act-detail" data-id="${x.a.id}"`:x.anc?`data-act="voir-comme" data-id="${id}"`:`data-act="ws-retards" data-id="${id}"`;
   $("#modal-slot").innerHTML=`<div class="overlay drawer-ov" id="ov"><aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="dr-t">
     <div class="dr-head"><div class="ws-who">${avatar(e,60)}<div><h3 id="dr-t">${esc(e.nom)}</h3><span class="hint" style="margin:0">${esc([e.poste||ROLES[e.role],e.showroom&&SHOWROOMS[e.showroom]?SHOWROOMS[e.showroom].replace("Showroom ",""):e.ville,resp?"rattaché·e à "+resp.nom:""].filter(Boolean).join(" · "))}</span></div></div><button class="x" id="mx" aria-label="Fermer">×</button></div>
     <div class="dr-kpi"><div class="dark"><small>Pipeline</small><b>${madShort(pipe)} <i>MAD</i></b><span>${opps.length} affaire${opps.length>1?"s":""} en cours</span></div><div><small>Pipeline pondéré</small><b>${madShort(pond)} <i>MAD</i></b><span>selon la probabilité de chaque étape</span></div></div>
