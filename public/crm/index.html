@@ -2554,8 +2554,8 @@ window.addEventListener("hashchange",syncTab);
 if(TABS.includes(location.hash.slice(1))) tab=location.hash.slice(1);
 
 /* ---- Activités : labels, priorité, créateur / responsable, à faire ---- */
-const LABELS_DEFAUT = ["🔄 Relance devis","📤 Envoi devis","🚚 Livraison","🆕 Nouvelle installation","📍 RDV / Re-visite","🤝 Premier contact","🎓 Formation","🛠️ SAV / Maintenance"];
-const LIVRAISON="🚚 Livraison";
+const LABELS_DEFAUT = ["Relance devis","Envoi devis","Livraison","Nouvelle installation","RDV / Re-visite","Premier contact","Formation","SAV / Maintenance"];
+const LIVRAISON="Livraison";
 const TYPES_A_FAIRE = ["tache","evenement","rdv"];
 function labels(){ const s=new Set(LABELS_DEFAUT); state.activites.forEach(a=>{ if(a.label) s.add(a.label); }); return [...s]; }
 function sources(){ const m=new Map(); state.comptes.forEach(c=>{ if(c.source) m.set(c.source,(m.get(c.source)||0)+1); }); return [...m.entries()].sort((a,b)=>b[1]-a[1]).map(x=>x[0]); }
@@ -3505,7 +3505,7 @@ function formRelance(compteId, devisId){
      <div class="tools" style="margin-top:8px"><button type="button" class="btn small" id="rl-copy">Copier</button>${telWa.length>=10?`<a class="btn small" id="rl-wa" target="_blank" rel="noopener">Ouvrir WhatsApp</a>`:""}${c.email?`<a class="btn small" id="rl-mail">Ouvrir l’e-mail</a>`:""}</div>
    </div>`;
   const submit=async f=>{ if(!f.message||!f.message.trim()) return false;
-    return write(ins("activites",{compte_id:c.id,commercial_id:me?me.id:null,type:f.canal==="email"?"email":"whatsapp",label:devisId?"🔄 Relance devis":"🔄 Relance",statut:"fait",fait_le:new Date().toISOString(),date_activite:new Date().toISOString(),resume:sTxt((f.objet?f.objet+"\n":"")+f.message)}),"Relance notée dans l’historique"); };
+    return write(ins("activites",{compte_id:c.id,commercial_id:me?me.id:null,type:f.canal==="email"?"email":"whatsapp",label:devisId?"Relance devis":"Relance",statut:"fait",fait_le:new Date().toISOString(),date_activite:new Date().toISOString(),resume:sTxt((f.objet?f.objet+"\n":"")+f.message)}),"Relance notée dans l’historique"); };
   submit.validate=f=>!f.message||!f.message.trim()?["message","Rédige d’abord le message."]:null;
   modal("Rédiger une relance",h,submit,"Noter comme envoyée");
   $("#mform").querySelectorAll("[data-chips]").forEach(g=>g.addEventListener("click",e=>{ const b=e.target.closest(".chip"); if(!b) return; g.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",String(x===b))); $(`#mform input[name="${g.dataset.chips}"]`).value=b.dataset.v; }));
