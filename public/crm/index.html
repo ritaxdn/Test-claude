@@ -2195,8 +2195,10 @@ function openCompte(c){
    <h3 style="margin-top:16px">Dernières activités</h3>${acts.length?`<div class="feed">${acts.map(a=>feedItem(a,{noCompte:true})).join("")}</div>`:`<p class="hint">Aucune activité.</p>`}
    <details class="fam" style="margin-top:16px" id="c-hist"><summary><span>Historique du compte</span></summary><div id="c-hist-body"></div></details>
    ${simple?"</details>":""}
+   <details class="fam" style="margin-top:14px" id="c-cmt"><summary><span>Commentaires</span><span class="n" id="c-cmt-n"></span></summary><div id="c-cmt-body"></div></details>
   </div></div>`;
   $("#mx").onclick=()=>closeModal(); $("#ov").addEventListener("click",e=>{if(e.target.id==="ov")closeModal();}); trapFocus($("#ov .modal")); $("#mx").focus();
+  loadCommentairesCompte(c.id);
   $("#c-hist").addEventListener("toggle",e=>{ if(e.target.open&&!e.target._l){ e.target._l=1; loadHistorique($("#c-hist-body"),"compte_id",c.id,100); } });
   $("#ov .modal").addEventListener("click",e=>{ const t=e.target.closest("[data-act]"); if(t&&["edit-compte","transfer","new-contact","new-opp","log","new-devis","edit-act","act-done","del-act-yes","edit-devis","new-echeancier","edit-paiement","relance-ia"].includes(t.dataset.act)) reopenAfter=()=>openCompte(byId(state.comptes,c.id)); },true);
 }
@@ -3853,6 +3855,19 @@ async function loadHistorique(el, col, id, limit){
   const {data,error}=await q;
   if(error){ el.innerHTML=`<p class="hint">Historique indisponible : ${esc(errorCopy(error)[1])}</p>`; return; }
   el.innerHTML=data.length?`<div class="feed">${data.map(histItem).join("")}</div>`:`<p class="hint">Aucune action enregistrée pour l’instant. Chaque création, modification et suppression apparaîtra ici.</p>`;
+}
+// Fiche client : tous les commentaires du client (toutes affaires, ancien CRM compris), en lecture
+async function loadCommentairesCompte(compteId){
+  const el=$("#c-cmt-body"), n=$("#c-cmt-n"); if(!el) return;
+  el.innerHTML=`<div class="skeleton" style="height:40px"></div>`;
+  const {data,error}=await sb.from("commentaires").select("*").eq("compte_id",compteId).order("created_at",{ascending:false}).limit(200);
+  if(!document.contains(el)) return;
+  if(error){ el.innerHTML=`<p class="hint">Commentaires indisponibles : ${esc(errorCopy(error)[1])}</p>`; return; }
+  if(n) n.textContent=data.length||"";
+  el.innerHTML=data.length?`<div class="cmts">${data.map(c=>{ const o=byId(state.opportunites,c.opportunite_id);
+    return `<div class="cmt"><div class="cmt-head"><b>${c.auteur_id?esc(nomMembre(c.auteur_id)):"Ancien CRM"}</b> <span class="hint">${new Date(c.created_at).toLocaleDateString("fr-FR",{day:"2-digit",month:"short",year:"numeric"})}${o?` · <button class="linkish" data-act="open-opp" data-id="${o.id}">${esc(o.titre)}</button>`:""}${c.import_ref?` · <span class="pill">Ancien CRM</span>`:""}</span></div>
+      <div style="white-space:pre-line">${esc(c.texte)}</div></div>`; }).join("")}</div><p class="hint" style="margin-top:8px">Pour ajouter un commentaire, ouvre l’affaire concernée → onglet Commentaires.</p>`
+    :`<p class="hint">Aucun commentaire sur ce client. Les commentaires s’ajoutent depuis une affaire → onglet Commentaires.</p>`;
 }
 async function loadCommentaires(el, oppId){
   const {data,error}=await sb.from("commentaires").select("*").eq("opportunite_id",oppId).order("created_at",{ascending:true});
