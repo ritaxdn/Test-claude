@@ -2554,7 +2554,8 @@ window.addEventListener("hashchange",syncTab);
 if(TABS.includes(location.hash.slice(1))) tab=location.hash.slice(1);
 
 /* ---- Activités : labels, priorité, créateur / responsable, à faire ---- */
-const LABELS_DEFAUT = ["🔄 Relance devis","📤 Envoi devis","🆕 Nouvelle installation","📍 RDV / Re-visite","🤝 Premier contact","🎓 Formation","🛠️ SAV / Maintenance"];
+const LABELS_DEFAUT = ["🔄 Relance devis","📤 Envoi devis","🚚 Livraison","🆕 Nouvelle installation","📍 RDV / Re-visite","🤝 Premier contact","🎓 Formation","🛠️ SAV / Maintenance"];
+const LIVRAISON="🚚 Livraison";
 const TYPES_A_FAIRE = ["tache","evenement","rdv"];
 function labels(){ const s=new Set(LABELS_DEFAUT); state.activites.forEach(a=>{ if(a.label) s.add(a.label); }); return [...s]; }
 function sources(){ const m=new Map(); state.comptes.forEach(c=>{ if(c.source) m.set(c.source,(m.get(c.source)||0)+1); }); return [...m.entries()].sort((a,b)=>b[1]-a[1]).map(x=>x[0]); }
@@ -2580,7 +2581,7 @@ function formActivite(oppId, compteId, preset, a){
   const titre = a ? "Modifier l’activité" : ({tache:"Nouvelle tâche",evenement:"Nouvel événement",appel:"Nouvel appel",rdv:"Nouveau RDV"}[type]||"Nouvelle activité");
   const h=`<div class="form-grid">
    ${fld("m-type","Type",`<select id="m-type" name="type">${opt(Object.entries(TYPES_ACT),type)}</select>`)}
-   ${fld("m-label","Label",`<input id="m-label" name="label" list="dl-labels" autocomplete="off" placeholder="Ex. 🔄 Relance devis…" value="${esc((a&&a.label)||preset.label||"")}"><datalist id="dl-labels">${labels().map(l=>`<option value="${esc(l)}">`).join("")}</datalist>`)}
+   ${(()=>{ const cur=(a&&a.label)||preset.label||""; const L=LABELS_DEFAUT.includes(cur)||!cur?LABELS_DEFAUT:[...LABELS_DEFAUT,cur]; return fld("m-label","Label",`<select id="m-label" name="label"><option value="">—</option>${L.map(l=>`<option value="${esc(l)}" ${l===cur?"selected":""}>${esc(l)}${LABELS_DEFAUT.includes(l)?"":" (ancien)"}</option>`).join("")}</select>`); })()}
    ${fld("m-when","Date et heure",`<input id="m-when" name="date_activite" type="datetime-local" value="${when}">`)}
    ${fld("m-duree","Durée",`<select id="m-duree" name="duree_min">${opt(DUREES,String((a&&a.duree_min)||preset.duree||dureeDefaut(type)))}</select>`)}
    ${a&&["annulee","non_effectuee"].includes(a.statut)?`<input type="hidden" name="statut" value="${a.statut}">`:fld("m-statut","Statut",`<select id="m-statut" name="statut">${opt([["fait","Fait"],["a_faire","À faire (planifiée)"]],aFaire?"a_faire":"fait")}</select>`)}
@@ -3167,7 +3168,7 @@ function formDetailAction(a){
 
 function formPlanifier(preset){
   preset=preset||{};
-  const TYP=[["appel","Appel"],["visite","Visite"],["rdv","RDV"],["demo","Démo"],["tache","Tâche"],["formation","Formation"]];
+  const TYP=[["appel","Appel"],["visite","Visite"],["rdv","RDV"],["demo","Démo"],["tache","Tâche"],["livraison","Livraison"],["formation","Formation"]];
   const type0=preset.type||"visite";
   const w=preset.when?new Date(preset.when):(()=>{ const d=new Date(); d.setDate(d.getDate()+1); d.setHours(10,0,0,0); return d; })();
   const h=`<div class="form-grid">
@@ -3177,12 +3178,14 @@ function formPlanifier(preset){
     ${fld("pl-h","Heure",`<input id="pl-h" name="heure" type="time" required value="${String(w.getHours()).padStart(2,"0")}:${String(w.getMinutes()).padStart(2,"0")}">`)}
     ${fld("pl-opp","Opportunité (facultatif)",`<select id="pl-opp" name="opportunite_id"><option value="">—</option></select>`)}
     ${estPilote()?fld("pl-com","Pour",`<select id="pl-com" name="commercial_id">${opt(equipeOpts(preset.com),preset.com||(me&&me.id),"")}</select>`):""}
+    ${fld("pl-lab","Libellé (facultatif)",`<select id="pl-lab" name="label"><option value="">—</option>${LABELS_DEFAUT.filter(l=>l!==LIVRAISON).map(l=>`<option value="${esc(l)}">${esc(l)}</option>`).join("")}</select>`)}
     ${fld("pl-note","Note (facultatif)",`<input id="pl-note" name="note" maxlength="300" autocomplete="off" placeholder="Ex. présenter le Longiflash, apporter la brochure…">`,true)}
     <p class="hint" id="pl-ville" style="grid-column:1/-1;margin:0" aria-live="polite"></p></div>`;
   const submit=async f=>{
-    const cId=compteIdFromLabel(f.compte_label), type=sEnum(f.type,Object.keys(TYPES_ACT))||"visite";
-    return write(ins("activites",{compte_id:cId,opportunite_id:sUuid(f.opportunite_id),commercial_id:(estPilote()?sUuid(f.commercial_id):null)||(me&&me.id)||null,type,statut:"a_faire",
-      date_activite:new Date(f.jour+"T"+f.heure).toISOString(),duree_min:dureeDefaut(type),resume:sTxt(f.note)}),"Planifié le "+new Date(f.jour+"T"+f.heure).toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"short"})+" à "+f.heure);
+    const liv=f.type==="livraison", cId=compteIdFromLabel(f.compte_label), type=liv?"tache":sEnum(f.type,Object.keys(TYPES_ACT))||"visite";
+    const label=liv?LIVRAISON:(LABELS_DEFAUT.includes(f.label)?f.label:null);
+    return write(ins("activites",{compte_id:cId,opportunite_id:sUuid(f.opportunite_id),commercial_id:(estPilote()?sUuid(f.commercial_id):null)||(me&&me.id)||null,type,statut:"a_faire",label,
+      date_activite:new Date(f.jour+"T"+f.heure).toISOString(),duree_min:liv?120:dureeDefaut(type),resume:sTxt(f.note)}),"Planifié le "+new Date(f.jour+"T"+f.heure).toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"short"})+" à "+f.heure);
   };
   submit.validate=f=>!compteIdFromLabel(f.compte_label)?["compte_label","Choisis le client dans la liste."]:(!f.jour||!f.heure)?["jour","Indique la date et l’heure."]:null;
   modal("Planifier une action",h,submit,"Planifier");
@@ -3245,10 +3248,10 @@ const lundiDe=d=>{ const z=startOfDay(d); z.setDate(z.getDate()-((z.getDay()+6)%
 const hm=d=>new Date(d).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
 let agStart=null, agQui=null, agDay=null, agVue="semaine", agSel=null, agShowroom="", agType="", agPop=null, agQ="", agQOuvert=false;
 const CAL_ETATS={prevu:["Prévu","#F1EEFF","#7B61FF"],confirme:["Confirmé","#E3F7FA","#00A3B8"],effectue:["Effectué","#E9F5EF","#11845B"],aconfirmer:["À confirmer","#FFF5E3","#D98A00"],reporte:["Reporté","#FCEEF5","#D0469C"],annule:["Annulé","#F1F1F4","#8E8C99"]};
-const CAL_TYPES={rdv:["RDV",'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 7h6M9 11h6M9 15h3"/>'],visite:["Visite",'<path d="M12 21s-6-5.3-6-10a6 6 0 0 1 12 0c0 4.7-6 10-6 10z"/><circle cx="12" cy="11" r="2"/>'],demo:["Démo",'<path d="M12 3v3M12 18v3M4.2 7.2l2.1 2.1M17.7 14.7l2.1 2.1M3 12h3M18 12h3"/><circle cx="12" cy="12" r="3"/>'],relance:["Relance",'<path d="M4 4v6h6"/><path d="M20 12a8 8 0 0 0-14-5.3L4 10"/><path d="M20 20v-6h-6"/><path d="M4 12a8 8 0 0 0 14 5.3l2-3.3"/>'],appel:["Appel",'<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/>'],autre:["Autre",'<circle cx="6" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="18" cy="12" r="1.5"/>']};
-const CREA={rdv:"rdv",visite:"visite",demo:"demo",relance:"appel",appel:"appel",autre:"autre"};
+const CAL_TYPES={rdv:["RDV",'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 7h6M9 11h6M9 15h3"/>'],visite:["Visite",'<path d="M12 21s-6-5.3-6-10a6 6 0 0 1 12 0c0 4.7-6 10-6 10z"/><circle cx="12" cy="11" r="2"/>'],demo:["Démo",'<path d="M12 3v3M12 18v3M4.2 7.2l2.1 2.1M17.7 14.7l2.1 2.1M3 12h3M18 12h3"/><circle cx="12" cy="12" r="3"/>'],relance:["Relance",'<path d="M4 4v6h6"/><path d="M20 12a8 8 0 0 0-14-5.3L4 10"/><path d="M20 20v-6h-6"/><path d="M4 12a8 8 0 0 0 14 5.3l2-3.3"/>'],appel:["Appel",'<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/>'],autre:["Autre",'<circle cx="6" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="18" cy="12" r="1.5"/>'],livraison:["Livraison",'<path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17.5" cy="17.5" r="1.8"/>']};
+const CREA={livraison:"tache",rdv:"rdv",visite:"visite",demo:"demo",relance:"appel",appel:"appel",autre:"autre"};
 const calIco=(t,c,s)=>`<svg width="${s||12}" height="${s||12}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${CAL_TYPES[t][1]}</svg>`;
-function calType(a){ if(["rdv","visite","demo"].includes(a.type)) return a.type; if(["appel","whatsapp","email"].includes(a.type)) return /relanc/i.test(a.label||"")?"relance":"appel"; return "autre"; }
+function calType(a){ if(/livraison/i.test(a.label||"")) return "livraison"; if(["rdv","visite","demo"].includes(a.type)) return a.type; if(["appel","whatsapp","email"].includes(a.type)) return /relanc/i.test(a.label||"")?"relance":"appel"; return "autre"; }
 function calEtat(a){ if(a.statut==="fait") return "effectue"; if(a.statut==="annulee"||a.statut==="non_effectuee") return "annule";
   const e=etatAction(a); if(e==="a_statuer"||e==="en_retard") return "aconfirmer"; if(+a.nb_reports>0) return "reporte"; return a.convenue?"confirme":"prevu"; }
 const calTerrain=a=>["rdv","visite","demo","formation"].includes(a.type);
@@ -3426,7 +3429,7 @@ function calCreer(d,anchor,y){
   $("#cq-plus").onclick=()=>{ calFermer(); formPlanifier({type:CREA[t],when:d,com:pil&&$("#cq-p")?$("#cq-p").value:undefined}); };
   $("#cq-ok").onclick=async()=>{ const c=cl(); if(!c){ $("#cq-err").textContent="Choisis un client dans la liste (ou « Plus d’options »)."; $("#cq-c").focus(); return; }
     const com=pil&&$("#cq-p")?$("#cq-p").value:(me&&me.id); const opp=state.opportunites.filter(o=>o.compte_id===c.id&&o.issue==="en_cours").sort((p,q)=>(+q.montant_mad||0)-(+p.montant_mad||0))[0];
-    $("#cq-ok").disabled=true; const ok=await write(ins("activites",{compte_id:c.id,opportunite_id:opp?opp.id:null,commercial_id:com,type:CREA[t],statut:"a_faire",date_activite:d.toISOString(),duree_min:+$("#cq-d").value,label:t==="relance"?"Relance":null,convenue:$("#cq-conv").checked}),CAL_TYPES[t][0]+" planifié · "+hm(d));
+    $("#cq-ok").disabled=true; const ok=await write(ins("activites",{compte_id:c.id,opportunite_id:opp?opp.id:null,commercial_id:com,type:CREA[t],statut:"a_faire",date_activite:d.toISOString(),duree_min:+$("#cq-d").value,label:t==="relance"?"Relance":t==="livraison"?LIVRAISON:null,convenue:$("#cq-conv").checked}),CAL_TYPES[t][0]+" planifié · "+hm(d));
     if(ok) calFermer(); else $("#cq-ok").disabled=false; };
   setTimeout(()=>$("#cq-c")&&$("#cq-c").focus(),0);
 }
