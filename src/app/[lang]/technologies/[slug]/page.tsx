@@ -35,7 +35,8 @@ export async function generateMetadata({
   return pageMetadata({
     lang,
     path: `/technologies/${slug}`,
-    title: seo ? seo.title[lang] : `${tech.name} — ${family}`,
+    // Gammes au nom identique en FR et EN (Photomodulation, HIFU) : title EN distinct du FR
+    title: seo ? seo.title[lang] : `${tech.name} — ${family}${lang === "en" && family === categories[tech.category].fr ? " device" : ""}`,
     description: seo
       ? seo.description[lang]
       : tech.tagline
@@ -113,7 +114,7 @@ export default async function TechnologyDetailPage({
           <ArrowLeft size={16} /> {dict.common.backTo} {dict.nav.technologies}
         </Link>
 
-        <Reveal className="mt-10 grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:items-end">
+        <div className="mt-10 grid animate-fade-rise gap-10 opacity-0 lg:grid-cols-[1.3fr_1fr] lg:items-end">
           <div>
             <Pill className="bg-white/60">{categories[tech.category][lang]}</Pill>
             <h1 className="display mt-6 text-balance text-[clamp(2.4rem,6vw,5.6rem)] text-deep">{tech.name}</h1>
@@ -130,7 +131,7 @@ export default async function TechnologyDetailPage({
             <Cta href={`/${lang}/contact?sujet=demo&machine=${tech.slug}`}>{dict.common.requestDemo}</Cta>
             <Cta href={`/${lang}/contact?sujet=expert&machine=${tech.slug}`} variant="line">{dict.common.speakToExpert}</Cta>
           </div>
-        </Reveal>
+        </div>
 
         {/* Réponses immédiates : pour qui, ce qui est inclus, la garantie, l'après-vente */}
         <Reveal className="mt-10 grid grid-cols-2 border-t border-deep/15 lg:grid-cols-4">

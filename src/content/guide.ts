@@ -7,7 +7,7 @@ export const guideContent = {
     meta: {
       title: "Guide gratuit : choisir sa technologie médico-esthétique",
       description:
-        "7 questions à se poser avant d'investir dans une technologie médico-esthétique : patients, résultats, certifications, formation, SAV, rentabilité et lancement. Guide PDF gratuit.",
+        "7 questions à se poser avant d'investir dans une technologie médico-esthétique : patients, résultats, formation, SAV et rentabilité. Guide PDF gratuit.",
     },
     eyebrow: "Guide gratuit · PDF",
     title: "Choisir sa technologie médico-esthétique",
@@ -56,7 +56,7 @@ export const guideContent = {
     meta: {
       title: "Free guide: choosing your medical aesthetic technology",
       description:
-        "7 questions to ask before investing in medical aesthetic technology: patients, results, certifications, training, after-sales, profitability and launch. Free PDF guide (in French).",
+        "7 questions to ask before investing in medical aesthetic technology: patients, results, training, after-sales and profitability. Free PDF guide (in French).",
     },
     eyebrow: "Free guide · PDF",
     title: "Choosing your medical aesthetic technology",

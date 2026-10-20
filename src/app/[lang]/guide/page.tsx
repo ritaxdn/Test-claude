@@ -29,11 +29,11 @@ export default async function GuidePage({ params }: { params: Promise<{ lang: st
       <Breadcrumbs lang={lang} items={[[lang === "fr" ? "Guide gratuit" : "Free guide", "/guide"]]} />
       {/* Téléphone : titre → formulaire → contenu du guide. Grand écran : titre et contenu à gauche, formulaire à droite. */}
       <div className="mx-auto grid max-w-7xl gap-10 px-3 md:px-7 lg:grid-cols-[1.2fr_1fr] lg:gap-x-16 lg:gap-y-0">
-        <Reveal className="lg:col-start-1 lg:row-start-1">
+        <div className="animate-fade-rise opacity-0 lg:col-start-1 lg:row-start-1">
           <Pill className="bg-white/60">{c.eyebrow}</Pill>
           <h1 className="display mt-5 text-balance text-[clamp(2rem,4.4vw,3.8rem)] leading-[1] text-deep">{c.title}</h1>
           <p className="mt-5 max-w-xl font-sans text-lg leading-relaxed text-deep-soft">{c.subtitle}</p>
-        </Reveal>
+        </div>
 
         <Reveal className="lg:col-start-1 lg:row-start-2 lg:mt-10">
           <div className="grid gap-8 sm:grid-cols-[11rem_1fr] sm:items-start">
