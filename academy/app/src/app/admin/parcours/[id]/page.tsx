@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Shell } from "@/components/Shell";
 import { requireAdmin } from "@/lib/auth";
 import { sql } from "@/lib/db";
+import { SubmitButton } from "@/components/SubmitButton";
 import { addModule, deleteDocument, deleteLesson, saveLesson, updateProgram, uploadDocument } from "../../actions";
 
 export const metadata: Metadata = { title: "Modifier le parcours" };
@@ -17,16 +18,18 @@ export default async function EditParcours({ params, searchParams }: { params: P
   if (!p) notFound();
   const models = await sql<{ id: string; name: string }[]>`select id, name from device_models order by name`;
   const modules = await sql<{ id: string; position: number; title: string }[]>`select id, position, title from modules where program_id = ${id} order by position`;
-  const lessons = await sql<{ id: string; module_id: string; position: number; title: string; video_ref: string | null; duration_sec: number | null; body: string | null }[]>`
-    select l.id, l.module_id, l.position, l.title, l.video_ref, l.duration_sec, l.body from lessons l join modules m on m.id = l.module_id where m.program_id = ${id} order by m.position, l.position`;
+  const lessons = await sql<{ id: string; module_id: string; position: number; title: string; video_ref: string | null; duration_sec: number | null; body: string | null; presenter_id: string | null }[]>`
+    select l.id, l.module_id, l.position, l.title, l.video_ref, l.duration_sec, l.body, l.presenter_id from lessons l join modules m on m.id = l.module_id where m.program_id = ${id} order by m.position, l.position`;
   const docs = await sql<{ id: string; title: string; lesson_title: string | null; size_bytes: number | null }[]>`
     select d.id, d.title, l.title as lesson_title, d.size_bytes from documents d left join lessons l on l.id = d.lesson_id where d.program_id = ${id} order by d.created_at`;
+  const presenters = await sql<{ id: string; name: string; active: boolean }[]>`select id, name, active from presenters order by name`;
   const provider = process.env.VIDEO_PROVIDER ?? "local";
   const lessonFields = (l?: (typeof lessons)[number]) => (
     <>
       <div className="form-grid">
         <div className="field full"><label>Titre de la leçon</label><input className="input" name="title" required defaultValue={l?.title} /></div>
         <div className="field"><label>{provider === "mux" ? "Playback ID Mux" : "Fichier vidéo (private-media/videos)"}</label><input className="input" name="video_ref" defaultValue={l?.video_ref ?? ""} /></div>
+        <div className="field"><label>Présenté par</label><select className="input" name="presenter_id" defaultValue={l?.presenter_id ?? ""}><option value="">—</option>{presenters.filter((x) => x.active || x.id === l?.presenter_id).map((x) => <option key={x.id} value={x.id}>{x.name}</option>)}</select></div>
         <div className="field"><label>Durée (min:s)</label><input className="input" name="duration" required pattern="\d+(:\d{1,2})?" placeholder="12:30" defaultValue={mmss(l?.duration_sec ?? null)} /></div>
         <div className="field full"><label>Texte sous la vidéo</label><textarea className="input" name="body" defaultValue={l?.body ?? ""} /></div>
       </div>
@@ -45,11 +48,11 @@ export default async function EditParcours({ params, searchParams }: { params: P
               <span className="eyebrow">Module {m.position} · {m.title}</span>
               {lessons.filter((l) => l.module_id === m.id).map((l) => (
                 <details key={l.id} style={{ borderTop: "1px solid var(--line)", paddingTop: 10 }}>
-                  <summary className="row between" style={{ cursor: "pointer" }}><span><span className="mono">{m.position}.{l.position}</span> <b>{l.title}</b></span><span className="small muted">{mmss(l.duration_sec)} · {l.video_ref ? "vidéo liée" : "sans vidéo"}</span></summary>
+                  <summary className="row between" style={{ cursor: "pointer" }}><span><span className="mono">{m.position}.{l.position}</span> <b>{l.title}</b></span><span className="small muted">{mmss(l.duration_sec)} · {l.video_ref ? "vidéo liée" : "sans vidéo"}{l.presenter_id ? ` · ${presenters.find((x) => x.id === l.presenter_id)?.name ?? ""}` : ""}</span></summary>
                   <form action={saveLesson} className="stack" style={{ gap: 10, marginTop: 10 }}>
                     <input type="hidden" name="program_id" value={p.id} /><input type="hidden" name="lesson_id" value={l.id} />
                     {lessonFields(l)}
-                    <div className="row" style={{ justifyContent: "flex-end" }}><button className="btn solid sm" type="submit">Enregistrer</button></div>
+                    <div className="row" style={{ justifyContent: "flex-end" }}><SubmitButton className="btn solid sm">Enregistrer</SubmitButton></div>
                   </form>
                   <form action={deleteLesson} style={{ marginTop: 8 }}><input type="hidden" name="program_id" value={p.id} /><input type="hidden" name="lesson_id" value={l.id} /><button className="btn sm ghost danger" type="submit">Supprimer la leçon</button></form>
                 </details>
@@ -59,7 +62,7 @@ export default async function EditParcours({ params, searchParams }: { params: P
                 <form action={saveLesson} className="stack" style={{ gap: 10, marginTop: 10 }}>
                   <input type="hidden" name="program_id" value={p.id} /><input type="hidden" name="module_id" value={m.id} />
                   {lessonFields()}
-                  <div className="row" style={{ justifyContent: "flex-end" }}><button className="btn solid sm" type="submit">Ajouter</button></div>
+                  <div className="row" style={{ justifyContent: "flex-end" }}><SubmitButton className="btn solid sm" pending="Ajout…">Ajouter</SubmitButton></div>
                 </form>
               </details>
             </section>
@@ -89,7 +92,7 @@ export default async function EditParcours({ params, searchParams }: { params: P
               <input className="input" name="title" placeholder="Titre (ex. Fiche protocole)" aria-label="Titre du document" />
               <select className="input" name="lesson_id" defaultValue="" aria-label="Leçon liée"><option value="">Tout le parcours</option>{lessons.map((l) => <option key={l.id} value={l.id}>{l.title}</option>)}</select>
               <input className="input" type="file" name="file" required accept=".pdf,.jpg,.jpeg,.png,.docx" style={{ paddingTop: 10 }} aria-label="Fichier" />
-              <button className="btn sm" type="submit">Ajouter le document</button>
+              <SubmitButton className="btn sm" pending="Envoi du fichier…">Ajouter le document</SubmitButton>
             </form>
           </section>
         </aside>

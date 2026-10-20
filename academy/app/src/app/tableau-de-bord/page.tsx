@@ -56,6 +56,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
                   </div>
                   <h3 className="display h2">{p.title}</h3>
                   {p.summary && <p className="muted small">{p.summary}</p>}
+                  {p.presenters && <p className="small">Avec <b>{p.presenters}</b></p>}
                   <Progress value={v} label={`Progression ${p.title}`} />
                   <p className="small muted">{p.done} leçon{p.done > 1 ? "s" : ""} sur {p.lessons}{p.last_activity ? ` · dernière activité le ${fmtDate(p.last_activity)}` : ""}</p>
                   <div className="row wrap">

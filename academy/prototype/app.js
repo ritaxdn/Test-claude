@@ -107,7 +107,7 @@ function freshState() {
     crm: { last: "2026-10-20 10:30", incoming: D.crmIncoming.map((s) => ({ ...s })), runs: 1 },
     audit: D.audit.map((a) => ({ ...a })),
     alerts: D.alerts.map((a) => ({ ...a })),
-    grants: [{ user: "Dr Omar Tazi", course: "sevenwaves-mastery", by: "Meryem (admin)", reason: "Groupe pilote", until: "2027-01-31" }],
+    grants: [{ user: "Dr Omar Tazi", course: "sevenwaves-mastery", by: "Admin (exemple)", reason: "Groupe pilote", until: "2027-01-31" }],
     protection: { drm: true, watermark: true, wmName: true, wmEmail: false, wmId: true, wmTime: true, streams: 1, devices: 3, ttl: 4, travel: true, pdfStamp: true, rightClick: false },
     published: Object.fromEntries(D.courses.map((c) => [c.id, true])),
   };
@@ -161,7 +161,7 @@ const myCerts = () => S.certs.filter((x) => x.user === me().id);
 
 function audit(action, target, note = "") {
   const now = new Date();
-  S.audit.unshift({ at: `${today()} ${now.toTimeString().slice(0, 5)}`, actor: S.mode === "admin" ? "Meryem (admin)" : me().name, action, target, note });
+  S.audit.unshift({ at: `${today()} ${now.toTimeString().slice(0, 5)}`, actor: S.mode === "admin" ? "Admin (exemple)" : me().name, action, target, note });
 }
 
 /* ───────────────────────── UI helpers ───────────────────────── */
@@ -234,7 +234,7 @@ function shell(active, content, opts = {}) {
         <a href="#/login" data-a="logout">${icon("out")}Se déconnecter</a>
       </nav>
       <div class="side-foot">
-        ${isAdmin ? `<div class="avatar">MA</div><div><div class="small" style="font-weight:600">Meryem Alami</div><div class="mono" style="font-size:9.5px">Administratrice · exemple</div></div>`
+        ${isAdmin ? `<div class="avatar">AC</div><div><div class="small" style="font-weight:600">Admin CELLULIFT</div><div class="mono" style="font-size:9.5px">Administration · exemple</div></div>`
           : `<div class="avatar">${u.initials}</div><div style="min-width:0"><div class="small" style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(u.name)}</div><div class="mono" style="font-size:9.5px">${mine().devices.length ? "Partenaire" : "Open Academy"}${mine().verification === "verified" ? " · Vérifié" : ""}</div></div>`}
       </div>
     </aside>
@@ -249,7 +249,7 @@ function shell(active, content, opts = {}) {
           <button class="icon-btn" data-a="notif" aria-label="Notifications">${icon("bell")}${!isAdmin && unread ? '<span class="pip"></span>' : ""}</button>
           ${ui.notifOpen && !isAdmin ? notifPop() : ""}
         </div>
-        <a href="${isAdmin ? "#/admin" : "#/account"}" class="avatar" aria-label="Compte">${isAdmin ? "MA" : u.initials}</a>
+        <a href="${isAdmin ? "#/admin" : "#/account"}" class="avatar" aria-label="Compte">${isAdmin ? "AC" : u.initials}</a>
       </header>
       ${opts.raw ? content : `<main class="page" id="page">${content}</main>`}
     </div>
@@ -303,7 +303,7 @@ function viewLogin() {
     <div class="stack" style="gap:8px">
       <button class="btn" data-a="login" data-v="partner" style="justify-content:flex-start">${icon("cpu", 16)} Dr Salma Benali — médecin partenaire (HANOVER 5G)</button>
       <button class="btn" data-a="login" data-v="open" style="justify-content:flex-start">${icon("book", 16)} Youssef Amrani — Open Academy, non vérifié</button>
-      <button class="btn" data-a="loginadmin" style="justify-content:flex-start">${icon("shield", 16)} Meryem Alami — administratrice CELLULIFT</button>
+      <button class="btn" data-a="loginadmin" style="justify-content:flex-start">${icon("shield", 16)} Administrateur CELLULIFT (exemple)</button>
     </div>
     <p class="small muted" style="margin-top:20px">Nouveau sur l'Academy ? <a href="#/register" style="text-decoration:underline;color:var(--deep)">Créer un compte professionnel</a></p>
   </div>`);

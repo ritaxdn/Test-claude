@@ -26,3 +26,8 @@ where not exists (select 1 from lessons l where l.module_id = m.id);
 insert into documents (program_id, title, storage_key, mime_type)
 select p.id, 'Fiche protocole HANOVER 5G (exemple)', 'exemple/fiche-protocole.pdf', 'application/pdf' from programs p
 where p.slug = 'hanover-5g' and not exists (select 1 from documents d where d.program_id = p.id);
+
+-- Leçons d'exemple présentées par le Dr Dadoun (contenu d'exemple, à remplacer par les vraies vidéos).
+update lessons l set presenter_id = (select id from presenters where name = 'Dr Mohamed Dadoun')
+  from modules m join programs p on p.id = m.program_id
+ where l.module_id = m.id and p.slug = 'hanover-5g' and l.presenter_id is null;

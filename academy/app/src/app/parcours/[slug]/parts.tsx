@@ -2,7 +2,31 @@ import type { LessonRow } from "@/lib/access";
 
 const mmss = (s: number | null) => (s ? `${Math.floor(s / 60)} min${s % 60 ? ` ${String(s % 60).padStart(2, "0")}` : ""}` : "");
 
-export function LessonList({ slug, lessons, current }: { slug: string; lessons: LessonRow[]; current?: string }) {
+const initials = (name: string) => name.replace(/^Dr\.?\s+/i, "").split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+
+export function Presenter({ name, title }: { name: string; title: string | null }) {
+  return (
+    <div className="row" style={{ marginTop: 14 }}>
+      <span className="avatar" aria-hidden="true">{initials(name)}</span>
+      <div><span className="small muted">Présenté par</span><div style={{ fontWeight: 600 }}>{name}</div>{title && <div className="small muted">{title}</div>}</div>
+    </div>
+  );
+}
+
+export function Presenters({ lessons }: { lessons: LessonRow[] }) {
+  const list = [...new Map(lessons.filter((l) => l.presenter_name).map((l) => [l.presenter_name!, l.presenter_title])).entries()];
+  if (!list.length) return null;
+  return (
+    <section className="glass card stack" style={{ gap: 12 }} aria-labelledby="h-pres">
+      <h2 id="h-pres" className="eyebrow">{list.length > 1 ? "Intervenants" : "Intervenant"}</h2>
+      {list.map(([name, title]) => (
+        <div key={name} className="row"><span className="avatar" aria-hidden="true">{initials(name)}</span><div><b className="small">{name}</b>{title && <div className="small muted">{title}</div>}</div></div>
+      ))}
+    </section>
+  );
+}
+
+export function LessonList({ slug, lessons, current, showPresenter }: { slug: string; lessons: LessonRow[]; current?: string; showPresenter?: boolean }) {
   const modules = [...new Map(lessons.map((l) => [l.module_id, { title: l.module_title, pos: l.module_position }])).entries()];
   const firstOpen = lessons.find((l) => !l.completed_at)?.lesson_id;
   return (
@@ -16,7 +40,7 @@ export function LessonList({ slug, lessons, current }: { slug: string; lessons: 
             const inner = (
               <>
                 <span className={`dot ${state}`} aria-hidden="true">{state === "done" ? "✓" : ""}</span>
-                <span style={{ flex: 1 }}>{l.seq}. {l.title} <span className="sr">({label})</span></span>
+                <span style={{ flex: 1 }}>{l.seq}. {l.title} <span className="sr">({label})</span>{showPresenter && l.presenter_name && <span className="small muted" style={{ display: "block" }}>{l.presenter_name}</span>}</span>
                 <span className="mono">{mmss(l.duration_sec)}</span>
               </>
             );

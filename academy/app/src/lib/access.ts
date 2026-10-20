@@ -1,8 +1,8 @@
 import "server-only";
 import { sql } from "./db";
 
-export type ProgramRow = { id: string; slug: string; title: string; summary: string | null; device_name: string | null; lessons: number; done: number; completed: boolean; last_activity: Date | null };
-export type LessonRow = { lesson_id: string; module_id: string; module_position: number; module_title: string; lesson_position: number; title: string; duration_sec: number | null; video_ref: string | null; seq: number; completed_at: Date | null; position_sec: number; max_position_sec: number; unlocked: boolean };
+export type ProgramRow = { id: string; slug: string; title: string; summary: string | null; device_name: string | null; lessons: number; done: number; completed: boolean; last_activity: Date | null; presenters: string | null };
+export type LessonRow = { lesson_id: string; module_id: string; module_position: number; module_title: string; lesson_position: number; title: string; duration_sec: number | null; video_ref: string | null; seq: number; completed_at: Date | null; position_sec: number; max_position_sec: number; presenter_name: string | null; presenter_title: string | null; unlocked: boolean };
 
 /** Parcours ouverts à l'utilisateur (droit actif, parcours publié), avec la progression. */
 export async function myPrograms(userId: string): Promise<ProgramRow[]> {
@@ -11,7 +11,8 @@ export async function myPrograms(userId: string): Promise<ProgramRow[]> {
            count(pl.lesson_id)::int as lessons,
            count(lp.completed_at)::int as done,
            (count(pl.lesson_id) > 0 and count(lp.completed_at) = count(pl.lesson_id)) as completed,
-           max(lp.updated_at) as last_activity
+           max(lp.updated_at) as last_activity,
+           string_agg(distinct pl.presenter_name, ', ') as presenters
       from programs p
       left join device_models dm on dm.id = p.device_model_id
       left join program_lessons pl on pl.program_id = p.id
@@ -31,7 +32,8 @@ export async function canAccessProgram(userId: string, programId: string): Promi
 export async function programLessons(userId: string, programId: string): Promise<LessonRow[]> {
   const rows = await sql<Omit<LessonRow, "unlocked">[]>`
     select pl.lesson_id, pl.module_id, pl.module_position, pl.module_title, pl.lesson_position, pl.title, pl.duration_sec, pl.video_ref, pl.seq::int,
-           lp.completed_at, coalesce(lp.position_sec, 0)::float as position_sec, coalesce(lp.max_position_sec, 0)::float as max_position_sec
+           lp.completed_at, coalesce(lp.position_sec, 0)::float as position_sec, coalesce(lp.max_position_sec, 0)::float as max_position_sec,
+           pl.presenter_name, pl.presenter_title
       from program_lessons pl
       left join lesson_progress lp on lp.lesson_id = pl.lesson_id and lp.user_id = ${userId}
      where pl.program_id = ${programId}

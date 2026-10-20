@@ -365,7 +365,7 @@
       const d = Object.fromEntries(new FormData(f));
       const uid = f.dataset.u || d.user, st = stateOf(uid);
       if (st) st.entitlements.push({ course: d.course, source: "manual", ref: d.reason, until: d.until || null, at: today() });
-      S().grants.unshift({ user: userName(uid), course: d.course, by: "Meryem (admin)", reason: d.reason, until: d.until || "" });
+      S().grants.unshift({ user: userName(uid), course: d.course, by: "Admin (exemple)", reason: d.reason, until: d.until || "" });
       audit("entitlement.grant", `${userName(uid)} → ${course(d.course).title}`, d.reason);
       closeOverlay(); rerender(); toast("Accès accordé — apprenant notifié");
     },

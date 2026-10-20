@@ -4,7 +4,7 @@ import { Shell, Progress, pct, fmtDate } from "@/components/Shell";
 import { requireUser } from "@/lib/auth";
 import { canAccessProgram, programLessons } from "@/lib/access";
 import { sql } from "@/lib/db";
-import { LessonList, Documents } from "./parts";
+import { LessonList, Documents, Presenters } from "./parts";
 
 export const metadata: Metadata = { title: "Parcours" };
 
@@ -35,7 +35,7 @@ export default async function Parcours({ params }: { params: Promise<{ slug: str
       <div className="cols">
         <section className="glass card" aria-labelledby="h-prog">
           <h2 id="h-prog" className="eyebrow" style={{ marginBottom: 6 }}>Programme · {lessons.length} leçons</h2>
-          <LessonList slug={slug} lessons={lessons} />
+          <LessonList slug={slug} lessons={lessons} showPresenter />
         </section>
         <aside className="stack">
           <section className="glass card stack" style={{ gap: 10 }}>
@@ -44,6 +44,7 @@ export default async function Parcours({ params }: { params: Promise<{ slug: str
             <p className="small muted">{done} leçon{done > 1 ? "s" : ""} terminée{done > 1 ? "s" : ""} sur {lessons.length}</p>
             {finished && <p className="alert ok">Formation terminée le {fmtDate(finishedAt)}.</p>}
           </section>
+          <Presenters lessons={lessons} />
           <section className="glass card stack" style={{ gap: 10 }} aria-labelledby="h-docs">
             <h2 id="h-docs" className="eyebrow">Documents</h2>
             <Documents docs={docs} />

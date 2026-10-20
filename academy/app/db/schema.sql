@@ -87,6 +87,20 @@ create table if not exists modules (
   unique (program_id, position) deferrable initially deferred
 );
 
+-- Présentateurs des vidéos (Dr Dadoun et l'équipe CELLULIFT Academy).
+create table if not exists presenters (
+  id      uuid primary key default gen_random_uuid(),
+  name    text unique not null check (char_length(name) between 2 and 120),
+  title   text check (char_length(title) <= 160),          -- ex. « Médecin esthétique & lasériste · Casablanca »
+  active  boolean not null default true,
+  created_at timestamptz not null default now()
+);
+insert into presenters (name, title) values
+  ('Dr Mohamed Dadoun', 'Médecin esthétique & lasériste · Casablanca'),
+  ('Meryem Belkhalfi', null),
+  ('Imane Souali', null)
+on conflict (name) do nothing;
+
 create table if not exists lessons (
   id            uuid primary key default gen_random_uuid(),
   module_id     uuid not null references modules on delete cascade,
@@ -143,11 +157,15 @@ create table if not exists audit_log (
   at        timestamptz not null default now()
 );
 
+alter table lessons add column if not exists presenter_id uuid references presenters on delete set null;
+
 -- Leçons d'un parcours dans l'ordre de lecture.
 create or replace view program_lessons as
 select p.id as program_id, m.id as module_id, m.position as module_position, m.title as module_title,
        l.id as lesson_id, l.position as lesson_position, l.title, l.duration_sec, l.video_ref,
-       row_number() over (partition by p.id order by m.position, l.position) as seq
+       row_number() over (partition by p.id order by m.position, l.position) as seq,
+       pr.name as presenter_name, pr.title as presenter_title
   from programs p
   join modules m on m.program_id = p.id
-  join lessons l on l.module_id = m.id;
+  join lessons l on l.module_id = m.id
+  left join presenters pr on pr.id = l.presenter_id;

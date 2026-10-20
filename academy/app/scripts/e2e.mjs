@@ -70,12 +70,16 @@ try {
   expect(dash.includes("HANOVER 5G") && dash.includes("HN5G-E2E-001"), "machine visible");
   expect(dash.includes("HANOVER 5G — Programme opérateur") && dash.includes("À commencer"), "parcours visible");
   ok("Tableau de bord : sa machine (n° de série) et le parcours correspondant");
+  expect(dash.includes("Avec Dr Mohamed Dadoun"), "présentateur sur la carte du parcours");
+  ok("Tableau de bord : le parcours indique son présentateur (Dr Mohamed Dadoun)");
   await doc.click("a:has-text('Programme et documents')");
   await doc.waitForURL(/\/parcours\/hanover-5g$/);
   const links = await doc.locator("a.lesson").count();
   const locked = await doc.locator(".lesson.locked").count();
   expect(links === 1 && locked === 2, `seule la leçon 1 ouverte (ouvertes ${links}, verrouillées ${locked})`);
   ok("Parcours : leçon 1 ouverte, leçons 2 et 3 verrouillées");
+  expect((await doc.textContent("#h-pres")) === "Intervenant" && (await doc.textContent("main")).includes("Médecin esthétique & lasériste"), "bloc intervenant du parcours");
+  ok("Parcours : bloc « Intervenant » avec le titre du Dr Dadoun");
   const [l1, l2, l3] = (await sql`select lesson_id from program_lessons pl join programs p on p.id = pl.program_id where p.slug = 'hanover-5g' order by seq`).map((r) => r.lesson_id);
   await doc.goto(`${BASE}/parcours/hanover-5g/${l3}`);
   expect(doc.url().endsWith(l1), "accès direct à la leçon 3 renvoyé vers la leçon 1");
@@ -100,6 +104,8 @@ try {
   }
   await watch(l1);
   ok("Leçon 1 regardée jusqu'au bout (avance rapide bloquée), validée à 90 %");
+  expect((await doc.textContent("main")).includes("Présenté parDr Mohamed Dadoun"), "présentateur sous la leçon");
+  ok("Leçon : « Présenté par Dr Mohamed Dadoun »");
   await doc.click("a:has-text('Leçon suivante')");
   await doc.waitForURL(new RegExp(l2));
   ok("Leçon 2 débloquée après la leçon 1");
@@ -182,6 +188,37 @@ try {
   const both = await doc.textContent("main");
   expect(both.includes(`Parcours ${machine}`) && both.includes("Formation terminée") && both.includes("À commencer"), "deuxième machine → deuxième parcours, le premier reste terminé");
   ok("Nouvelle machine ajoutée : son parcours s'ajoute, l'historique du premier est conservé");
+
+  // ── Présentateurs ──
+  const [{ lesson_id: testLesson }] = await sql`select pl.lesson_id from program_lessons pl join programs p on p.id = pl.program_id where p.slug = ${"test-" + run}`;
+  await doc.goto(`${BASE}/parcours/test-${run}/${testLesson}`);
+  expect(!(await doc.textContent("main")).includes("Présenté par") && (await doc.locator("#h-pres").count()) === 0, "pas de présentateur affiché quand la leçon n'en a pas");
+  ok("Présentateurs : une leçon sans présentateur n'affiche rien (état vide)");
+  await admin.goto(`${BASE}/admin/presentateurs`);
+  const plist = await admin.textContent("main");
+  expect(["Dr Mohamed Dadoun", "Meryem Belkhalfi", "Imane Souali"].every((n) => plist.includes(n)), "les trois présentateurs réels sont listés");
+  const pname = `Présentateur ${run}`;
+  await admin.fill("#pn", pname); await admin.fill("#pt", "Titre de test"); await admin.click("form:has(#pn) button[type=submit]");
+  await admin.waitForSelector(`text=${pname} ajouté(e).`);
+  await admin.fill("#pn", pname); await admin.click("form:has(#pn) button[type=submit]");
+  await admin.waitForSelector(".alert.err:has-text('existe déjà')");
+  ok("Présentateurs : liste des 3 présentateurs, ajout, doublon refusé avec un message");
+  const progId = (await sql`select id from programs where slug = ${"test-" + run}`)[0].id;
+  await admin.goto(`${BASE}/admin/parcours/${progId}`);
+  await admin.click("summary:has-text('Leçon test')");
+  const ef = admin.locator(`form:has(select[name=presenter_id]):has(input[name=lesson_id][value="${testLesson}"])`);
+  await ef.locator("select[name=presenter_id]").selectOption({ label: pname });
+  await ef.locator("button[type=submit]").click();
+  await admin.waitForSelector("text=Leçon enregistrée");
+  await doc.goto(`${BASE}/parcours/test-${run}/${testLesson}`);
+  const lt = await doc.textContent("main");
+  expect(lt.includes(`Présenté par${pname}`) && lt.includes("Titre de test"), "présentateur affecté visible par le médecin");
+  ok("Présentateurs : affecté à une leçon par l'admin, visible par le médecin avec son titre");
+  const pf = await doc.request.get(`${BASE}/admin/presentateurs`, { maxRedirects: 0 });
+  expect([302, 303, 307].includes(pf.status()), `page présentateurs interdite au médecin (${pf.status()})`);
+  ok("Présentateurs : page d'administration interdite au médecin");
+  await sql`update lessons set presenter_id = null where id = ${testLesson}`;
+  await sql`delete from presenters where name = ${pname}`;
   await sql`delete from users where id = ${otherId}`;
   console.log(`\nMVP validé : ${step} étapes réussies.`);
 } catch (e) {

@@ -1,13 +1,13 @@
 // CELLULIFT ACADEMY — données d'exemple du prototype.
 // Les noms de machines et les dates de sessions viennent de cellulift.ma ; les structures de cours,
-// les apprenants, les chiffres et la plupart des formateurs sont illustratifs.
+// les apprenants et les chiffres sont illustratifs. Les présentateurs sont les vrais (Dr Dadoun, Meryem Belkhalfi,
+// Imane Souali) ; leur attribution à chaque cours d'exemple est illustrative.
 
 window.ACADEMY_DATA = (() => {
   const trainers = {
     dadoun: { id: "dadoun", name: "Dr Mohamed Dadoun", title: "Médecin esthétique & lasériste · Casablanca", initials: "MD" },
-    mansouri: { id: "mansouri", name: "Dr Leïla Mansouri", title: "Dermatologue · Rabat (formatrice d'exemple)", initials: "LM" },
-    idrissi: { id: "idrissi", name: "Karim El Idrissi", title: "Spécialiste application clinique, CELLULIFT (exemple)", initials: "KI" },
-    berrada: { id: "berrada", name: "Nadia Berrada", title: "Consultante en centres esthétiques (exemple)", initials: "NB" },
+    belkhalfi: { id: "belkhalfi", name: "Meryem Belkhalfi", title: "Présentatrice · CELLULIFT Academy", initials: "MB" },
+    souali: { id: "souali", name: "Imane Souali", title: "Présentatrice · CELLULIFT Academy", initials: "IS" },
   };
 
   const devices = [
@@ -43,7 +43,7 @@ window.ACADEMY_DATA = (() => {
     },
     {
       id: "la-queen-diode", title: "LA QUEEN — Protocoles d'épilation au laser diode", img: "la-queen",
-      family: "Lasers", device: "LA QUEEN", trainer: "idrissi", level: "Intermédiaire", format: "Programme machine",
+      family: "Lasers", device: "LA QUEEN", trainer: "souali", level: "Intermédiaire", format: "Programme machine",
       summary: "Planification des séances, réglages de fluence et de durée d'impulsion, refroidissement et communication patient pour des résultats d'épilation réguliers.",
       objectives: ["Planifier un cycle complet de séances", "Adapter fluence et durée d'impulsion au poil et à la peau", "Utiliser correctement le refroidissement par contact", "Fixer des attentes réalistes avec le patient"],
       access: { rules: ["equipment"], devices: ["la-queen"] }, certificate: "completion", passing: 75,
@@ -63,7 +63,7 @@ window.ACADEMY_DATA = (() => {
     },
     {
       id: "hydra-6g-facial", title: "DERMABRASIF 6G — Protocoles visage", img: "dermabrasif-6g",
-      family: "Rajeunissement", device: "DERMABRASIF 6G", trainer: "mansouri", level: "Fondamental", format: "Programme machine",
+      family: "Rajeunissement", device: "DERMABRASIF 6G", trainer: "belkhalfi", level: "Fondamental", format: "Programme machine",
       summary: "Protocoles visage en six étapes, choix des sérums et association avec la LED pour cliniques et centres esthétiques.",
       objectives: ["Réaliser le protocole en 6 étapes", "Choisir les sérums selon le type de peau", "Associer la photomodulation LED", "Gérer l'hygiène et les consommables"],
       access: { rules: ["equipment", "paid"], devices: ["dermabrasif-6g"], price: 1900 }, certificate: "completion", passing: 70,
@@ -71,7 +71,7 @@ window.ACADEMY_DATA = (() => {
     },
     {
       id: "led-fundamentals", title: "Photomodulation LED — Les fondamentaux", img: "led-bio-light",
-      family: "Photomodulation", device: "LED BIO-LIGHT", trainer: "idrissi", level: "Fondamental", format: "Module",
+      family: "Photomodulation", device: "LED BIO-LIGHT", trainer: "souali", level: "Fondamental", format: "Module",
       summary: "Ce que la lumière produit sur les cellules de la peau, les longueurs d'onde qui comptent et comment intégrer la LED aux soins existants.",
       objectives: ["Expliquer simplement la photobiomodulation", "Associer longueur d'onde et indication", "Construire des protocoles complémentaires simples"],
       access: { rules: ["free"] }, certificate: "completion", passing: 70,
@@ -79,7 +79,7 @@ window.ACADEMY_DATA = (() => {
     },
     {
       id: "laser-safety", title: "Sécurité laser & phototypes cutanés", img: "synergy-plus",
-      family: "Lasers", device: "Toutes technologies à énergie", trainer: "mansouri", level: "Fondamental", format: "Module",
+      family: "Lasers", device: "Toutes technologies à énergie", trainer: "belkhalfi", level: "Fondamental", format: "Module",
       summary: "L'essentiel à connaître avant d'utiliser une technologie à énergie : phototypes, lunettes de protection, contre-indications, traçabilité.",
       objectives: ["Classer les phototypes de Fitzpatrick", "Appliquer les règles de protection oculaire", "Dépister les contre-indications", "Documenter le consentement"],
       access: { rules: ["free"] }, certificate: "completion", passing: 70,
@@ -87,7 +87,7 @@ window.ACADEMY_DATA = (() => {
     },
     {
       id: "body-contouring", title: "Remodelage corporel — Associer cryolipolyse & radiofréquence", img: "slimax-lipo-7",
-      family: "Remodelage corporel", device: "SLIMAX LIPO 7", trainer: "idrissi", level: "Intermédiaire", format: "Masterclass",
+      family: "Remodelage corporel", device: "SLIMAX LIPO 7", trainer: "souali", level: "Intermédiaire", format: "Masterclass",
       summary: "Concevoir des programmes de remodelage combinés, enchaîner les séances et mesurer objectivement les résultats.",
       objectives: ["Enchaîner cryolipolyse et RF", "Mesurer les résultats (photos, périmètres, composition corporelle)", "Concevoir des programmes de 6 et 10 séances"],
       access: { rules: ["paid", "equipment"], devices: ["slimax-lipo-7", "longishape"], price: 1500 }, certificate: "completion", passing: 75,
@@ -103,7 +103,7 @@ window.ACADEMY_DATA = (() => {
     },
     {
       id: "profitable-centre", title: "Technologie, pricing & protocoles : piloter un centre performant", img: "longishape",
-      family: "Gestion de centre", device: "Gestion de cabinet", trainer: "berrada", level: "Intermédiaire", format: "Masterclass",
+      family: "Gestion de centre", device: "Gestion de cabinet", trainer: "belkhalfi", level: "Intermédiaire", format: "Masterclass",
       summary: "Pourquoi certaines technologies deviennent rentables et d'autres restent inutilisées : positionnement, prix, protocoles et formation des équipes.",
       objectives: ["Calculer le coût par séance et le seuil de rentabilité", "Fixer le prix des forfaits", "Planifier la formation de l'équipe et l'utilisation des machines"],
       access: { rules: ["paid"], price: 900 }, certificate: "completion", passing: 70,
@@ -111,7 +111,7 @@ window.ACADEMY_DATA = (() => {
     },
     {
       id: "rf-physics", title: "Physique de la radiofréquence pour praticiens", img: "frequentazia",
-      family: "Radiofréquence", device: "Plateformes RF", trainer: "idrissi", level: "Intermédiaire", format: "Module",
+      family: "Radiofréquence", device: "Plateformes RF", trainer: "souali", level: "Intermédiaire", format: "Module",
       summary: "RF monopolaire, bipolaire et multipolaire expliquées clairement, avec les critères de température et la sécurité.",
       objectives: ["Distinguer les configurations RF", "Utiliser les critères de température", "Éviter brûlures et points chauds"],
       access: { rules: ["free"], verifiedOnly: true }, certificate: "completion", passing: 70,
@@ -194,7 +194,7 @@ window.ACADEMY_DATA = (() => {
     { id: "u-5307", name: "Youssef Amrani", email: "y.amrani@sample.ma", prof: "Kinésithérapeute", city: "Marrakech", type: "Open Academy", status: "unverified", courses: 1, last: "Aujourd'hui" },
     { id: "u-5122", name: "Dr Omar Tazi", email: "o.tazi@sample.ma", prof: "Médecin · Médecine esthétique", city: "Rabat", type: "Partenaire", status: "verified", courses: 4, last: "Hier" },
     { id: "u-5290", name: "Dr Hind Alaoui", email: "h.alaoui@sample.ma", prof: "Médecin · Médecine générale", city: "Tanger", type: "Open Academy", status: "pending", courses: 2, last: "2 j" },
-    { id: "u-5301", name: "Imane Chraibi", email: "i.chraibi@sample.ma", prof: "Esthéticienne", city: "Agadir", type: "Open Academy", status: "unverified", courses: 3, last: "3 j" },
+    { id: "u-5301", name: "Nora Chraibi", email: "n.chraibi@sample.ma", prof: "Esthéticienne", city: "Agadir", type: "Open Academy", status: "unverified", courses: 3, last: "3 j" },
     { id: "u-5018", name: "Dr Rachid Fassi", email: "r.fassi@sample.ma", prof: "Médecin · Chirurgie plastique", city: "Fès", type: "Partenaire", status: "verified", courses: 6, last: "5 j" },
     { id: "u-5311", name: "Dr Aminata Diallo", email: "a.diallo@sample.sn", prof: "Médecin · Dermatologie", city: "Dakar", type: "Open Academy", status: "pending", courses: 1, last: "1 j" },
     { id: "u-4977", name: "Sofia Kettani", email: "s.kettani@sample.ma", prof: "Infirmière", city: "Casablanca", type: "Partenaire", status: "verified", courses: 2, last: "1 sem." },
@@ -221,17 +221,17 @@ window.ACADEMY_DATA = (() => {
   ];
 
   const audit = [
-    { at: "2026-10-20 10:42", actor: "Meryem (admin)", action: "entitlement.grant", target: "Dr Omar Tazi → programme SEVENWAVES", note: "Groupe pilote" },
+    { at: "2026-10-20 10:42", actor: "Admin (exemple)", action: "entitlement.grant", target: "Dr Omar Tazi → programme SEVENWAVES", note: "Groupe pilote" },
     { at: "2026-10-20 09:15", actor: "Système", action: "protection.alert", target: "u-5018 · 3 pays en 24 h", note: "Ouverte" },
     { at: "2026-10-19 17:03", actor: "Yassine (sales_ops)", action: "device.link", target: "SW7-25-0033 → Dr Omar Tazi", note: "" },
-    { at: "2026-10-19 11:28", actor: "Meryem (admin)", action: "user.verify", target: "Sofia Kettani", note: "Inscription vérifiée" },
+    { at: "2026-10-19 11:28", actor: "Admin (exemple)", action: "user.verify", target: "Sofia Kettani", note: "Inscription vérifiée" },
     { at: "2026-10-18 15:50", actor: "Ghita (content_manager)", action: "course.publish", target: "Photomodulation LED — Les fondamentaux v2", note: "" },
     { at: "2026-10-18 09:01", actor: "Système", action: "order.paid", target: "AC-2026-0193 · 2 400 MAD", note: "Retour CMI" },
   ];
 
   const alerts = [
     { user: "Dr Rachid Fassi", id: "u-5018", kind: "Déplacement impossible", detail: "Fès 08:12 → Paris 09:40 → Fès 10:05", score: "Élevée", when: "Aujourd'hui 09:15" },
-    { user: "Imane Chraibi", id: "u-5301", kind: "Trop d'appareils", detail: "5 appareils différents en 30 jours (limite : 3)", score: "Moyenne", when: "Hier" },
+    { user: "Nora Chraibi", id: "u-5301", kind: "Trop d'appareils", detail: "5 appareils différents en 30 jours (limite : 3)", score: "Moyenne", when: "Hier" },
   ];
 
   return { trainers, devices, courses, quizBank, personas, certificates, sessions, notifications, users, verificationQueue, sales, crmIncoming, audit, alerts };

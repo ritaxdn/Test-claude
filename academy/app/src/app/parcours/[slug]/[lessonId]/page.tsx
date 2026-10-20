@@ -6,7 +6,7 @@ import { requireUser } from "@/lib/auth";
 import { lessonForUser } from "@/lib/access";
 import { sql } from "@/lib/db";
 import { playbackFor } from "@/lib/video";
-import { LessonList, Documents } from "../parts";
+import { LessonList, Documents, Presenter } from "../parts";
 
 export const metadata: Metadata = { title: "Leçon" };
 
@@ -51,6 +51,7 @@ export default async function Lecon({ params, searchParams }: { params: Promise<
           <div>
             <span className="eyebrow">Module {lesson.module_position} · {lesson.module_title} · leçon {lesson.seq} sur {lessons.length}</span>
             <h1 className="display h2" style={{ marginTop: 10 }}>{lesson.title}</h1>
+            {lesson.presenter_name && <Presenter name={lesson.presenter_name} title={lesson.presenter_title} />}
           </div>
           {l?.body && <div className="prose">{l.body.split(/\n\s*\n/).map((para, i) => <p key={i}>{para}</p>)}</div>}
           <div className="row between wrap" style={{ borderTop: "1px solid var(--line)", paddingTop: 16 }}>

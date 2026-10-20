@@ -149,11 +149,17 @@ export async function saveLesson(form: FormData) {
   const programId = s(form, "program_id"), lessonId = s(form, "lesson_id"), moduleId = s(form, "module_id");
   const duration = parseDuration(s(form, "duration"));
   if (!s(form, "title") || !duration) back(`/admin/parcours/${programId}`, { erreur: "Titre et durée (min:s) obligatoires pour chaque leçon." });
+  const presenter = s(form, "presenter_id");
+  const presenterId = isUuid(presenter) ? presenter : null;
+  if (presenterId) {
+    const [ok] = await sql`select 1 from presenters where id = ${presenterId}`;
+    if (!ok) back(`/admin/parcours/${programId}`, { erreur: "Présentateur introuvable." });
+  }
   if (isUuid(lessonId)) {
-    await sql`update lessons set title = ${s(form, "title")}, video_ref = ${opt(form, "video_ref")}, duration_sec = ${duration}, body = ${opt(form, "body")} where id = ${lessonId}`;
+    await sql`update lessons set title = ${s(form, "title")}, video_ref = ${opt(form, "video_ref")}, duration_sec = ${duration}, body = ${opt(form, "body")}, presenter_id = ${presenterId} where id = ${lessonId}`;
   } else {
-    await sql`insert into lessons (module_id, position, title, video_ref, duration_sec, body)
-              values (${moduleId}, (select coalesce(max(position), 0) + 1 from lessons where module_id = ${moduleId}), ${s(form, "title")}, ${opt(form, "video_ref")}, ${duration}, ${opt(form, "body")})`;
+    await sql`insert into lessons (module_id, position, title, video_ref, duration_sec, body, presenter_id)
+              values (${moduleId}, (select coalesce(max(position), 0) + 1 from lessons where module_id = ${moduleId}), ${s(form, "title")}, ${opt(form, "video_ref")}, ${duration}, ${opt(form, "body")}, ${presenterId})`;
   }
   await audit(admin.id, isUuid(lessonId) ? "lesson.update" : "lesson.create", s(form, "title"));
   back(`/admin/parcours/${programId}`, { info: "Leçon enregistrée." });
@@ -192,4 +198,22 @@ export async function deleteDocument(form: FormData) {
   await sql`delete from documents where id = ${s(form, "document_id")}`;
   await audit(admin.id, "document.delete", s(form, "document_id"));
   back(`/admin/parcours/${programId}`, { info: "Document retiré." });
+}
+
+/* ── Présentateurs ── */
+export async function savePresenter(form: FormData) {
+  const admin = await requireAdmin();
+  const id = s(form, "presenter_id"), name = s(form, "name").replace(/\s+/g, " ");
+  if (name.length < 2 || name.length > 120) back("/admin/presentateurs", { erreur: "Indiquez le nom du présentateur (2 à 120 caractères)." });
+  const title = opt(form, "title");
+  if (title && title.length > 160) back("/admin/presentateurs", { erreur: "Titre trop long (160 caractères maximum)." });
+  try {
+    if (isUuid(id)) await sql`update presenters set name = ${name}, title = ${title}, active = ${form.get("active") === "on"} where id = ${id}`;
+    else await sql`insert into presenters (name, title) values (${name}, ${title})`;
+  } catch (e) {
+    if ((e as { code?: string }).code === "23505") back("/admin/presentateurs", { erreur: `« ${name} » existe déjà.` });
+    throw e;
+  }
+  await audit(admin.id, isUuid(id) ? "presenter.update" : "presenter.create", name);
+  back("/admin/presentateurs", { info: isUuid(id) ? `${name} : enregistré.` : `${name} ajouté(e).` });
 }
