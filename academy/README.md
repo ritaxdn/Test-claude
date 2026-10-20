@@ -6,10 +6,12 @@ This folder is separate from the cellulift.ma website and is not built or deploy
 
 | Phase | Deliverable |
 |---|---|
+| **MVP application** | [`app/`](app/) — working Next.js + PostgreSQL app (doctor invitation → training completed; Cellulift follow-up). See [`app/README.md`](app/README.md) (FR). |
 | 1 · Product architecture | [`docs/01-product-architecture.md`](docs/01-product-architecture.md) — recommendation (Moodle vs white-label vs custom), stack, information architecture, roles, access logic, journeys, MVP scope |
 | 2 · UX/UI | [`docs/02-ux-ui.md`](docs/02-ux-ui.md) — design system ("Nacre & verre" applied to a product), sitemap, layouts |
 | 3 · Interactive prototype | [`prototype/`](prototype/) — clickable, responsive, sample data |
 | 4 · Production roadmap | [`docs/04-production-roadmap.md`](docs/04-production-roadmap.md) — backend, video security (honest), payments in Morocco, hosting, testing, phases |
+| CRM lifecycle | [`docs/06-cycle-de-vie-client.md`](docs/06-cycle-de-vie-client.md) (FR) · mock-up in [`crm-maquette/`](crm-maquette/) |
 | CRM integration | [`docs/05-integration-crm.md`](docs/05-integration-crm.md) (FR) — connection to the Cellulift CRM (Supabase): data flows, current data gaps, prerequisites |
 | Database drafts | [`supabase/schema.sql`](supabase/schema.sql) — Academy schema with entitlement engine · [`supabase/crm-academy-draft.sql`](supabase/crm-academy-draft.sql) — CRM-side additions. Neither is applied anywhere. |
 
