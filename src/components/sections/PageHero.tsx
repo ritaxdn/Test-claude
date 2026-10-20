@@ -1,4 +1,3 @@
-import { Reveal } from "@/components/ui/Reveal";
 import { Pill } from "@/components/system/Cta";
 import { Signal } from "@/components/system/Signal";
 
@@ -18,7 +17,8 @@ export function PageHero({
   return (
     <section className="relative overflow-hidden px-3 pb-10 pt-12 md:px-5 md:pb-14 md:pt-16">
       <div className="mx-auto max-w-7xl px-3 md:px-7">
-        <Reveal className="grid gap-6 lg:grid-cols-[1.5fr_1fr] lg:items-end">
+        {/* Animation CSS (sans JavaScript) : le titre s'affiche dès le premier rendu, ce qui accélère le LCP */}
+        <div className="grid animate-fade-rise gap-6 opacity-0 lg:grid-cols-[1.5fr_1fr] lg:items-end">
           <div>
             <Pill className="bg-white/60">{eyebrow}</Pill>
             {/* Titres longs (phrases) : corps réduit pour rester sur 3-4 lignes */}
@@ -31,7 +31,7 @@ export function PageHero({
             </h1>
           </div>
           {subtitle && <p className="max-w-md font-sans leading-relaxed text-deep-soft">{subtitle}</p>}
-        </Reveal>
+        </div>
       </div>
       <Signal className="mt-8 h-10 w-full opacity-80" />
     </section>

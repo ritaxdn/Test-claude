@@ -7,7 +7,7 @@ import { SITE_URL } from "@/lib/site";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { MobileTabBar } from "@/components/layout/MobileTabBar";
-import { CookieConsent } from "@/components/layout/CookieConsent";
+import { CookieConsent, CONSENT_PRELOAD } from "@/components/layout/CookieConsent";
 import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
 import { AttributionCapture } from "@/components/layout/AttributionCapture";
 import { Analytics } from "@vercel/analytics/next";
@@ -66,7 +66,12 @@ export default async function LangLayout({
     <html
       lang={lang}
       className={`${cormorant.variable} ${archivo.variable} ${instrumentSans.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
+      <head>
+        {/* Avant le premier affichage : masque le bandeau cookies si le visiteur a déjà choisi (voir CookieConsent) */}
+        <script dangerouslySetInnerHTML={{ __html: CONSENT_PRELOAD }} />
+      </head>
       <body className="pearl-bg flex min-h-full flex-col pb-20 text-deep sm:pb-0">
         {/* Lien d'évitement pour la navigation au clavier */}
         <a

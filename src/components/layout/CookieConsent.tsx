@@ -29,6 +29,13 @@ const t = {
   },
 } as const;
 
+/**
+ * Script lu avant le premier affichage (dans <head>) : si un choix est déjà enregistré, il marque <html>
+ * et le CSS masque le bandeau. Le bandeau peut ainsi être rendu côté serveur, visible dès le premier
+ * affichage pour un nouveau visiteur, sans apparaître tardivement (ce qui pénalisait le LCP).
+ */
+export const CONSENT_PRELOAD = `try{var v=localStorage.getItem("${KEY}");if(v)document.documentElement.setAttribute("data-consent",v)}catch(e){}`;
+
 /** Lit le choix enregistré (le stockage peut être indisponible : navigation privée, etc.). */
 function readChoice() {
   try {
@@ -43,11 +50,15 @@ function readChoice() {
  * qu'après acceptation. Le lien « Cookies » du pied de page rouvre le bandeau (événement « open-cookie-consent »).
  */
 export function CookieConsent({ locale }: { locale: Locale }) {
-  const [choice, setChoice] = useState<string | null>("pending");
+  // null au rendu serveur : le bandeau fait partie du HTML (masqué par CSS si un choix existe déjà)
+  const [choice, setChoice] = useState<string | null>(null);
 
   useEffect(() => {
     setChoice(readChoice()); // eslint-disable-line react-hooks/set-state-in-effect
-    const reopen = () => setChoice(null);
+    const reopen = () => {
+      document.documentElement.removeAttribute("data-consent");
+      setChoice(null);
+    };
     window.addEventListener("open-cookie-consent", reopen);
     return () => window.removeEventListener("open-cookie-consent", reopen);
   }, []);
@@ -80,7 +91,7 @@ export function CookieConsent({ locale }: { locale: Locale }) {
           role="dialog"
           aria-live="polite"
           aria-label="Cookies"
-          className="glass-strong fixed inset-x-3 bottom-24 z-50 mx-auto max-w-xl rounded-[1.5rem] p-5 sm:bottom-5"
+          className="cookie-banner glass-strong fixed inset-x-3 bottom-24 z-50 mx-auto max-w-xl rounded-[1.5rem] p-5 sm:bottom-5"
         >
           <p className="font-sans text-sm leading-relaxed text-deep">
             {c.text}{" "}

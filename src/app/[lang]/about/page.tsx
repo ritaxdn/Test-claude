@@ -27,8 +27,8 @@ export async function generateMetadata({
     path: "/about",
     title: isFr ? "À propos : votre partenaire depuis 2002" : "About: your partner since 2002",
     description: isFr
-      ? "Depuis 2002, Cellulift accompagne médecins, cliniques et centres dans l'intégration de technologies médico-esthétiques : sélection, formation, installation, SAV et développement."
-      : "Since 2002, Cellulift has supported physicians, clinics and centres in integrating medical aesthetic technology: selection, training, installation, after-sales and growth.",
+      ? "Depuis 2002, Cellulift accompagne médecins, cliniques et centres : choix de la technologie médico-esthétique, formation, installation et SAV."
+      : "Since 2002, Cellulift has supported physicians, clinics and centres: choosing medical aesthetic technology, training, installation and after-sales.",
   });
 }
 

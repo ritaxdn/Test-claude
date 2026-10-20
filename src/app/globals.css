@@ -136,6 +136,11 @@ body {
   border: 1px solid rgba(26, 24, 20, 0.08);
 }
 
+/* Bandeau cookies : masqué avant le premier affichage si le visiteur a déjà choisi (script CONSENT_PRELOAD) */
+html[data-consent] .cookie-banner {
+  display: none;
+}
+
 @keyframes fade-rise {
   from {
     opacity: 0;
