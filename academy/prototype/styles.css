@@ -492,3 +492,8 @@ table.t tbody tr:hover td { background: rgba(255,255,255,.55); }
 }
 @media (max-width: 900px) { .topbar .tb-logo { display: inline-flex; } .topbar .tb-logo .tag { display: none; } }
 @media (max-width: 640px) { .shell.immersive .topbar > a.btn { display: none; } }
+@media (max-width: 640px) {
+  .proto-bar { flex-wrap: nowrap; gap: 8px; padding: 7px 12px; }
+  .proto-bar select { max-width: 140px; min-width: 0; }
+  .proto-bar button { white-space: nowrap; }
+}
