@@ -71,7 +71,7 @@ const logo = (size = "", tag = "Academy", gid = `lg${++logoN}`) => `
   </a>`;
 
 /* ───────────────────────── State ───────────────────────── */
-const KEY = "cellulift-academy-proto-v1";
+const KEY = "cellulift-academy-proto-v2-fr";
 function seedPersona(p) {
   const done = {};
   Object.entries(p.progress).forEach(([cid, n]) => {
