@@ -11,6 +11,7 @@ create table users (
   full_name        text not null,
   status           text not null default 'active' check (status in ('active','suspended','deleted')),
   email_verified_at timestamptz,
+  crm_contact_id   uuid,                      -- public.contacts.id dans le CRM, une fois rapproché
   created_at       timestamptz not null default now()
 );
 
@@ -49,6 +50,7 @@ create table device_models (
   id        uuid primary key default gen_random_uuid(),
   name      text unique not null,              -- e.g. HANOVER 5G
   family    text not null,                     -- lasers, hifu, rejuvenation…
+  crm_produit_id uuid unique,                -- public.produits.id dans le CRM Cellulift
   active    boolean not null default true
 );
 
@@ -59,7 +61,7 @@ create table device_ownerships (
   serial_number text,
   clinic_name   text,
   purchased_at  date,
-  crm_ref       text,                          -- later: CRM / ERP record id
+  crm_ref       uuid unique,                   -- public.equipements_clients.id dans le CRM
   linked_by     uuid references users,
   revoked_at    timestamptz,
   created_at    timestamptz not null default now()
@@ -303,6 +305,29 @@ create table notifications (
   link     text,
   read_at  timestamptz,
   created_at timestamptz not null default now()
+);
+
+-- ───────────── CRM sync (see docs/05-integration-crm.md) ─────────────
+create table crm_sync_runs (
+  id          bigserial primary key,
+  started_at  timestamptz not null default now(),
+  finished_at timestamptz,
+  since       timestamptz,                     -- watermark passed to academy_equipements_depuis
+  received    int not null default 0,
+  linked      int not null default 0,          -- matched to an existing Academy user
+  invited     int not null default 0,          -- invitation sent to a new email
+  to_review   int not null default 0,          -- no email / ambiguous match → admin queue
+  revoked     int not null default 0,
+  error       text
+);
+
+create table crm_pending_links (               -- installations waiting for an admin to attach a person
+  crm_equipement_id uuid primary key,
+  payload    jsonb not null,
+  reason     text not null check (reason in ('no_email','ambiguous_match','unknown_product')),
+  created_at timestamptz not null default now(),
+  resolved_at timestamptz,
+  resolved_by uuid references users
 );
 
 -- ───────────── Access decision helper ─────────────
