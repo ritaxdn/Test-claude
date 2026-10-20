@@ -11,6 +11,12 @@ interface GuideFormText {
   text: string;
   name: string;
   email: string;
+  phone: string;
+  phonePlaceholder: string;
+  phoneError: string;
+  consent: string;
+  consentError: string;
+  privacyLink: string;
   specialty: string;
   specialtyPlaceholder: string;
   submit: string;
@@ -25,6 +31,7 @@ interface GuideFormText {
 }
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const phoneOk = (v: string) => /^[\d\s+().-]+$/.test(v) && v.replace(/\D/g, "").length >= 9 && v.replace(/\D/g, "").length <= 15;
 
 /**
  * Formulaire du guide gratuit : la demande arrive chez Cellulift (même circuit que le contact),
@@ -35,14 +42,16 @@ export function GuideForm({
   specialtyOptions,
   pdf,
   contactHref,
+  privacyHref,
 }: {
   text: GuideFormText;
   specialtyOptions: readonly string[];
   pdf: string;
   contactHref: string;
+  privacyHref: string;
 }) {
   const [status, setStatus] = useState<"idle" | "submitting" | "done">("idle");
-  const [errors, setErrors] = useState<{ name?: string; email?: string }>({});
+  const [errors, setErrors] = useState<{ name?: string; email?: string; phone?: string; consent?: string }>({});
   const startedAt = useRef(0);
 
   useEffect(() => {
@@ -54,10 +63,15 @@ export function GuideForm({
     const data = new FormData(e.currentTarget);
     const name = String(data.get("name") ?? "").trim();
     const email = String(data.get("email") ?? "").trim();
+    const phone = String(data.get("phone") ?? "").trim();
+    const consent = data.get("consent") === "on";
     const next: typeof errors = {};
     if (!name) next.name = text.requiredError;
     if (!email) next.email = text.requiredError;
     else if (!emailPattern.test(email)) next.email = text.emailError;
+    if (!phone) next.phone = text.requiredError;
+    else if (!phoneOk(phone)) next.phone = text.phoneError;
+    if (!consent) next.consent = text.consentError;
     setErrors(next);
     if (Object.keys(next).length) return;
 
@@ -69,6 +83,9 @@ export function GuideForm({
         body: JSON.stringify({
           name,
           email,
+          phone,
+          consent,
+          consentText: text.consent,
           specialty: String(data.get("specialty") ?? ""),
           parcours: "guide",
           subject: "Guide gratuit téléchargé",
@@ -137,6 +154,13 @@ export function GuideForm({
         {errors.email && <p role="alert" className="mt-1.5 font-sans text-xs text-rainbow-3">{errors.email}</p>}
       </div>
       <div>
+        <label htmlFor="guide-phone" className="font-sans text-sm text-deep-soft">
+          {text.phone} <span className="text-rainbow-3">*</span>
+        </label>
+        <input id="guide-phone" name="phone" type="tel" autoComplete="tel" inputMode="tel" placeholder={text.phonePlaceholder} className={inputClasses} aria-invalid={!!errors.phone} />
+        {errors.phone && <p role="alert" className="mt-1.5 font-sans text-xs text-rainbow-3">{errors.phone}</p>}
+      </div>
+      <div>
         <label htmlFor="guide-specialty" className="font-sans text-sm text-deep-soft">{text.specialty}</label>
         <div className="relative">
           <select id="guide-specialty" name="specialty" defaultValue="" className={cn(inputClasses, "appearance-none pr-10")}>
@@ -148,6 +172,15 @@ export function GuideForm({
           <ChevronDown size={16} className="pointer-events-none absolute right-4 top-1/2 mt-1 -translate-y-1/2 text-deep-soft" />
         </div>
       </div>
+      <div>
+        <label htmlFor="guide-consent" className="flex items-start gap-3 font-sans text-sm leading-relaxed text-deep-soft">
+          <input id="guide-consent" name="consent" type="checkbox" className="mt-1 h-4 w-4 shrink-0 accent-[var(--deep,#1b1d22)]" aria-invalid={!!errors.consent} />
+          <span>
+            {text.consent} <span className="text-rainbow-3">*</span>
+          </span>
+        </label>
+        {errors.consent && <p role="alert" className="mt-1.5 font-sans text-xs text-rainbow-3">{errors.consent}</p>}
+      </div>
       <button
         type="submit"
         disabled={status === "submitting"}
@@ -156,7 +189,12 @@ export function GuideForm({
         {status === "submitting" ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
         {status === "submitting" ? text.submitting : text.submit}
       </button>
-      <p className="font-sans text-xs leading-relaxed text-deep-soft">{text.privacy}</p>
+      <p className="font-sans text-xs leading-relaxed text-deep-soft">
+        {text.privacy}{" "}
+        <a href={privacyHref} className="underline underline-offset-2 hover:text-deep">
+          {text.privacyLink}
+        </a>
+      </p>
     </form>
   );
 }

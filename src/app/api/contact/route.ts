@@ -12,6 +12,8 @@ type ContactPayload = Partial<Record<ContactField, string>> & {
   lang?: string;
   attribution?: Record<string, unknown>; // campagne d'arrivée (utm_*, gclid, fbclid, référent, page d'entrée)
   website?: string; // champ piège (doit rester vide)
+  consent?: boolean; // guide : accord pour être recontacté par téléphone / WhatsApp
+  consentText?: string;
   elapsed?: number; // durée de remplissage, en ms
 };
 
@@ -180,12 +182,16 @@ export async function POST(request: Request) {
 
   const attr = attribution(body);
 
-  // Guide gratuit (page /guide) : seuls le nom et l'e-mail sont demandés.
+  // Guide gratuit (page /guide) : nom, téléphone / WhatsApp, e-mail et accord pour être recontacté ; l'activité est facultative.
   if (body.parcours === "guide") {
     const name = String(body.name ?? "").trim().slice(0, 200), email = String(body.email ?? "").trim().slice(0, 200);
-    if (!name || !emailPattern.test(email)) return NextResponse.json({ ok: false, error: "validation" }, { status: 422 });
-    const g: ContactPayload = { name, email, specialty: String(body.specialty ?? "").trim().slice(0, 200) || undefined, subject: "Guide gratuit", message: String(body.message ?? "").slice(0, 1000), lang: body.lang };
-    const [mail, crm] = await Promise.all([sendToCellulift("autre", g), sendToCrm(crmLead("guide", g, attr))]);
+    const phone = String(body.phone ?? "").trim().slice(0, 40);
+    if (!name || !emailPattern.test(email) || !phone || !isValidPhone(phone) || body.consent !== true)
+      return NextResponse.json({ ok: false, error: "validation" }, { status: 422 });
+    const g: ContactPayload = { name, email, phone, specialty: String(body.specialty ?? "").trim().slice(0, 200) || undefined, subject: "Guide gratuit",
+      message: [String(body.message ?? "").slice(0, 1000), "Accepte d'être contacté(e) par téléphone / WhatsApp."].filter(Boolean).join("\n"), lang: body.lang };
+    const lead: CrmLead = { ...crmLead("guide", g, attr), consentement_tel: true, consentement_texte: String(body.consentText ?? "").slice(0, 300) || undefined, consentement_le: new Date().toISOString() };
+    const [mail, crm] = await Promise.all([sendToCellulift("autre", g), sendToCrm(lead)]);
     return mail || crm ? NextResponse.json({ ok: true }) : NextResponse.json({ ok: false, error: "send_failed" }, { status: 502 });
   }
 

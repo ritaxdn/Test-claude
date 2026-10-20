@@ -73,6 +73,7 @@ export default async function GuidePage({ params }: { params: Promise<{ lang: st
             specialtyOptions={contactPageContent[lang].form.specialtyOptions}
             pdf={guidePdf}
             contactHref={`/${lang}/contact?sujet=expert`}
+            privacyHref={`/${lang}/privacy`}
           />
         </Reveal>
       </div>

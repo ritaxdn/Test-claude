@@ -461,6 +461,12 @@ i.dot.bad{background:var(--bad)}i.dot.warn{background:#D98A00}i.dot.ok{backgroun
 .sh-btns{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
 .sh-btns .btn.big{flex:1 1 140px;justify-content:center;min-height:50px;font-size:16px}
 .sh-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.sh-leads{margin:0 0 18px}.lead-row{flex-wrap:wrap;gap:8px 12px}.lead-row .t{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.lead-row .s{overflow-wrap:anywhere}
+.lead-btns{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
+@media (max-width:600px){.lead-btns{width:100%;justify-content:flex-start}.lead-btns .btn{flex:1 1 auto;min-height:40px}}
+.lead-qh{padding:12px 14px;margin:0 0 12px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2,rgba(0,0,0,.02))}
+.ws-acts .lead-com{min-width:0;max-width:100%;flex:1 1 180px}
+.opp-origine{margin:12px 0 0;padding:10px 14px;border:1px solid var(--line);border-radius:12px}
 .sh-row:last-child{border-bottom:0}
 .sh-row .t{font-size:16px;font-weight:600}
 .sh-row .s{font-size:13px;color:var(--ink-2)}
@@ -1181,6 +1187,7 @@ function filtrerPour(m){
   state.demandes=(state.demandes||[]).filter(d=>d.destinataire_id===m.id||d.auteur_id===m.id);
   const O=new Set(state.opportunites.map(o=>o.id)); state.intervenants=(state.intervenants||[]).filter(i=>O.has(i.opportunite_id));
   state.aides=(state.aides||[]).filter(x=>x.destinataire_id===m.id||x.auteur_id===m.id);
+  state.leads=(state.leads||[]).filter(l=>l.commercial_id===m.id);
 }
 function renderApercu(){
   let bar=document.getElementById("apercu-bar");
@@ -1247,14 +1254,15 @@ async function load(){
       sb.from("reglages").select("*").then(r=>r.error?{data:[],error:null}:r),
       q("demandes","created_at",false).then(r=>r.error?{data:[],error:null}:r),
       q("affaire_intervenants","created_at",true).then(r=>r.error?{data:[],error:null}:r),
-      q("demandes_aide","created_at",false).then(r=>r.error?{data:[],error:null}:r)
+      q("demandes_aide","created_at",false).then(r=>r.error?{data:[],error:null}:r),
+      q("leads","recu_le",false).then(r=>r.error?{data:[],error:null}:r)
     ]);
     const err = res.find(r=>r.error); if(err) throw err.error;
-    const [equipeTout,comptes,contacts,produits,opportunites,activites,devis,devis_lignes,paiements,reglagesRows,demandes,intervenants,aides] = res.map(r=>r.data||[]);
+    const [equipeTout,comptes,contacts,produits,opportunites,activites,devis,devis_lignes,paiements,reglagesRows,demandes,intervenants,aides,leads] = res.map(r=>r.data||[]);
     // Les personnes hors CRM (CEO, SAV, livraison…) ne figurent que dans l’organigramme
     const equipe=equipeTout.filter(e=>!e.hors_crm);
     const reglages={}; reglagesRows.forEach(x=>reglages[x.cle]=x.valeur);
-    state = {equipe,organigramme:equipeTout,comptes,contacts,produits,opportunites,activites,devis,devis_lignes,paiements,reglages,demandes,intervenants,aides};
+    state = {equipe,organigramme:equipeTout,comptes,contacts,produits,opportunites,activites,devis,devis_lignes,paiements,reglages,demandes,intervenants,aides,leads};
     const vrai=equipe.find(e=>e.user_id===currentUser.id)||null;
     if(apercu&&vrai&&["admin","superviseur"].includes(vrai.role)){ const m=equipe.find(e=>e.id===apercu.id); apercu=m||null; if(m) filtrerPour(m); } else apercu=null;
     renderApercu();
@@ -2264,6 +2272,10 @@ document.addEventListener("click",async e=>{
   if(act==="today-full"){ todayFull=true; viewAujourdhui($("#view")); const k=t.dataset.sec; const el=k==="devis"?[...document.querySelectorAll("#view h3")].find(h=>/Devis à relancer/.test(h.textContent)):k==="mois"?document.querySelector("#view .mois-fold"):k?document.querySelector("#view .ex-"+k):null; if(el){ if(el.tagName==="DETAILS") el.open=true; el.scrollIntoView({block:"start",behavior:"smooth"}); } return; }
   if(act==="today-simple"){ todayFull=false; window.scrollTo(0,0); return viewAujourdhui($("#view")); }
   if(act==="ws-tiroir"){ return wsTiroir(id); }
+  if(act==="lead-qualifier"){ const l=(state.leads||[]).find(x=>x.id===id); if(l) formQualifierLead(l); return; }
+  if(act==="lead-attribuer"){ const sel=t.closest(".ws-acts")&&t.closest(".ws-acts").querySelector(".lead-com"), com=sel&&sel.value;
+    if(!com){ toast("Choisis d’abord le commercial"); if(sel) sel.focus(); return; }
+    t.disabled=true; const ok=await write(()=>sb.rpc("attribuer_lead",{p_lead:id,p_com:com}),"Lead attribué à "+prenomDe(com)); if(!ok) t.disabled=false; return; }
   if(act==="ws-periode"){ wsPeriode=t.dataset.v; return viewAujourdhui($("#view")); }
   if(act==="ws-filtre"){ wsFiltre=t.dataset.v||""; wsTout=false; return viewAujourdhui($("#view")); }
   if(act==="ws-tout"){ wsTout=!wsTout; return viewAujourdhui($("#view")); }
@@ -2762,12 +2774,98 @@ function shItem(a,S){
   else { principal=moi?`<button class="btn primary big" data-act="act-effectuer" data-id="${a.id}">C’est fait</button>`:""; }
   return {a,c,titre,quand,pourquoi,principal,second,etat};
 }
+/* ---- Leads du guide : à qualifier par le commercial, à attribuer par le superviseur ---- */
+const LEAD_ST={a_qualifier:"À qualifier",projet_identifie:"Projet identifié",en_veille:"En veille",non_qualifie:"Non qualifié",converti:"Converti"};
+const L_PROFILS=[["medecin","Médecin"],["centre","Centre / Clinique"],["investisseur","Investisseur / Projet de centre"],["autre","Autre"]];
+const L_PROJETS=[["creer","Créer / équiper un centre"],["ajouter","Ajouter une technologie"],["remplacer","Remplacer une machine"],["renseigne","Se renseigne"]];
+const L_HORIZONS=[["0_3","0–3 mois"],["3_6","3–6 mois"],["6_12","6–12 mois"],["12_plus","+12 mois"],["indefini","Indéfini"]];
+const L_MOTIFS=["Étudiant","Fournisseur","Curieux","Mauvais numéro","Aucun projet","Autre"];
+const leadNom=l=>String((l.donnees&&l.donnees.organisation)||"").trim()&&String(l.donnees.organisation).trim()!==String(l.nom||"").trim()?(l.nom||"")+" · "+l.donnees.organisation:(l.nom||l.email||l.telephone||"Lead");
+const mesLeads=()=>(state.leads||[]).filter(l=>me&&l.commercial_id===me.id&&["a_qualifier","projet_identifie"].includes(l.statut))
+  .sort((a,b)=>(!!b.reactive_le-!!a.reactive_le)||new Date(b.attribue_le||b.recu_le)-new Date(a.attribue_le||a.recu_le));
+const leadsAAttribuer=()=>(state.leads||[]).filter(l=>!l.commercial_id&&l.statut==="a_qualifier").sort((a,b)=>new Date(a.recu_le)-new Date(b.recu_le));
+function leadContact(l,small){ const t=String(l.telephone||"").replace(/[^\d+]/g,""), w=String(l.telephone||"").replace(/\D/g,""), cls="btn"+(small?" small":"");
+  return t?`<a class="${cls}" href="tel:${esc(t)}">Appeler</a><a class="${cls}" href="https://wa.me/${esc(w.startsWith("0")?"212"+w.slice(1):w)}" target="_blank" rel="noopener">WhatsApp</a>`
+    :l.email?`<a class="${cls}" href="mailto:${esc(l.email)}">Email</a>`:""; }
+function leadCarte(l){ const reac=l.statut==="a_qualifier"&&l.reactive_le, c=byId(state.comptes,l.compte_id);
+  return `<div class="sh-row lead-row" data-lid="${l.id}"><div style="flex:1;min-width:0">
+    <div class="t"><b>${esc(leadNom(l))}</b> ${reac?`<span class="pill warn">À réactiver</span>`:l.statut==="projet_identifie"?`<span class="pill">Projet identifié</span>`:""}${c?` <span class="pill">${c.statut==="client"?"Déjà client":"Fiche existante"}</span>`:""}</div>
+    <div class="s">${esc(l.contenu||l.parcours||"")} · Entré le ${fmtDate(l.recu_le)}${l.source?" · "+esc(l.source):""}</div>
+    ${reac&&(l.contexte_reactivation||l.action_reprise)?`<div class="s">${esc([l.contexte_reactivation,l.action_reprise?"À la reprise : "+l.action_reprise:""].filter(Boolean).join(" · "))}</div>`:""}</div>
+    <div class="lead-btns">${leadContact(l,true)}<button class="btn small primary" data-act="lead-qualifier" data-id="${l.id}">${l.statut==="projet_identifie"?"Créer l’affaire":"Qualifier le projet →"}</button></div></div>`; }
+function leadsSection(L,simple){
+  if(!L.length) return "";
+  if(simple) return `<section class="sh-leads" aria-label="Leads à qualifier"><div class="sh-lab">Leads à qualifier · ${L.length}</div>
+    ${L.slice(0,5).map(leadCarte).join("")}${L.length>5?`<p style="margin:6px 0 0"><button class="linkish" data-act="today-full" data-sec="leads">Voir les ${L.length} ›</button></p>`:""}</section>`;
+  return `<section class="ex-sec ex-leads" aria-labelledby="ex-leads"><div class="ex-head"><h3 id="ex-leads">Leads à qualifier</h3><span class="n">${L.length}</span><span class="hint" style="margin:0">appeler, comprendre le projet, décider de la suite</span></div>
+    <div>${L.slice(0,40).map(leadCarte).join("")}</div></section>`; }
+function formQualifierLead(l){
+  const c=byId(state.comptes,l.compte_id), pi=l.statut==="projet_identifie";
+  const prods=state.produits.filter(p=>p.actif!==false).map(p=>p.nom).sort((a,b)=>a.localeCompare(b,"fr"));
+  const plus=(n)=>{ const d=new Date(); d.setMonth(d.getMonth()+n); return d.toISOString().slice(0,10); };
+  const demain=new Date(Date.now()+864e5).toISOString().slice(0,10);
+  const h=`<div class="lead-qh"><b>${esc(leadNom(l))}</b><div class="hint">${esc([l.contenu,"Entré le "+fmtDate(l.recu_le),l.source,l.ville].filter(Boolean).join(" · "))}</div>
+     ${l.donnees&&l.donnees.specialite?`<div class="hint">Profil déclaré : ${esc(l.donnees.specialite)}</div>`:""}
+     ${c?`<div class="hint">${c.statut==="client"?"Déjà client":"Fiche existante"} : <b>${esc(c.nom)}</b>${c.commercial_id?" · suivi par "+esc(nomMembre(c.commercial_id)):""}</div>`:""}
+     <div class="tools" style="margin-top:8px">${leadContact(l,true)}</div></div>
+   <div class="form-grid">
+    ${chipsF("profil","Profil",L_PROFILS,l.profil)}
+    ${chipsF("projet","Projet",L_PROJETS,l.projet)}
+    ${fld("lq-besoin","Technologie / besoin",`<input id="lq-besoin" name="besoin" list="dl-lq-prod" maxlength="300" autocomplete="off" placeholder="Ex. laser diode, HIFU, remodelage…" value="${esc(l.besoin||"")}"><datalist id="dl-lq-prod">${prods.map(x=>`<option value="${esc(x)}">`).join("")}</datalist>`,true)}
+    ${chipsF("horizon","Horizon",L_HORIZONS,l.horizon)}
+    ${fld("lq-note","Ce que tu as appris",`<textarea id="lq-note" name="note" maxlength="1000" placeholder="Ex. ouvre un centre à Agadir en mars, compare 2 fournisseurs…">${esc(l.note_qualif||"")}</textarea>`,true)}
+    ${chipsF("resultat","Résultat",[["projet","Projet réel"],["veille","Pas maintenant"],["non_qualifie","Non qualifié"],["doublon","Doublon / à trier"]],pi?"projet":"")}
+    <div data-si="projet" style="grid-column:1/-1" ${pi?"":"hidden"}><div class="form-grid">
+      ${fld("lq-titre","Titre de l’affaire",`<input id="lq-titre" name="titre" maxlength="140" value="${esc(c?c.nom:(l.donnees&&l.donnees.organisation)||l.nom||"")}">`)}
+      ${fld("lq-mt","Montant estimé MAD (optionnel)",`<input id="lq-mt" name="montant" inputmode="numeric" autocomplete="off">`)}
+      ${chipsF("suite","Suite",[["maintenant","Créer l’affaire maintenant"],["plus_tard","Plus tard (garder en « Projet identifié »)"]],"maintenant")}</div></div>
+    <div data-si="veille" style="grid-column:1/-1" hidden><div class="form-grid">
+      ${chipsF("veille_type","Ce que tu as appris",[["affaire","Projet concret → affaire en veille"],["lead","Pas de projet concret → lead en veille"]],"")}
+      ${chipsF("dans","Réactiver dans",[[plus(1),"1 mois"],[plus(3),"3 mois"],[plus(6),"6 mois"],[plus(12),"12 mois"]],"")}
+      ${fld("lq-date","ou à une date précise",`<input id="lq-date" name="reactiver_le" type="date" min="${demain}">`)}
+      ${fld("lq-ctx","Contexte de réactivation",`<textarea id="lq-ctx" name="contexte" maxlength="1000" placeholder="Ex. attend la fin des travaux du centre, rappeler en janvier…"></textarea>`,true)}
+      ${fld("lq-act","Action à la reprise (optionnel)",`<input id="lq-act" name="action" maxlength="300" placeholder="Ex. proposer une démo HIFU">`,true)}</div></div>
+    <div data-si="non_qualifie" style="grid-column:1/-1" hidden>${chipsF("motif","Motif",L_MOTIFS.map(m=>[m,m]),"")}</div>
+    <div data-si="doublon" style="grid-column:1/-1" hidden><p class="hint" style="margin:0 0 6px">Le lead est clôturé sans créer d’affaire${c?` et rattaché à la fiche <b>${esc(c.nom)}</b>`:", et rattaché à la fiche client existante si le téléphone ou l’email correspond"}.</p>
+      ${fld("lq-dbl","Précision (optionnel)",`<input id="lq-dbl" name="motif_doublon" maxlength="150" placeholder="Ex. déjà en discussion avec Sofia, même personne que…">`,true)}</div>
+   </div>`;
+  let res=null;
+  const submit=async f=>{
+    const r=f.resultat, prod=state.produits.find(p=>strip(p.nom)===strip(f.besoin||""));
+    const resultat=r==="projet"?(f.suite==="plus_tard"?"projet_plus_tard":"projet"):r==="veille"?(f.veille_type==="affaire"?"veille_affaire":"veille_lead"):r;
+    const P={resultat,profil:f.profil||"",projet:f.projet||"",horizon:f.horizon||"",besoin:sTxt(f.besoin)||"",note:sTxt(f.note)||"",titre:sTxt(f.titre)||"",montant:f.montant||"",produit_id:prod?prod.id:"",
+      reactiver_le:f.reactiver_le||f.dans||"",contexte:sTxt(f.contexte)||"",action:sTxt(f.action)||"",motif:r==="doublon"?(sTxt(f.motif_doublon)||""):(f.motif||"")};
+    const msg={projet:"Affaire créée",projet_plus_tard:"Projet identifié",veille_affaire:"Affaire créée en veille",veille_lead:"Lead mis en veille",non_qualifie:"Lead classé non qualifié",doublon:"Lead classé en doublon"}[resultat];
+    const ok=await write(async()=>{ const x=await sb.rpc("qualifier_lead",{p_lead:l.id,p:P}); res=x.data; return x; },msg);
+    if(ok&&res&&res.opportunite&&resultat==="projet"){ const o=byId(state.opportunites,res.opportunite); if(o) openOpp(o); }
+    return ok; };
+  submit.validate=f=>{ if(!f.resultat) return [null,"Choisis le résultat de l’échange."];
+    if(f.resultat==="veille"){ if(!f.veille_type) return [null,"Projet concret ou pas encore ? Choisis le type de veille."];
+      const d=f.reactiver_le||f.dans; if(!d||d<=new Date().toISOString().slice(0,10)) return ["reactiver_le","Choisis quand le réactiver (date à venir)."]; }
+    if(f.resultat==="non_qualifie"&&!f.motif) return [null,"Choisis le motif."];
+    return null; };
+  modal(pi?"Créer l’affaire":"Qualifier le lead",h,submit,"Enregistrer");
+  wireChipsX();
+  const form=$("#mform");
+  form.addEventListener("click",e=>{ const g=e.target.closest("[data-chipsx]"); if(!g) return;
+    if(g.dataset.chipsx==="resultat"){ const v=form.elements.resultat.value; form.querySelectorAll("[data-si]").forEach(x=>x.hidden=x.dataset.si!==v);
+      $("#msubmit").textContent={projet:"Enregistrer",veille:"Mettre en veille",non_qualifie:"Classer non qualifié",doublon:"Classer en doublon"}[v]||"Enregistrer"; }
+    if(g.dataset.chipsx==="dans"&&form.elements.dans.value) $("#lq-date").value=form.elements.dans.value; });
+  $("#lq-date").addEventListener("change",()=>{ form.elements.dans.value=""; form.querySelectorAll('[data-chipsx="dans"] .chip').forEach(x=>x.setAttribute("aria-pressed","false")); });
+}
+function origineHtml(o){
+  const l=o.lead_id?(state.leads||[]).find(x=>x.id===o.lead_id):null;
+  if(!o.lead_id&&!o.origine_canal) return "";
+  const ligne=[o.origine_canal||(l&&l.source),o.origine_contenu||(l&&l.contenu),o.origine_campagne||(l&&l.campagne)].filter(Boolean);
+  return `<section class="opp-origine" aria-label="Origine"><div class="lab-mono">Origine</div>
+    <div><b>${esc(ligne.join(" → ")||"Lead")}</b></div>
+    <div class="hint">${[o.origine_le?"Entré le "+fmtDate(o.origine_le):l?"Entré le "+fmtDate(l.recu_le):"",l&&l.qualifie_le?"qualifié le "+fmtDate(l.qualifie_le)+(l.qualifie_par?" par "+esc(nomMembre(l.qualifie_par)):""):""].filter(Boolean).join(" · ")}</div></section>`; }
 function accueilSimple(v,S,dv,mois,prenom,dateTxt,anciennes){
   anciennes=(anciennes||[]).slice().sort((x,y)=>new Date(y.date_activite)-new Date(x.date_activite));
   const file=[...new Map([...S.retard.filter(a=>a.prioritaire),...S.jour,...S.retard.filter(a=>!a.prioritaire),...S.statuer].map(a=>[a.id,a])).values()];
   const [premier,...reste]=file, suite=reste.slice(0,3).map(a=>shItem(a,S)), p=premier?shItem(premier,S):null;
   const dmd=(state.demandes||[]).filter(d=>me&&d.destinataire_id===me.id&&d.statut==="en_attente");
-  const AF=accueilAffaires(), n=file.length+dmd.length+AF.n;
+  const AF=accueilAffaires(), LQ=mesLeads(), n=file.length+dmd.length+AF.n+LQ.length;
   const chips=[
     S.retard.length?`<button class="btn" data-act="today-full" data-sec="retard">${S.retard.length} en retard ›</button>`:"",
     S.statuer.length?`<button class="btn" data-act="today-full" data-sec="statuer">${S.statuer.length} à statuer ›</button>`:"",
@@ -2781,6 +2879,7 @@ function accueilSimple(v,S,dv,mois,prenom,dateTxt,anciennes){
       <div class="sh-lab"><span class="dotv" aria-hidden="true"></span>${esc(prenomDe(d.auteur_id))} te demande ${d.type==="validation"?"une validation":"une mise à jour"}</div>
       <div class="sh-title">${esc((c&&c.nom)||(o&&o.titre)||"Point sur tes actions")}</div>${d.message?`<div class="sh-why">« ${esc(d.message)} »</div>`:""}
       <div class="sh-btns">${o?`<button class="btn primary big" data-act="open-opp" data-id="${o.id}">Ouvrir l’affaire</button>`:c?`<button class="btn primary big" data-act="open-compte" data-id="${c.id}">Ouvrir la fiche</button>`:""}<button class="btn big" data-act="demande-repondre" data-id="${d.id}">Répondre</button></div></section>`; }).join("")}
+    ${leadsSection(LQ,true)}
     ${p?`<section class="sh-card" aria-label="Maintenant" data-aid="${p.a.id}">
       <div class="sh-lab"><span class="dotv" aria-hidden="true"></span>Maintenant · <span class="${p.etat==="retard"?"t-bad":p.etat==="statuer"?"t-warn":""}">${esc(p.quand)}</span></div>
       <div class="sh-title"><button class="linkish" data-act="act-detail" data-id="${p.a.id}">${esc(p.titre)}</button></div>
@@ -2826,6 +2925,10 @@ function itemsATraiter(p){
   (state.aides||[]).forEach(x=>{ if(x.statut!=="en_attente"||!dans(x.auteur_id)||!me||(x.destinataire_id!==me.id&&me.role!=="admin")) return; const {o,client,bloc}=aideResume(x);
     L.push({k:"h:"+x.id,sev:"aide",com:x.auteur_id,cat:"Demande d’aide",titre:client,sous:o?o.titre:"",etape:o?ETAPE_LABEL[o.etape]||o.etape:"",valeur:o?+o.montant_mad||0:0,
       raisons:[bloc?"Bloque sur : "+bloc:"Demande de l’aide",x.message?"« "+x.message+" »":"",x.attente?"Attend "+(ATTENTES[x.attente]||"").toLowerCase():""].filter(Boolean),chips:[...(x.blocages||[]).map(b=>BLOCAGES[b]||b)],h:x,o}); });
+  // Leads du guide arrivés sans commercial : à attribuer
+  leadsAAttribuer().forEach(l=>{ const c=byId(state.comptes,l.compte_id);
+    L.push({k:"l:"+l.id,sev:"lead",com:null,cat:"Lead · "+(l.source||"site"),titre:leadNom(l),sous:[l.contenu,l.ville].filter(Boolean).join(" · "),valeur:0,
+      raisons:["Entré le "+fmtDate(l.recu_le)+(c?" · "+(c.statut==="client"?"déjà client":"fiche existante")+(c.commercial_id?" · suivi par "+nomMembre(c.commercial_id):""):"")],lead:l}); });
   // Affaires : 7 jours sans activité significative + aucune prochaine étape + aucune explication (les affaires en veille n'y entrent pas)
   state.opportunites.forEach(o=>{ if(o.issue!=="en_cours"||!dans(o.commercial_id)||enAttente.has("o:"+o.id)) return; const g=organisation(o); if(!g||!g.remonte) return; const r=risque(o);
     const raisons=[g.j==null?"Aucune activité significative enregistrée":`Aucune activité significative depuis ${g.j} jours`,"Aucune prochaine étape planifiée","Aucune explication du commercial"];
@@ -2846,10 +2949,10 @@ function itemsATraiter(p){
   // Tâches de l'ancien CRM restées ouvertes depuis plus d'un mois : un rappel par commercial, en fin de file
   const anc=new Map(); state.activites.forEach(a=>{ if(a.statut!=="a_faire"||!ancienImport(a)||estEvenement(a)) return; const r=responsable(a); if(!r||!dans(r)||!(e=>e&&e.role==="commercial"&&e.actif)(byId(state.equipe,r))) return; if(!anc.has(r)) anc.set(r,[]); anc.get(r).push(a); });
   anc.forEach((as,r)=>{ if(enAttente.has("r:"+r)) return; L.push({k:"anc:"+r,sev:"trier",com:r,cat:"Ancien CRM",titre:as.length+" tâche"+(as.length>1?"s":"")+" à trier",sous:[...new Set(as.map(a=>(byId(state.comptes,a.compte_id)||{}).nom).filter(Boolean))].slice(0,2).join(" · "),valeur:0,raisons:["Restées « à faire » dans l’ancien CRM depuis plus d’un mois"],anc:as}); });
-  const rang={aide:-1,critique:0,risque:1,statuer:2,trier:3};
+  const rang={aide:-1,lead:-0.5,critique:0,risque:1,statuer:2,trier:3};
   return L.sort((x,y)=>rang[x.sev]-rang[y.sev]||y.valeur-x.valeur);
 }
-const SEV={aide:["Demande d’aide","vio"],critique:["Critique","bad"],risque:["À risque","warn"],statuer:["À statuer",""],trier:["À trier",""]};
+const SEV={aide:["Demande d’aide","vio"],lead:["Lead à attribuer","vio"],critique:["Critique","bad"],risque:["À risque","warn"],statuer:["À statuer",""],trier:["À trier",""]};
 function wsActions(x,primaire){
   const b=(cls,act,lib,attrs)=>`<button class="btn ${cls}" data-act="${act}" ${attrs||""}>${lib}</button>`, P=primaire?"primary":"primary";
   const dem=(lib,extra)=>b("","demande",lib,`data-com="${x.com||""}" ${extra||""}`);
@@ -2858,6 +2961,8 @@ function wsActions(x,primaire){
   if(x.d) return b(P,"relance-ia","Relancer",`data-compte="${x.d.compte_id}" data-devis="${x.d.id}"`)+dem("Demander",`data-compte="${x.d.compte_id}" data-opp="${x.d.opportunite_id||""}"`);
   if(x.a) return (peutEffectuer(x.a)?b(P,"act-effectuer","Effectué",`data-id="${x.a.id}"`):dem("Demander à "+esc(prenomDe(x.com)),`data-aid="${x.a.id}" data-compte="${x.a.compte_id||""}" data-opp="${x.a.opportunite_id||""}" data-type="validation"`))+b("","act-reporter","Reporté",`data-id="${x.a.id}"`)+b("","act-statuer","Annulé",`data-id="${x.a.id}" data-v="annulee"`)+b("","act-statuer","Non effectué",`data-id="${x.a.id}" data-v="non_effectuee"`);
   if(x.retards) return b(P,"ws-tiroir","Voir ses actions",`data-id="${x.com}"`)+dem("Demander un point");
+  if(x.lead){ const c=byId(state.comptes,x.lead.compte_id), coms=commerciauxSuivis(perimetre()), sug=c&&coms.some(e=>e.id===c.commercial_id)?c.commercial_id:"";
+    return `<select class="lead-com" aria-label="Commercial pour ${esc(x.titre)}"><option value="">Choisir le commercial…</option>${coms.map(e=>`<option value="${e.id}" ${e.id===sug?"selected":""}>${esc(e.nom)}</option>`).join("")}</select>`+b(P,"lead-attribuer","Attribuer",`data-id="${x.lead.id}"`); }
   if(x.anc) return b(P,"voir-comme","Voir son écran",`data-id="${x.com}"`)+dem("Demander de les trier",`data-type="mise_a_jour"`);
   return "";
 }
@@ -2905,7 +3010,7 @@ function viewWorkspace(v){
   const devisP=state.devis.filter(d=>dans(d.commercial_id)&&d.statut!=="brouillon"&&dansP(d.date_envoi)).reduce((s,d)=>s+(+d.montant_mad||0),0);
   const nego=opps.filter(o=>o.etape==="Negociation"), negoVal=nego.reduce((s,o)=>s+(+o.montant_mad||0),0), negoDort=nego.filter(o=>now-derniereActivite(o)>14*864e5).reduce((s,o)=>s+(+o.montant_mad||0),0);
   const PER={jour:"Aujourd’hui",semaine:"Cette semaine",mois:"Ce mois-ci"}[wsPeriode];
-  const filtres=[["","Tout",L.length],...(L.some(x=>x.sev==="aide")?[["aide","Demandes d’aide",L.filter(x=>x.sev==="aide").length]]:[]),["critique","Critique",L.filter(x=>x.sev==="critique").length],["risque","À risque",L.filter(x=>x.sev==="risque").length],["statuer","À statuer",L.filter(x=>x.sev==="statuer").length],...(L.some(x=>x.sev==="trier")?[["trier","Ancien CRM",L.filter(x=>x.sev==="trier").length]]:[])];
+  const filtres=[["","Tout",L.length],...(L.some(x=>x.sev==="aide")?[["aide","Demandes d’aide",L.filter(x=>x.sev==="aide").length]]:[]),...(L.some(x=>x.sev==="lead")?[["lead","Leads à attribuer",L.filter(x=>x.sev==="lead").length]]:[]),["critique","Critique",L.filter(x=>x.sev==="critique").length],["risque","À risque",L.filter(x=>x.sev==="risque").length],["statuer","À statuer",L.filter(x=>x.sev==="statuer").length],...(L.some(x=>x.sev==="trier")?[["trier","Ancien CRM",L.filter(x=>x.sev==="trier").length]]:[])];
   const fileF=file.filter(x=>!wsFiltre||x.sev===wsFiltre), montre=wsTout?fileF:fileF.slice(0,6);
   const big=n=>`<b>${n>=1e4?madShort(n):mad(n)}</b>`;
   v.innerHTML=`<div class="ws">
@@ -3043,6 +3148,7 @@ function viewAujourdhui(v){
     <div class="tools">${estPilote()?`<div class="chips" role="group" aria-label="Voir"><button class="chip" data-act="today-qui" data-v="moi" aria-pressed="${todayQui==="moi"}">Moi</button><button class="chip" data-act="today-qui" data-v="equipe" aria-pressed="${todayQui==="equipe"}">Toute l’équipe</button></div>`:""}
       <button class="btn" data-act="planifier" ${state.comptes.length?"":"disabled"}>+ Planifier</button><button class="btn primary big hide-mobile" data-act="quick-visite" ${state.comptes.length?"":"disabled"}>J’ai fait une visite</button></div></div>
   <div class="grid2"><div class="panel ex-panel" style="min-width:0">
+    ${todayQui!=="equipe"?leadsSection(mesLeads(),false):""}
     ${section("retard","En retard","Rien en retard.","retard","appels, tâches et messages pas encore faits")}
     ${section("jour","Aujourd’hui","Rien d’autre de prévu aujourd’hui.","jour")}
     ${section("statuer","À statuer","Tout est statué.","statuer","RDV, visites et démos passés : ont-ils eu lieu ?")}
@@ -4169,6 +4275,7 @@ function openOpp(o){ if(o) ctxCompte=o.compte_id;
      <div><div class="lab-mono">Responsable</div><b>${esc(nomMembre(o.commercial_id))}</b>${o.createur_id&&o.createur_id!==o.commercial_id?`<div class="hint">créée par ${esc(nomMembre(o.createur_id))}</div>`:""}</div>
      <div><div class="lab-mono">Machine</div><b>${p?esc(p.nom):"—"}</b></div>
    </div>
+   ${origineHtml(o)}
    ${etapeBandeau(o)}
    <div class="tools quick">
      <button class="btn small" data-act="log" data-opp="${o.id}" data-type="tache">+ Tâche</button><button class="btn small" data-act="log" data-opp="${o.id}" data-type="evenement">+ Événement</button><button class="btn small" data-act="log" data-opp="${o.id}" data-type="appel">+ Appel</button><button class="btn small primary" data-act="new-devis" data-opp="${o.id}">Créer un devis</button>

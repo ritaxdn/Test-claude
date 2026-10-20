@@ -30,6 +30,9 @@ export type CrmLead = {
   gclid?: string;
   fbclid?: string;
   referent?: string;
+  consentement_tel?: boolean; // accord explicite pour être recontacté par téléphone / WhatsApp
+  consentement_texte?: string;
+  consentement_le?: string;
 };
 
 function crmKey(): string | undefined {
