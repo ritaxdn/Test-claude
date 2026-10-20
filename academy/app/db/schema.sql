@@ -169,3 +169,22 @@ select p.id as program_id, m.id as module_id, m.position as module_position, m.t
   join modules m on m.program_id = p.id
   join lessons l on l.module_id = m.id
   left join presenters pr on pr.id = l.presenter_id;
+
+-- Supabase expose le schéma public via son API automatique (rôles anon / authenticated).
+-- L'Academy se connecte directement à la base et n'utilise pas cette API : on la ferme.
+-- RLS activé sans aucune politique = aucune ligne lisible ni modifiable par l'API.
+do $$
+declare t text;
+begin
+  foreach t in array array['users','auth_tokens','sessions','login_attempts','device_models','device_ownerships','presenters',
+                           'programs','modules','lessons','documents','entitlements','lesson_progress','audit_log'] loop
+    execute format('alter table %I enable row level security', t);
+  end loop;
+  alter view program_lessons set (security_invoker = true);
+  if exists (select 1 from pg_roles where rolname = 'anon') then
+    revoke all on all tables in schema public from anon, authenticated;
+    revoke all on all sequences in schema public from anon, authenticated;
+    alter default privileges in schema public revoke all on tables from anon, authenticated;
+    alter default privileges in schema public revoke all on sequences from anon, authenticated;
+  end if;
+end $$;

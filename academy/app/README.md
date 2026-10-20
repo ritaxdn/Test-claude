@@ -37,13 +37,13 @@ DATABASE_URL=… BASE_URL=http://localhost:3100 npm run test:e2e
 
 | Élément | Service proposé | Variable(s) |
 |---|---|---|
-| Base de données | Nouveau projet Supabase (région UE), séparé du CRM | `DATABASE_URL` (chaîne « pooler » en mode transaction) |
+| Base de données | Projet Supabase **cellulift-academy** (`buffmdfkyzwhstqpcfxl`, Francfort), séparé du CRM — créé, schéma installé | `DATABASE_URL` (chaîne « pooler » en mode transaction) |
 | Vidéos | Mux, avec lecture signée (+ DRM si souscrit) | `VIDEO_PROVIDER=mux`, `MUX_SIGNING_KEY_ID`, `MUX_SIGNING_PRIVATE_KEY_BASE64`, `MUX_DRM_ENABLED` |
 | Documents | Supabase Storage, bucket **privé** | `STORAGE_PROVIDER=supabase`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_BUCKET` |
 | E-mails | Resend (déjà utilisé par le site du Dr Dadoun), domaine cellulift.ma vérifié | `RESEND_API_KEY`, `MAIL_FROM` |
 | Hébergement | Vercel, nouveau projet, dossier racine `academy/app` | `APP_URL=https://academy.cellulift.ma` |
 
-Étapes : créer les comptes → renseigner les variables dans Vercel → `npm run db:schema` sur la base de production (sans `db:seed`) → `npm run admin:create` → charger les vidéos dans Mux et coller leur *playback ID* dans chaque leçon (admin › Parcours).
+Étapes : créer les comptes (la base Supabase existe déjà : définir son mot de passe dans Settings › Database pour obtenir `DATABASE_URL`) → renseigner les variables dans Vercel → `npm run db:schema` sur la base de production (sans `db:seed`) → `npm run admin:create` → charger les vidéos dans Mux et coller leur *playback ID* dans chaque leçon (admin › Parcours).
 
 ## Sécurité : ce qui est en place, et ce qui ne l'est pas
 
