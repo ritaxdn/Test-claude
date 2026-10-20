@@ -878,7 +878,9 @@ function protoBar() {
 const actions = {
   close: closeOverlay,
   nav: () => document.body.classList.toggle("nav-open"),
-  reset: () => { if (confirm("Reset all prototype data?")) { S = freshState(); save(); location.hash = "#/login"; render(); } },
+  reset: () => overlay(`<div class="eyebrow">Prototype</div><h2 class="display h2" style="margin:10px 0">Reset the demo?</h2><p class="small muted">Progress, purchases, certificates and admin changes made in this browser are cleared.</p>
+    <div class="row between" style="margin-top:18px"><button class="btn ghost" data-a="close">Cancel</button><button class="btn solid" data-a="doreset">Reset demo</button></div>`),
+  doreset: () => { closeOverlay(); S = freshState(); save(); location.hash === "#/login" ? render() : (location.hash = "#/login"); toast("Demo reset"); },
   login: (el) => { S.authed = true; S.persona = el.dataset.v; S.mode = "learner"; save(); location.hash = "#/dashboard"; },
   loginadmin: () => { S.authed = true; S.mode = "admin"; save(); location.hash = "#/admin"; },
   logout: (el, e) => { e.preventDefault(); S.authed = false; save(); location.hash = "#/login"; toast("Signed out. Session token revoked."); },
