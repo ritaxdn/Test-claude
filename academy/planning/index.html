@@ -1,0 +1,405 @@
+<title>Planning des tournages Academy</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..600&family=Instrument+Sans:wght@400..600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout : en-tête compact (compteurs), barre de filtres, puis un bloc par machine (6 modules = 6 lignes éditables). */
+:root {
+  --bg: #eceef3; --surface: #ffffff; --surface-2: #f5f6f9; --ink: #1d1b26; --ink-2: #5d5b6b; --muted: #77758a;
+  --line: rgba(29, 27, 38, .1); --line-2: rgba(29, 27, 38, .18); --accent: #6b55e6; --on-accent: #ffffff;
+  --rainbow: linear-gradient(90deg, #00bcd4, #7b61ff 25%, #e91e8c 50%, #ff5722 75%, #ffc107);
+  --ok: #11845b; --ok-bg: rgba(17, 132, 91, .11); --warn: #9a5b00; --warn-bg: rgba(178, 106, 0, .12);
+  --info: #4b3bb5; --info-bg: rgba(123, 97, 255, .11); --cyan: #00727f; --cyan-bg: rgba(0, 188, 212, .12);
+  --mag: #a3175f; --mag-bg: rgba(233, 30, 140, .1);
+  --f-display: "Archivo", "Arial Narrow", sans-serif; --f-sans: "Instrument Sans", system-ui, sans-serif; --f-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f1114; --surface: #171a1f; --surface-2: #1d2127; --ink: #ecebe7; --ink-2: #b4b3bd; --muted: #8e8d99;
+  --line: rgba(236, 235, 231, .1); --line-2: rgba(236, 235, 231, .2); --accent: #a797ff; --on-accent: #14121c;
+  --ok: #4fd1a1; --ok-bg: rgba(79, 209, 161, .14); --warn: #f1b45e; --warn-bg: rgba(241, 180, 94, .14);
+  --info: #c3b8ff; --info-bg: rgba(167, 151, 255, .16); --cyan: #6fdeec; --cyan-bg: rgba(0, 188, 212, .16); --mag: #f59bc9; --mag-bg: rgba(233, 30, 140, .16);
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0f1114; --surface: #171a1f; --surface-2: #1d2127; --ink: #ecebe7; --ink-2: #b4b3bd; --muted: #8e8d99;
+  --line: rgba(236, 235, 231, .1); --line-2: rgba(236, 235, 231, .2); --accent: #a797ff; --on-accent: #14121c;
+  --ok: #4fd1a1; --ok-bg: rgba(79, 209, 161, .14); --warn: #f1b45e; --warn-bg: rgba(241, 180, 94, .14);
+  --info: #c3b8ff; --info-bg: rgba(167, 151, 255, .16); --cyan: #6fdeec; --cyan-bg: rgba(0, 188, 212, .16); --mag: #f59bc9; --mag-bg: rgba(233, 30, 140, .16);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-sans); font-size: 14.5px; line-height: 1.5; margin: 0;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 24px 64px; }
+.wrap { max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+h1, h2, h3, p { margin: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.eyebrow, .mono { font-family: var(--f-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); }
+.display { font-family: var(--f-display); font-stretch: 118%; font-weight: 500; text-transform: uppercase; letter-spacing: -.03em; line-height: .95; text-wrap: balance; }
+.signal { height: 2px; border-radius: 2px; background: var(--rainbow); }
+.muted { color: var(--ink-2); }
+.small { font-size: 13px; }
+header.top { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+header.top h1 { font-size: clamp(26px, 3.4vw, 38px); margin-top: 8px; }
+.sync { font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+.kpis { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.kpi b { font-family: var(--f-display); font-stretch: 112%; font-weight: 500; font-size: 26px; line-height: 1; font-variant-numeric: tabular-nums; }
+.progress { height: 6px; border-radius: 6px; background: var(--line); overflow: hidden; }
+.progress i { display: block; height: 100%; background: var(--rainbow); }
+.bar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 10px 12px; }
+.bar .grow { flex: 1 1 200px; min-width: 0; }
+.in, select.in { height: 36px; border-radius: 10px; border: 1px solid var(--line-2); background: var(--surface); padding: 0 10px; width: 100%; min-width: 0; }
+.in:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--info-bg); }
+.seg { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--line); }
+.seg button { border: 0; background: none; padding: 6px 12px; border-radius: 999px; cursor: pointer; color: var(--ink-2); font-size: 13px; }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--surface); cursor: pointer; font-weight: 500; font-size: 13.5px; white-space: nowrap; }
+.btn:hover { border-color: var(--ink-2); }
+.btn.solid { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.btn.ghost { border-color: transparent; background: transparent; }
+.btn.danger { color: var(--mag); }
+.btn:disabled { opacity: .5; cursor: default; }
+.machine { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; }
+.mhead { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+.mhead h2 { font-size: 16px; font-weight: 600; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.mhead .prog { display: flex; align-items: center; gap: 10px; min-width: 180px; }
+.mhead .prog .progress { flex: 1; }
+.chip { display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 999px; font-family: var(--f-mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; border: 1px solid var(--line-2); color: var(--ink-2); white-space: nowrap; }
+.chip.med { color: var(--mag); background: var(--mag-bg); border-color: transparent; }
+.rows { display: grid; }
+.row { display: grid; grid-template-columns: 34px minmax(0, 1.5fr) 130px minmax(0, 1fr) 140px 150px minmax(0, 1fr); gap: 8px; align-items: center; padding: 8px 16px; border-bottom: 1px solid var(--line); }
+.row:last-child { border-bottom: 0; }
+.row.head { background: var(--surface-2); padding-block: 6px; }
+.row .n { font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.row .sujet { font-weight: 500; font-size: 13.5px; }
+.row .sujet small { display: block; color: var(--muted); font-weight: 400; font-size: 12px; }
+.row label.lbl { display: none; }
+.st-a_planifier { color: var(--warn); background: var(--warn-bg); }
+.st-planifie { color: var(--info); background: var(--info-bg); }
+.st-tourne { color: var(--cyan); background: var(--cyan-bg); }
+.st-monte { color: var(--mag); background: var(--mag-bg); }
+.st-publie { color: var(--ok); background: var(--ok-bg); }
+select.status { border-color: transparent; font-weight: 500; }
+.saving { outline: 2px dashed var(--line-2); outline-offset: 1px; }
+.todo { color: var(--warn); }
+.empty { background: var(--surface); border: 1px dashed var(--line-2); border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+.notice { padding: 10px 14px; border-radius: 12px; background: var(--warn-bg); color: var(--warn); font-size: 13.5px; }
+.notice.err { background: var(--mag-bg); color: var(--mag); }
+.cal-month { display: flex; flex-direction: column; gap: 6px; }
+.cal-item { display: grid; grid-template-columns: 92px minmax(0, 1fr) auto; gap: 12px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 10px 14px; }
+.cal-item .d { font-family: var(--f-mono); font-size: 12px; }
+dialog { border: 1px solid var(--line-2); border-radius: 20px; background: var(--surface); color: var(--ink); padding: 20px; width: min(560px, calc(100vw - 32px)); max-height: calc(100vh - 40px); }
+dialog::backdrop { background: rgba(15, 17, 20, .45); }
+.picker { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 12px; max-height: 50vh; overflow: auto; margin: 12px 0; }
+.picker label { display: flex; gap: 8px; align-items: center; padding: 5px 4px; border-radius: 8px; font-size: 13.5px; }
+.picker label:hover { background: var(--surface-2); }
+.picker .fam { grid-column: 1 / -1; margin-top: 8px; }
+.picker input { accent-color: var(--accent); }
+.foot { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+@media (max-width: 1020px) {
+  .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .row.head { display: none; }
+  .row { grid-template-columns: 1fr 1fr; padding: 12px 16px; }
+  .row .n { display: none; }
+  .row .sujet { grid-column: 1 / -1; }
+  .row .note { grid-column: 1 / -1; }
+  .row label.lbl { display: block; font-family: var(--f-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
+}
+@media (max-width: 520px) {
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .row { grid-template-columns: 1fr; }
+  .picker { grid-template-columns: 1fr; }
+  .cal-item { grid-template-columns: 1fr; gap: 4px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <span class="eyebrow">CELLULIFT Academy · production des vidéos</span>
+      <h1 class="display">Planning des tournages</h1>
+      <p class="muted small" style="margin-top:8px;max-width:70ch">Un bloc par machine, six modules par parcours. Le SAV présente l'installation, la sécurité de l'appareil et la maintenance ; un médecin ou une formatrice présente la technologie, les contre-indications et les protocoles.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+      <span class="sync" id="sync" aria-live="polite">Connexion…</span>
+      <button class="btn solid" id="add" type="button" disabled>+ Ajouter des machines</button>
+    </div>
+  </header>
+  <div class="signal" aria-hidden="true"></div>
+  <p class="notice" id="notice" hidden></p>
+
+  <section class="kpis" id="kpis" aria-label="Avancement"></section>
+
+  <div class="bar" role="search">
+    <input class="in grow" id="q" type="search" placeholder="Rechercher une machine, un intervenant…" aria-label="Rechercher">
+    <select class="in" id="f-role" aria-label="Filtrer par intervenant" style="width:auto">
+      <option value="">Tous les intervenants</option><option value="SAV">SAV</option><option value="Médecin">Médecin</option><option value="Formatrice">Formatrice</option><option value="__todo">Intervenant à trouver</option>
+    </select>
+    <select class="in" id="f-st" aria-label="Filtrer par statut" style="width:auto"></select>
+    <div class="seg" role="group" aria-label="Vue">
+      <button type="button" data-view="machines" aria-pressed="true">Par machine</button>
+      <button type="button" data-view="calendrier" aria-pressed="false">Calendrier</button>
+    </div>
+  </div>
+
+  <main id="list" aria-live="polite"></main>
+</div>
+
+<datalist id="people">
+  <option value="Dr Mohamed Dadoun"></option><option value="Meryem Belkhalfi"></option><option value="Imane Souali"></option><option value="SAV CELLULIFT"></option>
+</datalist>
+
+<dialog id="dlg-add" aria-labelledby="dlg-add-t">
+  <form method="dialog" id="form-add">
+    <h2 id="dlg-add-t" class="display" style="font-size:22px">Ajouter des machines</h2>
+    <p class="muted small" style="margin-top:6px">Chaque machine ajoutée reçoit les 6 modules du parcours type. Les lasers marqués « Médecin » sont réservés aux médecins dans le CRM : leurs modules cliniques sont présentés par un médecin.</p>
+    <div class="picker" id="picker"></div>
+    <div class="foot"><button class="btn ghost" value="cancel" type="submit">Annuler</button><button class="btn solid" id="add-go" value="ok" type="submit">Ajouter</button></div>
+  </form>
+</dialog>
+
+<dialog id="dlg-del" aria-labelledby="dlg-del-t">
+  <form method="dialog">
+    <h2 id="dlg-del-t" style="font-size:18px">Retirer <span id="del-name"></span> du planning ?</h2>
+    <p class="muted small" style="margin:8px 0 16px">Ses 6 modules, dates et notes seront supprimés pour toute l'équipe.</p>
+    <div class="foot"><button class="btn ghost" value="cancel" type="submit">Annuler</button><button class="btn danger" value="ok" type="submit">Retirer</button></div>
+  </form>
+</dialog>
+
+<script>
+// Catalogue des machines (produits actifs du CRM Cellulift, octobre 2026). med = réservée aux médecins.
+const CATALOGUE = {
+  "Laser": [["ALEX YAG ULTRA", 1], ["FOTOKROM", 1], ["FRAC'COV 4", 1], ["HANOVER 5G", 1], ["LA QUEEN", 1], ["LASER SHOCK"], ["MEGALIGHT"], ["NEW EPIL'LIGHT"], ["SEVENWAVES"], ["SYNERGY+"]],
+  "Rajeunissement cutané": [["BIOFILLER X7"], ["CENTRIFUGEL"], ["DERMABRASIF 6G"], ["DERMAPLEX"], ["FREQUENCIOUS"], ["MYM DERMAPEN"], ["PISTOR +34"], ["SKIN ANALYSER G7"], ["SKIN ANALYZER G5"], ["SKIN BRIGHT"]],
+  "Amincissement": [["BODYTECH 9"], ["BRASILIFT"], ["ELITECOLOMBIA"], ["HOT POWER"], ["LONGCHOC"], ["LONGILYSE"], ["LONGISHAPE"], ["PANDASLIM"], ["PRESSOLIGNE 5"], ["SHOCSTEEL"], ["SLIMAX LIPO 3"], ["SLIMAX LIPO 7"], ["STEEL MUSCLE"], ["TANITA"]],
+  "HIFU": [["PERFECT'LIFT"], ["REJUVSKIN"]],
+  "Photomodulation": [["LED BIO-LIGHT"], ["LED FOTOSKIN"], ["LED FOTOSKIN ULTRA"], ["LONGIFLASH"], ["VAGILASE"]],
+  "Thérapie avancée": [["CRYOCOVER"], ["DREAMTECH PRO"], ["FREQUENTAZIA"], ["PHYSIOMEDIC A600"], ["T-CARE 6G"], ["UltraTrio Pro"]],
+};
+const TEMPLATE = [
+  { sujet: "La technologie", detail: "Principe, indications, résultats attendus", role: "clinique" },
+  { sujet: "Installation et prise en main", detail: "Appareil, réglages, accessoires", role: "SAV" },
+  { sujet: "Sécurité de l'appareil et de la salle", detail: "Électrique, lunettes, hygiène", role: "SAV" },
+  { sujet: "Contre-indications et sécurité du patient", detail: "Sélection, consentement, précautions", role: "clinique" },
+  { sujet: "Protocoles et paramètres", detail: "Réglages par indication, cas pratiques", role: "clinique" },
+  { sujet: "Entretien et maintenance", detail: "Consommables, nettoyage, en cas de panne", role: "SAV" },
+];
+const STATUTS = [["a_planifier", "À planifier"], ["planifie", "Planifié"], ["tourne", "Tourné"], ["monte", "Monté"], ["publie", "Publié dans l'Academy"]];
+const ST_LABEL = Object.fromEntries(STATUTS);
+const slug = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/\+/g, "-plus").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const $ = (s) => document.querySelector(s);
+const el = (tag, props = {}, ...kids) => { const n = document.createElement(tag); for (const [k, v] of Object.entries(props)) { if (k === "class") n.className = v; else if (k === "text") n.textContent = v; else if (k.startsWith("on")) n.addEventListener(k.slice(2), v); else if (v !== false && v != null) n.setAttribute(k, v === true ? "" : v); } kids.flat().forEach((c) => c != null && n.append(c)); return n; };
+
+let db = null, user = null, me = null, canWrite = true, rows = [], view = "machines", loaded = false;
+const pending = new Map(); // id -> timer (une écriture par document, regroupée)
+
+$("#f-st").append(el("option", { value: "", text: "Tous les statuts" }), ...STATUTS.map(([v, l]) => el("option", { value: v, text: l })));
+
+function setSync(t) { $("#sync").textContent = t; }
+function notice(t, err) { const n = $("#notice"); n.hidden = !t; n.textContent = t || ""; n.classList.toggle("err", !!err); }
+
+function grouped() {
+  const by = new Map();
+  for (const r of rows) { if (!by.has(r.machine)) by.set(r.machine, []); by.get(r.machine).push(r); }
+  for (const list of by.values()) list.sort((a, b) => a.module - b.module);
+  return [...by.entries()].sort((a, b) => (a[1][0].ordre ?? 0) - (b[1][0].ordre ?? 0) || a[0].localeCompare(b[0]));
+}
+
+function matches(r) {
+  const q = $("#q").value.trim().toLowerCase(), role = $("#f-role").value, st = $("#f-st").value;
+  if (q && ![r.machine, r.intervenant, r.sujet, r.note, r.famille].join(" ").toLowerCase().includes(q)) return false;
+  if (role === "__todo" && (r.intervenant || "").trim()) return false;
+  if (role && role !== "__todo" && r.role !== role) return false;
+  if (st && r.statut !== st) return false;
+  return true;
+}
+
+function renderKpis() {
+  const total = rows.length, count = (s) => rows.filter((r) => r.statut === s).length;
+  const machines = new Set(rows.map((r) => r.machine)).size;
+  const sansIntervenant = rows.filter((r) => !(r.intervenant || "").trim()).length;
+  const done = count("publie");
+  const pct = total ? Math.round((done / total) * 100) : 0;
+  const box = $("#kpis"); box.replaceChildren();
+  const k = (label, value, extra) => box.append(el("div", { class: "kpi" }, el("span", { class: "eyebrow", text: label }), el("b", { text: String(value) }), extra || null));
+  k("Machines", machines);
+  k("Modules", total);
+  k("Intervenant à trouver", sansIntervenant);
+  k("Planifiés", count("planifie"));
+  k("Tournés / montés", count("tourne") + count("monte"));
+  k("Publiés", done, el("div", { class: "progress", role: "progressbar", "aria-valuenow": pct, "aria-valuemin": 0, "aria-valuemax": 100, "aria-label": "Modules publiés" }, el("i", { style: `width:${pct}%` })));
+}
+
+function field(r, key, node, label) {
+  node.id = `${key}-${r.id}`;
+  node.disabled = !canWrite;
+  return el("div", { class: key }, el("label", { class: "lbl", for: node.id, text: label }), node);
+}
+
+function save(r, patch) {
+  Object.assign(r, patch);
+  if (pending.has(r.id)) clearTimeout(pending.get(r.id).t);
+  const merged = { ...(pending.get(r.id)?.patch || {}), ...patch };
+  const t = setTimeout(async () => {
+    pending.delete(r.id);
+    setSync("Enregistrement…");
+    try {
+      await db.collection("planning").doc(r.id).update({ ...merged, updatedAt: new Date().toISOString(), updatedBy: me?.id || null });
+      setSync("Enregistré");
+    } catch (e) {
+      if (e?.code === "invalid_argument" && !canWriteChecked) { canWrite = false; render(); notice("Vous pouvez consulter ce planning mais pas le modifier. Demandez un accès Contributeur au propriétaire de la page."); }
+      else { setSync("Non enregistré"); notice("La modification n'a pas pu être enregistrée. Vérifiez la connexion et réessayez.", true); }
+    }
+  }, 500);
+  pending.set(r.id, { t, patch: merged });
+}
+let canWriteChecked = false;
+
+function rowNode(r) {
+  const role = el("select", { class: "in", "aria-label": "Type d'intervenant", onchange: (e) => save(r, { role: e.target.value }) },
+    ...["SAV", "Médecin", "Formatrice"].map((v) => el("option", { value: v, text: v, selected: r.role === v })));
+  const who = el("input", { class: "in" + ((r.intervenant || "").trim() ? "" : " todo"), list: "people", value: r.intervenant || "", placeholder: "À trouver", "aria-label": "Intervenant",
+    onchange: (e) => save(r, { intervenant: e.target.value.trim() }) });
+  const date = el("input", { class: "in", type: "date", value: r.date || "", "aria-label": "Date de tournage", onchange: (e) => save(r, { date: e.target.value }) });
+  const st = el("select", { class: `in status st-${r.statut}`, "aria-label": "Statut", onchange: (e) => { e.target.className = `in status st-${e.target.value}`; save(r, { statut: e.target.value }); } },
+    ...STATUTS.map(([v, l]) => el("option", { value: v, text: l, selected: r.statut === v })));
+  const note = el("input", { class: "in", value: r.note || "", placeholder: "Note", "aria-label": "Note", onchange: (e) => save(r, { note: e.target.value }) });
+  return el("div", { class: "row" },
+    el("span", { class: "n", text: String(r.module) }),
+    el("div", { class: "sujet" }, r.sujet, el("small", { text: r.detail || "" })),
+    field(r, "role", role, "Intervenant"), field(r, "who", who, "Nom"), field(r, "date", date, "Date de tournage"), field(r, "st", st, "Statut"), field(r, "note", note, "Note"));
+}
+
+async function render() {
+  renderKpis();
+  const list = $("#list"); list.replaceChildren();
+  $("#add").disabled = !db || !canWrite;
+  if (!loaded) { list.append(el("p", { class: "muted", text: "Chargement du planning…" })); return; }
+  if (!rows.length) {
+    list.append(el("div", { class: "empty" },
+      el("h2", { class: "display", style: "font-size:22px", text: "Aucune machine dans le planning" }),
+      el("p", { class: "muted", text: "Ajoutez les machines à tourner en priorité. Chacune reçoit les 6 modules du parcours type, avec le bon type d'intervenant déjà choisi ; il restera à mettre les noms et les dates." }),
+      canWrite && db ? el("button", { class: "btn solid", type: "button", onclick: openAdd, text: "+ Ajouter des machines" }) : null));
+    return;
+  }
+  const visible = rows.filter(matches);
+  if (!visible.length) { list.append(el("p", { class: "muted", text: "Aucun module ne correspond à ces filtres." })); return; }
+  if (view === "calendrier") return renderCalendar(list, visible);
+  const head = el("div", { class: "row head", "aria-hidden": "true" }, ...["#", "Module", "Intervenant", "Nom", "Date de tournage", "Statut", "Note"].map((t) => el("span", { class: "mono", text: t })));
+  const frag = el("div", { style: "display:flex;flex-direction:column;gap:14px" });
+  for (const [machine, mods] of grouped()) {
+    const shown = mods.filter(matches);
+    if (!shown.length) continue;
+    const pub = mods.filter((m) => m.statut === "publie").length;
+    const pct = Math.round((pub / mods.length) * 100);
+    frag.append(el("section", { class: "machine", "aria-label": machine },
+      el("div", { class: "mhead" },
+        el("h2", {}, machine, el("span", { class: "chip", text: mods[0].famille || "" }), mods[0].medical ? el("span", { class: "chip med", text: "Médecin" }) : null),
+        el("div", { class: "prog" }, el("div", { class: "progress", role: "progressbar", "aria-valuenow": pct, "aria-valuemin": 0, "aria-valuemax": 100, "aria-label": `${machine} : modules publiés` }, el("i", { style: `width:${pct}%` })), el("span", { class: "mono", text: `${pub}/${mods.length} publiés` }),
+          canWrite ? el("button", { class: "btn ghost danger", type: "button", text: "Retirer", onclick: () => askDelete(machine) }) : null)),
+      el("div", { class: "rows" }, head.cloneNode(true), ...shown.map(rowNode))));
+  }
+  list.append(frag);
+}
+
+function renderCalendar(list, visible) {
+  const dated = visible.filter((r) => r.date).sort((a, b) => a.date.localeCompare(b.date) || a.machine.localeCompare(b.machine));
+  const undated = visible.filter((r) => !r.date).length;
+  const wrap = el("div", { style: "display:flex;flex-direction:column;gap:18px" });
+  if (!dated.length) wrap.append(el("p", { class: "muted", text: "Aucune date de tournage n'est encore fixée. Renseignez les dates dans la vue « Par machine »." }));
+  const months = new Map();
+  for (const r of dated) { const k = r.date.slice(0, 7); if (!months.has(k)) months.set(k, []); months.get(k).push(r); }
+  for (const [k, items] of months) {
+    const label = new Date(k + "-15").toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
+    wrap.append(el("section", { class: "cal-month" }, el("h2", { class: "eyebrow", text: `${label} · ${items.length} module${items.length > 1 ? "s" : ""}` }),
+      ...items.map((r) => el("div", { class: "cal-item" },
+        el("span", { class: "d", text: new Date(r.date + "T12:00").toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" }) }),
+        el("div", {}, el("b", { text: `${r.machine} · ${r.module}. ${r.sujet}` }), el("div", { class: "small muted", text: `${r.role}${r.intervenant ? " · " + r.intervenant : " · intervenant à trouver"}` })),
+        el("span", { class: `chip st-${r.statut}`, text: ST_LABEL[r.statut] || r.statut })))));
+  }
+  if (undated) wrap.append(el("p", { class: "muted small", text: `${undated} module${undated > 1 ? "s" : ""} sans date de tournage.` }));
+  list.append(wrap);
+}
+
+function openAdd() {
+  const have = new Set(rows.map((r) => r.machine));
+  const p = $("#picker"); p.replaceChildren();
+  for (const [fam, items] of Object.entries(CATALOGUE)) {
+    p.append(el("span", { class: "eyebrow fam", text: fam }));
+    for (const [name, med] of items) {
+      const id = "pick-" + slug(name);
+      p.append(el("label", { for: id }, el("input", { type: "checkbox", id, value: name, "data-fam": fam, "data-med": med ? "1" : "", disabled: have.has(name), checked: have.has(name) }), name, med ? el("span", { class: "chip med", text: "Médecin" }) : null, have.has(name) ? el("span", { class: "small muted", text: "déjà au planning" }) : null));
+    }
+  }
+  $("#dlg-add").showModal();
+}
+
+$("#form-add").addEventListener("submit", async (e) => {
+  if (e.submitter?.value !== "ok") return;
+  const picks = [...document.querySelectorAll("#picker input:checked:not(:disabled)")];
+  if (!picks.length) return;
+  setSync("Ajout…");
+  const base = rows.reduce((m, r) => Math.max(m, r.ordre ?? 0), 0);
+  try {
+    for (const [i, input] of picks.entries()) {
+      const med = !!input.dataset.med;
+      for (const [k, t] of TEMPLATE.entries()) {
+        const id = `${slug(input.value)}-m${k + 1}`;
+        await db.collection("planning").doc(id).set({
+          machine: input.value, famille: input.dataset.fam, medical: med, ordre: base + i + 1,
+          module: k + 1, sujet: t.sujet, detail: t.detail,
+          role: t.role === "SAV" ? "SAV" : med ? "Médecin" : "Formatrice",
+          intervenant: "", date: "", statut: "a_planifier", note: "",
+          updatedAt: new Date().toISOString(), updatedBy: me?.id || null,
+        });
+      }
+    }
+    setSync(`${picks.length} machine${picks.length > 1 ? "s" : ""} ajoutée${picks.length > 1 ? "s" : ""}`);
+  } catch (err) {
+    setSync("Non enregistré");
+    notice(err?.code === "quota_exceeded" ? "Le planning est plein : retirez des machines terminées avant d'en ajouter." : err?.code === "invalid_argument" ? "Vous n'avez pas le droit de modifier ce planning." : "L'ajout n'a pas abouti. Réessayez.", true);
+  }
+});
+
+let toDelete = null;
+function askDelete(machine) { toDelete = machine; $("#del-name").textContent = machine; $("#dlg-del").showModal(); }
+$("#dlg-del").addEventListener("close", async () => {
+  if ($("#dlg-del").returnValue !== "ok" || !toDelete) return;
+  const ids = rows.filter((r) => r.machine === toDelete).map((r) => r.id);
+  setSync("Suppression…");
+  try { for (const id of ids) await db.collection("planning").doc(id).delete(); setSync(`${toDelete} retirée`); }
+  catch { setSync("Non enregistré"); notice("La suppression n'a pas abouti. Réessayez.", true); }
+  toDelete = null;
+});
+
+$("#add").addEventListener("click", openAdd);
+["#q", "#f-role", "#f-st"].forEach((s) => $(s).addEventListener("input", render));
+document.querySelectorAll("[data-view]").forEach((b) => b.addEventListener("click", () => {
+  view = b.dataset.view;
+  document.querySelectorAll("[data-view]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+  try { localStorage.setItem("planning-view", view); } catch {}
+  render();
+}));
+try { const v = localStorage.getItem("planning-view"); if (v === "calendrier") document.querySelector('[data-view="calendrier"]').click(); } catch {}
+
+render();
+(async () => {
+  db = await window.claude?.use?.("db") ?? null;
+  user = await window.claude?.use?.("user") ?? null;
+  if (!db) { loaded = true; setSync("Hors ligne"); notice("Le planning partagé n'est pas disponible ici. Ouvrez la page depuis claude.ai en étant connecté."); render(); return; }
+  me = user ? await user.me() : null;
+  const can = user ? await user.can("data.write") : null;
+  if (can === false) { canWrite = false; canWriteChecked = true; notice("Lecture seule : vous pouvez consulter le planning, pas le modifier."); }
+  db.collection("planning").onSnapshot((snap) => {
+    // Une ligne en cours de saisie garde la valeur locale jusqu'à son enregistrement.
+    rows = snap.docs.map((d) => { const local = pending.get(d.id); return { id: d.id, ...d.data(), ...(local ? local.patch : {}) }; });
+    loaded = true;
+    if (!snap.metadata.hasPendingWrites) setSync(`À jour · ${new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}`);
+    const a = document.activeElement;
+    if (a && a.closest && a.closest(".row") && (a.tagName === "INPUT" && a.type !== "date")) { renderKpis(); return; } // ne pas casser une saisie en cours
+    render();
+  }, (err) => { setSync("Déconnecté"); notice(err.code === "revoked" ? "L'accès à ce planning a changé. Rechargez la page." : "La connexion au planning a été interrompue. Rechargez la page.", true); });
+})();
+</script>
