@@ -114,6 +114,8 @@ Private bucket → `GET /api/resources/{id}` checks entitlement → stamps the P
 | **PayPal** | For international professionals; currency conversion fees. |
 | **Bank transfer / clinic invoice** | Common for B2B; order stays *Enrollment Pending* until finance confirms in admin. |
 
+**Decision (Cellulift, Oct 2026): currency follows the client's country.** Morocco → MAD through a Moroccan gateway (CMI via the bank, or a PSP such as Payzone). Outside Morocco → EUR or USD through a gateway that accepts a Moroccan merchant (PayPal or the Moroccan PSP's international-card option; Stripe does not onboard Moroccan companies). Country taken from the account, price set per currency for each paid content (no automatic conversion). Check foreign-currency invoicing and repatriation rules with the accountant (Office des Changes).
+
 Implementation: `orders` table with status machine (`pending → paid → refunded / failed / cancelled`), idempotent webhook handler, entitlement created only on `paid`, invoice PDF numbered per Moroccan invoicing rules (ICE, IF, TVA), refunds revoke the purchase entitlement only.
 
 ---
