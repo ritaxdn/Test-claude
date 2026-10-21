@@ -12,7 +12,7 @@ export default async function Parcours({ searchParams }: { searchParams: Promise
   const programs = await sql<{ id: string; slug: string; title: string; published: boolean; device: string | null; lessons: number; learners: number }[]>`
     select p.id, p.slug, p.title, p.published, dm.name as device,
            (select count(*)::int from program_lessons pl where pl.program_id = p.id) as lessons,
-           (select count(distinct e.user_id)::int from entitlements e where e.program_id = p.id and e.revoked_at is null) as learners
+           (select count(distinct o.user_id)::int from device_ownerships o where o.device_model_id = p.device_model_id and o.revoked_at is null) as learners
       from programs p left join device_models dm on dm.id = p.device_model_id order by p.title`;
   const models = await sql<{ id: string; name: string }[]>`select id, name from device_models order by name`;
   return (
@@ -36,7 +36,7 @@ export default async function Parcours({ searchParams }: { searchParams: Promise
           <span className="eyebrow">Nouveau parcours</span>
           <div className="field"><label htmlFor="title">Titre</label><input className="input" id="title" name="title" required placeholder="HANOVER 5G — Programme opérateur" /></div>
           <div className="field"><label htmlFor="slug">Adresse</label><input className="input" id="slug" name="slug" required placeholder="hanover-5g" /><span className="hint">Lettres, chiffres et tirets.</span></div>
-          <div className="field"><label htmlFor="dm">Machine</label><select className="input" id="dm" name="device_model_id" defaultValue=""><option value="">Aucune (attribution manuelle)</option>{models.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}</select></div>
+          <div className="field"><label htmlFor="dm">Machine</label><select className="input" id="dm" name="device_model_id" defaultValue=""><option value="">Aucune (parcours fermé à tous les clients)</option>{models.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}</select></div>
           <div className="field"><label htmlFor="summary">Résumé</label><textarea className="input" id="summary" name="summary" /></div>
           <button className="btn solid" type="submit">Créer</button>
         </form>

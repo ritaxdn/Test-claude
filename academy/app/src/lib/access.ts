@@ -4,7 +4,17 @@ import { sql } from "./db";
 export type ProgramRow = { id: string; slug: string; title: string; summary: string | null; device_name: string | null; lessons: number; done: number; completed: boolean; last_activity: Date | null; presenters: string | null };
 export type LessonRow = { lesson_id: string; module_id: string; module_position: number; module_title: string; lesson_position: number; title: string; duration_sec: number | null; video_ref: string | null; seq: number; completed_at: Date | null; position_sec: number; max_position_sec: number; presenter_name: string | null; presenter_title: string | null; unlocked: boolean };
 
-/** Parcours ouverts à l'utilisateur (droit actif, parcours publié), avec la progression. */
+/**
+ * Règle d'accès unique : un client (médecin, kiné…) n'a accès qu'aux parcours des machines qu'il a
+ * achetées. Le droit est recalculé à chaque requête à partir de ses machines actives : retirer une
+ * machine, ou rattacher un parcours à une autre machine, coupe l'accès immédiatement.
+ */
+const ownsMachineOf = (userId: string) => sql`
+  p.published and p.device_model_id is not null
+  and exists (select 1 from device_ownerships o
+               where o.user_id = ${userId} and o.revoked_at is null and o.device_model_id = p.device_model_id)`;
+
+/** Parcours ouverts à l'utilisateur (machines achetées, parcours publiés), avec la progression. */
 export async function myPrograms(userId: string): Promise<ProgramRow[]> {
   return sql<ProgramRow[]>`
     select p.id, p.slug, p.title, p.summary, dm.name as device_name,
@@ -17,14 +27,13 @@ export async function myPrograms(userId: string): Promise<ProgramRow[]> {
       left join device_models dm on dm.id = p.device_model_id
       left join program_lessons pl on pl.program_id = p.id
       left join lesson_progress lp on lp.lesson_id = pl.lesson_id and lp.user_id = ${userId}
-     where p.published and exists (select 1 from entitlements e where e.user_id = ${userId} and e.program_id = p.id and e.revoked_at is null)
+     where ${ownsMachineOf(userId)}
      group by p.id, dm.name
      order by p.title`;
 }
 
 export async function canAccessProgram(userId: string, programId: string): Promise<boolean> {
-  const [r] = await sql`select 1 from entitlements e join programs p on p.id = e.program_id
-                         where e.user_id = ${userId} and e.program_id = ${programId} and e.revoked_at is null and p.published`;
+  const [r] = await sql`select 1 from programs p where p.id = ${programId} and ${ownsMachineOf(userId)}`;
   return !!r;
 }
 
@@ -55,14 +64,4 @@ export async function lessonForUser(userId: string, lessonId: string) {
   const lesson = lessons.find((x) => x.lesson_id === lessonId);
   if (!lesson) return null;
   return { ...l, lesson, lessons };
-}
-
-/** Ouvre les parcours de la machine pour ce médecin. */
-export async function grantForOwnership(ownershipId: string, grantedBy: string | null) {
-  await sql`
-    insert into entitlements (user_id, program_id, source, device_ownership_id, granted_by)
-    select o.user_id, p.id, 'equipment', o.id, ${grantedBy}
-      from device_ownerships o join programs p on p.device_model_id = o.device_model_id
-     where o.id = ${ownershipId} and o.revoked_at is null
-    on conflict do nothing`;
 }

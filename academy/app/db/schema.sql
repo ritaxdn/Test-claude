@@ -123,7 +123,8 @@ create table if not exists documents (
   created_at   timestamptz not null default now()
 );
 
--- Accès à un parcours : ouvert par une machine (source equipment) ou à la main (source manual).
+-- Non utilisée par le MVP : l'accès se calcule uniquement à partir des machines achetées
+-- (device_ownerships actives × programs.device_model_id). Conservée pour un usage futur.
 create table if not exists entitlements (
   id                  uuid primary key default gen_random_uuid(),
   user_id             uuid not null references users on delete cascade,

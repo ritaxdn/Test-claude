@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireAdmin, issueToken } from "@/lib/auth";
 import { sql, audit } from "@/lib/db";
-import { grantForOwnership } from "@/lib/access";
 import { sendInvitation } from "@/lib/mail";
 import { putDocument } from "@/lib/storage";
 
@@ -29,7 +28,6 @@ export async function inviteDoctor(form: FormData) {
       insert into device_ownerships (user_id, device_model_id, serial_number, clinic, installed_on, created_by)
       values (${u.id}, ${model}, ${opt(form, "serial_number")}, ${opt(form, "clinic")}, ${opt(form, "installed_on")}, ${admin.id})
       returning id, (select name from device_models where id = ${model})`;
-    await grantForOwnership(o.id, admin.id);
     machines.push(o.name);
   }
   const link = await issueToken(u.id, "invite", admin.id);
@@ -42,10 +40,9 @@ export async function addMachine(form: FormData) {
   const admin = await requireAdmin();
   const userId = s(form, "user_id"), model = s(form, "device_model_id");
   if (!isUuid(userId) || !isUuid(model)) back(`/admin/medecins/${userId}`, { erreur: "Choisissez une machine." });
-  const [o] = await sql<{ id: string }[]>`
+  await sql`
     insert into device_ownerships (user_id, device_model_id, serial_number, clinic, installed_on, created_by)
-    values (${userId}, ${model}, ${opt(form, "serial_number")}, ${opt(form, "clinic")}, ${opt(form, "installed_on")}, ${admin.id}) returning id`;
-  await grantForOwnership(o.id, admin.id);
+    values (${userId}, ${model}, ${opt(form, "serial_number")}, ${opt(form, "clinic")}, ${opt(form, "installed_on")}, ${admin.id})`;
   await audit(admin.id, "device.link", userId, { device_model_id: model, serial: opt(form, "serial_number") });
   back(`/admin/medecins/${userId}`, { info: "Machine ajoutée : le parcours correspondant est ouvert." });
 }
@@ -53,12 +50,9 @@ export async function addMachine(form: FormData) {
 export async function removeMachine(form: FormData) {
   const admin = await requireAdmin();
   const id = s(form, "ownership_id"), userId = s(form, "user_id");
-  await sql.begin(async (tx) => {
-    await tx`update device_ownerships set revoked_at = now() where id = ${id}`;
-    await tx`update entitlements set revoked_at = now() where device_ownership_id = ${id} and revoked_at is null`;
-  });
+  await sql`update device_ownerships set revoked_at = now() where id = ${id} and user_id = ${userId}`;
   await audit(admin.id, "device.unlink", userId, { ownership_id: id });
-  back(`/admin/medecins/${userId}`, { info: "Machine retirée. La progression est conservée." });
+  back(`/admin/medecins/${userId}`, { info: "Machine retirée : l'accès à son parcours est coupé. La progression est conservée si la machine est rajoutée." });
 }
 
 export async function newLink(form: FormData) {
@@ -121,12 +115,6 @@ export async function updateProgram(form: FormData) {
   const id = s(form, "program_id"), model = s(form, "device_model_id");
   const published = form.get("published") === "on";
   await sql`update programs set title = ${s(form, "title")}, summary = ${opt(form, "summary")}, device_model_id = ${isUuid(model) ? model : null}, published = ${published} where id = ${id}`;
-  // Les médecins qui ont déjà la machine reçoivent l'accès au parcours.
-  if (isUuid(model)) {
-    await sql`insert into entitlements (user_id, program_id, source, device_ownership_id, granted_by)
-              select o.user_id, ${id}, 'equipment', o.id, ${admin.id} from device_ownerships o
-               where o.device_model_id = ${model} and o.revoked_at is null on conflict do nothing`;
-  }
   await audit(admin.id, "program.update", id, { published });
   back(`/admin/parcours/${id}`, { info: "Parcours enregistré." });
 }

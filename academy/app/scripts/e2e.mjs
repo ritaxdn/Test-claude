@@ -177,6 +177,21 @@ try {
   await admin.check("input[name=published]"); await admin.click("form:has(input[name=published]) button:has-text('Enregistrer')");
   await admin.waitForSelector("text=Parcours enregistré");
   ok("Contenus : machine, parcours, module, leçon, document (envoi de fichier) et publication");
+  // ── Accès limité aux machines achetées ──
+  const [{ lesson_id: tl }] = await sql`select pl.lesson_id from program_lessons pl join programs p on p.id = pl.program_id where p.slug = ${"test-" + run}`;
+  const [{ id: tdoc }] = await sql`select d.id from documents d join programs p on p.id = d.program_id where p.slug = ${"test-" + run}`;
+  const noMachine = async (label) => {
+    await doc.goto(`${BASE}/tableau-de-bord`);
+    expect(!(await doc.textContent("main")).includes(`Parcours ${machine}`), `${label} : parcours absent du tableau de bord`);
+    expect((await doc.goto(`${BASE}/parcours/test-${run}`)).status() === 404, `${label} : page du parcours refusée`);
+    expect((await doc.goto(`${BASE}/parcours/test-${run}/${tl}`)).status() === 404, `${label} : leçon refusée`);
+    expect((await doc.request.get(`${BASE}/api/video/${tl}`)).status() === 403, `${label} : vidéo refusée`);
+    expect((await doc.request.get(`${BASE}/api/documents/${tdoc}`)).status() === 403, `${label} : document refusé`);
+    const beat = await doc.request.post(`${BASE}/api/progress/${tl}`, { data: { position: 3 }, headers: { origin: BASE } });
+    expect(beat.status() === 403, `${label} : progression refusée (${beat.status()})`);
+  };
+  await noMachine("Sans la machine");
+  ok("Machine non achetée : parcours, leçon, vidéo, document et progression refusés (parcours pourtant publié)");
   // Le médecin reçoit cette nouvelle machine : le nouveau parcours apparaît chez lui.
   const docId = (await sql`select id from users where email = ${DOC.email}`)[0].id;
   await admin.goto(`${BASE}/admin/medecins/${docId}`);
@@ -188,6 +203,28 @@ try {
   const both = await doc.textContent("main");
   expect(both.includes(`Parcours ${machine}`) && both.includes("Formation terminée") && both.includes("À commencer"), "deuxième machine → deuxième parcours, le premier reste terminé");
   ok("Nouvelle machine ajoutée : son parcours s'ajoute, l'historique du premier est conservé");
+  // Retirer la machine coupe l'accès immédiatement ; la rajouter le rouvre.
+  const own = await sql`select o.id from device_ownerships o join device_models dm on dm.id = o.device_model_id where o.user_id = ${docId} and dm.name = ${machine} and o.revoked_at is null`;
+  await admin.goto(`${BASE}/admin/medecins/${docId}`);
+  await admin.locator(`form:has(input[name=ownership_id][value="${own[0].id}"]) button`).click();
+  await admin.waitForSelector("text=Machine retirée");
+  await noMachine("Machine retirée");
+  ok("Machine retirée par l'admin : tout l'accès au parcours est coupé immédiatement");
+  // Parcours rattaché à une autre machine : les anciens propriétaires perdent l'accès, la progression reste.
+  const hanover = (await sql`select id, device_model_id from programs where slug = 'hanover-5g'`)[0];
+  await sql`update programs set device_model_id = (select id from device_models where name = 'LA QUEEN') where id = ${hanover.id}`;
+  expect((await doc.goto(`${BASE}/parcours/hanover-5g`)).status() === 404, "parcours rattaché à une autre machine : accès coupé");
+  await sql`update programs set device_model_id = ${hanover.device_model_id} where id = ${hanover.id}`;
+  await doc.goto(`${BASE}/tableau-de-bord`);
+  expect((await doc.textContent("main")).includes("Formation terminée"), "accès rétabli avec la progression conservée");
+  ok("Parcours rattaché à une autre machine : accès coupé ; remis sur la bonne machine : accès et progression rétablis");
+  // La rajouter rouvre l'accès.
+  await admin.goto(`${BASE}/admin/medecins/${docId}`);
+  await admin.click("summary:has-text('Ajouter une machine')");
+  await admin.selectOption("#dm", { label: machine }); await admin.click("button:has-text('Ajouter et ouvrir le parcours')");
+  await admin.waitForSelector("text=Machine ajoutée");
+  expect((await doc.goto(`${BASE}/parcours/test-${run}`)).status() === 200, "machine rajoutée : accès rouvert");
+  ok("Machine rajoutée : accès rouvert");
 
   // ── Présentateurs ──
   const [{ lesson_id: testLesson }] = await sql`select pl.lesson_id from program_lessons pl join programs p on p.id = pl.program_id where p.slug = ${"test-" + run}`;

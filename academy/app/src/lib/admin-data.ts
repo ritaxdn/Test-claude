@@ -13,7 +13,10 @@ export async function doctorRows(userId?: string): Promise<DoctorRow[]> {
       select o.user_id, string_agg(dm.name || coalesce(' · ' || o.serial_number, ''), ', ' order by o.created_at) as machines
         from device_ownerships o join device_models dm on dm.id = o.device_model_id where o.revoked_at is null group by o.user_id
     ), e as (
-      select distinct e.user_id, e.program_id from entitlements e where e.revoked_at is null
+      -- même règle que l'accès médecin : parcours publiés des machines actives
+      select distinct o.user_id, p.id as program_id
+        from device_ownerships o join programs p on p.device_model_id = o.device_model_id and p.published
+       where o.revoked_at is null
     ), prog as (
       select e.user_id, e.program_id, count(pl.lesson_id)::int as lessons, count(lp.completed_at)::int as done,
              max(lp.updated_at) as last_activity,

@@ -21,6 +21,7 @@ Si la réponse est non, la fonctionnalité est probablement secondaire : le dire
 ## Faits à respecter
 
 - Présentateurs des vidéos : **Dr Mohamed Dadoun**, **Meryem Belkhalfi**, **Imane Souali**. Ne pas inventer de formateurs ni de titres : seul celui du Dr Dadoun est connu (« Médecin esthétique & lasériste · Casablanca », source cellulift.ma).
+- **Règle d'accès : un client (médecin, kiné, centre…) n'a accès qu'aux parcours des machines qu'il a achetées.** Pas de machine achetée, pas d'accès. L'accès se calcule à chaque requête à partir de ses machines actives (`device_ownerships` × `programs.device_model_id`, parcours publié) ; ne jamais ajouter de droit stocké à part ni d'exception sans accord explicite.
 - Interface en français, vouvoiement.
 - Le CRM Cellulift est en production (`public/crm/index.html` + base Supabase) : lecture seule sans accord explicite ; toute migration passe par un brouillon relu (`supabase/crm-academy-draft.sql`).
 - Ne jamais présenter une protection simulée comme réelle ; le filigrane dissuade, il n'empêche pas la capture.
