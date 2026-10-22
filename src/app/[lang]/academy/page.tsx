@@ -11,6 +11,7 @@ import { WhyCellulift } from "@/components/sections/WhyCellulift";
 import { FinalCta } from "@/components/sections/FinalCta";
 import { ProtocolPath } from "@/components/system/SignalPath";
 import { Faculty } from "@/components/sections/Faculty";
+import { AcademyNewsletter } from "@/components/academy/AcademyNewsletter";
 
 // Les sessions passées disparaissent : la page est régénérée chaque jour.
 export const revalidate = 86400;
@@ -90,6 +91,9 @@ export default async function AcademyPage({
         phone={{ label: "Cellulift Academy", number: company.academyPhone }}
         email={{ label: "Cellulift Academy", address: company.academyEmail }}
       />
+
+      {/* Fenêtre newsletter : uniquement sur la page Academy */}
+      <AcademyNewsletter locale={lang} />
     </>
   );
 }
