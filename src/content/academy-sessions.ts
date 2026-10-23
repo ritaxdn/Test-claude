@@ -32,20 +32,6 @@ export const academySessions: AcademySession[] = [
     subtitle: "Dr Kahak × Dr Dadoun",
     link: "https://cal.com/endolifting-jusqu-ou-peut-aller-le-tightening-sans-chirurgie",
   },
-  {
-    start: "2026-10-26",
-    date: { fr: "Lundi 26 octobre 2026", en: "Monday, October 26, 2026" },
-    title: "Technologie, pricing & protocoles : les 3 leviers d'un centre de bien-être performant",
-    subtitle: "Masterclass Excellia Academy · Pourquoi certaines technologies deviennent rentables… et d'autres restent inutilisées ?",
-  },
-  {
-    start: "2026-11-07",
-    date: { fr: "Samedi 7 novembre 2026", en: "Saturday, November 7, 2026" },
-    title: "Laser × médecine régénérative : l'énergie peut-elle potentialiser la biostimulation ?",
-    subtitle: "Dr Dadoun",
-    place: "Marrakech",
-    link: "https://cal.com/laser-medecine-regenerative-l-energie-peut-elle-potentialiser-la-biostimulation",
-  },
 ];
 
 export const upcomingSessions = () => {
