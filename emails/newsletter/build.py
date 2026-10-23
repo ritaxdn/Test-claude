@@ -127,6 +127,56 @@ def academy_block(seg):
 </td></tr></table>"""
 
 
+GLASS_CARD = ("background:#F8F9FB;background-image:linear-gradient(145deg,rgba(255,255,255,.95),rgba(255,255,255,.6));"
+              "border:1px solid #FFFFFF;box-shadow:inset 0 1px 0 #FFFFFF,0 0 0 1px rgba(29,27,38,.06),0 24px 50px -32px rgba(29,27,38,.35);")
+
+
+def dossier(d, seg):
+    """Le dossier du mois : chiffre clé, puis idées numérotées sur cartes de verre."""
+    stat = f"""<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#F8F9FB" style="border-radius:28px;border-collapse:separate;{GLASS_CARD}"><tr>
+<td class="col" width="190" valign="middle" align="center" style="padding:26px 10px 26px 24px;">
+<div style="font-family:{DISPLAY};font-size:58px;font-weight:700;line-height:1;letter-spacing:-2px;color:{VIOLET};">{d['stat']}</div>
+<div style="font-family:{MONO};font-size:10px;letter-spacing:2px;text-transform:uppercase;color:{SOFT};margin-top:8px;">{d['stat_unit']}</div></td>
+<td class="col tcell" valign="middle" style="padding:26px 28px 26px 10px;font-family:{SANS};font-size:15px;line-height:1.6;color:{DEEP};">{d['stat_text']}</td>
+</tr></table>"""
+    cards = "".join(
+        f"""<tr><td style="padding-top:14px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#F8F9FB" style="border-radius:24px;border-collapse:separate;{GLASS_CARD}"><tr>
+<td width="64" valign="top" style="padding:24px 0 22px 24px;font-family:{DISPLAY};font-size:30px;font-weight:700;line-height:1;color:{RAINBOW[i]};">0{i + 1}</td>
+<td valign="top" style="padding:22px 26px 22px 12px;">{title(it['title'], 19, DEEP, 0)}
+<div style="font-family:{SANS};font-size:15px;line-height:1.6;color:{SOFT};margin-top:8px;">{it['text']}</div></td>
+</tr></table></td></tr>"""
+        for i, it in enumerate(d["items"])
+    )
+    return f"""<tr><td class="px" style="padding:0 28px 16px;">
+{label('<span style="color:' + VIOLET + ';">&#9679;</span>&nbsp; ' + d['eyebrow'])}
+{title(d['title'], 26)}
+</td></tr>
+<tr><td class="px" style="padding:0 24px;">{stat}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">{cards}</table></td></tr>
+{spacer(40)}"""
+
+
+def next_and_forward(s):
+    """Teaser du prochain numéro + invitation à transférer à un confrère (qui peut s'inscrire)."""
+    nxt = s["next"]
+    return f"""<tr><td class="px" style="padding:0 24px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#F8F9FB" style="border-radius:28px;border-collapse:separate;{GLASS_CARD}"><tr><td style="padding:28px 30px;">
+{label('<span style="color:#E91E8C;">&#9679;</span>&nbsp; Dans le prochain numéro')}
+{title(nxt['title'], 21, DEEP, 10)}
+<div style="font-family:{SANS};font-size:15px;line-height:1.6;color:{SOFT};margin-top:8px;">{nxt['text']}</div>
+<div style="height:1px;line-height:1px;font-size:0;background:{LINE};margin:22px 0 20px;">&nbsp;</div>
+<div style="font-family:{SANS};font-size:15px;line-height:1.6;color:{DEEP};"><strong>Un confrère devrait lire ceci ?</strong> Transférez-lui cet e-mail : il peut recevoir la newsletter en 10 secondes.</div>
+<div style="height:14px;line-height:14px;font-size:0;">&nbsp;</div>
+{button("S'inscrire à la newsletter", utm('/fr/academy', s['key'], 'inscription'))}
+</td></tr></table></td></tr>
+{spacer(40)}"""
+
+
+def sources(s):
+    items = " ".join(f'{i + 1}. <a href="{u}" target="_blank" style="color:{SOFT};text-decoration:underline;">{t}</a>' for i, (t, u) in enumerate(s["sources"]))
+    return f"""<tr><td class="px" style="padding:4px 28px 0;font-family:{SANS};font-size:11px;line-height:1.6;color:{SOFT};">Sources : {items}</td></tr>"""
+
+
 def build(seg):
     s = seg
     head = f"""<!DOCTYPE html>
@@ -186,7 +236,7 @@ def build(seg):
 {button('Demander une démonstration', utm('/fr/contact', s['key'], 'demo'), 'iris', 290)}
 </td></tr>
 {spacer(34)}
-
+{dossier(s['dossier'], s['key']) if s.get('dossier') else ''}
 <!-- Technologies -->
 <tr><td class="px" style="padding:0 28px 16px;">
 {label('<span style="color:' + VIOLET + ';">&#9679;</span>&nbsp; ' + s['tech_eyebrow'])}
@@ -200,7 +250,7 @@ def build(seg):
 <!-- Parcours Academy -->
 <tr><td class="px" style="padding:0 24px;">{academy_block(s['key'])}</td></tr>
 {spacer(40)}
-
+{next_and_forward(s) if s.get('next') else ''}
 <!-- Contact : bandeau lavande -->
 <tr><td class="px" style="padding:0 24px;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="{LAVENDER}" style="background:{LAVENDER};border-radius:28px;border-collapse:separate;"><tr><td align="center" style="padding:34px 24px 26px;">
@@ -212,8 +262,9 @@ def build(seg):
 </tr></table>
 </td></tr></table>
 </td></tr>
-{spacer(32)}
-<tr><td class="px" style="padding:0 24px;">{rainbow_line(1)}</td></tr>
+{spacer(28)}
+{sources(s) if s.get('sources') else ''}
+<tr><td class="px" style="padding:16px 24px 0;">{rainbow_line(1)}</td></tr>
 
 <!-- Pied de page -->
 <tr><td class="px" align="center" style="padding:24px 24px 8px;font-family:{SANS};font-size:12px;line-height:1.7;color:{SOFT};">
@@ -252,18 +303,41 @@ T = {
     "slimax": {"w": 173, "slug": "slimax-lipo-7", "name": "SLIMAX LIPO 7", "cat": "Amincissement avancé", "img": "/images/technologies/slimax-lipo-7/00.jpg",
                "line": "4 technologies réunies pour traiter graisse et relâchement.",
                "points": ["Abdomen, flancs et dos", "Intérieur et extérieur des cuisses", "Relâchement cutané"]},
+    "hanover-glp1": {"w": 208, "slug": "hanover-5g", "name": "HANOVER 5G", "cat": "Retendre · laser endolift", "img": "/images/technologies/hanover-5g/v2-00.jpg",
+                     "line": "Laser endolift 980 nm et 1470 nm : il dissout les graisses localisées et raffermit la peau, sous la surface.",
+                     "points": ["Lipolyse : double menton, bras, corps", "Raffermissement cutané", "Sans éviction socio-professionnelle"]},
+    "centrifugel": {"w": 161, "slug": "centrifugel", "name": "CENTRIFUGEL", "cat": "Régénérer · plasma", "img": "/images/technologies/centrifugel/00.jpg",
+                    "line": "Centrifugeuse 4000 tr/min pour préparer au cabinet le PRP et le plasma du Biofiller X7, gel 100 % autologue.",
+                    "points": ["Préparation du PRP", "Plasma pour Biofiller X7 (gel autologue)", "Couvercle verrouillé, arrêt automatique"]},
 }
 
 # hero_size : taille du titre dans l'image d'ouverture (hero/render.cjs).
 SEGMENTS = [
     {
-        "key": "medecins", "file": "newsletter-medecins.html", "edition": "Édition médecins", "hero_size": 66,
-        "subject": "HANOVER 5G, SEVENWAVES : les plateformes laser du mois",
-        "preheader": "Endolift, plateformes multi-technologies, et le parcours de formation qui accompagne chaque installation.",
-        "title_a": "La technologie s’acquiert.", "title_b": "La maîtrise se construit.",
-        "intro": "Ce mois-ci, la Cellulift Academy vous présente deux plateformes laser au cœur des protocoles actuels, et le parcours de formation qui accompagne chaque installation.",
-        "tech_eyebrow": "Focus technologies", "tech_title": "Les plateformes laser du mois", "techs": [T["hanover"], T["sevenwaves"]],
+        "key": "medecins", "file": "newsletter-medecins.html", "edition": "Édition médecins · N°01", "hero_size": 70,
+        "subject": "Le « visage Ozempic » arrive dans votre cabinet",
+        "preheader": "1 patient sous GLP-1 sur 2 s'inquiète de son visage. Voici comment lui répondre.",
+        "title_a": "Ils ont perdu 15 kilos.", "title_b": "Leur visage aussi.",
+        "intro": "Sémaglutide, tirzépatide : vos patients perdent du poids plus vite que jamais. Et leur visage suit : joues qui se creusent, ovale qui se relâche, traits fatigués. Une nouvelle patientèle arrive en consultation, souvent pour la première fois en médecine esthétique. Ce mois-ci, on vous dit comment l'accueillir.",
+        "dossier": {
+            "eyebrow": "Le dossier du mois", "title": "Le visage GLP-1, nouveau motif de consultation",
+            "stat": "1/2", "stat_unit": "patients sous GLP-1",
+            "stat_text": "s'inquiète de son visage : perte de volume, relâchement, rides. C'est l'estimation de 406 praticiens interrogés pour une étude présentée au congrès de l'American Academy of Dermatology 2026.<sup>1</sup>",
+            "items": [
+                {"title": "Le volume ne suffit plus", "text": "Après une perte de poids rapide, le visage perd à la fois du volume et de la tenue. Remplir sans retendre, c'est souvent multiplier les seringues, avec le risque d'un résultat moins naturel : la crainte n°2 des patients, juste après le coût.<sup>1</sup>"},
+                {"title": "Régénérer avant de remplir", "text": "La médecine régénérative est la tendance de fond de 2026 : biostimulation, plasma, collagène.<sup>2</sup> Avec le Biofiller X7, le plasma du patient devient un gel 100 % autologue qui redonne du volume, sans risque de réaction allergique."},
+                {"title": "Retendre sans chirurgie", "text": "Le laser endolift 1470 nm agit sous la peau : il dissout les graisses localisées et raffermit les tissus. Les premières séries publiées chez des patients sous GLP-1 sont encourageantes, sur de petits effectifs.<sup>3</sup>"},
+            ],
+        },
+        "tech_eyebrow": "Les technologies du protocole", "tech_title": "Retendre et régénérer", "techs": [T["hanover-glp1"], T["centrifugel"]],
+        "next": {"title": "Biofiller ou acide hyaluronique : volumiser ou régénérer ?",
+                 "text": "Le comparatif que vos patients vont vous demander : indications, durée, profil de patient."},
         "cta_title": "Une question sur un protocole ?", "cta_text": "Notre équipe vous répond sur les réglages, les indications et les prérequis des formations.",
+        "sources": [
+            ("AAD 2026 : enquête sur les préoccupations faciales des patients sous GLP-1 (Modern Aesthetics)", "https://modernaesthetics.com/news/aad-2026-survey-highlights-facial-concerns-among-glp-1-weight-loss-patients/2486397/"),
+            ("RealSelf, rapport de tendances T1 2026 (AmSpa)", "https://americanmedspa.org/news/realself-q1-2026-trend-report-reveals-surge-in-regenerative-aesthetics-skin-rejuvenation"),
+            ("Laser et involution faciale sous perte de poids médicamenteuse (Pharmateca)", "https://en.pharmateca.ru/articles/vozmojnosti-lazernoi-terapii-v-esteticheskoi-korrekcii-involutivnyh-izmenenii-lica-u-pacientov-na-fone-medikamentoznogo-snijeniya-vesa.html"),
+        ],
     },
     {
         "key": "kines", "file": "newsletter-kines.html", "edition": "Édition kinésithérapeutes", "hero_size": 74,
