@@ -84,6 +84,41 @@ def tech_card(t, seg, n):
 </td></tr></table>"""
 
 
+def tech_grid(techs, seg):
+    """Grille de 2 fiches : photo studio, catégorie, nom, accroche, 2 indications, bouton en pastille."""
+    cells = []
+    for i, t in enumerate(techs):
+        href = utm(f"/fr/technologies/{t['slug']}", seg, t["slug"])
+        pad = "padding-right:7px;" if i == 0 else "padding-left:7px;"
+        points = "".join(
+            f'<div style="font-family:{SANS};font-size:13px;line-height:1.45;color:{DEEP};margin-top:5px;">'
+            f'<span style="color:{VIOLET};">&mdash;</span>&nbsp; {p}</div>'
+            for p in t["points"][:2]
+        )
+        cells.append(f"""<td class="col gcell" width="50%" valign="top" style="{pad}">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FFFFFF;border:1px solid {LINE};border-radius:24px;border-collapse:separate;"><tr>
+<td align="center" bgcolor="{STUDIO}" style="background:{STUDIO};border-radius:23px 23px 0 0;padding:18px 0 0;">
+<a href="{href}" target="_blank"><img src="{SITE}{t['img']}" width="{round(t['w'] * 0.92)}" height="240" alt="{t['name']}" style="display:block;width:{round(t['w'] * 0.92)}px;height:240px;border:0;"></a></td></tr>
+<tr><td style="padding:20px 20px 22px;">
+{label(t['cat'], SOFT, 10)}
+{title(t['name'], 20, DEEP, 6)}
+<div style="font-family:{SANS};font-size:14px;line-height:1.5;color:{SOFT};margin-top:6px;">{t['line']}</div>
+{points}
+<div style="height:16px;line-height:16px;font-size:0;">&nbsp;</div>
+{button('Voir la fiche', href, 'deep', 160)}
+</td></tr></table></td>""")
+    return f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>{"".join(cells)}</tr></table>'
+
+
+def partners_strip(seg):
+    names = ["LGL Expert", "Scelia", "IALIDRA", "ARTHROMED", "IYADA", "GALENICA", "SOSKIN"]
+    row = " &nbsp;&middot;&nbsp; ".join(names)
+    return f"""<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid {LINE};border-bottom:1px solid {LINE};"><tr><td align="center" style="padding:20px 8px;">
+{label('Nos partenaires', SOFT, 10)}
+<div style="font-family:{MONO};font-size:12px;line-height:1.9;letter-spacing:1.5px;text-transform:uppercase;color:{DEEP};margin-top:8px;">{row}</div>
+</td></tr></table>"""
+
+
 def academy_block(seg):
     """Bloc sombre : le parcours Academy en 4 étapes."""
     steps = ["Installation", "Formation initiale", "Protocoles", "Perfectionnement"]
@@ -124,6 +159,7 @@ def build(seg):
     .px {{ padding-left:14px !important; padding-right:14px !important; }}
     .col {{ display:block !important; width:100% !important; box-sizing:border-box; }}
     .photo {{ border-radius:23px 23px 0 0 !important; }}
+    .gcell {{ padding:0 0 14px !important; }}
     .step {{ display:inline-block !important; width:48% !important; }}
     .btn {{ display:block !important; width:100% !important; }}
     .btn table {{ margin:0 auto !important; }}
@@ -131,9 +167,6 @@ def build(seg):
 </style>
 </head>"""
 
-    techs = "\n{}\n".format(spacer(14)).join(
-        f'<tr><td class="px" style="padding:0 24px;">{tech_card(t, s["key"], i + 1)}</td></tr>' for i, t in enumerate(s["techs"])
-    )
     body = f"""
 <body style="margin:0;padding:0;background:{PEARL};">
 <!-- Pré-en-tête (aperçu dans la boîte de réception) -->
@@ -157,16 +190,20 @@ def build(seg):
 <tr><td class="px" style="padding:30px 28px 6px;">
 <div style="font-family:{SANS};font-size:17px;line-height:1.6;color:{DEEP};font-weight:600;">Bonjour {{{{PRENOM}}}},</div>
 <div style="font-family:{SANS};font-size:16px;line-height:1.7;color:{SOFT};margin-top:8px;">{s['intro']}</div>
+<div style="height:20px;line-height:20px;font-size:0;">&nbsp;</div>
+{button('Demander une démonstration', utm('/fr/contact', s['key'], 'demo'), 'deep', 290)}
 </td></tr>
-{spacer(30)}
+{spacer(34)}
 
 <!-- Technologies -->
 <tr><td class="px" style="padding:0 28px 16px;">
 {label('<span style="color:' + VIOLET + ';">&#9679;</span>&nbsp; ' + s['tech_eyebrow'])}
 {title(s['tech_title'], 26)}
 </td></tr>
-{techs}
-{spacer(26)}
+<tr><td class="px" style="padding:0 24px;">{tech_grid(s['techs'], s['key'])}</td></tr>
+{spacer(30)}
+<tr><td class="px" style="padding:0 24px;">{partners_strip(s['key'])}</td></tr>
+{spacer(30)}
 
 <!-- Parcours Academy -->
 <tr><td class="px" style="padding:0 24px;">{academy_block(s['key'])}</td></tr>
@@ -226,7 +263,7 @@ T = {
 # hero_size : taille du titre dans l'image d'ouverture (hero/render.cjs).
 SEGMENTS = [
     {
-        "key": "medecins", "file": "newsletter-medecins.html", "edition": "Édition médecins", "hero_size": 92,
+        "key": "medecins", "file": "newsletter-medecins.html", "edition": "Édition médecins", "hero_size": 66,
         "subject": "HANOVER 5G, SEVENWAVES : les plateformes laser du mois",
         "preheader": "Endolift, plateformes multi-technologies, et le parcours de formation qui accompagne chaque installation.",
         "title_a": "La technologie s’acquiert.", "title_b": "La maîtrise se construit.",
@@ -235,7 +272,7 @@ SEGMENTS = [
         "cta_title": "Une question sur un protocole ?", "cta_text": "Notre équipe vous répond sur les réglages, les indications et les prérequis des formations.",
     },
     {
-        "key": "kines", "file": "newsletter-kines.html", "edition": "Édition kinésithérapeutes", "hero_size": 100,
+        "key": "kines", "file": "newsletter-kines.html", "edition": "Édition kinésithérapeutes", "hero_size": 74,
         "subject": "Drainage et composition corporelle : la sélection du mois",
         "preheader": "Pressothérapie et analyse corporelle : deux technologies corps pour votre cabinet.",
         "title_a": "Mesurer, drainer,", "title_b": "suivre chaque patient.",
@@ -244,7 +281,7 @@ SEGMENTS = [
         "cta_title": "Un projet pour votre cabinet ?", "cta_text": "Parlons des technologies adaptées à vos patients, de la formation et de l'accompagnement après installation.",
     },
     {
-        "key": "centres", "file": "newsletter-centres-esthetiques.html", "edition": "Édition centres esthétiques", "hero_size": 76,
+        "key": "centres", "file": "newsletter-centres-esthetiques.html", "edition": "Édition centres esthétiques", "hero_size": 60,
         "subject": "Épilation et amincissement : les incontournables du centre",
         "preheader": "LA QUEEN et SLIMAX LIPO 7 : deux technologies pour développer votre offre.",
         "title_a": "Une technologie rentable,", "title_b": "c’est une technologie maîtrisée.",
