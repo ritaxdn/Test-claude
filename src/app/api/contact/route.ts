@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { resendKey, defaultFrom } from "@/lib/resend";
 import { SITE_URL } from "@/lib/site";
 import { sendToCrm, type CrmLead } from "@/lib/crm";
+import { addToBrevo } from "@/lib/brevo";
 import { contactPageContent } from "@/content/contact-page";
 import { contactRules, emailPattern, isParcours, isValidPhone, whatsappNumber, type ContactField, type Parcours } from "@/lib/contact-rules";
 
@@ -14,6 +15,8 @@ type ContactPayload = Partial<Record<ContactField, string>> & {
   attribution?: Record<string, unknown>; // campagne d'arrivée (utm_*, gclid, fbclid, référent, page d'entrée)
   website?: string; // champ piège (doit rester vide)
   elapsed?: number; // durée de remplissage, en ms
+  firstName?: string; // newsletter : prénom et nom séparés (attributs Brevo)
+  lastName?: string;
 };
 
 // Limite d'envois par adresse IP (mémoire de l'instance : suffisant contre les rafales de spam).
@@ -197,15 +200,20 @@ export async function POST(request: Request) {
   }
 
   // Newsletter de la Cellulift Academy (fenêtre de la page Academy) : prénom, nom, e-mail et activité.
-  // L'inscription part en [NEWSLETTER] vers admin@cellulift.ma et le CRM (parcours « newsletter-academy »),
+  // L'inscription part en [NEWSLETTER] vers admin@cellulift.ma, le CRM et la liste Brevo (parcours « newsletter-academy »),
   // l'activité dans le champ « specialite » du CRM pour segmenter les envois.
   if (body.parcours === "newsletter") {
     const name = String(body.name ?? "").trim().slice(0, 200), email = String(body.email ?? "").trim().slice(0, 200);
     const specialty = String(body.specialty ?? "").trim();
     if (!name || !emailPattern.test(email) || !newsletterSpecialties.includes(specialty)) return NextResponse.json({ ok: false, error: "validation" }, { status: 422 });
     const n: ContactPayload = { name, email, specialty, subject: "Newsletter Academy", message: "Inscription à la newsletter de la Cellulift Academy.", origin: typeof body.origin === "string" && body.origin.startsWith("/") ? body.origin.slice(0, 300) : undefined, lang: body.lang };
-    const [mail, crm] = await Promise.all([sendToCellulift("masterclass", n, { to: recipients("newsletter"), tag: "NEWSLETTER" }), sendToCrm(crmLead("newsletter-academy", n, attr))]);
-    return mail || crm ? NextResponse.json({ ok: true }) : NextResponse.json({ ok: false, error: "send_failed" }, { status: 502 });
+    const part = (v: unknown) => String(v ?? "").trim().slice(0, 100) || undefined;
+    const [mail, crm, brevo] = await Promise.all([
+      sendToCellulift("masterclass", n, { to: recipients("newsletter"), tag: "NEWSLETTER" }),
+      sendToCrm(crmLead("newsletter-academy", n, attr)),
+      addToBrevo({ email, firstName: part(body.firstName), lastName: part(body.lastName), specialty }),
+    ]);
+    return mail || crm || brevo ? NextResponse.json({ ok: true }) : NextResponse.json({ ok: false, error: "send_failed" }, { status: 502 });
   }
 
   const parcours: Parcours = isParcours(body.parcours) ? body.parcours : "autre";

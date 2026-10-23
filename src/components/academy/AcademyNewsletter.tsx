@@ -157,6 +157,8 @@ export function AcademyNewsletter({ locale }: { locale: Locale }) {
         body: JSON.stringify({
           parcours: "newsletter",
           name,
+          firstName: values.firstName.trim(),
+          lastName: values.lastName.trim(),
           email: values.email.trim(),
           specialty: values.specialty,
           origin: window.location.pathname,
