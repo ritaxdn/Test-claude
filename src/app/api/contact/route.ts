@@ -32,42 +32,41 @@ const esc = (s = "") =>
   s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 
 /**
- * Boîte de réception selon le parcours (variables Vercel, adresses séparées par des virgules) :
- * CONTACT_EMAIL_TO (démo, devis, expert, autre — défaut cellulift@gmail.com),
- * CONTACT_EMAIL_ACADEMY (masterclass — défaut cellulift.academy1@gmail.com + cellulift@gmail.com),
- * CONTACT_EMAIL_SUPPORT (support technique — défaut cellulift@gmail.com, à remplacer par l'adresse SAV le moment venu),
- * CONTACT_EMAIL_PARTNERSHIPS (partenariat — défaut cellulift@gmail.com),
- * CONTACT_EMAIL_NEWSLETTER (newsletter de l'Academy — défaut admin@cellulift.ma).
+ * Toutes les demandes arrivent sur admin@cellulift.ma, rangées par l'étiquette en tête d'objet
+ * ([DEVIS], [DÉMO], [SUPPORT], [NEWSLETTER]…) pour les filtres de la boîte de réception.
+ * Une variable Vercel (adresses séparées par des virgules) redirige une famille ailleurs si besoin :
+ * CONTACT_EMAIL_TO (démo, devis, expert, guide, autre), CONTACT_EMAIL_ACADEMY (masterclass),
+ * CONTACT_EMAIL_SUPPORT (support technique), CONTACT_EMAIL_PARTNERSHIPS (partenariat),
+ * CONTACT_EMAIL_NEWSLETTER (newsletter de l'Academy).
  * Envoi : RESEND_API_KEY (obligatoire), CONTACT_EMAIL_FROM (défaut « Site Cellulift <contact@cellulift.ma> »).
  */
-function recipients(parcours: Parcours) {
-  const inbox = contactRules[parcours].inbox;
-  const list =
-    inbox === "academy"
-      ? process.env.CONTACT_EMAIL_ACADEMY || "cellulift.academy1@gmail.com, cellulift@gmail.com"
-      : inbox === "support"
-        ? process.env.CONTACT_EMAIL_SUPPORT || "cellulift@gmail.com"
-        : inbox === "partnerships"
-          ? process.env.CONTACT_EMAIL_PARTNERSHIPS || "cellulift@gmail.com"
-          : process.env.CONTACT_EMAIL_TO || "cellulift@gmail.com";
-  return list.split(",").map((x) => x.trim());
+const ADMIN_INBOX = "admin@cellulift.ma";
+const inboxEnv = {
+  main: "CONTACT_EMAIL_TO",
+  academy: "CONTACT_EMAIL_ACADEMY",
+  support: "CONTACT_EMAIL_SUPPORT",
+  partnerships: "CONTACT_EMAIL_PARTNERSHIPS",
+  newsletter: "CONTACT_EMAIL_NEWSLETTER",
+} as const;
+
+function recipients(inbox: keyof typeof inboxEnv) {
+  return (process.env[inboxEnv[inbox]] || ADMIN_INBOX).split(",").map((x) => x.trim());
 }
 
-function newsletterRecipients() {
-  return (process.env.CONTACT_EMAIL_NEWSLETTER || "admin@cellulift.ma").split(",").map((x) => x.trim());
-}
-
-async function sendToCellulift(parcours: Parcours, body: ContactPayload, to = recipients(parcours)) {
+async function sendToCellulift(
+  parcours: Parcours,
+  body: ContactPayload,
+  { to = recipients(contactRules[parcours].inbox), tag = contactRules[parcours].tag }: { to?: string[]; tag?: string } = {}
+) {
   const key = resendKey();
   if (!key) {
     console.error("[contact] RESEND_API_KEY manquante dans cet environnement Vercel : demande non envoyée.");
     return false;
   }
-  const rule = contactRules[parcours];
   const wa = body.phone ? whatsappNumber(body.phone) : null;
   // [libellé, texte, lien éventuel]
   const rows: [string, string | undefined, string?][] = [
-    ["Parcours", `${rule.tag}${body.subject ? ` (${body.subject})` : ""}`],
+    ["Parcours", `${tag}${body.subject ? ` (${body.subject})` : ""}`],
     ["Nom", body.name],
     ["Établissement", body.organization],
     ["Téléphone", body.phone, body.phone ? `tel:${body.phone.replace(/[^\d+]/g, "")}` : undefined],
@@ -97,8 +96,8 @@ async function sendToCellulift(parcours: Parcours, body: ContactPayload, to = re
     </table>
     <p style="font-family:Arial,sans-serif;font-size:14px;white-space:pre-wrap">${esc(body.message)}</p>`;
 
-  // Objet : PARCOURS — Technologie — Ville — Nom (Activité)
-  const subject = [rule.tag, body.machine, body.city, `${body.name}${body.specialty ? ` (${body.specialty})` : ""}`]
+  // Objet : [PARCOURS] Technologie — Ville — Nom (Activité)
+  const subject = `[${tag}] ` + [body.machine, body.city, `${body.name}${body.specialty ? ` (${body.specialty})` : ""}`]
     .filter(Boolean)
     .join(" — ");
 
@@ -193,19 +192,19 @@ export async function POST(request: Request) {
     const name = String(body.name ?? "").trim().slice(0, 200), email = String(body.email ?? "").trim().slice(0, 200);
     if (!name || !emailPattern.test(email)) return NextResponse.json({ ok: false, error: "validation" }, { status: 422 });
     const g: ContactPayload = { name, email, specialty: String(body.specialty ?? "").trim().slice(0, 200) || undefined, subject: "Guide gratuit", message: String(body.message ?? "").slice(0, 1000), lang: body.lang };
-    const [mail, crm] = await Promise.all([sendToCellulift("autre", g), sendToCrm(crmLead("guide", g, attr))]);
+    const [mail, crm] = await Promise.all([sendToCellulift("autre", g, { tag: "GUIDE" }), sendToCrm(crmLead("guide", g, attr))]);
     return mail || crm ? NextResponse.json({ ok: true }) : NextResponse.json({ ok: false, error: "send_failed" }, { status: 502 });
   }
 
   // Newsletter de la Cellulift Academy (fenêtre de la page Academy) : prénom, nom, e-mail et activité.
-  // L'inscription part vers admin@cellulift.ma (CONTACT_EMAIL_NEWSLETTER) et le CRM (parcours « newsletter-academy »),
+  // L'inscription part en [NEWSLETTER] vers admin@cellulift.ma et le CRM (parcours « newsletter-academy »),
   // l'activité dans le champ « specialite » du CRM pour segmenter les envois.
   if (body.parcours === "newsletter") {
     const name = String(body.name ?? "").trim().slice(0, 200), email = String(body.email ?? "").trim().slice(0, 200);
     const specialty = String(body.specialty ?? "").trim();
     if (!name || !emailPattern.test(email) || !newsletterSpecialties.includes(specialty)) return NextResponse.json({ ok: false, error: "validation" }, { status: 422 });
     const n: ContactPayload = { name, email, specialty, subject: "Newsletter Academy", message: "Inscription à la newsletter de la Cellulift Academy.", origin: typeof body.origin === "string" && body.origin.startsWith("/") ? body.origin.slice(0, 300) : undefined, lang: body.lang };
-    const [mail, crm] = await Promise.all([sendToCellulift("masterclass", n, newsletterRecipients()), sendToCrm(crmLead("newsletter-academy", n, attr))]);
+    const [mail, crm] = await Promise.all([sendToCellulift("masterclass", n, { to: recipients("newsletter"), tag: "NEWSLETTER" }), sendToCrm(crmLead("newsletter-academy", n, attr))]);
     return mail || crm ? NextResponse.json({ ok: true }) : NextResponse.json({ ok: false, error: "send_failed" }, { status: 502 });
   }
 

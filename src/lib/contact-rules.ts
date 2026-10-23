@@ -19,11 +19,11 @@ type Rule = {
   /** Champs affichés, dans l'ordre du formulaire */
   fields: ContactField[];
   required: ContactField[];
-  /** Boîte de réception (variables Vercel CONTACT_EMAIL_*) */
+  /** Famille de destinataires (admin@cellulift.ma par défaut, variables Vercel CONTACT_EMAIL_*) */
   inbox: "main" | "academy" | "support" | "partnerships";
   /** Événement Analytics à l'envoi (null = aucun) et valeur « parcours » transmise */
   event: { name: "generate_lead" | "support_request" | "partnership_request"; parcours?: string } | null;
-  /** Libellé de l'objet de l'e-mail commercial */
+  /** Étiquette en tête d'objet de l'e-mail, ex. [DEVIS] */
   tag: string;
 };
 
