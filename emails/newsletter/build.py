@@ -51,18 +51,24 @@ def title(text, size=24, color=DEEP, top=10):
             f'text-transform:uppercase;color:{color};margin-top:{top}px;">{text}</div>')
 
 
-def button(text, href, style="iris", width=230):
-    """Pastille blanche, texte Deep. « iris » : liseré irisé (dégradé, ou lavande là où les dégradés sont retirés)."""
-    inner = f"""<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
-<td align="center" bgcolor="#FFFFFF" style="border-radius:999px;{'' if style == 'iris' else 'border:1px solid #C9CAD3;'}">
-<!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" href="{href}" style="height:46px;v-text-anchor:middle;width:{width}px;" arcsize="50%" strokecolor="#A797FF" fillcolor="#FFFFFF"><center style="color:{DEEP};font-family:Arial,sans-serif;font-size:15px;font-weight:bold;">{text} &#8599;</center></v:roundrect><![endif]-->
-<!--[if !mso]><!--><a href="{href}" target="_blank" style="display:inline-block;white-space:nowrap;padding:13px 26px;font-family:{SANS};font-size:15px;font-weight:600;line-height:20px;color:{DEEP};text-decoration:none;border-radius:999px;">{text}&nbsp;&nbsp;<span style="color:{VIOLET};">&#8599;</span></a><!--<![endif]-->
-</td></tr></table>"""
-    if style != "iris":
-        return inner
-    ring = "linear-gradient(90deg," + ",".join(IRIS) + ")"
+def button(text, href, style="glass", width=230):
+    """Bouton en verre, comme le CTA du site : pastille blanche translucide, bord blanc lumineux, reflet en haut,
+    ombre douce, texte Deep et pastille ronde blanche avec la flèche. (Le paramètre style est conservé pour
+    compatibilité : tous les boutons sont en verre.)"""
+    glass = ("background:#F6F7FA;background-image:linear-gradient(145deg,rgba(255,255,255,.96),rgba(255,255,255,.62));"
+             "border:1px solid #FFFFFF;box-shadow:inset 0 1px 0 #FFFFFF,0 0 0 1px rgba(29,27,38,.07),0 14px 30px -16px rgba(29,27,38,.38);")
+    arrow = (f'<td width="34" valign="middle" style="padding:0 6px 0 0;">'
+             f'<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td width="34" height="34" align="center" valign="middle" bgcolor="#FFFFFF" '
+             f'style="width:34px;height:34px;border-radius:50%;background:#FFFFFF;box-shadow:0 4px 10px -4px rgba(29,27,38,.3);'
+             f'font-family:{SANS};font-size:15px;font-weight:700;line-height:34px;color:{VIOLET};">'
+             f'<a href="{href}" target="_blank" style="color:{VIOLET};text-decoration:none;display:block;">&#8599;</a></td></tr></table></td>')
     return f"""<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
-<td bgcolor="{IRIS[1]}" style="border-radius:999px;padding:2px;background:{IRIS[1]};background-image:{ring};box-shadow:0 12px 26px -16px rgba(29,27,38,.45);">{inner}</td></tr></table>"""
+<td bgcolor="#F6F7FA" style="border-radius:999px;{glass}">
+<!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" href="{href}" style="height:46px;v-text-anchor:middle;width:{width}px;" arcsize="50%" strokecolor="#DCDDE4" fillcolor="#F6F7FA"><center style="color:{DEEP};font-family:Arial,sans-serif;font-size:15px;font-weight:bold;">{text} &#8599;</center></v:roundrect><![endif]-->
+<!--[if !mso]><!--><table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+<td valign="middle" style="padding:6px 14px 6px 22px;"><a href="{href}" target="_blank" style="display:inline-block;white-space:nowrap;font-family:{SANS};font-size:15px;font-weight:600;line-height:34px;color:{DEEP};text-decoration:none;">{text}</a></td>
+{arrow}</tr></table><!--<![endif]-->
+</td></tr></table>"""
 
 
 def spacer(h):
