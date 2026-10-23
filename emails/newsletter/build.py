@@ -5,7 +5,12 @@ Gmail et Outlook ignorent les polices du site et les dégradés : le titre d'ouv
 image (hero/, rendue avec Archivo et le dégradé irisé), le reste du texte reste du vrai texte.
 Variables à remplacer par celles de l'outil d'e-mailing : {{PRENOM}}, {{DESINSCRIPTION}}, {{VERSION_WEB}}.
 """
+import hashlib
+import html as htmllib
+import json
 import os
+import re
+import sys
 from pathlib import Path
 
 SITE = "https://www.cellulift.ma"
@@ -41,14 +46,36 @@ def rainbow_line(height=2):
     return f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>{cells}</tr></table>'
 
 
-def label(text, color=SOFT, size=11):
-    return (f'<div style="font-family:{MONO};font-size:{size}px;line-height:1.5;letter-spacing:2px;'
-            f'text-transform:uppercase;color:{color};">{text}</div>')
+# Polices de la marque : Gmail et Outlook les ignorent. Titres, chiffres et étiquettes sont donc rendus en
+# images (Archivo 118 %, JetBrains Mono) par hero/render-text.cjs, sur fond transparent, avec le texte en alt.
+# Passe 1 (--collect) : liste des textes ; rendu ; passe 2 : HTML avec les dimensions réelles.
+TEXT_JOBS = {}
+_manifest = OUT / "text-manifest.json"
+TEXT_DIMS = json.loads(_manifest.read_text()) if _manifest.exists() else {}
 
 
-def title(text, size=24, color=DEEP, top=10):
-    return (f'<div style="font-family:{DISPLAY};font-size:{size}px;line-height:1.12;font-weight:700;letter-spacing:-0.4px;'
-            f'text-transform:uppercase;color:{color};margin-top:{top}px;">{text}</div>')
+def text_img(text, kind="display", size=24, color=DEEP, maxw=520, dot=None, center=False, top=0):
+    plain = re.sub(r"<[^>]+>", "", htmllib.unescape(text))
+    plain = re.sub(r" ([?!:;»])", "\u00a0\\1", plain)  # espace insécable française
+    spec = {"text": plain, "kind": kind, "size": size, "color": color, "maxw": maxw, "dot": dot or "", "align": "center" if center else "left"}
+    key = hashlib.sha1(json.dumps(spec, sort_keys=True, ensure_ascii=False).encode()).hexdigest()[:12]
+    TEXT_JOBS[key] = spec
+    w, h = TEXT_DIMS.get(key, (maxw, round(size * 1.2)))
+    margin = "margin:0 auto;" if center else ""
+    alt = htmllib.escape(plain, quote=True)
+    return (f'<img src="{ASSETS}/t/{key}.png" width="{w}" height="{h}" alt="{alt}" '
+            f'style="display:block;{margin}width:{w}px;max-width:100%;height:auto;border:0;margin-top:{top}px;'
+            f'font-family:{SANS};font-size:{size}px;font-weight:700;color:{color};">')
+
+
+def label(text, color=SOFT, size=11, maxw=520):
+    m = re.match(r'<span style="color:([^;]+);">&#9679;</span>&nbsp;\s*(.*)', text)
+    dot, text = (m.group(1), m.group(2)) if m else (None, text)
+    return text_img(text, "mono", size, color, maxw, dot)
+
+
+def title(text, size=24, color=DEEP, top=10, maxw=520, center=False):
+    return text_img(text, "display", size, color, maxw, center=center, top=top)
 
 
 def button(text, href, style="glass", width=230, compact=False):
@@ -90,7 +117,7 @@ def tech_row(t, seg, i):
            f'<a href="{href}" target="_blank"><img src="{ASSETS}/machine-{t["slug"]}.jpg" width="260" alt="{t["name"]}" '
            f'style="display:block;width:100%;max-width:260px;height:auto;border:0;border-radius:28px;margin:0 auto;"></a></td>')
     txt = (f'<td class="col tcell" valign="middle" dir="ltr" style="padding:{"0 26px 0 6px" if flip else "0 6px 0 26px"};text-align:left;">'
-           f'{label(kicker, SOFT, 10)}{title(t["name"], 26, DEEP, 8)}'
+           f'{label(kicker, SOFT, 10, 250)}{title(t["name"], 26, DEEP, 8, 250)}'
            f'<div style="font-family:{SANS};font-size:15px;line-height:1.55;color:{SOFT};margin-top:8px;">{t["line"]}</div>'
            f'<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:14px;">{points}</table>'
            f'<div style="height:12px;line-height:12px;font-size:0;">&nbsp;</div>{button("Voir la fiche", href, "iris", 170)}'
@@ -102,10 +129,9 @@ def tech_row(t, seg, i):
 
 def partners_strip(seg):
     names = ["LGL Expert", "Scelia", "IALIDRA", "ARTHROMED", "IYADA", "GALENICA", "SOSKIN"]
-    row = " &nbsp;&middot;&nbsp; ".join(names)
     return f"""<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid {LINE};border-bottom:1px solid {LINE};"><tr><td align="center" style="padding:20px 8px;">
-{label('Nos partenaires', SOFT, 10)}
-<div style="font-family:{MONO};font-size:12px;line-height:1.9;letter-spacing:1.5px;text-transform:uppercase;color:{DEEP};margin-top:8px;">{row}</div>
+{label('Nos partenaires', SOFT, 10, 300).replace("display:block;", "display:block;margin:0 auto;")}
+<div style="height:8px;line-height:8px;font-size:0;">&nbsp;</div>{text_img(" · ".join(names), "mono", 12, DEEP, 520, center=True)}
 </td></tr></table>"""
 
 
@@ -114,7 +140,7 @@ def academy_block(seg):
     steps = ["Installation", "Formation initiale", "Protocoles", "Perfectionnement"]
     cell = lambda i: (
         f'<td class="step" width="25%" valign="top" style="padding:0 6px 14px 0;">'
-        f'<div style="font-family:{DISPLAY};font-size:34px;font-weight:700;line-height:1;color:{RAINBOW[i]};">0{i + 1}</div>'
+        f'{text_img(f"0{i + 1}", "display", 34, RAINBOW[i], 80)}'
         f'<div style="height:3px;line-height:3px;font-size:0;background:{IRIS[i]};width:44px;margin:10px 0 8px;border-radius:3px;">&nbsp;</div>'
         f'<div style="font-family:{SANS};font-size:15px;font-weight:600;line-height:1.3;color:{DEEP};">{steps[i]}</div></td>'
     )
@@ -122,7 +148,7 @@ def academy_block(seg):
 <tr><td style="padding:0;border-radius:28px 28px 0 0;overflow:hidden;">{rainbow_line(4)}</td></tr>
 <tr><td style="padding:30px 30px 26px;">
 {label('<span style="color:' + VIOLET + ';">&#9679;</span>&nbsp; Le parcours Cellulift Academy')}
-{title("Une machine n'est jamais une garantie de résultat.", 24, DEEP, 12)}
+{title("Une machine n'est jamais une garantie de résultat.", 24, DEEP, 12, 480)}
 <div style="font-family:{SANS};font-size:15px;line-height:1.6;color:{SOFT};margin-top:10px;">Les résultats et la sécurité patient dépendent de la maîtrise du praticien. Chaque acquisition Cellulift s'accompagne d'un parcours de formation.</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:24px;"><tr>{cell(0)}{cell(1)}{cell(2)}{cell(3)}</tr></table>
 <div style="height:6px;line-height:6px;font-size:0;">&nbsp;</div>
@@ -138,14 +164,14 @@ def dossier(d, seg):
     """Le dossier du mois : chiffre clé, puis idées numérotées sur cartes de verre."""
     stat = f"""<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#F8F9FB" style="border-radius:28px;border-collapse:separate;{GLASS_CARD}"><tr>
 <td class="col" width="190" valign="middle" align="center" style="padding:26px 10px 26px 24px;">
-<div style="font-family:{DISPLAY};font-size:58px;font-weight:700;line-height:1;letter-spacing:-2px;color:{VIOLET};">{d['stat']}</div>
-<div style="font-family:{MONO};font-size:10px;letter-spacing:2px;text-transform:uppercase;color:{SOFT};margin-top:8px;">{d['stat_unit']}</div></td>
+{text_img(d['stat'], "display", 58, VIOLET, 170, center=True)}
+<div style="height:8px;line-height:8px;font-size:0;">&nbsp;</div>{text_img(d['stat_unit'], "mono", 10, SOFT, 170, center=True)}</td>
 <td class="col tcell" valign="middle" style="padding:26px 28px 26px 10px;font-family:{SANS};font-size:15px;line-height:1.6;color:{DEEP};">{d['stat_text']}</td>
 </tr></table>"""
     cards = "".join(
         f"""<tr><td style="padding-top:14px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#F8F9FB" style="border-radius:24px;border-collapse:separate;{GLASS_CARD}"><tr>
-<td width="64" valign="top" style="padding:24px 0 22px 24px;font-family:{DISPLAY};font-size:30px;font-weight:700;line-height:1;color:{RAINBOW[i]};">0{i + 1}</td>
-<td valign="top" style="padding:22px 26px 22px 12px;">{title(it['title'], 19, DEEP, 0)}
+<td width="64" valign="top" style="padding:24px 0 22px 24px;">{text_img(f"0{i + 1}", "display", 30, RAINBOW[i], 60)}</td>
+<td valign="top" style="padding:22px 26px 22px 12px;">{title(it['title'], 19, DEEP, 0, 400)}
 <div style="font-family:{SANS};font-size:15px;line-height:1.6;color:{SOFT};margin-top:8px;">{it['text']}</div></td>
 </tr></table></td></tr>"""
         for i, it in enumerate(d["items"])
@@ -165,7 +191,7 @@ def next_and_forward(s):
     return f"""<tr><td class="px" style="padding:0 24px;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#F8F9FB" style="border-radius:28px;border-collapse:separate;{GLASS_CARD}"><tr><td style="padding:28px 30px;">
 {label('<span style="color:#E91E8C;">&#9679;</span>&nbsp; Dans le prochain numéro')}
-{title(nxt['title'], 21, DEEP, 10)}
+{title(nxt['title'], 21, DEEP, 10, 480)}
 <div style="font-family:{SANS};font-size:15px;line-height:1.6;color:{SOFT};margin-top:8px;">{nxt['text']}</div>
 <div style="height:1px;line-height:1px;font-size:0;background:{LINE};margin:22px 0 20px;">&nbsp;</div>
 <div style="font-family:{SANS};font-size:15px;line-height:1.6;color:{DEEP};"><strong>Un confrère devrait lire ceci ?</strong> Transférez-lui cet e-mail : il peut recevoir la newsletter en 10 secondes.</div>
@@ -197,7 +223,7 @@ def next_steps(s):
         f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#F8F9FB" style="border-radius:24px;border-collapse:separate;{GLASS_CARD}"><tr>'
         f'<td style="padding:22px 22px 20px;">'
         f'<div style="height:3px;line-height:3px;font-size:0;width:36px;background:{c};border-radius:3px;">&nbsp;</div>'
-        f'{title(t, 19, DEEP, 12)}'
+        f'{title(t, 19, DEEP, 12, 220)}'
         f'<div style="font-family:{SANS};font-size:14px;line-height:1.55;color:{SOFT};margin-top:6px;min-height:66px;">{d}</div>'
         f'<div style="height:12px;line-height:12px;font-size:0;">&nbsp;</div>{button(b, h, "glass", 200, compact=True)}</td></tr></table></td>'
     )
@@ -295,7 +321,7 @@ def build(seg):
 <!-- Contact : bandeau lavande -->
 <tr><td class="px" style="padding:0 24px;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="{LAVENDER}" style="background:{LAVENDER};border-radius:28px;border-collapse:separate;"><tr><td align="center" style="padding:34px 24px 26px;">
-{title(s['cta_title'], 22, DEEP, 0)}
+{title(s['cta_title'], 22, DEEP, 0, 480, center=True)}
 <div style="font-family:{SANS};font-size:15px;line-height:1.6;color:{SOFT};margin:10px auto 22px;max-width:440px;">{s['cta_text']}</div>
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center"><tr>
 <td class="btn" align="center" style="padding:0 6px 10px;">{button('Écrire sur WhatsApp', WHATSAPP, 'iris')}</td>
@@ -407,6 +433,12 @@ SEGMENTS = [
 BREVO = {"Bonjour {{PRENOM}},": "Bonjour{% if contact.PRENOM %} {{ contact.PRENOM }}{% endif %},", "{{DESINSCRIPTION}}": "{{ unsubscribe }}", "{{VERSION_WEB}}": "{{ mirror }}"}
 
 if __name__ == "__main__":
+    if "--collect" in sys.argv:  # passe 1 : textes à rendre en images (hero/render-text.cjs)
+        for seg in SEGMENTS:
+            build(seg)
+        (OUT / "text-jobs.json").write_text(json.dumps(TEXT_JOBS, ensure_ascii=False, indent=1), encoding="utf-8")
+        print(len(TEXT_JOBS), "textes")
+        sys.exit()
     (OUT / "brevo").mkdir(exist_ok=True)
     for seg in SEGMENTS:
         html = build(seg)
