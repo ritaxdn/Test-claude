@@ -108,7 +108,7 @@ def tech_cards(techs, seg):
     return f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>{cols}</tr></table>'
 
 
-def journey():
+def journey(seg):
     steps = ["Installation", "Formation initiale", "Protocoles", "Perfectionnement"]
     tds = "".join(
         f'<td class="step" width="25%" valign="top" style="padding:0 4px;">'
@@ -120,7 +120,9 @@ def journey():
     inner = f"""{label('Le parcours Academy')}
 <div style="font-family:{DISPLAY};font-size:20px;line-height:1.2;font-weight:600;color:{DEEP};margin-top:12px;text-transform:uppercase;letter-spacing:-0.2px;">Une machine n'est jamais une garantie de résultat.</div>
 <div style="font-family:{SANS};font-size:15px;line-height:1.6;color:{SOFT};margin-top:10px;">Les résultats et la sécurité patient dépendent de la maîtrise du praticien. Chaque acquisition Cellulift s'accompagne d'un parcours de formation.</div>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:20px;"><tr>{tds}</tr></table>"""
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:20px;"><tr>{tds}</tr></table>
+<div style="height:16px;line-height:16px;font-size:0;">&nbsp;</div>
+{button("Découvrir l'Academy", utm('/fr/academy', seg, 'academy'))}"""
     return card(inner)
 
 
@@ -152,6 +154,17 @@ def build(seg):
 </style>
 </head>"""
 
+    # Formation à la une et agenda : seulement quand des dates de masterclass sont confirmées.
+    sessions_html = (
+        f"""<!-- Formation à la une -->
+<tr><td class="px" style="padding:0 24px;">{session_block(s['featured'], s['key'])}</td></tr>
+{spacer(16)}
+<!-- Agenda -->
+<tr><td class="px" style="padding:0 24px;">{agenda(s['agenda'], s['key'])}</td></tr>
+{spacer(40)}"""
+        if s.get("featured")
+        else ""
+    )
     body = f"""
 <body style="margin:0;padding:0;background:{PEARL};">
 <!-- Pré-en-tête (aperçu dans la boîte de réception) -->
@@ -177,16 +190,8 @@ def build(seg):
 <div style="font-family:{SANS};font-size:16px;line-height:1.65;color:{DEEP};margin-top:22px;">Bonjour {{{{PRENOM}}}},</div>
 <div style="font-family:{SANS};font-size:16px;line-height:1.65;color:{SOFT};margin-top:10px;">{s['intro']}</div>
 </td></tr>
-{spacer(24)}
-
-<!-- Formation à la une -->
-<tr><td class="px" style="padding:0 24px;">{session_block(s['featured'], s['key'])}</td></tr>
-{spacer(16)}
-
-<!-- Agenda -->
-<tr><td class="px" style="padding:0 24px;">{agenda(s['agenda'], s['key'])}</td></tr>
-{spacer(40)}
-
+{spacer(32)}
+{sessions_html}
 <!-- Technologies -->
 <tr><td class="px" style="padding:0 24px 16px;">
 {label(s['tech_eyebrow'])}
@@ -196,7 +201,7 @@ def build(seg):
 {spacer(24)}
 
 <!-- Parcours -->
-<tr><td class="px" style="padding:0 24px;">{journey()}</td></tr>
+<tr><td class="px" style="padding:0 24px;">{journey(s['key'])}</td></tr>
 {spacer(40)}
 
 <!-- Contact -->
@@ -227,11 +232,8 @@ Vous recevez cet e-mail car vous êtes en relation avec Cellulift ou inscrit(e) 
     return head + body
 
 
-S_LASER = {"date": "Samedi 7 novembre 2026", "short": "7 nov. 2026", "title": "Laser × médecine régénérative : l'énergie peut-elle potentialiser la biostimulation ?",
-           "subtitle": "Avec le Dr Mohamed Dadoun", "place": "Marrakech",
-           "link": "https://cal.com/laser-medecine-regenerative-l-energie-peut-elle-potentialiser-la-biostimulation"}
-S_EXCELLIA = {"date": "Lundi 26 octobre 2026", "short": "26 oct. 2026", "title": "Technologie, pricing & protocoles : les 3 leviers d'un centre de bien-être performant",
-              "subtitle": "Masterclass Excellia Academy · Pourquoi certaines technologies deviennent rentables… et d'autres restent inutilisées ?"}
+# Masterclasses confirmées à mettre en avant (format : date, short, title, subtitle, place, link).
+# Aucune date confirmée pour le moment : les éditions n'affichent ni formation à la une ni agenda.
 
 T = {
     "hanover": {"w": 176, "slug": "hanover-5g", "name": "HANOVER 5G", "cat": "Solutions lasers", "img": "/images/technologies/hanover-5g/v2-00.jpg", "line": "Laser endolift 980 nm et 1470 nm."},
@@ -245,31 +247,28 @@ T = {
 SEGMENTS = [
     {
         "key": "medecins", "file": "newsletter-medecins.html", "edition": "Édition médecins",
-        "subject": "Laser × médecine régénérative : la prochaine masterclass",
-        "preheader": "Le 7 novembre à Marrakech avec le Dr Dadoun, et les technologies laser du moment.",
+        "subject": "HANOVER 5G, SEVENWAVES : les plateformes laser du mois",
+        "preheader": "Endolift, plateformes multi-technologies, et le parcours de formation qui accompagne chaque installation.",
         "eyebrow": "Pour les médecins", "title_a": "La technologie s'acquiert.", "title_b": "La maîtrise se construit.",
-        "intro": "Ce mois-ci, la Cellulift Academy vous propose de croiser énergie et biostimulation : une masterclass clinique avec le Dr Mohamed Dadoun, et deux plateformes laser au cœur des protocoles actuels.",
-        "featured": S_LASER, "agenda": [S_LASER, S_EXCELLIA],
+        "intro": "Ce mois-ci, la Cellulift Academy vous présente deux plateformes laser au cœur des protocoles actuels, et le parcours de formation qui accompagne chaque installation.",
         "tech_eyebrow": "Focus technologies", "tech_title": "Les plateformes laser du mois", "techs": [T["hanover"], T["sevenwaves"]],
         "cta_title": "Une question sur un protocole ?", "cta_text": "Notre équipe vous répond sur les réglages, les indications et les prérequis des formations.",
     },
     {
         "key": "kines", "file": "newsletter-kines.html", "edition": "Édition kinésithérapeutes",
-        "subject": "Corps, drainage, composition corporelle : la sélection du mois",
-        "preheader": "Les technologies corps qui complètent votre pratique, et les prochaines dates de formation.",
+        "subject": "Drainage et composition corporelle : la sélection du mois",
+        "preheader": "Pressothérapie et analyse corporelle : deux technologies corps pour votre cabinet.",
         "eyebrow": "Pour les kinésithérapeutes", "title_a": "Mesurer, drainer,", "title_b": "suivre chaque patient.",
-        "intro": "Pressothérapie, analyse de la composition corporelle : ce mois-ci, la Cellulift Academy met en avant les technologies corps qui s'intègrent à une pratique de kinésithérapie, avec les formations pour les maîtriser.",
-        "featured": S_EXCELLIA, "agenda": [S_EXCELLIA, S_LASER],
+        "intro": "Pressothérapie, analyse de la composition corporelle : ce mois-ci, la Cellulift Academy met en avant les technologies corps qui s'intègrent à une pratique de kinésithérapie, avec la formation pour les maîtriser.",
         "tech_eyebrow": "Focus technologies", "tech_title": "Technologies corps", "techs": [T["pressoligne"], T["tanita"]],
         "cta_title": "Un projet pour votre cabinet ?", "cta_text": "Parlons des technologies adaptées à vos patients, de la formation et de l'accompagnement après installation.",
     },
     {
         "key": "centres", "file": "newsletter-centres-esthetiques.html", "edition": "Édition centres esthétiques",
-        "subject": "Technologie, pricing & protocoles : la masterclass du 26 octobre",
-        "preheader": "Pourquoi certaines technologies deviennent rentables… et d'autres restent inutilisées ?",
+        "subject": "Épilation et amincissement : les incontournables du centre",
+        "preheader": "LA QUEEN et SLIMAX LIPO 7 : deux technologies pour développer votre offre.",
         "eyebrow": "Pour les centres esthétiques", "title_a": "Une technologie rentable,", "title_b": "c'est une technologie maîtrisée.",
-        "intro": "Choisir la bonne machine ne suffit pas : le prix des séances, les protocoles et la formation de l'équipe font la différence. C'est le thème de la prochaine masterclass, et des deux technologies que nous mettons en avant ce mois-ci.",
-        "featured": S_EXCELLIA, "agenda": [S_EXCELLIA, S_LASER],
+        "intro": "Choisir la bonne machine ne suffit pas : les protocoles et la formation de l'équipe font la différence. Ce mois-ci, nous vous présentons deux technologies incontournables du centre, et le parcours de formation qui les accompagne.",
         "tech_eyebrow": "Focus technologies", "tech_title": "Les incontournables du centre", "techs": [T["laqueen"], T["slimax"]],
         "cta_title": "Vous préparez une nouvelle offre ?", "cta_text": "Épilation, amincissement, soins visage : notre équipe vous aide à choisir la technologie et à la rentabiliser.",
     },
