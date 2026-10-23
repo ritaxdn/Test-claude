@@ -10,6 +10,7 @@ Objet C : Le « visage GLP-1 », nouveau motif de consultation
 """
 import json
 import sys
+from urllib.parse import quote
 
 import build as b
 from build import ASSETS, DEEP, GLASS_CARD, LAVENDER, LINE, RAINBOW, SANS, SITE, SOFT, VIOLET, button, label, rainbow_line, text_img, title
@@ -30,11 +31,19 @@ def link(path, content):
 
 DEMO = link("/fr/contact?sujet=demo&machine=hanover-5g", "demo")
 DEMO_CENTRI = link("/fr/contact?sujet=demo&machine=centrifugel", "demo-centrifugel")
-FORMATION = link("/fr/contact?sujet=masterclass", "programme-formation")
 FICHE_HANOVER = link("/fr/technologies/hanover-5g", "fiche-hanover")
 FICHE_CENTRI = link("/fr/technologies/centrifugel", "fiche-centrifugel")
 INSCRIPTION = link("/fr/academy", "inscription-confrere")
-WHATSAPP = "https://wa.me/212670842795?text=" + "Bonjour%20Cellulift%2C%20je%20souhaite%20une%20d%C3%A9monstration%20(newsletter%20GLP-1)."
+# Chaque lien mène à une demande de rendez-vous (formulaire du site) ou à WhatsApp avec un message prérempli.
+def wa(message):
+    return "https://wa.me/212670842795?text=" + quote(f"Bonjour Cellulift, {message} (newsletter médecins N°01)")
+
+
+WHATSAPP = wa("je souhaite réserver une démonstration du protocole GLP-1 : HANOVER 5G et CENTRIFUGEL.")
+WA_HANOVER = wa("je souhaite voir la HANOVER 5G en démonstration.")
+WA_CENTRI = wa("je souhaite voir la CENTRIFUGEL et le Biofiller X7 en démonstration.")
+WA_FORMATION = wa("je souhaite recevoir le programme de formation Cellulift Academy (endolift et Biofiller X7).")
+WA_BILAN = wa("BILAN : je souhaite recevoir la fiche « Bilan visage GLP-1 ».")
 
 
 def p(text, size=15, color=BODY, top=14, weight=300):
@@ -53,14 +62,14 @@ def numbered(i, head, text):
 </tr></table>"""
 
 
-def machine(slug, name, kick, text, cta, demo, fiche):
+def machine(slug, name, kick, text, cta, demo, fiche, whatsapp):
     return f"""<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="{CARD}"><tr>
-<td class="col" width="40%" align="center" valign="middle" style="padding:22px;"><a href="{fiche}" target="_blank"><img src="{ASSETS}/machine-{slug}.jpg" width="190" alt="{name}" style="display:block;width:190px;max-width:100%;height:auto;border:0;border-radius:20px;"></a></td>
+<td class="col" width="40%" align="center" valign="middle" style="padding:22px;"><a href="{demo}" target="_blank"><img src="{ASSETS}/machine-{slug}.jpg" width="190" alt="{name}" style="display:block;width:190px;max-width:100%;height:auto;border:0;border-radius:20px;"></a></td>
 <td class="col" valign="middle" style="padding:24px 28px 26px 4px;">
 {label(kick, SOFT, 10, 300)}{title(name, 24, DEEP, 8, 300)}
 <div style="padding-top:8px;font-family:{SANS};font-size:14px;line-height:21px;font-weight:300;color:{SOFT};">{text}</div>
 <div style="height:16px;line-height:16px;font-size:0;">&nbsp;</div>{button(cta, demo, "glass", 240, compact=True)}
-<div style="padding-top:12px;font-family:{SANS};font-size:12px;"><a href="{fiche}" target="_blank" style="color:{SOFT};">Fiche technique</a></div>
+<div style="padding-top:12px;font-family:{SANS};font-size:13px;color:{SOFT};">Plus rapide&nbsp;: <a href="{whatsapp}" target="_blank" style="color:{DEEP};font-weight:600;">WhatsApp</a> · <a href="{fiche}" target="_blank" style="color:{SOFT};">Fiche technique</a></div>
 </td></tr></table>"""
 
 
@@ -128,7 +137,7 @@ def build_n01():
             {p("Le patient GLP-1 arrive en consultation. Le protocole pour l'accueillir, la technologie pour le traiter, la formation pour le maîtriser.", 15, SOFT, 16)}
           </td>
           <td class="col stack-gap" valign="middle" width="42%" align="center" style="padding-left:16px;">
-            <a href="{FICHE_HANOVER}" target="_blank"><img src="{ASSETS}/machine-hanover-5g.jpg" width="210" alt="HANOVER 5G — laser endolift" style="display:block;width:210px;max-width:100%;height:auto;border:0;border-radius:22px;"></a>
+            <a href="{DEMO}" target="_blank"><img src="{ASSETS}/machine-hanover-5g.jpg" width="210" alt="HANOVER 5G — laser endolift" style="display:block;width:210px;max-width:100%;height:auto;border:0;border-radius:22px;"></a>
           </td>
         </tr></table>
       </td></tr>
@@ -179,9 +188,9 @@ def build_n01():
     {title("Retendre. Régénérer.", 28, DEEP, 10, 520)}
   </td></tr>
   <tr><td style="padding:16px 0 0;">
-    {machine("hanover-5g", "HANOVER 5G", "01 · Retendre · Laser endolift", "Double longueur d'onde 980 et 1470&nbsp;nm. Double menton, ovale, bras&nbsp;: un acte en cabinet, sans éviction socio-professionnelle.", "Voir l'Hanover en démo", DEMO, FICHE_HANOVER)}
+    {machine("hanover-5g", "HANOVER 5G", "01 · Retendre · Laser endolift", "Double longueur d'onde 980 et 1470&nbsp;nm. Double menton, ovale, bras&nbsp;: un acte en cabinet, sans éviction socio-professionnelle.", "Voir l'Hanover en démo", DEMO, FICHE_HANOVER, WA_HANOVER)}
     <div style="height:12px;line-height:12px;font-size:0;">&nbsp;</div>
-    {machine("centrifugel", "CENTRIFUGEL", "02 · Régénérer · Plasma", "Centrifugeuse 4&nbsp;000&nbsp;tr/min pour le PRP et le Biofiller&nbsp;X7. Couvercle verrouillé, arrêt automatique&nbsp;: la préparation devient un geste de routine.", "Voir le protocole en démo", DEMO_CENTRI, FICHE_CENTRI)}
+    {machine("centrifugel", "CENTRIFUGEL", "02 · Régénérer · Plasma", "Centrifugeuse 4&nbsp;000&nbsp;tr/min pour le PRP et le Biofiller&nbsp;X7. Couvercle verrouillé, arrêt automatique&nbsp;: la préparation devient un geste de routine.", "Voir le protocole en démo", DEMO_CENTRI, FICHE_CENTRI, WA_CENTRI)}
   </td></tr>
 
   <!-- ACADEMY / FORMATION -->
@@ -196,7 +205,8 @@ def build_n01():
           {step(1, "Installation au cabinet")}{step(2, "Formation initiale")}{step(3, "Protocoles")}{step(4, "Perfection&shy;nement")}
         </tr></table>
         <div style="height:22px;line-height:22px;font-size:0;">&nbsp;</div>
-        {button("Recevoir le programme de formation", FORMATION, "glass", 320)}
+        {button("Recevoir le programme de formation", WA_FORMATION, "glass", 320)}
+        <div style="padding-top:12px;font-family:{SANS};font-size:13px;color:{SOFT};">Ou réservez un échange avec un formateur&nbsp;: <a href="{link('/fr/contact?sujet=masterclass', 'rdv-formation')}" style="color:{DEEP};font-weight:600;">demande de rendez-vous</a></div>
       </td></tr>
     </table>
   </td></tr>
@@ -209,6 +219,8 @@ def build_n01():
         {title("La fiche « Bilan visage GLP-1 »", 22, DEEP, 10, 500)}
         {p("Les 5 questions à poser en première consultation pour choisir entre retendre, régénérer ou combiner. Une page, à garder sur votre bureau.", 14, SOFT, 10)}
         {p("Répondez simplement «&nbsp;BILAN&nbsp;» à cet e-mail. Nous vous l'envoyons.", 15, DEEP, 14, 600)}
+        <div style="height:14px;line-height:14px;font-size:0;">&nbsp;</div>
+        {button("Recevoir la fiche sur WhatsApp", WA_BILAN, "glass", 300, compact=True)}
       </td></tr>
     </table>
   </td></tr>
