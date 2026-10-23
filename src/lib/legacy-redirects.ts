@@ -53,9 +53,12 @@ export const legacyRedirects: Record<string, string> = {
   "/photomodulation": "/fr/technologies#photomodulation",
   "/rejuvenation-cutanee": "/fr/technologies#rejuvenation",
   "/therapie-avancee": "/fr/technologies#therapie",
+  // MEGACRYO (cryolipolyse by Longiligne) : plus au catalogue, page encore affichée par Google (oct. 2026).
+  // Pas de cryolipolyse équivalente (CRYOCOVER = cryothérapie articulaire) → gamme Amincissement.
+  "/megacryo": "/fr/technologies/gammes/amincissement",
 
   // Laissées en 404 : sans équivalent réel sur le nouveau site (/actualites, /portfolio) ou machines dont le statut
-  // catalogue n'est pas confirmé (/sculptface, /gatecare, /perfect-cool, /hightlift, /rejuvteck-7, /megacryo, /microgun).
+  // catalogue n'est pas confirmé (/sculptface, /gatecare, /perfect-cool, /hightlift, /rejuvteck-7, /microgun).
   // Machine confirmée retirée → la déplacer dans legacyGone (410). Machine renommée → la rediriger vers sa nouvelle fiche.
 };
 
