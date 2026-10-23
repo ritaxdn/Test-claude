@@ -14,7 +14,8 @@ OUT = Path(__file__).parent
 ASSETS = os.environ.get("NEWSLETTER_ASSETS", f"{SITE}/email/newsletter")
 
 PEARL, DEEP, SOFT, LINE = "#ECEEF3", "#1D1B26", "#5D5B6B", "#DCDDE4"
-SILVER, STUDIO = "#B9BBC4", "#0E0F12"
+IRIS = ["#7FE3F0", "#A797FF", "#F29BD0", "#FFC58F"]  # iris pastel (anneau des boutons, repères)
+LAVENDER = "#F1EFFE"
 RAINBOW = ["#00BCD4", "#7B61FF", "#E91E8C", "#FF5722", "#FFC107"]
 VIOLET = "#6B5CFF"
 SANS = "'Instrument Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif"
@@ -50,64 +51,44 @@ def title(text, size=24, color=DEEP, top=10):
             f'text-transform:uppercase;color:{color};margin-top:{top}px;">{text}</div>')
 
 
-def button(text, href, style="deep", width=230):
-    bg, fg, border = {"deep": (DEEP, "#FFFFFF", DEEP), "light": ("#FFFFFF", DEEP, "#C9CAD3"), "white": ("#FFFFFF", DEEP, "#FFFFFF")}[style]
-    return f"""<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
-<td align="center" bgcolor="{bg}" style="border-radius:999px;border:1px solid {border};">
-<!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" href="{href}" style="height:48px;v-text-anchor:middle;width:{width}px;" arcsize="50%" stroke="f" fillcolor="{bg}"><center style="color:{fg};font-family:Arial,sans-serif;font-size:15px;">{text} &#8599;</center></v:roundrect><![endif]-->
-<!--[if !mso]><!--><a href="{href}" target="_blank" style="display:inline-block;white-space:nowrap;padding:14px 26px;font-family:{SANS};font-size:15px;font-weight:600;line-height:20px;color:{fg};text-decoration:none;border-radius:999px;">{text}&nbsp;&nbsp;&#8599;</a><!--<![endif]-->
+def button(text, href, style="iris", width=230):
+    """Pastille blanche, texte Deep. « iris » : liseré irisé (dégradé, ou lavande là où les dégradés sont retirés)."""
+    inner = f"""<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+<td align="center" bgcolor="#FFFFFF" style="border-radius:999px;{'' if style == 'iris' else 'border:1px solid #C9CAD3;'}">
+<!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" href="{href}" style="height:46px;v-text-anchor:middle;width:{width}px;" arcsize="50%" strokecolor="#A797FF" fillcolor="#FFFFFF"><center style="color:{DEEP};font-family:Arial,sans-serif;font-size:15px;font-weight:bold;">{text} &#8599;</center></v:roundrect><![endif]-->
+<!--[if !mso]><!--><a href="{href}" target="_blank" style="display:inline-block;white-space:nowrap;padding:13px 26px;font-family:{SANS};font-size:15px;font-weight:600;line-height:20px;color:{DEEP};text-decoration:none;border-radius:999px;">{text}&nbsp;&nbsp;<span style="color:{VIOLET};">&#8599;</span></a><!--<![endif]-->
 </td></tr></table>"""
+    if style != "iris":
+        return inner
+    ring = "linear-gradient(90deg," + ",".join(IRIS) + ")"
+    return f"""<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+<td bgcolor="{IRIS[1]}" style="border-radius:999px;padding:2px;background:{IRIS[1]};background-image:{ring};box-shadow:0 12px 26px -16px rgba(29,27,38,.45);">{inner}</td></tr></table>"""
 
 
 def spacer(h):
     return f'<tr><td height="{h}" style="height:{h}px;line-height:{h}px;font-size:0;">&nbsp;</td></tr>'
 
 
-def tech_card(t, seg, n):
-    """Fiche machine : photo studio à gauche (fond sombre), texte et indications à droite."""
+def tech_row(t, seg, i):
+    """Fiche en zigzag : scène de la machine (image) d'un côté, texte de l'autre ; empilées sur mobile, image d'abord."""
     href = utm(f"/fr/technologies/{t['slug']}", seg, t["slug"])
     points = "".join(
-        f'<tr><td width="18" valign="top" style="font-family:{SANS};font-size:14px;line-height:1.5;color:{VIOLET};">&mdash;</td>'
+        f'<tr><td width="20" valign="top" style="font-family:{SANS};font-size:14px;line-height:1.5;color:{VIOLET};">&#10022;</td>'
         f'<td style="font-family:{SANS};font-size:14px;line-height:1.5;color:{DEEP};padding-bottom:6px;">{p}</td></tr>'
         for p in t["points"]
     )
-    return f"""<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FFFFFF;border:1px solid {LINE};border-radius:24px;border-collapse:separate;"><tr>
-<td class="col photo" width="210" align="center" valign="middle" bgcolor="{STUDIO}" style="background:{STUDIO};border-radius:23px 0 0 23px;padding:22px 0;">
-<a href="{href}" target="_blank"><img src="{SITE}{t['img']}" width="{t['w']}" height="260" alt="{t['name']}" style="display:block;width:{t['w']}px;height:260px;border:0;border-radius:14px;"></a></td>
-<td class="col" valign="middle" style="padding:26px 28px;">
-{label(f"0{n} &middot; {t['cat']}", SOFT, 10)}
-{title(t['name'], 24, DEEP, 8)}
-<div style="font-family:{SANS};font-size:15px;line-height:1.5;color:{SOFT};margin-top:8px;">{t['line']}</div>
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:14px;">{points}</table>
-<div style="height:12px;line-height:12px;font-size:0;">&nbsp;</div>
-{button('Voir la fiche', href, 'light', 170)}
-</td></tr></table>"""
-
-
-def tech_grid(techs, seg):
-    """Grille de 2 fiches : photo studio, catégorie, nom, accroche, 2 indications, bouton en pastille."""
-    cells = []
-    for i, t in enumerate(techs):
-        href = utm(f"/fr/technologies/{t['slug']}", seg, t["slug"])
-        pad = "padding-right:7px;" if i == 0 else "padding-left:7px;"
-        points = "".join(
-            f'<div style="font-family:{SANS};font-size:13px;line-height:1.45;color:{DEEP};margin-top:5px;">'
-            f'<span style="color:{VIOLET};">&mdash;</span>&nbsp; {p}</div>'
-            for p in t["points"][:2]
-        )
-        cells.append(f"""<td class="col gcell" width="50%" valign="top" style="{pad}">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FFFFFF;border:1px solid {LINE};border-radius:24px;border-collapse:separate;"><tr>
-<td align="center" bgcolor="{STUDIO}" style="background:{STUDIO};border-radius:23px 23px 0 0;padding:18px 0 0;">
-<a href="{href}" target="_blank"><img src="{SITE}{t['img']}" width="{round(t['w'] * 0.92)}" height="240" alt="{t['name']}" style="display:block;width:{round(t['w'] * 0.92)}px;height:240px;border:0;"></a></td></tr>
-<tr><td style="padding:20px 20px 22px;">
-{label(t['cat'], SOFT, 10)}
-{title(t['name'], 20, DEEP, 6)}
-<div style="font-family:{SANS};font-size:14px;line-height:1.5;color:{SOFT};margin-top:6px;">{t['line']}</div>
-{points}
-<div style="height:16px;line-height:16px;font-size:0;">&nbsp;</div>
-{button('Voir la fiche', href, 'deep', 160)}
-</td></tr></table></td>""")
-    return f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>{"".join(cells)}</tr></table>'
+    flip = i % 2 == 1
+    kicker = f"0{i + 1} &middot; {t['cat']}"
+    img = (f'<td class="col" width="260" valign="middle" dir="ltr" style="padding:0;">'
+           f'<a href="{href}" target="_blank"><img src="{ASSETS}/machine-{t["slug"]}.jpg" width="260" alt="{t["name"]}" '
+           f'style="display:block;width:100%;max-width:260px;height:auto;border:0;border-radius:28px;margin:0 auto;"></a></td>')
+    txt = (f'<td class="col tcell" valign="middle" dir="ltr" style="padding:{"0 26px 0 6px" if flip else "0 6px 0 26px"};text-align:left;">'
+           f'{label(kicker, SOFT, 10)}{title(t["name"], 26, DEEP, 8)}'
+           f'<div style="font-family:{SANS};font-size:15px;line-height:1.55;color:{SOFT};margin-top:8px;">{t["line"]}</div>'
+           f'<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:14px;">{points}</table>'
+           f'<div style="height:12px;line-height:12px;font-size:0;">&nbsp;</div>{button("Voir la fiche", href, "iris", 170)}</td>')
+    return (f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" dir="{"rtl" if flip else "ltr"}">'
+            f'<tr>{img}{txt}</tr></table>')
 
 
 def partners_strip(seg):
@@ -120,21 +101,23 @@ def partners_strip(seg):
 
 
 def academy_block(seg):
-    """Bloc sombre : le parcours Academy en 4 étapes."""
+    """Parcours Academy sur carte blanche : liseré arc-en-ciel, 4 étapes numérotées en couleurs de la marque."""
     steps = ["Installation", "Formation initiale", "Protocoles", "Perfectionnement"]
     cell = lambda i: (
-        f'<td class="step" width="50%" valign="top" style="padding:0 8px 18px 0;">'
-        f'<div style="height:2px;line-height:2px;font-size:0;background:{RAINBOW[i]};background-image:linear-gradient(90deg,{RAINBOW[i]},{RAINBOW[i + 1]});width:40px;">&nbsp;</div>'
-        f'<div style="font-family:{MONO};font-size:12px;letter-spacing:2px;color:{SILVER};margin-top:10px;">0{i + 1}</div>'
-        f'<div style="font-family:{SANS};font-size:17px;font-weight:600;line-height:1.3;color:#FFFFFF;margin-top:2px;">{steps[i]}</div></td>'
+        f'<td class="step" width="25%" valign="top" style="padding:0 6px 14px 0;">'
+        f'<div style="font-family:{DISPLAY};font-size:34px;font-weight:700;line-height:1;color:{RAINBOW[i]};">0{i + 1}</div>'
+        f'<div style="height:3px;line-height:3px;font-size:0;background:{IRIS[i]};width:44px;margin:10px 0 8px;border-radius:3px;">&nbsp;</div>'
+        f'<div style="font-family:{SANS};font-size:15px;font-weight:600;line-height:1.3;color:{DEEP};">{steps[i]}</div></td>'
     )
-    return f"""<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="{DEEP}" style="background:{DEEP};border-radius:24px;border-collapse:separate;"><tr><td style="padding:34px 32px 30px;">
-{label('<span style="color:#7FE3F0;">&#9679;</span>&nbsp; Le parcours Cellulift Academy', SILVER)}
-{title("Une machine n'est jamais une garantie de résultat.", 24, "#FFFFFF", 14)}
-<div style="font-family:{SANS};font-size:15px;line-height:1.6;color:{SILVER};margin-top:12px;">Les résultats et la sécurité patient dépendent de la maîtrise du praticien. Chaque acquisition Cellulift s'accompagne d'un parcours de formation.</div>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:26px;"><tr>{cell(0)}{cell(1)}</tr><tr>{cell(2)}{cell(3)}</tr></table>
-<div style="height:8px;line-height:8px;font-size:0;">&nbsp;</div>
-{button("Découvrir l'Academy", utm('/fr/academy', seg, 'academy'), 'white')}
+    return f"""<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFFFFF" style="background:#FFFFFF;border:1px solid {LINE};border-radius:28px;border-collapse:separate;overflow:hidden;">
+<tr><td style="padding:0;border-radius:28px 28px 0 0;overflow:hidden;">{rainbow_line(4)}</td></tr>
+<tr><td style="padding:30px 30px 26px;">
+{label('<span style="color:' + VIOLET + ';">&#9679;</span>&nbsp; Le parcours Cellulift Academy')}
+{title("Une machine n'est jamais une garantie de résultat.", 24, DEEP, 12)}
+<div style="font-family:{SANS};font-size:15px;line-height:1.6;color:{SOFT};margin-top:10px;">Les résultats et la sécurité patient dépendent de la maîtrise du praticien. Chaque acquisition Cellulift s'accompagne d'un parcours de formation.</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:24px;"><tr>{cell(0)}{cell(1)}{cell(2)}{cell(3)}</tr></table>
+<div style="height:6px;line-height:6px;font-size:0;">&nbsp;</div>
+{button("Découvrir l'Academy", utm('/fr/academy', seg, 'academy'), 'iris')}
 </td></tr></table>"""
 
 
@@ -159,7 +142,7 @@ def build(seg):
     .px {{ padding-left:14px !important; padding-right:14px !important; }}
     .col {{ display:block !important; width:100% !important; box-sizing:border-box; }}
     .photo {{ border-radius:23px 23px 0 0 !important; }}
-    .gcell {{ padding:0 0 14px !important; }}
+    .tcell {{ padding:18px 6px 0 !important; }}
     .step {{ display:inline-block !important; width:48% !important; }}
     .btn {{ display:block !important; width:100% !important; }}
     .btn table {{ margin:0 auto !important; }}
@@ -167,6 +150,9 @@ def build(seg):
 </style>
 </head>"""
 
+    techs = "\n{}\n".format(spacer(26)).join(
+        f'<tr><td class="px" style="padding:0 24px;">{tech_row(t, s["key"], i)}</td></tr>' for i, t in enumerate(s["techs"])
+    )
     body = f"""
 <body style="margin:0;padding:0;background:{PEARL};">
 <!-- Pré-en-tête (aperçu dans la boîte de réception) -->
@@ -191,7 +177,7 @@ def build(seg):
 <div style="font-family:{SANS};font-size:17px;line-height:1.6;color:{DEEP};font-weight:600;">Bonjour {{{{PRENOM}}}},</div>
 <div style="font-family:{SANS};font-size:16px;line-height:1.7;color:{SOFT};margin-top:8px;">{s['intro']}</div>
 <div style="height:20px;line-height:20px;font-size:0;">&nbsp;</div>
-{button('Demander une démonstration', utm('/fr/contact', s['key'], 'demo'), 'deep', 290)}
+{button('Demander une démonstration', utm('/fr/contact', s['key'], 'demo'), 'iris', 290)}
 </td></tr>
 {spacer(34)}
 
@@ -200,7 +186,7 @@ def build(seg):
 {label('<span style="color:' + VIOLET + ';">&#9679;</span>&nbsp; ' + s['tech_eyebrow'])}
 {title(s['tech_title'], 26)}
 </td></tr>
-<tr><td class="px" style="padding:0 24px;">{tech_grid(s['techs'], s['key'])}</td></tr>
+{techs}
 {spacer(30)}
 <tr><td class="px" style="padding:0 24px;">{partners_strip(s['key'])}</td></tr>
 {spacer(30)}
@@ -209,14 +195,16 @@ def build(seg):
 <tr><td class="px" style="padding:0 24px;">{academy_block(s['key'])}</td></tr>
 {spacer(40)}
 
-<!-- Contact -->
-<tr><td class="px" align="center" style="padding:0 24px;">
+<!-- Contact : bandeau lavande -->
+<tr><td class="px" style="padding:0 24px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="{LAVENDER}" style="background:{LAVENDER};border-radius:28px;border-collapse:separate;"><tr><td align="center" style="padding:34px 24px 26px;">
 {title(s['cta_title'], 22, DEEP, 0)}
 <div style="font-family:{SANS};font-size:15px;line-height:1.6;color:{SOFT};margin:10px auto 22px;max-width:440px;">{s['cta_text']}</div>
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center"><tr>
-<td class="btn" align="center" style="padding:0 6px 10px;">{button('Écrire sur WhatsApp', 'https://wa.me/212670842795')}</td>
-<td class="btn" align="center" style="padding:0 6px 10px;">{button("Contacter l'équipe", utm('/fr/contact', s['key'], 'contact'), 'light')}</td>
+<td class="btn" align="center" style="padding:0 6px 10px;">{button('Écrire sur WhatsApp', 'https://wa.me/212670842795', 'iris')}</td>
+<td class="btn" align="center" style="padding:0 6px 10px;">{button("Contacter l'équipe", utm('/fr/contact', s['key'], 'contact'), 'plain')}</td>
 </tr></table>
+</td></tr></table>
 </td></tr>
 {spacer(32)}
 <tr><td class="px" style="padding:0 24px;">{rainbow_line(1)}</td></tr>
@@ -249,7 +237,7 @@ T = {
     "pressoligne": {"w": 173, "slug": "pressoligne-5", "name": "PRESSOLIGNE 5", "cat": "Amincissement avancé", "img": "/images/technologies/pressoligne-5/00.jpg",
                     "line": "Pressothérapie professionnelle pour drainer tout le corps.",
                     "points": ["Jambes lourdes et rétention d'eau", "Fatigue musculaire", "Fermeté de la peau"]},
-    "tanita": {"w": 208, "slug": "tanita", "name": "TANITA", "cat": "Amincissement avancé", "img": "/images/technologies/tanita/00.jpg",
+    "tanita": {"w": 208, "slug": "tanita", "wide": True, "name": "TANITA", "cat": "Amincissement avancé", "img": "/images/technologies/tanita/00.jpg",
                "line": "Moniteur de composition corporelle sans fil.",
                "points": ["Bilan de composition corporelle", "Suivi des programmes minceur", "Suivi nutritionnel et sportif"]},
     "laqueen": {"w": 208, "slug": "la-queen", "name": "LA QUEEN", "cat": "Solutions lasers", "img": "/images/technologies/la-queen/v2-00.jpg",
