@@ -1,0 +1,24 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..700&family=JetBrains+Mono:wght@400;500&display=block" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1200px;height:680px}
+body{position:relative;overflow:hidden;background:#ECEEF3;
+ background-image:radial-gradient(circle at 88% 8%,rgba(123,97,255,.22),transparent 42%),radial-gradient(circle at 4% 62%,rgba(0,188,212,.16),transparent 40%),radial-gradient(circle at 96% 100%,rgba(233,30,140,.14),transparent 45%);}
+.grid{position:absolute;inset:0;background-image:linear-gradient(rgba(29,27,38,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(29,27,38,.05) 1px,transparent 1px);background-size:60px 60px;mask-image:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent)}
+.wrap{position:absolute;left:84px;right:84px;top:92px}
+.label{font-family:'JetBrains Mono';font-size:22px;letter-spacing:.2em;text-transform:uppercase;color:#5D5B6B;display:flex;align-items:center;gap:16px}
+.dot{width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,#00BCD4,#7B61FF,#E91E8C)}
+h1{margin-top:40px;font-family:'Archivo';font-stretch:118%;font-weight:560;text-transform:uppercase;letter-spacing:-.035em;line-height:.92;font-size:var(--fs,96px);color:#1D1B26}
+h1 .iri{background:linear-gradient(100deg,#1D1B26 0%,#6B5CFF 30%,#D0469C 65%,#E38A3C 100%);-webkit-background-clip:text;background-clip:text;color:transparent;display:inline}
+svg{position:absolute;left:0;right:0;bottom:70px;width:1200px;height:80px}
+.foot{position:absolute;left:84px;bottom:40px;font-family:'JetBrains Mono';font-size:18px;letter-spacing:.24em;color:#5D5B6B;text-transform:uppercase}
+</style></head><body>
+<div class="grid"></div>
+<div class="wrap"><div class="label"><span class="dot"></span><span id="lab"></span></div><h1 id="t"></h1></div>
+<svg viewBox="0 0 1200 80" fill="none"><defs><linearGradient id="g" x1="0" x2="1200" y1="0" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#00BCD4"/><stop offset=".3" stop-color="#7B61FF"/><stop offset=".55" stop-color="#E91E8C"/><stop offset=".8" stop-color="#FF5722"/><stop offset="1" stop-color="#FFC107"/></linearGradient></defs>
+<path d="M0 50 H780 L806 50 L826 14 L846 72 L864 34 L878 50 H1200" stroke="url(#g)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<div class="foot">Cellulift Academy · Newsletter</div>
+<script>const q=new URLSearchParams(location.search);document.getElementById('lab').textContent=q.get('lab');
+document.getElementById('t').innerHTML=q.get('a')+'<br><span class="iri">'+q.get('b')+'</span>';document.documentElement.style.setProperty('--fs',(q.get('fs')||96)+'px');</script>
+</body></html>

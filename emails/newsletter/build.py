@@ -1,18 +1,24 @@
 """Génère les templates de newsletter Cellulift Academy (un par segment).
 
 E-mail « bulletproof » : tableaux, styles en ligne, 600 px, images hébergées sur cellulift.ma.
+Gmail et Outlook ignorent les polices du site et les dégradés : le titre d'ouverture est donc une
+image (hero/, rendue avec Archivo et le dégradé irisé), le reste du texte reste du vrai texte.
 Variables à remplacer par celles de l'outil d'e-mailing : {{PRENOM}}, {{DESINSCRIPTION}}, {{VERSION_WEB}}.
 """
+import os
 from pathlib import Path
 
 SITE = "https://www.cellulift.ma"
 OUT = Path(__file__).parent
+# Images d'ouverture : public/email/newsletter/ sur le site (NEWSLETTER_ASSETS pour un aperçu local).
+ASSETS = os.environ.get("NEWSLETTER_ASSETS", f"{SITE}/email/newsletter")
 
-PEARL, PEARL2, DEEP, SOFT, LINE = "#ECEEF3", "#E2E4EB", "#1D1B26", "#5D5B6B", "#DCDDE4"
+PEARL, DEEP, SOFT, LINE = "#ECEEF3", "#1D1B26", "#5D5B6B", "#DCDDE4"
+SILVER, STUDIO = "#B9BBC4", "#0E0F12"
 RAINBOW = ["#00BCD4", "#7B61FF", "#E91E8C", "#FF5722", "#FFC107"]
 VIOLET = "#6B5CFF"
-SANS = "'Instrument Sans', Arial, Helvetica, sans-serif"
-DISPLAY = "'Archivo', Arial, Helvetica, sans-serif"
+SANS = "'Instrument Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif"
+DISPLAY = "'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif"
 MONO = "'JetBrains Mono', 'Courier New', monospace"
 
 
@@ -25,7 +31,7 @@ def utm(path, segment, content):
 
 
 def rainbow_line(height=2):
-    # Vrai dégradé dans les clients modernes, 4 aplats successifs dans Outlook.
+    # Vrai dégradé dans les clients modernes, 4 aplats successifs dans Gmail et Outlook.
     cells = "".join(
         f'<td height="{height}" bgcolor="{a}" style="height:{height}px;line-height:{height}px;font-size:0;'
         f'background:{a};background-image:linear-gradient(90deg,{a},{b});">&nbsp;</td>'
@@ -39,91 +45,62 @@ def label(text, color=SOFT, size=11):
             f'text-transform:uppercase;color:{color};">{text}</div>')
 
 
-def button(text, href, solid=True):
-    bg, fg, border = (DEEP, "#FFFFFF", DEEP) if solid else ("#FFFFFF", DEEP, "#C9CAD3")
+def title(text, size=24, color=DEEP, top=10):
+    return (f'<div style="font-family:{DISPLAY};font-size:{size}px;line-height:1.12;font-weight:700;letter-spacing:-0.4px;'
+            f'text-transform:uppercase;color:{color};margin-top:{top}px;">{text}</div>')
+
+
+def button(text, href, style="deep", width=230):
+    bg, fg, border = {"deep": (DEEP, "#FFFFFF", DEEP), "light": ("#FFFFFF", DEEP, "#C9CAD3"), "white": ("#FFFFFF", DEEP, "#FFFFFF")}[style]
     return f"""<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
 <td align="center" bgcolor="{bg}" style="border-radius:999px;border:1px solid {border};">
-<!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" href="{href}" style="height:48px;v-text-anchor:middle;width:260px;" arcsize="50%" stroke="f" fillcolor="{bg}"><center style="color:{fg};font-family:Arial,sans-serif;font-size:15px;">{text} &#8599;</center></v:roundrect><![endif]-->
-<!--[if !mso]><!--><a href="{href}" target="_blank" style="display:inline-block;white-space:nowrap;padding:14px 28px;font-family:{SANS};font-size:15px;font-weight:500;line-height:20px;color:{fg};text-decoration:none;border-radius:999px;">{text}&nbsp;&nbsp;&#8599;</a><!--<![endif]-->
+<!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" href="{href}" style="height:48px;v-text-anchor:middle;width:{width}px;" arcsize="50%" stroke="f" fillcolor="{bg}"><center style="color:{fg};font-family:Arial,sans-serif;font-size:15px;">{text} &#8599;</center></v:roundrect><![endif]-->
+<!--[if !mso]><!--><a href="{href}" target="_blank" style="display:inline-block;white-space:nowrap;padding:14px 26px;font-family:{SANS};font-size:15px;font-weight:600;line-height:20px;color:{fg};text-decoration:none;border-radius:999px;">{text}&nbsp;&nbsp;&#8599;</a><!--<![endif]-->
 </td></tr></table>"""
-
-
-def card(inner, pad=28, bg="#FFFFFF"):
-    return (f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" '
-            f'style="background:{bg};border:1px solid {LINE};border-radius:24px;"><tr>'
-            f'<td style="padding:{pad}px;">{inner}</td></tr></table>')
 
 
 def spacer(h):
     return f'<tr><td height="{h}" style="height:{h}px;line-height:{h}px;font-size:0;">&nbsp;</td></tr>'
 
 
-def session_block(s, seg):
-    meta = " · ".join(x for x in [s.get("time"), s.get("place"), f'{s["seats"]} places' if s.get("seats") else None] if x)
-    sub = (f'<div style="font-family:{SANS};font-size:15px;line-height:1.5;color:{SOFT};margin-top:10px;">{s["subtitle"]}</div>'
-           if s.get("subtitle") else "")
-    meta_html = (f'<div style="margin-top:14px;">{label(meta, DEEP, 11)}</div>' if meta else "")
-    href = utm(s.get("link") or "/fr/academy", seg, "session-vedette")
-    inner = f"""{label('<span style="color:' + VIOLET + ';">&#9679;</span>&nbsp; Prochaine formation')}
-<div style="font-family:{MONO};font-size:13px;letter-spacing:1px;color:{DEEP};margin-top:18px;text-transform:uppercase;">{s['date']}</div>
-<div style="font-family:{DISPLAY};font-size:24px;line-height:1.15;font-weight:600;letter-spacing:-0.4px;color:{DEEP};margin-top:8px;">{s['title']}</div>
-{sub}{meta_html}
-<div style="height:24px;line-height:24px;font-size:0;">&nbsp;</div>
-{button('Réserver ma place', href)}"""
-    return card(inner)
-
-
-def agenda(sessions, seg):
-    rows = ""
-    for i, s in enumerate(sessions):
-        border = f"border-top:1px solid {LINE};" if i else ""
-        where = f' · {s["place"]}' if s.get("place") else ""
-        rows += f"""<tr><td style="{border}padding:16px 0;">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
-<td width="128" valign="top" style="font-family:{MONO};font-size:11px;line-height:1.6;letter-spacing:1px;text-transform:uppercase;color:{SOFT};">{s['short']}{where}</td>
-<td valign="top" style="font-family:{SANS};font-size:15px;line-height:1.45;color:{DEEP};padding-left:12px;">
-<a href="{utm(s.get('link') or '/fr/academy', seg, 'agenda')}" target="_blank" style="color:{DEEP};text-decoration:none;">{s['title']}&nbsp;<span style="color:{VIOLET};">&#8599;</span></a></td>
-</tr></table></td></tr>"""
-    inner = f"""{label('Agenda Academy')}
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:8px;">{rows}</table>
-<div style="font-family:{SANS};font-size:14px;margin-top:6px;"><a href="{utm('/fr/academy', seg, 'calendrier')}" target="_blank" style="color:{VIOLET};text-decoration:underline;">Voir tout le calendrier</a></div>"""
-    return card(inner)
-
-
-def tech_cards(techs, seg):
-    cols = ""
-    for i, t in enumerate(techs):
-        pad = "padding-right:8px;" if i == 0 else "padding-left:8px;"
-        href = utm(f"/fr/technologies/{t['slug']}", seg, t["slug"])
-        cols += f"""<td class="col" width="50%" valign="top" style="{pad}">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FFFFFF;border:1px solid {LINE};border-radius:24px;"><tr>
-<td align="center" style="padding:20px 20px 0;background:{PEARL2};border-radius:24px 24px 0 0;">
-<a href="{href}" target="_blank"><img src="{SITE}{t['img']}" width="{t['w']}" height="220" alt="{t['name']}" style="display:block;width:{t['w']}px;height:220px;border:0;"></a></td></tr>
-<tr><td style="padding:20px 22px 24px;">
-{label(t['cat'], SOFT, 10)}
-<div style="font-family:{DISPLAY};font-size:18px;font-weight:600;letter-spacing:0.5px;color:{DEEP};margin-top:6px;text-transform:uppercase;">{t['name']}</div>
-<div style="font-family:{SANS};font-size:14px;line-height:1.5;color:{SOFT};margin-top:8px;">{t['line']}</div>
-<div style="font-family:{SANS};font-size:14px;margin-top:14px;"><a href="{href}" target="_blank" style="color:{DEEP};text-decoration:none;border-bottom:1px solid {VIOLET};">Voir la fiche&nbsp;&#8599;</a></div>
-</td></tr></table></td>"""
-    return f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>{cols}</tr></table>'
-
-
-def journey(seg):
-    steps = ["Installation", "Formation initiale", "Protocoles", "Perfectionnement"]
-    tds = "".join(
-        f'<td class="step" width="25%" valign="top" style="padding:0 4px;">'
-        f'<div style="font-family:{MONO};font-size:11px;color:{VIOLET};letter-spacing:1px;">0{i + 1}</div>'
-        f'<div style="height:2px;line-height:2px;font-size:0;background:{RAINBOW[i]};background-image:linear-gradient(90deg,{RAINBOW[i]},{RAINBOW[i + 1]});margin:8px 0 10px;">&nbsp;</div>'
-        f'<div style="font-family:{SANS};font-size:14px;line-height:1.35;color:{DEEP};">{s}</div></td>'
-        for i, s in enumerate(steps)
+def tech_card(t, seg, n):
+    """Fiche machine : photo studio à gauche (fond sombre), texte et indications à droite."""
+    href = utm(f"/fr/technologies/{t['slug']}", seg, t["slug"])
+    points = "".join(
+        f'<tr><td width="18" valign="top" style="font-family:{SANS};font-size:14px;line-height:1.5;color:{VIOLET};">&mdash;</td>'
+        f'<td style="font-family:{SANS};font-size:14px;line-height:1.5;color:{DEEP};padding-bottom:6px;">{p}</td></tr>'
+        for p in t["points"]
     )
-    inner = f"""{label('Le parcours Academy')}
-<div style="font-family:{DISPLAY};font-size:20px;line-height:1.2;font-weight:600;color:{DEEP};margin-top:12px;text-transform:uppercase;letter-spacing:-0.2px;">Une machine n'est jamais une garantie de résultat.</div>
-<div style="font-family:{SANS};font-size:15px;line-height:1.6;color:{SOFT};margin-top:10px;">Les résultats et la sécurité patient dépendent de la maîtrise du praticien. Chaque acquisition Cellulift s'accompagne d'un parcours de formation.</div>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:20px;"><tr>{tds}</tr></table>
-<div style="height:16px;line-height:16px;font-size:0;">&nbsp;</div>
-{button("Découvrir l'Academy", utm('/fr/academy', seg, 'academy'))}"""
-    return card(inner)
+    return f"""<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FFFFFF;border:1px solid {LINE};border-radius:24px;border-collapse:separate;"><tr>
+<td class="col photo" width="210" align="center" valign="middle" bgcolor="{STUDIO}" style="background:{STUDIO};border-radius:23px 0 0 23px;padding:22px 0;">
+<a href="{href}" target="_blank"><img src="{SITE}{t['img']}" width="{t['w']}" height="260" alt="{t['name']}" style="display:block;width:{t['w']}px;height:260px;border:0;border-radius:14px;"></a></td>
+<td class="col" valign="middle" style="padding:26px 28px;">
+{label(f"0{n} &middot; {t['cat']}", SOFT, 10)}
+{title(t['name'], 24, DEEP, 8)}
+<div style="font-family:{SANS};font-size:15px;line-height:1.5;color:{SOFT};margin-top:8px;">{t['line']}</div>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:14px;">{points}</table>
+<div style="height:12px;line-height:12px;font-size:0;">&nbsp;</div>
+{button('Voir la fiche', href, 'light', 170)}
+</td></tr></table>"""
+
+
+def academy_block(seg):
+    """Bloc sombre : le parcours Academy en 4 étapes."""
+    steps = ["Installation", "Formation initiale", "Protocoles", "Perfectionnement"]
+    cell = lambda i: (
+        f'<td class="step" width="50%" valign="top" style="padding:0 8px 18px 0;">'
+        f'<div style="height:2px;line-height:2px;font-size:0;background:{RAINBOW[i]};background-image:linear-gradient(90deg,{RAINBOW[i]},{RAINBOW[i + 1]});width:40px;">&nbsp;</div>'
+        f'<div style="font-family:{MONO};font-size:12px;letter-spacing:2px;color:{SILVER};margin-top:10px;">0{i + 1}</div>'
+        f'<div style="font-family:{SANS};font-size:17px;font-weight:600;line-height:1.3;color:#FFFFFF;margin-top:2px;">{steps[i]}</div></td>'
+    )
+    return f"""<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="{DEEP}" style="background:{DEEP};border-radius:24px;border-collapse:separate;"><tr><td style="padding:34px 32px 30px;">
+{label('<span style="color:#7FE3F0;">&#9679;</span>&nbsp; Le parcours Cellulift Academy', SILVER)}
+{title("Une machine n'est jamais une garantie de résultat.", 24, "#FFFFFF", 14)}
+<div style="font-family:{SANS};font-size:15px;line-height:1.6;color:{SILVER};margin-top:12px;">Les résultats et la sécurité patient dépendent de la maîtrise du praticien. Chaque acquisition Cellulift s'accompagne d'un parcours de formation.</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:26px;"><tr>{cell(0)}{cell(1)}</tr><tr>{cell(2)}{cell(3)}</tr></table>
+<div style="height:8px;line-height:8px;font-size:0;">&nbsp;</div>
+{button("Découvrir l'Academy", utm('/fr/academy', seg, 'academy'), 'white')}
+</td></tr></table>"""
 
 
 def build(seg):
@@ -138,82 +115,73 @@ def build(seg):
 <meta name="supported-color-schemes" content="light">
 <title>{s['subject']}</title>
 <!--[if mso]><noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript><![endif]-->
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@118,600&family=Instrument+Sans:wght@400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@118,700&family=Instrument+Sans:wght@400;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
   body {{ margin:0; padding:0; background:{PEARL}; }}
   a {{ color:{DEEP}; }}
   @media (max-width:620px) {{
     .wrap {{ width:100% !important; }}
-    .px {{ padding-left:16px !important; padding-right:16px !important; }}
-    .col {{ display:block !important; width:100% !important; padding:0 0 16px !important; }}
-    .step {{ display:inline-block !important; width:46% !important; padding-bottom:14px !important; }}
-    .h1 {{ font-size:30px !important; }}
+    .px {{ padding-left:14px !important; padding-right:14px !important; }}
+    .col {{ display:block !important; width:100% !important; box-sizing:border-box; }}
+    .photo {{ border-radius:23px 23px 0 0 !important; }}
+    .step {{ display:inline-block !important; width:48% !important; }}
     .btn {{ display:block !important; width:100% !important; }}
     .btn table {{ margin:0 auto !important; }}
   }}
 </style>
 </head>"""
 
-    # Formation à la une et agenda : seulement quand des dates de masterclass sont confirmées.
-    sessions_html = (
-        f"""<!-- Formation à la une -->
-<tr><td class="px" style="padding:0 24px;">{session_block(s['featured'], s['key'])}</td></tr>
-{spacer(16)}
-<!-- Agenda -->
-<tr><td class="px" style="padding:0 24px;">{agenda(s['agenda'], s['key'])}</td></tr>
-{spacer(40)}"""
-        if s.get("featured")
-        else ""
+    techs = "\n{}\n".format(spacer(14)).join(
+        f'<tr><td class="px" style="padding:0 24px;">{tech_card(t, s["key"], i + 1)}</td></tr>' for i, t in enumerate(s["techs"])
     )
     body = f"""
 <body style="margin:0;padding:0;background:{PEARL};">
 <!-- Pré-en-tête (aperçu dans la boîte de réception) -->
 <div style="display:none;max-height:0;overflow:hidden;opacity:0;mso-hide:all;">{s['preheader']}&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;</div>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="{PEARL}" style="background:{PEARL};background-image:radial-gradient(circle at 85% 0%,rgba(123,97,255,.10),transparent 45%),radial-gradient(circle at 0% 50%,rgba(0,188,212,.08),transparent 40%),radial-gradient(circle at 100% 100%,rgba(233,30,140,.07),transparent 45%);">
-<tr><td align="center" style="padding:24px 0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="{PEARL}" style="background:{PEARL};">
+<tr><td align="center" style="padding:20px 0;">
 <table role="presentation" class="wrap" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:600px;">
 
-<tr><td class="px" align="right" style="padding:0 24px 12px;font-family:{SANS};font-size:12px;color:{SOFT};">
-<a href="{{{{VERSION_WEB}}}}" style="color:{SOFT};text-decoration:underline;">Voir dans le navigateur</a></td></tr>
-
 <!-- En-tête -->
-<tr><td class="px" align="center" style="padding:20px 24px 18px;">
-<a href="{utm('/fr/academy', s['key'], 'logo')}" target="_blank"><img src="{SITE}/email/cellulift-signature-logo.png" width="240" alt="CELLULIFT — Metamorphosis Technology" style="display:block;width:240px;height:auto;border:0;"></a>
-<div style="margin-top:14px;">{label('Academy · Newsletter · ' + s['edition'], SOFT, 10)}</div>
-</td></tr>
-<tr><td class="px" style="padding:0 24px;">{rainbow_line()}</td></tr>
+<tr><td class="px" style="padding:0 24px 14px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+<td valign="middle"><a href="{utm('/fr/academy', s['key'], 'logo')}" target="_blank"><img src="{SITE}/email/cellulift-signature-logo.png" width="170" alt="CELLULIFT — Metamorphosis Technology" style="display:block;width:170px;height:auto;border:0;"></a></td>
+<td valign="middle" align="right" style="font-family:{SANS};font-size:12px;color:{SOFT};"><a href="{{{{VERSION_WEB}}}}" style="color:{SOFT};text-decoration:underline;">Version web</a></td>
+</tr></table></td></tr>
 
-<!-- Ouverture -->
-<tr><td class="px" style="padding:36px 24px 8px;">
-{label('<span style="color:' + VIOLET + ';">&#9679;</span>&nbsp; ' + s['eyebrow'])}
-<div class="h1" style="font-family:{DISPLAY};font-size:36px;line-height:1.02;font-weight:600;letter-spacing:-1px;text-transform:uppercase;color:{DEEP};margin-top:14px;">{s['title_a']} <span style="color:{VIOLET};">{s['title_b']}</span></div>
-<div style="font-family:{SANS};font-size:16px;line-height:1.65;color:{DEEP};margin-top:22px;">Bonjour {{{{PRENOM}}}},</div>
-<div style="font-family:{SANS};font-size:16px;line-height:1.65;color:{SOFT};margin-top:10px;">{s['intro']}</div>
+<!-- Ouverture : titre en image (polices et dégradé de la marque, identiques dans toutes les messageries) -->
+<tr><td class="px" style="padding:0 24px;">
+<a href="{utm('/fr/academy', s['key'], 'hero')}" target="_blank"><img src="{ASSETS}/hero-{s['key']}.jpg" width="552" alt="{s['edition']} — {s['title_a']} {s['title_b']}" style="display:block;width:100%;max-width:552px;height:auto;border:0;border-radius:24px;"></a></td></tr>
+
+<!-- Mot d'ouverture -->
+<tr><td class="px" style="padding:30px 28px 6px;">
+<div style="font-family:{SANS};font-size:17px;line-height:1.6;color:{DEEP};font-weight:600;">Bonjour {{{{PRENOM}}}},</div>
+<div style="font-family:{SANS};font-size:16px;line-height:1.7;color:{SOFT};margin-top:8px;">{s['intro']}</div>
 </td></tr>
-{spacer(32)}
-{sessions_html}
+{spacer(30)}
+
 <!-- Technologies -->
-<tr><td class="px" style="padding:0 24px 16px;">
-{label(s['tech_eyebrow'])}
-<div style="font-family:{DISPLAY};font-size:22px;line-height:1.15;font-weight:600;letter-spacing:-0.3px;text-transform:uppercase;color:{DEEP};margin-top:10px;">{s['tech_title']}</div>
+<tr><td class="px" style="padding:0 28px 16px;">
+{label('<span style="color:' + VIOLET + ';">&#9679;</span>&nbsp; ' + s['tech_eyebrow'])}
+{title(s['tech_title'], 26)}
 </td></tr>
-<tr><td class="px" style="padding:0 24px;">{tech_cards(s['techs'], s['key'])}</td></tr>
-{spacer(24)}
+{techs}
+{spacer(26)}
 
-<!-- Parcours -->
-<tr><td class="px" style="padding:0 24px;">{journey(s['key'])}</td></tr>
+<!-- Parcours Academy -->
+<tr><td class="px" style="padding:0 24px;">{academy_block(s['key'])}</td></tr>
 {spacer(40)}
 
 <!-- Contact -->
 <tr><td class="px" align="center" style="padding:0 24px;">
-<div style="font-family:{DISPLAY};font-size:22px;line-height:1.15;font-weight:600;letter-spacing:-0.3px;text-transform:uppercase;color:{DEEP};">{s['cta_title']}</div>
+{title(s['cta_title'], 22, DEEP, 0)}
 <div style="font-family:{SANS};font-size:15px;line-height:1.6;color:{SOFT};margin:10px auto 22px;max-width:440px;">{s['cta_text']}</div>
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center"><tr>
 <td class="btn" align="center" style="padding:0 6px 10px;">{button('Écrire sur WhatsApp', 'https://wa.me/212670842795')}</td>
-<td class="btn" align="center" style="padding:0 6px 10px;">{button("Contacter l'équipe", utm('/fr/contact', s['key'], 'contact'), solid=False)}</td>
+<td class="btn" align="center" style="padding:0 6px 10px;">{button("Contacter l'équipe", utm('/fr/contact', s['key'], 'contact'), 'light')}</td>
 </tr></table>
 </td></tr>
-{spacer(36)}
+{spacer(32)}
 <tr><td class="px" style="padding:0 24px;">{rainbow_line(1)}</td></tr>
 
 <!-- Pied de page -->
@@ -232,42 +200,54 @@ Vous recevez cet e-mail car vous êtes en relation avec Cellulift ou inscrit(e) 
     return head + body
 
 
-# Masterclasses confirmées à mettre en avant (format : date, short, title, subtitle, place, link).
-# Aucune date confirmée pour le moment : les éditions n'affichent ni formation à la une ni agenda.
-
+# Fiches : textes repris des fiches machines du site (src/content/technology-sheets.ts).
+# w = largeur de la photo pour 260 px de haut (proportions de l'original).
 T = {
-    "hanover": {"w": 176, "slug": "hanover-5g", "name": "HANOVER 5G", "cat": "Solutions lasers", "img": "/images/technologies/hanover-5g/v2-00.jpg", "line": "Laser endolift 980 nm et 1470 nm."},
-    "sevenwaves": {"w": 147, "slug": "sevenwaves", "name": "SEVENWAVES", "cat": "Solutions lasers", "img": "/images/technologies/sevenwaves/00.jpg", "line": "4 technologies dans un seul équipement : diode, Nd:YAG, IPL et radiofréquence."},
-    "pressoligne": {"w": 147, "slug": "pressoligne-5", "name": "PRESSOLIGNE 5", "cat": "Amincissement avancé", "img": "/images/technologies/pressoligne-5/00.jpg", "line": "Pressothérapie professionnelle pour drainer tout le corps."},
-    "tanita": {"w": 176, "slug": "tanita", "name": "TANITA", "cat": "Amincissement avancé", "img": "/images/technologies/tanita/00.jpg", "line": "Moniteur de composition corporelle sans fil."},
-    "laqueen": {"w": 176, "slug": "la-queen", "name": "LA QUEEN", "cat": "Solutions lasers", "img": "/images/technologies/la-queen/v2-00.jpg", "line": "4 technologies, 4000 W : épilation, vasculaire, pigments et IPL."},
-    "slimax": {"w": 147, "slug": "slimax-lipo-7", "name": "SLIMAX LIPO 7", "cat": "Amincissement avancé", "img": "/images/technologies/slimax-lipo-7/00.jpg", "line": "4 technologies réunies pour traiter graisse et relâchement."},
+    "hanover": {"w": 208, "slug": "hanover-5g", "name": "HANOVER 5G", "cat": "Solutions lasers", "img": "/images/technologies/hanover-5g/v2-00.jpg",
+                "line": "Laser endolift 980 nm et 1470 nm.",
+                "points": ["Lipolyse : double menton, bras, corps", "Traitement laser endoveineux (EVLT)", "Varicosités, télangiectasies, angiomes"]},
+    "sevenwaves": {"w": 173, "slug": "sevenwaves", "name": "SEVENWAVES", "cat": "Solutions lasers", "img": "/images/technologies/sevenwaves/00.jpg",
+                   "line": "4 technologies dans un seul équipement : diode, Nd:YAG, IPL et radiofréquence.",
+                   "points": ["Épilation permanente, tous phototypes", "Taches pigmentaires, détatouage, Carbon Peel", "Rajeunissement et remodelage visage et corps"]},
+    "pressoligne": {"w": 173, "slug": "pressoligne-5", "name": "PRESSOLIGNE 5", "cat": "Amincissement avancé", "img": "/images/technologies/pressoligne-5/00.jpg",
+                    "line": "Pressothérapie professionnelle pour drainer tout le corps.",
+                    "points": ["Jambes lourdes et rétention d'eau", "Fatigue musculaire", "Fermeté de la peau"]},
+    "tanita": {"w": 208, "slug": "tanita", "name": "TANITA", "cat": "Amincissement avancé", "img": "/images/technologies/tanita/00.jpg",
+               "line": "Moniteur de composition corporelle sans fil.",
+               "points": ["Bilan de composition corporelle", "Suivi des programmes minceur", "Suivi nutritionnel et sportif"]},
+    "laqueen": {"w": 208, "slug": "la-queen", "name": "LA QUEEN", "cat": "Solutions lasers", "img": "/images/technologies/la-queen/v2-00.jpg",
+                "line": "4 technologies, 4000 W : épilation, vasculaire, pigments et IPL.",
+                "points": ["Épilation définitive, tous phototypes", "Varicosités et télangiectasies", "Détatouage toutes couleurs, Carbon Peel"]},
+    "slimax": {"w": 173, "slug": "slimax-lipo-7", "name": "SLIMAX LIPO 7", "cat": "Amincissement avancé", "img": "/images/technologies/slimax-lipo-7/00.jpg",
+               "line": "4 technologies réunies pour traiter graisse et relâchement.",
+               "points": ["Abdomen, flancs et dos", "Intérieur et extérieur des cuisses", "Relâchement cutané"]},
 }
 
+# hero_size : taille du titre dans l'image d'ouverture (hero/render.cjs).
 SEGMENTS = [
     {
-        "key": "medecins", "file": "newsletter-medecins.html", "edition": "Édition médecins",
+        "key": "medecins", "file": "newsletter-medecins.html", "edition": "Édition médecins", "hero_size": 92,
         "subject": "HANOVER 5G, SEVENWAVES : les plateformes laser du mois",
         "preheader": "Endolift, plateformes multi-technologies, et le parcours de formation qui accompagne chaque installation.",
-        "eyebrow": "Pour les médecins", "title_a": "La technologie s'acquiert.", "title_b": "La maîtrise se construit.",
+        "title_a": "La technologie s’acquiert.", "title_b": "La maîtrise se construit.",
         "intro": "Ce mois-ci, la Cellulift Academy vous présente deux plateformes laser au cœur des protocoles actuels, et le parcours de formation qui accompagne chaque installation.",
         "tech_eyebrow": "Focus technologies", "tech_title": "Les plateformes laser du mois", "techs": [T["hanover"], T["sevenwaves"]],
         "cta_title": "Une question sur un protocole ?", "cta_text": "Notre équipe vous répond sur les réglages, les indications et les prérequis des formations.",
     },
     {
-        "key": "kines", "file": "newsletter-kines.html", "edition": "Édition kinésithérapeutes",
+        "key": "kines", "file": "newsletter-kines.html", "edition": "Édition kinésithérapeutes", "hero_size": 100,
         "subject": "Drainage et composition corporelle : la sélection du mois",
         "preheader": "Pressothérapie et analyse corporelle : deux technologies corps pour votre cabinet.",
-        "eyebrow": "Pour les kinésithérapeutes", "title_a": "Mesurer, drainer,", "title_b": "suivre chaque patient.",
-        "intro": "Pressothérapie, analyse de la composition corporelle : ce mois-ci, la Cellulift Academy met en avant les technologies corps qui s'intègrent à une pratique de kinésithérapie, avec la formation pour les maîtriser.",
+        "title_a": "Mesurer, drainer,", "title_b": "suivre chaque patient.",
+        "intro": "Pressothérapie, analyse de la composition corporelle : ce mois-ci, la Cellulift Academy met en avant deux technologies corps qui s'intègrent à une pratique de kinésithérapie, avec la formation pour les maîtriser.",
         "tech_eyebrow": "Focus technologies", "tech_title": "Technologies corps", "techs": [T["pressoligne"], T["tanita"]],
         "cta_title": "Un projet pour votre cabinet ?", "cta_text": "Parlons des technologies adaptées à vos patients, de la formation et de l'accompagnement après installation.",
     },
     {
-        "key": "centres", "file": "newsletter-centres-esthetiques.html", "edition": "Édition centres esthétiques",
+        "key": "centres", "file": "newsletter-centres-esthetiques.html", "edition": "Édition centres esthétiques", "hero_size": 76,
         "subject": "Épilation et amincissement : les incontournables du centre",
         "preheader": "LA QUEEN et SLIMAX LIPO 7 : deux technologies pour développer votre offre.",
-        "eyebrow": "Pour les centres esthétiques", "title_a": "Une technologie rentable,", "title_b": "c'est une technologie maîtrisée.",
+        "title_a": "Une technologie rentable,", "title_b": "c’est une technologie maîtrisée.",
         "intro": "Choisir la bonne machine ne suffit pas : les protocoles et la formation de l'équipe font la différence. Ce mois-ci, nous vous présentons deux technologies incontournables du centre, et le parcours de formation qui les accompagne.",
         "tech_eyebrow": "Focus technologies", "tech_title": "Les incontournables du centre", "techs": [T["laqueen"], T["slimax"]],
         "cta_title": "Vous préparez une nouvelle offre ?", "cta_text": "Épilation, amincissement, soins visage : notre équipe vous aide à choisir la technologie et à la rentabiliser.",
