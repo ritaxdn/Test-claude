@@ -13,5 +13,5 @@ html,body{background:transparent}
 const q=JSON.parse(new URLSearchParams(location.search).get('j'));const t=document.getElementById('t');
 t.className=q.kind;t.style.fontSize=q.size+'px';t.style.color=q.color;t.style.maxWidth=q.maxw+'px';t.style.textAlign=q.align||'left';
 if(q.dot){const d=document.createElement('span');d.className='dot';d.style.background=q.dot;t.appendChild(d);}
-t.appendChild(document.createTextNode(q.text));
+if(q.parts&&q.parts.length){for(const [txt,col] of q.parts){const sp=document.createElement('span');sp.style.color=col;sp.textContent=txt;t.appendChild(sp);}}else t.appendChild(document.createTextNode(q.text));
 </script></body></html>

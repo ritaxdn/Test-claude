@@ -403,5 +403,271 @@
   "maxw": 480,
   "dot": "",
   "align": "center"
+ },
+ "4eea74461446": {
+  "text": "Édition médecins · N°01",
+  "kind": "mono",
+  "size": 11,
+  "color": "#5D5B6B",
+  "maxw": 520,
+  "dot": "#6B5CFF",
+  "align": "left"
+ },
+ "5bdbb12ee727": {
+  "text": "Ils ont perdu 15 kilos. Leur visage aussi.",
+  "kind": "display",
+  "size": 38,
+  "color": "#1D1B26",
+  "maxw": 320,
+  "dot": "",
+  "align": "left",
+  "parts": [
+   [
+    "Ils ont perdu 15 kilos. ",
+    "#1D1B26"
+   ],
+   [
+    "Leur visage ",
+    "#6B5CFF"
+   ],
+   [
+    "aussi.",
+    "#E91E8C"
+   ]
+  ]
+ },
+ "26a68306c580": {
+  "text": "52 %",
+  "kind": "display",
+  "size": 52,
+  "color": "#6B5CFF",
+  "maxw": 240,
+  "dot": "",
+  "align": "center"
+ },
+ "53446266c43f": {
+  "text": "1 sur 3",
+  "kind": "display",
+  "size": 52,
+  "color": "#E91E8C",
+  "maxw": 240,
+  "dot": "",
+  "align": "center"
+ },
+ "a6920ab8ea6a": {
+  "text": "Enquête auprès des praticiens · Congrès AAD 2026",
+  "kind": "mono",
+  "size": 10,
+  "color": "#5D5B6B",
+  "maxw": 480,
+  "dot": "",
+  "align": "center"
+ },
+ "d7bd3a1e1a79": {
+  "text": "Visage GLP-1 : ce qui change dans votre protocole",
+  "kind": "display",
+  "size": 28,
+  "color": "#1D1B26",
+  "maxw": 520,
+  "dot": "",
+  "align": "left"
+ },
+ "de0cc7b3712d": {
+  "text": "01",
+  "kind": "display",
+  "size": 26,
+  "color": "#00BCD4",
+  "maxw": 60,
+  "dot": "",
+  "align": "left"
+ },
+ "96dbcf8b2ee1": {
+  "text": "Remplir ne suffit plus",
+  "kind": "display",
+  "size": 17,
+  "color": "#1D1B26",
+  "maxw": 430,
+  "dot": "",
+  "align": "left"
+ },
+ "1fa02700a604": {
+  "text": "02",
+  "kind": "display",
+  "size": 26,
+  "color": "#7B61FF",
+  "maxw": 60,
+  "dot": "",
+  "align": "left"
+ },
+ "bd8de507fc8c": {
+  "text": "Retendre d'abord",
+  "kind": "display",
+  "size": 17,
+  "color": "#1D1B26",
+  "maxw": 430,
+  "dot": "",
+  "align": "left"
+ },
+ "ace61c19f870": {
+  "text": "03",
+  "kind": "display",
+  "size": 26,
+  "color": "#E91E8C",
+  "maxw": 60,
+  "dot": "",
+  "align": "left"
+ },
+ "9668bc821b52": {
+  "text": "Régénérer ensuite",
+  "kind": "display",
+  "size": 17,
+  "color": "#1D1B26",
+  "maxw": 430,
+  "dot": "",
+  "align": "left"
+ },
+ "2e3a4acffd34": {
+  "text": "Le protocole en deux technologies",
+  "kind": "mono",
+  "size": 11,
+  "color": "#5D5B6B",
+  "maxw": 520,
+  "dot": "#6B5CFF",
+  "align": "left"
+ },
+ "6a086a152911": {
+  "text": "Retendre. Régénérer.",
+  "kind": "display",
+  "size": 28,
+  "color": "#1D1B26",
+  "maxw": 520,
+  "dot": "",
+  "align": "left"
+ },
+ "353d5bb0246f": {
+  "text": "01 · Retendre · Laser endolift",
+  "kind": "mono",
+  "size": 10,
+  "color": "#5D5B6B",
+  "maxw": 300,
+  "dot": "",
+  "align": "left"
+ },
+ "a394772b74a8": {
+  "text": "HANOVER 5G",
+  "kind": "display",
+  "size": 24,
+  "color": "#1D1B26",
+  "maxw": 300,
+  "dot": "",
+  "align": "left"
+ },
+ "fe67cf87cdcd": {
+  "text": "02 · Régénérer · Plasma",
+  "kind": "mono",
+  "size": 10,
+  "color": "#5D5B6B",
+  "maxw": 300,
+  "dot": "",
+  "align": "left"
+ },
+ "9bc5ffcf933e": {
+  "text": "CENTRIFUGEL",
+  "kind": "display",
+  "size": 24,
+  "color": "#1D1B26",
+  "maxw": 300,
+  "dot": "",
+  "align": "left"
+ },
+ "78f93b68ff18": {
+  "text": "Cellulift Academy",
+  "kind": "mono",
+  "size": 11,
+  "color": "#5D5B6B",
+  "maxw": 520,
+  "dot": "#6B5CFF",
+  "align": "left"
+ },
+ "f0b5b4025286": {
+  "text": "La machine ne fait pas le résultat. La main, si.",
+  "kind": "display",
+  "size": 26,
+  "color": "#1D1B26",
+  "maxw": 500,
+  "dot": "",
+  "align": "left"
+ },
+ "70cede811035": {
+  "text": "01",
+  "kind": "display",
+  "size": 24,
+  "color": "#00BCD4",
+  "maxw": 60,
+  "dot": "",
+  "align": "left"
+ },
+ "4ef762691cf2": {
+  "text": "02",
+  "kind": "display",
+  "size": 24,
+  "color": "#7B61FF",
+  "maxw": 60,
+  "dot": "",
+  "align": "left"
+ },
+ "463f2ebb827d": {
+  "text": "03",
+  "kind": "display",
+  "size": 24,
+  "color": "#E91E8C",
+  "maxw": 60,
+  "dot": "",
+  "align": "left"
+ },
+ "e46ae305de3c": {
+  "text": "04",
+  "kind": "display",
+  "size": 24,
+  "color": "#FF5722",
+  "maxw": 60,
+  "dot": "",
+  "align": "left"
+ },
+ "5825077b3133": {
+  "text": "Réservé aux abonnés",
+  "kind": "mono",
+  "size": 11,
+  "color": "#6B5CFF",
+  "maxw": 520,
+  "dot": "#E91E8C",
+  "align": "left"
+ },
+ "f873417b125d": {
+  "text": "La fiche « Bilan visage GLP-1 »",
+  "kind": "display",
+  "size": 22,
+  "color": "#1D1B26",
+  "maxw": 500,
+  "dot": "",
+  "align": "left"
+ },
+ "5433b694e430": {
+  "text": "Voyez-le avant d'en parler à vos patients.",
+  "kind": "display",
+  "size": 26,
+  "color": "#1D1B26",
+  "maxw": 480,
+  "dot": "",
+  "align": "center"
+ },
+ "7948a54c8848": {
+  "text": "Dans le N°02",
+  "kind": "mono",
+  "size": 11,
+  "color": "#5D5B6B",
+  "maxw": 520,
+  "dot": "#E91E8C",
+  "align": "left"
  }
 }

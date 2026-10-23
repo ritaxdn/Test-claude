@@ -54,10 +54,12 @@ _manifest = OUT / "text-manifest.json"
 TEXT_DIMS = json.loads(_manifest.read_text()) if _manifest.exists() else {}
 
 
-def text_img(text, kind="display", size=24, color=DEEP, maxw=520, dot=None, center=False, top=0):
+def text_img(text, kind="display", size=24, color=DEEP, maxw=520, dot=None, center=False, top=0, parts=None):
     plain = re.sub(r"<[^>]+>", "", htmllib.unescape(text))
     plain = re.sub(r" ([?!:;»])", "\u00a0\\1", plain)  # espace insécable française
     spec = {"text": plain, "kind": kind, "size": size, "color": color, "maxw": maxw, "dot": dot or "", "align": "center" if center else "left"}
+    if parts:  # texte multicolore : [(texte, couleur), ...]
+        spec["parts"] = [[re.sub(r" ([?!:;»])", "\u00a0\\1", t), c] for t, c in parts]
     key = hashlib.sha1(json.dumps(spec, sort_keys=True, ensure_ascii=False).encode()).hexdigest()[:12]
     TEXT_JOBS[key] = spec
     w, h = TEXT_DIMS.get(key, (maxw, round(size * 1.2)))
@@ -259,7 +261,8 @@ def build(seg):
   body {{ margin:0; padding:0; background:{PEARL}; }}
   a {{ color:{DEEP}; }}
   @media (max-width:620px) {{
-    .wrap {{ width:100% !important; }}
+    .wrap {{ width:100% !important; table-layout:fixed !important; }}
+    img {{ max-width:100% !important; height:auto !important; }}
     .px {{ padding-left:14px !important; padding-right:14px !important; }}
     .col {{ display:block !important; width:100% !important; box-sizing:border-box; }}
     .photo {{ border-radius:23px 23px 0 0 !important; }}
