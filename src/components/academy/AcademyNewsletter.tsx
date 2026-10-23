@@ -2,12 +2,13 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Check, X } from "lucide-react";
+import { ArrowRight, Check, ChevronDown, X } from "lucide-react";
 import type { Locale } from "@/lib/i18n/config";
 import { cn } from "@/lib/utils";
 import { track } from "@/lib/analytics";
 import { readAttribution } from "@/lib/attribution";
 import { emailPattern } from "@/lib/contact-rules";
+import { contactPageContent } from "@/content/contact-page";
 
 // Fenêtre « Newsletter » de la Cellulift Academy (page Academy uniquement).
 // S'ouvre une seule fois après un temps de lecture, jamais par-dessus le bandeau cookies,
@@ -25,12 +26,13 @@ const t = {
     firstName: "Prénom",
     lastName: "Nom",
     email: "Adresse e-mail",
+    specialty: "Votre activité",
     submit: "S'inscrire",
     sending: "Inscription…",
     legal: "En vous inscrivant, vous acceptez de recevoir les informations de la Cellulift Academy. Désinscription possible à tout moment.",
     privacy: "Confidentialité",
     close: "Fermer",
-    required: "Indiquez votre prénom, votre nom et une adresse e-mail valide.",
+    required: "Indiquez votre prénom, votre nom, une adresse e-mail valide et votre activité.",
     error: "L'inscription n'a pas pu aboutir. Réessayez dans un instant.",
     doneTitle: "Merci, vous êtes inscrit.",
     doneText: "Vous recevrez les prochaines dates de la Cellulift Academy par e-mail.",
@@ -43,18 +45,23 @@ const t = {
     firstName: "First name",
     lastName: "Last name",
     email: "Email address",
+    specialty: "Your activity",
     submit: "Subscribe",
     sending: "Subscribing…",
     legal: "By subscribing, you agree to receive news from the Cellulift Academy. You can unsubscribe at any time.",
     privacy: "Privacy",
     close: "Close",
-    required: "Enter your first name, last name and a valid email address.",
+    required: "Enter your first name, last name, a valid email address and your activity.",
     error: "Subscription failed. Please try again in a moment.",
     doneTitle: "Thank you, you're subscribed.",
     doneText: "You'll receive the next Cellulift Academy dates by email.",
     doneClose: "Continue browsing",
   },
 } as const;
+
+// Activités du formulaire de contact. Le CRM reçoit toujours le libellé français,
+// pour que la segmentation de la newsletter reste la même quelle que soit la langue.
+const specialtiesFr = contactPageContent.fr.form.specialtyOptions;
 
 function readState() {
   try {
@@ -72,7 +79,7 @@ function writeState(v: string) {
 export function AcademyNewsletter({ locale }: { locale: Locale }) {
   const c = t[locale];
   const [open, setOpen] = useState(false);
-  const [values, setValues] = useState({ firstName: "", lastName: "", email: "" });
+  const [values, setValues] = useState({ firstName: "", lastName: "", email: "", specialty: "" });
   const [status, setStatus] = useState<"idle" | "sending" | "done">("idle");
   const [error, setError] = useState<string | null>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -136,7 +143,7 @@ export function AcademyNewsletter({ locale }: { locale: Locale }) {
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const name = `${values.firstName.trim()} ${values.lastName.trim()}`.trim();
-    if (!values.firstName.trim() || !values.lastName.trim() || !emailPattern.test(values.email.trim())) {
+    if (!values.firstName.trim() || !values.lastName.trim() || !emailPattern.test(values.email.trim()) || !values.specialty) {
       setError(c.required);
       return;
     }
@@ -151,6 +158,7 @@ export function AcademyNewsletter({ locale }: { locale: Locale }) {
           parcours: "newsletter",
           name,
           email: values.email.trim(),
+          specialty: values.specialty,
           origin: window.location.pathname,
           lang: locale,
           attribution: readAttribution(),
@@ -171,7 +179,7 @@ export function AcademyNewsletter({ locale }: { locale: Locale }) {
 
   if (!open) return null;
 
-  const field = (key: keyof typeof values, label: string, props: React.InputHTMLAttributes<HTMLInputElement>, ref?: React.Ref<HTMLInputElement>) => (
+  const field = (key: "firstName" | "lastName" | "email", label: string, props: React.InputHTMLAttributes<HTMLInputElement>, ref?: React.Ref<HTMLInputElement>) => (
     <div>
       <label htmlFor={`nl-${key}`} className="sr-only">
         {label}
@@ -291,6 +299,31 @@ export function AcademyNewsletter({ locale }: { locale: Locale }) {
                 {field("firstName", c.firstName, { type: "text", autoComplete: "given-name" }, firstFieldRef)}
                 {field("lastName", c.lastName, { type: "text", autoComplete: "family-name" })}
                 {field("email", c.email, { type: "email", inputMode: "email", autoComplete: "email" })}
+                <div className="relative">
+                  <label htmlFor="nl-specialty" className="sr-only">
+                    {c.specialty}
+                  </label>
+                  <select
+                    id="nl-specialty"
+                    value={values.specialty}
+                    onChange={(ev) => setValues((v) => ({ ...v, specialty: ev.target.value }))}
+                    required
+                    className={cn(
+                      "min-h-[52px] w-full appearance-none rounded-full border border-deep/10 bg-white/85 py-3 pl-6 pr-12 font-sans text-[0.95rem] transition-colors focus:border-[var(--rainbow-2)]/40 focus:bg-white focus:outline-none",
+                      values.specialty ? "text-deep" : "text-deep-soft/70"
+                    )}
+                  >
+                    <option value="" disabled>
+                      {c.specialty}
+                    </option>
+                    {specialtiesFr.map((fr, i) => (
+                      <option key={fr} value={fr} className="text-deep">
+                        {contactPageContent[locale].form.specialtyOptions[i] ?? fr}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown size={16} aria-hidden="true" className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 text-deep-soft" />
+                </div>
                 {error && (
                   <p role="alert" className="px-2 font-sans text-xs text-[var(--rainbow-3)]">
                     {error}

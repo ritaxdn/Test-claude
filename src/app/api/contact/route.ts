@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { resendKey, defaultFrom } from "@/lib/resend";
 import { SITE_URL } from "@/lib/site";
 import { sendToCrm, type CrmLead } from "@/lib/crm";
+import { contactPageContent } from "@/content/contact-page";
 import { contactRules, emailPattern, isParcours, isValidPhone, whatsappNumber, type ContactField, type Parcours } from "@/lib/contact-rules";
 
 type ContactPayload = Partial<Record<ContactField, string>> & {
@@ -159,6 +160,8 @@ function invalid(parcours: Parcours, body: ContactPayload) {
   return false;
 }
 
+const newsletterSpecialties: readonly string[] = contactPageContent.fr.form.specialtyOptions;
+
 export async function POST(request: Request) {
   let body: ContactPayload;
 
@@ -189,12 +192,14 @@ export async function POST(request: Request) {
     return mail || crm ? NextResponse.json({ ok: true }) : NextResponse.json({ ok: false, error: "send_failed" }, { status: 502 });
   }
 
-  // Newsletter de la Cellulift Academy (fenêtre de la page Academy) : prénom, nom et e-mail.
-  // L'inscription part vers la boîte de l'Academy et le CRM (parcours « newsletter-academy »).
+  // Newsletter de la Cellulift Academy (fenêtre de la page Academy) : prénom, nom, e-mail et activité.
+  // L'inscription part vers la boîte de l'Academy et le CRM (parcours « newsletter-academy »),
+  // l'activité dans le champ « specialite » du CRM pour segmenter les envois.
   if (body.parcours === "newsletter") {
     const name = String(body.name ?? "").trim().slice(0, 200), email = String(body.email ?? "").trim().slice(0, 200);
-    if (!name || !emailPattern.test(email)) return NextResponse.json({ ok: false, error: "validation" }, { status: 422 });
-    const n: ContactPayload = { name, email, subject: "Newsletter Academy", message: "Inscription à la newsletter de la Cellulift Academy.", origin: typeof body.origin === "string" && body.origin.startsWith("/") ? body.origin.slice(0, 300) : undefined, lang: body.lang };
+    const specialty = String(body.specialty ?? "").trim();
+    if (!name || !emailPattern.test(email) || !newsletterSpecialties.includes(specialty)) return NextResponse.json({ ok: false, error: "validation" }, { status: 422 });
+    const n: ContactPayload = { name, email, specialty, subject: "Newsletter Academy", message: "Inscription à la newsletter de la Cellulift Academy.", origin: typeof body.origin === "string" && body.origin.startsWith("/") ? body.origin.slice(0, 300) : undefined, lang: body.lang };
     const [mail, crm] = await Promise.all([sendToCellulift("masterclass", n), sendToCrm(crmLead("newsletter-academy", n, attr))]);
     return mail || crm ? NextResponse.json({ ok: true }) : NextResponse.json({ ok: false, error: "send_failed" }, { status: 502 });
   }
