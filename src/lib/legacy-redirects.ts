@@ -46,9 +46,17 @@ export const legacyRedirects: Record<string, string> = {
   // Anciens articles de blog
   "/une-nouvelle-technique-dans-le-traitement-de-la-cellulite": "/fr/technologies/gammes/amincissement", // validé par Cellulift
   "/photomodulation-optimisez-les-soins-de-vos-patients-avec-cellulift": "/fr/technologies#photomodulation", // provisoire
+  // Anciennes pages de gamme → la même gamme dans le catalogue (filtre par ancre), constatées dans Search Console (oct. 2026).
+  // Une gamme regroupe plusieurs machines : on n'envoie pas vers une seule fiche.
+  "/hifu-haut-intensite-focalise-ultrason": "/fr/technologies#hifu",
+  "/integrall-hifu": "/fr/technologies#hifu",
+  "/photomodulation": "/fr/technologies#photomodulation",
+  "/rejuvenation-cutanee": "/fr/technologies#rejuvenation",
+  "/therapie-avancee": "/fr/technologies#therapie",
 
-  // Laissées en 404 (décision Cellulift) : /photomodulation, /rejuvenation-cutanee, /hifu-haut-intensite-focalise-ultrason,
-  // /sculptface, /gatecare, /perfect-cool, /hightlift, /rejuvteck-7, /megacryo, /integrall-hifu, /actualites, /portfolio.
+  // Laissées en 404 : sans équivalent réel sur le nouveau site (/actualites, /portfolio) ou machines dont le statut
+  // catalogue n'est pas confirmé (/sculptface, /gatecare, /perfect-cool, /hightlift, /rejuvteck-7, /megacryo, /microgun).
+  // Machine confirmée retirée → la déplacer dans legacyGone (410). Machine renommée → la rediriger vers sa nouvelle fiche.
 };
 
 /**
