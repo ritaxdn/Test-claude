@@ -26,6 +26,8 @@ process.stdin.on("end", async () => {
     await page.goto("file://" + path.join(__dirname, `${kind}.html`) + "?" + new URLSearchParams(params));
     await page.waitForLoadState("networkidle");
     await page.evaluate(() => document.fonts.ready);
+    await page.waitForFunction(() => [...document.images].every((i) => i.complete));
+    await page.waitForTimeout(100);
     await page.screenshot({ path: path.join(out, file), type: "jpeg", quality: 88 });
     console.log(file);
     await ctx.close();

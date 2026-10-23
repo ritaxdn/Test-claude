@@ -8,9 +8,9 @@ sys.path.insert(0, str(HERE.parent))
 from build import SEGMENTS  # noqa: E402
 
 CUTOUTS = HERE.parent / "cutouts"
-# Halo de chaque scène : couleurs iris pastel de la marque (cyan, violet, rose, pêche).
-GLOWS = [("rgba(127,227,240,.65)", "rgba(167,151,255,.35)"), ("rgba(167,151,255,.6)", "rgba(242,155,208,.35)"),
-         ("rgba(242,155,208,.55)", "rgba(255,197,143,.35)"), ("rgba(255,197,143,.6)", "rgba(127,227,240,.35)")]
+# Lueurs floues derrière le verre de chaque scène : couleurs iris pastel de la marque (jamais de disque plein).
+GLOWS = [("rgba(127,227,240,.40)", "rgba(167,151,255,.32)"), ("rgba(167,151,255,.40)", "rgba(242,155,208,.30)"),
+         ("rgba(242,155,208,.36)", "rgba(255,197,143,.30)"), ("rgba(255,197,143,.40)", "rgba(127,227,240,.30)")]
 
 
 def cutout(t):
