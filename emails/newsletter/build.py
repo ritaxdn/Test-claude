@@ -51,7 +51,7 @@ def title(text, size=24, color=DEEP, top=10):
             f'text-transform:uppercase;color:{color};margin-top:{top}px;">{text}</div>')
 
 
-def button(text, href, style="glass", width=230):
+def button(text, href, style="glass", width=230, compact=False):
     """Bouton en verre, comme le CTA du site : pastille blanche translucide, bord blanc lumineux, reflet en haut,
     ombre douce, texte Deep et pastille ronde blanche avec la flèche. (Le paramètre style est conservé pour
     compatibilité : tous les boutons sont en verre.)"""
@@ -66,7 +66,7 @@ def button(text, href, style="glass", width=230):
 <td bgcolor="#F6F7FA" style="border-radius:999px;{glass}">
 <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" href="{href}" style="height:46px;v-text-anchor:middle;width:{width}px;" arcsize="50%" strokecolor="#DCDDE4" fillcolor="#F6F7FA"><center style="color:{DEEP};font-family:Arial,sans-serif;font-size:15px;font-weight:bold;">{text} &#8599;</center></v:roundrect><![endif]-->
 <!--[if !mso]><!--><table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
-<td valign="middle" style="padding:6px 14px 6px 22px;"><a href="{href}" target="_blank" style="display:inline-block;white-space:nowrap;font-family:{SANS};font-size:15px;font-weight:600;line-height:34px;color:{DEEP};text-decoration:none;">{text}</a></td>
+<td valign="middle" style="padding:{'6px 8px 6px 16px' if compact else '6px 14px 6px 22px'};"><a href="{href}" target="_blank" style="display:inline-block;white-space:nowrap;font-family:{SANS};font-size:{14 if compact else 15}px;font-weight:600;line-height:34px;color:{DEEP};text-decoration:none;">{text}</a></td>
 {arrow}</tr></table><!--<![endif]-->
 </td></tr></table>"""
 
@@ -85,6 +85,7 @@ def tech_row(t, seg, i):
     )
     flip = i % 2 == 1
     kicker = f"0{i + 1} &middot; {t['cat']}"
+    demo = utm(f"/fr/contact?sujet=demo&machine={t['slug']}", seg, "demo-" + t["slug"])
     img = (f'<td class="col" width="260" valign="middle" dir="ltr" style="padding:0;">'
            f'<a href="{href}" target="_blank"><img src="{ASSETS}/machine-{t["slug"]}.jpg" width="260" alt="{t["name"]}" '
            f'style="display:block;width:100%;max-width:260px;height:auto;border:0;border-radius:28px;margin:0 auto;"></a></td>')
@@ -92,7 +93,9 @@ def tech_row(t, seg, i):
            f'{label(kicker, SOFT, 10)}{title(t["name"], 26, DEEP, 8)}'
            f'<div style="font-family:{SANS};font-size:15px;line-height:1.55;color:{SOFT};margin-top:8px;">{t["line"]}</div>'
            f'<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:14px;">{points}</table>'
-           f'<div style="height:12px;line-height:12px;font-size:0;">&nbsp;</div>{button("Voir la fiche", href, "iris", 170)}</td>')
+           f'<div style="height:12px;line-height:12px;font-size:0;">&nbsp;</div>{button("Voir la fiche", href, "iris", 170)}'
+           f'<div style="font-family:{SANS};font-size:14px;margin-top:12px;"><a href="{demo}" target="_blank" '
+           f'style="color:{VIOLET};text-decoration:underline;font-weight:600;">Demander une démo de la {t["name"]}</a></div></td>')
     return (f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" dir="{"rtl" if flip else "ltr"}">'
             f'<tr>{img}{txt}</tr></table>')
 
@@ -172,6 +175,42 @@ def next_and_forward(s):
 {spacer(40)}"""
 
 
+ACADEMY_CAL = "https://cal.com/celluliftacademy"  # même calendrier que la page Academy
+WHATSAPP = "https://wa.me/212670842795"
+
+
+def next_steps(s):
+    """Votre prochaine étape : 4 portes d'entrée selon où en est le lecteur (voir, se former, être accompagné, apprendre)."""
+    slug = s["techs"][0]["slug"]
+    paths = [
+        ("#00BCD4", "Voir la machine", "Une démonstration de la " + s["techs"][0]["name"] + ", au showroom ou avec un conseiller.",
+         "Demander une démo", utm(f"/fr/contact?sujet=demo&machine={slug}", s["key"], "etape-demo")),
+        ("#7B61FF", "Se former", "Réservez votre créneau de formation Cellulift Academy directement dans notre agenda.",
+         "Réserver une formation", ACADEMY_CAL),
+        ("#E91E8C", "Être accompagné", "Un conseiller étudie votre projet : technologie, budget, installation, formation.",
+         "Parler à un conseiller", utm(f"/fr/contact?sujet=expert&machine={slug}", s["key"], "etape-conseiller")),
+        ("#FF5722", "Approfondir", "Le guide gratuit : 7 questions à se poser avant d'investir dans une technologie.",
+         "Recevoir le guide", utm("/fr/guide", s["key"], "etape-guide")),
+    ]
+    cell = lambda c, t, d, b, h, side: (
+        f'<td class="col pcell" width="50%" valign="top" style="padding:{"0 7px 14px 0" if side == 0 else "0 0 14px 7px"};">'
+        f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#F8F9FB" style="border-radius:24px;border-collapse:separate;{GLASS_CARD}"><tr>'
+        f'<td style="padding:22px 22px 20px;">'
+        f'<div style="height:3px;line-height:3px;font-size:0;width:36px;background:{c};border-radius:3px;">&nbsp;</div>'
+        f'{title(t, 19, DEEP, 12)}'
+        f'<div style="font-family:{SANS};font-size:14px;line-height:1.55;color:{SOFT};margin-top:6px;min-height:66px;">{d}</div>'
+        f'<div style="height:12px;line-height:12px;font-size:0;">&nbsp;</div>{button(b, h, "glass", 200, compact=True)}</td></tr></table></td>'
+    )
+    rows = "".join(f"<tr>{cell(*paths[i], 0)}{cell(*paths[i + 1], 1)}</tr>" for i in (0, 2))
+    return f"""<tr><td class="px" style="padding:0 28px 16px;">
+{label('<span style="color:' + VIOLET + ';">&#9679;</span>&nbsp; Et maintenant ?')}
+{title('Votre prochaine étape', 26)}
+<div style="font-family:{SANS};font-size:15px;line-height:1.6;color:{SOFT};margin-top:8px;">Où en êtes-vous ? Choisissez la porte d'entrée qui vous correspond.</div>
+</td></tr>
+<tr><td class="px" style="padding:0 24px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">{rows}</table></td></tr>
+{spacer(26)}"""
+
+
 def sources(s):
     items = " ".join(f'{i + 1}. <a href="{u}" target="_blank" style="color:{SOFT};text-decoration:underline;">{t}</a>' for i, (t, u) in enumerate(s["sources"]))
     return f"""<tr><td class="px" style="padding:4px 28px 0;font-family:{SANS};font-size:11px;line-height:1.6;color:{SOFT};">Sources : {items}</td></tr>"""
@@ -199,6 +238,7 @@ def build(seg):
     .col {{ display:block !important; width:100% !important; box-sizing:border-box; }}
     .photo {{ border-radius:23px 23px 0 0 !important; }}
     .tcell {{ padding:18px 6px 0 !important; }}
+    .pcell {{ padding:0 0 14px !important; }}
     .step {{ display:inline-block !important; width:48% !important; }}
     .btn {{ display:block !important; width:100% !important; }}
     .btn table {{ margin:0 auto !important; }}
@@ -243,7 +283,8 @@ def build(seg):
 {title(s['tech_title'], 26)}
 </td></tr>
 {techs}
-{spacer(30)}
+{spacer(40)}
+{next_steps(s)}
 <tr><td class="px" style="padding:0 24px;">{partners_strip(s['key'])}</td></tr>
 {spacer(30)}
 
@@ -257,12 +298,14 @@ def build(seg):
 {title(s['cta_title'], 22, DEEP, 0)}
 <div style="font-family:{SANS};font-size:15px;line-height:1.6;color:{SOFT};margin:10px auto 22px;max-width:440px;">{s['cta_text']}</div>
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center"><tr>
-<td class="btn" align="center" style="padding:0 6px 10px;">{button('Écrire sur WhatsApp', 'https://wa.me/212670842795', 'iris')}</td>
+<td class="btn" align="center" style="padding:0 6px 10px;">{button('Écrire sur WhatsApp', WHATSAPP, 'iris')}</td>
 <td class="btn" align="center" style="padding:0 6px 10px;">{button("Contacter l'équipe", utm('/fr/contact', s['key'], 'contact'), 'plain')}</td>
 </tr></table>
+<div style="font-family:{SANS};font-size:14px;line-height:1.6;color:{SOFT};margin-top:8px;">Ou répondez simplement à cet e-mail : il arrive directement à notre équipe.</div>
 </td></tr></table>
 </td></tr>
 {spacer(28)}
+{f'<tr><td class="px" style="padding:0 28px 22px;font-family:{SANS};font-size:15px;line-height:1.65;color:{DEEP};"><strong>P.S.</strong> {s["ps"]}</td></tr>' if s.get('ps') else ''}
 {sources(s) if s.get('sources') else ''}
 <tr><td class="px" style="padding:16px 24px 0;">{rainbow_line(1)}</td></tr>
 
@@ -333,6 +376,7 @@ SEGMENTS = [
         "next": {"title": "Biofiller ou acide hyaluronique : volumiser ou régénérer ?",
                  "text": "Le comparatif que vos patients vont vous demander : indications, durée, profil de patient."},
         "cta_title": "Une question sur un protocole ?", "cta_text": "Notre équipe vous répond sur les réglages, les indications et les prérequis des formations.",
+        "ps": "Vous suivez déjà des patients sous GLP-1 ? Répondez à cet e-mail avec « GLP-1 » : un conseiller Cellulift vous rappelle pour en parler.",
         "sources": [
             ("AAD 2026 : enquête sur les préoccupations faciales des patients sous GLP-1 (Modern Aesthetics)", "https://modernaesthetics.com/news/aad-2026-survey-highlights-facial-concerns-among-glp-1-weight-loss-patients/2486397/"),
             ("RealSelf, rapport de tendances T1 2026 (AmSpa)", "https://americanmedspa.org/news/realself-q1-2026-trend-report-reveals-surge-in-regenerative-aesthetics-skin-rejuvenation"),
