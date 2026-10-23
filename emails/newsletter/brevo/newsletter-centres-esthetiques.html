@@ -44,7 +44,7 @@
 <tr><td class="px" style="padding:36px 24px 8px;">
 <div style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:11px;line-height:1.5;letter-spacing:2px;text-transform:uppercase;color:#5D5B6B;"><span style="color:#6B5CFF;">&#9679;</span>&nbsp; Pour les centres esthétiques</div>
 <div class="h1" style="font-family:'Archivo', Arial, Helvetica, sans-serif;font-size:36px;line-height:1.02;font-weight:600;letter-spacing:-1px;text-transform:uppercase;color:#1D1B26;margin-top:14px;">Une technologie rentable, <span style="color:#6B5CFF;">c'est une technologie maîtrisée.</span></div>
-<div style="font-family:'Instrument Sans', Arial, Helvetica, sans-serif;font-size:16px;line-height:1.65;color:#1D1B26;margin-top:22px;">Bonjour {{ contact.PRENOM | default : '' }},</div>
+<div style="font-family:'Instrument Sans', Arial, Helvetica, sans-serif;font-size:16px;line-height:1.65;color:#1D1B26;margin-top:22px;">Bonjour{% if contact.PRENOM %} {{ contact.PRENOM }}{% endif %},</div>
 <div style="font-family:'Instrument Sans', Arial, Helvetica, sans-serif;font-size:16px;line-height:1.65;color:#5D5B6B;margin-top:10px;">Choisir la bonne machine ne suffit pas : le prix des séances, les protocoles et la formation de l'équipe font la différence. C'est le thème de la prochaine masterclass, et des deux technologies que nous mettons en avant ce mois-ci.</div>
 </td></tr>
 <tr><td height="24" style="height:24px;line-height:24px;font-size:0;">&nbsp;</td></tr>

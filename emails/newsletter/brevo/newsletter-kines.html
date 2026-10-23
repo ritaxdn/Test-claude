@@ -44,7 +44,7 @@
 <tr><td class="px" style="padding:36px 24px 8px;">
 <div style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:11px;line-height:1.5;letter-spacing:2px;text-transform:uppercase;color:#5D5B6B;"><span style="color:#6B5CFF;">&#9679;</span>&nbsp; Pour les kinésithérapeutes</div>
 <div class="h1" style="font-family:'Archivo', Arial, Helvetica, sans-serif;font-size:36px;line-height:1.02;font-weight:600;letter-spacing:-1px;text-transform:uppercase;color:#1D1B26;margin-top:14px;">Mesurer, drainer, <span style="color:#6B5CFF;">suivre chaque patient.</span></div>
-<div style="font-family:'Instrument Sans', Arial, Helvetica, sans-serif;font-size:16px;line-height:1.65;color:#1D1B26;margin-top:22px;">Bonjour {{ contact.PRENOM | default : '' }},</div>
+<div style="font-family:'Instrument Sans', Arial, Helvetica, sans-serif;font-size:16px;line-height:1.65;color:#1D1B26;margin-top:22px;">Bonjour{% if contact.PRENOM %} {{ contact.PRENOM }}{% endif %},</div>
 <div style="font-family:'Instrument Sans', Arial, Helvetica, sans-serif;font-size:16px;line-height:1.65;color:#5D5B6B;margin-top:10px;">Pressothérapie, analyse de la composition corporelle : ce mois-ci, la Cellulift Academy met en avant les technologies corps qui s'intègrent à une pratique de kinésithérapie, avec les formations pour les maîtriser.</div>
 </td></tr>
 <tr><td height="24" style="height:24px;line-height:24px;font-size:0;">&nbsp;</td></tr>

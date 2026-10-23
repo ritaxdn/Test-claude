@@ -275,8 +275,8 @@ SEGMENTS = [
     },
 ]
 
-# Variables Brevo : prénom (vide si inconnu), lien de désinscription, version web.
-BREVO = {"{{PRENOM}}": "{{ contact.PRENOM | default : '' }}", "{{DESINSCRIPTION}}": "{{ unsubscribe }}", "{{VERSION_WEB}}": "{{ mirror }}"}
+# Variables Brevo : « Bonjour Prénom, » (« Bonjour, » sans prénom), lien de désinscription, version web.
+BREVO = {"Bonjour {{PRENOM}},": "Bonjour{% if contact.PRENOM %} {{ contact.PRENOM }}{% endif %},", "{{DESINSCRIPTION}}": "{{ unsubscribe }}", "{{VERSION_WEB}}": "{{ mirror }}"}
 
 if __name__ == "__main__":
     (OUT / "brevo").mkdir(exist_ok=True)
