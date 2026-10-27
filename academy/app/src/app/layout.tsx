@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: "Formation des praticiens équipés de technologies CELLULIFT.",
   robots: { index: false, follow: false },
 };
-export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover", themeColor: "#ECEEF3" };
+export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover", themeColor: "#021223" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

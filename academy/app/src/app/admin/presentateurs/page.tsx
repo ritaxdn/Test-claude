@@ -31,7 +31,7 @@ export default async function Presentateurs({ searchParams }: { searchParams: Pr
                 <div className="field"><label htmlFor={`t-${r.id}`}>Titre</label><input className="input" id={`t-${r.id}`} name="title" defaultValue={r.title ?? ""} placeholder="À compléter" /></div>
               </div>
               <div className="row between wrap">
-                <label className="row small"><input type="checkbox" name="active" defaultChecked={r.active} style={{ accentColor: "#7b61ff" }} /> Proposé dans les leçons</label>
+                <label className="row small"><input type="checkbox" name="active" defaultChecked={r.active} /> Proposé dans les leçons</label>
                 <SubmitButton className="btn sm">Enregistrer</SubmitButton>
               </div>
             </form>

@@ -76,7 +76,7 @@ export default async function EditParcours({ params, searchParams }: { params: P
             <div className="field"><label htmlFor="t">Titre</label><input className="input" id="t" name="title" required defaultValue={p.title} /></div>
             <div className="field"><label htmlFor="dm">Machine</label><select className="input" id="dm" name="device_model_id" defaultValue={p.device_model_id ?? ""}><option value="">Aucune (fermé à tous)</option>{models.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}</select><span className="hint">Seuls les clients qui ont acheté cette machine voient ce parcours. Sans machine, il n'est ouvert à personne.</span></div>
             <div className="field"><label htmlFor="s">Résumé</label><textarea className="input" id="s" name="summary" defaultValue={p.summary ?? ""} /></div>
-            <label className="row small"><input type="checkbox" name="published" defaultChecked={p.published} style={{ accentColor: "#7b61ff" }} /> Publié (visible des médecins)</label>
+            <label className="row small"><input type="checkbox" name="published" defaultChecked={p.published} /> Publié (visible des médecins)</label>
             <button className="btn solid" type="submit">Enregistrer</button>
           </form>
           <section className="glass card stack" style={{ gap: 10 }}>
