@@ -62,6 +62,7 @@ export const richSheets: Record<string, RichSheet> = {
       [t("Refroidissement", "Cooling"), t("Contact saphir", "Sapphire contact")],
       [t("Autonomie de travail", "Working time"), t("Jusqu'à 18 h en continu", "Up to 18 h continuous")],
       [t("Écran", "Screen"), t("Tactile 10 pouces", "10-inch touchscreen")],
+      [t("Certification", "Certification"), t("CE · FDA", "CE · FDA")],
       [t("Fabricant", "Manufacturer"), t("LGL Expert", "LGL Expert")],
     ],
     related: ["alex-yag-ultra", "new-epil-light"],
@@ -138,6 +139,10 @@ export const richSheets: Record<string, RichSheet> = {
           "Les varicosités et télangiectasies (laser 980 nm), le mélasma, les lentigos et les naevus, le détatouage toutes couleurs et le Carbon Peel (Nd:YAG Q-switched), ainsi que l'acné, les taches et les signes du vieillissement (IPL/OPT à 5 filtres).",
           "Spider veins and telangiectasia (980 nm laser), melasma, lentigines and naevi, multicolour tattoo removal and Carbon Peel (Q-switched Nd:YAG), plus acne, spots and signs of ageing (five-filter IPL/OPT)."
         ),
+      },
+      {
+        q: t("La Queen est-elle certifiée ?", "Is La Queen certified?"),
+        a: t("Oui. La Queen est certifiée CE et FDA.", "Yes. La Queen is CE and FDA certified."),
       },
       {
         q: t("Combien de séances faut-il ?", "How many sessions are needed?"),

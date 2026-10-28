@@ -67,8 +67,7 @@ export const legacyRedirects: Record<string, string> = {
   "/microgun": "/fr/technologies/gammes/rejuvenation",
   "/gatecare": "/fr/technologies",
   "/perfect-cool": "/fr/technologies/gammes/amincissement",
-  // Successeur non confirmé : gamme de la HANOVER 5G. Si Cellulift confirme, pointer vers /fr/technologies/hanover-5g.
-  "/hanover-lift": "/fr/technologies/gammes/lasers",
+  "/hanover-lift": "/fr/technologies/hanover-5g", // HANOVER 5G = successeur (validé par Cellulift)
   // Machine renommée → la rediriger vers sa nouvelle fiche. Machine retirée sans gamme proche → legacyGone (410).
 };
 
