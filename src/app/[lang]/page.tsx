@@ -15,6 +15,7 @@ import { pageMetadata } from "@/lib/alternates";
 import { SITE_URL } from "@/lib/site";
 import { company } from "@/content/company";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { agencyKeys, agencyPath, agencyShowroom } from "@/content/agencies";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
@@ -30,7 +31,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   });
 }
 
-// Accueil allégé (10 sections) : hero → chiffres → positionnement → technologies → vidéos → Academy & Support → implantations → guide → FAQ → contact.
+// Accueil (10 sections) : hero → chiffres → positionnement → technologies → guide → Academy & Support → vidéos → implantations → FAQ → contact.
 export default async function HomePage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
@@ -41,12 +42,12 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       <StatsBand locale={lang} />
       <Positioning locale={lang} />
       <TechIndex locale={lang} />
-      <MediaSection locale={lang} />
-      <AcademySupport locale={lang} />
-      <ShowroomMap locale={lang} />
       <div className="px-3 pb-12 md:px-5 md:pb-16">
         <GuideBanner locale={lang} className="mx-auto max-w-7xl" />
       </div>
+      <AcademySupport locale={lang} />
+      <MediaSection locale={lang} />
+      <ShowroomMap locale={lang} />
       <Faq locale={lang} />
       <ProjectCta locale={lang} />
       {/* Données structurées : l'entreprise et le site (informations réelles du site uniquement) */}
@@ -79,6 +80,21 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
             inLanguage: ["fr", "en"],
             publisher: { "@id": `${SITE_URL}/#organization` },
           },
+          // Agences (même @id que sur leur page) : téléphone uniquement pour le siège, seul numéro confirmé par agence.
+          ...agencyKeys.map((key) => {
+            const a = agencyShowroom(key);
+            return {
+              "@context": "https://schema.org",
+              "@type": "LocalBusiness",
+              "@id": `${SITE_URL}/#${key}`,
+              name: `CELLULIFT — ${a.hq ? "Siège" : "Agence"} ${a.city.fr}`,
+              parentOrganization: { "@id": `${SITE_URL}/#organization` },
+              url: `${SITE_URL}/${lang}${agencyPath(key)}`,
+              ...(a.hq ? { telephone: company.phone } : {}),
+              address: { "@type": "PostalAddress", streetAddress: a.address, addressLocality: a.city.fr, addressCountry: "MA" },
+              geo: { "@type": "GeoCoordinates", latitude: a.lat, longitude: a.lon },
+            };
+          }),
         ]}
       />
     </div>

@@ -3,6 +3,7 @@ import { CookieSettingsLink } from "@/components/layout/CookieConsent";
 import { InstagramIcon } from "@/components/icons/SocialIcons";
 import { Logo } from "@/components/brand/Logo";
 import { company } from "@/content/company";
+import { agencyKeys } from "@/content/agencies";
 import { machineNames } from "@/content/technologies";
 import { WhatsAppLink } from "./WhatsAppLink";
 import type { Locale } from "@/lib/i18n/config";
@@ -102,7 +103,15 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
             <ul className="mt-5 space-y-2 border-t border-deep/10 pt-5">
               {offices.map((o) => (
                 <li key={o.id} className="font-sans text-sm text-deep-soft">
-                  <span className="text-deep">{o.city[locale]}</span> · {o.address}
+                  {/* Ville → page de l'agence (SEO local) */}
+                  {(agencyKeys as string[]).includes(o.id) ? (
+                    <Link href={`/${locale}/agences/${o.id}`} className="text-deep underline-offset-4 hover:underline">
+                      {o.city[locale]}
+                    </Link>
+                  ) : (
+                    <span className="text-deep">{o.city[locale]}</span>
+                  )}{" "}
+                  · {o.address}
                 </li>
               ))}
             </ul>

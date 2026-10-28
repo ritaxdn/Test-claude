@@ -1,0 +1,673 @@
+{
+ "e17082f8b0f9": {
+  "text": "01 · Retendre · laser endolift",
+  "kind": "mono",
+  "size": 10,
+  "color": "#5D5B6B",
+  "maxw": 250,
+  "dot": "",
+  "align": "left"
+ },
+ "ddcdfe93eb24": {
+  "text": "HANOVER 5G",
+  "kind": "display",
+  "size": 26,
+  "color": "#1D1B26",
+  "maxw": 250,
+  "dot": "",
+  "align": "left"
+ },
+ "e234c30bc26f": {
+  "text": "02 · Régénérer · plasma",
+  "kind": "mono",
+  "size": 10,
+  "color": "#5D5B6B",
+  "maxw": 250,
+  "dot": "",
+  "align": "left"
+ },
+ "f50848d8cb56": {
+  "text": "CENTRIFUGEL",
+  "kind": "display",
+  "size": 26,
+  "color": "#1D1B26",
+  "maxw": 250,
+  "dot": "",
+  "align": "left"
+ },
+ "b698a4ad4209": {
+  "text": "1/2",
+  "kind": "display",
+  "size": 58,
+  "color": "#6B5CFF",
+  "maxw": 170,
+  "dot": "",
+  "align": "center"
+ },
+ "bf611a0ba1d0": {
+  "text": "patients sous GLP-1",
+  "kind": "mono",
+  "size": 10,
+  "color": "#5D5B6B",
+  "maxw": 170,
+  "dot": "",
+  "align": "center"
+ },
+ "ce51499f90a9": {
+  "text": "01",
+  "kind": "display",
+  "size": 30,
+  "color": "#00BCD4",
+  "maxw": 60,
+  "dot": "",
+  "align": "left"
+ },
+ "e625f94b69fc": {
+  "text": "Le volume ne suffit plus",
+  "kind": "display",
+  "size": 19,
+  "color": "#1D1B26",
+  "maxw": 400,
+  "dot": "",
+  "align": "left"
+ },
+ "003800d6970c": {
+  "text": "02",
+  "kind": "display",
+  "size": 30,
+  "color": "#7B61FF",
+  "maxw": 60,
+  "dot": "",
+  "align": "left"
+ },
+ "58cd9ac24f45": {
+  "text": "Régénérer avant de remplir",
+  "kind": "display",
+  "size": 19,
+  "color": "#1D1B26",
+  "maxw": 400,
+  "dot": "",
+  "align": "left"
+ },
+ "628483e285c0": {
+  "text": "03",
+  "kind": "display",
+  "size": 30,
+  "color": "#E91E8C",
+  "maxw": 60,
+  "dot": "",
+  "align": "left"
+ },
+ "d4d277508c56": {
+  "text": "Retendre sans chirurgie",
+  "kind": "display",
+  "size": 19,
+  "color": "#1D1B26",
+  "maxw": 400,
+  "dot": "",
+  "align": "left"
+ },
+ "dbf23dc5ca0d": {
+  "text": "Le dossier du mois",
+  "kind": "mono",
+  "size": 11,
+  "color": "#5D5B6B",
+  "maxw": 520,
+  "dot": "#6B5CFF",
+  "align": "left"
+ },
+ "aaf3bc1832b1": {
+  "text": "Le visage GLP-1, nouveau motif de consultation",
+  "kind": "display",
+  "size": 26,
+  "color": "#1D1B26",
+  "maxw": 520,
+  "dot": "",
+  "align": "left"
+ },
+ "9e665901d75a": {
+  "text": "Les technologies du protocole",
+  "kind": "mono",
+  "size": 11,
+  "color": "#5D5B6B",
+  "maxw": 520,
+  "dot": "#6B5CFF",
+  "align": "left"
+ },
+ "661929bfb435": {
+  "text": "Retendre et régénérer",
+  "kind": "display",
+  "size": 26,
+  "color": "#1D1B26",
+  "maxw": 520,
+  "dot": "",
+  "align": "left"
+ },
+ "7fb2b0aeb9af": {
+  "text": "Voir la machine",
+  "kind": "display",
+  "size": 19,
+  "color": "#1D1B26",
+  "maxw": 220,
+  "dot": "",
+  "align": "left"
+ },
+ "63b05aa56955": {
+  "text": "Se former",
+  "kind": "display",
+  "size": 19,
+  "color": "#1D1B26",
+  "maxw": 220,
+  "dot": "",
+  "align": "left"
+ },
+ "7d7c77e767f7": {
+  "text": "Être accompagné",
+  "kind": "display",
+  "size": 19,
+  "color": "#1D1B26",
+  "maxw": 220,
+  "dot": "",
+  "align": "left"
+ },
+ "ef345ec4efcd": {
+  "text": "Approfondir",
+  "kind": "display",
+  "size": 19,
+  "color": "#1D1B26",
+  "maxw": 220,
+  "dot": "",
+  "align": "left"
+ },
+ "d81e64427d22": {
+  "text": "Et maintenant ?",
+  "kind": "mono",
+  "size": 11,
+  "color": "#5D5B6B",
+  "maxw": 520,
+  "dot": "#6B5CFF",
+  "align": "left"
+ },
+ "29436eb177eb": {
+  "text": "Votre prochaine étape",
+  "kind": "display",
+  "size": 26,
+  "color": "#1D1B26",
+  "maxw": 520,
+  "dot": "",
+  "align": "left"
+ },
+ "53c3a66abc1a": {
+  "text": "Nos partenaires",
+  "kind": "mono",
+  "size": 10,
+  "color": "#5D5B6B",
+  "maxw": 300,
+  "dot": "",
+  "align": "left"
+ },
+ "1f0ba32affb8": {
+  "text": "LGL Expert · Scelia · IALIDRA · ARTHROMED · IYADA · GALENICA · SOSKIN",
+  "kind": "mono",
+  "size": 12,
+  "color": "#1D1B26",
+  "maxw": 520,
+  "dot": "",
+  "align": "center"
+ },
+ "be87d62d2467": {
+  "text": "Le parcours Cellulift Academy",
+  "kind": "mono",
+  "size": 11,
+  "color": "#5D5B6B",
+  "maxw": 520,
+  "dot": "#6B5CFF",
+  "align": "left"
+ },
+ "632763cdfa1a": {
+  "text": "Une machine n'est jamais une garantie de résultat.",
+  "kind": "display",
+  "size": 24,
+  "color": "#1D1B26",
+  "maxw": 480,
+  "dot": "",
+  "align": "left"
+ },
+ "a04cf35ebece": {
+  "text": "01",
+  "kind": "display",
+  "size": 34,
+  "color": "#00BCD4",
+  "maxw": 80,
+  "dot": "",
+  "align": "left"
+ },
+ "700972a2050a": {
+  "text": "02",
+  "kind": "display",
+  "size": 34,
+  "color": "#7B61FF",
+  "maxw": 80,
+  "dot": "",
+  "align": "left"
+ },
+ "b8d62f2f1f91": {
+  "text": "03",
+  "kind": "display",
+  "size": 34,
+  "color": "#E91E8C",
+  "maxw": 80,
+  "dot": "",
+  "align": "left"
+ },
+ "330991594160": {
+  "text": "04",
+  "kind": "display",
+  "size": 34,
+  "color": "#FF5722",
+  "maxw": 80,
+  "dot": "",
+  "align": "left"
+ },
+ "cece5db649c9": {
+  "text": "Dans le prochain numéro",
+  "kind": "mono",
+  "size": 11,
+  "color": "#5D5B6B",
+  "maxw": 520,
+  "dot": "#E91E8C",
+  "align": "left"
+ },
+ "47f05277d334": {
+  "text": "Biofiller ou acide hyaluronique : volumiser ou régénérer ?",
+  "kind": "display",
+  "size": 21,
+  "color": "#1D1B26",
+  "maxw": 480,
+  "dot": "",
+  "align": "left"
+ },
+ "2f945e368afd": {
+  "text": "Une question sur un protocole ?",
+  "kind": "display",
+  "size": 22,
+  "color": "#1D1B26",
+  "maxw": 480,
+  "dot": "",
+  "align": "center"
+ },
+ "cde7c6976adf": {
+  "text": "01 · Amincissement avancé",
+  "kind": "mono",
+  "size": 10,
+  "color": "#5D5B6B",
+  "maxw": 250,
+  "dot": "",
+  "align": "left"
+ },
+ "b0455da8f496": {
+  "text": "PRESSOLIGNE 5",
+  "kind": "display",
+  "size": 26,
+  "color": "#1D1B26",
+  "maxw": 250,
+  "dot": "",
+  "align": "left"
+ },
+ "66c7762c26f2": {
+  "text": "02 · Amincissement avancé",
+  "kind": "mono",
+  "size": 10,
+  "color": "#5D5B6B",
+  "maxw": 250,
+  "dot": "",
+  "align": "left"
+ },
+ "3c0edae131a1": {
+  "text": "TANITA",
+  "kind": "display",
+  "size": 26,
+  "color": "#1D1B26",
+  "maxw": 250,
+  "dot": "",
+  "align": "left"
+ },
+ "f26a46b0fd12": {
+  "text": "Focus technologies",
+  "kind": "mono",
+  "size": 11,
+  "color": "#5D5B6B",
+  "maxw": 520,
+  "dot": "#6B5CFF",
+  "align": "left"
+ },
+ "33f38ff3679f": {
+  "text": "Technologies corps",
+  "kind": "display",
+  "size": 26,
+  "color": "#1D1B26",
+  "maxw": 520,
+  "dot": "",
+  "align": "left"
+ },
+ "b4b17b1168e4": {
+  "text": "Un projet pour votre cabinet ?",
+  "kind": "display",
+  "size": 22,
+  "color": "#1D1B26",
+  "maxw": 480,
+  "dot": "",
+  "align": "center"
+ },
+ "e694d865e01a": {
+  "text": "01 · Solutions lasers",
+  "kind": "mono",
+  "size": 10,
+  "color": "#5D5B6B",
+  "maxw": 250,
+  "dot": "",
+  "align": "left"
+ },
+ "d342a98ea94e": {
+  "text": "LA QUEEN",
+  "kind": "display",
+  "size": 26,
+  "color": "#1D1B26",
+  "maxw": 250,
+  "dot": "",
+  "align": "left"
+ },
+ "3a777b2b33ca": {
+  "text": "SLIMAX LIPO 7",
+  "kind": "display",
+  "size": 26,
+  "color": "#1D1B26",
+  "maxw": 250,
+  "dot": "",
+  "align": "left"
+ },
+ "8acfbc24e05d": {
+  "text": "Les incontournables du centre",
+  "kind": "display",
+  "size": 26,
+  "color": "#1D1B26",
+  "maxw": 520,
+  "dot": "",
+  "align": "left"
+ },
+ "e63e4da1d98d": {
+  "text": "Vous préparez une nouvelle offre ?",
+  "kind": "display",
+  "size": 22,
+  "color": "#1D1B26",
+  "maxw": 480,
+  "dot": "",
+  "align": "center"
+ },
+ "4eea74461446": {
+  "text": "Édition médecins · N°01",
+  "kind": "mono",
+  "size": 11,
+  "color": "#5D5B6B",
+  "maxw": 520,
+  "dot": "#6B5CFF",
+  "align": "left"
+ },
+ "5bdbb12ee727": {
+  "text": "Ils ont perdu 15 kilos. Leur visage aussi.",
+  "kind": "display",
+  "size": 38,
+  "color": "#1D1B26",
+  "maxw": 320,
+  "dot": "",
+  "align": "left",
+  "parts": [
+   [
+    "Ils ont perdu 15 kilos. ",
+    "#1D1B26"
+   ],
+   [
+    "Leur visage ",
+    "#6B5CFF"
+   ],
+   [
+    "aussi.",
+    "#E91E8C"
+   ]
+  ]
+ },
+ "26a68306c580": {
+  "text": "52 %",
+  "kind": "display",
+  "size": 52,
+  "color": "#6B5CFF",
+  "maxw": 240,
+  "dot": "",
+  "align": "center"
+ },
+ "53446266c43f": {
+  "text": "1 sur 3",
+  "kind": "display",
+  "size": 52,
+  "color": "#E91E8C",
+  "maxw": 240,
+  "dot": "",
+  "align": "center"
+ },
+ "a6920ab8ea6a": {
+  "text": "Enquête auprès des praticiens · Congrès AAD 2026",
+  "kind": "mono",
+  "size": 10,
+  "color": "#5D5B6B",
+  "maxw": 480,
+  "dot": "",
+  "align": "center"
+ },
+ "d7bd3a1e1a79": {
+  "text": "Visage GLP-1 : ce qui change dans votre protocole",
+  "kind": "display",
+  "size": 28,
+  "color": "#1D1B26",
+  "maxw": 520,
+  "dot": "",
+  "align": "left"
+ },
+ "de0cc7b3712d": {
+  "text": "01",
+  "kind": "display",
+  "size": 26,
+  "color": "#00BCD4",
+  "maxw": 60,
+  "dot": "",
+  "align": "left"
+ },
+ "96dbcf8b2ee1": {
+  "text": "Remplir ne suffit plus",
+  "kind": "display",
+  "size": 17,
+  "color": "#1D1B26",
+  "maxw": 430,
+  "dot": "",
+  "align": "left"
+ },
+ "1fa02700a604": {
+  "text": "02",
+  "kind": "display",
+  "size": 26,
+  "color": "#7B61FF",
+  "maxw": 60,
+  "dot": "",
+  "align": "left"
+ },
+ "bd8de507fc8c": {
+  "text": "Retendre d'abord",
+  "kind": "display",
+  "size": 17,
+  "color": "#1D1B26",
+  "maxw": 430,
+  "dot": "",
+  "align": "left"
+ },
+ "ace61c19f870": {
+  "text": "03",
+  "kind": "display",
+  "size": 26,
+  "color": "#E91E8C",
+  "maxw": 60,
+  "dot": "",
+  "align": "left"
+ },
+ "9668bc821b52": {
+  "text": "Régénérer ensuite",
+  "kind": "display",
+  "size": 17,
+  "color": "#1D1B26",
+  "maxw": 430,
+  "dot": "",
+  "align": "left"
+ },
+ "2e3a4acffd34": {
+  "text": "Le protocole en deux technologies",
+  "kind": "mono",
+  "size": 11,
+  "color": "#5D5B6B",
+  "maxw": 520,
+  "dot": "#6B5CFF",
+  "align": "left"
+ },
+ "6a086a152911": {
+  "text": "Retendre. Régénérer.",
+  "kind": "display",
+  "size": 28,
+  "color": "#1D1B26",
+  "maxw": 520,
+  "dot": "",
+  "align": "left"
+ },
+ "353d5bb0246f": {
+  "text": "01 · Retendre · Laser endolift",
+  "kind": "mono",
+  "size": 10,
+  "color": "#5D5B6B",
+  "maxw": 300,
+  "dot": "",
+  "align": "left"
+ },
+ "a394772b74a8": {
+  "text": "HANOVER 5G",
+  "kind": "display",
+  "size": 24,
+  "color": "#1D1B26",
+  "maxw": 300,
+  "dot": "",
+  "align": "left"
+ },
+ "fe67cf87cdcd": {
+  "text": "02 · Régénérer · Plasma",
+  "kind": "mono",
+  "size": 10,
+  "color": "#5D5B6B",
+  "maxw": 300,
+  "dot": "",
+  "align": "left"
+ },
+ "9bc5ffcf933e": {
+  "text": "CENTRIFUGEL",
+  "kind": "display",
+  "size": 24,
+  "color": "#1D1B26",
+  "maxw": 300,
+  "dot": "",
+  "align": "left"
+ },
+ "78f93b68ff18": {
+  "text": "Cellulift Academy",
+  "kind": "mono",
+  "size": 11,
+  "color": "#5D5B6B",
+  "maxw": 520,
+  "dot": "#6B5CFF",
+  "align": "left"
+ },
+ "f0b5b4025286": {
+  "text": "La machine ne fait pas le résultat. La main, si.",
+  "kind": "display",
+  "size": 26,
+  "color": "#1D1B26",
+  "maxw": 500,
+  "dot": "",
+  "align": "left"
+ },
+ "70cede811035": {
+  "text": "01",
+  "kind": "display",
+  "size": 24,
+  "color": "#00BCD4",
+  "maxw": 60,
+  "dot": "",
+  "align": "left"
+ },
+ "4ef762691cf2": {
+  "text": "02",
+  "kind": "display",
+  "size": 24,
+  "color": "#7B61FF",
+  "maxw": 60,
+  "dot": "",
+  "align": "left"
+ },
+ "463f2ebb827d": {
+  "text": "03",
+  "kind": "display",
+  "size": 24,
+  "color": "#E91E8C",
+  "maxw": 60,
+  "dot": "",
+  "align": "left"
+ },
+ "e46ae305de3c": {
+  "text": "04",
+  "kind": "display",
+  "size": 24,
+  "color": "#FF5722",
+  "maxw": 60,
+  "dot": "",
+  "align": "left"
+ },
+ "5825077b3133": {
+  "text": "Réservé aux abonnés",
+  "kind": "mono",
+  "size": 11,
+  "color": "#6B5CFF",
+  "maxw": 520,
+  "dot": "#E91E8C",
+  "align": "left"
+ },
+ "f873417b125d": {
+  "text": "La fiche « Bilan visage GLP-1 »",
+  "kind": "display",
+  "size": 22,
+  "color": "#1D1B26",
+  "maxw": 500,
+  "dot": "",
+  "align": "left"
+ },
+ "5433b694e430": {
+  "text": "Voyez-le avant d'en parler à vos patients.",
+  "kind": "display",
+  "size": 26,
+  "color": "#1D1B26",
+  "maxw": 480,
+  "dot": "",
+  "align": "center"
+ },
+ "7948a54c8848": {
+  "text": "Dans le N°02",
+  "kind": "mono",
+  "size": 11,
+  "color": "#5D5B6B",
+  "maxw": 520,
+  "dot": "#E91E8C",
+  "align": "left"
+ }
+}

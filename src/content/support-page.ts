@@ -11,7 +11,7 @@ export const supportPageContent = {
       title: "Un SAV qui fonctionne comme un système.",
       live: "En service",
       rows: [
-        { label: "Garantie", value: "24 mois · pièces et main-d'œuvre", state: "Actif" },
+        { label: "Garantie", value: "24 mois · main-d'œuvre", state: "Actif" },
         { label: "Ligne support", value: "{phone}", state: "En ligne" },
         { label: "Intervention sur site", value: "Notre staff technique se déplace", state: "Disponible" },
         { label: "Atelier intégré", value: "Diagnostic et réparation", state: "Opérationnel" },
@@ -52,7 +52,7 @@ export const supportPageContent = {
       eyebrow: "Ce qui est inclus",
       title: "Ce que vous obtenez avec chaque technologie",
       items: [
-        { title: "Garantie 24 mois", description: "Pièces et main-d'œuvre, sur toutes nos machines." },
+        { title: "Garantie 24 mois", description: "Main-d'œuvre : notre staff technique se déplace chez vous et notre atelier intégré assure le diagnostic et la réparation." },
         { title: "Déplacement du staff technique", description: "Nos techniciens interviennent directement chez vous." },
         { title: "Atelier intégré", description: "Diagnostic et réparation de vos machines par notre équipe." },
         { title: "Ligne support directe", description: "Un numéro dédié pour toute question technique." },
@@ -78,7 +78,7 @@ export const supportPageContent = {
       title: "After-sales that runs like a system.",
       live: "In service",
       rows: [
-        { label: "Warranty", value: "24 months · parts and labour", state: "Active" },
+        { label: "Warranty", value: "24 months · labour", state: "Active" },
         { label: "Support line", value: "{phone}", state: "Online" },
         { label: "On-site visits", value: "Our technical staff comes to you", state: "Available" },
         { label: "In-house workshop", value: "Diagnosis and repair", state: "Operational" },
@@ -119,7 +119,7 @@ export const supportPageContent = {
       eyebrow: "What's included",
       title: "What you get with every technology",
       items: [
-        { title: "24-month warranty", description: "Parts and labour, on all our devices." },
+        { title: "24-month warranty", description: "Labour: our technical staff comes to you and our in-house workshop handles diagnosis and repair." },
         { title: "On-site technical staff", description: "Our technicians come directly to you." },
         { title: "In-house workshop", description: "Diagnosis and repair of your devices by our team." },
         { title: "Direct support line", description: "A dedicated number for any technical question." },
