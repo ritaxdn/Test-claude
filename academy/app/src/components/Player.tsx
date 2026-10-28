@@ -77,7 +77,7 @@ export function Player({ lessonId, playback, duration, startAt, maxReached, comp
         )}
         {playback.kind === "mux" && muxReady && (
           // @ts-expect-error composant web Mux
-          <mux-player ref={ref} playback-id={playback.playbackId} playback-token={playback.token} drm-token={playback.drmToken} stream-type="on-demand" accent-color="#1D55E6" />
+          <mux-player ref={ref} playback-id={playback.playbackId} playback-token={playback.token} drm-token={playback.drmToken} stream-type="on-demand" accent-color="#7B61FF" />
         )}
         {playback.kind === "missing" && <div className="empty"><p>La vidéo de cette leçon n'est pas encore disponible.</p></div>}
         {playback.kind !== "missing" && <span className="wm" style={{ left: `${wm.left}%`, top: `${wm.top}%` }} aria-hidden="true">{watermark}</span>}

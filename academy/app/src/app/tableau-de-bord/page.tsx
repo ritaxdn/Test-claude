@@ -49,7 +49,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
               const v = pct(p.done, p.lessons);
               const n = next[i];
               return (
-                <article key={p.id} className="glass glow card stack">
+                <article key={p.id} className="glass card stack">
                   <div className="row between wrap">
                     {p.device_name && <span className="badge rb">Inclus avec votre {p.device_name}</span>}
                     {p.completed ? <span className="badge ok">Formation terminée</span> : v > 0 ? <span className="badge">En cours</span> : <span className="badge">À commencer</span>}

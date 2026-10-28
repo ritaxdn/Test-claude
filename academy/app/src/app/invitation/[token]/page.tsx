@@ -29,7 +29,7 @@ export default async function Invitation({ params, searchParams }: { params: Pro
               <input type="email" name="email" value={t.email} autoComplete="username" readOnly hidden />
               <div className="field"><label htmlFor="password">Mot de passe</label><input className="input" id="password" name="password" type="password" minLength={10} autoComplete="new-password" required /><span className="hint">Au moins 10 caractères. Une phrase courte est plus sûre qu'un mot compliqué.</span></div>
               <div className="field"><label htmlFor="password2">Confirmer le mot de passe</label><input className="input" id="password2" name="password2" type="password" minLength={10} autoComplete="new-password" required /></div>
-              <label className="row small muted" style={{ alignItems: "flex-start" }}><input type="checkbox" name="cgu" required style={{ marginTop: 4 }} /> J'accepte les conditions d'utilisation et la politique de confidentialité (loi 09-08). Les vidéos sont personnelles et ne doivent pas être partagées.</label>
+              <label className="row small muted" style={{ alignItems: "flex-start" }}><input type="checkbox" name="cgu" required style={{ marginTop: 4, accentColor: "#7b61ff" }} /> J'accepte les conditions d'utilisation et la politique de confidentialité (loi 09-08). Les vidéos sont personnelles et ne doivent pas être partagées.</label>
               <button className="btn solid" type="submit" style={{ minHeight: 46 }}>Créer mon accès</button>
             </form>
           </>
