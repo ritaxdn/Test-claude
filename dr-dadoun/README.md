@@ -98,6 +98,11 @@ Sans script configuré, le site peut aussi lire l'onglet publié en CSV (`FORMAT
   dans `about.talks` et les autres profils officiels (Cellulift, fiche Google…) dans `about.profiles` (`site.ts`).
 - Google Search Console : méthode « Balise HTML », coller le code (la valeur de `content="…"`) dans la variable
   `GOOGLE_SITE_VERIFICATION` de Vercel, redéployer, puis cliquer « Valider ».
+  Autre méthode (propriété « Domaine ») : ajouter le TXT `google-site-verification=…` dans Vercel → Domains →
+  docteurdadoun.com → DNS Records (les DNS du domaine sont chez Vercel).
+- IndexNow (Bing, et donc Copilot et ChatGPT Search) : après une mise en ligne qui ajoute ou modifie des pages,
+  lancer `npm run indexnow` depuis `dr-dadoun/` ; toutes les URL du sitemap sont envoyées. La clé est servie par
+  `public/759b1f8336ca2b1103f0d107512a748e.txt` (publique par conception).
 - Fiches détaillées des soins (`src/content/fiches.ts`) : publiées quand `validated: true` (+ `reviewed: "AAAA-MM-JJ"`).
   Aperçu des brouillons : `FICHES_PREVIEW=1`, uniquement sur l'environnement Preview de Vercel.
 
