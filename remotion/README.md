@@ -19,10 +19,10 @@ component, which reads `useVideoConfig()` to lay itself out per orientation.
 
 | id | file | length | size | what it is |
 | --- | --- | --- | --- | --- |
-| `CelluliftLogo` | `src/CelluliftLogo.tsx` | 4s (120f) | 1920×1080 | Animated logo reveal |
-| `CelluliftLogo-Vertical` | same | 4s (120f) | 1080×1920 | Reels / Stories |
-| `CelluliftPromo` | `src/CelluliftPromo.tsx` | 6s (180f) | 1920×1080 | Full promo (logo + pillars + CTA) |
-| `CelluliftPromo-Vertical` | same | 6s (180f) | 1080×1920 | Reels / Stories |
+| `CelluliftLogo` | `src/CelluliftLogo.tsx` | 5.7s (170f) | 1920×1080 | Animated logo reveal |
+| `CelluliftLogo-Vertical` | same | 5.7s (170f) | 1080×1920 | Reels / Stories |
+| `CelluliftPromo` | `src/CelluliftPromo.tsx` | 8s (240f) | 1920×1080 | Full promo (logo + pillars + CTA) |
+| `CelluliftPromo-Vertical` | same | 8s (240f) | 1080×1920 | Reels / Stories |
 
 ### The animated logo (`src/AnimatedLogo.tsx`)
 
@@ -30,24 +30,29 @@ Uses the **real Cellulift logo, unchanged** (`public/cellulift-logo.png`) —
 shared by both `CelluliftLogo` and `CelluliftPromo`'s opening scene. Not a
 single pixel of the source file is ever redrawn, recolored, or distorted.
 
-The reveal is a **sequenced mask wipe**, not a redraw: four regions were
-measured directly off the PNG's alpha channel (as fractions of its 469×271
-native size), and each is its own `overflow: hidden` + `clip-path` "window"
-onto the *same* image, offset so it lines up pixel-for-pixel. Animating each
-window's clip from fully closed to fully open — left to right — reveals that
-region of the real artwork progressively:
+The logo **writes itself in** — a premium, cinematic pace rather than a
+mechanical wipe. Four regions were measured directly off the PNG's alpha
+channel (as fractions of its 469×271 native size); each is a `mask-image`
+gradient "window" onto the *same* image, offset so it lines up pixel-for-pixel.
+Unlike a hard `clip-path` edge, a mask gradient can be **feathered** — a soft,
+ink-like boundary instead of a sharp cut, which reads as "being painted in"
+rather than "revealed by a blind". A warm light glint travels along that soft
+edge as each region writes in, like a pen of light tracing the mark:
 
-1. **Arc** (frames 0–30) — draws in left to right. Because the artwork's own
-   colour bands run left to right (cyan → magenta → orange → yellow), the wipe
-   reads as the arc drawing in **colour by colour**.
-2. **ECG** (frames 26–42) — the heartbeat line traces in right after,
-   overlapping the arc's tail slightly so it feels like it "follows".
-3. **Wordmark** (frames 40–62) — the reveal progress is quantized into 9
-   steps (C-E-L-L-U-L-I-F-T), so **CELLULIFT pops in letter by letter**
-   instead of sliding in as one smooth wipe.
-4. **Tagline** (frames 60–76) — "Metamorphosis Technology" wipes in last.
-5. **Pulsation** (from frame 82) — once fully assembled, a slow uniform
-   breathe (`Math.sin(frame)`, ±2%) keeps the mark alive.
+1. **Arc** (frames 0–58, eased) — writes in left to right with a ~17%-wide
+   feathered edge. Because the artwork's own colour bands run left to right
+   (cyan → magenta → orange → yellow), this reads as the arc writing itself in
+   **colour by colour**.
+2. **ECG** (frames 50–74) — the heartbeat line traces in right after,
+   overlapping the arc's tail so it feels like it "follows".
+3. **Wordmark** (frames 70–114, eased out) — a continuous soft-edged reveal;
+   the natural gaps between letters make **CELLULIFT read as writing itself
+   in stroke by stroke** without a hard quantized stair-step.
+4. **Tagline** (frames 110–132) — "Metamorphosis Technology" settles in last,
+   no glint (kept quiet so it doesn't compete with the wordmark).
+5. **Pulsation** (from frame 150) — once fully assembled, a slow, barely-there
+   breathe (`Math.sin(frame)`, ±1.6%) keeps the mark alive, plus a subtle
+   dolly-in (`scale(1.045 → 1)`) across the whole write-in for depth.
 
 > **Re-measuring the regions.** If you swap in a different logo file, the
 > `BOX` constants in `AnimatedLogo.tsx` (arc/word/ecg/tag, as 0–1 fractions of
@@ -61,7 +66,7 @@ Three scenes stitched with `<TransitionSeries>`:
 | Concept | Where |
 | --- | --- |
 | `useCurrentFrame` / `useVideoConfig` | every scene; drives the portrait/landscape layout switch |
-| Sequenced `clip-path` mask reveal | the logo scene (arc → ECG → letters → tagline), shared via `AnimatedLogo.tsx` |
+| Feathered `mask-image` ink reveal + travelling glint | the logo scene (arc → ECG → wordmark → tagline), shared via `AnimatedLogo.tsx` |
 | `spring()` physics entrance | staggered pillar cards, CTA headline — `{ damping: 18, mass: 0.8, stiffness: 120 }` for a consistent, brand-appropriate ~300ms settle |
 | `interpolate()` with clamped extrapolation | fades, fade-and-rise, the rainbow-rule wipe |
 | Rainbow gradient (never flattened) | section rules, glow, scrub bar |
