@@ -15,6 +15,9 @@ export type AcademySession = {
 
 export const academyCalendarUrl = "https://cal.com/celluliftacademy";
 
+// Inscription à la masterclass Vulva & Vision (formulaire Tally de Cellulift Academy)
+const masterclassRegistration = "https://tally.so/r/labEvB?utm_source=cellulift.ma&utm_medium=site&utm_campaign=masterclass_vulva_vision";
+
 export const academySessions: AcademySession[] = [
   {
     start: "2026-11-12",
@@ -23,6 +26,7 @@ export const academySessions: AcademySession[] = [
     subtitle: "Dr Dulce Cristina Pereira Henriques (Brésil) · Dr Dadoun · Dr Saheli",
     place: "Kenzi Tower Hotel, Casablanca",
     time: { fr: "De 16h à 21h", en: "4 pm to 9 pm" },
+    link: masterclassRegistration,
   },
   {
     start: "2026-10-03",
@@ -61,6 +65,7 @@ export const academyHighlight = {
   place: "Kenzi Tower Hotel, Casablanca",
   partners: { fr: "Avec LGL Expert et la SMFC (Société Marocaine de Fertilité et de Contraception)", en: "With LGL Expert and the SMFC (Moroccan Society of Fertility and Contraception)" },
   registration: { fr: "Participation sur inscription", en: "Participation by registration" },
+  registerUrl: masterclassRegistration,
   speaker: {
     name: "Dr Dulce Cristina Pereira Henriques",
     photo: "/images/academy/dr-dulce-cristina-pereira-henriques.jpg",

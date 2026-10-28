@@ -21,7 +21,7 @@ export function AcademyHighlight({ locale, full = false }: { locale: Locale; ful
   const h = currentHighlight();
   if (!h) return null;
   const l = t[locale];
-  const register = `/${locale}/contact?sujet=masterclass&session=${h.start}`;
+  const register = h.registerUrl;
 
   return (
     <section id="masterclass" className="scroll-mt-24 px-3 pb-12 md:px-5 md:pb-16">
