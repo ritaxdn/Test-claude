@@ -641,6 +641,364 @@ export const fiches: Record<string, Fiche> = {
       },
     ],
   },
+  "fils-tenseurs": {
+    validated: false,
+    how: "Des fils fins et résorbables, le plus souvent en polydioxanone (PDO), sont glissés sous la peau à l'aide d'une aiguille ou d'une canule, sans incision. Selon leur type, ils soutiennent et repositionnent les tissus relâchés, ou servent surtout à stimuler la production de collagène. Ils se résorbent en quelques mois, et l'effet de soutien se prolonge grâce au collagène formé autour.",
+    zones: ["Ovale du visage et bajoues", "Joues et pommettes", "Sourcils", "Cou", "Autres zones selon l'indication"],
+    sessions: "En général une séance. Le résultat peut être entretenu par une nouvelle séance après douze à dix-huit mois.",
+    relevant: [
+      "Relâchement débutant à modéré des joues et de l'ovale",
+      "Sourcil qui tombe légèrement",
+      "Peau qui a perdu de sa fermeté, sans excès de peau important",
+    ],
+    notBest: [
+      { case: "Rides d'expression liées aux muscles", better: "toxine-botulique" },
+      { case: "Perte de volume des pommettes ou des sillons", better: "acide-hyaluronique" },
+      { case: "Relâchement associé à des petits amas graisseux de l'ovale", better: "endolifting" },
+      { case: "Relâchement très marqué avec un excès de peau : il relève de la chirurgie" },
+      { case: "Peau très fine : les fils peuvent devenir visibles" },
+    ],
+    preparation: [
+      "Consultation préalable : analyse du relâchement et de la qualité de la peau",
+      "Signaler tout traitement anticoagulant, la prise d'aspirine ou de compléments qui fluidifient le sang",
+      "Signaler tout soin dentaire prévu dans les semaines qui suivent",
+      "Prévoir la séance à distance d'un événement important",
+    ],
+    aftercare: [
+      "Gonflement, sensibilité et parfois bleus pendant quelques jours",
+      "Petites irrégularités ou sensation de tiraillement, qui s'estompent en général en une à deux semaines",
+      "Éviter de grandes ouvertures de bouche, les massages du visage et les soins dentaires pendant quelques semaines",
+      "Dormir sur le dos les premiers jours, éviter le sport intense, le sauna et le hammam",
+    ],
+    risks: [
+      "Bleus et gonflement",
+      "Asymétrie ou petites fossettes, le plus souvent transitoires",
+      "Fil palpable ou visible sous la peau",
+      "Rarement : infection ou extrusion d'un fil, qui demande de le retirer",
+    ],
+    contraindications: [
+      "Grossesse et allaitement",
+      "Infection ou lésion de peau sur la zone",
+      "Troubles de la coagulation",
+      "Certaines maladies auto-immunes, à évaluer en consultation",
+    ],
+    pain: "La séance se fait sous anesthésie locale. On ressent surtout des pressions et des tiraillements. Les jours suivants, une sensibilité est fréquente, soulagée par des antalgiques simples.",
+    results:
+      "Un effet de soutien est visible tout de suite, puis s'affine à mesure que le gonflement disparaît. La stimulation du collagène améliore la fermeté sur plusieurs mois ; l'effet dure en général douze à dix-huit mois.",
+    faq: [
+      {
+        q: "Les fils tenseurs remplacent-ils un lifting chirurgical ?",
+        a: "Non. Ils conviennent à un relâchement débutant à modéré. Quand l'excès de peau est important, seule la chirurgie donne un résultat satisfaisant, et je vous le dis franchement.",
+      },
+      {
+        q: "Les fils restent-ils dans la peau ?",
+        a: "Non. Ils se résorbent en quelques mois. Le collagène formé autour prolonge l'effet.",
+      },
+      {
+        q: "Peut-on associer les fils à d'autres soins ?",
+        a: "Oui, souvent : l'acide hyaluronique restaure un volume, la toxine botulique détend un muscle, les fils repositionnent. Le plan est établi en consultation.",
+      },
+    ],
+  },
+
+  "epilation-laser": {
+    validated: false,
+    how: "La lumière du laser est absorbée par le pigment du poil et transformée en chaleur, qui détruit la racine du poil en phase de croissance. Comme tous les poils ne poussent pas en même temps, plusieurs séances sont nécessaires. Les réglages sont adaptés à la couleur de la peau et du poil.",
+    zones: ["Visage (lèvre supérieure, menton)", "Aisselles", "Maillot", "Jambes et bras", "Dos et torse"],
+    sessions:
+      "En général six à huit séances, espacées de quatre à huit semaines selon la zone. Une séance d'entretien par an peut être utile, notamment sur les zones sensibles aux hormones.",
+    relevant: [
+      "Poils bruns ou foncés, sur toutes les zones du corps",
+      "Pilosité gênante du visage",
+      "Poils incarnés et irritations liées au rasage ou à la cire",
+    ],
+    notBest: [
+      { case: "Poils blancs, gris, blonds très clairs ou roux : le laser ne les reconnaît pas" },
+      { case: "Peau bronzée ou exposition solaire prévue dans les semaines qui suivent" },
+      { case: "Pilosité qui apparaît ou augmente brutalement : elle demande d'abord un bilan hormonal" },
+    ],
+    preparation: [
+      "Consultation préalable : type de peau, couleur du poil, traitements en cours",
+      "Raser la zone la veille ; ni cire, ni pince, ni crème dépilatoire pendant les quatre semaines précédentes",
+      "Éviter le soleil et l'autobronzant pendant les quatre semaines précédentes",
+      "Signaler tout médicament qui rend la peau sensible au soleil",
+    ],
+    aftercare: [
+      "Rougeur et petits boutons autour des poils pendant quelques heures",
+      "Pas de hammam, de sauna ni de gommage pendant 48 heures",
+      "Protection solaire stricte sur les zones exposées",
+      "Ni cire ni pince entre les séances : le rasoir reste possible",
+    ],
+    risks: [
+      "Rougeur et gonflement transitoires",
+      "Taches claires ou foncées temporaires, surtout sur les peaux mates à foncées",
+      "Rarement : brûlure superficielle ou petite cloque",
+      "Rarement : repousse paradoxale de poils fins à proximité des zones traitées",
+    ],
+    contraindications: [
+      "Peau bronzée ou exposition solaire récente",
+      "Grossesse",
+      "Infection ou lésion de peau sur la zone",
+      "Médicaments photosensibilisants ou traitement récent par isotrétinoïne, à évaluer en consultation",
+    ],
+    pain: "On ressent de petits claquements chauds, comme un élastique sur la peau. Le refroidissement de la peau rend la séance supportable ; les zones fines comme le maillot ou la lèvre supérieure sont plus sensibles.",
+    results:
+      "Les poils traités tombent dans les deux à trois semaines. La pilosité diminue nettement au fil des séances ; quelques poils fins peuvent persister, et les zones sensibles aux hormones demandent parfois un entretien.",
+    phototypes:
+      "Le laser et ses réglages sont choisis selon la peau : les peaux mates et foncées peuvent être traitées, avec des paramètres adaptés et prudents pour éviter les taches.",
+    faq: [
+      {
+        q: "L'épilation laser est-elle définitive ?",
+        a: "Elle réduit durablement la pilosité, de façon très importante sur la plupart des zones. Quelques poils fins peuvent repousser avec le temps, d'où une séance d'entretien éventuelle.",
+      },
+      {
+        q: "Peut-on faire l'épilation laser sur peau mate ou foncée ?",
+        a: "Oui, avec un laser et des réglages adaptés. Le type de peau est évalué en consultation et un test peut être réalisé.",
+      },
+      {
+        q: "Peut-on se raser entre les séances ?",
+        a: "Oui, le rasoir est autorisé. En revanche, la cire, la pince et l'épilateur sont à éviter, car ils retirent la racine que le laser doit atteindre.",
+      },
+    ],
+  },
+
+  skinboosters: {
+    validated: false,
+    how: "Les skinboosters sont des gels d'acide hyaluronique peu ou non réticulé, très fluides, injectés en multiples petits points dans la peau. Contrairement à un comblement, ils n'ajoutent pas de volume : ils hydratent la peau en profondeur et stimulent sa qualité, pour plus d'éclat, d'élasticité et un grain de peau plus fin.",
+    zones: ["Visage", "Cou", "Décolleté", "Mains"],
+    sessions:
+      "Un protocole de deux à trois séances espacées d'environ un mois, puis une séance d'entretien tous les six à neuf mois.",
+    relevant: [
+      "Peau déshydratée, terne ou fatiguée",
+      "Perte d'élasticité et ridules fines",
+      "Peau du cou, du décolleté ou des mains qui se fripe",
+    ],
+    notBest: [
+      { case: "Perte de volume des pommettes ou des sillons", better: "acide-hyaluronique" },
+      { case: "Rides d'expression liées aux muscles", better: "toxine-botulique" },
+      { case: "Cicatrices d'acné en creux", better: "laser-co2" },
+      { case: "Relâchement de l'ovale", better: "fils-tenseurs" },
+    ],
+    preparation: [
+      "Consultation préalable : analyse de la qualité de la peau",
+      "Signaler tout traitement anticoagulant ou la prise d'aspirine",
+      "Signaler tout antécédent d'herpès",
+      "Venir sans maquillage, à distance d'un événement important",
+    ],
+    aftercare: [
+      "Petites papules aux points d'injection pendant 24 à 48 heures",
+      "Parfois quelques bleus",
+      "Pas de maquillage le jour même",
+      "Éviter le sport intense, le sauna, le hammam et le soleil pendant 48 heures",
+    ],
+    risks: [
+      "Papules, rougeurs et bleus transitoires",
+      "Rarement : petits nodules, infection ou réaction inflammatoire",
+    ],
+    contraindications: [
+      "Grossesse et allaitement",
+      "Infection ou herpès actif sur la zone",
+      "Allergie connue à l'un des composants",
+      "Certaines maladies auto-immunes, à évaluer en consultation",
+    ],
+    pain: "Une crème anesthésiante est appliquée avant la séance. Les piqûres sont nombreuses mais très fines.",
+    results:
+      "La peau paraît plus fraîche dès que les papules disparaissent. L'amélioration de la qualité de peau se construit sur le protocole complet et se maintient avec l'entretien.",
+    faq: [
+      {
+        q: "Les skinboosters changent-ils les traits du visage ?",
+        a: "Non. Ils n'ajoutent pas de volume : ils améliorent la qualité de la peau, pas les traits.",
+      },
+      {
+        q: "Quelle différence avec la mésothérapie ?",
+        a: "Les deux améliorent la qualité de peau. Les skinboosters reposent sur l'acide hyaluronique, la mésothérapie sur un cocktail de vitamines et d'actifs. Le choix dépend de votre peau.",
+      },
+      {
+        q: "Quand voit-on le résultat ?",
+        a: "Un éclat est souvent visible en quelques jours ; le résultat complet s'apprécie après le protocole de deux à trois séances.",
+      },
+    ],
+  },
+
+  mesotherapie: {
+    validated: false,
+    how: "La mésothérapie du visage, ou mésolift, consiste à injecter dans la peau, par micro-injections, un mélange d'actifs : vitamines, acides aminés, minéraux et acide hyaluronique non réticulé. Elle revitalise une peau terne ou fatiguée et améliore son éclat. Le mélange est choisi selon les besoins de la peau.",
+    zones: ["Visage", "Cou", "Décolleté", "Mains"],
+    sessions:
+      "Un protocole de trois à cinq séances espacées de deux à quatre semaines, puis un entretien tous les trois à six mois.",
+    relevant: [
+      "Teint terne, peau fatiguée ou stressée",
+      "Peau déshydratée",
+      "Préparation de la peau avant un événement",
+      "Entretien de la qualité de peau",
+    ],
+    notBest: [
+      { case: "Perte de volume", better: "acide-hyaluronique" },
+      { case: "Rides d'expression liées aux muscles", better: "toxine-botulique" },
+      { case: "Taches pigmentaires installées", better: "peeling" },
+      { case: "Cicatrices d'acné en creux", better: "laser-co2" },
+    ],
+    preparation: [
+      "Consultation préalable : analyse de la peau",
+      "Signaler tout traitement anticoagulant ou la prise d'aspirine",
+      "Signaler toute allergie",
+      "Venir sans maquillage",
+    ],
+    aftercare: [
+      "Petites marques et rougeurs pendant quelques heures à 24 heures",
+      "Pas de maquillage le jour même",
+      "Éviter le soleil, le sauna et le hammam pendant 24 à 48 heures",
+    ],
+    risks: [
+      "Rougeurs, petites papules ou bleus transitoires",
+      "Rarement : réaction allergique ou infection",
+    ],
+    contraindications: [
+      "Grossesse et allaitement",
+      "Infection ou herpès actif sur la zone",
+      "Allergie connue à l'un des composants",
+    ],
+    pain: "Les micro-injections sont très superficielles ; une crème anesthésiante peut être appliquée pour plus de confort.",
+    results:
+      "Le teint est souvent plus lumineux dès les jours qui suivent. L'effet se renforce au fil du protocole et s'entretient dans le temps.",
+    faq: [
+      {
+        q: "Combien de séances faut-il ?",
+        a: "En général trois à cinq séances rapprochées, puis un entretien. Je vous propose un protocole selon votre peau.",
+      },
+      {
+        q: "Peut-on reprendre ses activités tout de suite ?",
+        a: "Oui. Les petites marques disparaissent en quelques heures ; le maquillage est possible dès le lendemain.",
+      },
+      {
+        q: "La mésothérapie convient-elle aux peaux sensibles ?",
+        a: "Le plus souvent oui : le mélange est adapté à la peau, et la tolérance est vérifiée en consultation.",
+      },
+    ],
+  },
+
+  "prp-visage": {
+    validated: false,
+    how: "Le PRP (plasma riche en plaquettes) est préparé à partir d'une petite prise de votre propre sang, centrifugée pour concentrer les plaquettes. Ces plaquettes libèrent des facteurs de croissance qui stimulent le renouvellement de la peau et la production de collagène. Le plasma est réinjecté par micro-injections, ou appliqué en association avec un laser ou un microneedling.",
+    zones: ["Visage", "Contour des yeux", "Cou et décolleté", "Cuir chevelu, selon l'indication"],
+    sessions: "Trois séances espacées d'environ un mois, puis un entretien tous les six à douze mois.",
+    relevant: [
+      "Peau terne, manque d'éclat",
+      "Ridules et texture irrégulière",
+      "Cernes et contour des yeux fatigué, selon l'indication",
+      "En complément d'un laser, pour accompagner la cicatrisation",
+    ],
+    notBest: [
+      { case: "Perte de volume marquée", better: "acide-hyaluronique" },
+      { case: "Rides d'expression liées aux muscles", better: "toxine-botulique" },
+      { case: "Cicatrices d'acné en creux profondes, seul", better: "laser-co2" },
+      { case: "Recherche d'un résultat immédiat : l'effet est progressif" },
+    ],
+    preparation: [
+      "Consultation préalable",
+      "Bien boire et manger normalement avant la séance",
+      "Éviter aspirine et anti-inflammatoires quelques jours avant, selon mes indications",
+      "Venir sans maquillage",
+    ],
+    aftercare: [
+      "Rougeurs et petites marques pendant 24 à 48 heures, parfois quelques bleus",
+      "Ne pas laver le visage pendant quelques heures",
+      "Éviter le maquillage le jour même, le soleil, le sauna et le hammam pendant 48 heures",
+    ],
+    risks: [
+      "Bleus aux points d'injection ou de prise de sang",
+      "Rougeurs et gonflement transitoires",
+      "Rarement : infection",
+      "Résultat variable d'une personne à l'autre",
+    ],
+    contraindications: [
+      "Grossesse et allaitement",
+      "Troubles de la coagulation ou baisse des plaquettes",
+      "Infection ou herpès actif sur la zone",
+      "Cancer en cours de traitement",
+    ],
+    pain: "Une crème anesthésiante est appliquée avant les injections. La prise de sang est celle d'un bilan classique.",
+    results:
+      "L'effet est progressif : la peau gagne en éclat et en texture au fil des semaines et des séances. La réponse varie selon les personnes.",
+    faq: [
+      {
+        q: "Le PRP présente-t-il un risque d'allergie ?",
+        a: "Il est préparé à partir de votre propre sang, ce qui limite fortement le risque d'allergie.",
+      },
+      {
+        q: "Combien de temps dure la séance ?",
+        a: "Environ quarante-cinq minutes, prise de sang et préparation du plasma comprises.",
+      },
+      {
+        q: "Peut-on associer le PRP au laser ?",
+        a: "Oui, c'est une association fréquente : le PRP accompagne la cicatrisation et renforce le renouvellement de la peau après un laser.",
+      },
+    ],
+  },
+
+  peeling: {
+    validated: false,
+    how: "Un peeling médical consiste à appliquer sur la peau une solution exfoliante (acide glycolique, acide salicylique, TCA…) qui élimine les couches superficielles de l'épiderme. La peau se renouvelle : le teint s'unifie, les taches s'atténuent, le grain de peau s'affine. Le type d'acide et sa concentration sont choisis selon la peau et l'objectif, du peeling superficiel au peeling moyen.",
+    zones: ["Visage", "Cou et décolleté", "Mains", "Dos, selon l'indication"],
+    sessions:
+      "Les peelings superficiels se font en cure de trois à six séances espacées de deux à quatre semaines. Un peeling moyen est en général réalisé en une séance.",
+    relevant: [
+      "Teint terne ou irrégulier",
+      "Taches pigmentaires et taches solaires",
+      "Acné légère et marques rouges ou brunes laissées par l'acné",
+      "Pores dilatés, grain de peau épais",
+    ],
+    notBest: [
+      { case: "Cicatrices d'acné en creux", better: "laser-co2" },
+      { case: "Perte de volume", better: "acide-hyaluronique" },
+      { case: "Rides d'expression liées aux muscles", better: "toxine-botulique" },
+      { case: "Peau bronzée ou exposition solaire prévue dans les semaines qui suivent" },
+    ],
+    preparation: [
+      "Consultation préalable : type de peau et choix du peeling",
+      "Préparation de la peau à domicile pendant deux à quatre semaines, selon le peeling",
+      "Arrêter les rétinoïdes et exfoliants quelques jours avant, selon mes indications",
+      "Signaler tout antécédent d'herpès : un traitement préventif peut être prescrit",
+      "Éviter le soleil avant la séance",
+    ],
+    aftercare: [
+      "Rougeurs, tiraillements puis desquamation pendant deux à sept jours selon le peeling",
+      "Ne pas arracher les peaux qui se détachent",
+      "Crème hydratante et cicatrisante prescrite",
+      "Protection solaire stricte pendant plusieurs semaines",
+    ],
+    risks: [
+      "Rougeur et sensibilité transitoires",
+      "Taches réactionnelles, surtout sur les peaux mates à foncées si le soleil n'est pas évité",
+      "Poussée d'herpès chez les personnes prédisposées",
+      "Rarement, pour les peelings moyens : cicatrice",
+    ],
+    contraindications: [
+      "Grossesse et allaitement, selon le type de peeling",
+      "Peau bronzée ou exposition solaire récente",
+      "Herpès actif ou lésion sur la zone",
+      "Traitement récent par isotrétinoïne",
+    ],
+    pain: "On ressent des picotements ou une sensation de chaleur pendant quelques minutes, plus marqués pour les peelings moyens.",
+    results:
+      "La peau est plus lumineuse dès la fin de la desquamation. Le résultat sur les taches et le grain de peau se construit sur plusieurs séances, et se maintient avec une protection solaire régulière.",
+    phototypes:
+      "Les peaux mates et foncées peuvent être traitées, avec des peelings choisis pour limiter le risque de taches, une préparation de la peau et une protection solaire stricte.",
+    faq: [
+      {
+        q: "Peut-on travailler après un peeling ?",
+        a: "Après un peeling superficiel, oui, le plus souvent dès le lendemain. Un peeling moyen demande quelques jours d'éviction sociale.",
+      },
+      {
+        q: "En quelle saison faire un peeling ?",
+        a: "De préférence en dehors des périodes de fort ensoleillement. Avec une protection solaire stricte, certains peelings superficiels restent possibles toute l'année.",
+      },
+      {
+        q: "Le peeling efface-t-il le mélasma ?",
+        a: "Il peut l'atténuer, dans le cadre d'un traitement global, mais le mélasma a tendance à revenir. Nous en parlons en consultation.",
+      },
+    ],
+  },
 };
 
 /** Fiche publiée (validée), ou brouillon si l'aperçu est activé (FICHES_PREVIEW=1). */
