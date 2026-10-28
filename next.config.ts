@@ -1,16 +1,16 @@
 import type { NextConfig } from "next";
 
-// Content Security Policy : le navigateur n'exécute que les scripts du site, de Google Analytics et de Vercel.
+// Content Security Policy : le navigateur n'exécute que les scripts du site, de Google Analytics, de Microsoft Clarity et de Vercel.
 // (Next.js injecte des scripts en ligne : 'unsafe-inline' reste nécessaire sans nonce.)
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://va.vercel-scripts.com",
-  "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://vitals.vercel-insights.com",
-  "img-src 'self' data: blob: https://*.google-analytics.com https://www.googletagmanager.com",
+  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://va.vercel-scripts.com https://*.clarity.ms",
+  "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://vitals.vercel-insights.com https://*.clarity.ms",
+  "img-src 'self' data: blob: https://*.google-analytics.com https://www.googletagmanager.com https://*.clarity.ms https://c.bing.com",
   "style-src 'self' 'unsafe-inline'",
   "font-src 'self' data:",
   "media-src 'self'",
-  "frame-src 'none'",
+  "frame-src https://www.youtube-nocookie.com",
   "frame-ancestors 'self'",
   "object-src 'none'",
   "base-uri 'self'",

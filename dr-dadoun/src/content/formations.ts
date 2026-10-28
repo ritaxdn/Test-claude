@@ -140,7 +140,7 @@ export const formationsPage = {
         date: "Samedi 10 octobre 2026",
         course: "endolifting",
         title: "Endolifting : jusqu'où peut aller le tightening sans chirurgie ?",
-        subtitle: "Dr Kahak × Dr Dadoun",
+        subtitle: "Dr Dadoun × Dr Kahak",
         place: "", // À COMPLÉTER : lieu
         format: "", // À COMPLÉTER : horaire, nombre de places
         link: "https://cal.com/endolifting-jusqu-ou-peut-aller-le-tightening-sans-chirurgie",
