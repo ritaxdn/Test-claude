@@ -39,8 +39,8 @@ export const sheets: Record<string, Sheet> = {
   brasilift: {
     tagline: t("Lifting et volume des fessiers et de la poitrine par vacuum.", "Vacuum lifting and volume for buttocks and chest."),
     description: t(
-      "Système de vacuothérapie à ventouses (29 ventouses) : l'aspiration stimule la circulation sanguine et l'étirement contrôlé de la peau améliore la qualité du collagène, pour lifter et redonner du volume.",
-      "Cup-based vacuum therapy system (29 cups): suction stimulates blood flow and controlled skin stretching improves collagen quality, to lift and restore volume."
+      "Système de vacuothérapie à ventouses : l'aspiration stimule la circulation sanguine et l'étirement contrôlé de la peau améliore la qualité du collagène, pour lifter et redonner du volume.",
+      "Cup-based vacuum therapy system: suction stimulates blood flow and controlled skin stretching improves collagen quality, to lift and restore volume."
     ),
     indications: [
       t("Lifting et galbe des fessiers", "Buttock lifting and shaping"),
@@ -235,6 +235,7 @@ export const sheets: Record<string, Sheet> = {
 
   // ——— Solutions lasers ———
   "alex-yag-ultra": {
+    certifications: ["CE", "FDA"], // indiqué sur la brochure LGL Expert (« agréé CE, FDA »)
     tagline: t("Laser double longueur d'onde Alexandrite 755 nm et Nd:YAG 1064 nm.", "Dual-wavelength Alexandrite 755 nm and Nd:YAG 1064 nm laser."),
     description: t(
       "L'Alexandrite cible la mélanine, le Nd:YAG l'oxyhémoglobine : une seule plateforme pour l'épilation de tous les phototypes et le traitement des lésions pigmentaires et vasculaires, avec un refroidissement puissant.",
