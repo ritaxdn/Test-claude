@@ -29,7 +29,7 @@ export function TechIndex({ locale }: { locale: Locale }) {
           <Cta href={`/${locale}/technologies`}>{c.viewAll}</Cta>
         </Reveal>
 
-        <RevealGroup className="mt-6 grid grid-cols-2 gap-2.5 sm:mt-8 sm:gap-3 lg:grid-cols-3">
+        <RevealGroup className="mt-6 grid grid-cols-1 gap-2.5 sm:mt-8 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3">
           {keys.map((key, i) => {
             const machines = technologiesIn(key);
             const cover = universeCover(key);
@@ -40,7 +40,7 @@ export function TechIndex({ locale }: { locale: Locale }) {
               <RevealItem key={key}>
                 <Link
                   href={landingForCategory[key] ? `/${locale}${landingPath(landingForCategory[key])}` : `/${locale}/technologies#${key}`}
-                  className="glass scan-hover group relative flex aspect-square flex-col overflow-hidden sm:aspect-[5/4] rounded-[1.25rem] p-3.5 sm:rounded-[1.75rem] sm:p-5 md:p-6"
+                  className="glass scan-hover group relative flex min-h-[18rem] flex-col overflow-hidden sm:min-h-[22rem] rounded-[1.25rem] p-3.5 sm:rounded-[1.75rem] sm:p-5 md:p-6"
                 >
                   {cover && (
                     <div className="scan-frame pointer-events-none absolute inset-0 transition-all duration-700 ease-out md:scale-105 md:opacity-0 md:group-hover:scale-100 md:group-hover:opacity-100">
@@ -63,6 +63,12 @@ export function TechIndex({ locale }: { locale: Locale }) {
                     {/* Ligne de détail réservée sur toutes les cartes : les titres restent alignés */}
                     <p className={`data-label mt-2 hidden transition-colors duration-300 sm:block ${soft}`}>
                       {categoryDetail[key]?.[locale] ?? "\u00a0"}
+                    </p>
+                    {c.pitch[key]?.[0] && (
+                      <p className={`mt-3 font-sans text-sm leading-snug transition-colors duration-300 ${soft}`}>{c.pitch[key][0]}</p>
+                    )}
+                    <p className={`mt-3 font-sans text-sm font-medium underline-offset-4 transition-colors duration-300 group-hover:underline ${ink}`}>
+                      {c.pitch[key]?.[1]} →
                     </p>
                     {/* Technologies de la gamme : discrètes, révélées au survol (masquées sur téléphone, sans survol) */}
                     <ul className="mt-4 hidden flex-wrap gap-x-3 gap-y-1 transition-all duration-500 md:flex md:max-h-0 md:translate-y-2 md:overflow-hidden md:opacity-0 md:group-hover:max-h-40 md:group-hover:translate-y-0 md:group-hover:opacity-100">

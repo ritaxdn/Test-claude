@@ -55,13 +55,15 @@ export default async function AgencyPage({ params }: { params: Promise<{ lang: s
         data={{
           "@context": "https://schema.org",
           "@type": "LocalBusiness",
-          name: `CELLULIFT ${s.city.fr}`,
+          "@id": `${SITE_URL}/#${ville}`,
+          name: `CELLULIFT — ${s.hq ? "Siège" : "Agence"} ${s.city.fr}`,
           description: a.description[lang],
           url: `${SITE_URL}/${lang}${agencyPath(ville)}`,
-          telephone: company.phone,
+          // Téléphone uniquement pour le siège : pas de numéro propre confirmé pour les autres agences.
+          ...(s.hq ? { telephone: company.phone } : {}),
           address: { "@type": "PostalAddress", streetAddress: s.address, addressLocality: s.city.fr, addressCountry: "MA" },
           geo: { "@type": "GeoCoordinates", latitude: s.lat, longitude: s.lon },
-          parentOrganization: { "@type": "Organization", name: company.name, url: SITE_URL },
+          parentOrganization: { "@id": `${SITE_URL}/#organization` },
         }}
       />
       <PageHero eyebrow={s.hq ? t.hq : t.eyebrow} title={a.h1[lang]} subtitle={a.intro[lang]} compact />

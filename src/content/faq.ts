@@ -14,11 +14,11 @@ export const faq = {
       },
       {
         q: "Vos machines sont-elles certifiées ?",
-        a: "Oui. Toutes nos machines sont certifiées CE et FDA.",
+        a: "Nos équipements sont marqués CE. Les certifications de chaque machine (CE, FDA le cas échéant) sont disponibles sur demande.",
       },
       {
         q: "Quelle est la garantie ?",
-        a: "24 mois pièces et main-d'œuvre, avec possibilité de déplacement de notre staff technique et un atelier pour le diagnostic et la réparation.",
+        a: "24 mois de garantie main-d'œuvre. Nos techniciens se déplacent sur site et notre atelier intégré prend en charge le diagnostic et la réparation. Les pièces détachées et têtes de remplacement sont disponibles auprès de notre SAV.",
       },
       {
         q: "Qui installe la machine ?",
@@ -43,7 +43,7 @@ export const faq = {
       },
       {
         q: "Comment choisir son fournisseur d'équipements médico-esthétiques ?",
-        a: "Au-delà de la machine, vérifiez l'accompagnement : installation et mise en service, formation à la pratique, protocoles, garantie et service après-vente local. Chez Cellulift, chaque technologie est livrée avec l'installation, la formation Cellulift Academy, les protocoles et une garantie de 24 mois pièces et main-d'œuvre.",
+        a: "Au-delà de la machine, vérifiez l'accompagnement : installation et mise en service, formation à la pratique, protocoles, garantie et service après-vente local. Chez Cellulift, chaque technologie est livrée avec l'installation, la formation Cellulift Academy, les protocoles et une garantie de 24 mois main-d'œuvre.",
       },
       {
         q: "Intervenez-vous en dehors de Casablanca ?",
@@ -65,11 +65,11 @@ export const faq = {
       },
       {
         q: "Are your devices certified?",
-        a: "Yes. All our devices are CE and FDA certified.",
+        a: "Our equipment is CE marked. Each device's certifications (CE, and FDA where applicable) are available on request.",
       },
       {
         q: "What is the warranty?",
-        a: "24 months parts and labour, with on-site visits by our technical staff and a workshop for diagnosis and repair.",
+        a: "24-month labour warranty. Our technicians come on site and our in-house workshop handles diagnosis and repair. Spare parts and replacement heads are available from our after-sales service.",
       },
       {
         q: "Who installs the device?",
@@ -93,7 +93,7 @@ export const faq = {
       },
       {
         q: "How do I choose a medical aesthetic equipment supplier?",
-        a: "Beyond the device, check the support: installation and commissioning, hands-on training, protocols, warranty and local after-sales service. At Cellulift, every technology comes with installation, Cellulift Academy training, protocols and a 24-month parts and labour warranty.",
+        a: "Beyond the device, check the support: installation and commissioning, hands-on training, protocols, warranty and local after-sales service. At Cellulift, every technology comes with installation, Cellulift Academy training, protocols and a 24-month labour warranty.",
       },
       {
         q: "Do you work outside Casablanca?",

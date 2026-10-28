@@ -4,13 +4,14 @@
 export const homeSystem = {
   fr: {
     hero: {
-      // Ligne de contexte (H1, pour le référencement) puis grand titre de marque.
-      seo: "Technologies médico-esthétiques professionnelles",
-      title: ["La technologie", "au service de votre développement."],
-      titleAccent: "Expertise · Formation · Installation · Support",
-      badges: ["Distributeur officiel LGL Expert · Afrique", "Certifiées CE & FDA · Garantie 24 mois"],
-      ctaPrimary: "Voir la technologie en action",
-      ctaSecondary: "Trouver la technologie adaptée",
+      // H1 unique (ce que vend Cellulift, où), puis l'accroche de marque en paragraphe et la ligne de réassurance.
+      title: ["Lasers et équipements médico-esthétiques", "professionnels au Maroc"],
+      subtitle:
+        "On ne vend pas de la beauté. On vend de la performance : la bonne technologie, la formation pour la maîtriser et un SAV qui reste à vos côtés.",
+      reassurance: "Distributeur officiel LGL Expert · Installation · Formation CELLULIFT Academy · SAV 13 techniciens",
+      badges: ["Marquées CE · Garantie 24 mois main-d'œuvre"],
+      ctaPrimary: "Réserver une démo au showroom",
+      ctaSecondary: "Recevoir le guide : 7 questions avant d'investir",
     },
     // Chiffres clés (très grand, sans paragraphe). « {s} » = nombre de showrooms. Ne jamais afficher le nombre de technologies.
     stats: [
@@ -22,11 +23,11 @@ export const homeSystem = {
     // Bloc de positionnement sous les chiffres (validé par Cellulift)
     positioning: {
       title: "Votre fournisseur d'équipements médico-esthétiques au Maroc.",
-      text: "CELLULIFT sélectionne et distribue des équipements médico-esthétiques professionnels pour les médecins, cliniques et centres au Maroc : lasers, appareils d'amincissement et de remodelage corporel, technologies de réjuvénation cutanée. Chaque équipement est accompagné par nos équipes pour l'installation, la formation CELLULIFT Academy et le service après-vente.",
+      text: "Depuis 2002, CELLULIFT sélectionne et distribue des lasers esthétiques, des appareils d'amincissement et de remodelage corporel, des technologies HIFU et de réjuvénation cutanée pour les médecins esthétiques, dermatologues, cliniques et centres au Maroc. Chaque machine est livrée installée, avec une formation CELLULIFT Academy et un service après-vente assuré par nos 13 techniciens depuis Casablanca, Marrakech et Tanger.",
     },
     // Bandeau défilant sous le hero.
     ticker: [
-      "Toutes nos machines sont certifiées CE et FDA",
+      "Équipements marqués CE",
       "Depuis 2002",
       "Technologies • Installation • Formation • Accompagnement • Service après-vente",
       "{s} points de vente",
@@ -51,7 +52,7 @@ export const homeSystem = {
       // Preuves, présentées comme des données : la valeur domine, le libellé reste discret.
       items: [
         { label: "Distribution officielle", value: "LGL Expert", title: "Partenaire officiel en Afrique", text: "" },
-        { label: "Technologies certifiées", value: "CE · FDA", title: "Toutes nos machines sont certifiées", text: "" },
+        { label: "Équipements certifiés", value: "CE", title: "Certifications de chaque machine sur demande", text: "" },
         { label: "Présence internationale", value: "Maroc · France · Sénégal", title: "Accompagnement multi-marchés", text: "" },
         { label: "Expertise médicale", value: "Médecins · Formateurs · Experts", title: "Protocoles et accompagnement clinique", text: "" },
       ],
@@ -60,9 +61,18 @@ export const homeSystem = {
       eyebrow: "01 — Technologies",
       title: "Des technologies",
       titleAccent: "pour chaque indication.",
-      intro: "Les dispositifs de dernière génération LGL Expert, dont Cellulift est le distributeur officiel en Afrique, tous certifiés CE Médical et FDA.",
+      intro: "Les dispositifs de dernière génération LGL Expert, dont Cellulift est le distributeur officiel en Afrique, marqués CE.",
       columns: { ref: "", name: "", category: "", indications: "" },
       viewAll: "Explorer nos technologies",
+      // Deux lignes sous chaque gamme + libellé du lien (la carte entière mène à la page de la gamme).
+      pitch: {
+        amincissement: ["Appareils de remodelage corporel et de réduction des graisses localisées pour cabinets et centres. Des protocoles rentables, à forte demande patient.", "Voir les appareils d'amincissement"],
+        lasers: ["Lasers esthétiques professionnels pour l'épilation, le détatouage, les lésions pigmentaires et vasculaires. Choisis pour leur fiabilité et leur rendement en cabinet.", "Voir les lasers esthétiques"],
+        rejuvenation: ["Technologies anti-âge et de qualité de peau : texture, rides, éclat. Des soins à fort taux de retour patient.", "Voir les technologies de réjuvénation"],
+        photomodulation: ["LED médicales pour accompagner les traitements, accélérer la récupération et compléter vos protocoles anti-âge et anti-acné.", "Voir la photomodulation"],
+        hifu: ["Lifting non chirurgical du visage et du corps. Une alternative recherchée par les patients, sans éviction sociale.", "Voir les appareils HIFU"],
+        therapie: ["", "Voir les thérapies avancées"],
+      } as Record<string, [string, string]>,
     },
     academy: {
       eyebrow: "02 — Cellulift Academy",
@@ -78,7 +88,7 @@ export const homeSystem = {
       title: "Après l'installation, nous restons là.",
       text: "",
       items: [
-        { code: "01", title: "Garantie 24 mois", text: "Pièces et main-d'œuvre." },
+        { code: "01", title: "Garantie 24 mois", text: "Main-d'œuvre." },
         { code: "02", title: "Déplacement", text: "Notre staff technique se déplace chez vous." },
         { code: "03", title: "Atelier intégré", text: "Diagnostic et réparation de vos machines." },
         { code: "04", title: "Assistance", text: "Une question technique ? Notre équipe vous répond." },
@@ -105,12 +115,13 @@ export const homeSystem = {
   },
   en: {
     hero: {
-      seo: "Medical aesthetic technology for professionals",
-      title: ["Medical aesthetic technology.", "Built for growth."],
-      titleAccent: "Technology · Training · Installation · Support",
-      badges: ["Official LGL Expert distributor · Africa", "CE & FDA certified · 24-month warranty"],
-      ctaPrimary: "See it in action",
-      ctaSecondary: "Find the right technology",
+      title: ["Professional lasers and medical aesthetic", "equipment in Morocco"],
+      subtitle:
+        "We don't sell beauty. We sell performance: the right technology, the training to master it and an after-sales service that stays by your side.",
+      reassurance: "Official LGL Expert distributor · Installation · CELLULIFT Academy training · After-sales: 13 technicians",
+      badges: ["CE marked · 24-month labour warranty"],
+      ctaPrimary: "Book a showroom demo",
+      ctaSecondary: "Get the guide: 7 questions before investing",
     },
     stats: [
       { value: "20+", label: "Years of expertise" },
@@ -120,10 +131,10 @@ export const homeSystem = {
     ],
     positioning: {
       title: "Your medical aesthetic equipment supplier in Morocco.",
-      text: "CELLULIFT selects and distributes professional medical aesthetic equipment for physicians, clinics and centres in Morocco: lasers, body contouring devices and skin rejuvenation technology. Every device is supported by our teams through installation, CELLULIFT Academy training and after-sales service.",
+      text: "Since 2002, CELLULIFT has selected and distributed aesthetic lasers, body slimming and contouring devices, HIFU and skin rejuvenation technology for aesthetic physicians, dermatologists, clinics and centres in Morocco. Every device is delivered installed, with CELLULIFT Academy training and after-sales service by our 13 technicians from Casablanca, Marrakech and Tangier.",
     },
     ticker: [
-      "All our devices are CE and FDA certified",
+      "CE-marked equipment",
       "Since 2002",
       "Technology • Installation • Training • Support • After-sales service",
       "{s} points of sale",
@@ -147,7 +158,7 @@ export const homeSystem = {
       intro: "",
       items: [
         { label: "Official distribution", value: "LGL Expert", title: "Official partner in Africa", text: "" },
-        { label: "Certified technology", value: "CE · FDA", title: "All our devices are certified", text: "" },
+        { label: "Certified equipment", value: "CE", title: "Each device's certifications on request", text: "" },
         { label: "International presence", value: "Morocco · France · Senegal", title: "Multi-market support", text: "" },
         { label: "Medical expertise", value: "Physicians · Trainers · Experts", title: "Protocols and clinical guidance", text: "" },
       ],
@@ -156,9 +167,17 @@ export const homeSystem = {
       eyebrow: "01 — Technologies",
       title: "Technology",
       titleAccent: "for every indication.",
-      intro: "Latest-generation LGL Expert devices, of which Cellulift is the official distributor in Africa, all CE Medical and FDA certified.",
+      intro: "Latest-generation LGL Expert devices, of which Cellulift is the official distributor in Africa, CE marked.",
       columns: { ref: "", name: "", category: "", indications: "" },
       viewAll: "Explore our technologies",
+      pitch: {
+        amincissement: ["Body contouring and localised fat reduction devices for practices and centres. Profitable protocols in high patient demand.", "See the slimming devices"],
+        lasers: ["Professional aesthetic lasers for hair removal, tattoo removal, pigmented and vascular lesions. Chosen for their reliability and in-clinic return.", "See the aesthetic lasers"],
+        rejuvenation: ["Anti-ageing and skin quality technology: texture, wrinkles, radiance. Treatments with a high patient return rate.", "See the rejuvenation technology"],
+        photomodulation: ["Medical LEDs to support treatments, speed up recovery and complete your anti-ageing and anti-acne protocols.", "See photomodulation"],
+        hifu: ["Non-surgical lifting of the face and body. An alternative patients seek out, with no downtime.", "See the HIFU devices"],
+        therapie: ["", "See advanced therapy"],
+      } as Record<string, [string, string]>,
     },
     academy: {
       eyebrow: "02 — Cellulift Academy",
@@ -174,7 +193,7 @@ export const homeSystem = {
       title: "After installation, we stay with you.",
       text: "",
       items: [
-        { code: "01", title: "24-month warranty", text: "Parts and labour." },
+        { code: "01", title: "24-month warranty", text: "Labour." },
         { code: "02", title: "On-site visits", text: "Our technical staff comes to you." },
         { code: "03", title: "In-house workshop", text: "Diagnosis and repair of your devices." },
         { code: "04", title: "Assistance", text: "A technical question? Our team answers." },
