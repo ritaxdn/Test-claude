@@ -10,6 +10,7 @@ import { Reassurance } from "@/components/Reassurance";
 import { actPath, acts, doctor, getAct, practice, steps, type Act } from "@/content/site";
 import { concernsForAct } from "@/content/concerns";
 import { getFiche } from "@/content/fiches";
+import { publishedArticles } from "@/content/articles";
 import { absolute, breadcrumb, clinicId, metaDescription, physicianId } from "@/lib/seo";
 
 type Props = { params: Promise<{ univers: string; acte: string }> };
@@ -65,6 +66,7 @@ export default async function ActPage({ params }: Props) {
   const u = a.universe;
   const forConcerns = concernsForAct(a.slug);
   const fiche = getFiche(a.slug);
+  const articles = publishedArticles().filter((x) => x.related.includes(a.slug));
   const related = acts.filter((x) => x.universe.slug === u.slug && x.slug !== a.slug);
   const qa = [...(fiche?.faq ?? []), ...questions(a)];
   const url = absolute(actPath(a));
@@ -335,6 +337,24 @@ export default async function ActPage({ params }: Props) {
           <div className="mt-3">
             <DoctorByline />
           </div>
+          {articles.length > 0 && (
+            <div className="mt-20">
+              <p className="eyebrow">Pour aller plus loin</p>
+              <ul className="mt-6 grid gap-x-8 border-t border-line sm:grid-cols-2">
+                {articles.map((x) => (
+                  <li key={x.slug}>
+                    <Link
+                      href={`/conseils/${x.slug}`}
+                      className="group flex items-center justify-between gap-4 border-b border-line py-5 hover:text-accent-deep"
+                    >
+                      <span className="font-medium">{x.title}</span>
+                      <ArrowRight size={16} className="shrink-0 transition-transform group-hover:translate-x-1" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </section>
       </main>
       <Footer />

@@ -1,6 +1,7 @@
 import { about, actPath, acts, doctor, faq, philosophy, practice, universes } from "@/content/site";
 import { formationsPage } from "@/content/formations";
 import { concernActs, concerns } from "@/content/concerns";
+import { publishedArticles } from "@/content/articles";
 import { absolute } from "@/lib/seo";
 
 // /llms.txt : résumé du site destiné aux assistants IA (GEO), généré depuis le contenu.
@@ -41,6 +42,9 @@ export function GET() {
     "## Questions fréquentes",
     ...faq.flatMap((f) => [`- ${f.q}`, `  ${f.a}`]),
     "",
+    ...(publishedArticles().length
+      ? ["## Conseils", ...publishedArticles().map((x) => `- [${x.title}](${absolute(`/conseils/${x.slug}`)}) : ${x.description}`), ""]
+      : []),
     "## Formations pour médecins",
     `${formationsPage.hero.text} Réservé aux médecins. ${absolute("/formations")}`,
     ...formationsPage.courses.map((c) => `- ${c.title} : ${c.summary} (${absolute(`/formations/${c.slug}`)})`),
