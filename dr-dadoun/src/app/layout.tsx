@@ -8,7 +8,7 @@ import "./globals.css";
 // « Docteur Dadoun » en tête : c'est ce que les patients tapent dans Google.
 const title = "Docteur Dadoun — Médecin esthétique & lasériste à Casablanca";
 const description =
-  "Docteur Mohamed Dadoun, médecin esthétique et lasériste à Casablanca depuis plus de 35 ans : toxine botulique, acide hyaluronique, laser CO₂, endolifting et gynécologie esthétique. Cabinet Quartier des Hôpitaux, sur rendez-vous.";
+  "Dr Mohamed Dadoun, médecin esthétique et lasériste à Casablanca depuis 35 ans : Botox, acide hyaluronique, laser CO₂, endolifting, gynécologie esthétique.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -19,6 +19,11 @@ export const metadata: Metadata = {
     "médecin esthétique Casablanca",
     "médecine esthétique Casablanca",
     "botox Casablanca",
+    "injection botox Casablanca",
+    "filler Casablanca",
+    "injection lèvres Casablanca",
+    "couperose Casablanca",
+    "lifting sans chirurgie Casablanca",
     "toxine botulique Casablanca",
     "acide hyaluronique Casablanca",
     "laser CO2 Casablanca",

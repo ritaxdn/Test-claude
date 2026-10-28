@@ -12,6 +12,13 @@ export const siteUrl = (
 
 export const absolute = (path = "/") => `${siteUrl}${path.startsWith("/") ? path : `/${path}`}`;
 
+/** Description pour Google : au plus 158 caractères, coupée sur un mot. */
+export const metaDescription = (text: string, max = 158) => {
+  if (text.length <= max) return text;
+  const cut = text.slice(0, max - 1);
+  return `${cut.slice(0, cut.lastIndexOf(" ")).replace(/[\s,;:.—-]+$/, "")}…`;
+};
+
 export const clinicId = absolute("/#cabinet");
 export const physicianId = absolute("/#docteur");
 
@@ -32,7 +39,12 @@ const openingHoursSpecification = practice.openingHours.map((h) => ({
 }));
 
 const procedures = treatments.flatMap((c) =>
-  c.treatments.map((t) => ({ "@type": "MedicalProcedure", name: t.name, description: t.description })),
+  c.treatments.map((t) => ({
+    "@type": "MedicalProcedure",
+    name: t.name,
+    ...(t.alternateNames ? { alternateName: t.alternateNames } : {}),
+    description: t.description,
+  })),
 );
 
 /** Données structurées communes à tout le site : site, cabinet, médecin. */

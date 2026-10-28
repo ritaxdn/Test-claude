@@ -10,7 +10,7 @@ import { Reassurance } from "@/components/Reassurance";
 import { actPath, acts, doctor, getAct, practice, steps, type Act } from "@/content/site";
 import { concernsForAct } from "@/content/concerns";
 import { getFiche } from "@/content/fiches";
-import { absolute, breadcrumb, clinicId, physicianId } from "@/lib/seo";
+import { absolute, breadcrumb, clinicId, metaDescription, physicianId } from "@/lib/seo";
 
 type Props = { params: Promise<{ univers: string; acte: string }> };
 
@@ -23,10 +23,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const a = getAct(univers, acte);
   if (!a) return {};
   return {
-    title: `${a.name} à Casablanca`,
-    description: `${a.description} Au cabinet du ${doctor.name}, médecin esthétique et lasériste à ${practice.city}, sur rendez-vous.`,
+    title: `${a.seoName ?? a.name} à Casablanca`,
+    description: metaDescription(`${a.seoName ?? a.name} à ${practice.city} par le ${doctor.name}, médecin esthétique. ${a.description}`),
     alternates: { canonical: actPath(a) },
-    openGraph: { url: actPath(a), title: `${a.name} à Casablanca · ${doctor.name}` },
+    openGraph: { url: actPath(a), title: `${a.seoName ?? a.name} à Casablanca · ${doctor.name}` },
   };
 }
 
@@ -89,7 +89,7 @@ export default async function ActPage({ params }: Props) {
                 {a.category.title} · {practice.city}
               </p>
               <h1 className="mt-3 font-display text-4xl sm:text-5xl font-medium leading-[0.95] md:text-7xl">
-                {a.name} <span className="block text-white/70 md:inline">à {practice.city}</span>
+                {a.seoName ?? a.name} <span className="block text-white/70 md:inline">à {practice.city}</span>
               </h1>
               <div className="mt-6 flex flex-col justify-between gap-8 md:flex-row md:items-end">
                 <p className="max-w-xl text-lg leading-relaxed text-white/90">{a.description}</p>
@@ -349,7 +349,7 @@ export default async function ActPage({ params }: Props) {
         data={{
           "@context": "https://schema.org",
           "@type": "MedicalWebPage",
-          name: `${a.name} à Casablanca`,
+          name: `${a.seoName ?? a.name} à Casablanca`,
           url,
           inLanguage: "fr-MA",
           isPartOf: { "@id": absolute("/#site") },
@@ -360,6 +360,7 @@ export default async function ActPage({ params }: Props) {
             "@type": "MedicalProcedure",
             "@id": `${url}#acte`,
             name: a.name,
+            ...(a.alternateNames ? { alternateName: a.alternateNames } : {}),
             description: a.description,
             howPerformed: fiche ? fiche.how : `Durée : ${a.duration}. Suites : ${a.downtime}. Après consultation médicale.`,
             ...(fiche
