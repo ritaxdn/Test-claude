@@ -4,6 +4,27 @@
 type LocalizedText = { fr: string; en: string };
 
 export const technologySeo: Record<string, { title: LocalizedText; description: LocalizedText }> = {
+  "alex-yag-ultra": {
+    title: { fr: "ALEX YAG ULTRA — Laser Alexandrite et Nd:YAG au Maroc", en: "ALEX YAG ULTRA — Alexandrite and Nd:YAG laser in Morocco" },
+    description: {
+      fr: "Laser double longueur d'onde Alexandrite 755 nm et Nd:YAG 1064 nm : épilation tous phototypes, lésions pigmentaires et vasculaires. Démo, formation et SAV au Maroc.",
+      en: "Dual-wavelength Alexandrite 755 nm and Nd:YAG 1064 nm laser: hair removal on all skin types, pigmented and vascular lesions. Demo, training and after-sales in Morocco.",
+    },
+  },
+  brasilift: {
+    title: { fr: "BRASILIFT — Vacuothérapie lifting fessiers et poitrine", en: "BRASILIFT — Vacuum therapy for buttock and chest lifting" },
+    description: {
+      fr: "Brasilift : vacuothérapie à 29 ventouses pour lifter les fessiers et redonner du volume à la poitrine, sans chirurgie. Installation, formation et SAV au Maroc.",
+      en: "Brasilift: 29-cup vacuum therapy to lift the buttocks and restore chest volume, without surgery. Installation, training and after-sales in Morocco.",
+    },
+  },
+  "led-bio-light": {
+    title: { fr: "LED BIO-LIGHT — Panneau LED 4 couleurs professionnel", en: "LED BIO-LIGHT — Professional 4-colour LED panel" },
+    description: {
+      fr: "Photomodulation LED rouge, bleu, vert et jaune pour l'acné, les rougeurs et la régénération cellulaire, visage et corps. Installation, formation et SAV au Maroc.",
+      en: "Red, blue, green and yellow LED photomodulation for acne, redness and cell regeneration, face and body. Installation, training and after-sales in Morocco.",
+    },
+  },
   "frac-cov-4": {
     title: {
       fr: "FRAC’COV 4 — Laser CO2 fractionné professionnel",
@@ -25,7 +46,7 @@ export const technologySeo: Record<string, { title: LocalizedText; description: 
     },
   },
   "laser-shock": {
-    title: { fr: "LASER SHOCK — Laser Nd:YAG détatouage et pigments", en: "LASER SHOCK — Q-switched Nd:YAG tattoo removal laser" },
+    title: { fr: "LASER SHOCK — Laser Nd:YAG détatouage et pigments au Maroc", en: "LASER SHOCK — Q-switched Nd:YAG tattoo removal laser, Morocco" },
     description: {
       fr: "LASER SHOCK : laser Nd:YAG Q-switched 1064, 532 et 1320 nm pour taches pigmentaires, détatouage, naevus et Carbon Peel. CELLULIFT au Maroc.",
       en: "LASER SHOCK: Q-switched Nd:YAG laser at 1064, 532 and 1320 nm for pigmented spots, tattoo removal, naevi and Carbon Peel. CELLULIFT, Morocco.",

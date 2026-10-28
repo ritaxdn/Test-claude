@@ -235,6 +235,7 @@ export const sheets: Record<string, Sheet> = {
 
   // ——— Solutions lasers ———
   "alex-yag-ultra": {
+    certifications: ["CE", "FDA"], // indiqué sur la brochure LGL Expert (« agréé CE, FDA »)
     tagline: t("Laser double longueur d'onde Alexandrite 755 nm et Nd:YAG 1064 nm.", "Dual-wavelength Alexandrite 755 nm and Nd:YAG 1064 nm laser."),
     description: t(
       "L'Alexandrite cible la mélanine, le Nd:YAG l'oxyhémoglobine : une seule plateforme pour l'épilation de tous les phototypes et le traitement des lésions pigmentaires et vasculaires, avec un refroidissement puissant.",

@@ -14,7 +14,7 @@ import { Cta, Pill } from "@/components/system/Cta";
 import { SignalLine } from "@/components/system/SignalPath";
 import photoSizes from "@/content/photo-sizes.json";
 import { PhotoCarousel } from "@/components/technologies/PhotoCarousel";
-import { richSheets } from "@/content/technology-rich";
+import { loc, richSheets } from "@/content/technology-rich";
 import { company } from "@/content/company";
 import { SITE_URL } from "@/lib/site";
 import { landingForCategory, landingPath } from "@/content/category-landings";
@@ -313,12 +313,12 @@ export default async function TechnologyDetailPage({
             </div>
             {/* Les modules de la machine */}
             <Reveal className="mt-16">
-              <h2 className="display text-[clamp(1.6rem,2.6vw,2.5rem)] text-deep">{l.modules(rich.modules.length)}</h2>
-              <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <h2 className="display text-[clamp(1.6rem,2.6vw,2.5rem)] text-deep">{rich.modulesTitle?.[lang] ?? l.modules(rich.modules.length)}</h2>
+              <div className={`mt-6 grid gap-3 sm:grid-cols-2 ${rich.modules.length === 3 ? "lg:grid-cols-3" : rich.modules.length >= 4 ? "lg:grid-cols-4" : ""}`}>
                 {rich.modules.map((m) => (
-                  <div key={m.name} className="glass rounded-[1.5rem] p-6">
-                    <p className="data-label text-deep-soft">{typeof m.spec === "string" ? m.spec : m.spec[lang]}</p>
-                    <h3 className="display mt-3 text-xl text-deep">{m.name}</h3>
+                  <div key={loc(m.name, "fr")} className="glass rounded-[1.5rem] p-6">
+                    <p className="data-label text-deep-soft">{loc(m.spec, lang)}</p>
+                    <h3 className="display mt-3 text-xl text-deep">{loc(m.name, lang)}</h3>
                     <p className="mt-3 font-sans text-sm leading-relaxed text-deep-soft">{m.text[lang]}</p>
                   </div>
                 ))}
@@ -340,7 +340,7 @@ export default async function TechnologyDetailPage({
                     {rich.indications.map((r) => (
                       <tr key={r.indication.fr} className="border-t border-deep/10 align-top">
                         <td className="py-3 pr-4 text-deep">{r.indication[lang]}</td>
-                        <td className="py-3 text-deep-soft">{r.tech}</td>
+                        <td className="py-3 text-deep-soft">{loc(r.tech, lang)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -440,7 +440,7 @@ export default async function TechnologyDetailPage({
                 name: tech.name,
                 description: rich.hook[lang],
                 category: categories[tech.category][lang],
-                brand: { "@type": "Brand", name: rich.brand },
+                ...(rich.brand ? { brand: { "@type": "Brand", name: rich.brand } } : {}),
                 ...(tech.images?.[0] ? { image: `${SITE_URL}${tech.images[0]}` } : {}),
                 url: `${SITE_URL}/${lang}/technologies/${tech.slug}`,
               }}
