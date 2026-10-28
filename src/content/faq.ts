@@ -34,7 +34,7 @@ export const faq = {
       },
       {
         q: "Puis-je voir une machine avant d'acheter ?",
-        a: "Oui. Demandez une démonstration : nous vous recevons dans l'un de nos points de vente, sur rendez-vous.",
+        a: "Oui. Demandez une démonstration : nous vous recevons dans l'une de nos agences (Casablanca, Marrakech, Tanger), sur rendez-vous.",
       },
       // Questions « fournisseur » (validées par Cellulift)
       {
@@ -85,7 +85,7 @@ export const faq = {
       },
       {
         q: "Can I see a device before buying?",
-        a: "Yes. Request a demonstration: we welcome you at one of our points of sale, by appointment.",
+        a: "Yes. Request a demonstration: we welcome you at one of our branches (Casablanca, Marrakech, Tangier), by appointment.",
       },
       {
         q: "Where can I buy a professional aesthetic laser in Morocco?",

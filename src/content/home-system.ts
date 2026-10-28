@@ -13,12 +13,12 @@ export const homeSystem = {
       ctaPrimary: "Réserver une démo au showroom",
       ctaSecondary: "Recevoir le guide : 7 questions avant d'investir",
     },
-    // Chiffres clés (très grand, sans paragraphe). « {s} » = nombre de showrooms. Ne jamais afficher le nombre de technologies.
+    // Chiffres clés (très grand, sans paragraphe). Ne jamais afficher le nombre de technologies.
     stats: [
       { value: "20+", label: "Ans d'expertise" },
-      { value: "1000+", label: "Médecins équipés" },
+      { value: "4 400+", label: "Professionnels équipés" },
       { value: "24", unit: "mois", label: "De garantie" },
-      { value: "{s}", label: "Points de vente" },
+      { value: "3", label: "Agences au Maroc" },
     ],
     // Bloc de positionnement sous les chiffres (validé par Cellulift)
     positioning: {
@@ -30,9 +30,9 @@ export const homeSystem = {
       "Équipements marqués CE",
       "Depuis 2002",
       "Technologies • Installation • Formation • Accompagnement • Service après-vente",
-      "{s} points de vente",
-      "3 pays : Maroc · France · Sénégal",
-      "+1000 médecins équipés",
+      "3 agences au Maroc",
+      "Représentation à Rabat, Agadir, Paris et Dakar",
+      "+4 400 professionnels équipés",
     ],
     system: {
       eyebrow: "02 — L'écosystème Cellulift",
@@ -53,7 +53,7 @@ export const homeSystem = {
       items: [
         { label: "Distribution officielle", value: "LGL Expert", title: "Partenaire officiel en Afrique", text: "" },
         { label: "Équipements certifiés", value: "CE", title: "Certifications de chaque machine sur demande", text: "" },
-        { label: "Présence internationale", value: "Maroc · France · Sénégal", title: "Accompagnement multi-marchés", text: "" },
+        { label: "Implantations", value: "3 agences au Maroc", title: "Représentation à Rabat, Agadir, Paris et Dakar", text: "" },
         { label: "Expertise médicale", value: "Médecins · Formateurs · Experts", title: "Protocoles et accompagnement clinique", text: "" },
       ],
     },
@@ -98,12 +98,12 @@ export const homeSystem = {
     },
     showrooms: {
       eyebrow: "04 — Implantations",
-      title: ["Un partenaire.", "Trois marchés."],
-      markets: ["Maroc", "France", "Sénégal"],
+      title: ["Un partenaire.", "Partout au Maroc."],
+      markets: ["3 agences au Maroc", "Représentation à Rabat, Agadir, Paris et Dakar"],
       hq: "Siège",
       onRequest: "Adresse communiquée sur rendez-vous.",
       cta: "Voir les machines au showroom",
-      list: "Points de vente",
+      list: "Agences et représentations",
     },
     cta: {
       eyebrow: "05 — Votre projet",
@@ -125,9 +125,9 @@ export const homeSystem = {
     },
     stats: [
       { value: "20+", label: "Years of expertise" },
-      { value: "1000+", label: "Physicians equipped" },
+      { value: "4,400+", label: "Professionals equipped" },
       { value: "24", unit: "months", label: "Warranty" },
-      { value: "{s}", label: "Points of sale" },
+      { value: "3", label: "Branches in Morocco" },
     ],
     positioning: {
       title: "Your medical aesthetic equipment supplier in Morocco.",
@@ -137,9 +137,9 @@ export const homeSystem = {
       "CE-marked equipment",
       "Since 2002",
       "Technology • Installation • Training • Support • After-sales service",
-      "{s} points of sale",
-      "3 countries: Morocco · France · Senegal",
-      "1,000+ physicians equipped",
+      "3 branches in Morocco",
+      "Representation in Rabat, Agadir, Paris and Dakar",
+      "4,400+ professionals equipped",
     ],
     system: {
       eyebrow: "02 — The Cellulift ecosystem",
@@ -159,7 +159,7 @@ export const homeSystem = {
       items: [
         { label: "Official distribution", value: "LGL Expert", title: "Official partner in Africa", text: "" },
         { label: "Certified equipment", value: "CE", title: "Each device's certifications on request", text: "" },
-        { label: "International presence", value: "Morocco · France · Senegal", title: "Multi-market support", text: "" },
+        { label: "Locations", value: "3 branches in Morocco", title: "Representation in Rabat, Agadir, Paris and Dakar", text: "" },
         { label: "Medical expertise", value: "Physicians · Trainers · Experts", title: "Protocols and clinical guidance", text: "" },
       ],
     },
@@ -203,12 +203,12 @@ export const homeSystem = {
     },
     showrooms: {
       eyebrow: "04 — Locations",
-      title: ["One partner.", "Three markets."],
-      markets: ["Morocco", "France", "Senegal"],
+      title: ["One partner.", "All over Morocco."],
+      markets: ["3 branches in Morocco", "Representation in Rabat, Agadir, Paris and Dakar"],
       hq: "Head office",
       onRequest: "Address shared by appointment.",
       cta: "See the devices at the showroom",
-      list: "Points of sale",
+      list: "Branches and representation",
     },
     cta: {
       eyebrow: "05 — Your project",
