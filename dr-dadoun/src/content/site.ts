@@ -150,8 +150,8 @@ export type TreatmentCategory = {
 export const treatments: TreatmentCategory[] = [
   {
     id: "injections",
-    title: "Injections du visage",
-    intro: "Adoucir, restaurer, harmoniser — dans le respect des repères anatomiques.",
+    title: "Injections & fils",
+    intro: "Adoucir, restaurer, harmoniser, repositionner — dans le respect des repères anatomiques.",
     motto: "Analyser avant d'injecter.",
     treatments: [
       {
@@ -171,6 +171,15 @@ export const treatments: TreatmentCategory[] = [
           "Restaure les volumes, redessine les lèvres et l'ovale, atténue les sillons — en respectant les proportions naturelles du visage.",
         duration: "30 à 45 min",
         downtime: "Gonflement léger 24–48 h",
+      },
+      {
+        name: "Fils tenseurs",
+        alternateNames: ["Fils tenseurs", "Fils PDO", "Lifting par fils"],
+        motto: "Repositionner sans figer.",
+        description:
+          "Des fils résorbables, placés sous la peau, soutiennent et repositionnent les tissus relâchés (ovale, joues, sourcils) et stimulent le collagène.",
+        duration: "45 à 60 min",
+        downtime: "Gonflement et sensibilité quelques jours",
       },
     ],
   },
@@ -207,6 +216,57 @@ export const treatments: TreatmentCategory[] = [
           "Traitement ciblé des petits vaisseaux visibles et des rougeurs du visage (couperose).",
         duration: "15 à 30 min",
         downtime: "Rougeurs transitoires",
+      },
+      {
+        name: "Épilation laser",
+        alternateNames: ["Épilation définitive", "Épilation au laser", "Laser épilation"],
+        description:
+          "Réduction durable de la pilosité du visage et du corps, avec des réglages adaptés à la couleur de la peau et du poil.",
+        duration: "15 à 60 min selon la zone",
+        downtime: "Rougeurs légères quelques heures",
+      },
+    ],
+  },
+  {
+    id: "peau",
+    title: "Soins de la peau",
+    intro: "Hydrater, renouveler, stimuler : redonner à la peau sa qualité, sans changer les traits.",
+    motto: "Soigner la peau avant de la corriger.",
+    treatments: [
+      {
+        name: "Skinboosters",
+        alternateNames: ["Skinbooster", "Injection d'hydratation"],
+        description:
+          "Micro-injections d'acide hyaluronique non réticulé qui hydratent la peau en profondeur et améliorent son éclat et son élasticité, sans ajouter de volume.",
+        duration: "30 à 45 min",
+        downtime: "Petites papules 24–48 h",
+      },
+      {
+        name: "Mésothérapie",
+        seoName: "Mésothérapie du visage",
+        alternateNames: ["Mésolift", "Mésothérapie visage", "Cocktail de vitamines"],
+        description:
+          "Micro-injections d'un mélange de vitamines, d'acides aminés et d'acide hyaluronique pour revitaliser une peau terne ou fatiguée.",
+        duration: "20 à 30 min",
+        downtime: "Petites marques 24 h",
+      },
+      {
+        name: "PRP visage",
+        seoName: "PRP visage (plasma riche en plaquettes)",
+        alternateNames: ["PRP", "Plasma riche en plaquettes"],
+        description:
+          "Votre propre plasma, concentré en plaquettes, est réinjecté dans la peau pour stimuler son renouvellement : éclat, texture, ridules.",
+        duration: "45 min, prise de sang comprise",
+        downtime: "Rougeurs et petites marques 24–48 h",
+      },
+      {
+        name: "Peeling",
+        seoName: "Peeling médical",
+        alternateNames: ["Peeling chimique", "Peeling visage"],
+        description:
+          "Application d'une solution exfoliante, choisie et dosée selon la peau, pour unifier le teint, atténuer les taches et affiner le grain de peau.",
+        duration: "20 à 30 min",
+        downtime: "Rougeurs et desquamation 2 à 7 jours selon le peeling",
       },
     ],
   },
@@ -263,12 +323,12 @@ export const universes = [
     title: "Visage & peau",
     seoTitle: "Botox, acide hyaluronique et lasers à Casablanca",
     seoDescription:
-      "Médecine esthétique du visage à Casablanca : Botox, acide hyaluronique, laser CO₂, endolifting et laser vasculaire, par le Dr Dadoun.",
+      "Médecine esthétique à Casablanca : Botox, acide hyaluronique, fils tenseurs, skinboosters, PRP, peeling, lasers et épilation laser, par le Dr Dadoun.",
     tagline: "Injections et lasers médicaux",
     intro:
       "Rides d'expression, volumes, qualité de peau, relâchement : chaque traitement part de l'anatomie du visage et d'une indication posée en consultation.",
     image: "univers-visage.jpg",
-    categories: ["injections", "lasers"],
+    categories: ["injections", "lasers", "peau"],
   },
   {
     slug: "gynecologie-esthetique",
@@ -328,7 +388,7 @@ export const faq = [
   },
   {
     q: "Quels soins de médecine esthétique proposez-vous à Casablanca ?",
-    a: "Au visage : toxine botulique, acide hyaluronique, laser CO₂, endolifting et diode vasculaire. En gynécologie esthétique : laser gynécologique, éclaircissement intime, comblement des grandes lèvres, nymphoplastie, O-Shot et G-Shot. Chaque soin commence par une consultation.",
+    a: "Au visage et sur la peau : toxine botulique (Botox), acide hyaluronique, fils tenseurs, skinboosters, mésothérapie, PRP, peeling, laser CO₂, endolifting, laser vasculaire et épilation laser. En gynécologie esthétique : laser gynécologique, éclaircissement intime, comblement des grandes lèvres, nymphoplastie, O-Shot et G-Shot. Chaque soin commence par une consultation.",
   },
   {
     q: "Le résultat sera-t-il naturel ?",
