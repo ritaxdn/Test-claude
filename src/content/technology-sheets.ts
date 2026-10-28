@@ -9,6 +9,8 @@ export type Sheet = {
   description?: LocalizedText;
   indications?: LocalizedText[];
   benefits?: LocalizedText[];
+  /** Certifications confirmées par Cellulift pour cette machine (affichées sous le nom) */
+  certifications?: string[];
 };
 
 const t = (fr: string, en: string): LocalizedText => ({ fr, en });
@@ -290,6 +292,7 @@ export const sheets: Record<string, Sheet> = {
     ],
   },
   "la-queen": {
+    certifications: ["CE", "FDA"], // confirmé par Cellulift (oct. 2026)
     tagline: t("4 technologies, 4000 W : épilation, vasculaire, pigments et IPL.", "4 technologies, 4000 W: hair removal, vascular, pigment and IPL."),
     description: t(
       "Laser diode 755/808/1064 nm pour l'épilation de tous les phototypes toute l'année, laser vasculaire 980 nm, Nd:YAG Q-switched 532/1064/1320 nm et IPL/OPT à cinq filtres : une plateforme tout-en-un.",
