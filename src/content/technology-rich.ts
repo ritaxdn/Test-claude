@@ -510,8 +510,8 @@ export const richSheets: Record<string, RichSheet> = {
   brasilift: {
     h1: t("vacuothérapie pour le lifting des fessiers et le volume de la poitrine", "vacuum therapy for buttock lifting and chest volume"),
     hook: t(
-      "Un système à 29 ventouses : l'aspiration stimule la circulation sanguine et l'étirement contrôlé de la peau améliore la qualité du collagène, pour lifter et redonner du volume, sans chirurgie.",
-      "A 29-cup system: suction stimulates blood flow and controlled skin stretching improves collagen quality, to lift and restore volume without surgery."
+      "Un système de vacuothérapie à ventouses : l'aspiration stimule la circulation sanguine et l'étirement contrôlé de la peau améliore la qualité du collagène, pour lifter et redonner du volume, sans chirurgie.",
+      "A cup-based vacuum therapy system: suction stimulates blood flow and controlled skin stretching improves collagen quality, to lift and restore volume without surgery."
     ),
     modulesTitle: t("Comment agit Brasilift", "How Brasilift works"),
     modules: [
@@ -552,7 +552,6 @@ export const richSheets: Record<string, RichSheet> = {
     ),
     specs: [
       [t("Modèle", "Model"), t("Brasilift FX032", "Brasilift FX032")],
-      [t("Ventouses", "Cups"), t("29", "29")],
       [t("Puissance", "Power"), t("150 W", "150 W")],
       [t("Dimensions de la machine", "Machine size"), t("17 × 23 × 25,5 cm", "17 × 23 × 25.5 cm")],
       [t("Poids de la machine", "Machine weight"), t("2,28 kg", "2.28 kg")],

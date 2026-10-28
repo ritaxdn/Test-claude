@@ -14,8 +14,8 @@ export const technologySeo: Record<string, { title: LocalizedText; description: 
   brasilift: {
     title: { fr: "BRASILIFT — Vacuothérapie lifting fessiers et poitrine", en: "BRASILIFT — Vacuum therapy for buttock and chest lifting" },
     description: {
-      fr: "Brasilift : vacuothérapie à 29 ventouses pour lifter les fessiers et redonner du volume à la poitrine, sans chirurgie. Installation, formation et SAV au Maroc.",
-      en: "Brasilift: 29-cup vacuum therapy to lift the buttocks and restore chest volume, without surgery. Installation, training and after-sales in Morocco.",
+      fr: "Brasilift : vacuothérapie à ventouses pour lifter les fessiers et redonner du volume à la poitrine, sans chirurgie. Installation, formation et SAV au Maroc.",
+      en: "Brasilift: cup-based vacuum therapy to lift the buttocks and restore chest volume, without surgery. Installation, training and after-sales in Morocco.",
     },
   },
   "led-bio-light": {
