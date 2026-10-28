@@ -280,6 +280,367 @@ export const fiches: Record<string, Fiche> = {
       },
     ],
   },
+  "diode-vasculaire": {
+    validated: false,
+    how: "Le laser diode vasculaire émet une lumière absorbée par le sang contenu dans les petits vaisseaux dilatés. L'énergie chauffe la paroi du vaisseau, qui se referme puis est éliminée naturellement par l'organisme. La peau autour n'est pas abîmée : les réglages sont adaptés au calibre du vaisseau et au type de peau.",
+    zones: ["Ailes du nez", "Joues", "Menton", "Autres petits vaisseaux visibles du visage"],
+    sessions:
+      "Une à trois séances selon le nombre et la taille des vaisseaux, espacées d'environ quatre semaines. De nouveaux vaisseaux peuvent apparaître avec le temps : une séance d'entretien est alors possible.",
+    relevant: [
+      "Petits vaisseaux rouges visibles sur le nez ou les joues (couperose)",
+      "Points rubis et petites taches vasculaires",
+      "Rougeurs localisées liées à des vaisseaux dilatés",
+    ],
+    notBest: [
+      { case: "Rougeurs diffuses d'une rosacée inflammatoire active : elle se traite d'abord médicalement" },
+      { case: "Texture de peau, pores et cicatrices", better: "laser-co2" },
+      { case: "Peau bronzée ou exposition solaire prévue dans les semaines qui suivent" },
+      { case: "Varices et grosses veines des jambes : elles relèvent d'un bilan veineux" },
+    ],
+    preparation: [
+      "Consultation préalable : examen des vaisseaux et du type de peau",
+      "Éviter le soleil, les UV et l'autobronzant pendant les quatre semaines précédentes",
+      "Signaler tout médicament qui rend la peau sensible au soleil",
+      "Venir sans maquillage",
+    ],
+    aftercare: [
+      "Rougeur et léger gonflement pendant quelques heures à quelques jours",
+      "Les vaisseaux traités peuvent paraître plus foncés avant de s'estomper",
+      "Éviter la chaleur (hammam, sauna, sport intense) pendant 48 heures",
+      "Protection solaire stricte pendant plusieurs semaines",
+    ],
+    risks: [
+      "Rougeur et gonflement transitoires",
+      "Petites croûtes, rares, à ne pas gratter",
+      "Modification temporaire de la couleur de la peau, plus fréquente sur les peaux mates",
+      "Rarement : petite cicatrice",
+    ],
+    contraindications: [
+      "Peau bronzée ou exposition solaire récente",
+      "Grossesse",
+      "Infection ou lésion de peau sur la zone",
+      "Médicaments photosensibilisants ou traitement récent par isotrétinoïne, à évaluer en consultation",
+    ],
+    pain: "La sensation est celle de petits picotements chauds, brefs. Une crème anesthésiante n'est en général pas nécessaire ; le refroidissement de la peau rend la séance plus confortable.",
+    results:
+      "Certains vaisseaux disparaissent dès la séance, d'autres s'estompent en deux à quatre semaines. Un vaisseau traité ne revient pas, mais la tendance à en développer de nouveaux persiste.",
+    phototypes:
+      "Les peaux claires répondent le mieux. Sur les peaux mates, les réglages sont plus prudents pour limiter le risque de taches. Sur les peaux foncées, l'indication est discutée au cas par cas.",
+    faq: [
+      {
+        q: "La couperose peut-elle revenir ?",
+        a: "Les vaisseaux traités ne reviennent pas, mais d'autres peuvent apparaître avec le temps, le soleil ou la chaleur. Une protection solaire régulière limite ce risque, et une séance d'entretien reste possible.",
+      },
+      {
+        q: "Peut-on se maquiller après la séance ?",
+        a: "En général dès le lendemain, une fois la rougeur estompée. Je vous le confirme à la fin de la séance.",
+      },
+      {
+        q: "Combien de séances faut-il ?",
+        a: "Le plus souvent une à trois. Le nombre dépend de l'étendue et de la taille des vaisseaux ; je vous l'indique dès la consultation.",
+      },
+    ],
+  },
+
+  // Gynécologie esthétique : chaque fiche rappelle que la consultation commence par un bilan médical.
+  "laser-gynecologique": {
+    validated: false,
+    how: "Une sonde laser introduite dans le vagin, ou appliquée sur la vulve, délivre une énergie contrôlée qui stimule la muqueuse et la production de collagène. L'objectif est d'améliorer, chez certaines patientes, la sécheresse ou la sensation de relâchement. L'indication est posée seulement après un bilan gynécologique.",
+    zones: ["Muqueuse vaginale", "Vulve, selon l'indication"],
+    sessions:
+      "En général deux à trois séances espacées de quatre à six semaines. Une séance d'entretien peut être proposée après un an, selon le résultat.",
+    relevant: [
+      "Sécheresse vaginale, notamment après la ménopause ou un accouchement",
+      "Sensation de relâchement vaginal",
+      "Inconfort pendant les rapports lié à une muqueuse fragilisée",
+      "Certaines fuites urinaires légères à l'effort, après bilan",
+    ],
+    notBest: [
+      { case: "Infection ou douleur inexpliquée : elle demande d'abord un diagnostic" },
+      { case: "Descente d'organes (prolapsus) importante : elle relève d'une autre prise en charge" },
+      { case: "Fuites urinaires importantes : un bilan urologique est nécessaire" },
+      { case: "Apparence des petites lèvres", better: "nymphoplastie" },
+    ],
+    preparation: [
+      "Consultation et bilan gynécologique préalables",
+      "Frottis cervico-utérin à jour",
+      "Aucune infection en cours",
+      "Séance programmée en dehors des règles",
+    ],
+    aftercare: [
+      "Légère sensation de chaleur ou petites pertes pendant quelques jours",
+      "Pas de rapports sexuels pendant quelques jours, selon mes indications",
+      "Éviter le bain, la piscine et le hammam pendant quelques jours",
+      "Reprise des activités habituelles le jour même",
+    ],
+    risks: [
+      "Inconfort, chaleur ou pertes légères pendant quelques jours",
+      "Rarement : infection, irritation ou petite brûlure de la muqueuse",
+      "Résultat variable d'une patiente à l'autre",
+    ],
+    contraindications: [
+      "Grossesse",
+      "Infection génitale ou urinaire en cours",
+      "Frottis anormal non exploré",
+      "Saignements inexpliqués",
+      "Antécédent de cancer gynécologique, à évaluer avec votre médecin",
+    ],
+    pain: "La séance est en général peu douloureuse : une sensation de chaleur ou de vibration. Une crème anesthésiante peut être appliquée sur la vulve.",
+    results:
+      "Une amélioration est souvent ressentie dès les premières semaines et se poursuit après la dernière séance. La durée de l'effet varie : un entretien peut être utile.",
+    faq: [
+      {
+        q: "La séance est-elle confidentielle ?",
+        a: "Oui. La consultation et le soin se déroulent dans un cadre strictement médical et confidentiel, au cabinet.",
+      },
+      {
+        q: "Peut-on reprendre le travail le jour même ?",
+        a: "Oui, la plupart des patientes reprennent leurs activités tout de suite. Seuls les rapports, le bain et la piscine sont à éviter quelques jours.",
+      },
+      {
+        q: "Le laser convient-il après la ménopause ?",
+        a: "La sécheresse liée à la ménopause est une indication fréquente, après bilan gynécologique. D'autres traitements existent : nous en parlons en consultation pour choisir le plus adapté.",
+      },
+    ],
+  },
+
+  "eclaircissement-intime": {
+    validated: false,
+    how: "La peau de la zone intime peut foncer avec les hormones, les frottements, l'épilation ou l'âge. L'éclaircissement associe, selon la peau, des soins dépigmentants, des peelings doux adaptés à cette zone ou certaines technologies. L'objectif est d'unifier le teint de la zone, progressivement et sans agresser la peau.",
+    zones: ["Aine et pli de l'aine", "Grandes lèvres", "Zone périnéale et périanale", "Intérieur des cuisses"],
+    sessions:
+      "Plusieurs séances, souvent trois à six, espacées de deux à quatre semaines, avec des soins à poursuivre à domicile entre les séances.",
+    relevant: [
+      "Peau plus foncée dans le pli de l'aine ou sur les grandes lèvres",
+      "Hyperpigmentation après des épilations répétées",
+      "Teint irrégulier de la zone intime, source de gêne",
+    ],
+    notBest: [
+      { case: "Tache qui change de forme ou de couleur : elle doit d'abord être examinée" },
+      { case: "Peau irritée ou infection en cours : elle se soigne d'abord" },
+      { case: "Perte de volume des grandes lèvres", better: "comblement-des-grandes-levres" },
+      { case: "Recherche d'un blanchiment complet : le but est d'unifier, pas de décolorer" },
+    ],
+    preparation: [
+      "Consultation préalable : examen de la peau et recherche de la cause de la pigmentation",
+      "Pas d'épilation à la cire ni au rasoir quelques jours avant la séance",
+      "Signaler tout traitement en cours et toute allergie",
+    ],
+    aftercare: [
+      "Légère rougeur ou desquamation pendant quelques jours, selon le protocole",
+      "Sous-vêtements en coton, éviter les frottements",
+      "Pas d'épilation ni de hammam pendant quelques jours",
+      "Soins prescrits à appliquer à domicile",
+    ],
+    risks: [
+      "Irritation, rougeur ou picotements transitoires",
+      "Hyperpigmentation réactionnelle, surtout sur les peaux foncées si la peau est trop sollicitée",
+      "Résultat progressif, variable selon la peau",
+    ],
+    contraindications: [
+      "Grossesse et allaitement",
+      "Infection, irritation ou lésion sur la zone",
+      "Allergie connue à un produit du protocole",
+    ],
+    pain: "Les soins sont en général bien tolérés : picotements ou sensation de chaleur pendant quelques minutes.",
+    results:
+      "L'éclaircissement est progressif, visible au fil des séances. Le résultat se maintient mieux en limitant les frottements et en poursuivant les soins conseillés.",
+    phototypes:
+      "Les peaux mates et foncées sont les plus concernées par cette demande, et aussi les plus sensibles : le protocole est volontairement progressif pour éviter les taches réactionnelles.",
+    faq: [
+      {
+        q: "Le résultat est-il définitif ?",
+        a: "Le résultat se maintient, mais la peau de cette zone peut refoncer avec les frottements, les épilations ou les variations hormonales. Des soins d'entretien aident à le conserver.",
+      },
+      {
+        q: "Est-ce compatible avec l'épilation laser ?",
+        a: "Oui, en espaçant les séances. Je vous indique le bon calendrier en consultation.",
+      },
+      {
+        q: "Peut-on faire le soin pendant les règles ?",
+        a: "Il est plus confortable de programmer la séance en dehors des règles.",
+      },
+    ],
+  },
+
+  "comblement-des-grandes-levres": {
+    validated: false,
+    how: "Avec l'âge, l'accouchement ou une perte de poids, les grandes lèvres peuvent perdre leur volume et paraître relâchées. Un gel d'acide hyaluronique, injecté en petites quantités, restaure ce volume. Le produit est choisi pour cette zone, et se résorbe naturellement avec le temps.",
+    zones: ["Grandes lèvres"],
+    sessions: "Une séance, parfois complétée par une retouche après quelques semaines. Le résultat dure en général douze à dix-huit mois.",
+    relevant: [
+      "Grandes lèvres qui ont perdu leur volume",
+      "Aspect relâché ou fripé après une grossesse ou une perte de poids",
+      "Inconfort lié à des frottements",
+    ],
+    notBest: [
+      { case: "Petites lèvres longues ou gênantes", better: "nymphoplastie" },
+      { case: "Peau plus foncée de la zone", better: "eclaircissement-intime" },
+      { case: "Sécheresse ou relâchement vaginal", better: "laser-gynecologique" },
+    ],
+    preparation: [
+      "Consultation préalable : examen et discussion du résultat souhaité",
+      "Signaler tout traitement anticoagulant ou la prise d'aspirine",
+      "Signaler tout antécédent d'herpès génital",
+      "Aucune infection en cours",
+    ],
+    aftercare: [
+      "Gonflement et parfois bleus pendant quelques jours",
+      "Pas de rapports sexuels, de sport intense ni de hammam pendant quelques jours",
+      "Vêtements amples les premiers jours",
+      "Consulter rapidement en cas de douleur importante ou de changement de couleur de la peau",
+    ],
+    risks: [
+      "Gonflement, bleus",
+      "Petites irrégularités, le plus souvent transitoires",
+      "Rarement : infection ou réaction inflammatoire",
+      "Exceptionnel mais grave : obstruction d'un vaisseau, qui demande une prise en charge immédiate",
+    ],
+    contraindications: [
+      "Grossesse et allaitement",
+      "Infection génitale ou herpès actif",
+      "Allergie connue à l'un des composants",
+      "Certaines maladies auto-immunes, à évaluer en consultation",
+    ],
+    pain: "Une crème anesthésiante est appliquée avant la séance, et le produit contient un anesthésique local. La sensation reste supportable.",
+    results:
+      "Le résultat est visible tout de suite, et définitif une fois le gonflement résorbé, en une à deux semaines. Il dure en général douze à dix-huit mois.",
+    faq: [
+      {
+        q: "Le résultat est-il naturel ?",
+        a: "Oui : la quantité injectée est mesurée pour restaurer un volume, pas pour transformer la zone.",
+      },
+      {
+        q: "Est-ce réversible ?",
+        a: "Oui. L'acide hyaluronique peut être dissous par une enzyme, la hyaluronidase, si nécessaire.",
+      },
+      {
+        q: "Quand peut-on reprendre les rapports ?",
+        a: "Après quelques jours, une fois le gonflement passé. Je vous donne le délai précis après la séance.",
+      },
+    ],
+  },
+
+  nymphoplastie: {
+    validated: false,
+    how: "La nymphoplastie réduit la taille des petites lèvres lorsqu'elles sont longues, asymétriques ou gênantes. C'est un acte chirurgical, réalisé sous anesthésie locale : l'excédent est retiré et la cicatrice est refermée avec des fils qui se résorbent seuls. La décision est prise après une consultation approfondie et un délai de réflexion.",
+    zones: ["Petites lèvres"],
+    sessions: "Un seul geste. Une consultation de contrôle est prévue après la cicatrisation.",
+    relevant: [
+      "Petites lèvres qui dépassent et frottent dans les vêtements",
+      "Gêne pendant le sport, le vélo ou les rapports",
+      "Asymétrie marquée, source de gêne",
+    ],
+    notBest: [
+      { case: "Perte de volume des grandes lèvres", better: "comblement-des-grandes-levres" },
+      { case: "Sécheresse ou relâchement vaginal", better: "laser-gynecologique" },
+      { case: "Demande qui vient d'une pression extérieure, ou d'une image « standard » : on en parle d'abord" },
+      { case: "Patiente mineure" },
+    ],
+    preparation: [
+      "Consultation approfondie, puis délai de réflexion avant de fixer la date",
+      "Signaler tout traitement anticoagulant ou la prise d'aspirine",
+      "Aucune infection en cours",
+      "Intervention programmée en dehors des règles",
+      "Arrêt du tabac conseillé, pour une meilleure cicatrisation",
+    ],
+    aftercare: [
+      "Gonflement et inconfort pendant une à deux semaines",
+      "Soins locaux et toilette douce selon l'ordonnance",
+      "Sous-vêtements en coton, vêtements amples",
+      "Pas de rapports sexuels, de bain ni de sport pendant plusieurs semaines, selon mes indications",
+    ],
+    risks: [
+      "Gonflement, bleus",
+      "Petit hématome",
+      "Infection ou ouverture partielle de la cicatrice",
+      "Asymétrie ou résultat imparfait, parfois à reprendre",
+      "Modification transitoire de la sensibilité",
+    ],
+    contraindications: [
+      "Grossesse",
+      "Infection génitale en cours",
+      "Patiente mineure",
+      "Troubles de la coagulation non équilibrés",
+    ],
+    pain: "L'intervention se fait sous anesthésie locale : elle n'est pas douloureuse. Les suites sont inconfortables quelques jours et soulagées par les antalgiques prescrits.",
+    results:
+      "Le résultat se juge après la disparition du gonflement, en général après quatre à six semaines. Il est définitif.",
+    faq: [
+      {
+        q: "Combien de temps faut-il pour récupérer ?",
+        a: "Le travail de bureau est en général possible après quelques jours. Le sport et les rapports reprennent après plusieurs semaines : je vous donne les délais précis à la consultation.",
+      },
+      {
+        q: "La cicatrice se voit-elle ?",
+        a: "Elle est placée le long du bord des petites lèvres et devient en général très discrète une fois la cicatrisation terminée.",
+      },
+      {
+        q: "Pourquoi un délai de réflexion ?",
+        a: "Parce qu'il s'agit d'un geste définitif sur une zone intime. Je veux que la décision soit la vôtre, prise sereinement.",
+      },
+    ],
+  },
+
+  // À VALIDER : le site présente le G-Shot comme une injection de PRP. Selon les praticiens, il désigne parfois une injection
+  // d'acide hyaluronique : le Dr Dadoun précise sa pratique avant publication.
+  "o-shot-g-shot": {
+    validated: false,
+    how: "Le PRP (plasma riche en plaquettes) est préparé à partir d'une petite prise de votre propre sang, centrifugée pour concentrer les plaquettes et leurs facteurs de croissance. Il est ensuite injecté dans la sphère intime : au niveau du clitoris et de la paroi vaginale pour l'O-Shot, d'une zone précise de la paroi vaginale antérieure pour le G-Shot. L'objectif est de stimuler les tissus. Les données scientifiques restent limitées et les résultats varient d'une patiente à l'autre : nous en parlons franchement en consultation.",
+    zones: ["Clitoris et paroi vaginale (O-Shot)", "Paroi vaginale antérieure (G-Shot)"],
+    sessions: "Une à trois séances espacées d'environ un mois, selon la réponse.",
+    relevant: [
+      "Baisse de la sensibilité ou de la lubrification",
+      "Certaines fuites urinaires légères à l'effort, après bilan",
+      "En complément d'autres soins de la sphère intime, selon l'indication",
+    ],
+    notBest: [
+      { case: "Troubles du désir d'origine psychologique ou relationnelle : un autre accompagnement est plus adapté" },
+      { case: "Sécheresse ou relâchement vaginal marqué", better: "laser-gynecologique" },
+      { case: "Infection ou douleur inexpliquée : elle demande d'abord un diagnostic" },
+      { case: "Recherche d'un résultat garanti : la réponse au PRP est variable" },
+    ],
+    preparation: [
+      "Consultation et bilan gynécologique préalables",
+      "Frottis cervico-utérin à jour",
+      "Éviter aspirine et anti-inflammatoires quelques jours avant, selon mes indications",
+      "Bien boire et manger normalement avant la prise de sang",
+    ],
+    aftercare: [
+      "Légère sensibilité ou gonflement pendant un à deux jours",
+      "Reprise des activités le jour même",
+      "Rapports possibles après quelques jours, selon mes indications",
+    ],
+    risks: [
+      "Douleur ou bleu au point de prise de sang",
+      "Sensibilité ou gonflement transitoire de la zone injectée",
+      "Rarement : infection",
+      "Absence d'amélioration chez certaines patientes",
+    ],
+    contraindications: [
+      "Grossesse",
+      "Infection génitale ou urinaire en cours",
+      "Troubles de la coagulation ou baisse des plaquettes",
+      "Cancer en cours de traitement",
+    ],
+    pain: "Une crème anesthésiante est appliquée avant les injections. La gêne est brève.",
+    results:
+      "Quand le PRP agit, l'amélioration apparaît progressivement, sur quelques semaines, et peut durer plusieurs mois. Elle n'est pas garantie.",
+    faq: [
+      {
+        q: "Le PRP est-il sûr ?",
+        a: "Il est préparé à partir de votre propre sang, ce qui limite le risque d'allergie. Il est réalisé dans des conditions d'asepsie stricte, après un bilan médical.",
+      },
+      {
+        q: "Les résultats sont-ils prouvés ?",
+        a: "Les études sont encore peu nombreuses et les résultats varient. Je vous explique honnêtement ce que l'on peut en attendre dans votre situation.",
+      },
+      {
+        q: "Combien de temps dure la séance ?",
+        a: "Environ trente à quarante-cinq minutes, prise de sang et préparation du PRP comprises.",
+      },
+    ],
+  },
 };
 
 /** Fiche publiée (validée), ou brouillon si l'aperçu est activé (FICHES_PREVIEW=1). */
