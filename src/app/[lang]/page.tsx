@@ -10,12 +10,16 @@ import { ShowroomMap } from "@/components/system/ShowroomMap";
 import { Faq } from "@/components/system/Faq";
 import { MediaSection } from "@/components/media/MediaSection";
 import { GuideBanner } from "@/components/guide/GuideBanner";
+import { AcademyHighlight } from "@/components/sections/AcademyHighlight";
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/alternates";
 import { SITE_URL } from "@/lib/site";
 import { company } from "@/content/company";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { agencyKeys, agencyPath, agencyShowroom } from "@/content/agencies";
+
+// La masterclass à la une disparaît après sa date : la page est régénérée chaque jour.
+export const revalidate = 86400;
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
@@ -40,6 +44,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     <div className="pearl-bg">
       <SystemHero locale={lang} />
       <StatsBand locale={lang} />
+      <AcademyHighlight locale={lang} />
       <Positioning locale={lang} />
       <TechIndex locale={lang} />
       <div className="px-3 pb-12 md:px-5 md:pb-16">
