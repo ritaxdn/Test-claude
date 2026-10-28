@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
+import { guard, oneLine } from "@/lib/guard";
 import { formationsPage as f } from "@/content/formations";
 import { clean, sendToPractice } from "@/lib/mail";
 
 // Reçoit les demandes des médecins (page /formations) et les transmet au cabinet.
 export async function POST(request: Request) {
+  const refused = guard(request, "formations");
+  if (refused) return refused;
   const body = await request.json().catch(() => null);
   if (!body || typeof body !== "object") {
     return NextResponse.json({ error: "Requête invalide." }, { status: 400 });
@@ -32,7 +35,7 @@ export async function POST(request: Request) {
 
   const names = courses.map((c) => courseTitles.get(c)!).join(", ");
   const ok = await sendToPractice({
-    subject: `Formation — ${kind.label} — ${data.firstName} ${data.lastName}`,
+    subject: oneLine(`Formation — ${kind.label} — ${data.firstName} ${data.lastName}`),
     heading: "Nouvelle demande de formation",
     replyTo: data.email,
     rows: [

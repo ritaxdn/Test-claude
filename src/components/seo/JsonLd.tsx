@@ -2,7 +2,7 @@ import { SITE_URL } from "@/lib/site";
 
 /** Données structurées (schema.org) insérées dans la page. N'y mettre que des informations réelles. */
 export function JsonLd({ data }: { data: Record<string, unknown> | Record<string, unknown>[] }) {
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />;
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data).replace(/</g, "\\u003c") }} />;
 }
 
 /** Fil d'Ariane (BreadcrumbList) : accueil → … → page courante. `items` : [nom, chemin sans langue]. */

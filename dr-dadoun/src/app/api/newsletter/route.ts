@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { guard, oneLine } from "@/lib/guard";
 import { formationsPage as f } from "@/content/formations";
 import { clean, sendToPractice } from "@/lib/mail";
 
@@ -8,6 +9,8 @@ import { clean, sendToPractice } from "@/lib/mail";
 //   RESEND_API_KEY      clé avec l'accès « Full access » (une clé « Sending access » ne peut pas gérer les contacts)
 // Sans audience configurée, l'inscription est envoyée par e-mail au cabinet pour ne perdre aucun contact.
 export async function POST(request: Request) {
+  const refused = guard(request, "newsletter");
+  if (refused) return refused;
   const body = await request.json().catch(() => null);
   if (!body || typeof body !== "object") {
     return NextResponse.json({ error: "Requête invalide." }, { status: 400 });
@@ -43,7 +46,7 @@ export async function POST(request: Request) {
 
   // Repli : l'inscription est transmise au cabinet par e-mail.
   const ok = await sendToPractice({
-    subject: `Newsletter ${f.newsletter.name} — nouvelle inscription — ${data.email}`,
+    subject: oneLine(`Newsletter ${f.newsletter.name} — nouvelle inscription — ${data.email}`),
     heading: `Nouvelle inscription à la newsletter ${f.newsletter.name}`,
     replyTo: data.email,
     rows: [

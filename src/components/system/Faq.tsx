@@ -18,7 +18,7 @@ export function Faq({ locale }: { locale: Locale }) {
   };
   return (
     <section id="faq" className="scroll-mt-24 px-3 pb-14 md:px-5 md:pb-20">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <div className="mx-auto grid max-w-7xl gap-8 px-3 md:px-7 lg:grid-cols-[1fr_1.6fr]">
         <Reveal>
           <Pill>{c.eyebrow}</Pill>

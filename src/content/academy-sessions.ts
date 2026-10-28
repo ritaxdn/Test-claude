@@ -29,7 +29,7 @@ export const academySessions: AcademySession[] = [
     start: "2026-10-10",
     date: { fr: "Samedi 10 octobre 2026", en: "Saturday, October 10, 2026" },
     title: "Endolifting : jusqu'où peut aller le tightening sans chirurgie ?",
-    subtitle: "Dr Kahak × Dr Dadoun",
+    subtitle: "Dr Dadoun × Dr Kahak",
     link: "https://cal.com/endolifting-jusqu-ou-peut-aller-le-tightening-sans-chirurgie",
   },
 ];
