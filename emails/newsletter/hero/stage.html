@@ -1,0 +1,22 @@
+<!doctype html><html><head><meta charset="utf-8">
+<!-- Scène d'une machine (1040 × 1120) : fond nacré, halo de couleur, numéro, machine détourée. -->
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..700&family=JetBrains+Mono:wght@400;500&display=block" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1040px;height:1120px;background:#ECEEF3}
+.card{position:absolute;inset:0;border-radius:64px;overflow:hidden;background:#ECEEF3}
+.grid{position:absolute;inset:0;background-image:linear-gradient(rgba(29,27,38,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(29,27,38,.045) 1px,transparent 1px);background-size:52px 52px}
+.num{position:absolute;z-index:2;left:56px;top:28px;font-family:'Archivo';font-stretch:125%;font-weight:600;font-size:200px;line-height:1;color:transparent;-webkit-text-stroke:2px rgba(29,27,38,.18)}
+
+.blob{position:absolute;border-radius:50%;filter:blur(70px)}
+.b1{left:120px;top:160px;width:420px;height:380px;background:var(--c)}
+.b2{right:100px;bottom:200px;width:380px;height:340px;background:var(--c2)}
+.glass{position:absolute;left:70px;right:70px;top:150px;bottom:70px;border-radius:56px;background:linear-gradient(145deg,rgba(255,255,255,.80),rgba(255,255,255,.42));backdrop-filter:blur(26px) saturate(1.4);border:2px solid rgba(255,255,255,.95);box-shadow:inset 0 2px 0 rgba(255,255,255,.95),0 50px 90px -46px rgba(29,27,38,.38)}
+.machine{position:absolute;left:50%;bottom:130px;transform:translateX(-50%);max-width:760px;height:780px;object-fit:contain;filter:drop-shadow(0 34px 34px rgba(29,27,38,.25))}
+.floor{position:absolute;left:50%;bottom:112px;width:440px;height:44px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(rgba(29,27,38,.25),transparent 70%)}
+.line{position:absolute;left:0;right:0;bottom:0;height:10px;background:linear-gradient(90deg,#00BCD4,#7B61FF,#E91E8C,#FF5722,#FFC107)}
+</style></head><body><div class="card"><div class="grid"></div><div class="num" id="n"></div><div class="blob b1"></div><div class="blob b2"></div><div class="glass"></div><div class="floor"></div><img class="machine" id="img"><div class="line"></div></div>
+<script>const q=new URLSearchParams(location.search);document.getElementById('n').textContent=q.get('n');
+const s=document.documentElement.style;s.setProperty('--c',q.get('c'));s.setProperty('--c2',q.get('c2'));s.setProperty('--r',(q.get('r')||0)+'deg');
+const im=document.getElementById('img');im.src=q.get('img');if(q.get('wide'))im.style.height='560px';</script>
+</body></html>

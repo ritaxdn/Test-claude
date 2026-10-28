@@ -4,8 +4,8 @@ export const company = {
   legalName: "Cellulift",
   tagline: "Metamorphosis Technology",
   since: 2002,
-  // Boîtes Gmail en attendant Google Workspace (les adresses @cellulift.ma ne sont pas encore créées).
-  email: "cellulift@gmail.com",
+  // Adresse principale (reçoit toutes les demandes du site). Academy : boîte Gmail en attendant son adresse @cellulift.ma.
+  email: "admin@cellulift.ma",
   academyEmail: "cellulift.academy1@gmail.com",
   // Vide : pas de ligne « Partenariats » séparée dans le pied de page (les demandes arrivent sur l'adresse principale).
   partnershipsEmail: "" as string,

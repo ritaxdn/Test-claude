@@ -45,14 +45,14 @@ export const legacyRedirects: Record<string, string> = {
   "/new-synergy": "/fr/technologies/synergy-plus",
   // Anciens articles de blog
   "/une-nouvelle-technique-dans-le-traitement-de-la-cellulite": "/fr/technologies/gammes/amincissement", // validé par Cellulift
-  "/photomodulation-optimisez-les-soins-de-vos-patients-avec-cellulift": "/fr/technologies#photomodulation", // provisoire
-  // Anciennes pages de gamme → la même gamme dans le catalogue (filtre par ancre), constatées dans Search Console (oct. 2026).
+  "/photomodulation-optimisez-les-soins-de-vos-patients-avec-cellulift": "/fr/technologies/gammes/photomodulation",
+  // Anciennes pages de gamme → la page de la même gamme, constatées dans Search Console (oct. 2026).
   // Une gamme regroupe plusieurs machines : on n'envoie pas vers une seule fiche.
-  "/hifu-haut-intensite-focalise-ultrason": "/fr/technologies#hifu",
-  "/integrall-hifu": "/fr/technologies#hifu",
-  "/photomodulation": "/fr/technologies#photomodulation",
-  "/rejuvenation-cutanee": "/fr/technologies#rejuvenation",
-  "/therapie-avancee": "/fr/technologies#therapie",
+  "/hifu-haut-intensite-focalise-ultrason": "/fr/technologies/gammes/hifu",
+  "/integrall-hifu": "/fr/technologies/gammes/hifu",
+  "/photomodulation": "/fr/technologies/gammes/photomodulation",
+  "/rejuvenation-cutanee": "/fr/technologies/gammes/rejuvenation",
+  "/therapie-avancee": "/fr/technologies/gammes/therapie",
   // MEGACRYO (cryolipolyse by Longiligne) : plus au catalogue, page encore affichée par Google (oct. 2026).
   // Pas de cryolipolyse équivalente (CRYOCOVER = cryothérapie articulaire) → gamme Amincissement.
   "/megacryo": "/fr/technologies/gammes/amincissement",

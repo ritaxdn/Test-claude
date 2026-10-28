@@ -62,7 +62,7 @@ const t = {
     facts: [
       ["Pour", "Médecins et centres médico-esthétiques"],
       ["Inclus", "Installation · Formation · Protocoles"],
-      ["Garantie", "24 mois · pièces et main-d'œuvre"],
+      ["Garantie", "24 mois · main-d'œuvre"],
       ["Après l'achat", "Support technique et atelier intégré"],
     ],
   },
@@ -76,7 +76,7 @@ const t = {
     facts: [
       ["For", "Physicians and medical aesthetic centres"],
       ["Included", "Installation · Training · Protocols"],
-      ["Warranty", "24 months · parts and labour"],
+      ["Warranty", "24 months · labour"],
       ["After purchase", "Technical support and in-house workshop"],
     ],
   },

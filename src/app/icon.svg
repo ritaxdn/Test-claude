@@ -1,4 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- Favicon « Nacre & signal » : fond nacré, ligne ECG arc-en-ciel (aucun fond noir). -->
   <defs>
     <linearGradient id="g" x1="2" y1="16" x2="30" y2="16" gradientUnits="userSpaceOnUse">
       <stop offset="0%" stop-color="#00BCD4" />
@@ -7,12 +8,16 @@
       <stop offset="75%" stop-color="#FF5722" />
       <stop offset="100%" stop-color="#FFC107" />
     </linearGradient>
+    <linearGradient id="p" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#E2E4EB" />
+    </linearGradient>
   </defs>
-  <rect width="32" height="32" rx="8" fill="#1A1814" />
+  <rect x="0.75" y="0.75" width="30.5" height="30.5" rx="8" fill="url(#p)" stroke="#D6D8E1" stroke-width="1.5" />
   <path
-    d="M4 16H11L13 11L16 21L19 13L21 16H28"
+    d="M4 16H10.5L13 10.5L16 21.5L19 12.5L21 16H28"
     stroke="url(#g)"
-    stroke-width="2"
+    stroke-width="2.8"
     stroke-linecap="round"
     stroke-linejoin="round"
   />

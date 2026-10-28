@@ -2,11 +2,12 @@ import type { MetadataRoute } from "next";
 import { locales } from "@/lib/i18n/config";
 import { technologies } from "@/content/technologies";
 import { landingKeys, landingPath } from "@/content/category-landings";
+import { agencyKeys, agencyPath } from "@/content/agencies";
 import { SITE_URL } from "@/lib/site";
 
 const staticPaths = ["", "/about", "/technologies", "/guide", "/academy", "/support", "/contact", "/privacy", "/terms"];
-// Pages de gamme (Solutions lasers, Amincissement)
-const rangePaths = landingKeys.map(landingPath);
+// Pages de gamme (une par gamme du catalogue)
+const rangePaths = [...landingKeys.map(landingPath), ...agencyKeys.map(agencyPath)];  // + pages agences
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const entries: MetadataRoute.Sitemap = [];
