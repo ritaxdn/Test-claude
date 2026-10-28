@@ -5,16 +5,22 @@ import { AbsoluteFill, Img, interpolate, staticFile, useCurrentFrame, useVideoCo
  * The Cellulift logo, writing itself in — premium, cinematic pacing.
  *
  * Still never touches a pixel of `cellulift-logo.png`. Each region (arc,
- * ECG, wordmark, tagline) is a CSS mask-image "window" onto the SAME
- * untouched image. Unlike a hard clip-path edge, a mask-image gradient can
- * be FEATHERED — a soft, ink-like edge instead of a sharp cut, which reads
- * as "being painted in" rather than "being revealed by a blind". A bright
- * glint travels along that soft edge, like a pen of light tracing the mark.
+ * ECG, each letter of the wordmark, tagline) is a CSS mask-image "window"
+ * onto the SAME untouched image. Unlike a hard clip-path edge, a mask-image
+ * gradient can be FEATHERED — a soft, ink-like edge instead of a sharp cut,
+ * which reads as "being painted in" rather than "being revealed by a blind".
+ *
+ * A glint (a soft sheen, blended with `soft-light` so it tints with the
+ * artwork's own colour instead of washing it out) travels along each
+ * letter's edge as it writes in. It is deliberately scoped tight to each
+ * letter's own small box — a glint sized to the whole arc's bounding box
+ * looked like a pasted-on cloud floating above the empty margin around the
+ * swoosh, so the arc and ECG strokes keep a plain soft edge with no glint.
  *
  * Sequence: the arc writes in, colour band by colour band, left to right
- * -> the ECG heartbeat traces right after -> CELLULIFT writes itself in,
- * stroke by stroke -> the tagline settles in -> then a slow, barely-there
- * breathing pulsation keeps the assembled mark alive.
+ * -> the ECG heartbeat traces right after -> CELLULIFT writes itself in
+ * letter by letter, each with its own soft sheen -> the tagline settles in
+ * -> then a slow, barely-there breathing pulsation keeps the mark alive.
  */
 
 const LOGO = staticFile("cellulift-logo.png");
@@ -31,10 +37,30 @@ const BOX = {
   tag: { l: 0, t: 0.871, w: 1, h: 0.1292 },
 };
 
+// CELLULIFT's letters, by their approximate relative widths in the real
+// wordmark (I is narrow, U/C are wide) — used to slice BOX.word into 9
+// per-letter windows so each one can write itself in on its own beat.
+const LETTERS = ["C", "E", "L", "L", "U", "L", "I", "F", "T"];
+const LETTER_WEIGHTS = [1.15, 0.95, 0.85, 0.85, 1.1, 0.85, 0.5, 0.9, 1.0];
+const LETTER_GAP = 0.012;
+
+function letterSlices() {
+  const totalWeight = LETTER_WEIGHTS.reduce((a, b) => a + b, 0);
+  const usable = 1 - LETTER_GAP * (LETTERS.length - 1);
+  let x = 0;
+  return LETTER_WEIGHTS.map((w) => {
+    const frac = (w / totalWeight) * usable;
+    const slice = { l: x, w: frac };
+    x += frac + LETTER_GAP;
+    return slice;
+  });
+}
+const LETTER_SLICES = letterSlices();
+
 const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
 const easeOutCubic = (t: number) => 1 - (1 - t) ** 3;
 
-const GLINT = "radial-gradient(ellipse, rgba(255,255,255,0.95) 0%, rgba(255,214,130,0.55) 38%, transparent 72%)";
+const SHEEN = "linear-gradient(90deg, transparent, rgba(255,255,255,0.9) 50%, transparent)";
 
 const InkWindow: React.FC<{
   box: { l: number; t: number; w: number; h: number };
@@ -43,18 +69,24 @@ const InkWindow: React.FC<{
   progress: number; // 0..1, already eased
   angleDeg?: number;
   featherFrac?: number; // feather width as a fraction of the region's own width
-  glint?: boolean;
-}> = ({ box, logoW, logoH, progress, angleDeg = 90, featherFrac = 0.16, glint = true }) => {
+  sheen?: boolean;
+}> = ({ box, logoW, logoH, progress, angleDeg = 90, featherFrac = 0.16, sheen = false }) => {
+  // At progress <= 0 the mask's opaque stop sits at a negative px value,
+  // which CSS clamps forward past the transparent stop — producing a
+  // hairline-visible sliver instead of staying fully hidden. Skip the
+  // render outright rather than rely on a degenerate gradient.
+  if (progress <= 0.0015) return null;
+
   const left = box.l * logoW;
   const top = box.t * logoH;
   const width = box.w * logoW;
   const height = box.h * logoH;
 
-  const feather = Math.max(18, width * featherFrac);
+  const feather = Math.max(10, width * featherFrac);
   const edgeX = -feather + progress * (width + feather);
   const maskGradient = `linear-gradient(${angleDeg}deg, rgba(0,0,0,1) 0px, rgba(0,0,0,1) ${edgeX}px, rgba(0,0,0,0) ${edgeX + feather}px, rgba(0,0,0,0) 100%)`;
 
-  const edgeOpacity = progress <= 0.02 || progress >= 0.98 ? 0 : interpolate(progress, [0, 0.08, 0.92, 1], [0, 1, 1, 0], {
+  const sheenOpacity = progress <= 0.02 || progress >= 0.98 ? 0 : interpolate(progress, [0, 0.1, 0.9, 1], [0, 0.6, 0.6, 0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
@@ -76,18 +108,17 @@ const InkWindow: React.FC<{
       }}
     >
       <Img src={LOGO} style={{ position: "absolute", left: -left, top: -top, width: logoW, height: logoH }} />
-      {glint && (
+      {sheen && (
         <div
           style={{
             position: "absolute",
-            left: edgeX + feather / 2 - height * 0.55,
-            top: -height * 0.25,
-            width: height * 1.1,
-            height: height * 1.5,
-            background: GLINT,
-            opacity: edgeOpacity,
-            filter: "blur(6px)",
-            mixBlendMode: "plus-lighter",
+            left: edgeX - feather * 1.2,
+            top: 0,
+            width: feather * 2.4,
+            height,
+            background: SHEEN,
+            opacity: sheenOpacity,
+            mixBlendMode: "soft-light",
           }}
         />
       )}
@@ -108,17 +139,23 @@ export const AnimatedLogo: React.FC<{ width?: number }> = ({ width }) => {
 
   const arcP = eased(0, 58);
   const ecgP = eased(50, 74);
-  const wordP = eased(70, 114, easeOutCubic);
-  const tagP = eased(110, 132);
+
+  const wordStart = 70;
+  const letterStagger = 4.5;
+  const letterDuration = 16;
+  const lastLetterEnd = wordStart + (LETTERS.length - 1) * letterStagger + letterDuration;
+
+  const tagStart = lastLetterEnd + 6;
+  const tagP = eased(tagStart, tagStart + 22);
 
   const introOpacity = interpolate(frame, [0, 8], [0, 1], clamp);
   // A slow, barely-there dolly-in while the mark writes itself.
   const dolly = interpolate(frame, [0, 90], [1.045, 1], clamp);
 
-  const pulseStart = 150;
+  const pulseStart = tagStart + 36;
   const pulse = frame > pulseStart ? Math.sin((frame - pulseStart) / 15) : 0;
   const breathe = 1 + pulse * 0.016;
-  const glowBase = interpolate(frame, [0, 24, 110, 150], [0, 0.22, 0.14, 0.14], clamp);
+  const glowBase = interpolate(frame, [0, 24, pulseStart - 10, pulseStart], [0, 0.22, 0.14, 0.14], clamp);
   const glow = glowBase + pulse * 0.05;
 
   return (
@@ -145,8 +182,30 @@ export const AnimatedLogo: React.FC<{ width?: number }> = ({ width }) => {
       >
         <InkWindow box={BOX.arc} logoW={logoW} logoH={logoH} progress={arcP} angleDeg={97} featherFrac={0.17} />
         <InkWindow box={BOX.ecg} logoW={logoW} logoH={logoH} progress={ecgP} angleDeg={92} featherFrac={0.28} />
-        <InkWindow box={BOX.word} logoW={logoW} logoH={logoH} progress={wordP} angleDeg={90} featherFrac={0.09} />
-        <InkWindow box={BOX.tag} logoW={logoW} logoH={logoH} progress={tagP} angleDeg={90} featherFrac={0.12} glint={false} />
+        {LETTERS.map((_, i) => {
+          const slice = LETTER_SLICES[i];
+          const letterBox = {
+            l: BOX.word.l + slice.l * BOX.word.w,
+            t: BOX.word.t,
+            w: slice.w * BOX.word.w,
+            h: BOX.word.h,
+          };
+          const start = wordStart + i * letterStagger;
+          const p = easeOutCubic(interpolate(frame, [start, start + letterDuration], [0, 1], clamp));
+          return (
+            <InkWindow
+              key={i}
+              box={letterBox}
+              logoW={logoW}
+              logoH={logoH}
+              progress={p}
+              angleDeg={90}
+              featherFrac={0.4}
+              sheen
+            />
+          );
+        })}
+        <InkWindow box={BOX.tag} logoW={logoW} logoH={logoH} progress={tagP} angleDeg={90} featherFrac={0.12} />
       </div>
     </AbsoluteFill>
   );
