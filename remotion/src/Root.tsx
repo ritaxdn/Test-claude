@@ -6,11 +6,11 @@ import { CelluliftLogo } from "./CelluliftLogo";
 export const RemotionRoot: React.FC = () => {
   return (
     <>
-      {/* Focused animated logo reveal — 4s loop */}
+      {/* Focused animated logo reveal — premium, cinematic write-in */}
       <Composition
         id="CelluliftLogo"
         component={CelluliftLogo}
-        durationInFrames={120}
+        durationInFrames={170}
         fps={30}
         width={1920}
         height={1080}
@@ -18,17 +18,17 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="CelluliftLogo-Vertical"
         component={CelluliftLogo}
-        durationInFrames={120}
+        durationInFrames={170}
         fps={30}
         width={1080}
         height={1920}
       />
 
-      {/* Full 6s promo (logo scene + pillars + CTA) */}
+      {/* Full promo (logo scene + pillars + CTA) */}
       <Composition
         id="CelluliftPromo"
         component={CelluliftPromo}
-        durationInFrames={180}
+        durationInFrames={240}
         fps={30}
         width={1920}
         height={1080}
@@ -36,7 +36,7 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="CelluliftPromo-Vertical"
         component={CelluliftPromo}
-        durationInFrames={180}
+        durationInFrames={240}
         fps={30}
         width={1080}
         height={1920}

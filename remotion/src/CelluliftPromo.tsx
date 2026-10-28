@@ -240,7 +240,7 @@ export const CelluliftPromo: React.FC = () => {
     <AbsoluteFill style={{ backgroundColor: C.bg }}>
       <Glow />
       <TransitionSeries>
-        <TransitionSeries.Sequence durationInFrames={70}>
+        <TransitionSeries.Sequence durationInFrames={130}>
           <LogoScene />
         </TransitionSeries.Sequence>
         <TransitionSeries.Transition
