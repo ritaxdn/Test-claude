@@ -7,9 +7,9 @@ import { Footer } from "@/components/Footer";
 import { JsonLd } from "@/components/JsonLd";
 import { DoctorByline } from "@/components/DoctorByline";
 import { Reassurance } from "@/components/Reassurance";
-import { actPath, doctor, practice, universes } from "@/content/site";
+import { actPath, practice, universes } from "@/content/site";
 import { concernActs, concerns, getConcern } from "@/content/concerns";
-import { absolute, breadcrumb, clinicId, physicianId } from "@/lib/seo";
+import { absolute, breadcrumb, clinicId, metaDescription, physicianId } from "@/lib/seo";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const names = concernActs(c).map((a) => a.name);
   return {
     title: `${c.title} : quel traitement à Casablanca ?`,
-    description: `${c.intro} Consultation avec le ${doctor.name}, médecin esthétique à ${practice.city} : ${names.join(", ")}.`,
+    description: metaDescription(`${c.title} à ${practice.city} : ${names.join(", ")}. ${c.intro}`),
     alternates: { canonical: `/preoccupations/${c.slug}` },
     openGraph: { url: `/preoccupations/${c.slug}` },
   };
