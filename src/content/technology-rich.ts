@@ -6,12 +6,26 @@ import type { LocalizedText } from "./technologies";
  * Prix : toujours « sur demande » (choix Cellulift, ne pas publier de prix).
  */
 export type RichSheet = {
+  /** Suite du H1 après le nom de la machine (« La Queen : … ») */
+  h1: LocalizedText;
+  /** Accroche sous le H1 (remplace la phrase courte de la fiche) */
+  hook: LocalizedText;
+  /** Marque (données Product) */
+  brand: string;
   /** Les modules de la machine : nom, caractéristique clé, à quoi il sert */
   modules: { name: string; spec: string | LocalizedText; text: LocalizedText }[];
   /** Pour quel type de cabinet */
   forWho: LocalizedText[];
   /** Comment se construit un protocole */
   protocol: LocalizedText;
+  /** Tableau indication → technologie */
+  indications: { indication: LocalizedText; tech: string }[];
+  /** Pourquoi c'est rentable (sans chiffre inventé) */
+  profit: LocalizedText;
+  /** Caractéristiques techniques (brochure) */
+  specs: [LocalizedText, LocalizedText][];
+  /** Maillage : fiches proches */
+  related: string[];
   faq: { q: LocalizedText; a: LocalizedText }[];
   /** Vidéo Instagram de la machine (reel) */
   instagram?: string;
@@ -21,6 +35,36 @@ const t = (fr: string, en: string): LocalizedText => ({ fr, en });
 
 export const richSheets: Record<string, RichSheet> = {
   "la-queen": {
+    h1: t("plateforme laser 4-en-1 pour cabinets et centres médico-esthétiques", "4-in-1 laser platform for aesthetic practices and centres"),
+    hook: t(
+      "Épilation tous phototypes, vasculaire, pigments, détatouage et IPL : 4 technologies et 4 000 W dans une seule machine. Une plateforme pensée pour élargir votre carte de soins sans multiplier les équipements.",
+      "Hair removal for all skin types, vascular, pigment, tattoo removal and IPL: 4 technologies and 4,000 W in a single device. A platform built to widen your treatment menu without multiplying equipment."
+    ),
+    brand: "LGL Expert",
+    indications: [
+      { indication: t("Épilation définitive, tous phototypes", "Permanent hair removal, all skin types"), tech: "Diode 755 / 808 / 1064 nm" },
+      { indication: t("Varicosités, télangiectasies", "Spider veins, telangiectasia"), tech: "Vasculaire 980 nm" },
+      { indication: t("Mélasma, lentigos, naevus", "Melasma, lentigines, naevi"), tech: "Nd:YAG Q-switched" },
+      { indication: t("Détatouage toutes couleurs", "Multicolour tattoo removal"), tech: "Nd:YAG Q-switched" },
+      { indication: t("Carbon Peel", "Carbon Peel"), tech: "Nd:YAG Q-switched 1320 nm" },
+      { indication: t("Acné, taches, vieillissement cutané", "Acne, spots, skin ageing"), tech: "IPL / OPT" },
+    ],
+    profit: t(
+      "Une seule machine couvre l'acte le plus demandé en médecine esthétique, l'épilation laser, et des actes complémentaires à plus forte valeur : pigments, vasculaire, détatouage. Vous amortissez un investissement unique sur plusieurs lignes de revenus.",
+      "A single device covers the most requested aesthetic procedure, laser hair removal, plus higher-value complementary treatments: pigment, vascular, tattoo removal. You pay off one investment across several revenue streams."
+    ),
+    specs: [
+      [t("Puissance", "Power"), t("4 000 W", "4,000 W")],
+      [t("Diode", "Diode"), t("755 / 808 / 1064 nm", "755 / 808 / 1064 nm")],
+      [t("Vasculaire", "Vascular"), t("980 nm", "980 nm")],
+      [t("Nd:YAG Q-switched", "Q-switched Nd:YAG"), t("532 / 1064 / 1320 nm", "532 / 1064 / 1320 nm")],
+      [t("IPL / OPT", "IPL / OPT"), t("5 filtres", "5 filters")],
+      [t("Refroidissement", "Cooling"), t("Contact saphir", "Sapphire contact")],
+      [t("Autonomie de travail", "Working time"), t("Jusqu'à 18 h en continu", "Up to 18 h continuous")],
+      [t("Écran", "Screen"), t("Tactile 10 pouces", "10-inch touchscreen")],
+      [t("Fabricant", "Manufacturer"), t("LGL Expert", "LGL Expert")],
+    ],
+    related: ["alex-yag-ultra", "new-epil-light"],
     modules: [
       {
         name: "Laser diode",
@@ -75,10 +119,17 @@ export const richSheets: Record<string, RichSheet> = {
     ),
     faq: [
       {
-        q: t("La Queen peut-elle traiter tous les phototypes ?", "Can La Queen treat every skin type?"),
+        q: t("La Queen convient-elle aux peaux foncées ?", "Is La Queen suitable for dark skin?"),
         a: t(
-          "Oui. Le laser diode combine 755, 808 et 1064 nm pour l'épilation de tous les phototypes, toute l'année.",
-          "Yes. The diode laser combines 755, 808 and 1064 nm for hair removal on all skin types, all year round."
+          "Oui. La combinaison 755/808/1064 nm permet d'adapter le traitement à tous les phototypes, le 1064 nm étant la longueur d'onde de référence pour les peaux foncées.",
+          "Yes. The 755/808/1064 nm combination lets you adapt treatment to every skin type, 1064 nm being the reference wavelength for dark skin."
+        ),
+      },
+      {
+        q: t("Peut-on faire de l'épilation en été ?", "Can hair removal be done in summer?"),
+        a: t(
+          "Oui, l'épilation diode peut être réalisée toute l'année, à condition de respecter les protocoles enseignés en formation.",
+          "Yes, diode hair removal can be performed all year round, provided the protocols taught in training are followed."
         ),
       },
       {
@@ -105,11 +156,24 @@ export const richSheets: Record<string, RichSheet> = {
       {
         q: t("Quel est le prix de La Queen ?", "How much does La Queen cost?"),
         a: t(
-          "Le prix est communiqué sur demande, selon la configuration. Des solutions de financement sont disponibles : demandez un devis à un conseiller Cellulift.",
-          "Pricing is shared on request, depending on the configuration. Financing options are available: ask a Cellulift advisor for a quote."
+          "Le prix dépend de la configuration et des pièces à main choisies : il est communiqué sur demande. Des solutions de financement sont disponibles ; un expert Cellulift vous fait une proposition personnalisée.",
+          "Pricing depends on the configuration and the handpieces chosen, and is shared on request. Financing options are available; a Cellulift expert makes you a tailored proposal."
         ),
       },
       {
+        q: t("Quelle formation est incluse ?", "What training is included?"),
+        a: t(
+          "La formation CELLULIFT Academy est incluse : prise en main, sécurité laser et protocoles par indication.",
+          "CELLULIFT Academy training is included: getting started, laser safety and protocols for each indication."
+        ),
+      },
+      {
+        q: t("Que couvre la garantie ?", "What does the warranty cover?"),
+        a: t(
+          "24 mois main-d'œuvre, avec déplacement de nos techniciens et diagnostic en atelier.",
+          "24 months of labour, with on-site visits by our technicians and diagnosis in our workshop."
+        ),
+      },      {
         q: t("Qu'est-ce qui est inclus à l'achat ?", "What is included with the purchase?"),
         a: t(
           "L'installation et la mise en service par nos techniciens, la formation CELLULIFT Academy, les protocoles de traitement, une garantie de 24 mois main-d'œuvre et le service après-vente.",
@@ -119,8 +183,8 @@ export const richSheets: Record<string, RichSheet> = {
       {
         q: t("Peut-on voir La Queen avant d'acheter ?", "Can I see La Queen before buying?"),
         a: t(
-          "Oui. Réservez une démonstration dans l'une de nos agences, à Casablanca, Marrakech ou Tanger.",
-          "Yes. Book a demonstration at one of our branches in Casablanca, Marrakech or Tangier."
+          "Oui, La Queen est en démonstration à notre showroom de Casablanca, N°02 Rue Savoie, Quartier des Hôpitaux, sur rendez-vous.",
+          "Yes, La Queen is on demonstration at our Casablanca showroom, N°02 Rue Savoie, Quartier des Hôpitaux, by appointment."
         ),
       },
     ],

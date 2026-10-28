@@ -16,12 +16,12 @@ export const technologySeo: Record<string, { title: LocalizedText; description: 
   },
   "la-queen": {
     title: {
-      fr: "LA QUEEN — Laser épilation diode, Nd:YAG et IPL",
-      en: "LA QUEEN — Diode hair removal laser, Nd:YAG and IPL",
+      fr: "LA QUEEN — Laser épilation diode, Nd:YAG, IPL au Maroc",
+      en: "LA QUEEN — Diode hair removal laser, Nd:YAG, IPL in Morocco",
     },
     description: {
-      fr: "LA QUEEN : laser diode 755/808/1064 nm, laser vasculaire 980 nm, Nd:YAG Q-switched et IPL. Épilation, vasculaire, pigments et détatouage. CELLULIFT au Maroc.",
-      en: "LA QUEEN: 755/808/1064 nm diode laser, 980 nm vascular laser, Q-switched Nd:YAG and IPL. Hair removal, vascular, pigment and tattoo removal. CELLULIFT, Morocco.",
+      fr: "Plateforme laser 4-en-1 : diode 755/808/1064 nm, vasculaire 980 nm, Nd:YAG Q-switched et IPL. Installation, formation et SAV au Maroc. Démo au showroom.",
+      en: "4-in-1 laser platform: 755/808/1064 nm diode, 980 nm vascular, Q-switched Nd:YAG and IPL. Installation, training and after-sales in Morocco. Showroom demo.",
     },
   },
   "laser-shock": {
