@@ -3,7 +3,8 @@ import { AbsoluteFill, Audio, interpolate, Sequence, staticFile, useCurrentFrame
 import "../styles.css";
 import { C, F } from "../brand";
 import { MUSIC_FILE, T } from "../content";
-import { DocRow, display, EcgLine, eyebrow, FormatCtx, Glass, Iri, LessonDot, Pearl, prog, Progress, useFormat, type Format } from "../ui/kit";
+import { DocRow, display, EASE, EcgLine, eyebrow, FormatCtx, Glass, Iri, LessonDot, Pearl, prog, Progress, useFormat, type Format } from "../ui/kit";
+import { Counter, DotGrid, KineticText, Orbs, Rings, ScanWipe, TypeOn, Viewfinder } from "./motion";
 import { useFonts } from "../fonts";
 import { TEASER } from "./teaserContent";
 
@@ -90,25 +91,27 @@ function Intro() {
   const { v, W } = useFormat();
   return (
     <AbsoluteFill style={{ alignItems: "center", justifyContent: "center" }}>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: v ? 48 : 36, opacity: 1 - prog(f, 48, 12) }}>
+      <Sequence from={30}><Rings count={2} gap={6} max={0.7} /></Sequence>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: v ? 48 : 36, opacity: 1 - prog(f, 50, 10) }}>
         <EcgLine width={W * 0.86} draw={prog(f, 4, 44)} stroke={0.9} id="ecg-t1" />
-        <span style={{ ...eyebrow(v ? 1.9 : 1.6), color: C.deep, letterSpacing: "0.32em", opacity: prog(f, 20, 18) }}>{TEASER.kicker}</span>
+        <div style={{ ...eyebrow(v ? 1.9 : 1.6), color: C.deep, letterSpacing: "0.32em" }}>
+          <TypeOn text={TEASER.kicker.toUpperCase()} start={18} cps={0.9} />
+        </div>
       </div>
     </AbsoluteFill>
   );
 }
 
-function Beat({ text, frag, dur }: { text: string; frag: React.ReactNode; dur: number }) {
+function Beat({ text, frag, dur, index }: { text: string; frag: React.ReactNode; dur: number; index: number }) {
   const f = useCurrentFrame();
   const { v } = useFormat();
-  const p = prog(f, 2, 18);
-  const out = prog(f, dur - 8, 8);
   return (
     <AbsoluteFill>
       <Lens dur={dur} zoom={v ? [2.0, 2.4] : [1.7, 2.05]} blur={[16, 10]}>{frag}</Lens>
       <AbsoluteFill style={{ background: "radial-gradient(70% 45% at 50% 50%, rgba(236,238,243,0.82), rgba(236,238,243,0.35) 70%, transparent)" }} />
+      <Counter index={index} total={TEASER.beats.length} local={f} dur={dur} />
       <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", padding: v ? "0 70px" : 0 }}>
-        <h2 style={{ ...display(v ? 118 : 132, v ? 104 : 118), textAlign: "center", opacity: p * (1 - out), transform: `translateY(${(1 - p) * 26}px)`, filter: out ? `blur(${out * 6}px)` : undefined }}>{text}</h2>
+        <KineticText text={text} start={2} exit={dur - 12} size={v ? 118 : 132} stretch={v ? 104 : 118} stagger={0.9} />
       </AbsoluteFill>
     </AbsoluteFill>
   );
@@ -116,20 +119,31 @@ function Beat({ text, frag, dur }: { text: string; frag: React.ReactNode; dur: n
 
 function Montage({ dur }: { dur: number }) {
   const f = useCurrentFrame();
-  const { v } = useFormat();
-  const shots: [React.ReactNode, number][] = [
-    [<FragHello key="h" />, v ? 0.78 : 1.6],
-    [<FragLessons key="l" />, v ? 1.25 : 1.8],
-    [<FragDone key="d" />, v ? 1.55 : 2.3],
-    [<FragProgress key="p" from={67} to={100} local={3 * 19} />, v ? 1.25 : 1.9],
+  const { v, u } = useFormat();
+  const shots: [React.ReactNode, number, number, number][] = [
+    // fragment, échelle, largeur et hauteur du cadre de visée (px à l'échelle 1)
+    [<FragHello key="h" />, v ? 0.78 : 1.6, v ? 980 : 1700, v ? 150 : 170],
+    [<FragLessons key="l" />, v ? 1.25 : 1.8, v ? 950 : 1150, v ? 340 : 400],
+    [<FragDone key="d" />, v ? 1.55 : 2.3, v ? 900 : 1000, v ? 160 : 180],
+    [<FragProgress key="p" from={67} to={100} local={3 * 19} />, v ? 1.25 : 1.9, v ? 950 : 1200, v ? 240 : 260],
   ];
   const len = Math.floor(dur / shots.length);
   const i = Math.min(shots.length - 1, Math.floor(f / len));
   const lf = f - i * len;
-  const s = shots[i][1] * interpolate(lf, [0, len], [1.08, 1]);
+  const [node, scale, fw, fh] = shots[i];
+  const s = scale * interpolate(lf, [0, len], [1.08, 1]);
   return (
-    <AbsoluteFill style={{ alignItems: "center", justifyContent: "center" }}>
-      <div style={{ transform: `scale(${s})`, filter: lf < 3 ? `blur(${(3 - lf) * 3}px)` : undefined }}>{shots[i][0]}</div>
+    <AbsoluteFill>
+      <DotGrid opacity={0.55} />
+      <AbsoluteFill style={{ alignItems: "center", justifyContent: "center" }}>
+        <div style={{ transform: `scale(${s})`, filter: lf < 3 ? `blur(${(3 - lf) * 3}px)` : undefined }}>{node}</div>
+      </AbsoluteFill>
+      <Viewfinder w={fw} h={fh} label={`${String(i + 1).padStart(2, "0")} / ${String(shots.length).padStart(2, "0")} · APERÇU`} local={lf} />
+      {/* filet arc-en-ciel qui file à chaque coupe */}
+      <div style={{ position: "absolute", left: 0, top: v ? "70%" : "78%", height: 1.5, width: `${prog(lf, 0, len, EASE) * 100}%`, background: C.rainbow, opacity: 0.8 }} />
+      <span style={{ position: "absolute", right: v ? 70 : 96, top: v ? "71.2%" : "79.5%", fontFamily: F.mono, fontSize: 11 * u, letterSpacing: "0.14em", color: C.deepSoft, fontVariantNumeric: "tabular-nums" }}>
+        {String(Math.round(prog(f, 0, dur, EASE) * 100)).padStart(3, "0")} %
+      </span>
     </AbsoluteFill>
   );
 }
@@ -142,18 +156,21 @@ function Veil({ dur }: { dur: number }) {
 function Reveal({ dur }: { dur: number }) {
   const f = useCurrentFrame();
   const { v, W } = useFormat();
-  const size = v ? 340 : 300;
-  const p = prog(f, 14, 30);
   const out = prog(f, dur - 10, 10);
   return (
-    <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", opacity: 1 - out }}>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: v ? 34 : 26 }}>
-        <h1 style={{ ...display(size, 125), lineHeight: 0.85, letterSpacing: "-0.04em", opacity: p, transform: `translateY(${(1 - p) * 40}px) scale(${interpolate(f, [0, dur], [1.04, 1])})` }}>
-          <Iri shift={prog(f, 18, 50)}>{TEASER.name}</Iri>
-        </h1>
-        <EcgLine width={Math.min(W * 0.62, 900)} draw={prog(f, 0, 40)} stroke={1.1} id="ecg-t2" />
-        <span style={{ ...eyebrow(v ? 2.1 : 1.8), letterSpacing: "0.28em", color: C.deepSoft, opacity: prog(f, 32, 18) }}>{TEASER.by}</span>
-      </div>
+    <AbsoluteFill style={{ opacity: 1 - out }}>
+      <Sequence from={6}><Rings count={3} gap={7} /></Sequence>
+      <AbsoluteFill style={{ alignItems: "center", justifyContent: "center" }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: v ? 34 : 26, transform: `scale(${interpolate(f, [0, dur], [1.04, 1])})` }}>
+          <div style={{ lineHeight: 0.85 }}>
+            <KineticText text={TEASER.name} start={10} size={v ? 340 : 300} stretch={125} stagger={3} iri />
+          </div>
+          <EcgLine width={Math.min(W * 0.62, 900)} draw={prog(f, 0, 40)} stroke={1.1} id="ecg-t2" />
+          <div style={{ ...eyebrow(v ? 2.1 : 1.8), letterSpacing: "0.28em", color: C.deepSoft }}>
+            <TypeOn text={TEASER.by.toUpperCase()} start={30} cps={1.2} />
+          </div>
+        </div>
+      </AbsoluteFill>
     </AbsoluteFill>
   );
 }
@@ -168,11 +185,13 @@ function Outro({ dur }: { dur: number }) {
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: v ? 40 : 30, textAlign: "center" }}>
         <span style={{ ...display(v ? 64 : 58, 125), ...r(0) }}><Iri shift={1}>{TEASER.name}</Iri> <span style={{ fontFamily: F.mono, fontSize: v ? 22 : 20, letterSpacing: "0.28em", color: C.deepSoft, verticalAlign: "middle" }}>{TEASER.by}</span></span>
         <p style={{ margin: 0, fontFamily: F.sans, fontSize: v ? 40 : 34, color: C.deepSoft, maxWidth: v ? 880 : 1100, lineHeight: 1.3, ...r(6) }}>{TEASER.promise}</p>
-        <h2 style={{ ...display(v ? 92 : 84, v ? 104 : 118), maxWidth: v ? 920 : 1500, ...r(14) }}>{TEASER.cta}</h2>
-        <span style={{ height: 2, width: (v ? 640 : 900) * prog(f, 22, 36), background: C.rainbow }} />
-        <div style={{ display: "flex", flexDirection: "column", gap: v ? 16 : 12, alignItems: "center", ...r(28) }}>
-          <span style={{ fontFamily: F.mono, fontSize: v ? 34 : 28, letterSpacing: "0.14em", color: C.deep }}>{TEASER.url}</span>
-          <span style={{ ...eyebrow(v ? 1.6 : 1.4), letterSpacing: "0.2em" }}>{TEASER.audience}</span>
+        <div style={{ maxWidth: v ? 920 : 1500 }}>
+          <KineticText text={TEASER.cta} start={12} size={v ? 92 : 84} stretch={v ? 104 : 118} stagger={0.6} />
+        </div>
+        <span style={{ height: 2, width: (v ? 640 : 900) * prog(f, 30, 30), background: C.rainbow }} />
+        <div style={{ display: "flex", flexDirection: "column", gap: v ? 16 : 12, alignItems: "center" }}>
+          <TypeOn text={TEASER.url} start={36} cps={1.3} style={{ fontFamily: F.mono, fontSize: v ? 34 : 28, letterSpacing: "0.14em", color: C.deep }} />
+          <span style={{ ...eyebrow(v ? 1.6 : 1.4), letterSpacing: "0.2em", ...r(48) }}>{TEASER.audience}</span>
         </div>
       </div>
     </AbsoluteFill>
@@ -187,14 +206,19 @@ export function Teaser({ vertical }: { vertical: boolean }) {
     <FormatCtx.Provider value={fmt}>
       <AbsoluteFill style={{ background: C.pearl, overflow: "hidden" }}>
         <Pearl />
+        <Orbs strength={0.55} />
         <Sequence from={0} durationInFrames={60} name="Ligne ECG"><Intro /></Sequence>
         {TEASER.beats.map((b, i) => (
-          <Sequence key={b} from={60 + i * 48} durationInFrames={48} name={`Mot ${i + 1}`}><Beat text={b} frag={beats[i]} dur={48} /></Sequence>
+          <Sequence key={b} from={60 + i * 48} durationInFrames={48} name={`Mot ${i + 1}`}><Beat text={b} frag={beats[i]} dur={48} index={i} /></Sequence>
         ))}
         <Sequence from={204} durationInFrames={78} name="Montage"><Montage dur={78} /></Sequence>
         <Sequence from={276} durationInFrames={30} name="Voile"><Veil dur={30} /></Sequence>
         <Sequence from={300} durationInFrames={72} name="Révélation"><Reveal dur={72} /></Sequence>
         <Sequence from={372} durationInFrames={78} name="Appel"><Outro dur={78} /></Sequence>
+        {/* balayages scan aux changements de plan */}
+        {[52, 100, 148, 196, 278].map((at) => (
+          <Sequence key={at} from={at} durationInFrames={18} name="Balayage"><ScanWipe dur={18} /></Sequence>
+        ))}
         {MUSIC_FILE && <Audio src={staticFile(MUSIC_FILE)} />}
       </AbsoluteFill>
     </FormatCtx.Provider>
