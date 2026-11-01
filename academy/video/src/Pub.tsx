@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { AbsoluteFill, Audio, continueRender, delayRender, Sequence, staticFile } from "remotion";
+import React from "react";
+import { AbsoluteFill, Audio, Sequence, staticFile } from "remotion";
+import { useFonts } from "./fonts";
 import "./styles.css";
 import { MUSIC_FILE } from "./content";
 import { SCENES } from "./timeline";
@@ -8,21 +9,6 @@ import { HookScene, LogoScene } from "./scenes/Intro";
 import { DashboardScene, InvitationScene } from "./scenes/Onboarding";
 import { LessonScene } from "./scenes/Lesson";
 import { AdminScene, ProgressScene, SignatureScene } from "./scenes/Outcome";
-
-/** Attend que les polices locales soient prêtes avant de rendre la moindre image. */
-function useFonts() {
-  const [handle] = useState(() => delayRender("Chargement des polices"));
-  useEffect(() => {
-    const faces = [
-      '500 40px "Archivo Variable"', '400 20px "Instrument Sans"', '500 20px "Instrument Sans"', '600 20px "Instrument Sans"',
-      '400 12px "JetBrains Mono"', '500 12px "JetBrains Mono"', '400 40px "Cormorant Garamond"',
-    ];
-    Promise.all(faces.map((f) => document.fonts.load(f, "AÉéçà%·—")))
-      .then(() => document.fonts.ready)
-      .then(() => continueRender(handle))
-      .catch(() => continueRender(handle));
-  }, [handle]);
-}
 
 export function Pub({ vertical }: { vertical: boolean }) {
   useFonts();

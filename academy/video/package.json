@@ -9,6 +9,7 @@
     "render:16x9": "remotion render src/index.ts Pub16x9 out/academy-pub-16x9.mp4",
     "render:9x16": "remotion render src/index.ts Pub9x16 out/academy-pub-9x16.mp4",
     "render": "npm run render:16x9 && npm run render:9x16",
+    "render:teaser": "remotion render src/index.ts Teaser9x16 out/academy-teaser-9x16.mp4 && remotion render src/index.ts Teaser16x9 out/academy-teaser-16x9.mp4",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

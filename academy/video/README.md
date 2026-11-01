@@ -57,6 +57,13 @@ Règles à garder (voir `academy/CLAUDE.md`) :
 
 Couleurs et polices : `src/brand.ts` (copie des jetons de `globals.css`). Si la charte change dans l'app, reportez la modification ici.
 
+## Teaser d'avant-première (15 s)
+
+Un second film, plus court, pour donner envie avant le lancement : fragments flous de l'interface, trois mots (« Votre technologie. Vos protocoles. Votre progression. »), un montage rapide, puis la révélation du nom et l'appel à l'avant-première.
+
+- Code : `src/teaser/Teaser.tsx` · textes : `src/teaser/teaserContent.ts` (nom affiché, mention, appel, public visé).
+- Rendu : `npm run render:teaser` → `out/academy-teaser-9x16.mp4` et `out/academy-teaser-16x9.mp4`.
+
 ## Musique
 
 La piste son est vide. Pour ajouter une musique libre de droits fournie par Cellulift :
