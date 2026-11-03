@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>LIFT motion</title>
+<link rel="stylesheet" href="fonts.css">
+<style>
+  :root { --pearl:#ECEEF3; --deep:#1d1b26; --soft:#5d5b6b;
+    --rb: linear-gradient(90deg,#00BCD4,#7B61FF,#E91E8C,#FF5722,#FFC107);
+    --rbv: linear-gradient(135deg,#7B61FF 0%,#E91E8C 55%,#FF5722 100%); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { width:1080px; height:1920px; overflow:hidden; background:var(--pearl); }
+  #stage { position:relative; width:1080px; height:1920px; overflow:hidden; perspective:1500px;
+    background:radial-gradient(1200px 900px at 20% 10%, #dcd6ff 0%, transparent 60%), radial-gradient(1000px 900px at 90% 70%, #c9f1f6 0%, transparent 60%), radial-gradient(900px 800px at 10% 95%, #ffd6ea 0%, transparent 60%), var(--pearl);
+    font-family:"Instrument Sans",sans-serif; color:var(--deep); }
+  .layer { position:absolute; left:0; top:0; width:1080px; height:1920px; transform-origin:540px 960px; will-change:transform,filter; }
+  .mono { font-family:"JetBrains Mono",monospace; letter-spacing:.14em; text-transform:uppercase; }
+  .display { font-family:Archivo,sans-serif; font-stretch:118%; font-weight:600; letter-spacing:-.035em; line-height:.95; text-transform:uppercase; }
+  .rb-text { background:var(--rb); -webkit-background-clip:text; background-clip:text; color:transparent; }
+
+  /* A — le planning papier */
+  #sheet { position:absolute; left:110px; top:420px; width:860px; height:1080px; background:#fbfbf8; border-radius:18px;
+    box-shadow:0 40px 90px -30px rgba(29,27,38,.35); padding:70px 64px; }
+  #sheet h3 { font-size:24px; color:var(--soft); }
+  #sheet .big { font-size:66px; margin-top:18px; }
+  .row { position:relative; display:grid; grid-template-columns:190px 1fr; gap:24px; padding:34px 0; border-bottom:2px dashed #d9d8de; font-size:34px; }
+  .row .d { font-family:"JetBrains Mono",monospace; font-size:28px; color:var(--soft); padding-top:6px; }
+  .row b { font-weight:600; }
+  .row small { display:block; font-size:24px; color:var(--soft); margin-top:6px; }
+  #strike { position:absolute; left:-20px; top:170px; width:800px; height:140px; overflow:visible; }
+  #stamp { position:absolute; left:380px; top:330px; padding:18px 30px; border:6px solid #E91E8C; color:#E91E8C; border-radius:14px;
+    font-family:Archivo,sans-serif; font-stretch:118%; font-weight:700; font-size:44px; text-transform:uppercase; letter-spacing:-.02em; transform:rotate(-10deg); }
+
+  /* B — notifications */
+  .notif { position:absolute; left:60px; width:960px; padding:30px 36px; border-radius:44px; background:rgba(255,255,255,.82);
+    backdrop-filter:blur(30px); box-shadow:0 30px 70px -25px rgba(29,27,38,.40), inset 0 0 0 1.5px rgba(255,255,255,.9);
+    display:grid; grid-template-columns:84px 1fr; gap:26px; align-items:center; }
+  .notif .ic { width:84px; height:84px; border-radius:22px; display:grid; place-items:center; font-size:44px; color:#fff; }
+  .notif .app { font-size:24px; color:var(--soft); display:flex; justify-content:space-between; }
+  .notif .msg { font-size:36px; font-weight:600; margin-top:6px; line-height:1.15; }
+
+  /* C — les leçons */
+  #grid { position:absolute; left:260px; top:795px; width:1740px; display:grid; grid-template-columns:repeat(3,560px); gap:30px; }
+  .lc { position:relative; height:330px; border-radius:40px; padding:36px 38px; background:#fff; overflow:hidden;
+    box-shadow:0 30px 60px -30px rgba(29,27,38,.35), inset 0 0 0 1.5px rgba(29,27,38,.05); }
+  .lc .fill { position:absolute; inset:0; background:var(--rbv); opacity:0; }
+  .lc .in { position:relative; }
+  .lc .m { font-size:20px; color:var(--soft); }
+  .lc .t { font-size:36px; font-weight:600; margin-top:16px; line-height:1.12; }
+  .lc .bar { position:absolute; left:38px; right:38px; bottom:110px; height:10px; border-radius:10px; background:#ecebf1; overflow:hidden; }
+  .lc .bar i { display:block; height:100%; width:0; background:var(--rb); border-radius:10px; }
+  .lc .foot { position:absolute; left:38px; right:38px; bottom:34px; display:flex; justify-content:space-between; align-items:center; }
+  .lc .dur { font-family:"JetBrains Mono",monospace; font-size:22px; color:var(--soft); }
+  .lc .ok { font-size:26px; font-weight:600; padding:12px 22px; border-radius:999px; background:var(--deep); color:#fff; opacity:0; }
+  .lc .play { width:64px; height:64px; border-radius:50%; background:var(--deep); display:grid; place-items:center; }
+  .lc.done .m, .lc.done .t, .lc.done .dur { color:#fff; }
+
+  /* D — compteurs */
+  .chip { position:absolute; left:110px; width:860px; padding:44px 52px; border-radius:52px; background:rgba(255,255,255,.88);
+    box-shadow:0 40px 90px -30px rgba(29,27,38,.45), 0 0 0 3px transparent; }
+  .chip.rbb { border:4px solid transparent; background:linear-gradient(#fff,#fff) padding-box, var(--rb) border-box; }
+  .chip .l { font-size:26px; color:var(--soft); }
+  .chip .n { font-family:Archivo,sans-serif; font-stretch:118%; font-weight:700; font-size:170px; letter-spacing:-.04em; line-height:1; margin-top:14px; }
+
+  /* E — produit et fin */
+  #phone { position:absolute; left:240px; top:600px; width:600px; height:1266px; border-radius:86px; padding:14px;
+    background:linear-gradient(145deg,#fdfdff,#d9dbe4); box-shadow:0 60px 120px -40px rgba(29,27,38,.45), inset 0 0 0 2px #fff, 0 0 0 1px rgba(29,27,38,.12); }
+  #screen { position:relative; width:572px; height:1238px; border-radius:72px; overflow:hidden; background:#eceef3; }
+  #screen img { position:absolute; left:0; top:58px; width:572px; }
+  #island { position:absolute; left:50%; top:22px; width:150px; height:42px; margin-left:-75px; border-radius:30px; background:#111; z-index:2; }
+  #brand { position:absolute; left:0; right:0; top:150px; text-align:center; }
+  .lift { font-family:Archivo,sans-serif; font-weight:800; font-stretch:125%; font-size:210px; letter-spacing:-.04em; line-height:.9; }
+  .by { font-family:"Cormorant Garamond",serif; font-size:46px; letter-spacing:.06em; margin-top:16px; }
+  .by b { font-weight:500; letter-spacing:.28em; }
+  #cta { position:absolute; left:50%; top:1610px; transform:translateX(-50%); white-space:nowrap; font-size:40px; font-weight:600; color:#fff;
+    background:var(--deep); padding:34px 60px; border-radius:999px; box-shadow:0 30px 60px -20px rgba(29,27,38,.55); }
+  #cta2 { position:absolute; left:0; right:0; top:1770px; text-align:center; font-size:24px; color:var(--soft); }
+
+  /* Légende fixe façon TikTok */
+  #hook { position:absolute; left:0; right:0; top:1330px; text-align:center; z-index:20; }
+  #hook span { display:inline-block; font-size:42px; font-weight:600; line-height:1.25; color:#fff; padding:14px 28px; border-radius:18px;
+    background:rgba(29,27,38,.86); }
+  #flash { position:absolute; inset:0; background:var(--rb); opacity:0; mix-blend-mode:screen; z-index:15; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <!-- A : la formation en présentiel, avant -->
+  <div class="layer" id="A">
+    <div id="sheet">
+      <h3 class="mono">Formations · présentiel</h3>
+      <div class="display big">Planning <span style="color:var(--soft)">novembre</span></div>
+      <div style="position:relative;margin-top:40px">
+        <div class="row"><span class="d">Mar. 14<br>09:00</span><span><b>HANOVER 5G</b><small>Casablanca · salle de formation</small></span></div>
+        <div class="row" id="r2"><span class="d">Jeu. 16<br>14:00</span><span><b>DERMABRASIF 6G</b><small>Casablanca · places limitées</small></span></div>
+        <div class="row"><span class="d">Sam. 18<br>10:00</span><span><b>SLIMAX LIPO 7</b><small>Marrakech · complet</small></span></div>
+        <div class="row"><span class="d">Mar. 21<br>09:00</span><span><b>LA QUEEN</b><small>Tanger</small></span></div>
+        <svg id="strike" viewBox="0 0 800 140"><path id="sp" d="M10 80 C 160 50, 330 100, 470 66 S 700 50, 790 74" stroke="#E91E8C" stroke-width="12" fill="none" stroke-linecap="round"/></svg>
+        <div id="stamp">Cabinet fermé ?</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- B : les notifications qui fâchent -->
+  <div class="layer" id="B">
+    <div class="notif" id="n1" style="top:300px"><div class="ic" style="background:#FF5722">!</div><div><div class="app mono"><span>Agenda</span><span>maintenant</span></div><div class="msg">12 patients à reporter jeudi.</div></div></div>
+    <div class="notif" id="n2" style="top:520px"><div class="ic" style="background:#00BCD4">➜</div><div><div class="app mono"><span>Trajet</span><span>il y a 2 min</span></div><div class="msg">Marrakech → Casablanca · 3 h 10</div></div></div>
+    <div class="notif" id="n3" style="top:740px"><div class="ic" style="background:#7B61FF">✕</div><div><div class="app mono"><span>Formation</span><span>il y a 5 min</span></div><div class="msg">Session complète. Prochaine date : dans 2 mois.</div></div></div>
+  </div>
+
+  <!-- C : les leçons LIFT -->
+  <div class="layer" id="C"><div id="grid"></div></div>
+
+  <!-- D : compteurs -->
+  <div class="layer" id="D">
+    <div class="chip rbb" id="c1" style="top:360px"><div class="l mono">Leçons validées</div><div class="n" id="n-lec">0</div></div>
+    <div class="chip" id="c2" style="top:760px"><div class="l mono">Kilomètres parcourus</div><div class="n"><span id="n-km">380</span> <span style="font-size:90px">km</span></div></div>
+  </div>
+
+  <!-- E : produit + appel -->
+  <div class="layer" id="E">
+    <div id="phone"><div id="screen"><div id="island"></div><img src="img/m2-tableau-de-bord.png" alt=""></div></div>
+    <div id="brand"><div class="lift rb-text">LIFT</div><div class="by">by <b>CELLULIFT</b> Academy</div></div>
+    <div id="cta">Rejoindre l'avant-première →</div>
+    <div id="cta2" class="mono">Incluse pour les clients CELLULIFT · cellulift.ma</div>
+  </div>
+
+  <div id="flash"></div>
+  <div id="hook"><span id="hookt">Et si la formation venait enfin à vous ?</span></div>
+</div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const cl = (x) => Math.max(0, Math.min(1, x));
+const p = (t, a, b) => cl((t - a) / (b - a));
+const eo = (x) => 1 - Math.pow(1 - x, 3);
+const e5 = (x) => 1 - Math.pow(1 - x, 5);
+const eio = (x) => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const lerp = (a, b, k) => a + (b - a) * k;
+
+// Caméra : images clés {t, x, y, s, rx, ry, rz}, interpolées en ease-in-out
+function cam(keys, t) {
+  if (t <= keys[0].t) return keys[0];
+  for (let i = 0; i < keys.length - 1; i++) {
+    const a = keys[i], b = keys[i + 1];
+    if (t <= b.t) { const k = eio((t - a.t) / (b.t - a.t)); const o = {}; for (const f of ["x","y","s","rx","ry","rz"]) o[f] = lerp(a[f], b[f], k); return o; }
+  }
+  return keys[keys.length - 1];
+}
+const tf = (c) => `translate(${c.x}px,${c.y}px) scale(${c.s}) rotateX(${c.rx}deg) rotateY(${c.ry}deg) rotateZ(${c.rz}deg)`;
+// Flou de mouvement : proportionnel à la vitesse de la caméra
+function blurOf(keys, t) {
+  const a = cam(keys, t - 1 / 30), b = cam(keys, t);
+  const d = Math.abs(a.x - b.x) + Math.abs(a.y - b.y) + Math.abs(a.s - b.s) * 900 + (Math.abs(a.rx - b.rx) + Math.abs(a.ry - b.ry) + Math.abs(a.rz - b.rz)) * 14;
+  return Math.min(22, d * .12);
+}
+const K = (t, x, y, s, rx = 0, ry = 0, rz = 0) => ({ t, x, y, s, rx, ry, rz });
+
+const camA = [K(0, 380, 40, 2.6, 40, -8, -16), K(1.5, 200, 0, 2.2, 32, -6, -12), K(2.6, 0, -160, 1.5, 24, -4, -8), K(4.8, -20, -220, 1.25, 30, 6, -4), K(5.5, -1500, -220, 1.25, 30, 10, -4)];
+const camB = [K(2.6, 0, 0, 1, 8, 0, -3), K(4.8, 0, -40, 1.02, 10, 0, -2), K(5.5, -1500, -60, 1.02, 10, 0, -2)];
+const camC = [K(5.2, 1500, -260, 1.75, 18, -14, -4), K(5.9, -40, -260, 1.75, 18, -14, -4), K(8.6, -60, -290, 1.62, 14, -10, -3),
+  K(10.2, -380, -640, 1.05, 34, -6, -12), K(12.0, -430, -720, .8, 32, 4, -9), K(13.2, -354, -580, .62, 22, 0, -5), K(16.2, -354, -580, .62, 22, 0, -5)];
+
+// Leçons (titres du vrai programme de démonstration)
+const L = [
+  ["Module 1 · Leçon 1", "Principe et indications de la HANOVER 5G", "4 min"],
+  ["Module 2 · Leçon 2", "Installer l'appareil et préparer la salle", "6 min"],
+  ["Module 3 · Leçon 3", "Lunettes, salle et hygiène", "3 min"],
+  ["Module 4 · Leçon 4", "Sélection du patient et consentement", "5 min"],
+  ["Module 5 · Leçon 5", "Paramètres par phototype", "7 min"],
+  ["Module 6 · Leçon 6", "Entretien et consommables", "4 min"],
+  ["Dermabrasif 6G · 1", "Le soin en six étapes", "6 min"],
+  ["Dermabrasif 6G · 2", "Choisir le bon sérum", "4 min"],
+  ["Dermabrasif 6G · 3", "Associer la LED", "3 min"],
+  ["Protocoles", "Fiche protocole HANOVER 5G", "PDF"],
+  ["Protocoles", "Paramètres par phototype", "PDF"],
+  ["Sécurité", "Contre-indications", "5 min"],
+];
+const order = [0, 1, 4, 3, 2, 5, 6, 7, 9, 8, 10, 11]; // ordre de cascade
+for (const [i, [m, t, d]] of L.entries()) {
+  const c = document.createElement("div"); c.className = "lc"; c.id = "lc" + i;
+  c.innerHTML = `<div class="fill"></div><div class="in"><p class="m mono">${m}</p><p class="t">${t}</p></div><div class="bar"><i></i></div>
+    <div class="foot"><span class="dur">${d}</span><span class="ok">✓ Validée</span></div>`;
+  $("#grid").append(c);
+}
+const spLen = $("#sp").getTotalLength(); $("#sp").style.strokeDasharray = spLen;
+
+window.render = (t) => {
+  // A — planning papier
+  const ca = cam(camA, t), A = $("#A");
+  A.style.transform = tf(ca); A.style.filter = `blur(${blurOf(camA, t)}px)`;
+  A.style.opacity = t < 5.6 ? 1 : 0;
+  $("#sp").style.strokeDashoffset = spLen * (1 - e5(p(t, 1.0, 1.6)));
+  const st = e5(p(t, 1.7, 2.0)); $("#stamp").style.opacity = st; $("#stamp").style.transform = `rotate(-10deg) scale(${2.2 - 1.2 * st})`;
+
+  // B — notifications
+  const cb = cam(camB, t), B = $("#B");
+  B.style.transform = tf(cb); B.style.filter = `blur(${blurOf(camB, t)}px)`; B.style.opacity = t < 2.6 || t > 5.6 ? 0 : 1;
+  [["#n1", 2.7], ["#n2", 3.3], ["#n3", 3.9]].forEach(([s, a]) => {
+    const v = e5(p(t, a, a + .4)); $(s).style.opacity = v; $(s).style.transform = `translateY(${(1 - v) * -160}px) scale(${.9 + .1 * v})`; });
+  // le planning recule et se floute sous les notifications
+  if (t > 2.6 && t < 5.5) A.style.filter = `blur(${4 + blurOf(camA, t)}px) saturate(.6)`;
+
+  // éclair de transition
+  $("#flash").style.opacity = Math.max(0, 1 - Math.abs(t - 5.5) / .18) * .55 + Math.max(0, 1 - Math.abs(t - 13.4) / .16) * .45;
+
+  // C — leçons validées en cascade
+  const cc = cam(camC, t), C = $("#C");
+  C.style.transform = tf(cc); C.style.filter = `blur(${blurOf(camC, t)}px)` + (t > 13.2 ? ` blur(${p(t, 13.2, 13.8) * 14}px)` : "");
+  C.style.opacity = t < 5.2 ? 0 : 1 - p(t, 15.6, 16.2);
+  L.forEach((_, i) => {
+    const r = order.indexOf(i), c = $("#lc" + i);
+    const barA = i === 0 ? 6.2 : 9.7 + r * .2, barB = i === 0 ? 8.0 : barA + .35, okT = barB + .05;
+    c.querySelector(".bar i").style.width = (eo(p(t, barA, barB)) * 100) + "%";
+    const ok = e5(p(t, okT, okT + .3));
+    c.querySelector(".ok").style.opacity = ok; c.querySelector(".ok").style.transform = `scale(${1.6 - .6 * ok})`;
+    c.querySelector(".fill").style.opacity = eo(p(t, okT + .05, okT + .35));
+    c.classList.toggle("done", t > okT + .15);
+    c.style.transform = `translateZ(${Math.sin(t * 1.3 + i) * 10 + (1 - e5(p(t, okT, okT + .3))) * (t > okT ? 60 : 0)}px)`;
+  });
+
+  // D — compteurs (au-dessus de la grille floutée)
+  const D = $("#D"), dv = t < 13.1 ? 0 : 1 - p(t, 15.6, 16.1);
+  D.style.opacity = dv;
+  D.style.transform = `translateY(${(1 - e5(p(t, 13.1, 13.6))) * 220}px) rotateX(${(1 - e5(p(t, 13.1, 13.6))) * 25}deg) scale(${1 + p(t, 13.6, 16) * .04})`;
+  $("#n-lec").textContent = Math.round(eo(p(t, 13.4, 14.6)) * 12);
+  $("#n-km").textContent = Math.round((1 - eo(p(t, 13.6, 14.9))) * 380);
+  $("#c2").style.transform = `translateY(${(1 - e5(p(t, 13.35, 13.85))) * 160}px)`; $("#c2").style.opacity = e5(p(t, 13.35, 13.85));
+
+  // E — recul sur le produit, logo et appel à l'avant-première
+  const E = $("#E"), ev = e5(p(t, 15.9, 16.6));
+  E.style.opacity = ev;
+  const ps = lerp(2.6, .66, e5(p(t, 15.9, 17.0)));
+  $("#phone").style.transform = `translateY(${lerp(-180, -130, e5(p(t, 15.9, 17.0))) + Math.sin(t * 1.2) * 6}px) scale(${ps}) rotateX(${lerp(18, 0, e5(p(t, 15.9, 17.2)))}deg)`;
+  $("#phone").style.filter = `blur(${(1 - e5(p(t, 15.9, 16.5))) * 10}px)`;
+  const bv = e5(p(t, 16.7, 17.3)); $("#brand").style.opacity = bv; $("#brand").style.transform = `translateY(${(1 - bv) * -50}px) scale(${.9 + .1 * bv})`;
+  const kv = e5(p(t, 17.3, 17.8)); $("#cta").style.opacity = kv; $("#cta").style.transform = `translateX(-50%) translateY(${(1 - kv) * 60}px) scale(${.9 + .1 * kv + Math.max(0, Math.sin((t - 18) * 4)) * .03 * (t > 18)})`;
+  const k2 = e5(p(t, 17.7, 18.2)); $("#cta2").style.opacity = k2;
+
+  // légende fixe : tout le film, puis s'efface sur la fin
+  $("#hook").style.opacity = t < .2 ? 0 : 1 - p(t, 16.0, 16.4);
+};
+window.render(0);
+</script>
+</body>
+</html>

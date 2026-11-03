@@ -1,5 +1,7 @@
 # Teaser LIFT by CELLULIFT Academy
 
+- `lift-motion-muet.mp4` : **version motion design** (21,5 s, 9:16), sur le modèle d'une pub « interface en 3D » : caméra plongeante, flou de mouvement, cartes qui se valident en cascade, compteurs. Problème (planning présentiel barré, notifications « 12 patients à reporter », « 3 h 10 de trajet », « session complète ») → solution (leçons validées, 12 leçons / 0 km) → recul sur l'appli → LIFT + « Rejoindre l'avant-première ». Source : `source/motion.html`, rendu `source/mrender.js`.
+
 - `lift-teaser-muet.mp4` : 31 s, 1080×1920 (9:16), sans voix. Fin sur l'appel à l'avant-première (`/academy/avant-premiere`).
 - `source/index.html` : l'animation (fonction `render(t)` pilotée image par image) ; `source/render.js` capture 30 images/s avec Playwright, puis :
   `ffmpeg -framerate 30 -i frames/f%04d.jpg -c:v libx264 -crf 18 -pix_fmt yuv420p lift-teaser-muet.mp4`
