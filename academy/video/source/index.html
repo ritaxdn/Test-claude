@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>LIFT teaser</title>
+<link rel="stylesheet" href="fonts.css">
+<style>
+  :root { --pearl:#ECEEF3; --deep:#1d1b26; --soft:#5d5b6b;
+    --rb: linear-gradient(90deg,#00BCD4,#7B61FF,#E91E8C,#FF5722,#FFC107); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { width:1080px; height:1920px; overflow:hidden; background:var(--pearl); }
+  #stage { position:relative; width:1080px; height:1920px; overflow:hidden; background:var(--pearl);
+    font-family:"Instrument Sans",sans-serif; color:var(--deep); }
+  .abs { position:absolute; }
+  .blob { position:absolute; border-radius:50%; filter:blur(120px); opacity:.55; }
+  .display { font-family:Archivo,sans-serif; font-stretch:118%; font-weight:600; letter-spacing:-.035em; line-height:.95; text-transform:uppercase; }
+  .mono { font-family:"JetBrains Mono",monospace; letter-spacing:.18em; text-transform:uppercase; }
+  .rb-text { background:var(--rb); -webkit-background-clip:text; background-clip:text; color:transparent; }
+
+  /* Intro */
+  #intro { inset:0; }
+  #intro img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  #intro .veil { position:absolute; inset:0; background:linear-gradient(180deg,rgba(236,238,243,.55),rgba(236,238,243,.92) 62%,#ECEEF3); }
+  #intro .lines { position:absolute; left:90px; right:90px; bottom:360px; }
+  #intro .line { font-size:86px; margin-top:26px; }
+
+  /* Logo */
+  #logo { left:0; right:0; top:0; height:1920px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .lift { font-family:Archivo,sans-serif; font-weight:800; font-stretch:125%; font-size:260px; letter-spacing:-.04em; line-height:.9; }
+  .by { font-family:"Cormorant Garamond",serif; font-size:58px; letter-spacing:.06em; margin-top:26px; color:var(--deep); }
+  .by b { font-weight:500; letter-spacing:.28em; }
+  .ecg { width:640px; height:80px; margin-top:24px; }
+
+  /* Téléphone */
+  #phone { left:240px; top:600px; width:600px; height:1266px; border-radius:86px; padding:14px;
+    background:linear-gradient(145deg,#fdfdff,#d9dbe4); box-shadow:0 60px 120px -40px rgba(29,27,38,.45), inset 0 0 0 2px rgba(255,255,255,.9), 0 0 0 1px rgba(29,27,38,.12); }
+  #screen { position:relative; width:572px; height:1238px; border-radius:72px; overflow:hidden; background:#eceef3; }
+  #screen img { position:absolute; left:0; top:58px; width:572px; transform-origin:50% 0; }
+  #island { position:absolute; left:50%; top:22px; width:150px; height:42px; margin-left:-75px; border-radius:30px; background:#111; z-index:5; }
+
+  /* Légendes */
+  .cap { left:90px; right:90px; top:150px; }
+  .cap .eb { font-size:26px; color:var(--soft); }
+  .cap .t { font-size:76px; margin-top:22px; }
+
+  /* Cartes flottantes */
+  .card { position:absolute; border-radius:44px; overflow:hidden; background:#fff;
+    box-shadow:0 50px 100px -30px rgba(29,27,38,.40), 0 0 0 1px rgba(29,27,38,.06); }
+  .card img { display:block; width:100%; }
+
+  #soon { inset:0; display:flex; align-items:center; justify-content:center; }
+  #soon .s { font-size:190px; }
+
+  /* Fin */
+  #end { inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+  #end .pill { margin-top:70px; font-size:28px; padding:16px 30px; border-radius:999px; border:2px solid transparent;
+    background:linear-gradient(#f7f8fb,#f7f8fb) padding-box, var(--rb) border-box; }
+  #end .claim { font-size:70px; margin-top:60px; max-width:900px; }
+  #end .cta { margin-top:70px; font-size:40px; font-weight:500; background:var(--deep); color:#fff; padding:34px 58px; border-radius:999px; }
+  #end .url { margin-top:36px; font-size:30px; color:var(--soft); }
+  #end .note { position:absolute; bottom:120px; font-size:22px; color:var(--soft); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="blob" id="b1" style="width:900px;height:900px;background:#7B61FF;left:-300px;top:-200px"></div>
+  <div class="blob" id="b2" style="width:800px;height:800px;background:#00BCD4;right:-320px;top:700px"></div>
+  <div class="blob" id="b3" style="width:700px;height:700px;background:#E91E8C;left:-200px;bottom:-260px;opacity:.35"></div>
+
+  <div id="intro" class="abs">
+    <img src="img/hanover-5g.jpg" alt="">
+    <div class="veil"></div>
+    <div class="lines">
+      <p class="mono" id="i0" style="font-size:26px;color:var(--soft)">Cabinet · 8 h 30</p>
+      <p class="display line" id="i1">Une nouvelle machine.</p>
+      <p class="display line" id="i2">Des réglages à maîtriser.</p>
+      <p class="display line" id="i3">Vos patients <span class="rb-text">attendent.</span></p>
+    </div>
+  </div>
+
+  <div id="logo" class="abs">
+    <div class="lift rb-text" id="lift">LIFT</div>
+    <svg class="ecg" viewBox="0 0 160 20" fill="none"><defs><linearGradient id="g" x1="0" y1="0" x2="160" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#00BCD4"/><stop offset=".25" stop-color="#7B61FF"/><stop offset=".5" stop-color="#E91E8C"/><stop offset=".75" stop-color="#FF5722"/><stop offset="1" stop-color="#FFC107"/></linearGradient></defs>
+      <path id="ecgp" d="M0 10 H50 L58 10 L64 2 L72 18 L80 6 L86 10 H100 L106 10 L112 4 L118 16 L124 10 H160" stroke="url(#g)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div class="by" id="by">by <b>CELLULIFT</b> Academy</div>
+  </div>
+
+  <div id="caps"></div>
+
+  <div id="phone" class="abs"><div id="screen"><div id="island"></div></div></div>
+  <div id="cards"></div>
+
+  <div id="soon" class="abs"><div class="display s rb-text">Bientôt.</div></div>
+
+  <div id="end" class="abs">
+    <div class="lift rb-text" style="font-size:200px">LIFT</div>
+    <div class="by" style="font-size:48px">by <b>CELLULIFT</b> Academy</div>
+    <div class="pill mono">Avant-première</div>
+    <div class="display claim">La formation de vos machines, sur votre téléphone.</div>
+    <div class="cta">Rejoindre la liste d'attente →</div>
+    <div class="url mono">cellulift.ma</div>
+    <div class="note mono">Formation réservée aux machines CELLULIFT</div>
+  </div>
+</div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const cl = (x) => Math.max(0, Math.min(1, x));
+const p = (t, a, b) => cl((t - a) / (b - a));
+const eo = (x) => 1 - Math.pow(1 - x, 3);
+const eio = (x) => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+// Visibilité d'une fenêtre [a, b] avec fondus d'entrée et de sortie
+const win = (t, a, b, fi = .4, fo = .4) => Math.min(eo(p(t, a, a + fi)), 1 - eio(p(t, b - fo, b)));
+
+// Écrans du téléphone et légendes, dans l'ordre du parcours médecin
+const SEG = [
+  { a: 5.8, b: 8.3, eb: "LIFT · Ma formation", t: 'La formation de vos machines, <span class="rb-text">sur votre téléphone.</span>', img: "m2-tableau-de-bord.png" },
+  { a: 8.3, b: 11.0, eb: "Mes parcours", t: 'Chaque machine, <span class="rb-text">son parcours.</span>', img: "m3-parcours-cartes.png",
+    card: { img: "m3b-carte-hanover.png", x: 70, y: 1080, w: 620, at: 9.0 } },
+  { a: 11.0, b: 14.0, eb: "Leçons vidéo", t: 'Des vidéos, dans l\'ordre, <span class="rb-text">à votre rythme.</span>', img: "m5-lecon.png",
+    card: { img: "m6b-liste.png", x: 600, y: 940, w: 420, at: 11.8 } },
+  { a: 14.0, b: 16.5, eb: "Vos intervenants", t: 'Présentées par <span class="rb-text">nos experts.</span>', img: "m4-programme.png",
+    card: { img: "m4c-intervenants.png", x: 60, y: 1380, w: 760, at: 14.6 } },
+  { a: 16.5, b: 19.0, eb: "Documents", t: 'Protocoles et documents, <span class="rb-text">à portée de main.</span>', img: "m4b-intervenants-documents.png",
+    card: { img: "m4d-documents.png", x: 260, y: 1330, w: 760, at: 17.1 } },
+  { a: 19.0, b: 21.2, eb: "Progression", t: 'Jusqu\'à la formation <span class="rb-text">terminée.</span>', img: "m7-terminee.png",
+    card: { img: "m7b-carte-terminee.png", x: 90, y: 1010, w: 560, at: 19.5 } },
+];
+for (const [i, s] of SEG.entries()) {
+  const c = document.createElement("div"); c.className = "abs cap"; c.id = "cap" + i;
+  c.innerHTML = `<p class="mono eb">${s.eb}</p><p class="display t">${s.t}</p>`; $("#caps").append(c);
+  const im = document.createElement("img"); im.src = "img/" + s.img; im.id = "scr" + i; $("#screen").append(im);
+  if (s.card) { const k = document.createElement("div"); k.className = "card"; k.id = "card" + i;
+    k.style.left = s.card.x + "px"; k.style.top = s.card.y + "px"; k.style.width = s.card.w + "px";
+    k.innerHTML = `<img src="img/${s.card.img}">`; $("#cards").append(k); }
+}
+const ecgLen = $("#ecgp").getTotalLength();
+$("#ecgp").style.strokeDasharray = ecgLen;
+
+window.render = (t) => {
+  // Fond vivant
+  $("#b1").style.transform = `translate(${Math.sin(t * .35) * 80}px, ${Math.cos(t * .3) * 60}px)`;
+  $("#b2").style.transform = `translate(${Math.cos(t * .28) * 90}px, ${Math.sin(t * .33) * 70}px)`;
+  $("#b3").style.transform = `translate(${Math.sin(t * .22) * 70}px, 0)`;
+
+  // 1. Intro : la tension
+  const iv = 1 - eio(p(t, 3.0, 3.5));
+  $("#intro").style.opacity = iv;
+  $("#intro img").style.transform = `scale(${1.08 + t * .02})`;
+  [["#i0", .1], ["#i1", .3], ["#i2", 1.2], ["#i3", 2.1]].forEach(([s, a]) => {
+    const v = eo(p(t, a, a + .5)); $(s).style.opacity = v; $(s).style.transform = `translateY(${(1 - v) * 40}px)`; });
+
+  // 2. Logo
+  const lv = win(t, 3.4, 5.9, .5, .45);
+  $("#logo").style.opacity = lv;
+  const lp = eo(p(t, 3.5, 4.3));
+  $("#lift").style.transform = `scale(${.86 + .14 * lp})`; $("#lift").style.opacity = lp;
+  $("#ecgp").style.strokeDashoffset = ecgLen * (1 - eio(p(t, 3.7, 4.7)));
+  const bv = eo(p(t, 4.3, 4.9)); $("#by").style.opacity = bv; $("#by").style.transform = `translateY(${(1 - bv) * 20}px)`;
+
+  // 3. Téléphone : entrée, présence, sortie floutée
+  const ph = eo(p(t, 5.7, 6.5)), out = eio(p(t, 21.0, 21.8));
+  $("#phone").style.opacity = Math.min(ph, 1 - out);
+  $("#phone").style.transform = `translateY(${(1 - ph) * 500 + Math.sin(t * 1.1) * 6}px) scale(${1 - out * .06})`;
+  $("#phone").style.filter = `blur(${out * 18}px)`;
+  SEG.forEach((s, i) => {
+    const last = i === SEG.length - 1;
+    const v = i === 0 ? win(t, s.a, s.b, .6, .3) : win(t, s.a + .1, last ? 21.5 : s.b, .4, .3);
+    const c = $("#cap" + i); c.style.opacity = v; c.style.transform = `translateY(${(1 - v) * 30}px)`;
+    // Écran suivant : glisse depuis la droite, comme une navigation dans l'appli
+    const sv = i === 0 ? 1 : eio(p(t, s.a, s.a + .45));
+    const nxt = SEG[i + 1], gone = nxt && t > nxt.a + .45;
+    const im = $("#scr" + i);
+    im.style.opacity = t < s.a || gone ? 0 : 1;
+    im.style.zIndex = i + 1;
+    im.style.transform = `translateX(${(1 - sv) * 572}px) scale(${1 + .03 * p(t, s.a, s.b + .4)})`;
+    if (s.card) {
+      const k = $("#card" + i), kv = Math.min(eo(p(t, s.card.at, s.card.at + .5)), 1 - eio(p(t, s.b - .25, s.b + .1)));
+      k.style.opacity = kv;
+      k.style.transform = `translateY(${(1 - kv) * 60 + Math.sin(t * 1.6 + i) * 6}px) scale(${.9 + .1 * kv}) rotate(${(i % 2 ? 1.2 : -1.2) * kv}deg)`;
+    }
+  });
+
+  // 4. Bientôt
+  const sv = win(t, 21.4, 23.4, .5, .5);
+  $("#soon").style.opacity = sv;
+  $("#soon .s").style.transform = `scale(${.94 + .08 * p(t, 21.4, 23.4)})`;
+  $("#soon .s").style.filter = `blur(${(1 - eo(p(t, 21.4, 22.1))) * 14}px)`;
+
+  // 5. Fin : appel à l'avant-première
+  const ev = eo(p(t, 23.3, 24.0));
+  $("#end").style.opacity = ev;
+  [...$("#end").children].forEach((el, i) => {
+    const v = eo(p(t, 23.4 + i * .18, 23.9 + i * .18)); el.style.opacity = v; el.style.transform = `translateY(${(1 - v) * 30}px)`; });
+};
+window.render(0);
+</script>
+</body>
+</html>
