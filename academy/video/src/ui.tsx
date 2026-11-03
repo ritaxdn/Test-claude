@@ -99,6 +99,7 @@ export const PearlBg: React.FC = () => {
       style={{
         position: "absolute",
         inset: 0,
+        // Fond « void » nacré : seulement les trois halos doux de la charte, sans bulle.
         background: `
           radial-gradient(${s * 0.55}px ${s * 0.4}px at ${(0.92 + dx) * 100}% ${(-0.02 + dy) * 100}%, rgba(123, 97, 255, 0.16), transparent 62%),
           radial-gradient(${s * 0.5}px ${s * 0.4}px at ${(-0.04 - dx) * 100}% ${(0.48 + dy) * 100}%, rgba(0, 188, 212, 0.13), transparent 62%),
@@ -106,19 +107,6 @@ export const PearlBg: React.FC = () => {
           #eceef3`,
       }}
     >
-      {/* Orbe nacré flottant (même dessin que l'écran de connexion de l'app). */}
-      <div
-        style={{
-          position: "absolute",
-          width: s * 0.42,
-          height: s * 0.42,
-          borderRadius: "50%",
-          left: width * 0.62 + Math.sin(f / 70) * 30,
-          top: height * 0.5 - s * 0.21 + Math.cos(f / 80) * 26,
-          background: "radial-gradient(circle at 35% 35%, #fff, rgba(167, 151, 255, 0.28) 40%, rgba(242, 155, 208, 0.18) 62%, transparent 70%)",
-          opacity: 0.8,
-        }}
-      />
     </div>
   );
 };
@@ -184,4 +172,32 @@ export const Caption: React.FC<{ step: string; title: readonly string[]; iri: st
       </h2>
     </div>
   );
+};
+
+/**
+ * Balayage « scan line » de la charte (cyan → violet → magenta, avec un léger voile violet) :
+ * révèle le contenu de haut en bas entre `start` et `start + dur`.
+ */
+export const ScanReveal: React.FC<{ children: React.ReactNode; start: number; dur?: number; radius?: number }> = ({ children, start, dur = 28, radius = 0 }) => {
+  const f = useCurrentFrame();
+  const p = prog(f, start, dur);
+  const y = p * 100;
+  const fade = 1 - prog(f, start + dur - 4, 10);
+  return (
+    <div style={{ position: "relative", borderRadius: radius, overflow: "hidden" }}>
+      <div style={{ clipPath: `inset(0 0 ${100 - y}% 0)` }}>{children}</div>
+      {p > 0 && fade > 0 && (
+        <>
+          <div style={{ position: "absolute", left: 0, right: 0, top: `calc(${y}% - 40px)`, height: 40, background: "linear-gradient(180deg, transparent, rgba(123,97,255,.18))", opacity: fade, pointerEvents: "none" }} />
+          <div style={{ position: "absolute", left: 0, right: 0, top: `${y}%`, height: 2, marginTop: -1, background: "linear-gradient(90deg, #00bcd4, #7b61ff, #e91e8c)", boxShadow: "0 0 12px rgba(123,97,255,.6)", opacity: fade, pointerEvents: "none" }} />
+        </>
+      )}
+    </div>
+  );
+};
+
+/** Mise au point (« focal shift ») : flou → net à l'entrée. */
+export const focus = (frame: number, start: number, dur = 22, amount = 10): React.CSSProperties => {
+  const p = prog(frame, start, dur);
+  return p >= 1 ? {} : { filter: `blur(${(1 - p) * amount}px)` };
 };

@@ -1,7 +1,7 @@
 import React from "react";
 import { AbsoluteFill, Img, interpolate, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import { T } from "./texts";
-import { Caption, clamp, Dot, Iri, Logo, prog, Progress, rise, useTall } from "./ui";
+import { Caption, clamp, Dot, focus, Iri, ScanReveal, Logo, prog, Progress, rise, useTall } from "./ui";
 
 /* ------------------------------------------------------------------ */
 /* Mise en page : 16:9 = légende à gauche, interface à droite ;        */
@@ -56,9 +56,17 @@ const UiBox: React.FC<{ children: React.ReactNode; box: Box; align?: "center" | 
       ...style,
     }}
   >
-    <div style={{ zoom: box.zoom, width: box.width / box.zoom }}>{children}</div>
+    <FocusIn>
+      <div style={{ zoom: box.zoom, width: box.width / box.zoom }}>{children}</div>
+    </FocusIn>
   </div>
 );
+
+/** Mise au point à l'entrée de chaque zone d'interface. */
+const FocusIn: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const f = useCurrentFrame();
+  return <div style={focus(f, 2, 24, 12)}>{children}</div>;
+};
 
 /** Fondu d'entrée / sortie de chaque plan. */
 export const SceneFade: React.FC<{ children: React.ReactNode; out?: boolean }> = ({ children, out = true }) => {
@@ -175,10 +183,14 @@ const InviteCard: React.FC = () => {
   );
 };
 
-const MachineCard: React.FC = () => (
+const MachineCard: React.FC<{ scan: number }> = ({ scan }) => (
   <div className="glass card row" style={{ gap: 18, padding: 16 }}>
-    <div style={{ width: 92, height: 92, borderRadius: 18, overflow: "hidden", flex: "none", background: "#0f1114" }}>
-      <Img src={staticFile(T.machine.photo)} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 30%" }} />
+    <div style={{ width: 92, height: 92, flex: "none" }}>
+      <ScanReveal start={scan} dur={24} radius={18}>
+        <div style={{ width: 92, height: 92, background: "#0f1114" }}>
+          <Img src={staticFile(T.machine.photo)} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 30%" }} />
+        </div>
+      </ScanReveal>
     </div>
     <div className="stack" style={{ gap: 4 }}>
       <span className="mono">{T.machine.family}</span>
@@ -244,7 +256,7 @@ export const SceneDashboard: React.FC = () => {
               Mes machines
             </span>
             <div style={{ ...rise(f, 82, 28, 34), transform: `${rise(f, 82, 28, 34).transform} scale(${0.97 + 0.03 * prog(f, 82, 28)})` }}>
-              <MachineCard />
+              <MachineCard scan={92} />
             </div>
             <span className="eyebrow" style={{ ...rise(f, 92, 20), marginTop: 6 }}>
               Mes parcours
@@ -369,7 +381,9 @@ export const SceneLesson: React.FC = () => {
           {tall ? (
             <div className="stack" style={{ gap: 18 }}>
               <div style={rise(f, 6, 30, 40)}>
-                <Player t={watch} />
+                <ScanReveal start={8} dur={32} radius={22}>
+                  <Player t={watch} />
+                </ScanReveal>
               </div>
               {head}
               {list}
@@ -378,7 +392,9 @@ export const SceneLesson: React.FC = () => {
             <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) 290px", gap: 20, alignItems: "start" }}>
               <div className="stack" style={{ gap: 18 }}>
                 <div style={rise(f, 6, 30, 40)}>
-                  <Player t={watch} />
+                  <ScanReveal start={8} dur={32} radius={22}>
+                    <Player t={watch} />
+                  </ScanReveal>
                 </div>
                 {head}
               </div>
