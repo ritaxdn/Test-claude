@@ -201,3 +201,55 @@ export const focus = (frame: number, start: number, dur = 22, amount = 10): Reac
   const p = prog(frame, start, dur);
   return p >= 1 ? {} : { filter: `blur(${(1 - p) * amount}px)` };
 };
+
+/**
+ * Motion graphic de transition : une ligne arc-en-ciel lumineuse balaie l'écran
+ * (placée à cheval sur chaque changement de plan).
+ */
+export const Wipe: React.FC = () => {
+  const f = useCurrentFrame();
+  const { width, durationInFrames } = useVideoConfig();
+  const p = interpolate(f, [0, durationInFrames], [0, 1], { ...clamp, easing: Easing.bezier(0.65, 0, 0.35, 1) });
+  const x = -0.1 * width + p * 1.2 * width;
+  const o = Math.sin(p * Math.PI);
+  return (
+    <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 50, opacity: o }}>
+      <div style={{ position: "absolute", top: 0, bottom: 0, left: x - 160, width: 160, background: "linear-gradient(90deg, transparent, rgba(123,97,255,.10))" }} />
+      <div style={{ position: "absolute", top: 0, bottom: 0, left: x, width: 3, background: "linear-gradient(180deg, #00bcd4, #7b61ff 30%, #e91e8c 60%, #ff5722 85%, #ffc107)", boxShadow: "0 0 24px rgba(123,97,255,.7), 0 0 60px rgba(233,30,140,.35)" }} />
+    </div>
+  );
+};
+
+/** Éclat : traits arc-en-ciel qui jaillissent autour du parent (position: relative requise). */
+export const Burst: React.FC<{ start: number; radius?: number; rays?: number }> = ({ start, radius = 34, rays = 10 }) => {
+  const f = useCurrentFrame();
+  const d = f - start;
+  if (d < 0 || d > 22) return null;
+  const p = prog(f, start, 18);
+  const colors = ["#00bcd4", "#7b61ff", "#e91e8c", "#ff5722", "#ffc107"];
+  return (
+    <span style={{ position: "absolute", left: "50%", top: "50%", width: 0, height: 0, pointerEvents: "none", zIndex: 4 }}>
+      {Array.from({ length: rays }).map((_, i) => {
+        const a = (i / rays) * Math.PI * 2 + 0.3;
+        const r0 = radius * (0.6 + 0.6 * p);
+        const len = 24 * (1 - p) + 4;
+        return (
+          <span
+            key={i}
+            style={{
+              position: "absolute",
+              left: Math.cos(a) * r0,
+              top: Math.sin(a) * r0,
+              width: len,
+              height: 4,
+              borderRadius: 2,
+              background: colors[i % colors.length],
+              transform: `translate(-50%, -50%) rotate(${a}rad)`,
+              opacity: 1 - p,
+            }}
+          />
+        );
+      })}
+    </span>
+  );
+};

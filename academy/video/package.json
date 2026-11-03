@@ -4,9 +4,10 @@
   "version": "1.0.0",
   "description": "Vidéo publicitaire animée de CELLULIFT Academy (Remotion).",
   "scripts": {
-    "studio": "remotion studio src/index.ts",
-    "render:16x9": "remotion render src/index.ts Academy16x9 out/academy-pub-16x9.mp4",
-    "render:9x16": "remotion render src/index.ts Academy9x16 out/academy-pub-9x16.mp4",
+    "studio": "npm run audio && remotion studio src/index.ts",
+    "audio": "python3 scripts/make-audio.py",
+    "render:16x9": "npm run audio && remotion render src/index.ts Academy16x9 out/academy-pub-16x9.mp4",
+    "render:9x16": "npm run audio && remotion render src/index.ts Academy9x16 out/academy-pub-9x16.mp4",
     "render": "npm run render:16x9 && npm run render:9x16",
     "stills": "node scripts/stills.mjs",
     "typecheck": "tsc --noEmit"

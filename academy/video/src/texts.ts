@@ -76,8 +76,9 @@ export const T = {
 } as const;
 
 /**
- * Musique : déposez un fichier libre de droits fourni par CELLULIFT dans
- * public/audio/ puis indiquez son nom ici (ex. "audio/musique.mp3").
- * null = piste son vide.
+ * Musique : par défaut, la nappe synthétisée public/audio/music.wav (scripts/make-audio.py).
+ * Pour la remplacer par une musique libre de droits fournie par CELLULIFT, déposez le fichier
+ * dans public/audio/ et indiquez son nom ici (ex. "audio/musique.mp3"). Idéalement 120 BPM :
+ * les changements de plan tombent alors sur les temps.
  */
 export const MUSIC_FILE: string | null = null;

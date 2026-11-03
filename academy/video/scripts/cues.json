@@ -1,0 +1,52 @@
+{
+  "_doc": "Repères des bruitages en secondes (début du plan + image locale / 30). Plans : logo 0, accroche 2.5, invitation 5, tableau de bord 9.5, leçon 13.5, PDF 18.5, admin 22.5, signature 26.5.",
+  "typing": { "from": 6.6, "to": 7.33, "count": 12 },
+  "cues": [
+    { "t": 0.0, "sfx": "whoosh", "gain": 0.5 },
+    { "t": 0.2, "sfx": "shimmer", "gain": 1.0 },
+    { "t": 1.13, "sfx": "pop_low", "gain": 0.6 },
+
+    { "t": 2.4, "sfx": "whoosh", "gain": 0.7, "pan": -0.3 },
+    { "t": 2.5, "sfx": "pop_low", "gain": 0.45 },
+    { "t": 3.63, "sfx": "whoosh_down", "gain": 0.5 },
+    { "t": 3.77, "sfx": "pop", "gain": 0.45 },
+    { "t": 3.87, "sfx": "glass", "gain": 0.6 },
+
+    { "t": 4.9, "sfx": "whoosh", "gain": 0.8, "pan": 0.3 },
+    { "t": 5.6, "sfx": "pop", "gain": 0.8 },
+    { "t": 6.533, "sfx": "click", "gain": 0.9 },
+    { "t": 7.933, "sfx": "click", "gain": 1.0 },
+    { "t": 8.067, "sfx": "glass", "gain": 0.8 },
+
+    { "t": 9.4, "sfx": "whoosh", "gain": 0.8, "pan": -0.3 },
+    { "t": 10.233, "sfx": "pop", "gain": 0.8, "pan": -0.3 },
+    { "t": 10.5, "sfx": "shimmer", "gain": 0.6 },
+    { "t": 10.833, "sfx": "pop_high", "gain": 0.7, "pan": 0.3 },
+    { "t": 12.733, "sfx": "click", "gain": 1.0 },
+
+    { "t": 13.4, "sfx": "whoosh", "gain": 0.8, "pan": 0.3 },
+    { "t": 13.833, "sfx": "pop_low", "gain": 0.8 },
+    { "t": 14.033, "sfx": "shimmer", "gain": 0.8 },
+    { "t": 14.633, "sfx": "pop", "gain": 0.6, "pan": -0.3 },
+    { "t": 15.167, "sfx": "pop_high", "gain": 0.6, "pan": 0.3 },
+    { "t": 17.1, "sfx": "glass", "gain": 0.8 },
+
+    { "t": 18.4, "sfx": "whoosh", "gain": 0.8, "pan": -0.3 },
+    { "t": 18.633, "sfx": "pop", "gain": 0.7, "pan": -0.3 },
+    { "t": 18.9, "sfx": "pop_low", "gain": 0.7, "pan": 0.3 },
+    { "t": 18.967, "sfx": "pop_high", "gain": 0.4, "pan": -0.3 },
+    { "t": 19.2, "sfx": "pop_high", "gain": 0.4, "pan": -0.3 },
+    { "t": 19.833, "sfx": "glass", "gain": 0.55 },
+    { "t": 19.9, "sfx": "click", "gain": 0.7 },
+    { "t": 20.7, "sfx": "glass", "gain": 0.6 },
+    { "t": 21.3, "sfx": "glass_big", "gain": 1.0 },
+
+    { "t": 22.4, "sfx": "whoosh", "gain": 0.8, "pan": 0.3 },
+    { "t": 23.633, "sfx": "pop", "gain": 0.8 },
+    { "t": 23.95, "sfx": "glass", "gain": 0.5 },
+
+    { "t": 25.5, "sfx": "riser", "gain": 0.9 },
+    { "t": 26.5, "sfx": "impact", "gain": 1.0 },
+    { "t": 26.57, "sfx": "shimmer", "gain": 1.2 }
+  ]
+}

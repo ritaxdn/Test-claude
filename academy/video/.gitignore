@@ -1,3 +1,5 @@
 node_modules/
 out/
 stills/
+public/audio/sfx.wav
+public/audio/music.wav
