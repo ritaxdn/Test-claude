@@ -71,13 +71,14 @@
     <img src="img/hanover-5g.jpg" alt="">
     <div class="veil"></div>
     <div class="lines">
-      <p class="mono" id="i0" style="font-size:26px;color:var(--soft)">Cabinet · 8 h 30</p>
-      <p class="display line" id="i1">Une nouvelle machine.</p>
-      <p class="display line" id="i2">Des réglages à maîtriser.</p>
-      <p class="display line" id="i3">Vos patients <span class="rb-text">attendent.</span></p>
+      <p class="mono" id="i0" style="font-size:26px;color:var(--soft)">Mardi · cabinet fermé</p>
+      <p class="display line" id="i1">Fermer votre cabinet une journée.</p>
+      <p class="display line" id="i2">Traverser la ville.</p>
+      <p class="display line" id="i3">Pour une formation au <span class="rb-text">mauvais moment.</span></p>
     </div>
   </div>
 
+  <div id="ask" class="abs" style="inset:0;display:flex;align-items:center;justify-content:center;padding:0 90px"><p class="display" style="font-size:104px;text-align:center">Et si la formation <span class="rb-text">venait à vous ?</span></p></div>
   <div id="logo" class="abs">
     <div class="lift rb-text" id="lift">LIFT</div>
     <svg class="ecg" viewBox="0 0 160 20" fill="none"><defs><linearGradient id="g" x1="0" y1="0" x2="160" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#00BCD4"/><stop offset=".25" stop-color="#7B61FF"/><stop offset=".5" stop-color="#E91E8C"/><stop offset=".75" stop-color="#FF5722"/><stop offset="1" stop-color="#FFC107"/></linearGradient></defs>
@@ -90,14 +91,14 @@
   <div id="phone" class="abs"><div id="screen"><div id="island"></div></div></div>
   <div id="cards"></div>
 
-  <div id="soon" class="abs"><div class="display s rb-text">Bientôt.</div></div>
+  <div id="soon" class="abs"><div style="text-align:center"><p class="mono" style="font-size:28px;color:var(--soft)">Clients CELLULIFT</p><div class="display s rb-text" style="font-size:150px;margin-top:30px">Incluse.</div></div></div>
 
   <div id="end" class="abs">
     <div class="lift rb-text" style="font-size:200px">LIFT</div>
     <div class="by" style="font-size:48px">by <b>CELLULIFT</b> Academy</div>
-    <div class="pill mono">Avant-première</div>
-    <div class="display claim">La formation de vos machines, sur votre téléphone.</div>
-    <div class="cta">Rejoindre la liste d'attente →</div>
+    <div class="pill mono">Avant-première · Bientôt</div>
+    <div class="display claim">La formation vient à vous.</div>
+    <div class="cta">Les inscrits entrent en premier →</div>
     <div class="url mono">cellulift.ma</div>
     <div class="note mono">Formation réservée aux machines CELLULIFT</div>
   </div>
@@ -114,14 +115,14 @@ const win = (t, a, b, fi = .4, fo = .4) => Math.min(eo(p(t, a, a + fi)), 1 - eio
 
 // Écrans du téléphone et légendes, dans l'ordre du parcours médecin
 const SEG = [
-  { a: 5.8, b: 8.3, eb: "LIFT · Ma formation", t: 'La formation de vos machines, <span class="rb-text">sur votre téléphone.</span>', img: "m2-tableau-de-bord.png" },
-  { a: 8.3, b: 11.0, eb: "Mes parcours", t: 'Chaque machine, <span class="rb-text">son parcours.</span>', img: "m3-parcours-cartes.png",
+  { a: 5.8, b: 8.3, eb: "LIFT · En ligne", t: 'Les formations de vos machines, <span class="rb-text">sur votre téléphone.</span>', img: "m2-tableau-de-bord.png" },
+  { a: 8.3, b: 11.0, eb: "Mes parcours", t: 'Quand vous voulez. <span class="rb-text">Où vous voulez.</span>', img: "m3-parcours-cartes.png",
     card: { img: "m3b-carte-hanover.png", x: 70, y: 1080, w: 620, at: 9.0 } },
-  { a: 11.0, b: 14.0, eb: "Leçons vidéo", t: 'Des vidéos, dans l\'ordre, <span class="rb-text">à votre rythme.</span>', img: "m5-lecon.png",
+  { a: 11.0, b: 14.0, eb: "Leçons vidéo", t: 'Des vidéos courtes, <span class="rb-text">à votre rythme.</span>', img: "m5-lecon.png",
     card: { img: "m6b-liste.png", x: 600, y: 940, w: 420, at: 11.8 } },
-  { a: 14.0, b: 16.5, eb: "Vos intervenants", t: 'Présentées par <span class="rb-text">nos experts.</span>', img: "m4-programme.png",
+  { a: 14.0, b: 16.5, eb: "Vos intervenants", t: 'Nos experts, <span class="rb-text">à vos côtés.</span>', img: "m4-programme.png",
     card: { img: "m4c-intervenants.png", x: 60, y: 1380, w: 760, at: 14.6 } },
-  { a: 16.5, b: 19.0, eb: "Documents", t: 'Protocoles et documents, <span class="rb-text">à portée de main.</span>', img: "m4b-intervenants-documents.png",
+  { a: 16.5, b: 19.0, eb: "Documents", t: 'Des protocoles <span class="rb-text">clairs.</span>', img: "m4b-intervenants-documents.png",
     card: { img: "m4d-documents.png", x: 260, y: 1330, w: 760, at: 17.1 } },
   { a: 19.0, b: 21.2, eb: "Progression", t: 'Jusqu\'à la formation <span class="rb-text">terminée.</span>', img: "m7-terminee.png",
     card: { img: "m7b-carte-terminee.png", x: 90, y: 1010, w: 560, at: 19.5 } },
@@ -137,7 +138,7 @@ for (const [i, s] of SEG.entries()) {
 const ecgLen = $("#ecgp").getTotalLength();
 $("#ecgp").style.strokeDasharray = ecgLen;
 
-window.render = (t) => {
+const base = (t) => {
   // Fond vivant
   $("#b1").style.transform = `translate(${Math.sin(t * .35) * 80}px, ${Math.cos(t * .3) * 60}px)`;
   $("#b2").style.transform = `translate(${Math.cos(t * .28) * 90}px, ${Math.sin(t * .33) * 70}px)`;
@@ -192,6 +193,15 @@ window.render = (t) => {
   $("#end").style.opacity = ev;
   [...$("#end").children].forEach((el, i) => {
     const v = eo(p(t, 23.4 + i * .18, 23.9 + i * .18)); el.style.opacity = v; el.style.transform = `translateY(${(1 - v) * 30}px)`; });
+};
+// Nouveau script : intro plus longue, puis « Et si la formation venait à vous ? » avant le logo.
+window.render = (t) => {
+  const tb = t < 4.4 ? t * 0.68 : t < 6.6 ? 2.99 : t - 3.2;
+  base(tb);
+  $("#intro").style.opacity = 1 - eio(p(t, 4.2, 4.7));
+  const av = win(t, 4.5, 6.8, .5, .4);
+  $("#ask").style.opacity = av;
+  $("#ask p").style.transform = `scale(${.95 + .05 * eo(p(t, 4.5, 6.8))})`;
 };
 window.render(0);
 </script>

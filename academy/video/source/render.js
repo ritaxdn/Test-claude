@@ -1,5 +1,5 @@
 const { chromium } = require('/opt/node22/lib/node_modules/playwright');
-const fs=require('fs'); const FPS=30, DUR=27.5; fs.mkdirSync(__dirname+'/frames',{recursive:true});
+const fs=require('fs'); const FPS=30, DUR=31; fs.mkdirSync(__dirname+'/frames',{recursive:true});
 (async()=>{ const b=await chromium.launch(); const p=await b.newPage({viewport:{width:1080,height:1920}});
   await p.goto('file://'+__dirname+'/index.html'); await p.evaluate(()=>document.fonts.ready); await p.waitForTimeout(500);
   const N=Math.round(FPS*DUR);
