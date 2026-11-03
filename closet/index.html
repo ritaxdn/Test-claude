@@ -1,0 +1,247 @@
+<title>Mon Dressing</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Figtree:wght@400;500;600&display=swap">
+<style>
+/* Layout: a boutique catalogue — quiet header, category rail, white product tiles in a 4/3/2 grid, side drawer for the product sheet. */
+:root{
+  --bg:#fbfaf9; --tile:#ffffff; --ink:#1c1a1b; --muted:#77706f; --line:#e7e2df;
+  --accent:#8a1f3d; --accent-ink:#ffffff; --chip:#f1edea; --shadow:rgba(28,26,27,.08);
+  --display:"Bodoni Moda",Didot,"Times New Roman",serif;
+  --body:"Figtree",ui-sans-serif,system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141213; --tile:#ffffff; --ink:#f2eeec; --muted:#a59d9b; --line:#2e2a2b;
+  --accent:#e27b98; --accent-ink:#1c1a1b; --chip:#221f20; --shadow:rgba(0,0,0,.4); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141213; --tile:#ffffff; --ink:#f2eeec; --muted:#a59d9b; --line:#2e2a2b;
+  --accent:#e27b98; --accent-ink:#1c1a1b; --chip:#221f20; --shadow:rgba(0,0,0,.4); color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
+.wrap{max-width:1240px;margin:0 auto}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;padding-block:40px 24px;border-bottom:1px solid var(--line)}
+.brand small{display:block;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(34px,6vw,58px);line-height:1;margin:6px 0 0;letter-spacing:-.01em;text-wrap:balance}
+h1 em{font-style:italic;color:var(--accent)}
+.btn{border:1px solid var(--ink);background:var(--ink);color:var(--bg);padding:11px 20px;border-radius:999px;font-weight:500;font-size:14px;letter-spacing:.02em}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.danger{background:transparent;color:var(--accent);border-color:var(--accent)}
+.btn:disabled{opacity:.45;cursor:default}
+
+.tools{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding-block:20px 8px}
+.cats{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;max-width:100%}
+.cats button{border:0;background:transparent;padding:8px 12px;border-radius:999px;white-space:nowrap;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.cats button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.cats sup{font-size:10px;margin-left:3px;font-variant-numeric:tabular-nums}
+.side{display:flex;gap:8px;flex-wrap:wrap}
+.side input,.side select{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:8px 14px;font-size:13px;min-width:0}
+.side input{width:180px}
+
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px 20px;padding-block:20px}
+@media (max-width:980px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:640px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 12px}.side input{width:140px}}
+.card{position:relative;display:flex;flex-direction:column;gap:10px;text-align:left;border:0;background:none;padding:0}
+.ph{position:relative;aspect-ratio:4/5;max-width:100%;background:var(--tile);overflow:hidden;display:grid;place-items:center;transition:box-shadow .25s}
+.ph img{width:100%;height:100%;object-fit:contain;transition:transform .4s ease}
+.card:hover .ph{box-shadow:0 10px 30px var(--shadow)}
+.card:hover .ph img{transform:scale(1.04)}
+.meta{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.meta b{font-weight:500;font-size:14px;line-height:1.3}
+.meta span{font-size:12px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.sub{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:-6px}
+.fav{position:absolute;top:8px;right:8px;width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.9);display:grid;place-items:center;color:#1c1a1b}
+.fav[aria-pressed="true"] svg{fill:#8a1f3d;stroke:#8a1f3d}
+.tag{position:absolute;left:8px;top:8px;background:#1c1a1b;color:#fff;font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:4px 8px}
+
+.empty{padding:80px 0;text-align:center;color:var(--muted)}
+.empty h2{font-family:var(--display);font-weight:400;font-size:30px;color:var(--ink);margin:0 0 8px}
+
+/* drawer */
+.scrim{position:fixed;inset:0;background:rgba(20,18,19,.45);z-index:20}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(520px,100%);background:var(--bg);z-index:21;overflow-y:auto;
+  padding:calc(20px + env(safe-area-inset-top,0px)) max(24px,env(safe-area-inset-right,0px)) calc(28px + env(safe-area-inset-bottom,0px)) 24px;
+  display:flex;flex-direction:column;gap:18px;box-shadow:-20px 0 60px var(--shadow)}
+.dhead{display:flex;justify-content:space-between;align-items:center}
+.dhead small{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.x{border:0;background:none;font-size:26px;line-height:1;padding:4px 8px}
+.big{background:var(--tile);aspect-ratio:1;max-width:100%;display:grid;place-items:center;position:relative}
+.big img{width:100%;height:100%;object-fit:contain}
+.big .noimg{color:#77706f;font-size:13px}
+.drawer h2{font-family:var(--display);font-weight:400;font-size:32px;line-height:1.1;margin:0}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);border-block:1px solid var(--line)}
+.stats div{padding:12px 0;display:flex;flex-direction:column;gap:2px}
+.stats div+div{padding-left:14px;border-left:1px solid var(--line)}
+.stats b{font-family:var(--display);font-size:24px;font-weight:400;font-variant-numeric:tabular-nums}
+.stats span{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{display:flex;flex-direction:column;gap:4px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);min-width:0}
+label.full{grid-column:1/-1}
+form input,form select,form textarea{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:10px 12px;font-size:14px;text-transform:none;letter-spacing:0;color:var(--ink);width:100%}
+form textarea{min-height:70px;resize:vertical}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.note{font-size:12px;color:var(--muted)}
+.confirm{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:var(--chip);padding:10px 12px;border-radius:8px;font-size:13px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(24px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:13px;z-index:30}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <small id="count">Ma garde-robe</small>
+      <h1>Le <em>Dressing</em></h1>
+    </div>
+    <button class="btn" id="addBtn" hidden>+ Ajouter une pièce</button>
+  </header>
+
+  <div class="tools">
+    <nav class="cats" id="cats" aria-label="Catégories"></nav>
+    <div class="side">
+      <input id="q" type="search" placeholder="Rechercher…" aria-label="Rechercher">
+      <select id="sort" aria-label="Trier">
+        <option value="new">Nouveautés</option>
+        <option value="most">Les plus portées</option>
+        <option value="least">À reporter</option>
+        <option value="fav">Favoris d'abord</option>
+      </select>
+    </div>
+  </div>
+
+  <main id="grid" class="grid" aria-live="polite"></main>
+  <div id="empty" class="empty">
+    <h2>Ouverture du dressing…</h2>
+    <p>Tes pièces apparaissent ici dès qu'elles sont chargées. Ajoute une pièce avec sa photo pour commencer.</p>
+  </div>
+</div>
+
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" hidden aria-modal="true" role="dialog" aria-labelledby="dTitle"></aside>
+<div class="toast" id="toast" hidden></div>
+<input type="file" id="file" accept="image/*" hidden>
+
+<script>
+const CATS=["Bottes","Talons","Mules & sandales","Plats","Sneakers","Sacs","Accessoires"];
+const COLORS=["Noir","Blanc","Beige","Marron","Doré","Argenté","Rose","Rouge","Bleu","Vert","Multicolore"];
+const SEASONS=["Toute l'année","Printemps / Été","Automne / Hiver"];
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let items=[],cat="Tout",db=null,assets=null,col=null,openId=null,pendingFile=null;
+try{const s=JSON.parse(localStorage.getItem("dressing.ui")||"{}");if(s.cat)cat=s.cat;if(s.sort)$("#sort").value=s.sort}catch(e){}
+const saveUi=()=>{try{localStorage.setItem("dressing.ui",JSON.stringify({cat,sort:$("#sort").value}))}catch(e){}};
+
+function toast(t){const el=$("#toast");el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,2200)}
+const heart='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 20s-7-4.4-9.2-8.6C1.3 8.4 3 5 6.4 5c2 0 3.3 1.2 3.9 2.1h.2C11.3 6.2 12.6 5 14.6 5 18 5 19.7 8.4 18.2 11.4 16 15.6 12 20 12 20z" transform="translate(1.5 0)"/></svg>';
+const daysSince=d=>d?Math.floor((Date.now()-new Date(d))/864e5):null;
+const fmtDate=d=>d?new Date(d).toLocaleDateString("fr-FR",{day:"numeric",month:"short"}):"—";
+
+function renderCats(){
+  const n=c=>c==="Tout"?items.length:items.filter(i=>i.category===c).length;
+  const list=["Tout",...CATS.filter(c=>n(c)>0)];
+  if(!list.includes(cat))cat="Tout";
+  $("#cats").innerHTML=list.map(c=>`<button aria-pressed="${c===cat}" data-c="${esc(c)}">${esc(c)}<sup>${n(c)}</sup></button>`).join("");
+}
+function view(){
+  const q=$("#q").value.trim().toLowerCase(),s=$("#sort").value;
+  let v=items.filter(i=>(cat==="Tout"||i.category===cat)&&(!q||[i.name,i.brand,i.color,i.category,i.notes].join(" ").toLowerCase().includes(q)));
+  const by={new:(a,b)=>(b.createdAt||0)-(a.createdAt||0),most:(a,b)=>(b.wears||0)-(a.wears||0),least:(a,b)=>(a.wears||0)-(b.wears||0),fav:(a,b)=>(b.favorite?1:0)-(a.favorite?1:0)||(b.createdAt||0)-(a.createdAt||0)};
+  return v.sort(by[s]);
+}
+function render(){
+  renderCats();
+  const v=view();
+  $("#count").textContent=items.length?`${items.length} pièce${items.length>1?"s":""} · ${items.filter(i=>i.favorite).length} favori${items.filter(i=>i.favorite).length>1?"s":""}`:"Ma garde-robe";
+  $("#grid").innerHTML=v.map(i=>{
+    const d=daysSince(i.lastWorn);
+    return `<article class="card" data-id="${i.id}" tabindex="0" role="button" aria-label="${esc(i.name)}">
+      <div class="ph">${i.img?`<img src="${esc(i.img)}" alt="${esc(i.name)}" loading="lazy">`:'<span class="note">Sans photo</span>'}
+        ${(i.wears||0)===0?'<span class="tag">Jamais portée</span>':''}
+        ${db?`<button class="fav" data-fav="${i.id}" aria-pressed="${!!i.favorite}" aria-label="Favori">${heart}</button>`:''}
+      </div>
+      <div class="meta"><b>${esc(i.name)}</b><span>${i.wears||0}×</span></div>
+      <div class="sub">${esc(i.brand||i.category)}${d!=null?` · il y a ${d} j`:''}</div>
+    </article>`}).join("");
+  const e=$("#empty");
+  if(items.length&&!v.length){e.hidden=false;e.innerHTML='<h2>Aucune pièce</h2><p>Rien ne correspond à cette recherche.</p>'}
+  else e.hidden=!!items.length;
+  if(openId&&!pendingFile&&!$("#drawer").hidden&&!$("#drawer").contains(document.activeElement)) openSheet(openId);
+}
+
+function opts(arr,val){return arr.map(o=>`<option${o===val?" selected":""}>${esc(o)}</option>`).join("")}
+function openSheet(id){
+  const it=id?items.find(i=>i.id===id):{name:"",brand:"",category:"Talons",color:"",season:"Toute l'année",notes:"",wears:0};
+  if(!it)return closeSheet();
+  openId=id;pendingFile=null;
+  const ro=!db;
+  $("#drawer").innerHTML=`
+    <div class="dhead"><small>${id?esc(it.category):"Nouvelle pièce"}</small><button class="x" id="close" aria-label="Fermer">×</button></div>
+    <div class="big" id="big">${it.img?`<img src="${esc(it.img)}" alt="">`:'<span class="noimg">Ajoute une photo, idéalement sur fond blanc</span>'}</div>
+    ${assets?`<div class="row"><button class="btn ghost" id="photo">${it.img?"Changer la photo":"Choisir une photo"}</button></div>`:""}
+    ${id?`<h2 id="dTitle">${esc(it.name)}</h2>
+    <div class="stats"><div><b>${it.wears||0}</b><span>Fois portée</span></div><div><b>${fmtDate(it.lastWorn)}</b><span>Dernière fois</span></div><div><b>${it.favorite?"♥":"—"}</b><span>Favori</span></div></div>
+    ${ro?"":`<div class="row"><button class="btn" id="wear">Portée aujourd'hui</button>${it.wears?'<button class="btn ghost" id="unwear">−1</button>':""}</div>`}`:'<h2 id="dTitle">Ajouter une pièce</h2>'}
+    <form id="f">
+      <label class="full">Nom<input id="f-name" name="name" required value="${esc(it.name)}" ${ro?"disabled":""}></label>
+      <label>Marque<input id="f-brand" name="brand" value="${esc(it.brand)}" ${ro?"disabled":""}></label>
+      <label>Catégorie<select id="f-cat" name="category" ${ro?"disabled":""}>${opts(CATS,it.category)}</select></label>
+      <label>Couleur<select id="f-color" name="color" ${ro?"disabled":""}><option value=""></option>${opts(COLORS,it.color)}</select></label>
+      <label>Saison<select id="f-season" name="season" ${ro?"disabled":""}>${opts(SEASONS,it.season)}</select></label>
+      <label class="full">Notes<textarea id="f-notes" name="notes" placeholder="Taille, avec quoi la porter, où je l'ai achetée…" ${ro?"disabled":""}>${esc(it.notes)}</textarea></label>
+      ${ro?"":`<div class="row full" style="grid-column:1/-1"><button class="btn" type="submit" id="save">${id?"Enregistrer":"Ajouter au dressing"}</button>${id?'<button class="btn danger" type="button" id="del">Retirer</button>':""}</div>`}
+      <div id="confirm" style="grid-column:1/-1"></div>
+    </form>
+    ${ro?'<p class="note">Lecture seule : ouvre le dressing depuis ton compte pour modifier.</p>':""}`;
+  $("#drawer").hidden=$("#scrim").hidden=false;
+  $("#close").onclick=closeSheet;
+  $("#photo")&&($("#photo").onclick=()=>$("#file").click());
+  $("#wear")&&($("#wear").onclick=()=>upd(id,{wears:(it.wears||0)+1,lastWorn:new Date().toISOString()},"Bien noté, belle journée !"));
+  $("#unwear")&&($("#unwear").onclick=()=>upd(id,{wears:Math.max(0,(it.wears||0)-1)},"Retiré"));
+  $("#del")&&($("#del").onclick=()=>{$("#confirm").innerHTML='<div class="confirm">Retirer cette pièce du dressing ? <button class="btn danger" type="button" id="yes">Oui, retirer</button><button class="btn ghost" type="button" id="no">Annuler</button></div>';
+    $("#no").onclick=()=>$("#confirm").innerHTML="";
+    $("#yes").onclick=async()=>{try{await col.doc(id).delete();closeSheet();toast("Pièce retirée")}catch(e){toast("Impossible de retirer : "+(e.message||e.code))}}});
+  $("#f").onsubmit=async ev=>{
+    ev.preventDefault();const b=$("#save");b.disabled=true;
+    const fd=Object.fromEntries(new FormData(ev.target));
+    try{
+      if(pendingFile){b.textContent="Envoi de la photo…";const a=await assets.upload(pendingFile);fd.img=a.url;fd.assetId=a.id}
+      if(id){await col.doc(id).update(fd);toast("Enregistré")}
+      else{fd.createdAt=Date.now();fd.wears=0;fd.favorite=false;const r=await col.add(fd);openId=r.id;toast("Ajoutée au dressing")}
+      closeSheet();
+    }catch(e){toast("Échec de l'enregistrement : "+(e.message||e.code));b.disabled=false}
+  };
+}
+function closeSheet(){$("#drawer").hidden=$("#scrim").hidden=true;openId=null;pendingFile=null}
+async function upd(id,patch,msg){try{await col.doc(id).update(patch);toast(msg);openSheet(id)}catch(e){toast("Échec : "+(e.message||e.code))}}
+
+$("#file").onchange=e=>{const f=e.target.files[0];e.target.value="";if(!f)return;pendingFile=f;
+  $("#big").innerHTML=`<img src="${URL.createObjectURL(f)}" alt="">`;
+  if(openId){$("#save").textContent="Enregistrer la nouvelle photo"}};
+$("#cats").onclick=e=>{const b=e.target.closest("button");if(!b)return;cat=b.dataset.c;saveUi();render()};
+$("#q").oninput=render;$("#sort").onchange=()=>{saveUi();render()};
+$("#scrim").onclick=closeSheet;
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#drawer").hidden)closeSheet();
+  if((e.key==="Enter"||e.key===" ")&&e.target.classList?.contains("card")){e.preventDefault();openSheet(e.target.dataset.id)}});
+$("#grid").onclick=async e=>{
+  const f=e.target.closest("[data-fav]");
+  if(f){e.stopPropagation();const it=items.find(i=>i.id===f.dataset.fav);try{await col.doc(it.id).update({favorite:!it.favorite})}catch(err){toast("Échec : "+(err.message||err.code))}return}
+  const c=e.target.closest(".card");if(c)openSheet(c.dataset.id)};
+$("#addBtn").onclick=()=>openSheet(null);
+
+(async()=>{
+  const timer=setTimeout(()=>{if(!items.length)$("#empty").innerHTML='<h2>Dressing indisponible</h2><p>Connecte-toi à ton compte Claude pour voir et gérer tes pièces.</p>'},10000);
+  db=await window.claude?.use?.("db");
+  if(!db){clearTimeout(timer);$("#empty").innerHTML='<h2>Dressing indisponible</h2><p>Connecte-toi à ton compte Claude pour voir et gérer tes pièces.</p>';return}
+  assets=await window.claude.use("assets");
+  col=db.collection("items");
+  $("#addBtn").hidden=false;
+  col.onSnapshot(s=>{clearTimeout(timer);items=s.docs.map(d=>({id:d.id,...d.data()}));
+    if(!items.length){$("#empty").innerHTML='<h2>Ton dressing est vide</h2><p>Clique sur « Ajouter une pièce » et choisis une photo pour commencer.</p>'}
+    render()},
+    err=>{clearTimeout(timer);$("#empty").hidden=false;$("#empty").innerHTML=`<h2>Lecture impossible</h2><p>${esc(err.message||err.code)}</p>`});
+})();
+render();
+</script>
