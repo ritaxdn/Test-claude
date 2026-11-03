@@ -15,9 +15,9 @@ import { formationsPage as f } from "@/content/formations";
 import { practice } from "@/content/site";
 
 export const metadata: Metadata = {
-  title: "Formations en médecine esthétique pour médecins — Casablanca",
+  title: "Formations en médecine esthétique pour médecins",
   description:
-    "Formations réservées aux médecins, dispensées par le Dr Dadoun à Casablanca (35+ ans d'expérience, formateur depuis 10+ ans) : injectables, lasers médicaux, endolifting. Petits groupes, pratique encadrée.",
+    "Formations pour médecins par le Dr Dadoun à Casablanca : injectables, lasers médicaux, endolifting. Petits groupes, pratique encadrée.",
   alternates: { canonical: "/formations" },
   openGraph: { url: "/formations" },
 };

@@ -10,7 +10,8 @@ import { Reassurance } from "@/components/Reassurance";
 import { actPath, acts, doctor, getAct, practice, steps, type Act } from "@/content/site";
 import { concernsForAct } from "@/content/concerns";
 import { getFiche } from "@/content/fiches";
-import { absolute, breadcrumb, clinicId, physicianId } from "@/lib/seo";
+import { publishedArticles } from "@/content/articles";
+import { absolute, breadcrumb, clinicId, metaDescription, physicianId } from "@/lib/seo";
 
 type Props = { params: Promise<{ univers: string; acte: string }> };
 
@@ -23,10 +24,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const a = getAct(univers, acte);
   if (!a) return {};
   return {
-    title: `${a.name} à Casablanca`,
-    description: `${a.description} Au cabinet du ${doctor.name}, médecin esthétique et lasériste à ${practice.city}, sur rendez-vous.`,
+    title: `${a.seoName ?? a.name} à Casablanca`,
+    description: metaDescription(`${a.seoName ?? a.name} à ${practice.city} par le ${doctor.name}, médecin esthétique. ${a.description}`),
     alternates: { canonical: actPath(a) },
-    openGraph: { url: actPath(a), title: `${a.name} à Casablanca · ${doctor.name}` },
+    openGraph: { url: actPath(a), title: `${a.seoName ?? a.name} à Casablanca · ${doctor.name}` },
   };
 }
 
@@ -65,6 +66,7 @@ export default async function ActPage({ params }: Props) {
   const u = a.universe;
   const forConcerns = concernsForAct(a.slug);
   const fiche = getFiche(a.slug);
+  const articles = publishedArticles().filter((x) => x.related.includes(a.slug));
   const related = acts.filter((x) => x.universe.slug === u.slug && x.slug !== a.slug);
   const qa = [...(fiche?.faq ?? []), ...questions(a)];
   const url = absolute(actPath(a));
@@ -89,7 +91,7 @@ export default async function ActPage({ params }: Props) {
                 {a.category.title} · {practice.city}
               </p>
               <h1 className="mt-3 font-display text-4xl sm:text-5xl font-medium leading-[0.95] md:text-7xl">
-                {a.name} <span className="block text-white/70 md:inline">à {practice.city}</span>
+                {a.seoName ?? a.name} <span className="block text-white/70 md:inline">à {practice.city}</span>
               </h1>
               <div className="mt-6 flex flex-col justify-between gap-8 md:flex-row md:items-end">
                 <p className="max-w-xl text-lg leading-relaxed text-white/90">{a.description}</p>
@@ -335,6 +337,24 @@ export default async function ActPage({ params }: Props) {
           <div className="mt-3">
             <DoctorByline />
           </div>
+          {articles.length > 0 && (
+            <div className="mt-20">
+              <p className="eyebrow">Pour aller plus loin</p>
+              <ul className="mt-6 grid gap-x-8 border-t border-line sm:grid-cols-2">
+                {articles.map((x) => (
+                  <li key={x.slug}>
+                    <Link
+                      href={`/conseils/${x.slug}`}
+                      className="group flex items-center justify-between gap-4 border-b border-line py-5 hover:text-accent-deep"
+                    >
+                      <span className="font-medium">{x.title}</span>
+                      <ArrowRight size={16} className="shrink-0 transition-transform group-hover:translate-x-1" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </section>
       </main>
       <Footer />
@@ -349,7 +369,7 @@ export default async function ActPage({ params }: Props) {
         data={{
           "@context": "https://schema.org",
           "@type": "MedicalWebPage",
-          name: `${a.name} à Casablanca`,
+          name: `${a.seoName ?? a.name} à Casablanca`,
           url,
           inLanguage: "fr-MA",
           isPartOf: { "@id": absolute("/#site") },
@@ -360,6 +380,7 @@ export default async function ActPage({ params }: Props) {
             "@type": "MedicalProcedure",
             "@id": `${url}#acte`,
             name: a.name,
+            ...(a.alternateNames ? { alternateName: a.alternateNames } : {}),
             description: a.description,
             howPerformed: fiche ? fiche.how : `Durée : ${a.duration}. Suites : ${a.downtime}. Après consultation médicale.`,
             ...(fiche

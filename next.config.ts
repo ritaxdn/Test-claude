@@ -10,7 +10,7 @@ const csp = [
   "style-src 'self' 'unsafe-inline'",
   "font-src 'self' data:",
   "media-src 'self'",
-  "frame-src https://www.youtube-nocookie.com",
+  "frame-src https://www.youtube-nocookie.com https://www.instagram.com",
   "frame-ancestors 'self'",
   "object-src 'none'",
   "base-uri 'self'",

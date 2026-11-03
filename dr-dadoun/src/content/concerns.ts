@@ -31,6 +31,7 @@ export const concerns: Concern[] = [
     ],
     options: [
       { act: "laser-co2", why: "Le resurfaçage retravaille la texture et atténue les cicatrices, séance après séance." },
+      { act: "prp-visage", why: "Associé au laser, le PRP accompagne la cicatrisation et le renouvellement de la peau." },
     ],
     elsewhere:
       "Une acné encore active se traite d'abord. Et certaines marques, rouges ou pigmentées, ne relèvent pas du même traitement que les creux.",
@@ -52,6 +53,7 @@ export const concerns: Concern[] = [
       { act: "endolifting", why: "Une fibre laser sous la peau stimule la rétraction des tissus pour raffermir l'ovale et le cou." },
       { act: "laser-co2", why: "Lorsque le relâchement est surtout cutané, le resurfaçage améliore la fermeté de la peau." },
       { act: "acide-hyaluronique", why: "Quand le relâchement vient en partie d'une perte de volume, restaurer les appuis redessine l'ovale." },
+      { act: "fils-tenseurs", why: "Des fils résorbables repositionnent les tissus relâchés des joues et de l'ovale." },
     ],
     elsewhere:
       "Un relâchement très marqué, avec un excès de peau important, dépasse ce que permettent les techniques non chirurgicales. Je vous le dis alors franchement.",
@@ -125,6 +127,10 @@ export const concerns: Concern[] = [
     ],
     options: [
       { act: "laser-co2", why: "Le resurfaçage renouvelle la surface de la peau et améliore texture et ridules." },
+      { act: "skinboosters", why: "Ils hydratent la peau en profondeur pour plus d'éclat et d'élasticité, sans ajouter de volume." },
+      { act: "peeling", why: "Une exfoliation médicale unifie le teint, atténue les taches et affine le grain de peau." },
+      { act: "mesotherapie", why: "Un cocktail de vitamines et d'acide hyaluronique revitalise une peau terne ou fatiguée." },
+      { act: "prp-visage", why: "Votre propre plasma stimule le renouvellement de la peau : éclat, texture, ridules." },
     ],
     elsewhere:
       "Une peau terne s'améliore parfois d'abord avec de bons soins quotidiens et une protection solaire. Je vous le dis si c'est le cas.",

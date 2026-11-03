@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { doctor, nav, practice, spaces } from "@/content/site";
 import { navPro } from "@/content/formations";
+import { publishedArticles } from "@/content/articles";
 import { InstagramIcon } from "@/components/InstagramIcon";
 
 export function Footer({ variant = "patients" }: { variant?: "patients" | "pro" }) {
   const pro = variant === "pro";
-  const links = [...(pro ? navPro : nav), pro ? spaces.patients : spaces.pro];
+  const conseils = !pro && publishedArticles().length ? [{ href: "/conseils", label: "Conseils" }] : [];
+  const links = [...(pro ? navPro : nav), ...conseils, pro ? spaces.patients : spaces.pro];
   return (
     <footer className="p-2 md:p-3">
       <div className="rounded-[1.75rem] bg-ink text-white">

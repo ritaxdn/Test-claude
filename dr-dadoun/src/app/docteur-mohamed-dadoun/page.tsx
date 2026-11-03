@@ -16,7 +16,7 @@ const title = `${doctor.fullName} — ${doctor.role} à ${practice.city}`;
 
 export const metadata: Metadata = {
   title: { absolute: title },
-  description: `${doctor.fullName}, ${doctor.role.toLowerCase()} à ${practice.city} (${practice.addressLine1}). Plus de 35 ans d'expérience, formateur de médecins. Parcours, méthode et reconnaissances.`,
+  description: `${doctor.fullName}, ${doctor.role.toLowerCase()} à ${practice.city}, Quartier des Hôpitaux. Plus de 35 ans d'expérience, formateur de médecins : parcours et méthode.`,
   alternates: { canonical: doctor.path },
   openGraph: { url: doctor.path, title, type: "profile" },
 };

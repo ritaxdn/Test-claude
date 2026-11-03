@@ -57,9 +57,18 @@ export const legacyRedirects: Record<string, string> = {
   // Pas de cryolipolyse équivalente (CRYOCOVER = cryothérapie articulaire) → gamme Amincissement.
   "/megacryo": "/fr/technologies/gammes/amincissement",
 
-  // Laissées en 404 : sans équivalent réel sur le nouveau site (/actualites, /portfolio) ou machines dont le statut
-  // catalogue n'est pas confirmé (/sculptface, /gatecare, /perfect-cool, /hightlift, /rejuvteck-7, /microgun).
-  // Machine confirmée retirée → la déplacer dans legacyGone (410). Machine renommée → la rediriger vers sa nouvelle fiche.
+  // Anciennes pages encore connues de Google (oct. 2026), sans fiche équivalente sur le nouveau site :
+  // vers la gamme la plus proche (jamais vers une fiche qui ne serait pas la même machine).
+  "/actualites": "/fr",
+  "/portfolio": "/fr/technologies",
+  "/sculptface": "/fr/technologies/gammes/hifu",
+  "/hightlift": "/fr/technologies/gammes/hifu",
+  "/rejuvteck-7": "/fr/technologies/gammes/rejuvenation",
+  "/microgun": "/fr/technologies/gammes/rejuvenation",
+  "/gatecare": "/fr/technologies",
+  "/perfect-cool": "/fr/technologies/gammes/amincissement",
+  "/hanover-lift": "/fr/technologies/hanover-5g", // HANOVER 5G = successeur (validé par Cellulift)
+  // Machine renommée → la rediriger vers sa nouvelle fiche. Machine retirée sans gamme proche → legacyGone (410).
 };
 
 /**

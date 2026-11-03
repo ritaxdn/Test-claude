@@ -34,7 +34,7 @@ export function AcademySessions({ locale, eyebrow, title }: { locale: Locale; ey
           <Reveal className="mt-8 space-y-3">
             {sessions.map((s) => {
               const [, m, d] = s.start.split("-");
-              const contact = `/${locale}/contact`;
+              const contact = `/${locale}/contact?sujet=masterclass&session=${s.start}`;
               return (
                 <article
                   key={s.start + s.title}
@@ -85,8 +85,14 @@ export function AcademySessions({ locale, eyebrow, title }: { locale: Locale; ey
                       </span>
                     </Link>
                   ) : (
-                    <Link href={contact} className="self-start font-sans text-sm text-deep underline-offset-4 hover:underline md:self-center">
-                      {l.onRequest}
+                    <Link
+                      href={contact}
+                      className="glass-strong group inline-flex items-center justify-between gap-4 self-start whitespace-nowrap rounded-full py-2 pl-5 pr-2 font-sans text-sm text-deep transition-colors hover:bg-white md:self-center"
+                    >
+                      {l.register}
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/80 transition-transform group-hover:rotate-45">
+                        <ArrowUpRight size={14} />
+                      </span>
                     </Link>
                   )}
                 </article>

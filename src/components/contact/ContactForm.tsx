@@ -81,6 +81,8 @@ export function ContactForm({
   const [parcours, setParcours] = useState<Parcours>("demo");
   // Machine d'origine (bouton d'une fiche : ?machine=frac-cov-4)
   const [machine, setMachine] = useState<{ slug: string; name: string } | null>(null);
+  // Session d'origine (bouton « S'inscrire » d'une masterclass : ?session=2026-11-12)
+  const [presetSession, setPresetSession] = useState("");
   // Anti-spam : heure d'affichage du formulaire (un humain met plus de quelques secondes à le remplir).
   const startedAt = useRef(0);
   const formRef = useRef<HTMLFormElement>(null);
@@ -91,13 +93,15 @@ export function ContactForm({
     const params = new URLSearchParams(window.location.search);
     const sujet = params.get("sujet") ?? "";
     if (isParcours(sujet)) setParcours(sujet); // eslint-disable-line react-hooks/set-state-in-effect -- paramètres d'adresse lus après le rendu serveur
+    const preset = sessions.find((x) => x.value === params.get("session"));
+    if (preset) setPresetSession(preset.label);
     const m = machineFromLocation(window.location.pathname, window.location.search, machines);
     if (m) {
       setMachine(m);
       const template = sujet === "demo" ? text.machineMessageDemo : sujet === "devis" ? text.machineMessageDevis : text.machineMessage;
       if (messageRef.current && !messageRef.current.value) messageRef.current.value = template.replace("{machine}", m.name);
     }
-  }, [text, machines]);
+  }, [text, machines, sessions]);
 
   const rule = contactRules[parcours];
   const shows = (f: ContactField) => rule.fields.includes(f);
@@ -352,7 +356,7 @@ export function ContactForm({
               "session",
               text.session,
               <div className="relative">
-                <select {...a11y("session")} defaultValue="" className={cn(inputClasses, "mt-2 appearance-none pr-10")}>
+                <select key={presetSession} {...a11y("session")} defaultValue={presetSession} className={cn(inputClasses, "mt-2 appearance-none pr-10")}>
                   <option value="">{text.sessionNext}</option>
                   {sessions.map((s) => (
                     <option key={s.value} value={s.label}>

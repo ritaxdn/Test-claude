@@ -8,7 +8,7 @@ import { Photo } from "@/components/Photo";
 import { image } from "@/lib/images";
 import { getUniverse, practice, slugify, treatments, universes } from "@/content/site";
 import { JsonLd } from "@/components/JsonLd";
-import { absolute, breadcrumb, clinicId } from "@/lib/seo";
+import { absolute, breadcrumb, clinicId, metaDescription } from "@/lib/seo";
 
 type Props = { params: Promise<{ univers: string }> };
 
@@ -19,10 +19,9 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const u = getUniverse((await params).univers);
   if (!u) return {};
-  const acts = treatments.filter((c) => u.categories.includes(c.id)).flatMap((c) => c.treatments.map((t) => t.name));
   return {
-    title: `${u.title} à Casablanca : ${acts.slice(0, 4).join(", ")}`,
-    description: `${u.intro} Cabinet du Dr Dadoun, médecin esthétique et lasériste à Casablanca : ${acts.join(", ")}.`,
+    title: u.seoTitle,
+    description: metaDescription(u.seoDescription),
     alternates: { canonical: `/soins/${u.slug}` },
     openGraph: { url: `/soins/${u.slug}` },
   };

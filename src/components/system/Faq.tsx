@@ -5,8 +5,19 @@ import type { Locale } from "@/lib/i18n/config";
 import { faq } from "@/content/faq";
 
 /** FAQ en accordéon natif (<details>, accessible sans JavaScript) + données structurées FAQPage pour Google. */
-export function Faq({ locale }: { locale: Locale }) {
-  const c = faq[locale];
+export function Faq({
+  locale,
+  items,
+  title,
+  className = "px-3 pb-14 md:px-5 md:pb-20",
+}: {
+  locale: Locale;
+  /** Questions propres à une page (fiche machine) ; par défaut la FAQ de l'accueil */
+  items?: { q: string; a: string }[];
+  title?: string;
+  className?: string;
+}) {
+  const c = { ...faq[locale], ...(items ? { items } : {}), ...(title ? { title } : {}) };
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -17,7 +28,7 @@ export function Faq({ locale }: { locale: Locale }) {
     })),
   };
   return (
-    <section id="faq" className="scroll-mt-24 px-3 pb-14 md:px-5 md:pb-20">
+    <section id="faq" className={`scroll-mt-24 ${className}`}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <div className="mx-auto grid max-w-7xl gap-8 px-3 md:px-7 lg:grid-cols-[1fr_1.6fr]">
         <Reveal>
