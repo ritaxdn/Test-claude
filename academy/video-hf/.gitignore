@@ -2,3 +2,4 @@ out/
 */.hyperframes/artifacts/
 */assets/audio/*.wav
 */node_modules/
+*/.hyperframes/video-state.json
