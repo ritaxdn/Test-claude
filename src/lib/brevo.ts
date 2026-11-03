@@ -1,6 +1,7 @@
 /**
  * Inscription des abonnés à la newsletter dans Brevo (liste de diffusion).
  * Variables Vercel : BREVO_API_KEY (Brevo › Paramètres › Clés API) et BREVO_LIST_ID (numéro de la liste).
+ * Avant-première de l'Academy en ligne : BREVO_WAITLIST_LIST_ID (liste dédiée), sinon la liste de la newsletter.
  * Sans clé, rien n'est envoyé. Attributs Brevo utilisés : PRENOM, NOM, SPECIALITE et SEGMENT (édition de la newsletter).
  */
 
@@ -25,9 +26,9 @@ export type BrevoContact = {
 };
 
 /** Renvoie true si Brevo a bien enregistré le contact. Ne lève jamais d'erreur. */
-export async function addToBrevo(c: BrevoContact): Promise<boolean> {
+export async function addToBrevo(c: BrevoContact, list: "newsletter" | "avant-premiere" = "newsletter"): Promise<boolean> {
   const key = process.env.BREVO_API_KEY?.trim();
-  const listId = Number(process.env.BREVO_LIST_ID);
+  const listId = Number((list === "avant-premiere" && process.env.BREVO_WAITLIST_LIST_ID) || process.env.BREVO_LIST_ID);
   if (!key || !listId) return false;
   const attributes = Object.fromEntries(
     Object.entries({

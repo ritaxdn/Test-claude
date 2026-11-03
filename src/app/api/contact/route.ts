@@ -18,6 +18,7 @@ type ContactPayload = Partial<Record<ContactField, string>> & {
   elapsed?: number; // durée de remplissage, en ms
   firstName?: string; // newsletter : prénom et nom séparés (attributs Brevo)
   lastName?: string;
+  client?: string; // avant-première : « oui » (possède une machine CELLULIFT) ou « non »
 };
 
 
@@ -30,7 +31,7 @@ const esc = (s = "") =>
  * Une variable Vercel (adresses séparées par des virgules) redirige une famille ailleurs si besoin :
  * CONTACT_EMAIL_TO (démo, devis, expert, guide, autre), CONTACT_EMAIL_ACADEMY (masterclass),
  * CONTACT_EMAIL_SUPPORT (support technique), CONTACT_EMAIL_PARTNERSHIPS (partenariat),
- * CONTACT_EMAIL_NEWSLETTER (newsletter de l'Academy).
+ * CONTACT_EMAIL_NEWSLETTER (newsletter et avant-première de l'Academy).
  * Envoi : RESEND_API_KEY (obligatoire), CONTACT_EMAIL_FROM (défaut « Site Cellulift <contact@cellulift.ma> »).
  */
 const ADMIN_INBOX = "admin@cellulift.ma";
@@ -158,6 +159,8 @@ function invalid(parcours: Parcours, body: ContactPayload) {
 }
 
 const newsletterSpecialties: readonly string[] = contactPageContent.fr.form.specialtyOptions;
+// La page avant-première existe en français et en anglais : l'activité vaut l'une ou l'autre liste.
+const waitlistSpecialties: readonly string[] = [...contactPageContent.fr.form.specialtyOptions, ...contactPageContent.en.form.specialtyOptions];
 
 export async function POST(request: Request) {
   const refused = guard(request, "contact");
@@ -201,6 +204,32 @@ export async function POST(request: Request) {
       sendToCellulift("masterclass", n, { to: recipients("newsletter"), tag: "NEWSLETTER" }),
       sendToCrm(crmLead("newsletter-academy", n, attr)),
       addToBrevo({ email, firstName: part(body.firstName), lastName: part(body.lastName), specialty }),
+    ]);
+    return mail || crm || brevo ? NextResponse.json({ ok: true }) : NextResponse.json({ ok: false, error: "send_failed" }, { status: 502 });
+  }
+
+  // Avant-première de la CELLULIFT Academy en ligne (page /academy/avant-premiere, cible du teaser).
+  // Même circuit que la newsletter : [AVANT-PREMIÈRE] vers admin@cellulift.ma, CRM (parcours « avant-premiere-academy ») et Brevo.
+  // Le visiteur ne voit « inscrit » que si au moins un des trois a enregistré l'inscription.
+  if (body.parcours === "avant-premiere") {
+    const part = (v: unknown) => String(v ?? "").trim().slice(0, 100);
+    const firstName = part(body.firstName), lastName = part(body.lastName);
+    const email = String(body.email ?? "").trim().slice(0, 200), phone = String(body.phone ?? "").trim().slice(0, 30);
+    const specialty = String(body.specialty ?? "").trim();
+    const client = body.client === "oui" ? "oui" : body.client === "non" ? "non" : "";
+    const machine = client === "oui" ? String(body.machine ?? "").trim().slice(0, 200) : "";
+    if (!firstName || !lastName || !emailPattern.test(email) || (phone && !isValidPhone(phone)) || !waitlistSpecialties.includes(specialty) || !client)
+      return NextResponse.json({ ok: false, error: "validation" }, { status: 422 });
+    const w: ContactPayload = {
+      name: `${firstName} ${lastName}`, email, phone: phone || undefined, specialty, machine: machine || undefined,
+      subject: "Avant-première Academy",
+      message: `Inscription à l'avant-première de la CELLULIFT Academy en ligne.\nClient CELLULIFT : ${client === "oui" ? `oui${machine ? ` (${machine})` : ""}` : "pas encore"}.`,
+      origin: typeof body.origin === "string" && body.origin.startsWith("/") ? body.origin.slice(0, 300) : undefined, lang: body.lang,
+    };
+    const [mail, crm, brevo] = await Promise.all([
+      sendToCellulift("masterclass", w, { to: recipients("newsletter"), tag: "AVANT-PREMIÈRE" }),
+      sendToCrm(crmLead("avant-premiere-academy", w, attr)),
+      addToBrevo({ email, firstName, lastName, specialty }, "avant-premiere"),
     ]);
     return mail || crm || brevo ? NextResponse.json({ ok: true }) : NextResponse.json({ ok: false, error: "send_failed" }, { status: 502 });
   }

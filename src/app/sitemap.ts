@@ -5,7 +5,7 @@ import { landingKeys, landingPath } from "@/content/category-landings";
 import { agencyKeys, agencyPath } from "@/content/agencies";
 import { SITE_URL } from "@/lib/site";
 
-const staticPaths = ["", "/about", "/technologies", "/guide", "/academy", "/support", "/contact", "/privacy", "/terms"];
+const staticPaths = ["", "/about", "/technologies", "/guide", "/academy", "/academy/avant-premiere", "/support", "/contact", "/privacy", "/terms"];
 // Pages de gamme (une par gamme du catalogue)
 const rangePaths = [...landingKeys.map(landingPath), ...agencyKeys.map(agencyPath)];  // + pages agences
 
