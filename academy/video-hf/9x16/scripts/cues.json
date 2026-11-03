@@ -109,25 +109,35 @@
     },
     {
       "t": 13.833,
-      "sfx": "pop_low",
-      "gain": 0.8
-    },
-    {
-      "t": 14.033,
-      "sfx": "shimmer",
-      "gain": 0.8
-    },
-    {
-      "t": 14.633,
       "sfx": "pop",
-      "gain": 0.6,
+      "gain": 0.8,
       "pan": -0.3
     },
     {
-      "t": 15.167,
-      "sfx": "pop_high",
-      "gain": 0.6,
+      "t": 14.77,
+      "sfx": "click",
+      "gain": 1.0
+    },
+    {
+      "t": 14.8,
+      "sfx": "glass",
+      "gain": 0.5
+    },
+    {
+      "t": 14.9,
+      "sfx": "pop_low",
+      "gain": 0.8,
       "pan": 0.3
+    },
+    {
+      "t": 15.25,
+      "sfx": "shimmer",
+      "gain": 0.9
+    },
+    {
+      "t": 17.05,
+      "sfx": "click",
+      "gain": 0.7
     },
     {
       "t": 17.1,

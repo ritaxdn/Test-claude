@@ -24,7 +24,7 @@ Le projet peut aussi s'ouvrir dans l'application de bureau HyperFrames (`npx hyp
 ## Structure
 
 - `index.html` : racine (fond nacré, 8 scènes, transitions, musique et bruitages).
-- `compositions/` : `logo`, `hook`, `invite`, `dashboard`, `lesson`, `progress`, `done`, `signature` (une scène par plan) et `wipes` (balayages arc-en-ciel aux transitions).
+- `compositions/` : `logo`, `hook`, `invite`, `dashboard`, `lesson` (plan « parcours » : choix parmi les machines du médecin, puis le parcours en étapes), `progress`, `done`, `signature` (une scène par plan) et `wipes` (balayages arc-en-ciel aux transitions).
 - `assets/academy.css` : jetons « Nacre & verre » repris de `academy/app/src/app/globals.css`.
 - `assets/fonts/`, `assets/img/` : polices (OFL) et photos des machines.
 - `scripts/make-audio.py`, `scripts/cues.json` : bande son synthétisée, bruitages calés sur l'image.
