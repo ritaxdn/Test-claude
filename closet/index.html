@@ -1,123 +1,226 @@
 <title>Mon Dressing</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Figtree:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,500;6..96,700&family=Figtree:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: a boutique catalogue — quiet header, category rail, white product tiles in a 4/3/2 grid, side drawer for the product sheet. */
+/* Layout: a store "dressing room" — category sidebar | the look being built (stacked swipeable rails: haut, bas, chaussures, sac) | product grid.
+   Phone: the look fills the screen like an outfit app, with a bottom tab bar. Deliberately single light theme: white ground so product photos melt into the page. */
 :root{
-  --bg:#fbfaf9; --tile:#ffffff; --ink:#1c1a1b; --muted:#77706f; --line:#e7e2df;
-  --accent:#8a1f3d; --accent-ink:#ffffff; --chip:#f1edea; --shadow:rgba(28,26,27,.08);
+  color-scheme:light;
+  --bg:#ffffff; --ink:#111111; --muted:#7a7a7a; --line:#e6e6e6; --soft:#f5f5f4;
+  --accent:#b7d39a; --accent-ink:#1d2a12; --sel:#111111;
   --display:"Bodoni Moda",Didot,"Times New Roman",serif;
   --body:"Figtree",ui-sans-serif,system-ui,sans-serif;
+  --navh:64px;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#141213; --tile:#ffffff; --ink:#f2eeec; --muted:#a59d9b; --line:#2e2a2b;
-  --accent:#e27b98; --accent-ink:#1c1a1b; --chip:#221f20; --shadow:rgba(0,0,0,.4); color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#141213; --tile:#ffffff; --ink:#f2eeec; --muted:#a59d9b; --line:#2e2a2b;
-  --accent:#e27b98; --accent-ink:#1c1a1b; --chip:#221f20; --shadow:rgba(0,0,0,.4); color-scheme:dark}
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
-.wrap{max-width:1240px;margin:0 auto}
+[hidden]{display:none!important}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:var(--body);font-size:14px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 32px}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.wrap{max-width:1280px;margin:0 auto}
 
-header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;padding-block:40px 24px;border-bottom:1px solid var(--line)}
-.brand small{display:block;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
-h1{font-family:var(--display);font-weight:400;font-size:clamp(34px,6vw,58px);line-height:1;margin:6px 0 0;letter-spacing:-.01em;text-wrap:balance}
-h1 em{font-style:italic;color:var(--accent)}
-.btn{border:1px solid var(--ink);background:var(--ink);color:var(--bg);padding:11px 20px;border-radius:999px;font-weight:500;font-size:14px;letter-spacing:.02em}
+/* header */
+header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;padding-block:18px 14px;border-bottom:1px solid var(--line)}
+.crumb{font-size:12px;color:var(--muted);letter-spacing:.04em}
+.crumb b{color:var(--ink);font-weight:600}
+.logo{text-align:center}
+.logo h1{margin:0;font-weight:700;font-size:24px;letter-spacing:.32em;text-transform:uppercase;padding-left:.32em}
+.logo small{display:block;font-size:11px;color:var(--muted);letter-spacing:.06em}
+.hright{display:flex;justify-content:flex-end}
+.pill{border:0;background:var(--ink);color:#fff;border-radius:6px;padding:9px 14px;font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;display:inline-flex;gap:8px;align-items:center}
+.pill .n{background:#fff;color:var(--ink);border-radius:50%;width:18px;height:18px;display:grid;place-items:center;font-size:11px}
+.btn{border:1px solid var(--ink);background:var(--ink);color:#fff;padding:10px 18px;border-radius:999px;font-weight:600;font-size:13px}
 .btn.ghost{background:transparent;color:var(--ink)}
-.btn.danger{background:transparent;color:var(--accent);border-color:var(--accent)}
+.btn.danger{background:transparent;color:#a3243f;border-color:#a3243f}
 .btn:disabled{opacity:.45;cursor:default}
 
-.tools{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding-block:20px 8px}
-.cats{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;max-width:100%}
-.cats button{border:0;background:transparent;padding:8px 12px;border-radius:999px;white-space:nowrap;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-.cats button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
-.cats sup{font-size:10px;margin-left:3px;font-variant-numeric:tabular-nums}
-.side{display:flex;gap:8px;flex-wrap:wrap}
-.side input,.side select{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:8px 14px;font-size:13px;min-width:0}
-.side input{width:180px}
+/* 3 columns */
+.room{display:grid;grid-template-columns:200px minmax(300px,380px) minmax(0,1fr);min-height:calc(100vh - 80px)}
+.room>*{min-width:0}
+aside.nav{border-right:1px solid var(--line);padding:22px 16px 22px 0}
+.nav a{display:block;padding:3px 8px;color:var(--ink);text-decoration:none;font-size:13.5px;border-radius:3px;cursor:pointer}
+.nav a.top{font-weight:600}
+.nav a.sub{padding-left:18px;color:#444;font-size:13px}
+.nav a[aria-current="true"]{background:var(--soft);font-weight:700}
+.nav .gap{height:14px}
+.nav sup{color:var(--muted);font-size:10px;margin-left:4px;font-variant-numeric:tabular-nums}
 
-.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px 20px;padding-block:20px}
-@media (max-width:980px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media (max-width:640px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 12px}.side input{width:140px}}
-.card{position:relative;display:flex;flex-direction:column;gap:10px;text-align:left;border:0;background:none;padding:0}
-.ph{position:relative;aspect-ratio:4/5;max-width:100%;background:var(--tile);overflow:hidden;display:grid;place-items:center;transition:box-shadow .25s}
-.ph img{width:100%;height:100%;object-fit:contain;transition:transform .4s ease}
-.card:hover .ph{box-shadow:0 10px 30px var(--shadow)}
-.card:hover .ph img{transform:scale(1.04)}
-.meta{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
-.meta b{font-weight:500;font-size:14px;line-height:1.3}
-.meta span{font-size:12px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
-.sub{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:-6px}
-.fav{position:absolute;top:8px;right:8px;width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.9);display:grid;place-items:center;color:#1c1a1b}
-.fav[aria-pressed="true"] svg{fill:#8a1f3d;stroke:#8a1f3d}
-.tag{position:absolute;left:8px;top:8px;background:#1c1a1b;color:#fff;font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:4px 8px}
+/* look column */
+.look{border-right:1px solid var(--line);padding:22px 0 22px;display:flex;flex-direction:column;gap:6px;position:relative}
+.lookhead{display:flex;justify-content:space-between;align-items:flex-start;padding-inline:18px;gap:8px}
+.lookhead h2{margin:0 0 4px;font-size:14px;font-weight:700;letter-spacing:.02em}
+.lines{font-size:12px;line-height:1.5}
+.lines div{display:flex;gap:6px}
+.lines span{color:var(--muted)}
+.lines .tot{font-weight:700;margin-top:4px}
+.toggles{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.toggles button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 10px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.toggles button[aria-pressed="true"]{border-color:var(--ink);color:var(--ink);font-weight:600}
 
-.empty{padding:80px 0;text-align:center;color:var(--muted)}
-.empty h2{font-family:var(--display);font-weight:400;font-size:30px;color:var(--ink);margin:0 0 8px}
+.rails{display:flex;flex-direction:column;align-items:stretch;gap:4px;padding-block:14px 8px}
+.rail{position:relative}
+.track{--sw:190px;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding-inline:calc(50% - var(--sw) / 2);scroll-behavior:smooth}
+.track::-webkit-scrollbar{display:none}
+.slide{flex:0 0 var(--sw);scroll-snap-align:center;display:grid;place-items:center;border:0;background:none;padding:2px;opacity:.35;transform:scale(.82);transition:opacity .25s,transform .25s}
+.slide.on{opacity:1;transform:none}
+.slide img{max-width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;pointer-events:none}
+.rail[data-slot="top"] .slide{height:190px}
+.rail[data-slot="bottom"] .slide{height:200px}
+.rail[data-slot="shoes"] .slide{height:150px}
+.rail[data-slot="bag"] .slide{height:130px}
+.ph{width:100%;height:100%;border:1.5px dashed #cfcfcf;border-radius:10px;display:grid;place-items:center;text-align:center;color:var(--muted);font-size:12px;padding:8px;background:none}
+.arrow{position:absolute;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;border:0;background:#4a4a4a;color:#fff;display:grid;place-items:center;font-size:14px;opacity:0;transition:opacity .2s;z-index:2}
+.arrow.l{left:6px}.arrow.r{right:6px}
+.rail:hover .arrow,.arrow:focus-visible{opacity:.85}
+.rlabel{position:absolute;left:18px;top:2px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);z-index:1}
+.lookfoot{display:flex;justify-content:center;gap:10px;align-items:center;padding-top:8px}
+.shuffle{width:52px;height:52px;border-radius:50%;border:0;background:var(--ink);color:#fff;display:grid;place-items:center}
+.save{position:absolute;right:0;top:46%;writing-mode:vertical-rl;transform:rotate(180deg);border:0;background:var(--accent);color:#fff;font-weight:700;letter-spacing:.14em;font-size:12px;padding:18px 9px;border-radius:0 10px 10px 0;text-transform:uppercase;text-shadow:0 1px 1px rgba(0,0,0,.15)}
+
+/* grid column */
+.shop{padding:16px 0 22px 18px;display:flex;flex-direction:column;gap:10px}
+.shophead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.shophead input{border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-size:13px;width:180px;max-width:100%;color:var(--ink)}
+.chips{display:none;gap:6px;overflow-x:auto;scrollbar-width:none}
+.chips button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;white-space:nowrap;font-size:12px}
+.chips button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.tile{position:relative;border:1px solid transparent;background:#fff;padding:10px 8px 10px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
+.tile:hover{border-color:var(--line)}
+.tile.sel{border-color:var(--sel);border-width:2px;padding:9px 7px 9px}
+.tile .im{width:100%;aspect-ratio:1;display:grid;place-items:center}
+.tile img{max-width:100%;max-height:100%;object-fit:contain;mix-blend-mode:multiply}
+.tile b{font-weight:500;font-size:12.5px;line-height:1.25}
+.tile small{color:var(--muted);font-size:11.5px}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;border:1px solid rgba(0,0,0,.15);vertical-align:middle;margin-right:4px}
+.info{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:50%;border:1px solid var(--line);background:#fff;font-size:12px;font-weight:700;color:var(--muted);display:grid;place-items:center}
+.fav{position:absolute;top:6px;left:6px;font-size:14px;color:#a3243f}
+.empty{padding:40px 8px;color:var(--muted);text-align:center}
+.empty h3{font-family:var(--display);font-weight:500;font-size:24px;color:var(--ink);margin:0 0 6px}
+
+/* saved looks */
+.looks{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+.lk{border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:6px;align-items:center;background:#fff}
+.lk .stack{display:flex;flex-direction:column;align-items:center;gap:2px;height:210px;justify-content:center}
+.lk .stack img{max-height:68px;max-width:110px;object-fit:contain;mix-blend-mode:multiply}
+.lk b{font-size:12.5px;font-weight:600}
+.lk .row{display:flex;gap:6px}
+.lk .row button{font-size:11px;padding:5px 10px}
+
+/* bottom bar (phone) */
+.tabbar{display:none}
 
 /* drawer */
-.scrim{position:fixed;inset:0;background:rgba(20,18,19,.45);z-index:20}
-.drawer{position:fixed;top:0;right:0;bottom:0;width:min(520px,100%);background:var(--bg);z-index:21;overflow-y:auto;
-  padding:calc(20px + env(safe-area-inset-top,0px)) max(24px,env(safe-area-inset-right,0px)) calc(28px + env(safe-area-inset-bottom,0px)) 24px;
-  display:flex;flex-direction:column;gap:18px;box-shadow:-20px 0 60px var(--shadow)}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:20}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(500px,100%);background:#fff;z-index:21;overflow-y:auto;
+  padding:calc(18px + env(safe-area-inset-top,0px)) max(22px,env(safe-area-inset-right,0px)) calc(26px + env(safe-area-inset-bottom,0px)) 22px;
+  display:flex;flex-direction:column;gap:16px;box-shadow:-20px 0 60px rgba(0,0,0,.12)}
 .dhead{display:flex;justify-content:space-between;align-items:center}
-.dhead small{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.dhead small{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
 .x{border:0;background:none;font-size:26px;line-height:1;padding:4px 8px}
-.big{background:var(--tile);aspect-ratio:1;max-width:100%;display:grid;place-items:center;position:relative}
-.big img{width:100%;height:100%;object-fit:contain}
-.big .noimg{color:#77706f;font-size:13px}
-.drawer h2{font-family:var(--display);font-weight:400;font-size:32px;line-height:1.1;margin:0}
+.big{aspect-ratio:1;max-width:100%;display:grid;place-items:center;background:#fff}
+.big img{max-width:100%;max-height:100%;object-fit:contain;mix-blend-mode:multiply}
+.drawer h2{font-family:var(--display);font-weight:500;font-size:28px;line-height:1.1;margin:0}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);border-block:1px solid var(--line)}
-.stats div{padding:12px 0;display:flex;flex-direction:column;gap:2px}
-.stats div+div{padding-left:14px;border-left:1px solid var(--line)}
-.stats b{font-family:var(--display);font-size:24px;font-weight:400;font-variant-numeric:tabular-nums}
-.stats span{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.stats div{padding:10px 0;display:flex;flex-direction:column}
+.stats div+div{padding-left:12px;border-left:1px solid var(--line)}
+.stats b{font-family:var(--display);font-size:22px;font-weight:500;font-variant-numeric:tabular-nums}
+.stats span{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-label{display:flex;flex-direction:column;gap:4px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);min-width:0}
+label{display:flex;flex-direction:column;gap:4px;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);min-width:0}
 label.full{grid-column:1/-1}
-form input,form select,form textarea{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:10px 12px;font-size:14px;text-transform:none;letter-spacing:0;color:var(--ink);width:100%}
-form textarea{min-height:70px;resize:vertical}
-.row{display:flex;flex-wrap:wrap;gap:8px}
+form input,form select,form textarea{border:1px solid var(--line);background:#fff;border-radius:8px;padding:10px 12px;font-size:14px;text-transform:none;letter-spacing:0;color:var(--ink);width:100%}
+form textarea{min-height:64px;resize:vertical}
+.brow{display:flex;flex-wrap:wrap;gap:8px}
 .note{font-size:12px;color:var(--muted)}
-.confirm{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:var(--chip);padding:10px 12px;border-radius:8px;font-size:13px}
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(24px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:13px;z-index:30}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.confirm{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:var(--soft);padding:10px 12px;border-radius:8px;font-size:13px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(24px + var(--tb,0px) + env(safe-area-inset-bottom,0px));background:var(--ink);color:#fff;padding:10px 18px;border-radius:999px;font-size:13px;z-index:30;white-space:nowrap}
+
+/* tablet */
+@media (max-width:1060px){
+  .room{grid-template-columns:170px minmax(280px,340px) minmax(0,1fr)}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+/* phone: outfit app */
+@media (max-width:760px){
+  :root{--tb:var(--navh)}
+  body{padding-bottom:calc(var(--navh) + 24px + env(safe-area-inset-bottom,0px))}
+  header{grid-template-columns:auto 1fr auto;padding-block:12px 10px}
+  .crumb{display:none}
+  .logo{text-align:left}
+  .logo h1{font-family:var(--display);letter-spacing:0;text-transform:none;font-size:28px;padding:0}
+  .logo small{display:none}
+  .room{display:block;min-height:0}
+  aside.nav{display:none}
+  .look{border:0;padding-top:10px}
+  .shop{padding:12px 0}
+  .chips{display:flex}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  body[data-tab="look"] .shop{display:none}
+  body[data-tab="closet"] .look,body[data-tab="looks"] .look{display:none}
+  .lookhead .lines{display:none}
+  .lookhead{justify-content:center}
+  .rail[data-slot="top"] .slide{height:min(30vh,220px)}
+  .rail[data-slot="bottom"] .slide{height:min(30vh,230px)}
+  .rail[data-slot="shoes"] .slide{height:min(18vh,150px)}
+  .arrow{display:none}
+  .track{--sw:min(56vw,230px)}
+  .save{right:calc(-1 * max(16px,env(safe-area-inset-right,0px)))}
+  .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:15;background:#000;justify-content:space-around;align-items:center;
+    height:calc(var(--navh) + env(safe-area-inset-bottom,0px));padding:0 max(16px,env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(16px,env(safe-area-inset-left,0px))}
+  .tabbar button{border:0;background:none;color:#8d8d8d;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;letter-spacing:.06em;padding:6px 10px}
+  .tabbar button[aria-current="true"]{color:#fff}
+  .tabbar .plus{width:46px;height:46px;border-radius:50%;background:#fff;color:#000;font-size:26px;justify-content:center;padding:0}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
 
 <div class="wrap">
   <header>
-    <div class="brand">
-      <small id="count">Ma garde-robe</small>
-      <h1>Le <em>Dressing</em></h1>
-    </div>
-    <button class="btn" id="addBtn" hidden>+ Ajouter une pièce</button>
+    <div class="crumb"><b>Mon dressing</b> / Cabine d'essayage</div>
+    <div class="logo"><h1>Dressing Room</h1><small id="count">Ma garde-robe</small></div>
+    <div class="hright"><button class="pill" id="addBtn" hidden><span class="n">+</span>Ajouter</button></div>
   </header>
 
-  <div class="tools">
-    <nav class="cats" id="cats" aria-label="Catégories"></nav>
-    <div class="side">
-      <input id="q" type="search" placeholder="Rechercher…" aria-label="Rechercher">
-      <select id="sort" aria-label="Trier">
-        <option value="new">Nouveautés</option>
-        <option value="most">Les plus portées</option>
-        <option value="least">À reporter</option>
-        <option value="fav">Favoris d'abord</option>
-      </select>
-    </div>
-  </div>
+  <div class="room">
+    <aside class="nav" id="nav" aria-label="Catégories"></aside>
 
-  <main id="grid" class="grid" aria-live="polite"></main>
-  <div id="empty" class="empty">
-    <h2>Ouverture du dressing…</h2>
-    <p>Tes pièces apparaissent ici dès qu'elles sont chargées. Ajoute une pièce avec sa photo pour commencer.</p>
+    <section class="look" aria-label="Ma tenue">
+      <div class="lookhead">
+        <div>
+          <h2>Nouveau look</h2>
+          <div class="lines" id="lines"></div>
+        </div>
+        <div class="toggles" id="toggles" aria-label="Lignes affichées"></div>
+      </div>
+      <div class="rails" id="rails"></div>
+      <div class="lookfoot">
+        <button class="shuffle" id="shuffle" aria-label="Mélanger la tenue" title="Mélanger">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M3 8l4-4 4 4M17 20V4M13 16l4 4 4-4"/></svg>
+        </button>
+      </div>
+      <button class="save" id="saveLook">Enregistrer la tenue</button>
+    </section>
+
+    <section class="shop" aria-label="Pièces">
+      <div class="chips" id="chips"></div>
+      <div class="shophead"><span id="matching">Pièces : 0</span><input id="q" type="search" placeholder="Rechercher…" aria-label="Rechercher"></div>
+      <div id="grid" class="grid"></div>
+      <div id="empty" class="empty"><h3>Ouverture du dressing…</h3><p>Tes pièces apparaissent ici dès qu'elles sont chargées.</p></div>
+    </section>
   </div>
 </div>
+
+<nav class="tabbar" aria-label="Navigation">
+  <button data-tab="look" aria-current="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 6a2 2 0 1 1 2 2c-1 0-2 .6-2 1.5V10l9 6.5a1 1 0 0 1-.6 1.8H3.6a1 1 0 0 1-.6-1.8L12 10"/></svg>Look</button>
+  <button data-tab="closet"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M12 3v18M10 11v2M14 11v2"/></svg>Dressing</button>
+  <button class="plus" id="addTab" aria-label="Ajouter une pièce">+</button>
+  <button data-tab="looks"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 20s-7-4.4-9.2-8.6C1.3 8.4 3 5 6.4 5c2 0 3.3 1.2 3.9 2.1h.2C11.3 6.2 12.6 5 14.6 5 18 5 19.7 8.4 18.2 11.4 16 15.6 12 20 12 20z" transform="translate(1.5 0)"/></svg>Tenues</button>
+</nav>
 
 <div class="scrim" id="scrim" hidden></div>
 <aside class="drawer" id="drawer" hidden aria-modal="true" role="dialog" aria-labelledby="dTitle"></aside>
@@ -125,81 +228,180 @@ form textarea{min-height:70px;resize:vertical}
 <input type="file" id="file" accept="image/*" hidden>
 
 <script>
-const CATS=["Bottes","Talons","Mules & sandales","Plats","Sneakers","Sacs","Accessoires"];
-const COLORS=["Noir","Blanc","Beige","Marron","Doré","Argenté","Rose","Rouge","Bleu","Vert","Multicolore"];
+const GROUPS=[
+  {name:"Vêtements",cats:["Hauts","Vestes","Robes","Bas"]},
+  {name:"Chaussures",cats:["Bottes","Talons","Mules & sandales","Plats","Sneakers"]},
+  {name:"Sacs",cats:["Sacs"]},
+  {name:"Accessoires",cats:["Accessoires"]},
+];
+const CATS=GROUPS.flatMap(g=>g.cats);
+const SLOTS=[
+  {key:"top",label:"Haut",cats:["Hauts","Vestes","Robes"],add:"Hauts"},
+  {key:"bottom",label:"Bas",cats:["Bas"],add:"Bas"},
+  {key:"shoes",label:"Chaussures",cats:GROUPS[1].cats,add:"Talons"},
+  {key:"bag",label:"Sac",cats:["Sacs"],add:"Sacs"},
+];
+const slotOf=c=>SLOTS.find(s=>s.cats.includes(c))?.key;
+const COLORS={"Noir":"#111","Blanc":"#fff","Beige":"#e3d3bd","Marron":"#7a4b2b","Doré":"#c9a646","Argenté":"#c5c7cb","Rose":"#d6337a","Rouge":"#c0272d","Bleu":"#2446b5","Vert":"#5f9a4b","Violet":"#8d4bc4","Multicolore":"conic-gradient(#d6337a,#c9a646,#5f9a4b,#2446b5,#d6337a)"};
 const SEASONS=["Toute l'année","Printemps / Été","Automne / Hiver"];
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let items=[],cat="Tout",db=null,assets=null,col=null,openId=null,pendingFile=null;
-try{const s=JSON.parse(localStorage.getItem("dressing.ui")||"{}");if(s.cat)cat=s.cat;if(s.sort)$("#sort").value=s.sort}catch(e){}
-const saveUi=()=>{try{localStorage.setItem("dressing.ui",JSON.stringify({cat,sort:$("#sort").value}))}catch(e){}};
+
+let items=[],looks=[],db=null,assets=null,col=null,lcol=null,openId=null,pendingFile=null,presetCat=null;
+let view="Tout";               // category, group name, "Tout", "Favoris", "Mes tenues"
+let sel={top:null,bottom:null,shoes:null,bag:null};
+let shown={top:true,bottom:true,shoes:true,bag:true};
+try{const s=JSON.parse(localStorage.getItem("dressing.v2")||"{}");Object.assign(sel,s.sel||{});Object.assign(shown,s.shown||{});if(s.view)view=s.view}catch(e){}
+const saveUi=()=>{try{localStorage.setItem("dressing.v2",JSON.stringify({sel,shown,view}))}catch(e){}};
 
 function toast(t){const el=$("#toast");el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,2200)}
-const heart='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 20s-7-4.4-9.2-8.6C1.3 8.4 3 5 6.4 5c2 0 3.3 1.2 3.9 2.1h.2C11.3 6.2 12.6 5 14.6 5 18 5 19.7 8.4 18.2 11.4 16 15.6 12 20 12 20z" transform="translate(1.5 0)"/></svg>';
-const daysSince=d=>d?Math.floor((Date.now()-new Date(d))/864e5):null;
 const fmtDate=d=>d?new Date(d).toLocaleDateString("fr-FR",{day:"numeric",month:"short"}):"—";
+const inSlot=k=>items.filter(i=>SLOTS.find(s=>s.key===k).cats.includes(i.category)).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+const byId=id=>items.find(i=>i.id===id);
 
-function renderCats(){
-  const n=c=>c==="Tout"?items.length:items.filter(i=>i.category===c).length;
-  const list=["Tout",...CATS.filter(c=>n(c)>0)];
-  if(!list.includes(cat))cat="Tout";
-  $("#cats").innerHTML=list.map(c=>`<button aria-pressed="${c===cat}" data-c="${esc(c)}">${esc(c)}<sup>${n(c)}</sup></button>`).join("");
+/* ---------- sidebar + chips ---------- */
+function count(v){
+  if(v==="Tout")return items.length;
+  if(v==="Favoris")return items.filter(i=>i.favorite).length;
+  if(v==="Mes tenues")return looks.length;
+  const g=GROUPS.find(g=>g.name===v);
+  return items.filter(i=>g?g.cats.includes(i.category):i.category===v).length;
 }
-function view(){
-  const q=$("#q").value.trim().toLowerCase(),s=$("#sort").value;
-  let v=items.filter(i=>(cat==="Tout"||i.category===cat)&&(!q||[i.name,i.brand,i.color,i.category,i.notes].join(" ").toLowerCase().includes(q)));
-  const by={new:(a,b)=>(b.createdAt||0)-(a.createdAt||0),most:(a,b)=>(b.wears||0)-(a.wears||0),least:(a,b)=>(a.wears||0)-(b.wears||0),fav:(a,b)=>(b.favorite?1:0)-(a.favorite?1:0)||(b.createdAt||0)-(a.createdAt||0)};
-  return v.sort(by[s]);
+function renderNav(){
+  const a=(v,cls,label)=>`<a class="${cls}" data-v="${esc(v)}" aria-current="${view===v}" tabindex="0">${esc(label||v)}<sup>${count(v)}</sup></a>`;
+  let h=a("Tout","top","Tout voir")+a("Favoris","top")+'<div class="gap"></div>';
+  for(const g of GROUPS){
+    if(g.cats.length>1){h+=a(g.name,"top");h+=g.cats.filter(c=>count(c)>0).map(c=>a(c,"sub")).join("")}
+    else h+=a(g.name,"top");
+    h+='<div class="gap"></div>';
+  }
+  h+=a("Mes tenues","top");
+  $("#nav").innerHTML=h;
+  const chipList=["Tout","Favoris",...GROUPS.map(g=>g.name),...CATS.filter(c=>count(c)>0&&!GROUPS.some(g=>g.name===c))];
+  $("#chips").innerHTML=chipList.filter(v=>v==="Tout"||count(v)>0||v===view).map(v=>`<button data-v="${esc(v)}" aria-pressed="${view===v}">${esc(v==="Tout"?"Tout voir":v)}</button>`).join("");
 }
-function render(){
-  renderCats();
-  const v=view();
-  $("#count").textContent=items.length?`${items.length} pièce${items.length>1?"s":""} · ${items.filter(i=>i.favorite).length} favori${items.filter(i=>i.favorite).length>1?"s":""}`:"Ma garde-robe";
-  $("#grid").innerHTML=v.map(i=>{
-    const d=daysSince(i.lastWorn);
-    return `<article class="card" data-id="${i.id}" tabindex="0" role="button" aria-label="${esc(i.name)}">
-      <div class="ph">${i.img?`<img src="${esc(i.img)}" alt="${esc(i.name)}" loading="lazy">`:'<span class="note">Sans photo</span>'}
-        ${(i.wears||0)===0?'<span class="tag">Jamais portée</span>':''}
-        ${db?`<button class="fav" data-fav="${i.id}" aria-pressed="${!!i.favorite}" aria-label="Favori">${heart}</button>`:''}
-      </div>
-      <div class="meta"><b>${esc(i.name)}</b><span>${i.wears||0}×</span></div>
-      <div class="sub">${esc(i.brand||i.category)}${d!=null?` · il y a ${d} j`:''}</div>
-    </article>`}).join("");
+
+/* ---------- product grid ---------- */
+function filtered(){
+  const q=$("#q").value.trim().toLowerCase();
+  const g=GROUPS.find(g=>g.name===view);
+  return items.filter(i=>{
+    if(view==="Favoris"&&!i.favorite)return false;
+    if(g&&!g.cats.includes(i.category))return false;
+    if(!g&&CATS.includes(view)&&i.category!==view)return false;
+    return !q||[i.name,i.brand,i.color,i.category,i.notes].join(" ").toLowerCase().includes(q);
+  }).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+}
+const swatch=c=>c&&COLORS[c]?`<span class="dot" style="background:${COLORS[c]}"></span>`:"";
+function renderGrid(){
   const e=$("#empty");
-  if(items.length&&!v.length){e.hidden=false;e.innerHTML='<h2>Aucune pièce</h2><p>Rien ne correspond à cette recherche.</p>'}
-  else e.hidden=!!items.length;
-  if(openId&&!pendingFile&&!$("#drawer").hidden&&!$("#drawer").contains(document.activeElement)) openSheet(openId);
+  if(view==="Mes tenues"){renderLooks();return}
+  const v=filtered(),chosen=new Set(Object.entries(sel).filter(([k])=>shown[k]).map(([,id])=>id));
+  $("#matching").textContent=`Pièces : ${v.length}`;
+  $("#grid").className="grid";
+  $("#grid").innerHTML=v.map(i=>`<div class="tile${chosen.has(i.id)?" sel":""}" data-id="${i.id}" role="button" tabindex="0" aria-label="Essayer ${esc(i.name)}">
+      ${i.favorite?'<span class="fav" aria-label="Favori">♥</span>':""}
+      <button class="info" data-info="${i.id}" aria-label="Fiche de ${esc(i.name)}">i</button>
+      <div class="im">${i.img?`<img src="${esc(i.img)}" alt="" loading="lazy">`:'<span class="note">Sans photo</span>'}</div>
+      <b>${esc(i.name)}</b>
+      <small>${esc(i.brand||i.category)}</small>
+      <small>${swatch(i.color)}${i.wears||0}× portée</small>
+    </div>`).join("");
+  if(!items.length){e.hidden=false}
+  else if(!v.length){e.hidden=false;e.innerHTML='<h3>Rien ici</h3><p>Aucune pièce dans cette catégorie pour l\'instant.</p>'}
+  else e.hidden=true;
+}
+function renderLooks(){
+  const e=$("#empty");
+  $("#matching").textContent=`Tenues : ${looks.length}`;
+  $("#grid").className="looks";
+  $("#grid").innerHTML=looks.map(l=>{
+    const ims=SLOTS.map(s=>byId(l.items?.[s.key])).filter(Boolean);
+    return `<div class="lk"><div class="stack">${ims.map(i=>i.img?`<img src="${esc(i.img)}" alt="${esc(i.name)}">`:`<small class="note">${esc(i.name)}</small>`).join("")}</div>
+      <b>${esc(l.name)}</b>
+      <div class="row"><button class="btn" data-wear="${l.id}">Essayer</button><button class="btn ghost" data-dl="${l.id}">Retirer</button></div></div>`}).join("");
+  e.hidden=!!looks.length;
+  if(!looks.length)e.innerHTML='<h3>Aucune tenue</h3><p>Compose un look au centre puis clique sur « Enregistrer la tenue ».</p>';
 }
 
+/* ---------- the look: swipeable rails ---------- */
+function renderToggles(){
+  $("#toggles").innerHTML=SLOTS.filter(s=>s.key!=="shoes").map(s=>`<button data-t="${s.key}" aria-pressed="${!!shown[s.key]}">${s.label}</button>`).join("");
+}
+function renderRails(){
+  const r=$("#rails");
+  r.innerHTML=SLOTS.filter(s=>shown[s.key]).map(s=>{
+    const list=inSlot(s.key);
+    if(list.length&&!list.some(i=>i.id===sel[s.key]))sel[s.key]=list[0].id;
+    const slides=list.length?list.map(i=>`<button class="slide" data-id="${i.id}" aria-label="${esc(i.name)}">${i.img?`<img src="${esc(i.img)}" alt="">`:`<span class="ph">${esc(i.name)}<br>Photo à ajouter</span>`}</button>`).join("")
+      :`<div class="slide on"><button class="ph" data-addcat="${s.add}">+ Ajoute ${s.key==="bag"?"un sac":s.key==="top"?"un haut":s.key==="bottom"?"un bas":"des chaussures"}</button></div>`;
+    return `<div class="rail" data-slot="${s.key}"><span class="rlabel">${s.label}</span>
+      <div class="track" tabindex="-1">${slides}</div>
+      ${list.length>1?'<button class="arrow l" data-dir="-1" aria-label="Précédent">‹</button><button class="arrow r" data-dir="1" aria-label="Suivant">›</button>':""}</div>`}).join("");
+  r.querySelectorAll(".rail").forEach(rail=>{
+    const k=rail.dataset.slot,tr=rail.querySelector(".track");
+    centerOn(k,sel[k],false);
+    let t;tr.addEventListener("scroll",()=>{clearTimeout(t);t=setTimeout(()=>pickCentered(k),90)},{passive:true});
+  });
+  markOn();renderLines();
+}
+function centerOn(k,id,smooth=true){
+  const tr=document.querySelector(`.rail[data-slot="${k}"] .track`);if(!tr||!id)return;
+  const el=tr.querySelector(`.slide[data-id="${id}"]`);if(!el)return;
+  tr.scrollTo({left:el.offsetLeft-(tr.clientWidth-el.offsetWidth)/2,behavior:smooth?"smooth":"auto"});
+}
+function pickCentered(k){
+  const tr=document.querySelector(`.rail[data-slot="${k}"] .track`);if(!tr)return;
+  const mid=tr.scrollLeft+tr.clientWidth/2;let best=null,d=1e9;
+  tr.querySelectorAll(".slide[data-id]").forEach(s=>{const c=s.offsetLeft+s.offsetWidth/2,dd=Math.abs(c-mid);if(dd<d){d=dd;best=s}});
+  if(best&&sel[k]!==best.dataset.id){sel[k]=best.dataset.id;saveUi();markOn();renderLines();renderGrid()}
+}
+function markOn(){document.querySelectorAll(".rail").forEach(r=>{const k=r.dataset.slot;r.querySelectorAll(".slide[data-id]").forEach(s=>s.classList.toggle("on",s.dataset.id===sel[k]))})}
+function renderLines(){
+  const rows=SLOTS.filter(s=>shown[s.key]).map(s=>byId(sel[s.key])).filter(Boolean);
+  $("#lines").innerHTML=rows.map(i=>`<div>${esc(i.name)}<span>${esc(i.brand||"")}</span></div>`).join("")+`<div class="tot">${rows.length} pièce${rows.length>1?"s":""}</div>`;
+}
+function tryOn(id){
+  const it=byId(id),k=it&&slotOf(it.category);
+  if(!k){openSheet(id);return}
+  sel[k]=id;
+  if(!shown[k]){shown[k]=true;renderToggles();renderRails()} else {centerOn(k,id);markOn();renderLines()}
+  saveUi();renderGrid();
+  if(matchMedia("(max-width:760px)").matches)setTab("look");
+}
+
+/* ---------- fiche (drawer) ---------- */
 function opts(arr,val){return arr.map(o=>`<option${o===val?" selected":""}>${esc(o)}</option>`).join("")}
 function openSheet(id){
-  const it=id?items.find(i=>i.id===id):{name:"",brand:"",category:"Talons",color:"",season:"Toute l'année",notes:"",wears:0};
+  const it=id?byId(id):{name:"",brand:"",category:presetCat||"Hauts",color:"",season:"Toute l'année",notes:"",wears:0};
   if(!it)return closeSheet();
   openId=id;pendingFile=null;
   const ro=!db;
   $("#drawer").innerHTML=`
     <div class="dhead"><small>${id?esc(it.category):"Nouvelle pièce"}</small><button class="x" id="close" aria-label="Fermer">×</button></div>
-    <div class="big" id="big">${it.img?`<img src="${esc(it.img)}" alt="">`:'<span class="noimg">Ajoute une photo, idéalement sur fond blanc</span>'}</div>
-    ${assets?`<div class="row"><button class="btn ghost" id="photo">${it.img?"Changer la photo":"Choisir une photo"}</button></div>`:""}
+    <div class="big" id="big">${it.img?`<img src="${esc(it.img)}" alt="">`:'<span class="note">Ajoute une photo, idéalement sur fond blanc</span>'}</div>
+    ${assets?`<div class="brow"><button class="btn ghost" id="photo">${it.img?"Changer la photo":"Choisir une photo"}</button>${id&&slotOf(it.category)?'<button class="btn ghost" id="try">Essayer dans le look</button>':""}</div>`:""}
     ${id?`<h2 id="dTitle">${esc(it.name)}</h2>
     <div class="stats"><div><b>${it.wears||0}</b><span>Fois portée</span></div><div><b>${fmtDate(it.lastWorn)}</b><span>Dernière fois</span></div><div><b>${it.favorite?"♥":"—"}</b><span>Favori</span></div></div>
-    ${ro?"":`<div class="row"><button class="btn" id="wear">Portée aujourd'hui</button>${it.wears?'<button class="btn ghost" id="unwear">−1</button>':""}</div>`}`:'<h2 id="dTitle">Ajouter une pièce</h2>'}
+    ${ro?"":`<div class="brow"><button class="btn" id="wear">Portée aujourd'hui</button>${it.wears?'<button class="btn ghost" id="unwear">−1</button>':""}<button class="btn ghost" id="favb">${it.favorite?"Retirer des favoris":"♥ Favori"}</button></div>`}`:'<h2 id="dTitle">Ajouter une pièce</h2>'}
     <form id="f">
       <label class="full">Nom<input id="f-name" name="name" required value="${esc(it.name)}" ${ro?"disabled":""}></label>
       <label>Marque<input id="f-brand" name="brand" value="${esc(it.brand)}" ${ro?"disabled":""}></label>
-      <label>Catégorie<select id="f-cat" name="category" ${ro?"disabled":""}>${opts(CATS,it.category)}</select></label>
-      <label>Couleur<select id="f-color" name="color" ${ro?"disabled":""}><option value=""></option>${opts(COLORS,it.color)}</select></label>
+      <label>Catégorie<select id="f-cat" name="category" ${ro?"disabled":""}>${GROUPS.map(g=>`<optgroup label="${esc(g.name)}">${opts(g.cats,it.category)}</optgroup>`).join("")}</select></label>
+      <label>Couleur<select id="f-color" name="color" ${ro?"disabled":""}><option value=""></option>${opts(Object.keys(COLORS),it.color)}</select></label>
       <label>Saison<select id="f-season" name="season" ${ro?"disabled":""}>${opts(SEASONS,it.season)}</select></label>
       <label class="full">Notes<textarea id="f-notes" name="notes" placeholder="Taille, avec quoi la porter, où je l'ai achetée…" ${ro?"disabled":""}>${esc(it.notes)}</textarea></label>
-      ${ro?"":`<div class="row full" style="grid-column:1/-1"><button class="btn" type="submit" id="save">${id?"Enregistrer":"Ajouter au dressing"}</button>${id?'<button class="btn danger" type="button" id="del">Retirer</button>':""}</div>`}
+      ${ro?"":`<div class="brow" style="grid-column:1/-1"><button class="btn" type="submit" id="save">${id?"Enregistrer":"Ajouter au dressing"}</button>${id?'<button class="btn danger" type="button" id="del">Retirer</button>':""}</div>`}
       <div id="confirm" style="grid-column:1/-1"></div>
     </form>
     ${ro?'<p class="note">Lecture seule : ouvre le dressing depuis ton compte pour modifier.</p>':""}`;
   $("#drawer").hidden=$("#scrim").hidden=false;
   $("#close").onclick=closeSheet;
   $("#photo")&&($("#photo").onclick=()=>$("#file").click());
+  $("#try")&&($("#try").onclick=()=>{closeSheet();tryOn(id)});
   $("#wear")&&($("#wear").onclick=()=>upd(id,{wears:(it.wears||0)+1,lastWorn:new Date().toISOString()},"Bien noté, belle journée !"));
   $("#unwear")&&($("#unwear").onclick=()=>upd(id,{wears:Math.max(0,(it.wears||0)-1)},"Retiré"));
+  $("#favb")&&($("#favb").onclick=()=>upd(id,{favorite:!it.favorite},it.favorite?"Retirée des favoris":"Ajoutée aux favoris"));
   $("#del")&&($("#del").onclick=()=>{$("#confirm").innerHTML='<div class="confirm">Retirer cette pièce du dressing ? <button class="btn danger" type="button" id="yes">Oui, retirer</button><button class="btn ghost" type="button" id="no">Annuler</button></div>';
     $("#no").onclick=()=>$("#confirm").innerHTML="";
     $("#yes").onclick=async()=>{try{await col.doc(id).delete();closeSheet();toast("Pièce retirée")}catch(e){toast("Impossible de retirer : "+(e.message||e.code))}}});
@@ -209,39 +411,86 @@ function openSheet(id){
     try{
       if(pendingFile){b.textContent="Envoi de la photo…";const a=await assets.upload(pendingFile);fd.img=a.url;fd.assetId=a.id}
       if(id){await col.doc(id).update(fd);toast("Enregistré")}
-      else{fd.createdAt=Date.now();fd.wears=0;fd.favorite=false;const r=await col.add(fd);openId=r.id;toast("Ajoutée au dressing")}
+      else{fd.createdAt=Date.now();fd.wears=0;fd.favorite=false;await col.add(fd);toast("Ajoutée au dressing")}
       closeSheet();
     }catch(e){toast("Échec de l'enregistrement : "+(e.message||e.code));b.disabled=false}
   };
 }
-function closeSheet(){$("#drawer").hidden=$("#scrim").hidden=true;openId=null;pendingFile=null}
-async function upd(id,patch,msg){try{await col.doc(id).update(patch);toast(msg);openSheet(id)}catch(e){toast("Échec : "+(e.message||e.code))}}
+function closeSheet(){$("#drawer").hidden=$("#scrim").hidden=true;openId=null;pendingFile=null;presetCat=null}
+async function upd(id,patch,msg){try{await col.doc(id).update(patch);toast(msg)}catch(e){toast("Échec : "+(e.message||e.code))}}
+function addPiece(cat){if(!db){toast("Connecte-toi pour ajouter des pièces");return}presetCat=cat||null;openSheet(null)}
 
-$("#file").onchange=e=>{const f=e.target.files[0];e.target.value="";if(!f)return;pendingFile=f;
-  $("#big").innerHTML=`<img src="${URL.createObjectURL(f)}" alt="">`;
-  if(openId){$("#save").textContent="Enregistrer la nouvelle photo"}};
-$("#cats").onclick=e=>{const b=e.target.closest("button");if(!b)return;cat=b.dataset.c;saveUi();render()};
-$("#q").oninput=render;$("#sort").onchange=()=>{saveUi();render()};
-$("#scrim").onclick=closeSheet;
-document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#drawer").hidden)closeSheet();
-  if((e.key==="Enter"||e.key===" ")&&e.target.classList?.contains("card")){e.preventDefault();openSheet(e.target.dataset.id)}});
+/* ---------- tabs (phone) ---------- */
+function setTab(t){
+  document.body.dataset.tab=t;
+  document.querySelectorAll(".tabbar [data-tab]").forEach(b=>b.setAttribute("aria-current",b.dataset.tab===t));
+  if(t==="looks"){view="Mes tenues";renderAll()}
+  else if(t==="closet"&&view==="Mes tenues"){view="Tout";renderAll()}
+  if(t==="look")requestAnimationFrame(()=>SLOTS.forEach(s=>centerOn(s.key,sel[s.key],false)));
+  window.scrollTo(0,0);
+}
+
+/* ---------- events ---------- */
+function goView(v){view=v;saveUi();renderAll();
+  if(matchMedia("(max-width:760px)").matches&&document.body.dataset.tab==="look")setTab(v==="Mes tenues"?"looks":"closet")}
+$("#nav").onclick=e=>{const a=e.target.closest("[data-v]");if(a)goView(a.dataset.v)};
+$("#nav").onkeydown=e=>{if(e.key==="Enter"){const a=e.target.closest("[data-v]");if(a)goView(a.dataset.v)}};
+$("#chips").onclick=e=>{const b=e.target.closest("[data-v]");if(b)goView(b.dataset.v)};
+$("#q").oninput=renderGrid;
 $("#grid").onclick=async e=>{
-  const f=e.target.closest("[data-fav]");
-  if(f){e.stopPropagation();const it=items.find(i=>i.id===f.dataset.fav);try{await col.doc(it.id).update({favorite:!it.favorite})}catch(err){toast("Échec : "+(err.message||err.code))}return}
-  const c=e.target.closest(".card");if(c)openSheet(c.dataset.id)};
-$("#addBtn").onclick=()=>openSheet(null);
+  const info=e.target.closest("[data-info]");if(info){openSheet(info.dataset.info);return}
+  const w=e.target.closest("[data-wear]");
+  if(w){const l=looks.find(x=>x.id===w.dataset.wear);SLOTS.forEach(s=>{shown[s.key]=!!l.items?.[s.key]||s.key==="shoes";if(l.items?.[s.key])sel[s.key]=l.items[s.key]});saveUi();renderToggles();renderRails();renderGrid();
+    if(matchMedia("(max-width:760px)").matches)setTab("look");toast("Tenue chargée");return}
+  const dl=e.target.closest("[data-dl]");
+  if(dl){try{await lcol.doc(dl.dataset.dl).delete();toast("Tenue retirée")}catch(err){toast("Échec : "+(err.message||err.code))}return}
+  const t=e.target.closest(".tile");if(t)tryOn(t.dataset.id)};
+$("#grid").onkeydown=e=>{if((e.key==="Enter"||e.key===" ")&&e.target.classList.contains("tile")){e.preventDefault();tryOn(e.target.dataset.id)}};
+$("#rails").onclick=e=>{
+  const ar=e.target.closest(".arrow");
+  if(ar){const k=ar.closest(".rail").dataset.slot,list=inSlot(k),i=list.findIndex(x=>x.id===sel[k]);
+    const n=list[(i+(+ar.dataset.dir)+list.length)%list.length];sel[k]=n.id;centerOn(k,n.id);markOn();renderLines();renderGrid();saveUi();return}
+  const ph=e.target.closest("[data-addcat]");if(ph){addPiece(ph.dataset.addcat);return}
+  const s=e.target.closest(".slide[data-id]");if(!s)return;
+  const k=s.closest(".rail").dataset.slot;
+  if(s.dataset.id===sel[k])openSheet(s.dataset.id);else{sel[k]=s.dataset.id;centerOn(k,s.dataset.id);markOn();renderLines();renderGrid();saveUi()}};
+$("#toggles").onclick=e=>{const b=e.target.closest("[data-t]");if(!b)return;shown[b.dataset.t]=!shown[b.dataset.t];saveUi();renderToggles();renderRails();renderGrid()};
+$("#shuffle").onclick=()=>{SLOTS.forEach(s=>{const l=inSlot(s.key);if(shown[s.key]&&l.length){sel[s.key]=l[Math.floor(Math.random()*l.length)].id;centerOn(s.key,sel[s.key])}});markOn();renderLines();renderGrid();saveUi()};
+$("#saveLook").onclick=async()=>{
+  if(!lcol){toast("Connecte-toi pour enregistrer des tenues");return}
+  const it={};SLOTS.forEach(s=>{if(shown[s.key]&&sel[s.key]&&byId(sel[s.key]))it[s.key]=sel[s.key]});
+  if(!Object.keys(it).length){toast("Choisis au moins une pièce");return}
+  try{await lcol.add({items:it,name:"Tenue du "+new Date().toLocaleDateString("fr-FR",{day:"numeric",month:"long"}),createdAt:Date.now()});toast("Tenue enregistrée")}
+  catch(err){toast("Échec : "+(err.message||err.code))}};
+$("#addBtn").onclick=()=>addPiece(CATS.includes(view)?view:null);
+$("#addTab").onclick=()=>addPiece(CATS.includes(view)?view:null);
+document.querySelectorAll(".tabbar [data-tab]").forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+$("#file").onchange=e=>{const f=e.target.files[0];e.target.value="";if(!f)return;pendingFile=f;
+  $("#big").innerHTML=`<img src="${URL.createObjectURL(f)}" alt="">`;if(openId)$("#save").textContent="Enregistrer la nouvelle photo"};
+$("#scrim").onclick=closeSheet;
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#drawer").hidden)closeSheet()});
+let rz;addEventListener("resize",()=>{clearTimeout(rz);rz=setTimeout(()=>SLOTS.forEach(s=>centerOn(s.key,sel[s.key],false)),150)});
 
+function renderAll(){
+  $("#count").textContent=items.length?`${items.length} pièces · ${looks.length} tenue${looks.length>1?"s":""}`:"Ma garde-robe";
+  renderNav();renderToggles();renderRails();renderGrid();
+  if(openId&&!pendingFile&&!$("#drawer").hidden&&!$("#drawer").contains(document.activeElement))openSheet(openId);
+}
+
+document.body.dataset.tab="look";
+renderAll();
 (async()=>{
-  const timer=setTimeout(()=>{if(!items.length)$("#empty").innerHTML='<h2>Dressing indisponible</h2><p>Connecte-toi à ton compte Claude pour voir et gérer tes pièces.</p>'},10000);
+  const fail=m=>{$("#empty").hidden=false;$("#empty").innerHTML=`<h3>Dressing indisponible</h3><p>${m}</p>`};
+  const timer=setTimeout(()=>{if(!items.length)fail("Connecte-toi à ton compte Claude pour voir et gérer tes pièces.")},10000);
   db=await window.claude?.use?.("db");
-  if(!db){clearTimeout(timer);$("#empty").innerHTML='<h2>Dressing indisponible</h2><p>Connecte-toi à ton compte Claude pour voir et gérer tes pièces.</p>';return}
+  if(!db){clearTimeout(timer);fail("Connecte-toi à ton compte Claude pour voir et gérer tes pièces.");return}
   assets=await window.claude.use("assets");
-  col=db.collection("items");
+  col=db.collection("items");lcol=db.collection("looks");
   $("#addBtn").hidden=false;
   col.onSnapshot(s=>{clearTimeout(timer);items=s.docs.map(d=>({id:d.id,...d.data()}));
-    if(!items.length){$("#empty").innerHTML='<h2>Ton dressing est vide</h2><p>Clique sur « Ajouter une pièce » et choisis une photo pour commencer.</p>'}
-    render()},
-    err=>{clearTimeout(timer);$("#empty").hidden=false;$("#empty").innerHTML=`<h2>Lecture impossible</h2><p>${esc(err.message||err.code)}</p>`});
+      if(!items.length)$("#empty").innerHTML='<h3>Ton dressing est vide</h3><p>Clique sur « Ajouter » et choisis une photo pour commencer.</p>';
+      renderAll()},
+    err=>{clearTimeout(timer);fail(esc(err.message||err.code))});
+  lcol.onSnapshot(s=>{looks=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));renderAll()},()=>{});
 })();
-render();
 </script>
