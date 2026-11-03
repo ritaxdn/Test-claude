@@ -1,0 +1,26 @@
+{
+  "name": "cellulift-academy-video",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Vidéo publicitaire animée de CELLULIFT Academy (Remotion).",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "render:16x9": "remotion render src/index.ts Academy16x9 out/academy-pub-16x9.mp4",
+    "render:9x16": "remotion render src/index.ts Academy9x16 out/academy-pub-9x16.mp4",
+    "render": "npm run render:16x9 && npm run render:9x16",
+    "stills": "node scripts/stills.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.540",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "remotion": "4.0.540"
+  },
+  "devDependencies": {
+    "@remotion/bundler": "4.0.540",
+    "@remotion/renderer": "4.0.540",
+    "@types/react": "19.2.2",
+    "typescript": "5.9.3"
+  }
+}
