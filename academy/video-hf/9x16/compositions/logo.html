@@ -1,0 +1,26 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+    
+  </style>
+  <div id="root" data-composition-id="logo">
+    <div class="scene" id="logo-wrap">
+      <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+        <div id="logo-mark"><div style="display:inline-flex;flex-direction:column;align-items:center;gap:20.5px"><span class="rbtext" style="font-family:var(--f-mark);font-weight:400;font-size:128px;letter-spacing:.22em;margin-right:-.22em;line-height:1;text-transform:uppercase">Cellulift</span><svg width="691.2" height="86.4" viewBox="0 0 160 20" fill="none" style="overflow:visible;display:block"><defs><linearGradient id="logo-ecg-g" x1="0" y1="0" x2="160" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0.0" stop-color="#00BCD4"/><stop offset="0.25" stop-color="#7B61FF"/><stop offset="0.5" stop-color="#E91E8C"/><stop offset="0.75" stop-color="#FF5722"/><stop offset="1.0" stop-color="#FFC107"/></linearGradient></defs><path id="logo-ecg" d="M0 10 H50 L58 10 L64 2 L72 18 L80 6 L86 10 H100 L106 10 L112 4 L118 16 L124 10 H160" stroke="url(#logo-ecg-g)" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1.2" stroke-dashoffset="1.1"/></svg></div></div>
+        <div class="display" id="logo-tag" style="font-size:60px;letter-spacing:.32em;margin-right:-.32em;margin-top:34px"><span class="iri">Academy</span></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      const tl = gsap.timeline({ paused: true });
+      const tall = window.matchMedia("(orientation: portrait)").matches;
+
+    tl.to("#logo-wrap", { opacity: 0, scale: 1.04, filter: "blur(8px)", duration: 0.33, ease: "none" }, 2.27);
+    tl.fromTo("#logo-mark", { scale: 0.9 }, { scale: 1, duration: 1.2, ease: "back.out(1.2)" }, 0);
+    tl.fromTo("#logo-ecg", { attr: { "stroke-dashoffset": 1.1 } }, { attr: { "stroke-dashoffset": 0 }, duration: 1.6, ease: "expo.out" }, 0.2);
+    tl.fromTo("#logo-tag", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.73, ease: "expo.out" }, 1.13);
+      window.__timelines["logo"] = tl;
+    })();
+  </script>
+</template>

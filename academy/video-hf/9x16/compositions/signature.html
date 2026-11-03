@@ -1,0 +1,35 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+    .sig-h { font-size: 78px; line-height: 1; margin-top: 60px; }
+    .sig-line { height: 2px; width: 1000px; background: var(--rainbow); opacity: .8; margin: 48px 0 30px; }
+    .sig-url { font-size: 28px; letter-spacing: .18em; color: var(--deep); text-transform: none; }
+    @media (orientation: portrait) { .sig-h { font-size: 70px; margin-top: 90px; } .sig-line { width: 720px; margin: 64px 0 40px; } .sig-url { font-size: 34px; } #sig-logo { zoom: 1.1; } }
+  </style>
+  <div id="root" data-composition-id="signature">
+    <div class="scene" id="signature-wrap">
+      <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px">
+        <div id="sig-logo"><div style="display:inline-flex;flex-direction:column;align-items:center;gap:9.3px"><span class="rbtext" style="font-family:var(--f-mark);font-weight:400;font-size:58px;letter-spacing:.22em;margin-right:-.22em;line-height:1;text-transform:uppercase">Cellulift</span><svg width="313.20000000000005" height="39.2" viewBox="0 0 160 20" fill="none" style="overflow:visible;display:block"><defs><linearGradient id="sig-ecg-g" x1="0" y1="0" x2="160" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0.0" stop-color="#00BCD4"/><stop offset="0.25" stop-color="#7B61FF"/><stop offset="0.5" stop-color="#E91E8C"/><stop offset="0.75" stop-color="#FF5722"/><stop offset="1.0" stop-color="#FFC107"/></linearGradient></defs><path id="sig-ecg" d="M0 10 H50 L58 10 L64 2 L72 18 L80 6 L86 10 H100 L106 10 L112 4 L118 16 L124 10 H160" stroke="url(#sig-ecg-g)" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1.2" stroke-dashoffset="1.1"/></svg><span class="mono" style="font-size:24.0px;letter-spacing:.5em;margin-right:-.5em;color:var(--deep-soft)">Academy</span></div></div>
+        <h2 class="display sig-h"><div id="sig-l1">La technologie s'acquiert.</div><div id="sig-l2" style="margin-top:6px">La <span class="iri">maîtrise</span> se construit.</div></h2>
+        <div class="sig-line" id="sig-line"></div>
+        <div class="mono sig-url" id="sig-url">academy.cellulift.ma</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      const tl = gsap.timeline({ paused: true });
+      const tall = window.matchMedia("(orientation: portrait)").matches;
+
+    tl.fromTo("#signature-wrap", { opacity: 0 }, { opacity: 1, duration: 0.33, ease: "expo.out" }, 0);
+    tl.fromTo("#sig-logo", { scale: 0.85, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.8, ease: "back.out(1.3)" }, 0);
+    tl.fromTo("#sig-ecg", { attr: { "stroke-dashoffset": 1.1 } }, { attr: { "stroke-dashoffset": 0 }, duration: 1.47, ease: "expo.out" }, 0.07);
+    tl.fromTo("#sig-l1", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.73, ease: "expo.out" }, 0.33);
+    tl.fromTo("#sig-l2", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.73, ease: "expo.out" }, 0.53);
+    tl.fromTo("#sig-line", { scaleX: 0 }, { scaleX: 1, duration: 1.2, ease: "expo.out" }, 0.87);
+    tl.fromTo("#sig-url", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.73, ease: "expo.out" }, 1.13);
+    tl.to("#signature-wrap", { opacity: 0, duration: 0.4, ease: "none" }, 3.08);
+      window.__timelines["signature"] = tl;
+    })();
+  </script>
+</template>

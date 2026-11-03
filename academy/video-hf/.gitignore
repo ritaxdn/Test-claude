@@ -1,0 +1,4 @@
+out/
+*/.hyperframes/artifacts/
+*/assets/audio/*.wav
+*/node_modules/

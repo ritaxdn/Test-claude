@@ -1,0 +1,52 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; pointer-events: none; }
+    #root .wipe { position: absolute; top: 0; bottom: 0; left: 0; width: 3px; opacity: 0; }
+    #root .wipe-line { position: absolute; inset: 0; background: linear-gradient(180deg, #00bcd4, #7b61ff 30%, #e91e8c 60%, #ff5722 85%, #ffc107); box-shadow: 0 0 24px rgba(123,97,255,.7), 0 0 60px rgba(233,30,140,.35); }
+    #root .wipe-wash { position: absolute; top: 0; bottom: 0; right: 3px; width: 160px; background: linear-gradient(90deg, transparent, rgba(123,97,255,.10)); }
+  </style>
+  <div id="root" data-composition-id="wipes">
+      <div class="wipe" id="wipe0"><div class="wipe-wash"></div><div class="wipe-line"></div></div>
+      <div class="wipe" id="wipe1"><div class="wipe-wash"></div><div class="wipe-line"></div></div>
+      <div class="wipe" id="wipe2"><div class="wipe-wash"></div><div class="wipe-line"></div></div>
+      <div class="wipe" id="wipe3"><div class="wipe-wash"></div><div class="wipe-line"></div></div>
+      <div class="wipe" id="wipe4"><div class="wipe-wash"></div><div class="wipe-line"></div></div>
+      <div class="wipe" id="wipe5"><div class="wipe-wash"></div><div class="wipe-line"></div></div>
+      <div class="wipe" id="wipe6"><div class="wipe-wash"></div><div class="wipe-line"></div></div>
+  </div>
+  <script>
+    (function () {
+      const tl = gsap.timeline({ paused: true });
+      const W = window.matchMedia("(orientation: portrait)").matches ? 1080 : 1920;
+    tl.set("#wipe0", { opacity: 0 }, 0);
+    tl.fromTo("#wipe0", { x: -0.1 * W }, { x: 1.1 * W, duration: 0.533, ease: "power2.inOut", immediateRender: false }, 2.267);
+    tl.to("#wipe0", { opacity: 1, duration: 0.267, ease: "sine.out" }, 2.267);
+    tl.to("#wipe0", { opacity: 0, duration: 0.266, ease: "sine.in" }, 2.533);
+    tl.set("#wipe1", { opacity: 0 }, 0);
+    tl.fromTo("#wipe1", { x: -0.1 * W }, { x: 1.1 * W, duration: 0.533, ease: "power2.inOut", immediateRender: false }, 4.767);
+    tl.to("#wipe1", { opacity: 1, duration: 0.267, ease: "sine.out" }, 4.767);
+    tl.to("#wipe1", { opacity: 0, duration: 0.266, ease: "sine.in" }, 5.033);
+    tl.set("#wipe2", { opacity: 0 }, 0);
+    tl.fromTo("#wipe2", { x: -0.1 * W }, { x: 1.1 * W, duration: 0.533, ease: "power2.inOut", immediateRender: false }, 9.267);
+    tl.to("#wipe2", { opacity: 1, duration: 0.267, ease: "sine.out" }, 9.267);
+    tl.to("#wipe2", { opacity: 0, duration: 0.266, ease: "sine.in" }, 9.533);
+    tl.set("#wipe3", { opacity: 0 }, 0);
+    tl.fromTo("#wipe3", { x: -0.1 * W }, { x: 1.1 * W, duration: 0.533, ease: "power2.inOut", immediateRender: false }, 13.267);
+    tl.to("#wipe3", { opacity: 1, duration: 0.267, ease: "sine.out" }, 13.267);
+    tl.to("#wipe3", { opacity: 0, duration: 0.266, ease: "sine.in" }, 13.533);
+    tl.set("#wipe4", { opacity: 0 }, 0);
+    tl.fromTo("#wipe4", { x: -0.1 * W }, { x: 1.1 * W, duration: 0.533, ease: "power2.inOut", immediateRender: false }, 18.267);
+    tl.to("#wipe4", { opacity: 1, duration: 0.267, ease: "sine.out" }, 18.267);
+    tl.to("#wipe4", { opacity: 0, duration: 0.266, ease: "sine.in" }, 18.533);
+    tl.set("#wipe5", { opacity: 0 }, 0);
+    tl.fromTo("#wipe5", { x: -0.1 * W }, { x: 1.1 * W, duration: 0.533, ease: "power2.inOut", immediateRender: false }, 22.267);
+    tl.to("#wipe5", { opacity: 1, duration: 0.267, ease: "sine.out" }, 22.267);
+    tl.to("#wipe5", { opacity: 0, duration: 0.266, ease: "sine.in" }, 22.533);
+    tl.set("#wipe6", { opacity: 0 }, 0);
+    tl.fromTo("#wipe6", { x: -0.1 * W }, { x: 1.1 * W, duration: 0.533, ease: "power2.inOut", immediateRender: false }, 26.267);
+    tl.to("#wipe6", { opacity: 1, duration: 0.267, ease: "sine.out" }, 26.267);
+    tl.to("#wipe6", { opacity: 0, duration: 0.266, ease: "sine.in" }, 26.533);
+      window.__timelines["wipes"] = tl;
+    })();
+  </script>
+</template>

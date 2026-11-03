@@ -1,0 +1,64 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+    
+  </style>
+  <div id="root" data-composition-id="invite">
+    <div class="scene" id="invite-wrap">
+      <div class="win-pos" id="inv-win-pos" data-layout-ignore><div class="win" id="inv-win"><div class="win" id="inv-win-drift"><div class="win-rim-glow"></div><div class="win-rim"></div><div class="win-body"><div class="row chrome"><i></i><i></i><i></i><span class="mono url">academy.cellulift.ma</span></div><div style="display:grid;grid-template-columns:1fr 1fr;height:740px"><section style="padding:44px;border-right:1px solid var(--line);display:flex;flex-direction:column;justify-content:space-between"><div style="zoom:.8"><div style="display:inline-flex;flex-direction:column;align-items:center;gap:4.8px"><span class="rbtext" style="font-family:var(--f-mark);font-weight:400;font-size:30px;letter-spacing:.22em;margin-right:-.22em;line-height:1;text-transform:uppercase">Cellulift</span><svg width="162.0" height="20.2" viewBox="0 0 160 20" fill="none" style="overflow:visible;display:block"><defs><linearGradient id="ecg-auth-g" x1="0" y1="0" x2="160" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0.0" stop-color="#00BCD4"/><stop offset="0.25" stop-color="#7B61FF"/><stop offset="0.5" stop-color="#E91E8C"/><stop offset="0.75" stop-color="#FF5722"/><stop offset="1.0" stop-color="#FFC107"/></linearGradient></defs><path id="ecg-auth" d="M0 10 H50 L58 10 L64 2 L72 18 L80 6 L86 10 H100 L106 10 L112 4 L118 16 L124 10 H160" stroke="url(#ecg-auth-g)" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1.2" stroke-dashoffset="0"/></svg><span class="mono" style="font-size:6.0px;letter-spacing:.5em;margin-right:-.5em;color:var(--deep-soft)">Metamorphosis Technology · Academy</span></div></div><div><span class="eyebrow">academy.cellulift.ma</span><h1 class="display" style="font-size:44px;margin-top:16px">La technologie s'acquiert.<br><span class="iri">La maîtrise</span> se construit.</h1><p class="muted" style="margin-top:18px">Les parcours de formation de vos technologies CELLULIFT : vidéos, protocoles et suivi de votre progression.</p></div><span class="mono">© CELLULIFT · Maroc</span></section><section style="display:grid;place-items:center"><div class="glass stack" style="padding:30px;gap:14px;width:460px"><span class="eyebrow">Invitation</span><h2 class="display h2">Bienvenue, Dr Salma Benali</h2><p class="muted small">Choisissez un mot de passe pour <b>s.benali@exemple.ma</b>. Vous l'utiliserez pour accéder à vos formations.</p><div class="field"><label>Mot de passe</label><div class="input" id="bg-input" style="letter-spacing:.25em"></div></div><div class="btn solid" id="bg-btn" style="position:relative;min-height:46px">Créer mon accès</div></div></section></div></div></div></div></div>
+      <div class="headline" id="inv-hl"><div class="mono step" id="inv-step">01 · Invitation</div><h2 class="display"><span class="w"><span>Une</span></span>&nbsp;<span class="w"><span><span class="iri">invitation</span></span></span><span class="br-tall"></span><span class="sp-wide">&nbsp;</span><span class="w"><span>dès</span></span>&nbsp;<span class="w"><span>l'installation</span></span></h2><div class="uline" id="inv-uline"></div></div>
+      <div class="pp" style="--x:960px;--y:630px;--tx:540px;--ty:1100px"><div id="inv-card"><div id="inv-card-f"><div class="pz" style="--w:460px;--z:1.55;--tw:460px;--tz:1.85"><div class="glass stack" style="padding:30px;gap:14px;width:460px"><span class="eyebrow">Invitation</span><h2 class="display h2">Bienvenue, Dr Salma Benali</h2><p class="muted small">Choisissez un mot de passe pour <b>s.benali@exemple.ma</b>. Vous l'utiliserez pour accéder à vos formations.</p><div class="field"><label>Mot de passe</label><div class="input" id="inv-input" style="letter-spacing:.25em"><span id="inv-dots" style="display:inline-block">••••••••••••</span></div></div><div class="btn solid" id="inv-btn" style="position:relative;min-height:46px">Créer mon accès<span id="inv-ok" style="position:absolute;inset:-1px;border-radius:999px;background:var(--ok);display:grid;place-items:center;color:#fff">✓ Accès créé</span><span class="burst" id="inv-burst"><i style="background:#00BCD4"></i><i style="background:#7B61FF"></i><i style="background:#E91E8C"></i><i style="background:#FF5722"></i><i style="background:#FFC107"></i><i style="background:#00BCD4"></i><i style="background:#7B61FF"></i><i style="background:#E91E8C"></i><i style="background:#FF5722"></i><i style="background:#FFC107"></i><i style="background:#00BCD4"></i><i style="background:#7B61FF"></i><i style="background:#E91E8C"></i><i style="background:#FF5722"></i></span></div></div></div></div></div></div>
+      <div class="cursor" id="inv-cur"><div class="ring" id="inv-cur-ring"></div><div id="inv-cur-hand" style="position:absolute;left:0;top:0"><svg viewBox="0 0 40 46"><g fill="#1d1b26" stroke="#1d1b26" stroke-width="4.4" stroke-linejoin="round"><rect x="15" y="2" width="7.5" height="22" rx="3.75"/><rect x="22.5" y="6" width="7" height="18" rx="3.5"/><rect x="29.5" y="9" width="6.5" height="15" rx="3.25"/><rect x="9" y="16" width="27" height="25" rx="10"/><rect x="2" y="20" width="7" height="15" rx="3.5" transform="rotate(-32 5.5 27.5)"/></g><g fill="#fff"><rect x="15" y="2" width="7.5" height="22" rx="3.75"/><rect x="22.5" y="6" width="7" height="18" rx="3.5"/><rect x="29.5" y="9" width="6.5" height="15" rx="3.25"/><rect x="9" y="16" width="27" height="25" rx="10"/><rect x="2" y="20" width="7" height="15" rx="3.5" transform="rotate(-32 5.5 27.5)"/></g><g stroke="#1d1b26" stroke-width="2" stroke-linecap="round"><path d="M18 29v6M23 29v6M28 29v6"/></g></svg></div></div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      const tl = gsap.timeline({ paused: true });
+      const tall = window.matchMedia("(orientation: portrait)").matches;
+
+    tl.fromTo("#invite-wrap", { opacity: 0 }, { opacity: 1, duration: 0.33, ease: "expo.out" }, 0);
+    tl.to("#invite-wrap", { opacity: 0, scale: 1.04, filter: "blur(8px)", duration: 0.33, ease: "none" }, 4.27);
+    {
+      const s = tall ? 1.3 : 1.38;
+      tl.fromTo("#inv-win", { y: 420, rotationX: 42, scale: s * 0.92, opacity: 0, transformPerspective: 2600 },
+        { y: 0, rotationX: 14, scale: s, opacity: 1, duration: 1.1, ease: "back.out(0.8)" }, 0);
+      tl.fromTo("#inv-win-drift", { rotationY: -16, scale: 1, transformPerspective: 2600 },
+        { rotationY: -9.100000000000001, scale: 1.1, duration: 4.6, ease: "none" }, 0);
+      tl.fromTo("#inv-win-pos", { filter: "blur(0px)", opacity: 1 }, { filter: "blur(7px)", opacity: 0.7, duration: 0.73, ease: "expo.out" }, 0.6);
+    }
+    tl.fromTo("#inv-step", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "expo.out" }, 0.13);
+    tl.fromTo("#inv-hl .w > span", { yPercent: 110 }, { yPercent: 0, duration: 0.55, ease: "back.out(1.6)", stagger: 0.083 }, 0.23);
+    tl.fromTo("#inv-uline", { scaleX: 0 }, { scaleX: 1, duration: 0.87, ease: "expo.out" }, 0.46);
+    tl.fromTo("#inv-card", { y: 120, rotationX: 30, rotation: 0, scale: 0.62, opacity: 0, transformPerspective: 1800 },
+      { y: 0, rotationX: 0, rotation: 0, scale: 1, opacity: 1, duration: 0.75, ease: "back.out(1.6)" }, 0.6);
+    tl.fromTo("#inv-card-f", { y: -4 }, { y: 4, duration: 1.45, ease: "sine.inOut", yoyo: true, repeat: 2 }, 1.4);
+    tl.fromTo("#inv-dots", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.73, ease: "steps(12)" }, 1.6);
+    tl.fromTo("#inv-input", { borderColor: "rgba(29,27,38,.16)", boxShadow: "0 0 0 0px rgba(123,97,255,0)" }, { borderColor: "#7b61ff", boxShadow: "0 0 0 4px rgba(123,97,255,.14)", duration: 0.2 }, 1.55);
+    tl.to("#inv-btn", { scale: 0.94, duration: 0.13, ease: "power2.in" }, 2.93);
+    tl.to("#inv-btn", { scale: 1, duration: 0.2, ease: "power2.out" }, 3.06);
+    tl.fromTo("#inv-ok", { opacity: 0 }, { opacity: 1, duration: 0.12, ease: "none" }, 3.07);
+    tl.set("#inv-burst", { opacity: 0 }, 0); tl.set("#inv-burst", { opacity: 1 }, 3.07);
+    gsap.utils.toArray("#inv-burst i").forEach((el, i) => {
+      const a = (i / 14) * Math.PI * 2 + 0.3;
+      tl.fromTo(el, { x: Math.cos(a) * 36.0, y: Math.sin(a) * 36.0, rotation: a * 180 / Math.PI, xPercent: -50, yPercent: -50, scaleX: 1, opacity: 1 },
+        { x: Math.cos(a) * 72.0, y: Math.sin(a) * 72.0, scaleX: 0.15, opacity: 0, duration: 0.6, ease: "expo.out" }, 3.07);
+    });
+    {
+      const keys = tall ? [[1.13, 920, 1620], [1.53, 660, 1232], [2.53, 660, 1232], [2.87, 580, 1322]] : [[1.13, 1480, 1010], [1.53, 1080, 740], [2.53, 1080, 740], [2.87, 1000, 816]];
+      tl.set("#inv-cur", { opacity: 0, x: keys[0][1], y: keys[0][2] }, 0);
+      tl.to("#inv-cur", { opacity: 1, duration: 0.27, ease: "none" }, keys[0][0]);
+      for (let i = 1; i < keys.length; i++) {
+        tl.to("#inv-cur", { x: keys[i][1], y: keys[i][2], duration: keys[i][0] - keys[i - 1][0], ease: "expo.out" }, keys[i - 1][0]);
+      }
+      tl.set("#inv-cur-ring", { opacity: 0 }, 0);
+      tl.set("#inv-cur-hand", { rotation: -8 }, 0);
+      for (const c of [1.53, 2.93]) {
+        tl.to("#inv-cur-hand", { scale: 0.82, duration: 0.13, ease: "power2.in" }, c);
+        tl.to("#inv-cur-hand", { scale: 1, duration: 0.2, ease: "power2.out" }, c + 0.13);
+        tl.fromTo("#inv-cur-ring", { scale: 0.25, opacity: 1 }, { scale: 1.1, opacity: 0, duration: 0.53, ease: "power1.out", immediateRender: false }, c);
+      }
+    }
+      window.__timelines["invite"] = tl;
+    })();
+  </script>
+</template>

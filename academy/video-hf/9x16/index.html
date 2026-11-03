@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="fr" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>CELLULIFT Academy — 9:16</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="assets/academy.css" />
+    <style>
+      @font-face { font-family: "Archivo"; src: url("assets/fonts/archivo.woff2") format("woff2"); font-weight: 100 900; font-stretch: 62% 125%; font-display: block; }
+      @font-face { font-family: "Instrument Sans"; src: url("assets/fonts/instrument-sans.woff2") format("woff2"); font-weight: 400 700; font-display: block; }
+      @font-face { font-family: "JetBrains Mono"; src: url("assets/fonts/jetbrains-mono.woff2") format("woff2"); font-weight: 400 600; font-display: block; }
+      @font-face { font-family: "Cormorant Garamond"; src: url("assets/fonts/cormorant.woff2") format("woff2"); font-weight: 300 500; font-display: block; }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #eceef3; }
+      #main { width: 100%; height: 100%; position: relative; overflow: hidden; }
+      /* Fond nacré « void » : trois halos doux de la charte, qui dérivent lentement. */
+      .bg { position: absolute; inset: 0; background: #eceef3; }
+      .glow { position: absolute; border-radius: 50%; }
+      #glow-v { width: 2112px; height: 1536px; left: -62px; top: -806px; background: radial-gradient(closest-side, rgba(123,97,255,.16), transparent); }
+      #glow-c { width: 1920px; height: 1536px; left: -1037px; top: 154px; background: radial-gradient(closest-side, rgba(0,188,212,.13), transparent); }
+      #glow-m { width: 1920px; height: 1536px; left: 120px; top: 1152px; background: radial-gradient(closest-side, rgba(233,30,140,.11), transparent); }
+    </style>
+  </head>
+  <body class="root">
+    <div id="main" data-composition-id="main" data-start="0" data-duration="30" data-fps="30" data-width="1080" data-height="1920">
+      <div class="bg" data-layout-ignore><div class="glow" id="glow-v"></div><div class="glow" id="glow-c"></div><div class="glow" id="glow-m"></div></div>
+      <div id="logo" data-composition-id="logo" data-composition-src="compositions/logo.html" data-start="0" data-duration="2.6" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index:2"></div>
+      <div id="hook" data-composition-id="hook" data-composition-src="compositions/hook.html" data-start="2.5" data-duration="2.7" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index:3"></div>
+      <div id="invite" data-composition-id="invite" data-composition-src="compositions/invite.html" data-start="5" data-duration="4.6" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index:4"></div>
+      <div id="dashboard" data-composition-id="dashboard" data-composition-src="compositions/dashboard.html" data-start="9.5" data-duration="4.1" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index:5"></div>
+      <div id="lesson" data-composition-id="lesson" data-composition-src="compositions/lesson.html" data-start="13.5" data-duration="5.1" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index:6"></div>
+      <div id="progress" data-composition-id="progress" data-composition-src="compositions/progress.html" data-start="18.5" data-duration="4.1" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index:7"></div>
+      <div id="done" data-composition-id="done" data-composition-src="compositions/done.html" data-start="22.5" data-duration="4.1" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index:8"></div>
+      <div id="signature" data-composition-id="signature" data-composition-src="compositions/signature.html" data-start="26.5" data-duration="3.5" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index:9"></div>
+      <div id="wipes" data-composition-id="wipes" data-composition-src="compositions/wipes.html" data-start="0" data-duration="30" data-track-index="3" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index:50"></div>
+      <audio id="music" class="clip" data-start="0" data-duration="30" data-track-index="10" data-volume="0.5" src="assets/audio/music.wav"></audio>
+      <audio id="sfx" class="clip" data-start="0" data-duration="30" data-track-index="11" data-volume="1" src="assets/audio/sfx.wav"></audio>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#glow-v", { x: -40, y: -30 }, { x: 40, y: 30, duration: 10, ease: "sine.inOut", yoyo: true, repeat: 2 }, 0);
+      tl.fromTo("#glow-c", { x: 40, y: 30 }, { x: -40, y: -30, duration: 12, ease: "sine.inOut", yoyo: true, repeat: 1 }, 0);
+      tl.fromTo("#glow-m", { x: -30, y: 40 }, { x: 30, y: -40, duration: 15, ease: "sine.inOut", yoyo: true, repeat: 1 }, 0);
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

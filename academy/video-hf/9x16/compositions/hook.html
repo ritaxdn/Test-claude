@@ -1,0 +1,31 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+    .hook-h { grid-area: 1 / 1; font-size: 118px; line-height: 1; text-align: center; width: 1500px; }
+    .hook-h .w { display: inline-block; overflow: hidden; vertical-align: top; padding: 0 .02em .08em; }
+    .hook-h .w > span { display: inline-block; }
+    @media (orientation: portrait) { .hook-h { font-size: 100px; width: 940px; } }
+  </style>
+  <div id="root" data-composition-id="hook">
+    <div class="scene" id="hook-wrap">
+      <div style="position:absolute;inset:0;display:grid;place-items:center">
+        <h1 class="display hook-h" id="hook-l1"><span class="w"><span>Votre</span></span>&nbsp;<span class="w"><span>machine</span></span>&nbsp;<span class="w"><span>est</span></span>&nbsp;<span class="w"><span>installée.</span></span></h1>
+        <h1 class="display hook-h" id="hook-l2"><span class="w"><span>Votre</span></span>&nbsp;<span class="w"><span><span class="iri">formation</span></span></span>&nbsp;<span class="w"><span>commence.</span></span></h1>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      const tl = gsap.timeline({ paused: true });
+      const tall = window.matchMedia("(orientation: portrait)").matches;
+
+    tl.fromTo("#hook-wrap", { opacity: 0 }, { opacity: 1, duration: 0.33, ease: "expo.out" }, 0);
+    tl.to("#hook-wrap", { opacity: 0, scale: 1.04, filter: "blur(8px)", duration: 0.33, ease: "none" }, 2.37);
+    tl.fromTo("#hook-l1 .w > span", { yPercent: 110 }, { yPercent: 0, duration: 0.5, ease: "back.out(1.7)", stagger: 0.1 }, 0);
+    tl.to("#hook-l1", { opacity: 0, y: -80, filter: "blur(8px)", duration: 0.47, ease: "expo.out" }, 1.4);
+    tl.set("#hook-l2", { opacity: 0 }, 0); tl.set("#hook-l2", { opacity: 1 }, 1.47);
+    tl.fromTo("#hook-l2 .w > span", { yPercent: 110 }, { yPercent: 0, duration: 0.5, ease: "back.out(1.7)", stagger: 0.1 }, 1.53);
+      window.__timelines["hook"] = tl;
+    })();
+  </script>
+</template>
