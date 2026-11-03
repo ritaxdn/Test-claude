@@ -78,10 +78,13 @@ const AppWindow: React.FC<{ children: React.ReactNode; start?: number; rx?: numb
   const f = useCurrentFrame();
   const { fps } = useVideoConfig();
   const { tall, cy, cx } = useFmt();
+  const { durationInFrames } = useVideoConfig();
   const p = sp(f, start, fps, { damping: 18, stiffness: 70, mass: 1.1 });
   const blur = blurAt !== undefined ? prog(f, blurAt, 22) : 0;
-  const s = scale ?? (tall ? 1.05 : 1.2);
-  const drift = f * 0.035;
+  // Caméra proche : la fenêtre déborde du cadre et la caméra pousse lentement vers elle.
+  const push = 1 + 0.1 * interpolate(f, [0, durationInFrames], [0, 1], clamp);
+  const s = (scale ?? (tall ? 1.3 : 1.38)) * push;
+  const drift = f * 0.05;
   return (
     <div
       style={{
@@ -95,6 +98,9 @@ const AppWindow: React.FC<{ children: React.ReactNode; start?: number; rx?: numb
         filter: blur > 0 ? `blur(${blur * 7}px)` : undefined,
       }}
     >
+      {/* Liseré lumineux arc-en-ciel sur les bords de la fenêtre */}
+      <div style={{ position: "absolute", inset: -14, borderRadius: 40, background: "linear-gradient(120deg, #00bcd4, #7b61ff 40%, #e91e8c 75%, #ffc107)", filter: "blur(26px)", opacity: 0.45 }} />
+      <div style={{ position: "absolute", inset: -2, borderRadius: 30, background: "linear-gradient(120deg, #00bcd4, #7b61ff 40%, #e91e8c 75%, #ffc107)" }} />
       <div
         style={{
           width: "100%",
@@ -103,13 +109,21 @@ const AppWindow: React.FC<{ children: React.ReactNode; start?: number; rx?: numb
           overflow: "hidden",
           background: "linear-gradient(160deg, rgba(255,255,255,.9), rgba(246,247,251,.82))",
           border: "1px solid rgba(255,255,255,.95)",
-          boxShadow: "0 1px 0 rgba(255,255,255,.9) inset, 0 80px 140px -60px rgba(29,27,38,.35), 0 0 0 1px rgba(29,27,38,.05)",
+          boxShadow: "0 1px 0 rgba(255,255,255,.9) inset, 0 80px 140px -60px rgba(29,27,38,.35)",
+          position: "relative",
         }}
       >
+        {/* Barre de navigateur */}
+        <div className="row" style={{ height: 40, padding: "0 18px", gap: 8, background: "rgba(226,228,235,.85)", borderBottom: "1px solid var(--line)" }}>
+          {[0, 1, 2].map((i) => (
+            <span key={i} style={{ width: 11, height: 11, borderRadius: "50%", background: "rgba(29,27,38,.18)" }} />
+          ))}
+          <span className="mono" style={{ margin: "0 auto", padding: "5px 18px", borderRadius: 999, background: "rgba(255,255,255,.8)", textTransform: "none", letterSpacing: "0.04em" }}>
+            academy.cellulift.ma
+          </span>
+        </div>
         {children}
       </div>
-      {/* Halo coloré sous la fenêtre */}
-      <div style={{ position: "absolute", left: "8%", right: "8%", bottom: -60, height: 120, background: "linear-gradient(90deg, rgba(0,188,212,.25), rgba(123,97,255,.3), rgba(233,30,140,.22))", filter: "blur(60px)", zIndex: -1 }} />
     </div>
   );
 };
@@ -142,7 +156,7 @@ const Pop: React.FC<{ x: number; y: number; start: number; w: number; z: number;
         zIndex: 3,
       }}
     >
-      <div style={{ zoom: z, width: w, filter: "drop-shadow(0 30px 40px rgba(29,27,38,.18)) drop-shadow(0 10px 50px rgba(123,97,255,.18))" }}>{children}</div>
+      <div style={{ zoom: z, width: w, filter: "drop-shadow(0 30px 40px rgba(29,27,38,.16)) drop-shadow(0 18px 60px rgba(123,97,255,.38))" }}>{children}</div>
     </div>
   );
 };
@@ -177,10 +191,40 @@ const Cursor: React.FC<{ keys: [number, number, number][]; clicks?: number[] }> 
   return (
     <div style={{ position: "absolute", left: x, top: y, zIndex: 10, opacity: prog(f, keys[0][0], 8) }}>
       {ring && <div style={{ position: "absolute", left: -ring.r, top: -ring.r, width: ring.r * 2, height: ring.r * 2, borderRadius: "50%", border: "2.5px solid rgba(123,97,255,.8)", opacity: ring.o }} />}
-      <svg width={40 * s} height={46 * s} viewBox="0 0 40 46" style={{ transform: `scale(${press})`, transformOrigin: "4px 4px", filter: "drop-shadow(0 8px 14px rgba(29,27,38,.3))", marginLeft: -4, marginTop: -4 }}>
-        <path d="M5 4 L5 36 L13.5 28.5 L19.5 42 L25.5 39.5 L19.5 26.5 L31 26 Z" fill="#fff" stroke="#1d1b26" strokeWidth="2.6" strokeLinejoin="round" />
-      </svg>
+      <Hand size={46 * s} press={press} />
     </div>
+  );
+};
+
+/**
+ * Curseur « main » (gant blanc à contour sombre, style dessin animé).
+ * Le point actif est le bout de l'index (en haut).
+ */
+const Hand: React.FC<{ size: number; press: number }> = ({ size, press }) => {
+  const shapes = (
+    <>
+      <rect x="15" y="2" width="7.5" height="22" rx="3.75" />
+      <rect x="22.5" y="6" width="7" height="18" rx="3.5" />
+      <rect x="29.5" y="9" width="6.5" height="15" rx="3.25" />
+      <rect x="9" y="16" width="27" height="25" rx="10" />
+      <rect x="2" y="20" width="7" height="15" rx="3.5" transform="rotate(-32 5.5 27.5)" />
+    </>
+  );
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 40 46"
+      style={{ transform: `scale(${press}) rotate(-8deg)`, transformOrigin: "40% 5%", filter: "drop-shadow(0 8px 14px rgba(29,27,38,.3))", marginLeft: -size * 0.46, marginTop: -size * 0.04, overflow: "visible" }}
+    >
+      <g fill="#1d1b26" stroke="#1d1b26" strokeWidth="4.4" strokeLinejoin="round">
+        {shapes}
+      </g>
+      <g fill="#fff">{shapes}</g>
+      <g stroke="#1d1b26" strokeWidth="2" strokeLinecap="round">
+        <path d="M18 29v6M23 29v6M28 29v6" />
+      </g>
+    </svg>
   );
 };
 
@@ -294,30 +338,55 @@ const MachineCard: React.FC<{ name?: string; family?: string; detail?: string; p
   );
 };
 
-const ProgramCard: React.FC<{ title?: string; device?: string; press?: number; ring?: number }> = ({ title = T.program.title, device = T.machine.name, press = 1, ring = 0 }) => (
+const ProgramCard: React.FC<{ title?: string; device?: string; press?: number; ring?: number; done?: boolean; burst?: number }> = ({ title = T.program.title, device = T.machine.name, press = 1, ring = 0, done = false, burst }) => (
   <article className="glass card stack" style={{ gap: 12 }}>
     <div className="row between">
       <span className="badge rb">Inclus avec votre {device}</span>
-      <span className="badge">À commencer</span>
+      {done ? (
+        <span className="badge ok" style={{ position: "relative" }}>
+          Formation terminée
+          {burst !== undefined && <Burst start={burst} radius={56} rays={12} />}
+        </span>
+      ) : (
+        <span className="badge">À commencer</span>
+      )}
     </div>
     <h3 className="display h2">{title}</h3>
     <p className="small">
       Avec <b>{T.presenter.name}</b>
     </p>
-    <Progress value={0} />
-    <p className="small muted">0 leçon sur {T.program.lessons.length}</p>
+    <Progress value={done ? 100 : 0} />
+    <p className="small muted">
+      {done ? T.program.lessons.length : 0} leçon{done ? "s" : ""} sur {T.program.lessons.length}
+    </p>
     <div className="row">
-      <span className="btn solid" style={{ transform: `scale(${press})`, boxShadow: ring ? `0 0 0 ${ring * 10}px rgba(123,97,255,${0.25 * (1 - ring)})` : undefined }}>
-        Commencer · {T.program.lessons[0].title}
-      </span>
+      {done ? (
+        <>
+          <span className="btn" style={{ transform: `scale(${press})` }}>
+            Revoir le parcours
+          </span>
+          <span className="btn ghost">Programme et documents</span>
+        </>
+      ) : (
+        <span className="btn solid" style={{ transform: `scale(${press})`, boxShadow: ring ? `0 0 0 ${ring * 10}px rgba(123,97,255,${0.25 * (1 - ring)})` : undefined }}>
+          Commencer · {T.program.lessons[0].title}
+        </span>
+      )}
     </div>
   </article>
 );
 
-const DashboardPage: React.FC = () => (
+const DoneAlert: React.FC = () => (
+  <p className="alert ok" role="status" style={{ fontSize: 15, lineHeight: 1.5 }}>
+    {T.done.alert}
+  </p>
+);
+
+const DashboardPage: React.FC<{ done?: boolean }> = ({ done = false }) => (
   <>
     <TopBar />
     <div style={{ padding: "28px 34px" }} className="stack">
+      {done && <DoneAlert />}
       <div>
         <span className="eyebrow">Ma formation</span>
         <h1 className="display h1" style={{ marginTop: 8 }}>
@@ -331,7 +400,7 @@ const DashboardPage: React.FC = () => (
       </div>
       <span className="eyebrow">Mes parcours</span>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
-        <ProgramCard />
+        <ProgramCard done={done} />
         <ProgramCard title="DERMABRASIF 6G — Programme opérateur" device="DERMABRASIF 6G" />
       </div>
     </div>
@@ -420,91 +489,6 @@ const LessonPage: React.FC = () => (
           <LessonList done={[0, 0, 0]} current={0} />
         </div>
       </div>
-    </div>
-  </>
-);
-
-type Row = { name: string; email: string; machine: string; program: string; pct: number; done: string; status: string; cls: string; highlight?: boolean };
-const ADMIN_ROWS: Row[] = [
-  ...T.admin.rows,
-  { name: "Dr Hind Berrada", email: "h.berrada@exemple.ma", machine: "LA QUEEN", program: "LA QUEEN — Programme opérateur", pct: 67, done: "2 / 3", status: "En cours", cls: "" },
-  { name: "Dr Omar Lahlou", email: "o.lahlou@exemple.ma", machine: "SEVENWAVES", program: "SEVENWAVES — Programme opérateur", pct: 100, done: "4 / 4", status: "Terminée", cls: "ok" },
-];
-
-const AdminRowCard: React.FC<{ r: Row }> = ({ r }) => (
-  <div className="glass stack" style={{ padding: 20, gap: 12, borderRadius: 24, background: "linear-gradient(145deg, rgba(255,255,255,.97), rgba(255,255,255,.82))" }}>
-    <div className="row between">
-      <div className="row">
-        <span className="avatar">{T.doctor.initials}</span>
-        <div>
-          <b>{r.name}</b>
-          <div className="small muted">{r.email}</div>
-        </div>
-      </div>
-      <span className={`badge ${r.cls}`} style={{ position: "relative" }}>
-        {r.status}
-        <Burst start={44} radius={46} rays={10} />
-      </span>
-    </div>
-    <div className="row" style={{ gap: 8, flexWrap: "wrap" }}>
-      <span className="badge rb">{r.machine}</span>
-      <span className="muted">→</span>
-      <span className="small">{r.program}</span>
-    </div>
-    <Progress value={r.pct} height={7} />
-    <span className="small muted">{r.done} leçons</span>
-  </div>
-);
-
-const AdminPage: React.FC = () => (
-  <>
-    <TopBar admin />
-    <div style={{ padding: "24px 34px" }} className="stack">
-      <div>
-        <span className="eyebrow">{T.admin.eyebrow}</span>
-        <h1 className="display h1" style={{ marginTop: 6 }}>
-          Médecins
-        </h1>
-      </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14 }}>
-        {T.admin.kpis.map((k) => (
-          <div key={k.label} className="glass card kpi" style={{ padding: 16 }}>
-            <span className="eyebrow">{k.label}</span>
-            <div className="v">{k.value}</div>
-          </div>
-        ))}
-      </div>
-      <section className="glass" style={{ padding: 0 }}>
-        <table className="t">
-          <thead>
-            <tr>
-              <th>Médecin</th>
-              <th>Machine</th>
-              <th>Parcours assigné</th>
-              <th>Progression</th>
-              <th>Statut</th>
-            </tr>
-          </thead>
-          <tbody>
-            {ADMIN_ROWS.map((r) => (
-              <tr key={r.name}>
-                <td>
-                  <b>{r.name}</b>
-                  <div className="small muted">{r.email}</div>
-                </td>
-                <td className="small">{r.machine}</td>
-                <td className="small">{r.program}</td>
-                <td style={{ minWidth: 150 }}>
-                  <Progress value={r.pct} />
-                </td>
-                <td>
-                  <span className={`badge ${r.cls}`}>{r.status}</span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
     </div>
   </>
 );
@@ -680,13 +664,13 @@ export const SceneProgress: React.FC = () => {
   const value = 33 + (c2 + c3) * 33.5;
   const done = c3 > 0.5 ? 3 : c2 > 0.5 ? 2 : 1;
   const badge = sp(f, 84, fps, { damping: 9, stiffness: 160, mass: 0.6 });
-  const folder = tall ? { x: cx, y: cy - 300 } : { x: cx - 420, y: cy + 40 };
-  const card = tall ? { x: cx, y: cy + 330 } : { x: cx + 330, y: cy + 40 };
+  const folder = tall ? { x: cx, y: cy - 210 } : { x: cx - 420, y: cy + 40 };
+  const card = tall ? { x: cx, y: cy + 360 } : { x: cx + 330, y: cy + 40 };
   return (
     <SceneFade>
       <Headline {...T.captions.progress} start={2} />
       {/* Dossier « Protocoles » : les fiches PDF en sortent */}
-      <Pop x={folder.x} y={folder.y} start={4} w={360} z={tall ? 1.8 : 1.5}>
+      <Pop x={folder.x} y={folder.y} start={4} w={360} z={tall ? 1.55 : 1.5}>
         <div style={{ position: "relative", height: 300 }}>
           <div style={{ position: "absolute", left: 18, right: 18, top: 0, height: 210, borderRadius: 22, background: "linear-gradient(135deg, #a797ff, #7b61ff 60%, #e91e8c)", opacity: 0.9 }} />
           {T.program.documents.map((d, i) => {
@@ -768,25 +752,29 @@ export const SceneProgress: React.FC = () => {
   );
 };
 
-/** 05 — Suivi CELLULIFT : le tableau admin en 3D, la ligne du médecin sort vers la caméra. */
-export const SceneAdmin: React.FC = () => {
+/** 05 — Accompagnement (écran du médecin) : parcours terminé, message de suivi CELLULIFT. */
+export const SceneDone: React.FC = () => {
   const { tall, cx, cy } = useFmt();
-  const salma = ADMIN_ROWS.find((r) => r.highlight) ?? ADMIN_ROWS[0];
-  const row = tall ? { x: cx, y: cy + 170 } : { x: cx + 140, y: cy + 130 };
+  const alert = tall ? { x: cx, y: cy - 300 } : { x: cx, y: cy - 150 };
+  const card = tall ? { x: cx, y: cy + 180 } : { x: cx, y: cy + 150 };
   return (
     <SceneFade>
-      <AppWindow start={0} rx={18} ry={-10} blurAt={34} scale={tall ? 1.0 : 1.18} dy={tall ? -120 : 0}>
-        <AdminPage />
+      <AppWindow start={0} rx={14} ry={12} blurAt={14}>
+        <DashboardPage done />
       </AppWindow>
-      <Headline {...T.captions.admin} start={4} />
-      <Pop x={row.x} y={row.y} start={34} w={520} z={tall ? 1.75 : 1.5} tilt={-4}>
-        <AdminRowCard r={salma} />
+      <Headline {...T.captions.done} start={4} />
+      <Pop x={alert.x} y={alert.y} start={18} w={tall ? 520 : 640} z={tall ? 1.75 : 1.5}>
+        <div style={{ borderRadius: 16, background: "#fff" }}>
+          <DoneAlert />
+        </div>
+      </Pop>
+      <Pop x={card.x} y={card.y} start={32} w={tall ? 520 : 480} z={tall ? 1.75 : 1.5} tilt={4}>
+        <ProgramCard done burst={44} />
       </Pop>
       <Cursor
         keys={[
-          [20, cx + (tall ? 300 : 600), cy + (tall ? 600 : 380)],
-          [44, row.x + (tall ? 200 : 170), row.y + (tall ? 70 : 60)],
-          [80, row.x + (tall ? 190 : 160), row.y + (tall ? 78 : 66)],
+          [40, cx + (tall ? 380 : 620), cy + (tall ? 700 : 420)],
+          [70, card.x - (tall ? 250 : 220), card.y + (tall ? 245 : 210)],
         ]}
       />
     </SceneFade>

@@ -45,12 +45,12 @@ Règles à respecter (voir `academy/CLAUDE.md`) :
 | 9,5–13,5 s | 02 Tableau de bord : la machine HANOVER 5G (balayage scan line) puis son parcours sortent, clic sur « Commencer » | `SceneDashboard` |
 | 13,5–18,5 s | 03 Leçon : le lecteur sort, « Présenté par Dr Mohamed Dadoun », la leçon 1 se coche | `SceneLesson` |
 | 18,5–22,5 s | 04 Les fiches PDF sortent du dossier « Protocoles », progression 33 → 67 → 100 %, « Formation terminée » | `SceneProgress` |
-| 22,5–26,5 s | 05 Vue admin en 3D, la ligne du médecin sort : machine → parcours → 100 % → Terminée | `SceneAdmin` |
+| 22,5–26,5 s | 05 Accompagnement (écran du médecin) : message « Bravo… CELLULIFT en est informé et vous proposera la suite », parcours HANOVER 5G à 100 % « Formation terminée » | `SceneDone` |
 | 26,5–30 s | Signature + `academy.cellulift.ma` | `SceneSignature` |
 
 Le découpage (début et fin de chaque plan) est dans `src/Ad.tsx`.
 
-**Motion graphics** : fenêtre de l'app en perspective avec profondeur de champ, cartes qui sortent avec un ressort, curseur animé (clics avec onde), titres cinétiques mot par mot avec filet arc-en-ciel, ligne arc-en-ciel lumineuse qui balaie l'écran à chaque transition, éclats arc-en-ciel aux moments clés (accès créé, leçon cochée, formation terminée), scan line sur les visuels.
+**Motion graphics** : fenêtre de l'app en perspective avec profondeur de champ, cartes qui sortent avec un ressort, fenêtre vue de près avec liseré lumineux arc-en-ciel et barre de navigateur `academy.cellulift.ma`, curseur « main » animé (clics avec onde), titres cinétiques mot par mot avec filet arc-en-ciel, ligne arc-en-ciel lumineuse qui balaie l'écran à chaque transition, éclats arc-en-ciel aux moments clés (accès créé, leçon cochée, formation terminée), scan line sur les visuels.
 
 ## Son
 

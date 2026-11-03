@@ -63,6 +63,8 @@ p, h1, h2, h3 { margin: 0; }
 .dot.lock { background: var(--pearl-2); }
 .doc { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 14px; border: 1px solid var(--line); background: rgba(255, 255, 255, 0.6); }
 .doc .ic { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: linear-gradient(135deg, rgba(127, 227, 240, 0.45), rgba(167, 151, 255, 0.4)); font-family: var(--f-mono); font-size: 10px; flex: none; }
+.alert { padding: 14px 16px; border-radius: 14px; font-size: 14px; margin: 0; }
+.alert.ok { background: var(--ok-bg); color: var(--ok); }
 table.t { width: 100%; border-collapse: collapse; font-size: 14px; }
 table.t th { text-align: left; font-family: var(--f-mono); font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--deep-soft); padding: 12px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; }
 table.t td { padding: 13px 14px; border-bottom: 1px solid var(--line); vertical-align: middle; }

@@ -3,7 +3,7 @@ import { AbsoluteFill, Audio, Sequence, staticFile } from "remotion";
 import { css } from "./styles";
 import { MUSIC_FILE } from "./texts";
 import { PearlBg, Wipe } from "./ui";
-import { SceneAdmin, SceneDashboard, SceneHook, SceneInvite, SceneLesson, SceneLogo, SceneProgress, SceneSignature } from "./scenes";
+import { SceneDashboard, SceneDone, SceneHook, SceneInvite, SceneLesson, SceneLogo, SceneProgress, SceneSignature } from "./scenes";
 
 export const FPS = 30;
 
@@ -15,7 +15,7 @@ export const PLANS = [
   { name: "Tableau de bord", from: 9.5, to: 13.6, C: SceneDashboard },
   { name: "Leçon", from: 13.5, to: 18.6, C: SceneLesson },
   { name: "PDF + progression", from: 18.5, to: 22.6, C: SceneProgress },
-  { name: "Suivi CELLULIFT", from: 22.5, to: 26.6, C: SceneAdmin },
+  { name: "Accompagnement", from: 22.5, to: 26.6, C: SceneDone },
   { name: "Signature", from: 26.5, to: 30, C: SceneSignature },
 ] as const;
 
