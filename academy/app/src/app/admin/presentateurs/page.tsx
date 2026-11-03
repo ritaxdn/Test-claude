@@ -40,7 +40,7 @@ export default async function Presentateurs({ searchParams }: { searchParams: Pr
         <form action={savePresenter} className="glass card stack" style={{ gap: 12 }}>
           <span className="eyebrow">Ajouter</span>
           <div className="field"><label htmlFor="pn">Nom</label><input className="input" id="pn" name="name" required /></div>
-          <div className="field"><label htmlFor="pt">Titre</label><input className="input" id="pt" name="title" placeholder="Ex. Formatrice · CELLULIFT Academy" /></div>
+          <div className="field"><label htmlFor="pt">Titre</label><input className="input" id="pt" name="title" placeholder="Ex. Formatrice · LIFT by CELLULIFT Academy" /></div>
           <SubmitButton className="btn solid" pending="Ajout…">Ajouter</SubmitButton>
         </form>
       </div>

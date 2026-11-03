@@ -1,4 +1,4 @@
-// Liste d'attente « avant-première » de la plateforme en ligne CELLULIFT Academy (cible du teaser vidéo).
+// Liste d'attente « avant-première » de la plateforme en ligne LIFT by CELLULIFT Academy (cible du teaser vidéo).
 // Pas de date annoncée : les inscrits sont prévenus en premier à l'ouverture.
 // Rappel de la règle d'accès : les parcours de formation sont réservés aux machines CELLULIFT achetées ;
 // rien ici ne promet un accès gratuit ou payant hors machines (prévu plus tard, non encore décidé).
@@ -6,14 +6,14 @@
 export const waitlistContent = {
   fr: {
     meta: {
-      title: "Avant-première CELLULIFT Academy : la formation en ligne de vos machines",
+      title: "Avant-première LIFT by CELLULIFT Academy : la formation en ligne de vos machines",
       description:
-        "Inscrivez-vous à l'avant-première de la CELLULIFT Academy en ligne : parcours vidéo par machine, protocoles et documents. Soyez prévenu(e) en premier à l'ouverture.",
+        "Inscrivez-vous à l'avant-première de LIFT by CELLULIFT Academy : parcours vidéo par machine, protocoles et documents. Soyez prévenu(e) en premier à l'ouverture.",
     },
-    eyebrow: "Avant-première · Bientôt",
+    eyebrow: "LIFT by CELLULIFT Academy · Avant-première",
     title: "La formation de vos machines, sur votre téléphone.",
     subtitle:
-      "La CELLULIFT Academy arrive en ligne. Inscrivez-vous à l'avant-première : vous serez parmi les premiers à y entrer.",
+      "LIFT by CELLULIFT Academy arrive. Inscrivez-vous à l'avant-première : vous serez parmi les premiers à y entrer.",
     insideTitle: "Ce qui vous attend",
     inside: [
       ["Un parcours par machine", "Les vidéos de prise en main de chaque appareil, dans l'ordre, à votre rythme."],
@@ -25,7 +25,7 @@ export const waitlistContent = {
     perks: [
       "Vous êtes prévenu(e) en premier, avant l'ouverture publique.",
       "Clients CELLULIFT : votre accès aux parcours de vos machines dès l'ouverture.",
-      "Pas encore client : vous découvrez l'Academy et ses nouveautés en avant-première.",
+      "Pas encore client : vous découvrez LIFT et ses nouveautés en avant-première.",
     ],
     note: "Les parcours de formation sont réservés aux machines CELLULIFT que vous possédez.",
     form: {
@@ -50,20 +50,20 @@ export const waitlistContent = {
       phoneError: "Numéro invalide.",
       sendError: "L'inscription n'a pas pu être enregistrée. Réessayez dans un instant.",
       successTitle: "Vous êtes sur la liste.",
-      successText: "Merci ! Vous serez prévenu(e) en premier à l'ouverture de la CELLULIFT Academy.",
+      successText: "Merci ! Vous serez prévenu(e) en premier à l'ouverture de LIFT by CELLULIFT Academy.",
       back: "Découvrir nos masterclasses",
-      privacy: "Vos coordonnées servent uniquement à vous prévenir de l'ouverture de l'Academy. Jamais revendues. Désinscription en un clic.",
+      privacy: "Vos coordonnées servent uniquement à vous prévenir de l'ouverture de LIFT. Jamais revendues. Désinscription en un clic.",
     },
   },
   en: {
     meta: {
-      title: "CELLULIFT Academy early access: online training for your devices",
+      title: "LIFT by CELLULIFT Academy early access: online training for your devices",
       description:
-        "Join the early-access list for the online CELLULIFT Academy: video courses for each device, protocols and documents. Be the first to know when it opens.",
+        "Join the early-access list for LIFT by CELLULIFT Academy: video courses for each device, protocols and documents. Be the first to know when it opens.",
     },
-    eyebrow: "Early access · Coming soon",
+    eyebrow: "LIFT by CELLULIFT Academy · Early access",
     title: "Training for your devices, on your phone.",
-    subtitle: "CELLULIFT Academy is coming online. Join the early-access list and be among the first to get in.",
+    subtitle: "LIFT by CELLULIFT Academy is coming. Join the early-access list and be among the first to get in.",
     insideTitle: "What's coming",
     inside: [
       ["One course per device", "Hands-on videos for each device, in order, at your own pace."],
@@ -75,7 +75,7 @@ export const waitlistContent = {
     perks: [
       "You hear first, before the public opening.",
       "CELLULIFT clients: access to your devices' courses from day one.",
-      "Not a client yet: discover the Academy and what's new before anyone else.",
+      "Not a client yet: discover LIFT and what's new before anyone else.",
     ],
     note: "Training courses are reserved for the CELLULIFT devices you own.",
     form: {
@@ -100,9 +100,9 @@ export const waitlistContent = {
       phoneError: "Invalid number.",
       sendError: "Your sign-up could not be saved. Please try again in a moment.",
       successTitle: "You're on the list.",
-      successText: "Thank you! You'll be the first to know when CELLULIFT Academy opens.",
+      successText: "Thank you! You'll be the first to know when LIFT by CELLULIFT Academy opens.",
       back: "Discover our masterclasses",
-      privacy: "Your details are only used to let you know when the Academy opens. Never sold. Unsubscribe in one click.",
+      privacy: "Your details are only used to let you know when LIFT opens. Never sold. Unsubscribe in one click.",
     },
   },
 } as const;

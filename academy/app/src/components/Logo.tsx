@@ -1,6 +1,6 @@
-export function Logo({ tag = "Academy", href = "/" }: { tag?: string; href?: string }) {
+export function Logo({ tag = "LIFT · Academy", href = "/" }: { tag?: string; href?: string }) {
   return (
-    <a href={href} className="logo" aria-label="CELLULIFT Academy">
+    <a href={href} className="logo" aria-label="LIFT by CELLULIFT Academy">
       <span className="w">Cellulift</span>
       <svg width="140" height="14" viewBox="0 0 160 20" fill="none" aria-hidden="true">
         <defs>

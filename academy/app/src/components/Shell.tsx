@@ -13,7 +13,7 @@ export function Shell({ user, active, children }: { user: User; active: string; 
     <>
       <header className="top">
         <div className="top-in">
-          <Logo tag={user.role === "admin" ? "Academy · Admin" : "Academy"} href={user.role === "admin" ? "/admin" : "/tableau-de-bord"} />
+          <Logo tag={user.role === "admin" ? "LIFT · Admin" : "LIFT · Academy"} href={user.role === "admin" ? "/admin" : "/tableau-de-bord"} />
           <nav className="nav" aria-label="Navigation principale">
             {links.map(([href, label]) => (
               <a key={href} href={href} aria-current={active === href ? "page" : undefined}>{label}</a>

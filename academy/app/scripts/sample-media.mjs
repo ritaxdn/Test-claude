@@ -14,7 +14,7 @@ for (const [file, label, color] of clips) {
   console.log("vidéo", out);
 }
 // PDF minimal (une page de texte).
-const text = "BT /F1 18 Tf 72 760 Td (Fiche protocole - exemple) Tj 0 -30 Td /F1 12 Tf (Document d'exemple pour le developpement de CELLULIFT Academy.) Tj ET";
+const text = "BT /F1 18 Tf 72 760 Td (Fiche protocole - exemple) Tj 0 -30 Td /F1 12 Tf (Document d'exemple pour le developpement de LIFT by CELLULIFT Academy.) Tj ET";
 const objs = ["<< /Type /Catalog /Pages 2 0 R >>", "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
   "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>",
   `<< /Length ${text.length} >>\nstream\n${text}\nendstream`, "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>"];

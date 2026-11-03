@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: { default: "CELLULIFT Academy", template: "%s · CELLULIFT Academy" },
+  title: { default: "LIFT by CELLULIFT Academy", template: "%s · LIFT by CELLULIFT" },
   description: "Formation des praticiens équipés de technologies CELLULIFT.",
   robots: { index: false, follow: false },
 };

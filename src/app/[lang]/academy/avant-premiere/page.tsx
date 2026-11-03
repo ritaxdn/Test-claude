@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   return pageMetadata({ lang, path: "/academy/avant-premiere", absoluteTitle: m.title, description: m.description });
 }
 
-// Avant-première de la CELLULIFT Academy en ligne (cible du teaser) : promesse à gauche, inscription à droite
+// Avant-première de LIFT by CELLULIFT Academy (cible du teaser) : promesse à gauche, inscription à droite
 // (au-dessus du contenu sur téléphone, comme la page du guide).
 export default async function WaitlistPage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;

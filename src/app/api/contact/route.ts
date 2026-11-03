@@ -222,8 +222,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: false, error: "validation" }, { status: 422 });
     const w: ContactPayload = {
       name: `${firstName} ${lastName}`, email, phone: phone || undefined, specialty, machine: machine || undefined,
-      subject: "Avant-première Academy",
-      message: `Inscription à l'avant-première de la CELLULIFT Academy en ligne.\nClient CELLULIFT : ${client === "oui" ? `oui${machine ? ` (${machine})` : ""}` : "pas encore"}.`,
+      subject: "Avant-première LIFT",
+      message: `Inscription à l'avant-première de LIFT by CELLULIFT Academy.\nClient CELLULIFT : ${client === "oui" ? `oui${machine ? ` (${machine})` : ""}` : "pas encore"}.`,
       origin: typeof body.origin === "string" && body.origin.startsWith("/") ? body.origin.slice(0, 300) : undefined, lang: body.lang,
     };
     const [mail, crm, brevo] = await Promise.all([

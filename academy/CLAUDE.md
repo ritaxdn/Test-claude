@@ -25,6 +25,7 @@ Si la réponse est non, la fonctionnalité est probablement secondaire : le dire
 - Contenus gratuits et payants (Open Academy) : prévus **plus tard**, Cellulift choisira quels contenus sont gratuits et lesquels sont payants. D'ici là, rien n'est ouvert hors machines achetées. Le jour venu, ce sera une source d'accès supplémentaire explicite (gratuit / acheté), sans affaiblir la règle des parcours machines.
 - Paiement (quand les contenus payants arriveront) : selon le pays du client. Maroc → paiement marocain en dirhams (MAD). Hors Maroc → euro ou dollar. Le pays vient du compte du client (pas de l'adresse IP) ; chaque contenu payant a un prix fixé par devise (pas de conversion automatique).
 - Palette : on garde la direction claire « Nacre & verre » de cellulift.ma (fond nacré, verre clair, signal arc-en-ciel). Une palette bleu nuit a été essayée puis écartée par Cellulift (oct. 2026) : ne pas y revenir sans demande.
+- Nom de la plateforme en ligne : **LIFT by CELLULIFT Academy** (« LIFT » en court). Ne pas le confondre avec la page Academy du site (masterclasses et formations en présentiel).
 - Interface en français, vouvoiement.
 - Le CRM Cellulift est en production (`public/crm/index.html` + base Supabase) : lecture seule sans accord explicite ; toute migration passe par un brouillon relu (`supabase/crm-academy-draft.sql`).
 - Ne jamais présenter une protection simulée comme réelle ; le filigrane dissuade, il n'empêche pas la capture.

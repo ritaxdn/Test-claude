@@ -17,7 +17,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
   const first = user.full_name.startsWith("Dr") ? user.full_name : user.full_name.split(" ")[0];
   return (
     <Shell user={user} active="/tableau-de-bord">
-      {bienvenue && <p className="alert ok" role="status" style={{ marginBottom: 20 }}>Votre accès est créé. Bienvenue sur CELLULIFT Academy.</p>}
+      {bienvenue && <p className="alert ok" role="status" style={{ marginBottom: 20 }}>Votre accès est créé. Bienvenue sur LIFT by CELLULIFT Academy.</p>}
       <div className="page-head">
         <div><span className="eyebrow">Ma formation</span><h1 className="display h1">Bonjour, <span className="iri">{first}</span></h1></div>
       </div>

@@ -6,7 +6,7 @@ export function AuthFrame({ children }: { children: ReactNode }) {
     <div className="auth">
       <section className="auth-side">
         <div className="orb" aria-hidden="true" />
-        <Logo tag="Metamorphosis Technology · Academy" />
+        <Logo tag="LIFT by Cellulift Academy" />
         <div style={{ position: "relative", maxWidth: 480 }}>
           <span className="eyebrow">academy.cellulift.ma</span>
           <h1 className="display" style={{ fontSize: "clamp(2.2rem, 3.6vw, 3.2rem)", marginTop: 16 }}>
