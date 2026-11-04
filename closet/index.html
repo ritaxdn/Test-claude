@@ -301,6 +301,7 @@ body.nolook .tile.sel{background:none}
 body[data-tab="closet"] .tile.sel{background:none}
 @media (min-width:761px){body.nolook .room{grid-template-columns:200px minmax(0,1fr)}body.nolook .look{display:none}body.nolook .grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media (max-width:760px){.addmenu{position:fixed;left:50%;right:auto;transform:translateX(-50%);top:auto;bottom:calc(var(--navh) + 14px + env(safe-area-inset-bottom,0px));min-width:220px}}
+.cpick{border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:12px;background:#fff;color:var(--muted);width:100%}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
 
@@ -454,8 +455,9 @@ function renderGrid(){
   if(view==="Statistiques"){renderStats();return}
   if(view==="Mode valise"){renderValise();return}
   if(view==="Collections"&&!colls.find(c=>c.id===openColl)){renderColls();return}
-  const coll=view==="Collections"?colls.find(c=>c.id===openColl):null;
-  const v=coll?(coll.ids||[]).map(byId).filter(Boolean):filtered(),chosen=new Set(SLOTS.filter(s=>shown[s.key]).flatMap(s=>ids(sel[s.key])));
+  if(view==="Collections"){renderLooks(colls.find(c=>c.id===openColl));return}
+  const coll=null;
+  const v=filtered(),chosen=new Set(SLOTS.filter(s=>shown[s.key]).flatMap(s=>ids(sel[s.key])));
   $("#matching").textContent=coll?`${coll.name} · ${v.length} pièce${v.length>1?"s":""}`:`Pièces : ${v.length}`;
   $("#grid").className="grid";
   $("#grid").innerHTML=(coll?`<div class="collbar"><button class="btn ghost" data-cback>‹ Toutes les collections</button><span class="note">Ajoute des pièces depuis leur fiche (bouton « i »).</span><span class="sp"></span><button class="btn ghost" data-cren="${coll.id}">Renommer</button><button class="btn danger" data-cdel="${coll.id}">Supprimer</button><div id="cconf"></div></div>`:"")+v.map(i=>`<div class="tile${chosen.has(i.id)?" sel":""}" data-id="${i.id}" role="button" tabindex="0" aria-label="Essayer ${esc(i.name)}">
@@ -472,25 +474,29 @@ function renderGrid(){
 function renderColls(){
   const g=$("#grid");g.className="colls";$("#empty").hidden=true;
   $("#matching").textContent=`Collections : ${colls.length}`;
-  g.innerHTML=`<form class="cform" id="cf"><input id="c-name" name="name" placeholder="Nom de la collection (ex. Capsule hiver, Mykonos 2026…)" required maxlength="60"><button class="btn" type="submit">Créer la collection</button></form>`+
-    (colls.length?colls.map(c=>{const ims=(c.ids||[]).map(byId).filter(i=>i&&src(i)).slice(0,4);
-      return `<button class="ccard" data-copen="${c.id}"><div class="cmos">${ims.map(i=>`<img src="${esc(src(i))}" alt="">`).join("")}${ims.length?"":'<span class="note">Vide</span>'}</div><b>${esc(c.name)}</b><small>${(c.ids||[]).filter(byId).length} pièce${(c.ids||[]).length>1?"s":""}</small></button>`}).join(""):'<p class="note wide">Crée ta première collection : une capsule de saison, une valise, tes pièces préférées…</p>');
+  g.innerHTML=`<form class="cform" id="cf"><input id="c-name" name="name" placeholder="Nom de la collection de tenues (ex. Mykonos 2026, Bureau, Soirées…)" required maxlength="60"><button class="btn" type="submit">Créer la collection</button></form>`+
+    (colls.length?colls.map(c=>{const ls=(c.looks||[]).map(id=>looks.find(l=>l.id===id)).filter(Boolean);
+      const ims=ls.flatMap(l=>lookIds(l.items).map(byId).filter(i=>i&&src(i)).slice(0,1)).slice(0,4);
+      return `<button class="ccard" data-copen="${c.id}"><div class="cmos">${ims.map(i=>`<img src="${esc(src(i))}" alt="">`).join("")}${ims.length?"":'<span class="note">Vide</span>'}</div><b>${esc(c.name)}</b><small>${ls.length} tenue${ls.length>1?"s":""}</small></button>`}).join(""):'<p class="note wide">Crée ta première collection de tenues : Vacances, Bureau, Soirées d\'hiver…</p>');
 }
-function renderLooks(){
+function renderLooks(coll){
   const e=$("#empty");
   $("#matching").textContent=`Tenues : ${looks.length}`;
   $("#grid").className="looks";
   const fmt=d=>new Date(d).toLocaleDateString("fr-FR",{day:"numeric",month:"short"});
   const nDone=looks.filter(l=>l.worn).length;
   let list=[...looks].sort((a,b)=>(a.worn?1:0)-(b.worn?1:0)||(b.createdAt||0)-(a.createdAt||0));
+  if(coll)list=list.filter(l=>(coll.looks||[]).includes(l.id));
   if(hideWorn)list=list.filter(l=>!l.worn);
-  $("#matching").textContent=`Tenues : ${looks.length} · ${looks.length-nDone} pas encore portée${looks.length-nDone>1?"s":""}`;
-  $("#grid").innerHTML=`<div class="lookbar"><button data-hidew aria-pressed="${hideWorn}">Masquer les tenues déjà portées</button></div>`+(hideWorn&&looks.length&&!list.length?'<p class="note lookbar">Tu as porté toutes tes tenues ! Désactive le filtre pour les revoir.</p>':"")+list.map(l=>{
+  $("#matching").textContent=coll?`${coll.name} · ${(coll.looks||[]).filter(id=>looks.some(l=>l.id===id)).length} tenue(s)`:`Tenues : ${looks.length} · ${looks.length-nDone} pas encore portée${looks.length-nDone>1?"s":""}`;
+  const cpick=l=>colls.length&&!coll?`<select class="cpick" data-cpick="${l.id}" aria-label="Collections de ${esc(l.name)}"><option value="">+ Collection…</option>${colls.map(c=>`<option value="${c.id}">${(c.looks||[]).includes(l.id)?"✓ ":""}${esc(c.name)}</option>`).join("")}</select>`:"";
+  $("#grid").innerHTML=(coll?`<div class="collbar"><button class="btn ghost" data-cback>‹ Toutes les collections</button><span class="note">Ajoute des tenues depuis « Mes tenues » (menu « + Collection »).</span><span class="sp"></span><button class="btn ghost" data-cren="${coll.id}">Renommer</button><button class="btn danger" data-cdel="${coll.id}">Supprimer</button><div id="cconf"></div></div>`:"")+`<div class="lookbar"><button data-hidew aria-pressed="${hideWorn}">Masquer les tenues déjà portées</button></div>`+(hideWorn&&looks.length&&!list.length?'<p class="note lookbar">Tu as porté toutes tes tenues ! Désactive le filtre pour les revoir.</p>':"")+list.map(l=>{
     const ims=lookIds(l.items).map(byId).filter(Boolean);
     const done=!!l.worn;
     return `<div class="lk${done?" done":""}">${done?`<span class="worn">✓ Déjà portée${l.worn>1?` ${l.worn}×`:""} · ${fmt(l.lastWorn)}</span>`:'<span class="fresh">Pas encore portée</span>'}<div class="stack">${ims.map(i=>src(i)?`<img src="${esc(src(i))}" alt="${esc(i.name)}">`:`<small class="note">${esc(i.name)}</small>`).join("")}</div>
       <b>${esc(l.name)}</b>${editing===l.id?'<span class="fresh">En cours de modification</span>':""}
-      <div class="row"><button class="btn wearbtn${done?" undo":""}" data-done="${l.id}">${done?"Annuler « portée »":"Je l'ai portée aujourd'hui"}</button><button class="btn" data-wear="${l.id}">Essayer</button><button class="btn ghost" data-dl="${l.id}">Retirer</button></div></div>`}).join("");
+      <div class="row"><button class="btn wearbtn${done?" undo":""}" data-done="${l.id}">${done?"Annuler « portée »":"Je l'ai portée aujourd'hui"}</button><button class="btn" data-wear="${l.id}">Essayer</button>${coll?`<button class="btn ghost" data-cout="${l.id}">Sortir de la collection</button>`:`<button class="btn ghost" data-dl="${l.id}">Retirer</button>`}</div>${cpick(l)}</div>`}).join("");
+  if(coll){e.hidden=!!list.length;if(!list.length)e.innerHTML='<h3>Collection vide</h3><p>Va dans « Mes tenues » et choisis cette collection dans le menu « + Collection » d\'une tenue.</p>';return}
   e.hidden=!!looks.length;
   if(!looks.length)e.innerHTML='<h3>Aucune tenue</h3><p>Compose un look au centre puis clique sur « Enregistrer la tenue ».</p>';
 }
@@ -641,7 +647,6 @@ function openSheet(id){
       <label>Catégorie<select id="f-cat" name="category" ${ro?"disabled":""}>${GROUPS.map(g=>`<optgroup label="${esc(g.name)}">${opts(g.cats,it.category)}</optgroup>`).join("")}</select></label>
       <label>Couleur<select id="f-color" name="color" ${ro?"disabled":""}><option value=""></option>${opts(Object.keys(COLORS),it.color)}</select></label>
       <label>Saison<select id="f-season" name="season" ${ro?"disabled":""}>${opts(SEASONS,it.season)}</select></label>
-      ${id&&colls.length?`<fieldset class="full tags"><legend>Collections</legend>${colls.map(c=>`<label class="tag"><input type="checkbox" name="colls" value="${c.id}" ${(c.ids||[]).includes(id)?"checked":""} ${ro?"disabled":""}> ${esc(c.name)}</label>`).join("")}</fieldset>`:""}
       <fieldset class="full tags"><legend>Style</legend>${STYLES.map(t=>`<label class="tag"><input type="checkbox" name="tags" value="${t}" ${(it.tags||[]).includes(t)?"checked":""} ${ro?"disabled":""}> ${t}</label>`).join("")}</fieldset>
       <label class="full">Notes<textarea id="f-notes" name="notes" placeholder="Taille, avec quoi la porter, où je l'ai achetée…" ${ro?"disabled":""}>${esc(it.notes)}</textarea></label>
       ${ro?"":`<div class="brow" style="grid-column:1/-1"><button class="btn" type="submit" id="save">${id?"Enregistrer":"Ajouter au dressing"}</button>${id?'<button class="btn danger" type="button" id="del">Retirer</button>':""}</div>`}
@@ -664,8 +669,6 @@ function openSheet(id){
     try{
       if(pendingFile){b.textContent="Envoi de la photo…";fd.thumb=await makeThumb(pendingFile);try{const a=await assets.upload(pendingFile);fd.img=a.url;fd.assetId=a.id}catch(e){}}
       if(id){await col.doc(id).update(fd);
-        if(ccol)for(const c of colls){const has=(c.ids||[]).includes(id),want=wantC.includes(c.id);
-          if(has!==want)await ccol.doc(c.id).update({ids:want?[...(c.ids||[]),id]:(c.ids||[]).filter(x=>x!==id)})}
         toast("Enregistré")}
       else{fd.createdAt=Date.now();fd.wears=0;fd.favorite=false;await col.add(fd);toast("Ajoutée au dressing")}
       closeSheet();
@@ -699,7 +702,9 @@ $("#grid").onclick=async e=>{
   if(e.target.closest("[data-cback]")){openColl=null;renderGrid();return}
   const cr=e.target.closest("[data-cren]");if(cr){const c=colls.find(x=>x.id===cr.dataset.cren);
     $("#cconf").innerHTML=`<form class="cform" id="crf"><input id="c-rename" name="name" value="${esc(c.name)}" required maxlength="60"><button class="btn" type="submit">Renommer</button></form>`;$("#c-rename").focus();return}
-  const cd=e.target.closest("[data-cdel]");if(cd){$("#cconf").innerHTML=`<div class="confirm">Supprimer cette collection ? Les pièces restent dans ton dressing. <button class="btn danger" data-cyes="${cd.dataset.cdel}">Oui, supprimer</button></div>`;return}
+  const cd=e.target.closest("[data-cdel]");if(cd){$("#cconf").innerHTML=`<div class="confirm">Supprimer cette collection ? Les tenues restent dans « Mes tenues ». <button class="btn danger" data-cyes="${cd.dataset.cdel}">Oui, supprimer</button></div>`;return}
+  const ct=e.target.closest("[data-cout]");if(ct){const c=colls.find(x=>x.id===openColl);if(!c)return;
+    try{await ccol.doc(c.id).update({looks:(c.looks||[]).filter(x=>x!==ct.dataset.cout)});toast("Tenue sortie de la collection")}catch(err){toast("Échec : "+(err.message||err.code))}return}
   const cy=e.target.closest("[data-cyes]");if(cy){try{await ccol.doc(cy.dataset.cyes).delete();openColl=null;toast("Collection supprimée")}catch(err){toast("Échec : "+(err.message||err.code))}return}
   if(e.target.closest("[data-vsave]")&&valise&&lcol){const b=e.target.closest("[data-vsave]");b.disabled=true;let n=0;
     try{for(const [i,o] of valise.outfits.entries()){if(looks.some(l=>lookKey(l.items)===lookKey(o)))continue;await lcol.add({items:o,name:`Valise ${valise.style.toLowerCase()} · Jour ${i+1}`,createdAt:Date.now()+i,worn:0});n++}
@@ -724,9 +729,14 @@ $("#grid").addEventListener("submit",e=>{
   if(e.target.id!=="vf")return;e.preventDefault();
   const f=Object.fromEntries(new FormData(e.target));valise=buildValise(Math.max(1,Math.min(14,+f.days||5)),f.style,f.season);renderValise();
 });
+$("#grid").addEventListener("change",async e=>{
+  const s=e.target.closest("[data-cpick]");if(!s||!s.value||!ccol)return;
+  const c=colls.find(x=>x.id===s.value),lid=s.dataset.cpick,has=(c.looks||[]).includes(lid);s.value="";
+  try{await ccol.doc(c.id).update({looks:has?(c.looks||[]).filter(x=>x!==lid):[...(c.looks||[]),lid]});toast(has?`Retirée de « ${c.name} »`:`Ajoutée à « ${c.name} »`)}catch(err){toast("Échec : "+(err.message||err.code))}
+});
 $("#grid").addEventListener("submit",async e=>{
   if(e.target.id==="cf"){e.preventDefault();if(!ccol)return;const n=new FormData(e.target).get("name").trim();if(!n)return;
-    try{const r=await ccol.add({name:n,ids:[],createdAt:Date.now()});openColl=r.id;renderGrid();toast("Collection créée : ajoute des pièces depuis leur fiche")}catch(err){toast("Échec : "+(err.message||err.code))}}
+    try{const r=await ccol.add({name:n,ids:[],createdAt:Date.now()});openColl=r.id;renderGrid();toast("Collection créée : ajoute des tenues depuis « Mes tenues »")}catch(err){toast("Échec : "+(err.message||err.code))}}
   if(e.target.id==="crf"){e.preventDefault();const n=new FormData(e.target).get("name").trim();if(!n||!openColl)return;
     try{await ccol.doc(openColl).update({name:n});toast("Collection renommée")}catch(err){toast("Échec : "+(err.message||err.code))}}
 });
