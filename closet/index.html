@@ -258,6 +258,10 @@ function toast(t){const el=$("#toast");el.textContent=t;el.hidden=false;clearTim
 const fmtDate=d=>d?new Date(d).toLocaleDateString("fr-FR",{day:"numeric",month:"short"}):"—";
 const inSlot=k=>items.filter(i=>SLOTS.find(s=>s.key===k).cats.includes(i.category)).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
 const byId=id=>items.find(i=>i.id===id);
+const src=i=>i?.thumb||i?.img||"";
+function makeThumb(file){return new Promise((ok,ko)=>{const im=new Image();im.onload=()=>{const m=560,k=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement("canvas");
+  c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);
+  URL.revokeObjectURL(im.src);ok(c.toDataURL("image/jpeg",.78))};im.onerror=ko;im.src=URL.createObjectURL(file)})}
 
 /* ---------- sidebar + chips ---------- */
 function count(v){
@@ -302,7 +306,7 @@ function renderGrid(){
   $("#grid").innerHTML=v.map(i=>`<div class="tile${chosen.has(i.id)?" sel":""}" data-id="${i.id}" role="button" tabindex="0" aria-label="Essayer ${esc(i.name)}">
       ${i.favorite?'<span class="fav" aria-label="Favori">♥</span>':""}
       <button class="info" data-info="${i.id}" aria-label="Fiche de ${esc(i.name)}">i</button>
-      <div class="im">${i.img?`<img src="${esc(i.img)}" alt="" loading="lazy">`:'<span class="note">Sans photo</span>'}</div>
+      <div class="im">${src(i)?`<img src="${esc(src(i))}" alt="" loading="lazy">`:'<span class="note">Sans photo</span>'}</div>
       <b>${esc(i.name)}</b>
       <small>${esc(i.brand||i.category)}</small>
       <small>${swatch(i.color)}${i.wears||0}× portée</small>
@@ -317,7 +321,7 @@ function renderLooks(){
   $("#grid").className="looks";
   $("#grid").innerHTML=looks.map(l=>{
     const ims=SLOTS.map(s=>byId(l.items?.[s.key])).filter(Boolean);
-    return `<div class="lk"><div class="stack">${ims.map(i=>i.img?`<img src="${esc(i.img)}" alt="${esc(i.name)}">`:`<small class="note">${esc(i.name)}</small>`).join("")}</div>
+    return `<div class="lk"><div class="stack">${ims.map(i=>src(i)?`<img src="${esc(src(i))}" alt="${esc(i.name)}">`:`<small class="note">${esc(i.name)}</small>`).join("")}</div>
       <b>${esc(l.name)}</b>
       <div class="row"><button class="btn" data-wear="${l.id}">Essayer</button><button class="btn ghost" data-dl="${l.id}">Retirer</button></div></div>`}).join("");
   e.hidden=!!looks.length;
@@ -333,7 +337,7 @@ function renderRails(){
   r.innerHTML=SLOTS.filter(s=>shown[s.key]).map(s=>{
     const list=inSlot(s.key);
     if(list.length&&!list.some(i=>i.id===sel[s.key]))sel[s.key]=list[0].id;
-    const slides=list.length?list.map(i=>`<button class="slide" data-id="${i.id}" aria-label="${esc(i.name)}">${i.img?`<img src="${esc(i.img)}" alt="">`:`<span class="ph">${esc(i.name)}<br>Photo à ajouter</span>`}</button>`).join("")
+    const slides=list.length?list.map(i=>`<button class="slide" data-id="${i.id}" aria-label="${esc(i.name)}">${src(i)?`<img src="${esc(src(i))}" alt="">`:`<span class="ph">${esc(i.name)}<br>Photo à ajouter</span>`}</button>`).join("")
       :`<div class="slide on"><button class="ph" data-addcat="${s.add}">+ Ajoute ${s.key==="bag"?"un sac":s.key==="top"?"un haut":s.key==="bottom"?"un bas":"des chaussures"}</button></div>`;
     return `<div class="rail" data-slot="${s.key}"><span class="rlabel">${s.label}</span>
       <div class="track" tabindex="-1">${slides}</div>
@@ -379,8 +383,8 @@ function openSheet(id){
   const ro=!db;
   $("#drawer").innerHTML=`
     <div class="dhead"><small>${id?esc(it.category):"Nouvelle pièce"}</small><button class="x" id="close" aria-label="Fermer">×</button></div>
-    <div class="big" id="big">${it.img?`<img src="${esc(it.img)}" alt="">`:'<span class="note">Ajoute une photo, idéalement sur fond blanc</span>'}</div>
-    ${assets?`<div class="brow"><button class="btn ghost" id="photo">${it.img?"Changer la photo":"Choisir une photo"}</button>${id&&slotOf(it.category)?'<button class="btn ghost" id="try">Essayer dans le look</button>':""}</div>`:""}
+    <div class="big" id="big">${src(it)?`<img src="${esc(src(it))}" alt="">`:'<span class="note">Ajoute une photo, idéalement sur fond blanc</span>'}</div>
+    ${db?`<div class="brow"><button class="btn ghost" id="photo">${src(it)?"Changer la photo":"Choisir une photo"}</button>${id&&slotOf(it.category)?'<button class="btn ghost" id="try">Essayer dans le look</button>':""}</div>`:""}
     ${id?`<h2 id="dTitle">${esc(it.name)}</h2>
     <div class="stats"><div><b>${it.wears||0}</b><span>Fois portée</span></div><div><b>${fmtDate(it.lastWorn)}</b><span>Dernière fois</span></div><div><b>${it.favorite?"♥":"—"}</b><span>Favori</span></div></div>
     ${ro?"":`<div class="brow"><button class="btn" id="wear">Portée aujourd'hui</button>${it.wears?'<button class="btn ghost" id="unwear">−1</button>':""}<button class="btn ghost" id="favb">${it.favorite?"Retirer des favoris":"♥ Favori"}</button></div>`}`:'<h2 id="dTitle">Ajouter une pièce</h2>'}
@@ -409,7 +413,7 @@ function openSheet(id){
     ev.preventDefault();const b=$("#save");b.disabled=true;
     const fd=Object.fromEntries(new FormData(ev.target));
     try{
-      if(pendingFile){b.textContent="Envoi de la photo…";const a=await assets.upload(pendingFile);fd.img=a.url;fd.assetId=a.id}
+      if(pendingFile){b.textContent="Envoi de la photo…";fd.thumb=await makeThumb(pendingFile);try{const a=await assets.upload(pendingFile);fd.img=a.url;fd.assetId=a.id}catch(e){}}
       if(id){await col.doc(id).update(fd);toast("Enregistré")}
       else{fd.createdAt=Date.now();fd.wears=0;fd.favorite=false;await col.add(fd);toast("Ajoutée au dressing")}
       closeSheet();
