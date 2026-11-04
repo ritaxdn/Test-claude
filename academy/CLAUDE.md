@@ -4,6 +4,7 @@
 
 Avant toute fonctionnalité : **est-ce que cela aide Cellulift à mieux acquérir, convertir, onboarder, former, accompagner ou fidéliser ses médecins ?**
 Si la réponse est non, la fonctionnalité est probablement secondaire : le dire, et proposer plus simple.
+Pour les *Formations*, la question devient aussi : **est-ce que cela aide à vendre des formations à des professionnels qui ne sont pas encore clients ?**
 
 ## Méthode pour toute fonctionnalité LMS
 
@@ -21,11 +22,13 @@ Si la réponse est non, la fonctionnalité est probablement secondaire : le dire
 ## Faits à respecter
 
 - Présentateurs des vidéos : **Dr Mohamed Dadoun**, **Meryem Belkhalfi**, **Imane Souali**. Ne pas inventer de formateurs ni de titres : seul celui du Dr Dadoun est connu (« Médecin esthétique & lasériste · Casablanca », source cellulift.ma).
-- **Règle d'accès : un client (médecin, kiné, centre…) n'a accès qu'aux parcours des machines qu'il a achetées.** Pas de machine achetée, pas d'accès. L'accès se calcule à chaque requête à partir de ses machines actives (`device_ownerships` × `programs.device_model_id`, parcours publié) ; ne jamais ajouter de droit stocké à part ni d'exception sans accord explicite.
-- Contenus gratuits et payants (Open Academy) : prévus **plus tard**, Cellulift choisira quels contenus sont gratuits et lesquels sont payants. D'ici là, rien n'est ouvert hors machines achetées. Le jour venu, ce sera une source d'accès supplémentaire explicite (gratuit / acheté), sans affaiblir la règle des parcours machines.
-- Paiement (quand les contenus payants arriveront) : selon le pays du client. Maroc → paiement marocain en dirhams (MAD). Hors Maroc → euro ou dollar. Le pays vient du compte du client (pas de l'adresse IP) ; chaque contenu payant a un prix fixé par devise (pas de conversion automatique).
+- **Deux espaces, une marque (décision Cellulift, nov. 2026)** : *Formations* (catalogue ouvert aux professionnels éligibles, accès payant ou offert — priorité commerciale : les non-clients) et *Mes technologies* (parcours des équipements, selon les machines du client). Architecture détaillée et plan de tests : `docs/07-formations-et-acces.md` (proposition, en attente de validation avant code).
+- **Règle machines (inchangée, à préserver intégralement)** : un parcours *technologie* n'est ouvert qu'aux clients possédant une machine active du bon modèle (`device_ownerships` × `programs.device_model_id`, parcours publié), recalculé à chaque requête. Une machine n'ouvre jamais une formation ; un achat n'ouvre jamais un parcours technologie. Un même compte cumule les deux.
+- **Règle formations** : accès seulement via un accès actif (acheté **après paiement vérifié** par un admin, ou offert avec motif), qualification professionnelle **vérifiée** et profession autorisée pour la formation — contrôlé côté serveur à chaque requête. Tout accès accordé, modifié ou révoqué est tracé (jamais de suppression). Paiement **manuel** pour le MVP ; paiement en ligne plus tard. Aucun autre droit ni exception sans accord explicite.
+- Ne jamais présenter comme disponible une fonctionnalité en développement (côté médecin comme dans la communication).
+- Paiement (paiement en ligne, plus tard) : selon le pays du client. Maroc → paiement marocain en dirhams (MAD). Hors Maroc → euro ou dollar. Le pays vient du compte du client (pas de l'adresse IP) ; chaque contenu payant a un prix fixé par devise (pas de conversion automatique).
 - Palette : on garde la direction claire « Nacre & verre » de cellulift.ma (fond nacré, verre clair, signal arc-en-ciel). Une palette bleu nuit a été essayée puis écartée par Cellulift (oct. 2026) : ne pas y revenir sans demande.
-- Nom de la plateforme en ligne : **LIFT by CELLULIFT Academy** (« LIFT » en court). Ne pas le confondre avec la page Academy du site (masterclasses et formations en présentiel).
+- Nom de la plateforme en ligne : **LIFT by CELLULIFT Academy** (« LIFT » en court), une seule marque, sans sous-marque. Communication : promesse centrée sur la valeur de l'expertise et la qualité des parcours ; ne pas écrire « inclus avec la machine » ; ne pas laisser croire que LIFT est réservé aux clients. Ne pas le confondre avec la page Academy du site (masterclasses et formations en présentiel).
 - Interface en français, vouvoiement.
 - Le CRM Cellulift est en production (`public/crm/index.html` + base Supabase) : lecture seule sans accord explicite ; toute migration passe par un brouillon relu (`supabase/crm-academy-draft.sql`).
 - Ne jamais présenter une protection simulée comme réelle ; le filigrane dissuade, il n'empêche pas la capture.
