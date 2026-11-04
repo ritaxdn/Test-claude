@@ -661,28 +661,43 @@ function harmonyV(vals,style,key){
   if(key&&looks.some(l=>lookKey(l.items)===key))sc-=20;     // pas une tenue déjà enregistrée
   return sc+Math.random()*2;
 }
+let shufHist=[];try{shufHist=JSON.parse(localStorage.getItem("dressing.shuf")||"[]")}catch(_){}
 $("#shuffle").onclick=()=>{
   const act=SLOTS.filter(s=>shown[s.key]&&inSlot(s.key).length);
   if(!act.length)return;
   const styles=STYLES.filter(t=>act.every(s=>inSlot(s.key).some(i=>(i.tags||[]).includes(t))));
-  const style=(styles.length?styles:STYLES)[Math.floor(Math.random()*(styles.length||STYLES.length))];
+  // on alterne les styles : celui proposé la dernière fois a moins de chances de revenir
+  const lastStyle=shufHist[0]?.style,cand=(styles.length?styles:STYLES).filter(t=>t!=="Sport"||Math.random()<.35);
+  const sty=cand.filter(t=>t!==lastStyle);const style=(sty.length?sty:cand.length?cand:STYLES)[Math.floor(Math.random()*(sty.length||cand.length||STYLES.length))];
   const tg=i=>i.tags||[],sportOnly=i=>tg(i).includes("Sport")&&!tg(i).some(t=>t!=="Sport");
   const pools={};
   act.forEach(s=>{const l=inSlot(s.key);
     if(style==="Sport")pools[s.key]=l.filter(i=>tg(i).includes("Sport"));            // pas de pièce de ville dans une tenue sport
-    else{const ok=l.filter(i=>!sportOnly(i)),p=ok.filter(i=>tg(i).includes(style));pools[s.key]=p.length?p:ok}}); // jamais de sport en ville
+    else{const ok=l.filter(i=>!sportOnly(i)),p=ok.filter(i=>tg(i).includes(style));
+      pools[s.key]=p.length>=3?p:ok}});                                               // jamais de sport en ville, et assez de choix
+  // nouveauté : pièces vues dans les derniers mélanges, déjà très utilisées dans tes tenues, ou souvent portées = moins prioritaires
+  const recent={};shufHist.forEach((h,n)=>h.ids.forEach(id=>recent[id]=(recent[id]||0)+(8-n)));
+  const inLooks={};looks.forEach(l=>lookIds(l.items).forEach(id=>inLooks[id]=(inLooks[id]||0)+1));
+  const fresh=i=>-(recent[i.id]||0)*1.2-(inLooks[i.id]||0)*0.8-(i.wears||0)*0.5+(!i.wears&&!inLooks[i.id]?3:0);
   const rnd=a=>a[Math.floor(Math.random()*a.length)];
-  let best=null,bs=-1e9;
-  for(let n=0;n<400;n++){
+  const cands=[];
+  for(let n=0;n<600;n++){
     const c={};
     act.forEach(s=>{const p=pools[s.key];if(!p.length)return;
-      if(s.key==="acc")c.acc=[...p].sort(()=>Math.random()-.5).slice(0,1+Math.floor(Math.random()*Math.min(3,p.length)));
+      if(s.key==="acc"){const want=1+Math.floor(Math.random()*3),seenT=new Set(),out=[];
+        for(const i of [...p].sort(()=>Math.random()-.5)){const t=accType(i);if(t!=="poignet"&&seenT.has(t))continue;seenT.add(t);out.push(i);if(out.length>=want)break}
+        c.acc=out}                                                               // jamais deux colliers ni deux paires de boucles
       else c[s.key]=rnd(p)});
+    const vals=Object.values(c).flat();
     const key=lookKey(Object.fromEntries(Object.entries(c).map(([k,v])=>[k,Array.isArray(v)?v.map(i=>i.id):v.id])));
-    const sc=harmonyV(Object.values(c).flat(),style,key);
-    if(sc>bs){bs=sc;best=c}
+    const sc=harmonyV(vals,style,key)+vals.reduce((a,i)=>a+fresh(i),0)/Math.max(1,vals.length)*2.5+Math.random()*4;
+    cands.push({c,sc});
   }
+  cands.sort((a,b)=>b.sc-a.sc);
+  const best=cands[Math.floor(Math.random()*Math.min(12,cands.length))].c;   // tirage parmi les 12 meilleures, pas toujours la même
   act.forEach(s=>{const v=best[s.key];if(!v){if(style==="Sport")shown[s.key]=false;return}sel[s.key]=s.key==="acc"?v.map(i=>i.id):v.id});
+  shufHist.unshift({style,ids:Object.values(best).flat().map(i=>i.id)});shufHist=shufHist.slice(0,8);
+  try{localStorage.setItem("dressing.shuf",JSON.stringify(shufHist))}catch(_){}
   saveUi();renderToggles();renderRails();renderGrid();toast("Tenue "+style.toLowerCase()+" proposée");
 };
 function currentLook(){const it={};SLOTS.forEach(s=>{if(!shown[s.key])return;if(s.key==="acc"){const a=ids(sel.acc).filter(byId);if(a.length)it.acc=a}else if(sel[s.key]&&byId(sel[s.key]))it[s.key]=sel[s.key]});return it}
