@@ -237,12 +237,54 @@ form textarea{min-height:64px;resize:vertical}
 .vday .stack img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
 .row1{display:flex;gap:8px}
 @media (max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}.kpis div:nth-child(3){padding-left:0;border-left:0}}
+/* ---- interface apaisée ---- */
+header{border-bottom-color:transparent;padding-block:22px 10px}
+.logo h1{font-size:20px;letter-spacing:.42em;font-weight:600}
+.logo small{letter-spacing:.04em}
+aside.nav{border-right-color:transparent;padding-top:26px}
+.nav a{color:var(--muted);font-size:13px;padding:5px 10px}
+.nav a.top{font-weight:500;color:var(--ink)}
+.nav a.sub{padding-left:22px;color:var(--muted)}
+.nav a[aria-current="true"]{background:none;color:var(--ink);font-weight:700}
+.nav a.sub[aria-current="true"]{box-shadow:inset 2px 0 0 var(--ink)}
+.nav sup{opacity:0;transition:opacity .2s}
+.nav a:hover sup,.nav a[aria-current="true"] sup{opacity:.6}
+.nav .gap{height:18px}
+.navh{color:var(--muted)!important;font-size:10.5px!important;letter-spacing:.14em;text-transform:uppercase;font-weight:500!important}
+.look{border-right-color:var(--soft)}
+.toggles button{border-color:transparent;background:var(--soft);color:#9a9a9a;font-size:10.5px}
+.toggles button[aria-pressed="true"]{background:#fff;border-color:var(--line);color:var(--ink);font-weight:500}
+.det{border-top:1px solid var(--soft);padding-top:6px}
+.det summary{font-size:11.5px;color:var(--muted);cursor:pointer;list-style:none}
+.det summary::-webkit-details-marker{display:none}
+.det summary::after{content:" ▾"}
+.det[open] summary::after{content:" ▴"}
+.det .lines{border-top:0;padding-top:6px}
+.slide{opacity:.12}
+.rlabel{color:#b0b0b0}
+.shophead{color:#9a9a9a}
+.shophead input{background:var(--soft);border-color:transparent}
+.grid{gap:30px 18px}
+.tile{gap:3px;padding:6px 6px 10px}
+.tile b{font-weight:400;font-size:12.5px}
+.tile small{font-size:11px;color:#a3a3a3}
+.tile .info{opacity:0;transition:opacity .2s;border-color:transparent;background:rgba(255,255,255,.9)}
+.tile:hover .info,.tile .info:focus-visible{opacity:1}
+.tile.sel{border:1px solid transparent;padding:6px 6px 10px;background:var(--soft)}
+.tile .fav{font-size:11px}
+.lookfoot{padding-top:16px}
+.shuffle{width:46px;height:46px}
+.save{height:46px;font-size:11px;letter-spacing:.12em}
+.upd{height:46px}
+@media (hover:none){.tile .info{opacity:.55}}
+@media (max-width:760px){.logo h1{letter-spacing:0;font-size:26px;font-weight:700}}
+@media (max-width:760px){.chips button{border-color:transparent;background:var(--soft);font-size:11.5px}.chips button[aria-pressed="true"]{background:var(--ink)}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
 
 <div class="wrap">
   <header>
-    <div class="crumb"><b>Mon dressing</b> / Cabine d'essayage</div>
+    <div class="crumb"></div>
     <div class="logo"><h1>Dressing Room</h1><small id="count">Ma garde-robe</small></div>
     <div class="hright"><button class="pill" id="addBtn" hidden><span class="n">+</span>Ajouter</button></div>
   </header>
@@ -255,7 +297,7 @@ form textarea{min-height:64px;resize:vertical}
         <div class="ttl"><h2>Nouveau look</h2><span class="tot" id="tot"></span></div>
         <div class="editing" id="editing" hidden></div>
         <div class="toggles" id="toggles" aria-label="Lignes affichées"></div>
-        <div class="lines" id="lines"></div>
+        <details class="det"><summary>Voir le détail des pièces</summary><div class="lines" id="lines"></div></details>
       </div>
       <div class="rails" id="rails"></div>
       <div class="lookfoot">
@@ -353,7 +395,8 @@ function renderNav(){
   const a=(v,cls,label)=>{const c=count(v);return `<a class="${cls}" data-v="${esc(v)}" aria-current="${view===v}" tabindex="0">${esc(label||v)}${c===""?"":`<sup>${c}</sup>`}</a>`};
   let h=a("Tout","top","Tout voir")+a("Favoris","top")+STYLES.map(t=>a(t,"top")).join("")+'<div class="gap"></div>';
   for(const g of GROUPS){
-    if(g.cats.length>1){h+=a(g.name,"top");h+=g.cats.filter(c=>count(c)>0||(g.name==="Vêtements"&&c!=="Bas")).map(c=>a(c,"sub")).join("")}
+    if(g.cats.length>1){const open=view===g.name||g.cats.includes(view);h+=a(g.name,"top"+(open?" open":""));
+      if(open)h+=g.cats.filter(c=>count(c)>0).map(c=>a(c,"sub")).join("")}
     else h+=a(g.name,"top");
     h+='<div class="gap"></div>';
   }
@@ -390,7 +433,6 @@ function renderGrid(){
       <div class="im">${src(i)?`<img src="${esc(src(i))}" alt="" loading="lazy">`:'<span class="note">Sans photo</span>'}</div>
       <b>${esc(i.name)}</b>
       <small>${esc(i.brand||i.category)}</small>
-      <small>${swatch(i.color)}${i.wears||0}× portée</small>
     </div>`).join("");
   if(!items.length){e.hidden=false}
   else if(!v.length){e.hidden=false;e.innerHTML='<h3>Rien ici</h3><p>Aucune pièce dans cette catégorie pour l\'instant.</p>'}
