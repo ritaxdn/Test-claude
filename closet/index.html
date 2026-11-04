@@ -72,6 +72,7 @@ aside.nav{border-right:1px solid var(--line);padding:22px 16px 22px 0}
 .rail[data-slot="bottom"] .slide{height:200px}
 .rail[data-slot="shoes"] .slide{height:150px}
 .rail[data-slot="bag"] .slide{height:130px}
+.rail[data-slot="acc"] .slide{height:120px}
 .ph{width:100%;height:100%;border:1.5px dashed #cfcfcf;border-radius:10px;display:grid;place-items:center;text-align:center;color:var(--muted);font-size:12px;padding:8px;background:none}
 .arrow{position:absolute;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;border:0;background:#4a4a4a;color:#fff;display:grid;place-items:center;font-size:14px;opacity:0;transition:opacity .2s;z-index:2}
 .arrow.l{left:6px}.arrow.r{right:6px}
@@ -240,6 +241,7 @@ const SLOTS=[
   {key:"bottom",label:"Bas",cats:["Bas"],add:"Bas"},
   {key:"shoes",label:"Chaussures",cats:GROUPS[1].cats,add:"Talons"},
   {key:"bag",label:"Sac",cats:["Sacs"],add:"Sacs"},
+  {key:"acc",label:"Accessoires",cats:["Accessoires"],add:"Accessoires"},
 ];
 const slotOf=c=>SLOTS.find(s=>s.cats.includes(c))?.key;
 const COLORS={"Noir":"#111","Blanc":"#fff","Beige":"#e3d3bd","Marron":"#7a4b2b","Doré":"#c9a646","Argenté":"#c5c7cb","Rose":"#d6337a","Rouge":"#c0272d","Bleu":"#2446b5","Vert":"#5f9a4b","Violet":"#8d4bc4","Multicolore":"conic-gradient(#d6337a,#c9a646,#5f9a4b,#2446b5,#d6337a)"};
@@ -249,9 +251,10 @@ const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&
 
 let items=[],looks=[],db=null,assets=null,col=null,lcol=null,openId=null,pendingFile=null,presetCat=null;
 let view="Tout";               // category, group name, "Tout", "Favoris", "Mes tenues"
-let sel={top:null,bottom:null,shoes:null,bag:null};
-let shown={top:true,bottom:true,shoes:true,bag:true};
+let sel={top:null,bottom:null,shoes:null,bag:null,acc:null};
+let shown={top:true,bottom:true,shoes:true,bag:true,acc:true};
 try{const s=JSON.parse(localStorage.getItem("dressing.v2")||"{}");Object.assign(sel,s.sel||{});Object.assign(shown,s.shown||{});if(s.view)view=s.view}catch(e){}
+if(shown.acc===undefined)shown.acc=true;
 const saveUi=()=>{try{localStorage.setItem("dressing.v2",JSON.stringify({sel,shown,view}))}catch(e){}};
 
 function toast(t){const el=$("#toast");el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,2200)}
@@ -338,7 +341,7 @@ function renderRails(){
     const list=inSlot(s.key);
     if(list.length&&!list.some(i=>i.id===sel[s.key]))sel[s.key]=list[0].id;
     const slides=list.length?list.map(i=>`<button class="slide" data-id="${i.id}" aria-label="${esc(i.name)}">${src(i)?`<img src="${esc(src(i))}" alt="">`:`<span class="ph">${esc(i.name)}<br>Photo à ajouter</span>`}</button>`).join("")
-      :`<div class="slide on"><button class="ph" data-addcat="${s.add}">+ Ajoute ${s.key==="bag"?"un sac":s.key==="top"?"un haut":s.key==="bottom"?"un bas":"des chaussures"}</button></div>`;
+      :`<div class="slide on"><button class="ph" data-addcat="${s.add}">+ Ajoute ${s.key==="bag"?"un sac":s.key==="acc"?"un accessoire":s.key==="top"?"un haut":s.key==="bottom"?"un bas":"des chaussures"}</button></div>`;
     return `<div class="rail" data-slot="${s.key}"><span class="rlabel">${s.label}</span>
       <div class="track" tabindex="-1">${slides}</div>
       ${list.length>1?'<button class="arrow l" data-dir="-1" aria-label="Précédent">‹</button><button class="arrow r" data-dir="1" aria-label="Suivant">›</button>':""}</div>`}).join("");
