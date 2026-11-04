@@ -309,7 +309,7 @@ const SLOTS=[
   {key:"acc",label:"Accessoires",cats:["Accessoires"],add:"Accessoires"},
 ];
 const slotOf=c=>SLOTS.find(s=>s.cats.includes(c))?.key;
-const COLORS={"Noir":"#111","Blanc":"#fff","Beige":"#e3d3bd","Marron":"#7a4b2b","Doré":"#c9a646","Argenté":"#c5c7cb","Gris":"#6b6f73","Rose":"#d6337a","Rouge":"#c0272d","Bleu":"#2446b5","Vert":"#5f9a4b","Violet":"#8d4bc4","Multicolore":"conic-gradient(#d6337a,#c9a646,#5f9a4b,#2446b5,#d6337a)"};
+const COLORS={"Noir":"#111","Blanc":"#fff","Beige":"#e3d3bd","Marron":"#7a4b2b","Doré":"#c9a646","Argenté":"#c5c7cb","Gris":"#6b6f73","Rose":"#d6337a","Rouge":"#c0272d","Orange":"#e8890c","Bleu":"#2446b5","Vert":"#5f9a4b","Violet":"#8d4bc4","Multicolore":"conic-gradient(#d6337a,#c9a646,#5f9a4b,#2446b5,#d6337a)"};
 const SEASONS=["Toute l'année","Printemps / Été","Automne / Hiver"];
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
