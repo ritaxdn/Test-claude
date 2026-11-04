@@ -101,7 +101,7 @@ window.show = (n) => {
 
 <script>
 // Animation du storyboard v3 : chaque plan a sa fenêtre [a, b].
-const W = [[0,1.7],[1.7,3.1],[3.1,4.5],[4.5,6.3],[6.3,7.8],[7.7,9.5],[9.5,11.1],[11.1,13.1],[13.1,15.1],[15.1,17.1],[17.1,19.1],[19.1,20.8],[20.8,25]];
+const W = [[0,1.3],[1.3,2.1],[2.1,4.0],[4.0,6.1],[6.1,7.6],[7.6,9.55],[9.55,11.55],[11.55,12.9],[12.9,14.2],[14.2,15.6],[15.6,16.5],[16.5,17.8],[17.8,23.5]];
 const cl = (x) => Math.max(0, Math.min(1, x)), p = (t, a, b) => cl((t - a) / (b - a));
 const eo = (x) => 1 - Math.pow(1 - x, 3), eio = (x) => x < .5 ? 4*x*x*x : 1 - Math.pow(-2*x + 2, 3) / 2;
 const back = (x) => { const c = 1.7; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
@@ -161,10 +161,10 @@ window.render = (t) => {
       d.style.opacity = cl(v * 1.5); d.style.transform = `${d.dataset.tf} translateY(${(1 - v) * 60 + Math.sin(t * 1.6 + j) * 4}px) scale(${.82 + .18 * v})`; });
   });
   // détails par plan
-  path2.style.strokeDashoffset = L2 * (1 - eo(p(t, 2.35, 2.75)));
+  path2.style.strokeDashoffset = L2 * (1 - eo(p(t, 1.6, 1.95)));
   // le bouton Lecture du « vous » grandit jusqu'à remplir l'écran → plan 5
   const pb = document.querySelector("#f4 .k span[style*='inline-grid']");
-  if (pb) { const g = eio(p(t, 5.85, 6.3)); pb.style.transform = `scale(${1 + g * 28})`; pb.style.position = "relative"; pb.style.zIndex = 5; }
+  if (pb) { const g = eio(p(t, 5.65, 6.1)); pb.style.transform = `scale(${1 + g * 28})`; pb.style.position = "relative"; pb.style.zIndex = 5; }
   // doigt : pression
   document.querySelectorAll(".touch").forEach((d) => { const k = (t * 2.2) % 1; d.style.boxShadow = `0 0 0 ${10 + k * 40}px rgba(29,27,38,${.12 * (1 - k)})`; });
 };
