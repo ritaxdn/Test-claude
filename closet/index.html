@@ -199,6 +199,10 @@ form textarea{min-height:64px;resize:vertical}
   .tabbar button[aria-current="true"]{color:#fff}
   .tabbar .plus{width:46px;height:46px;border-radius:50%;background:#fff;color:#000;font-size:26px;justify-content:center;padding:0}
 }
+.editing{display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--soft);border-radius:8px;padding:8px 10px;font-size:12px}
+.editing b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.editing button{border:0;background:none;font-size:12px;text-decoration:underline;color:var(--muted);white-space:nowrap}
+.upd{border:1px solid var(--ink);background:var(--ink);color:#fff;font-weight:700;letter-spacing:.06em;font-size:12px;padding:0 18px;height:52px;border-radius:999px;text-transform:uppercase}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
 
@@ -215,6 +219,7 @@ form textarea{min-height:64px;resize:vertical}
     <section class="look" aria-label="Ma tenue">
       <div class="lookhead">
         <div class="ttl"><h2>Nouveau look</h2><span class="tot" id="tot"></span></div>
+        <div class="editing" id="editing" hidden></div>
         <div class="toggles" id="toggles" aria-label="Lignes affichées"></div>
         <div class="lines" id="lines"></div>
       </div>
@@ -223,6 +228,7 @@ form textarea{min-height:64px;resize:vertical}
         <button class="shuffle" id="shuffle" aria-label="Mélanger la tenue" title="Mélanger">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M3 8l4-4 4 4M17 20V4M13 16l4 4 4-4"/></svg>
         </button>
+        <button class="upd" id="updLook" hidden>Mettre à jour la tenue</button>
         <button class="save" id="saveLook">Enregistrer la tenue</button>
       </div>
     </section>
@@ -273,6 +279,7 @@ const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
 let hideWorn=false;try{hideWorn=!!localStorage.getItem("dressing.hideWorn")}catch(_){}
+let editing=null;
 let items=[],looks=[],db=null,assets=null,col=null,lcol=null,openId=null,pendingFile=null,presetCat=null;
 let view="Tout";               // category, group name, "Tout", "Favoris", "Mes tenues"
 let sel={jacket:null,dress:null,top:null,bottom:null,shoes:null,bag:null,acc:null};
@@ -358,7 +365,7 @@ function renderLooks(){
     const ims=SLOTS.map(s=>byId(l.items?.[s.key])).filter(Boolean);
     const done=!!l.worn;
     return `<div class="lk${done?" done":""}">${done?`<span class="worn">✓ Déjà portée${l.worn>1?` ${l.worn}×`:""} · ${fmt(l.lastWorn)}</span>`:'<span class="fresh">Pas encore portée</span>'}<div class="stack">${ims.map(i=>src(i)?`<img src="${esc(src(i))}" alt="${esc(i.name)}">`:`<small class="note">${esc(i.name)}</small>`).join("")}</div>
-      <b>${esc(l.name)}</b>
+      <b>${esc(l.name)}</b>${editing===l.id?'<span class="fresh">En cours de modification</span>':""}
       <div class="row"><button class="btn wearbtn${done?" undo":""}" data-done="${l.id}">${done?"Annuler « portée »":"Je l'ai portée aujourd'hui"}</button><button class="btn" data-wear="${l.id}">Essayer</button><button class="btn ghost" data-dl="${l.id}">Retirer</button></div></div>`}).join("");
   e.hidden=!!looks.length;
   if(!looks.length)e.innerHTML='<h3>Aucune tenue</h3><p>Compose un look au centre puis clique sur « Enregistrer la tenue ».</p>';
@@ -495,10 +502,10 @@ $("#grid").onclick=async e=>{
     }catch(err){toast("Échec : "+(err.message||err.code))}
     return}
   const w=e.target.closest("[data-wear]");
-  if(w){const l=looks.find(x=>x.id===w.dataset.wear);SLOTS.forEach(s=>{shown[s.key]=!!l.items?.[s.key]||s.key==="shoes";if(l.items?.[s.key])sel[s.key]=l.items[s.key]});saveUi();renderToggles();renderRails();renderGrid();
-    if(matchMedia("(max-width:760px)").matches)setTab("look");toast("Tenue chargée");return}
+  if(w){const l=looks.find(x=>x.id===w.dataset.wear);SLOTS.forEach(s=>{shown[s.key]=!!l.items?.[s.key]||s.key==="shoes";if(l.items?.[s.key])sel[s.key]=l.items[s.key]});editing=l.id;saveUi();renderToggles();renderRails();renderGrid();renderEditing();
+    if(matchMedia("(max-width:760px)").matches)setTab("look");toast("Tenue chargée : change ce que tu veux puis « Mettre à jour »");return}
   const dl=e.target.closest("[data-dl]");
-  if(dl){try{await lcol.doc(dl.dataset.dl).delete();toast("Tenue retirée")}catch(err){toast("Échec : "+(err.message||err.code))}return}
+  if(dl){try{if(editing===dl.dataset.dl){editing=null;renderEditing()}await lcol.doc(dl.dataset.dl).delete();toast("Tenue retirée")}catch(err){toast("Échec : "+(err.message||err.code))}return}
   const t=e.target.closest(".tile");if(t)tryOn(t.dataset.id)};
 $("#grid").onkeydown=e=>{if((e.key==="Enter"||e.key===" ")&&e.target.classList.contains("tile")){e.preventDefault();tryOn(e.target.dataset.id)}};
 $("#rails").onclick=e=>{
@@ -546,6 +553,25 @@ $("#shuffle").onclick=()=>{
   renderToggles();renderRails();
   markOn();renderLines();renderGrid();saveUi();toast("Tenue "+style.toLowerCase()+" proposée");
 };
+function currentLook(){const it={};SLOTS.forEach(s=>{if(shown[s.key]&&sel[s.key]&&byId(sel[s.key]))it[s.key]=sel[s.key]});return it}
+const lookKey=o=>SLOTS.map(x=>(o||{})[x.key]||"").join("|");
+function renderEditing(){
+  const l=editing&&looks.find(x=>x.id===editing);if(!l)editing=null;
+  $("#editing").hidden=!l;$("#updLook").hidden=!l;
+  if(l)$("#editing").innerHTML=`<b>Tu modifies « ${esc(l.name)} »</b><button id="stopEdit">Arrêter</button>`;
+  if(!$("#saveLook").disabled)$("#saveLook").textContent=l?"Enregistrer comme nouvelle":"Enregistrer la tenue";
+}
+$("#editing").onclick=e=>{if(e.target.id==="stopEdit"){editing=null;renderEditing();renderGrid()}};
+$("#updLook").onclick=async()=>{
+  const l=looks.find(x=>x.id===editing);if(!l||!lcol)return;
+  const it=currentLook();if(!Object.keys(it).length){toast("Choisis au moins une pièce");return}
+  const dup=looks.find(x=>x.id!==l.id&&lookKey(x.items)===lookKey(it));
+  if(dup){toast(`Une autre tenue est déjà identique : « ${dup.name} »`);return}
+  const b=$("#updLook");b.disabled=true;b.textContent="Mise à jour…";
+  try{await lcol.doc(l.id).update({items:it,updatedAt:Date.now()});toast(`« ${l.name} » mise à jour`);editing=null}
+  catch(err){toast("Échec de la mise à jour : "+(err.message||err.code||"réessaie"))}
+  b.disabled=false;b.textContent="Mettre à jour la tenue";renderEditing();renderGrid();
+};
 $("#saveLook").onclick=async()=>{
   if(!lcol){toast("Connecte-toi pour enregistrer des tenues");return}
   const b=$("#saveLook");if(b.disabled)return;
@@ -558,9 +584,9 @@ $("#saveLook").onclick=async()=>{
   try{
     const n=looks.length+1;
     await lcol.add({items:it,name:`Tenue n°${n} · `+new Date().toLocaleDateString("fr-FR",{day:"numeric",month:"long"}),createdAt:Date.now(),worn:0});
-    toast("Tenue enregistrée dans « Mes tenues »");b.textContent="Enregistrée ✓";
+    toast("Tenue enregistrée dans « Mes tenues »");b.textContent="Enregistrée ✓";editing=null;
   }catch(err){toast("Échec de l'enregistrement : "+(err.message||err.code||"réessaie"));b.textContent="Enregistrer la tenue"}
-  setTimeout(()=>{b.disabled=false;b.textContent="Enregistrer la tenue"},1500)};
+  setTimeout(()=>{b.disabled=false;renderEditing()},1500)};
 $("#addBtn").onclick=()=>addPiece(CATS.includes(view)?view:null);
 $("#addTab").onclick=()=>addPiece(CATS.includes(view)?view:null);
 document.querySelectorAll(".tabbar [data-tab]").forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
@@ -572,7 +598,7 @@ let rz;addEventListener("resize",()=>{clearTimeout(rz);rz=setTimeout(()=>SLOTS.f
 
 function renderAll(){
   $("#count").textContent=items.length?`${items.length} pièces · ${looks.length} tenue${looks.length>1?"s":""}`:"Ma garde-robe";
-  renderNav();renderToggles();renderRails();renderGrid();
+  renderNav();renderToggles();renderRails();renderGrid();renderEditing();
   if(openId&&!pendingFile&&!$("#drawer").hidden&&!$("#drawer").contains(document.activeElement))openSheet(openId);
 }
 
