@@ -114,7 +114,12 @@ export async function updateProgram(form: FormData) {
   const admin = await requireAdmin();
   const id = s(form, "program_id"), model = s(form, "device_model_id");
   const published = form.get("published") === "on";
-  await sql`update programs set title = ${s(form, "title")}, summary = ${opt(form, "summary")}, device_model_id = ${isUuid(model) ? model : null}, published = ${published} where id = ${id}`;
+  const [cur] = await sql<{ kind: "technology" | "training" }[]>`select kind from programs where id = ${id}`;
+  if (!cur) back("/admin/parcours", { erreur: "Parcours introuvable." });
+  // Technologie : machine obligatoire pour publier. Formation : jamais de machine (règle aussi imposée par la base).
+  const device = cur.kind === "training" ? null : isUuid(model) ? model : null;
+  if (published && cur.kind === "technology" && !device) back(`/admin/parcours/${id}`, { erreur: "Choisissez la machine de ce parcours avant de le publier." });
+  await sql`update programs set title = ${s(form, "title")}, summary = ${opt(form, "summary")}, device_model_id = ${device}, published = ${published} where id = ${id}`;
   await audit(admin.id, "program.update", id, { published });
   back(`/admin/parcours/${id}`, { info: "Parcours enregistré." });
 }

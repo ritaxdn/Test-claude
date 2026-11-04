@@ -20,8 +20,20 @@ do $$
 declare t text;
 begin
   foreach t in array array['users','auth_tokens','sessions','login_attempts','device_models','device_ownerships','presenters',
-                           'programs','modules','lessons','documents','entitlements','lesson_progress','audit_log'] loop
+                           'programs','modules','lessons','documents','entitlements','lesson_progress','audit_log',
+                           'orders','access_grants'] loop
     execute format('drop policy if exists academy_app_all on %I', t);
     execute format('create policy academy_app_all on %I for all to academy_app using (true) with check (true)', t);
   end loop;
+end $$;
+
+-- Lot 1 Formations : l'historique ne se réécrit pas. Le compte de l'app ne peut ni modifier ni
+-- supprimer le journal, ni supprimer une commande ou un accès (ils s'annulent / se révoquent).
+do $$
+begin
+  revoke update, delete, truncate on audit_log from academy_app;
+  if exists (select 1 from pg_tables where schemaname = 'public' and tablename = 'orders') then
+    revoke delete, truncate on orders, access_grants from academy_app;
+    grant execute on function lift_is_admin(uuid) to academy_app;
+  end if;
 end $$;
