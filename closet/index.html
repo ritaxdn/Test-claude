@@ -209,6 +209,34 @@ form textarea{min-height:64px;resize:vertical}
 .accpick img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
 .accpick.on{border:2px solid var(--ink);padding:2px}
 .accpick.on::after{content:"✓";position:absolute;top:2px;right:3px;font-size:10px;font-weight:700;background:var(--ink);color:#fff;border-radius:50%;width:15px;height:15px;display:grid;place-items:center}
+.stats-v,.valise{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
+.wide,.vform,.kpis,.row1{grid-column:1/-1}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-block:1px solid var(--line)}
+.kpis div{padding:12px 0;display:flex;flex-direction:column;min-width:0}
+.kpis div+div{padding-left:14px;border-left:1px solid var(--line)}
+.kpis b{font-family:var(--display);font-size:28px;font-weight:500;font-variant-numeric:tabular-nums}
+.kpis span{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.stats-v section{min-width:0;display:flex;flex-direction:column;gap:6px}
+.stats-v h4,.valise h4{margin:6px 0 2px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.bar{display:grid;grid-template-columns:minmax(0,1fr) 1.6fr 2.5ch;gap:8px;align-items:center;font-size:12.5px}
+.bar span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar i{height:8px;border-radius:4px;background:linear-gradient(var(--ink),var(--ink)) 0/var(--w) 100% no-repeat,var(--soft)}
+.bar b{font-variant-numeric:tabular-nums;font-weight:600;text-align:right}
+.minis{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}
+.mini{border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px;display:flex;flex-direction:column;gap:4px;align-items:center;text-align:center;font-size:11px;min-width:0}
+.mini img{width:100%;aspect-ratio:1;object-fit:contain;mix-blend-mode:multiply}
+.mini span{overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.mini b{font-size:11px}
+.vform{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;border:1px solid var(--line);border-radius:10px;padding:12px}
+.vform input,.vform select{border:1px solid var(--line);border-radius:8px;padding:9px 10px;font-size:13px;min-width:0;background:#fff;color:var(--ink);text-transform:none;letter-spacing:0}
+.vform label{display:flex;flex-direction:column;gap:4px;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);flex:1 1 120px;min-width:0}
+.vday{border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:6px;background:#fff;min-width:0}
+.vday b{font-size:12px}
+.vday .stack{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.vday .stack>*{aspect-ratio:1;display:grid;place-items:center;overflow:hidden;font-size:10px;text-align:center}
+.vday .stack img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
+.row1{display:flex;gap:8px}
+@media (max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}.kpis div:nth-child(3){padding-left:0;border-left:0}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
 
@@ -269,6 +297,8 @@ const GROUPS=[
 ];
 const CATS=GROUPS.flatMap(g=>g.cats);
 const STYLES=["Sport","Soirée","Casual"];
+const TOOLS=["Mes tenues","Statistiques","Mode valise"];
+let valise=null;
 const SLOTS=[
   {key:"jacket",label:"Veste / Manteau",cats:["Vestes","Manteaux","Trenchs","Fourrures"],add:"Vestes"},
   {key:"top",label:"Haut",cats:["Hauts"],add:"Hauts"},
@@ -315,21 +345,22 @@ function count(v){
   if(v==="Favoris")return items.filter(i=>i.favorite).length;
   if(STYLES.includes(v))return items.filter(i=>(i.tags||[]).includes(v)).length;
   if(v==="Mes tenues")return looks.length;
+  if(TOOLS.includes(v))return "";
   const g=GROUPS.find(g=>g.name===v);
   return items.filter(i=>g?g.cats.includes(i.category):i.category===v).length;
 }
 function renderNav(){
-  const a=(v,cls,label)=>`<a class="${cls}" data-v="${esc(v)}" aria-current="${view===v}" tabindex="0">${esc(label||v)}<sup>${count(v)}</sup></a>`;
+  const a=(v,cls,label)=>{const c=count(v);return `<a class="${cls}" data-v="${esc(v)}" aria-current="${view===v}" tabindex="0">${esc(label||v)}${c===""?"":`<sup>${c}</sup>`}</a>`};
   let h=a("Tout","top","Tout voir")+a("Favoris","top")+STYLES.map(t=>a(t,"top")).join("")+'<div class="gap"></div>';
   for(const g of GROUPS){
     if(g.cats.length>1){h+=a(g.name,"top");h+=g.cats.filter(c=>count(c)>0||(g.name==="Vêtements"&&c!=="Bas")).map(c=>a(c,"sub")).join("")}
     else h+=a(g.name,"top");
     h+='<div class="gap"></div>';
   }
-  h+=a("Mes tenues","top");
+  h+=TOOLS.map(t=>a(t,"top")).join("");
   $("#nav").innerHTML=h;
-  const chipList=["Tout","Favoris",...STYLES,...GROUPS.map(g=>g.name),...CATS.filter(c=>count(c)>0&&!GROUPS.some(g=>g.name===c))];
-  $("#chips").innerHTML=chipList.filter(v=>v==="Tout"||count(v)>0||v===view).map(v=>`<button data-v="${esc(v)}" aria-pressed="${view===v}">${esc(v==="Tout"?"Tout voir":v)}</button>`).join("");
+  const chipList=["Tout","Favoris","Statistiques","Mode valise",...STYLES,...GROUPS.map(g=>g.name),...CATS.filter(c=>count(c)>0&&!GROUPS.some(g=>g.name===c))];
+  $("#chips").innerHTML=chipList.filter(v=>v==="Tout"||TOOLS.includes(v)||count(v)>0||v===view).map(v=>`<button data-v="${esc(v)}" aria-pressed="${view===v}">${esc(v==="Tout"?"Tout voir":v)}</button>`).join("");
 }
 
 /* ---------- product grid ---------- */
@@ -348,6 +379,8 @@ const swatch=c=>c&&COLORS[c]?`<span class="dot" style="background:${COLORS[c]}">
 function renderGrid(){
   const e=$("#empty");
   if(view==="Mes tenues"){renderLooks();return}
+  if(view==="Statistiques"){renderStats();return}
+  if(view==="Mode valise"){renderValise();return}
   const v=filtered(),chosen=new Set(SLOTS.filter(s=>shown[s.key]).flatMap(s=>ids(sel[s.key])));
   $("#matching").textContent=`Pièces : ${v.length}`;
   $("#grid").className="grid";
@@ -436,6 +469,70 @@ function tryOn(id){
   if(matchMedia("(max-width:760px)").matches)setTab("look");
 }
 
+const stackHtml=o=>lookIds(o).map(byId).filter(Boolean).map(i=>src(i)?`<img src="${esc(src(i))}" alt="${esc(i.name)}">`:`<small class="note">${esc(i.name)}</small>`).join("");
+const mini=(i,t)=>`<button class="mini" data-info="${i.id}">${src(i)?`<img src="${esc(src(i))}" alt="">`:""}<span>${esc(i.name)}</span>${t?`<b>${t}</b>`:""}</button>`;
+
+/* ---------- statistiques ---------- */
+function renderStats(){
+  const g=$("#grid");g.className="stats-v";$("#empty").hidden=true;$("#matching").textContent="Statistiques";
+  const worn=items.filter(i=>i.wears>0),never=items.filter(i=>!i.wears);
+  const tally=f=>{const m={};items.forEach(i=>{const k=f(i);if(k)m[k]=(m[k]||0)+1});return Object.entries(m).sort((a,b)=>b[1]-a[1])};
+  const bars=(rows,dot)=>{const max=rows[0]?.[1]||1;return rows.map(([k,n])=>`<div class="bar"><span>${dot?swatch(k):""}${esc(k)}</span><i style="--w:${Math.round(n/max*100)}%"></i><b>${n}</b></div>`).join("")};
+  const colors=tally(i=>i.color),brands=tally(i=>i.brand).slice(0,8),cats=tally(i=>i.category);
+  const styles=STYLES.map(t=>[t,items.filter(i=>(i.tags||[]).includes(t)).length]).sort((a,b)=>b[1]-a[1]);
+  const top=items.filter(i=>i.wears).sort((a,b)=>b.wears-a.wears).slice(0,6);
+  g.innerHTML=`<div class="kpis"><div><b>${items.length}</b><span>pièces</span></div><div><b>${worn.length}</b><span>déjà portées</span></div><div><b>${never.length}</b><span>jamais portées</span></div><div><b>${looks.filter(l=>l.worn).length}/${looks.length}</b><span>tenues portées</span></div></div>
+  <section><h4>Couleurs dominantes</h4>${bars(colors,true)}</section>
+  <section><h4>Marques préférées</h4>${brands.length?bars(brands):'<p class="note">Ajoute les marques dans les fiches.</p>'}</section>
+  <section><h4>Par rubrique</h4>${bars(cats)}</section>
+  <section><h4>Par style</h4>${bars(styles)}</section>
+  <section class="wide"><h4>Les plus portées</h4>${top.length?`<div class="minis">${top.map(i=>mini(i,i.wears+"×")).join("")}</div>`:'<p class="note">Clique « Je l\'ai portée aujourd\'hui » sur une tenue pour commencer le suivi.</p>'}</section>
+  <section class="wide"><h4>Jamais portées · ${never.length}</h4><div class="minis">${never.map(i=>mini(i,"")).join("")}</div></section>`;
+}
+
+/* ---------- mode valise ---------- */
+function renderValise(){
+  const g=$("#grid");g.className="valise";$("#empty").hidden=true;$("#matching").textContent="Mode valise";
+  const v=valise;
+  g.innerHTML=`<form class="vform" id="vf"><label>Nombre de jours<input id="v-days" name="days" type="number" min="1" max="14" value="${v?.days||5}"></label>
+    <label>Style<select id="v-style" name="style">${["Mixte","Casual","Soirée","Sport"].map(x=>`<option ${v?.style===x?"selected":""}>${x}</option>`).join("")}</select></label>
+    <label>Saison<select id="v-season" name="season">${["Printemps / Été","Automne / Hiver"].map(x=>`<option ${v?.season===x?"selected":""}>${x}</option>`).join("")}</select></label>
+    <button class="btn" type="submit">${v?"Refaire ma valise":"Préparer ma valise"}</button></form>`+
+    (v?(v.outfits.length?`<section class="wide"><h4>À mettre dans la valise · ${v.pack.length} pièces pour ${v.days} jour${v.days>1?"s":""}</h4><div class="minis">${v.pack.map(i=>mini(i,"")).join("")}</div></section>
+    ${v.outfits.map((o,n)=>`<div class="vday"><b>Jour ${n+1}</b><div class="stack">${stackHtml(o)}</div></div>`).join("")}
+    <div class="row1"><button class="btn" data-vsave>Enregistrer ces ${v.outfits.length} tenues dans « Mes tenues »</button></div>`:'<p class="note wide">Pas assez de pièces pour ce style et cette saison. Essaie « Mixte » ou une autre saison.</p>'):'<p class="note wide">Choisis la durée, le style et la saison : je choisis le minimum de pièces pour faire une tenue différente chaque jour.</p>');
+}
+function buildValise(days,style,season){
+  const st=style==="Mixte"?"Casual":style;
+  const tg=i=>i.tags||[],sportOnly=i=>tg(i).includes("Sport")&&!tg(i).some(t=>t!=="Sport");
+  const okS=i=>!i.season||i.season==="Toute l'année"||i.season===season;
+  const okT=i=>style==="Sport"?tg(i).includes("Sport"):!sportOnly(i)&&(style==="Mixte"||!tg(i).length||tg(i).includes(style));
+  const P={};SLOTS.forEach(s=>P[s.key]=inSlot(s.key).filter(i=>okS(i)&&okT(i)));
+  const pick=(a,n)=>[...a].sort(()=>Math.random()-.5).slice(0,Math.max(0,Math.min(n,a.length)));
+  let best=null;
+  for(let t=0;t<300;t++){
+    const cap={top:pick(P.top,Math.min(4,Math.ceil(days/2)+1)),bottom:pick(P.bottom,Math.min(3,Math.ceil(days/3)+1)),dress:days>=3?pick(P.dress,days>=6?2:1):[],
+      jacket:pick(P.jacket,1),shoes:pick(P.shoes,days>=4?2:1),bag:pick(P.bag,1),acc:pick(P.acc,2)};
+    const sh=cap.shoes.length?cap.shoes:[null],combos=[];
+    for(const s of sh){for(const a of cap.top)for(const b of cap.bottom)combos.push({top:a,bottom:b,shoes:s});for(const d of cap.dress)combos.push({dress:d,shoes:s})}
+    if(!combos.length)continue;
+    const sc=combos.map(c=>{const o={...c,jacket:cap.jacket[0]||null,bag:cap.bag[0]||null};return{o,s:harmonyV([...Object.values(o),...cap.acc],st)}}).sort((a,b)=>b.s-a.s);
+    const good=sc.filter(x=>x.s>-4),n=new Set(Object.values(cap).flat().map(i=>i.id)).size;
+    const score=Math.min(good.length,days)*10-n*1.5+good.slice(0,days).reduce((a,x)=>a+x.s,0)/days;
+    if(!best||score>best.score)best={score,cap,list:good.length?good:sc};
+  }
+  if(!best)return{days,style,season,pack:[],outfits:[]};
+  // varier : on prend à chaque fois la tenue qui réutilise le moins les pièces des jours précédents
+  const used={},chosen=[],pool=[...best.list];
+  for(let d=0;d<days&&pool.length;d++){
+    pool.sort((p,q)=>Object.values(p.o).filter(Boolean).reduce((a,i)=>a+(used[i.id]||0),0)*3-p.s-(Object.values(q.o).filter(Boolean).reduce((a,i)=>a+(used[i.id]||0),0)*3-q.s));
+    const x=pool.shift();chosen.push(x);Object.values(x.o).filter(Boolean).forEach(i=>used[i.id]=(used[i.id]||0)+1);
+  }
+  const outfits=[];
+  for(let d=0;d<days;d++){const x=chosen[d%chosen.length],o={};SLOTS.forEach(s=>{if(s.key==="acc"){if(best.cap.acc.length)o.acc=best.cap.acc.map(i=>i.id)}else if(x.o[s.key])o[s.key]=x.o[s.key].id});outfits.push(o)}
+  const pack=[...new Map(Object.values(best.cap).flat().map(i=>[i.id,i])).values()].sort((a,b)=>CATS.indexOf(a.category)-CATS.indexOf(b.category));
+  return{days,style,season,pack,outfits};
+}
 function toggleAcc(id){
   let a=ids(sel.acc);
   if(a.includes(id))a=a.filter(x=>x!==id);
@@ -513,6 +610,9 @@ $("#chips").onclick=e=>{const b=e.target.closest("[data-v]");if(b)goView(b.datas
 $("#q").oninput=renderGrid;
 $("#grid").onclick=async e=>{
   const info=e.target.closest("[data-info]");if(info){openSheet(info.dataset.info);return}
+  if(e.target.closest("[data-vsave]")&&valise&&lcol){const b=e.target.closest("[data-vsave]");b.disabled=true;let n=0;
+    try{for(const [i,o] of valise.outfits.entries()){if(looks.some(l=>lookKey(l.items)===lookKey(o)))continue;await lcol.add({items:o,name:`Valise ${valise.style.toLowerCase()} · Jour ${i+1}`,createdAt:Date.now()+i,worn:0});n++}
+      toast(n?`${n} tenue${n>1?"s":""} ajoutée${n>1?"s":""} à « Mes tenues »`:"Ces tenues existent déjà")}catch(err){toast("Échec : "+(err.message||err.code))}b.disabled=false;return}
   if(e.target.closest("[data-hidew]")){hideWorn=!hideWorn;try{localStorage.setItem("dressing.hideWorn",hideWorn?"1":"")}catch(_){}renderLooks();return}
   const dn=e.target.closest("[data-done]");
   if(dn){const l=looks.find(x=>x.id===dn.dataset.done);if(!l||!lcol)return;
@@ -529,6 +629,10 @@ $("#grid").onclick=async e=>{
   const dl=e.target.closest("[data-dl]");
   if(dl){try{if(editing===dl.dataset.dl){editing=null;renderEditing()}await lcol.doc(dl.dataset.dl).delete();toast("Tenue retirée")}catch(err){toast("Échec : "+(err.message||err.code))}return}
   const t=e.target.closest(".tile");if(t)tryOn(t.dataset.id)};
+$("#grid").addEventListener("submit",e=>{
+  if(e.target.id!=="vf")return;e.preventDefault();
+  const f=Object.fromEntries(new FormData(e.target));valise=buildValise(Math.max(1,Math.min(14,+f.days||5)),f.style,f.season);renderValise();
+});
 $("#grid").onkeydown=e=>{if((e.key==="Enter"||e.key===" ")&&e.target.classList.contains("tile")){e.preventDefault();tryOn(e.target.dataset.id)}};
 $("#rails").onclick=e=>{
   const ar=e.target.closest(".arrow");
