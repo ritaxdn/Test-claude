@@ -114,7 +114,17 @@ aside.nav{border-right:1px solid var(--line);padding:22px 16px 22px 0}
 .lk .stack>*{aspect-ratio:1;display:grid;place-items:center;background:#fff;overflow:hidden;text-align:center}
 .lk .stack img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
 .lk b{font-size:13px;font-weight:600;text-align:center}
+.lk.done{background:var(--soft)}
+.lk.done .stack{opacity:.55}
+.worn{align-self:center;font-size:11px;font-weight:600;letter-spacing:.04em;padding:3px 10px;border-radius:999px;background:var(--ink);color:#fff}
+.fresh{align-self:center;font-size:11px;color:var(--muted)}
+.lk .wearbtn{grid-column:1/-1;background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.lk .wearbtn.undo{background:#fff;border-color:var(--line);color:var(--muted)}
+.lookbar{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.lookbar button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-size:12px}
+.lookbar button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
 .lk .row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:auto}
+.lk .row .wearbtn{font-size:12px}
 .lk .row button{font-size:12px;padding:8px 10px}
 
 /* bottom bar (phone) */
@@ -262,6 +272,7 @@ const SEASONS=["Toute l'année","Printemps / Été","Automne / Hiver"];
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
+let hideWorn=false;try{hideWorn=!!localStorage.getItem("dressing.hideWorn")}catch(_){}
 let items=[],looks=[],db=null,assets=null,col=null,lcol=null,openId=null,pendingFile=null,presetCat=null;
 let view="Tout";               // category, group name, "Tout", "Favoris", "Mes tenues"
 let sel={jacket:null,dress:null,top:null,bottom:null,shoes:null,bag:null,acc:null};
@@ -338,11 +349,17 @@ function renderLooks(){
   const e=$("#empty");
   $("#matching").textContent=`Tenues : ${looks.length}`;
   $("#grid").className="looks";
-  $("#grid").innerHTML=looks.map(l=>{
+  const fmt=d=>new Date(d).toLocaleDateString("fr-FR",{day:"numeric",month:"short"});
+  const nDone=looks.filter(l=>l.worn).length;
+  let list=[...looks].sort((a,b)=>(a.worn?1:0)-(b.worn?1:0)||(b.createdAt||0)-(a.createdAt||0));
+  if(hideWorn)list=list.filter(l=>!l.worn);
+  $("#matching").textContent=`Tenues : ${looks.length} · ${looks.length-nDone} pas encore portée${looks.length-nDone>1?"s":""}`;
+  $("#grid").innerHTML=`<div class="lookbar"><button data-hidew aria-pressed="${hideWorn}">Masquer les tenues déjà portées</button></div>`+(hideWorn&&looks.length&&!list.length?'<p class="note lookbar">Tu as porté toutes tes tenues ! Désactive le filtre pour les revoir.</p>':"")+list.map(l=>{
     const ims=SLOTS.map(s=>byId(l.items?.[s.key])).filter(Boolean);
-    return `<div class="lk"><div class="stack">${ims.map(i=>src(i)?`<img src="${esc(src(i))}" alt="${esc(i.name)}">`:`<small class="note">${esc(i.name)}</small>`).join("")}</div>
+    const done=!!l.worn;
+    return `<div class="lk${done?" done":""}">${done?`<span class="worn">✓ Déjà portée${l.worn>1?` ${l.worn}×`:""} · ${fmt(l.lastWorn)}</span>`:'<span class="fresh">Pas encore portée</span>'}<div class="stack">${ims.map(i=>src(i)?`<img src="${esc(src(i))}" alt="${esc(i.name)}">`:`<small class="note">${esc(i.name)}</small>`).join("")}</div>
       <b>${esc(l.name)}</b>
-      <div class="row"><button class="btn" data-wear="${l.id}">Essayer</button><button class="btn ghost" data-dl="${l.id}">Retirer</button></div></div>`}).join("");
+      <div class="row"><button class="btn wearbtn${done?" undo":""}" data-done="${l.id}">${done?"Annuler « portée »":"Je l'ai portée aujourd'hui"}</button><button class="btn" data-wear="${l.id}">Essayer</button><button class="btn ghost" data-dl="${l.id}">Retirer</button></div></div>`}).join("");
   e.hidden=!!looks.length;
   if(!looks.length)e.innerHTML='<h3>Aucune tenue</h3><p>Compose un look au centre puis clique sur « Enregistrer la tenue ».</p>';
 }
@@ -465,6 +482,16 @@ $("#chips").onclick=e=>{const b=e.target.closest("[data-v]");if(b)goView(b.datas
 $("#q").oninput=renderGrid;
 $("#grid").onclick=async e=>{
   const info=e.target.closest("[data-info]");if(info){openSheet(info.dataset.info);return}
+  if(e.target.closest("[data-hidew]")){hideWorn=!hideWorn;try{localStorage.setItem("dressing.hideWorn",hideWorn?"1":"")}catch(_){}renderLooks();return}
+  const dn=e.target.closest("[data-done]");
+  if(dn){const l=looks.find(x=>x.id===dn.dataset.done);if(!l||!lcol)return;
+    const undo=!!l.worn,now=new Date().toISOString(),ids=Object.values(l.items||{}).filter(id=>byId(id));
+    try{
+      await lcol.doc(l.id).update(undo?{worn:0,lastWorn:null}:{worn:(l.worn||0)+1,lastWorn:now});
+      for(const id of ids){const it=byId(id);await col.doc(id).update(undo?{wears:Math.max(0,(it.wears||0)-1)}:{wears:(it.wears||0)+1,lastWorn:now})}
+      toast(undo?"Tenue remise dans « pas encore portée »":"Noté ! Tenue marquée comme portée");
+    }catch(err){toast("Échec : "+(err.message||err.code))}
+    return}
   const w=e.target.closest("[data-wear]");
   if(w){const l=looks.find(x=>x.id===w.dataset.wear);SLOTS.forEach(s=>{shown[s.key]=!!l.items?.[s.key]||s.key==="shoes";if(l.items?.[s.key])sel[s.key]=l.items[s.key]});saveUi();renderToggles();renderRails();renderGrid();
     if(matchMedia("(max-width:760px)").matches)setTab("look");toast("Tenue chargée");return}
