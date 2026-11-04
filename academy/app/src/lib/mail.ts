@@ -43,3 +43,31 @@ export async function sendReset(to: string, name: string, link: string): Promise
     return false;
   }
 }
+
+/* ── Parcours commercial (lot 2) ── */
+const FROM = () => process.env.MAIL_FROM ?? "LIFT by CELLULIFT Academy <academy@cellulift.ma>";
+const escH = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
+
+/** Envoi générique (texte simple). Renvoie false si l'envoi n'est pas configuré ou échoue : jamais d'exception. */
+export async function sendMail(to: string, subject: string, lines: string[], cta?: { label: string; href: string }): Promise<boolean> {
+  const key = process.env.RESEND_API_KEY;
+  if (!key || !to) return false;
+  const html = `<div style="font-family:Arial,sans-serif;max-width:560px;color:#1D1B26;line-height:1.55">
+    <p style="letter-spacing:.2em;text-transform:uppercase;font-size:12px;color:#5D5B6B">LIFT by CELLULIFT Academy</p>
+    ${lines.map((l) => `<p>${escH(l)}</p>`).join("")}
+    ${cta ? `<p><a href="${escH(cta.href)}" style="display:inline-block;background:#1D1B26;color:#fff;padding:12px 20px;border-radius:999px;text-decoration:none">${escH(cta.label)}</a></p>` : ""}
+  </div>`;
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST", headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ from: FROM(), to, subject, html, text: [...lines, cta ? `${cta.label} : ${cta.href}` : ""].join("\n\n") }),
+      signal: AbortSignal.timeout(8000),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+/** Copie interne à l'équipe Cellulift (adresse dans LIFT_NOTIFY_EMAIL). */
+export const notifyTeam = (subject: string, lines: string[]) => sendMail(process.env.LIFT_NOTIFY_EMAIL ?? "", `[LIFT] ${subject}`, lines);

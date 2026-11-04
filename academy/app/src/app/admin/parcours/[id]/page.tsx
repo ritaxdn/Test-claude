@@ -5,6 +5,8 @@ import { requireAdmin } from "@/lib/auth";
 import { sql } from "@/lib/db";
 import { SubmitButton } from "@/components/SubmitButton";
 import { addModule, deleteDocument, deleteLesson, saveLesson, updateProgram, uploadDocument } from "../../actions";
+import { updateTraining } from "../../commercial-actions";
+import { PROFESSIONS } from "@/lib/professions";
 
 export const metadata: Metadata = { title: "Modifier le parcours" };
 const mmss = (s: number | null) => (s ? `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}` : "");
@@ -14,7 +16,9 @@ export default async function EditParcours({ params, searchParams }: { params: P
   const { id } = await params;
   const sp = await searchParams;
   if (!/^[0-9a-f-]{36}$/i.test(id)) notFound();
-  const [p] = await sql<{ id: string; slug: string; title: string; summary: string | null; device_model_id: string | null; published: boolean }[]>`select id, slug, title, summary, device_model_id, published from programs where id = ${id}`;
+  const [p] = await sql<{ id: string; slug: string; title: string; summary: string | null; device_model_id: string | null; published: boolean; kind: "technology" | "training"; listed: boolean;
+    eligible_professions: string[]; tagline: string | null; objectives: string[]; audience: string | null; prerequisites: string | null; price_mad: string | null; price_eur: string | null; price_usd: string | null; access_months: number | null }[]>`
+    select id, slug, title, summary, device_model_id, published, kind, listed, eligible_professions, tagline, objectives, audience, prerequisites, price_mad, price_eur, price_usd, access_months from programs where id = ${id}`;
   if (!p) notFound();
   const models = await sql<{ id: string; name: string }[]>`select id, name from device_models order by name`;
   const modules = await sql<{ id: string; position: number; title: string }[]>`select id, position, title from modules where program_id = ${id} order by position`;
@@ -74,11 +78,35 @@ export default async function EditParcours({ params, searchParams }: { params: P
             <span className="eyebrow">Réglages</span>
             <input type="hidden" name="program_id" value={p.id} />
             <div className="field"><label htmlFor="t">Titre</label><input className="input" id="t" name="title" required defaultValue={p.title} /></div>
-            <div className="field"><label htmlFor="dm">Machine</label><select className="input" id="dm" name="device_model_id" defaultValue={p.device_model_id ?? ""}><option value="">Aucune (fermé à tous)</option>{models.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}</select><span className="hint">Seuls les clients qui ont acheté cette machine voient ce parcours. Sans machine, il n'est ouvert à personne.</span></div>
+            {p.kind === "technology" ? (
+              <div className="field"><label htmlFor="dm">Machine</label><select className="input" id="dm" name="device_model_id" defaultValue={p.device_model_id ?? ""}><option value="">Aucune (fermé à tous)</option>{models.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}</select><span className="hint">Seuls les clients qui ont acheté cette machine voient ce parcours. Sans machine, il n'est ouvert à personne.</span></div>
+            ) : <p className="small muted">Formation : ouverte aux professionnels qui l&apos;ont achetée (ou à qui elle est offerte), qualification vérifiée et profession autorisée.</p>}
             <div className="field"><label htmlFor="s">Résumé</label><textarea className="input" id="s" name="summary" defaultValue={p.summary ?? ""} /></div>
-            <label className="row small"><input type="checkbox" name="published" defaultChecked={p.published} style={{ accentColor: "#7b61ff" }} /> Publié (visible des médecins)</label>
+            <label className="row small"><input type="checkbox" name="published" defaultChecked={p.published} style={{ accentColor: "#7b61ff" }} /> Publié {p.kind === "training" ? "(ouvert aux personnes qui ont un accès)" : "(visible des médecins)"}</label>
             <button className="btn solid" type="submit">Enregistrer</button>
           </form>
+          {p.kind === "training" && (
+            <form action={updateTraining} className="glass card stack" style={{ gap: 12 }}>
+              <span className="eyebrow">Fiche commerciale</span>
+              <input type="hidden" name="program_id" value={p.id} />
+              <fieldset className="field" style={{ border: 0, padding: 0, margin: 0 }}><legend className="small" style={{ marginBottom: 6 }}>Professions autorisées</legend>
+                {PROFESSIONS.map(([c, l]) => <label key={c} className="row small"><input type="checkbox" name="eligible_professions" value={c} defaultChecked={p.eligible_professions.includes(c)} /> {l}</label>)}</fieldset>
+              <div className="field"><label htmlFor="tg">Promesse (une phrase)</label><input className="input" id="tg" name="tagline" maxLength={200} defaultValue={p.tagline ?? ""} /></div>
+              <div className="field"><label htmlFor="ob">Objectifs pédagogiques (un par ligne)</label><textarea className="input" id="ob" name="objectives" defaultValue={p.objectives.join("\n")} /></div>
+              <div className="field"><label htmlFor="au">Public</label><textarea className="input" id="au" name="audience" maxLength={1000} defaultValue={p.audience ?? ""} /></div>
+              <div className="field"><label htmlFor="pr">Prérequis</label><textarea className="input" id="pr" name="prerequisites" maxLength={1000} defaultValue={p.prerequisites ?? ""} /></div>
+              <div className="form-grid">
+                <div className="field"><label htmlFor="pm">Prix MAD</label><input className="input" id="pm" name="price_mad" inputMode="decimal" defaultValue={p.price_mad ?? ""} /></div>
+                <div className="field"><label htmlFor="pe">Prix EUR</label><input className="input" id="pe" name="price_eur" inputMode="decimal" defaultValue={p.price_eur ?? ""} /></div>
+                <div className="field"><label htmlFor="pu">Prix USD</label><input className="input" id="pu" name="price_usd" inputMode="decimal" defaultValue={p.price_usd ?? ""} /></div>
+                <div className="field"><label htmlFor="am">Durée d&apos;accès (mois)</label><input className="input" id="am" name="access_months" inputMode="numeric" defaultValue={p.access_months ?? ""} /></div>
+              </div>
+              <span className="hint">Un prix par devise, sans conversion automatique. La devise suit le pays du professionnel (Maroc : MAD).</span>
+              <label className="row small"><input type="checkbox" name="listed" defaultChecked={p.listed} /> Visible au catalogue public (formation publiée uniquement)</label>
+              <SubmitButton className="btn solid">Enregistrer la fiche</SubmitButton>
+              {p.listed && <a className="small" href={`/formations/${p.slug}`} target="_blank" rel="noopener">Voir la fiche publique</a>}
+            </form>
+          )}
           <section className="glass card stack" style={{ gap: 10 }}>
             <span className="eyebrow">Documents</span>
             {docs.map((d) => (

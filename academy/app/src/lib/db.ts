@@ -17,3 +17,14 @@ if (process.env.NODE_ENV !== "production") g.__academySql = sql;
 export async function audit(actorId: string | null, action: string, target: string, details?: Record<string, unknown>) {
   await sql`insert into audit_log (actor_id, action, target, details) values (${actorId}, ${action}, ${target}, ${details ? sql.json(details as postgres.JSONValue) : null})`;
 }
+
+/**
+ * Transaction « au nom de » un compte : l'auteur est transmis à la base (app.actor_id) et les
+ * déclencheurs de traçabilité l'inscrivent dans audit_log pour chaque changement de droits.
+ */
+export function withActor<T>(actorId: string, fn: (tx: postgres.TransactionSql) => Promise<T>): Promise<T> {
+  return sql.begin(async (tx) => {
+    await tx`select set_config('app.actor_id', ${actorId}, true)`;
+    return fn(tx);
+  }) as Promise<T>;
+}

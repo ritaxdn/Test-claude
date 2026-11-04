@@ -1,5 +1,7 @@
 # 08 — Lot 2 : parcours commercial minimum (plan, à valider)
 
+> **Statut (4 nov. 2026) : lot 2 codé et testé en local, branche `claude/lift-formations-acces`, aucun déploiement, base de production non modifiée.**
+>
 > Objectif unique : **un professionnel non client CELLULIFT découvre une formation, demande son inscription,
 > est vérifié, paie manuellement et reçoit son accès.** « Mes technologies » reste inchangé pour les clients.
 > Branche `claude/lift-formations-acces`, aucun déploiement. S'appuie sur le lot 1 (docs/07).
@@ -122,3 +124,51 @@ Paiement en ligne, inscription sans vérification, abonnements, attestations ou 
 
 ## 8. Mesurer si ça vend (dès le lot 2)
 Entonnoir mesuré en base, sans outil externe : visites de la fiche → demandes → vérifiées → commandes → **payées** → première leçon commencée → formation terminée. Délais : demande → vérification, commande → paiement. Motifs de refus et d'abandon. Ce sont les chiffres qui diront si le modèle payant fonctionne, avant d'investir dans le paiement en ligne.
+
+## 9. Réalisé (lot 2)
+
+### Écrans
+| Écran | Adresse | Accès |
+|---|---|---|
+| Catalogue | `/formations` | Public. Formations **publiées et listées** seulement ; « Catalogue en préparation » si aucune |
+| Fiche formation | `/formations/[slug]` | Public. Objectifs, programme (titres et durées), intervenants réels, prix par devise, durée d'accès, mention « n'habilite pas » ; aucun contenu de leçon |
+| Demande d'inscription | `/formations/[slug]/inscription` | Public. Professions de la formation seulement, justificatif facultatif, consentement |
+| Confirmation | `/formations/[slug]/inscription/merci` | Public |
+| Tableau de bord | `/tableau-de-bord` | Sections **Formations** et **Mes technologies**, chacune seulement si elle n'est pas vide. « Accès terminé » pour une formation expirée. Lien vers le catalogue si aucune formation |
+| Mon compte | `/mon-compte` | Profession, statut de vérification, commandes |
+| Demandes | `/admin/demandes` | Admin. Filtres par étape et entonnoir (demandes, vérifiées, payées, formation commencée) |
+| Fiche demande | `/admin/demandes/[id]` | Admin. Accepter ou refuser (**vérificateur habilité**) ; marquer payée, annuler, rembourser |
+| Justificatif | `/api/justificatifs/[id]` | **Vérificateur habilité** seulement ; consultation tracée ; 410 après suppression |
+| Fiche commerciale | `/admin/parcours/[id]` | Admin. Professions autorisées, promesse, objectifs, public, prérequis, prix MAD / EUR / USD, durée d'accès, visible au catalogue |
+| Fiche professionnel | `/admin/medecins/[id]` | Admin. Qualification, commandes (payer, annuler, rembourser), accès (offrir avec motif, révoquer) |
+| Vérificateurs | `/admin/verificateurs` | Admin. Accorder ou retirer le droit (jamais à soi-même) ; historique |
+
+### Données (migration 004, additive, retour arrière testé)
+- **Fiche commerciale** dans `programs`. Une formation n'apparaît au catalogue que si elle est publiée.
+- **`enrollment_requests`** : une demande ne peut être acceptée ou refusée que par un vérificateur habilité, ne change plus de statut une fois traitée, ses informations ne se modifient pas, et elle ne se supprime pas.
+- **`qualification_documents`** : type de fichier contrôlé sur son contenu, 5 Mo maximum, empreinte SHA-256. La suppression du fichier est programmée à décision + 30 jours ; la ligne est conservée et la suppression tracée.
+- **`orders.payment_reference`** : référence unique `LIFT-AAAA-NNNNNN`, générée par la base, impossible à modifier.
+- Le journal couvre les demandes, les justificatifs et les prix. Le RLS est actif sur les deux nouvelles tables, et l'application n'a pas le droit de supprimer leurs lignes.
+
+### Règles appliquées
+- La devise découle du pays (Maroc : MAD ; zone euro et Suisse : EUR ; autres : USD), avec un prix fixé par devise, sans conversion. Sans prix dans la devise, l'acceptation est bloquée avec un message.
+- Accepter une demande crée le compte (ou le reprend), vérifie la qualification, crée la commande « en attente » et envoie les instructions de paiement. Le texte du RIB vient de la variable `LIFT_PAYMENT_INSTRUCTIONS`.
+- Marquer une commande payée exige la référence bancaire du virement. L'accès est ouvert pour la durée de la formation, puis un lien de création du mot de passe est envoyé (nouveau compte) ou un lien de connexion (compte existant).
+- E-mails : demande reçue, refus motivé, instructions de paiement, accès ouvert, remboursement. Une copie part à l'équipe (`LIFT_NOTIFY_EMAIL`). Sans clé Resend, rien n'est envoyé et l'admin voit le lien ou la référence à transmettre.
+- Contre les robots : champ piège, envoi en moins de 3 s ignoré, 5 demandes par heure par connexion, 3 par jour par adresse et par formation.
+- Justificatifs supprimés chaque jour par `npm run purge:justificatifs` (tâche planifiée à mettre en place).
+- Libellé côté client : « Votre HANOVER 5G » remplace « Inclus avec votre HANOVER 5G » (règle « ne pas écrire inclus avec la machine »). Réversible si Cellulift préfère l'ancien libellé.
+
+### Tests (4 nov. 2026, compte `academy_app`, navigateur réel)
+`npm run test:e2e` : **MVP 32/32, Formations 16/16, Sécurité 13/13, Parcours commercial 18/18** (`scripts/e2e-commercial.mjs`). La suite commerciale couvre :
+- catalogue vide, formation non listée (404), fiche sans aucun accès au contenu ;
+- robots, profession non autorisée (refusée côté serveur), faux PDF, fichier de plus de 5 Mo ;
+- demande valide avec justificatif, consultation du justificatif (401 / 403 / 200, consultation tracée) ;
+- acceptation (MAD), paiement (référence obligatoire), accès de 12 mois, mot de passe, formation ouverte, « Mon compte » ;
+- hors Maroc (EUR), remboursement intégral, refus motivé, limite de fréquence, suppression du justificatif à 30 jours ;
+- client existant inchangé, accès expiré, fiche commerciale, vérificateurs, administration interdite aux professionnels.
+
+Rendu vérifié sur téléphone (390 px, aucun débordement) et sur ordinateur. Typecheck OK. Aucune erreur dans le journal de l'application.
+
+### Avant toute mise en ligne (rappel des dépendances §4)
+D1 à D5 côté Cellulift (formation réelle, prix, RIB et facturation, CGV avec règle de remboursement partiel, confidentialité et CNDP) ; T1 à T4 côté technique (migrations 002 → 004 sur Supabase après sauvegarde, Mux signé et DRM, compartiment privé `lift-justificatifs`, domaine d'envoi Resend) ; tâche planifiée de suppression des justificatifs ; variables `LIFT_PAYMENT_INSTRUCTIONS`, `LIFT_NOTIFY_EMAIL`, `LIFT_TERMS_VERSION`, `SUPABASE_PROOF_BUCKET`. La version des conditions enregistrée avec chaque consentement est aujourd'hui « brouillon-2026-11 » : elle doit pointer vers les vraies CGV avant l'ouverture.

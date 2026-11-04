@@ -21,7 +21,7 @@ declare t text;
 begin
   foreach t in array array['users','auth_tokens','sessions','login_attempts','device_models','device_ownerships','presenters',
                            'programs','modules','lessons','documents','entitlements','lesson_progress','audit_log',
-                           'orders','access_grants'] loop
+                           'orders','access_grants','enrollment_requests','qualification_documents'] loop
     execute format('drop policy if exists academy_app_all on %I', t);
     execute format('create policy academy_app_all on %I for all to academy_app using (true) with check (true)', t);
   end loop;
@@ -34,6 +34,9 @@ begin
   revoke update, delete, truncate on audit_log from academy_app;
   if exists (select 1 from pg_tables where schemaname = 'public' and tablename = 'orders') then
     revoke delete, truncate on orders, access_grants from academy_app;
+    if exists (select 1 from pg_tables where schemaname = 'public' and tablename = 'enrollment_requests') then
+      revoke delete, truncate on enrollment_requests, qualification_documents from academy_app;
+    end if;
     grant execute on function lift_is_admin(uuid) to academy_app;
   end if;
 end $$;

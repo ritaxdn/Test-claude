@@ -7,8 +7,8 @@ const initials = (name: string) => name.replace(/^Dr\.?\s+/i, "").split(/\s+/).m
 
 export function Shell({ user, active, children }: { user: User; active: string; children: ReactNode }) {
   const links = user.role === "admin"
-    ? [["/admin", "Médecins"], ["/admin/parcours", "Parcours"], ["/admin/presentateurs", "Présentateurs"], ["/admin/machines", "Machines"]]
-    : [["/tableau-de-bord", "Ma formation"]];
+    ? [["/admin", "Médecins"], ["/admin/demandes", "Demandes"], ["/admin/parcours", "Parcours"], ["/admin/presentateurs", "Présentateurs"], ["/admin/machines", "Machines"], ["/admin/verificateurs", "Vérificateurs"]]
+    : [["/tableau-de-bord", "Ma formation"], ["/formations", "Catalogue"], ["/mon-compte", "Mon compte"]];
   return (
     <>
       <header className="top">

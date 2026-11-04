@@ -12,9 +12,11 @@
     "db:migrate": "node scripts/db.mjs migrate",
     "admin:create": "node scripts/create-admin.mjs",
     "media:sample": "node scripts/sample-media.mjs",
-    "test:e2e": "node scripts/e2e.mjs && node scripts/e2e-formations.mjs && node scripts/e2e-securite.mjs",
+    "test:e2e": "node scripts/e2e.mjs && node scripts/e2e-formations.mjs && node scripts/e2e-securite.mjs && node scripts/e2e-commercial.mjs",
+    "test:commercial": "node scripts/e2e-commercial.mjs",
     "test:securite": "node scripts/e2e-securite.mjs",
-    "test:formations": "node scripts/e2e-formations.mjs"
+    "test:formations": "node scripts/e2e-formations.mjs",
+    "purge:justificatifs": "node scripts/purge-justificatifs.mjs"
   },
   "dependencies": {
     "next": "16.2.10",

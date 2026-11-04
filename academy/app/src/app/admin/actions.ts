@@ -102,8 +102,9 @@ export async function createProgram(form: FormData) {
   const slug = s(form, "slug").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   if (!title || slug.length < 2) back("/admin/parcours", { erreur: "Titre et adresse obligatoires." });
   const model = s(form, "device_model_id");
+  const kind = s(form, "kind") === "training" ? "training" : "technology";
   const [p] = await sql<{ id: string }[]>`
-    insert into programs (slug, title, summary, device_model_id) values (${slug}, ${title}, ${opt(form, "summary")}, ${isUuid(model) ? model : null})
+    insert into programs (slug, title, summary, device_model_id, kind) values (${slug}, ${title}, ${opt(form, "summary")}, ${kind === "technology" && isUuid(model) ? model : null}, ${kind})
     on conflict (slug) do nothing returning id`;
   if (!p) back("/admin/parcours", { erreur: "Cette adresse de parcours existe déjà." });
   await audit(admin.id, "program.create", title);
