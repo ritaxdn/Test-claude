@@ -136,6 +136,10 @@ aside.nav{border-right:1px solid var(--line);padding:22px 16px 22px 0}
 form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 label{display:flex;flex-direction:column;gap:4px;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);min-width:0}
 label.full{grid-column:1/-1}
+fieldset.tags{grid-column:1/-1;border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+fieldset.tags legend{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:0;margin-bottom:4px;width:100%}
+label.tag{flex-direction:row;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;letter-spacing:0;text-transform:none;color:var(--ink);cursor:pointer}
+label.tag input{width:auto;margin:0}
 form input,form select,form textarea{border:1px solid var(--line);background:#fff;border-radius:8px;padding:10px 12px;font-size:14px;text-transform:none;letter-spacing:0;color:var(--ink);width:100%}
 form textarea{min-height:64px;resize:vertical}
 .brow{display:flex;flex-wrap:wrap;gap:8px}
@@ -240,6 +244,7 @@ const GROUPS=[
   {name:"Accessoires",cats:["Accessoires"]},
 ];
 const CATS=GROUPS.flatMap(g=>g.cats);
+const STYLES=["Sport","Soirée","Casual"];
 const SLOTS=[
   {key:"jacket",label:"Veste",cats:["Vestes"],add:"Vestes"},
   {key:"top",label:"Haut",cats:["Hauts"],add:"Hauts"},
@@ -277,13 +282,14 @@ function makeThumb(file){return new Promise((ok,ko)=>{const im=new Image();im.on
 function count(v){
   if(v==="Tout")return items.length;
   if(v==="Favoris")return items.filter(i=>i.favorite).length;
+  if(STYLES.includes(v))return items.filter(i=>(i.tags||[]).includes(v)).length;
   if(v==="Mes tenues")return looks.length;
   const g=GROUPS.find(g=>g.name===v);
   return items.filter(i=>g?g.cats.includes(i.category):i.category===v).length;
 }
 function renderNav(){
   const a=(v,cls,label)=>`<a class="${cls}" data-v="${esc(v)}" aria-current="${view===v}" tabindex="0">${esc(label||v)}<sup>${count(v)}</sup></a>`;
-  let h=a("Tout","top","Tout voir")+a("Favoris","top")+'<div class="gap"></div>';
+  let h=a("Tout","top","Tout voir")+a("Favoris","top")+STYLES.map(t=>a(t,"top")).join("")+'<div class="gap"></div>';
   for(const g of GROUPS){
     if(g.cats.length>1){h+=a(g.name,"top");h+=g.cats.filter(c=>count(c)>0).map(c=>a(c,"sub")).join("")}
     else h+=a(g.name,"top");
@@ -291,7 +297,7 @@ function renderNav(){
   }
   h+=a("Mes tenues","top");
   $("#nav").innerHTML=h;
-  const chipList=["Tout","Favoris",...GROUPS.map(g=>g.name),...CATS.filter(c=>count(c)>0&&!GROUPS.some(g=>g.name===c))];
+  const chipList=["Tout","Favoris",...STYLES,...GROUPS.map(g=>g.name),...CATS.filter(c=>count(c)>0&&!GROUPS.some(g=>g.name===c))];
   $("#chips").innerHTML=chipList.filter(v=>v==="Tout"||count(v)>0||v===view).map(v=>`<button data-v="${esc(v)}" aria-pressed="${view===v}">${esc(v==="Tout"?"Tout voir":v)}</button>`).join("");
 }
 
@@ -301,10 +307,11 @@ function filtered(){
   const g=GROUPS.find(g=>g.name===view);
   return items.filter(i=>{
     if(view==="Favoris"&&!i.favorite)return false;
+    if(STYLES.includes(view)&&!(i.tags||[]).includes(view))return false;
     if(g&&!g.cats.includes(i.category))return false;
     if(!g&&CATS.includes(view)&&i.category!==view)return false;
     return !q||[i.name,i.brand,i.color,i.category,i.notes].join(" ").toLowerCase().includes(q);
-  }).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  }).sort((a,b)=>(CATS.indexOf(a.category)-CATS.indexOf(b.category))||String(a.name).localeCompare(String(b.name),"fr"));
 }
 const swatch=c=>c&&COLORS[c]?`<span class="dot" style="background:${COLORS[c]}"></span>`:"";
 function renderGrid(){
@@ -404,6 +411,7 @@ function openSheet(id){
       <label>Catégorie<select id="f-cat" name="category" ${ro?"disabled":""}>${GROUPS.map(g=>`<optgroup label="${esc(g.name)}">${opts(g.cats,it.category)}</optgroup>`).join("")}</select></label>
       <label>Couleur<select id="f-color" name="color" ${ro?"disabled":""}><option value=""></option>${opts(Object.keys(COLORS),it.color)}</select></label>
       <label>Saison<select id="f-season" name="season" ${ro?"disabled":""}>${opts(SEASONS,it.season)}</select></label>
+      <fieldset class="full tags"><legend>Style</legend>${STYLES.map(t=>`<label class="tag"><input type="checkbox" name="tags" value="${t}" ${(it.tags||[]).includes(t)?"checked":""} ${ro?"disabled":""}> ${t}</label>`).join("")}</fieldset>
       <label class="full">Notes<textarea id="f-notes" name="notes" placeholder="Taille, avec quoi la porter, où je l'ai achetée…" ${ro?"disabled":""}>${esc(it.notes)}</textarea></label>
       ${ro?"":`<div class="brow" style="grid-column:1/-1"><button class="btn" type="submit" id="save">${id?"Enregistrer":"Ajouter au dressing"}</button>${id?'<button class="btn danger" type="button" id="del">Retirer</button>':""}</div>`}
       <div id="confirm" style="grid-column:1/-1"></div>
@@ -421,7 +429,7 @@ function openSheet(id){
     $("#yes").onclick=async()=>{try{await col.doc(id).delete();closeSheet();toast("Pièce retirée")}catch(e){toast("Impossible de retirer : "+(e.message||e.code))}}});
   $("#f").onsubmit=async ev=>{
     ev.preventDefault();const b=$("#save");b.disabled=true;
-    const fd=Object.fromEntries(new FormData(ev.target));
+    const fdata=new FormData(ev.target);const fd=Object.fromEntries(fdata);fd.tags=fdata.getAll("tags");
     try{
       if(pendingFile){b.textContent="Envoi de la photo…";fd.thumb=await makeThumb(pendingFile);try{const a=await assets.upload(pendingFile);fd.img=a.url;fd.assetId=a.id}catch(e){}}
       if(id){await col.doc(id).update(fd);toast("Enregistré")}
