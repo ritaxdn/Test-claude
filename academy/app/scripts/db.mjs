@@ -1,10 +1,10 @@
-// node scripts/db.mjs schema|seed|migrate|rollback-002 — applique db/schema.sql, db/seed.sql,
+// node scripts/db.mjs schema|seed|migrate|rollback-002|rollback-003 — applique db/schema.sql, db/seed.sql,
 // les migrations db/migrations/0*.sql (hors *_down) dans l'ordre, ou le retour arrière du lot 1.
 import { readFile, readdir } from "node:fs/promises";
 import postgres from "postgres";
 
 const what = process.argv[2];
-if (!["schema", "seed", "migrate", "rollback-002"].includes(what)) { console.error("Usage : node scripts/db.mjs schema|seed|migrate|rollback-002"); process.exit(1); }
+if (!["schema", "seed", "migrate", "rollback-002", "rollback-003"].includes(what)) { console.error("Usage : node scripts/db.mjs schema|seed|migrate|rollback-002|rollback-003"); process.exit(1); }
 if (!process.env.DATABASE_URL) { console.error("DATABASE_URL manquant."); process.exit(1); }
 const sql = postgres(process.env.DATABASE_URL, { max: 1, prepare: false, onnotice: () => {} });
 try {
@@ -15,7 +15,7 @@ try {
       console.log(`db/migrations/${f} appliqué.`);
     }
   } else {
-    const file = what === "rollback-002" ? "migrations/002_formations_down" : what;
+    const file = what === "rollback-002" ? "migrations/002_formations_down" : what === "rollback-003" ? "migrations/003_verificateurs_down" : what;
     await sql.unsafe(await readFile(new URL(`../db/${file}.sql`, import.meta.url), "utf8"));
     console.log(`db/${file}.sql appliqué.`);
   }

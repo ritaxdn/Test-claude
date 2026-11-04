@@ -40,7 +40,7 @@ export default async function Lecon({ params, searchParams }: { params: Promise<
         <div className="stack" style={{ gap: 20 }}>
           <Player
             lessonId={lessonId}
-            playback={playbackFor(lessonId, lesson.video_ref, user.id)}
+            playback={playbackFor(lessonId, lesson.video_ref, user.id, lesson.duration_sec)}
             duration={lesson.duration_sec ?? 0}
             startAt={lesson.position_sec}
             maxReached={lesson.max_position_sec}

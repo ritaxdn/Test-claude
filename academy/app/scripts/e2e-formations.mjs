@@ -43,7 +43,13 @@ const closed = (r) => r.page === 404 && r.lesson === 404 && r.video === 403 && r
 try {
   // ── Préparation : un admin, une formation avec 2 leçons et un document ──
   const admin = await account("Admin Formations E2E", "admin");
+  const boss = await account("Admin 2 E2E (sans droit de vérification)", "admin");
   const fake = await account("Professionnel qui se prend pour un admin");
+  // Droit distinct « vérifier les qualifications » : accordé par un AUTRE admin, jamais à soi-même.
+  await refused(() => as(admin.id, (tx) => tx`update users set can_verify_qualifications = true where id = ${admin.id}`), "soi-même", "droit de vérification auto-attribué");
+  await refused(() => as(fake.id, (tx) => tx`update users set can_verify_qualifications = true where id = ${admin.id}`), "administrateur actif", "droit de vérification accordé par un non-admin");
+  await refused(() => sql`update users set can_verify_qualifications = true where id = ${admin.id}`, "administrateur actif", "droit de vérification accordé sans auteur");
+  await as(boss.id, (tx) => tx`update users set can_verify_qualifications = true where id = ${admin.id}`);
   const slug = `formation-e2e-${run}`;
   const [t] = await as(admin.id, (tx) => tx`insert into programs (slug, title, summary, kind, eligible_professions, published)
       values (${slug}, 'Formation E2E — Lasers : indications et sécurité', 'Contenu de test.', 'training', ${["medecin_esthetique", "dermatologue"]}, true) returning id`);
@@ -53,7 +59,7 @@ try {
   const [d] = await sql`insert into documents (program_id, title, storage_key) values (${t.id}, 'Fiche E2E', 'exemple/fiche-protocole.pdf') returning id`;
   const T = { id: t.id, slug, l1: l1.id, doc: d.id };
   const [hanover] = await sql`select p.id, p.device_model_id from programs p where slug = 'hanover-5g'`;
-  ok("Préparation : formation publiée (2 leçons, 1 document), compte admin");
+  ok("Préparation : formation publiée (2 leçons, 1 document) ; droit de vérification accordé par un autre admin (auto-attribution et non-admin refusés)");
 
   // ── 9. Contraintes de structure ──
   await refused(() => sql`insert into programs (slug, title, kind, device_model_id, eligible_professions, published) values (${`x-${run}`}, 'X', 'training', ${hanover.device_model_id}, '{medecin_esthetique}', true)`, "programs_kind_rules", "formation rattachée à une machine");
@@ -75,8 +81,9 @@ try {
   await refused(() => sql`update orders set status = 'paid', paid_checked_by = ${fake.id}, paid_checked_at = now(), reference = 'VIR-FAUX' where id = ${o1.id}`, "administrateur actif", "paiement validé par un non-admin");
   await refused(() => sql`insert into access_grants (user_id, program_id, source, reason, granted_by) values (${pro.id}, ${T.id}, 'offered', 'cadeau', ${fake.id})`, "administrateur actif", "accès offert par un non-admin");
   await refused(() => sql`update users set qualification_status = 'verified', qualification_checked_by = ${fake.id}, qualification_checked_at = now() where id = ${pro.id}`, "administrateur actif", "qualification validée par un non-admin");
+  await refused(() => as(boss.id, (tx) => tx`update users set qualification_status = 'verified', qualification_checked_by = ${boss.id}, qualification_checked_at = now() where id = ${pro.id}`), "habilité", "qualification validée par un admin NON habilité");
   await refused(() => sql`update orders set status = 'paid', paid_checked_by = ${admin.id}, paid_checked_at = now() where id = ${o1.id}`, "orders_check", "paiement validé sans référence");
-  ok("Refusé par la base : commande, paiement, accès et qualification par un non-admin ; paiement sans référence");
+  ok("Refusé par la base : commande, paiement, accès et qualification par un non-admin ; qualification par un admin non habilité ; paiement sans référence");
 
   // ── 1 + 3. Paiement vérifié, accès acheté… mais qualification en attente → toujours fermé ──
   await as(admin.id, (tx) => tx`update orders set status = 'paid', paid_checked_by = ${admin.id}, paid_checked_at = now(), reference = 'VIR-E2E-0001' where id = ${o1.id}`);
@@ -179,6 +186,8 @@ try {
   expect(n["users.update"] >= 4, `qualifications journalisées ${JSON.stringify(n)}`);
   const [leak] = await sql`select count(*)::int as n from audit_log where action like 'users.%' and details::text like '%scrypt%'`;
   expect(leak.n === 0, "aucun mot de passe dans le journal");
+  const [flag] = await sql`select count(*)::int as n from audit_log where actor_id = ${boss.id} and action = 'users.update' and target = ${admin.id} and details->'after'->>'can_verify_qualifications' = 'true'`;
+  expect(flag.n === 1, "attribution du droit de vérification journalisée");
   const [refund] = await sql`select count(*)::int as n from audit_log where action = 'access_grants.update' and target = ${g2.id} and details->'after'->>'revoke_reason' like 'Remboursement%' and actor_id = ${admin.id}`;
   expect(refund.n === 1, "révocation par remboursement journalisée avec l'auteur du remboursement");
   ok(`Journal : ${Object.entries(n).map(([k, v]) => `${k} ×${v}`).join(", ")} — auteur renseigné, aucun mot de passe`);

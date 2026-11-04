@@ -224,3 +224,39 @@ Environnement : PostgreSQL 16 local, application lancée **avec le compte `acade
 | `src/lib/access.ts` | Règle « Formations » ajoutée à côté de la règle machines (qui gagne seulement `kind = 'technology'`) |
 | `src/app/admin/actions.ts` | Message clair si l'on publie un parcours technologie sans machine ; une formation ne reçoit jamais de machine |
 | `scripts/e2e-formations.mjs` | Nouveau : 16 étapes |
+
+## 13. Vérifications complémentaires (avant lot 2, 4 nov. 2026)
+
+### 13.1 Jetons vidéo Mux : limites de révocation et durée
+- **Ce que fait Mux** (documentation « Secure video playback ») : l'expiration du jeton est contrôlée sur **chaque requête**, manifeste et segments, *« même si la lecture a déjà commencé »*. Un jeton ne peut donc pas être retiré avant son expiration. Il doit aussi couvrir toute la durée de la vidéo.
+- **Changement fait** : la durée n'est plus fixée à 2 h. Elle vaut **durée de la leçon + 10 min, au minimum 15 min et au maximum 2 h** (2 h si la durée est inconnue) : `muxTokenTtl()` dans `src/lib/video.ts`.
+- **Limite résiduelle documentée** : après une révocation, un jeton déjà émis reste utilisable au plus cette durée (15 min pour une leçon de moins de 5 min). Chaque rechargement de page refait le contrôle d'accès avant d'émettre un nouveau jeton. Quand un professionnel revient sur une vidéo après une longue pause, la page doit être rechargée (amélioration prévue : renouvellement automatique du jeton par le lecteur).
+- **Testé** (S12) sur une instance de l'app configurée en mode Mux avec une clé de test : jeton de 15 min pour une leçon de 12 s, lié au compte, et aucun jeton émis pour un compte sans droit.
+- À vérifier dans la console Mux : la politique de lecture des vidéos est « signed », sinon le jeton n'est pas exigé.
+
+### 13.2 Accès croisés, sessions, accès directs : `scripts/e2e-securite.mjs` (12/12)
+| # | Scénario | Résultat |
+|---|---|---|
+| S02 | B (vérifié, même profession, sans accès) sur la formation de A : page, leçon, vidéo, document, progression | Tous refusés |
+| S03 | B tente d'écrire une progression sur la leçon de A | Refusé ; la progression de A est intacte ; aucune ligne pour B |
+| S04 | Client HANOVER sur une formation, acheteur sur HANOVER (5 points d'entrée) | Tous refusés |
+| S05 | Leçon sous un autre slug, leçon verrouillée (vidéo et page), identifiants inconnus ou malformés, `../` encodé, plage d'octets hors fichier | 404 / 403 / redirection / 416 |
+| S06 | Progression envoyée depuis un autre site (origine) | 403 |
+| S07–S10 | Sans session, jeton inventé, empreinte réutilisée comme jeton, session expirée, compte désactivé avec une session ouverte | Traités comme anonymes : pages → connexion, API → 401 |
+| S11 | Un professionnel ouvre la fiche admin d'un autre compte | Renvoyé hors de l'administration |
+
+### 13.3 Droit distinct de vérification des qualifications (migration 003, testée)
+- Nouvelle colonne `users.can_verify_qualifications`. **Seul un administrateur actif ayant ce droit** peut passer une qualification à « vérifiée » ou « refusée », et jamais sur son propre compte (contrôle en base, F04).
+- Le droit s'accorde ou se retire **par un autre administrateur actif**, jamais à soi-même, et il est tracé au journal (F01, F16). Le premier vérificateur est désigné par le compte propriétaire de la base.
+- Retour arrière : `003_verificateurs_down.sql`, testé (rejeu complet 002 → 003 → retour → 003).
+
+### 13.4 Justificatifs professionnels : règles de protection et de conservation (à mettre en œuvre au lot 2)
+| Règle | Proposition |
+|---|---|
+| Minimisation | Demander d'abord le **n° d'inscription à l'Ordre**. Un fichier n'est demandé que si le numéro ne suffit pas à vérifier. |
+| Formats | PDF, JPEG, PNG ; 5 Mo maximum ; type contrôlé sur le contenu réel du fichier, pas sur son nom. |
+| Stockage | Compartiment Supabase **privé et dédié** (`lift-justificatifs`), distinct des supports de cours ; nom de fichier aléatoire ; jamais d'URL publique. |
+| Consultation | Uniquement par les **vérificateurs habilités**, via le serveur : URL signée de 60 s. **Chaque consultation est journalisée.** Le professionnel voit seulement le statut de son propre dossier. |
+| Conservation | Le fichier est **supprimé 30 jours après la décision**, ce qui laisse le temps d'une contestation. On conserve seulement le type de pièce, le numéro, le vérificateur, la date et la décision. Une suppression automatique, tracée, est prévue. |
+| Demande de suppression | À la fermeture du compte, ou sur demande : suppression du fichier et des données de vérification non obligatoires, tracée. |
+| Cadre légal | Données personnelles de professionnels de santé : **à faire valider** au regard de la loi 09-08 et des formalités auprès de la CNDP. Une mention d'information est affichée au moment du dépôt. |

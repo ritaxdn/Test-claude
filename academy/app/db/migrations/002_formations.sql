@@ -9,7 +9,13 @@ begin;
 do $$
 declare n int;
 begin
-  select count(*) into n from programs where published and device_model_id is null;
+  -- Rejouable : si la migration est déjà passée, seuls les parcours « technologie » sont concernés
+  -- (une formation n'a jamais de machine).
+  if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'programs' and column_name = 'kind') then
+    execute $q$select count(*) from programs where published and device_model_id is null and kind = 'technology'$q$ into n;
+  else
+    select count(*) into n from programs where published and device_model_id is null;
+  end if;
   if n > 0 then
     raise exception 'Migration arrêtée : % parcours publié(s) sans machine. Les rattacher à une machine ou les dépublier avant de migrer.', n;
   end if;
