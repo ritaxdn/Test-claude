@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>LIFT frames</title>
+<link rel="stylesheet" href="fonts.css">
+<style>
+  :root { --pearl:#F4F4F7; --deep:#1d1b26; --soft:#6b6979; --rb:linear-gradient(90deg,#00BCD4,#7B61FF,#E91E8C,#FF5722,#FFC107); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { width:1080px; height:1920px; overflow:hidden; background:var(--pearl); }
+  #stage { position:relative; width:1080px; height:1920px; overflow:hidden; background:var(--pearl); font-family:"Instrument Sans",sans-serif; color:var(--deep); }
+  .blob { position:absolute; border-radius:50%; filter:blur(110px); }
+  .f { position:absolute; inset:0; display:block; opacity:0; transform-origin:540px 900px; } .w { display:inline-block; white-space:pre; }
+  .center { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:0 80px; }
+  .k { font-family:"Instrument Sans",sans-serif; font-weight:600; font-size:96px; letter-spacing:-.035em; line-height:1.05; }
+  .k .ghost { opacity:.18; }
+  .rb { background:var(--rb); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .glass { background:rgba(255,255,255,.72); backdrop-filter:blur(24px); border-radius:48px;
+    box-shadow:0 40px 90px -35px rgba(29,27,38,.35), inset 0 0 0 2px rgba(255,255,255,.95); }
+  .mono { font-family:"JetBrains Mono",monospace; letter-spacing:.14em; text-transform:uppercase; font-size:24px; color:var(--soft); }
+  .emo { position:absolute; font-size:78px; filter:drop-shadow(0 16px 20px rgba(29,27,38,.18)); }
+  .touch { position:absolute; width:120px; height:120px; border-radius:50%; background:rgba(29,27,38,.16); border:4px solid rgba(255,255,255,.9); box-shadow:0 0 0 18px rgba(29,27,38,.06); }
+  .pill { display:inline-flex; align-items:center; gap:18px; padding:30px 44px; border-radius:999px; font-size:40px; font-weight:600; }
+  .bar { height:16px; border-radius:16px; background:#e7e6ee; overflow:hidden; } .bar i { display:block; height:100%; border-radius:16px; background:var(--rb); }
+  .av { width:110px; height:110px; border-radius:50%; display:grid; place-items:center; font-weight:600; font-size:36px; color:#fff; }
+  .lift { font-family:Archivo,sans-serif; font-weight:800; font-stretch:125%; font-size:230px; letter-spacing:-.04em; line-height:.9; }
+  .by { font-family:"Cormorant Garamond",serif; font-size:50px; letter-spacing:.06em; margin-top:18px; } .by b { font-weight:500; letter-spacing:.28em; }
+  .phone { position:absolute; width:560px; height:1180px; border-radius:82px; padding:14px; background:linear-gradient(145deg,#fdfdff,#d9dbe4);
+    box-shadow:0 60px 120px -40px rgba(29,27,38,.45), inset 0 0 0 2px #fff, 0 0 0 1px rgba(29,27,38,.12); }
+  .phone .sc { position:relative; width:532px; height:1152px; border-radius:68px; overflow:hidden; background:#eceef3; }
+  .phone .sc img { position:absolute; left:0; top:54px; width:532px; }
+  .phone .isl { position:absolute; left:50%; top:20px; width:140px; height:40px; margin-left:-70px; border-radius:30px; background:#111; z-index:2; }
+  .laptop { position:absolute; width:1000px; }
+  .laptop .lid { border-radius:30px 30px 0 0; padding:18px 18px 22px; background:#1d1b26; box-shadow:0 50px 100px -40px rgba(29,27,38,.5); }
+  .laptop .lid img { display:block; width:100%; border-radius:8px; }
+  .laptop .base { height:34px; margin:0 -50px; border-radius:0 0 40px 40px; background:linear-gradient(#e4e5ec,#bfc1cc); }
+  .pop { position:absolute; border-radius:40px; overflow:hidden; background:#fff; box-shadow:0 50px 100px -30px rgba(29,27,38,.45), 0 0 0 1px rgba(29,27,38,.06); }
+  .pop img { display:block; width:100%; }
+  .ttl { position:absolute; left:80px; right:80px; top:150px; text-align:center; }
+  .ttl .k { font-size:84px; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="blob" id="bA" style="width:900px;height:900px;left:-380px;top:-260px;background:#E91E8C;opacity:.30"></div>
+  <div class="blob" id="bB" style="width:900px;height:900px;right:-420px;bottom:-240px;background:#7B61FF;opacity:.30"></div>
+  <div class="blob" id="bC" style="width:700px;height:700px;right:-300px;top:200px;background:#00BCD4;opacity:.0"></div>
+
+  <!-- 1 : accroche mot par mot -->
+  <div class="f" id="f1"><div class="center"><p class="k">Fermer votre<br>cabinet<span class="ghost">…</span></p></div></div>
+
+  <!-- 2 : …pour une formation ? + trajet barré -->
+  <div class="f" id="f2"><div class="center">
+    <p class="k" style="font-size:80px">…pour une <span style="color:#E91E8C">formation</span> ?</p>
+    <div class="glass" style="margin-top:90px;padding:40px 48px;width:820px;text-align:left;position:relative">
+      <p class="mono">Jeu. 16 · 09:00</p>
+      <p style="font-size:44px;font-weight:600;margin-top:10px">Marrakech → Casablanca</p>
+      <p style="font-size:32px;color:var(--soft);margin-top:6px">3 h 10 de route · 12 patients reportés</p>
+      <svg style="position:absolute;left:30px;top:70px" width="760" height="80" viewBox="0 0 760 80"><path d="M10 50 C 200 20, 420 70, 750 30" stroke="#E91E8C" stroke-width="10" fill="none" stroke-linecap="round"/></svg>
+    </div>
+    <span class="emo" style="left:120px;top:560px;transform:rotate(-12deg)">🚗</span><span class="emo" style="right:130px;top:600px;transform:rotate(10deg)">⏳</span>
+  </div></div>
+
+  <!-- 3 : notification -->
+  <div class="f" id="f3"><div class="center">
+    <div class="glass" style="width:900px;padding:36px 40px;display:grid;grid-template-columns:96px 1fr;gap:28px;align-items:center;text-align:left">
+      <div style="width:96px;height:96px;border-radius:26px;background:#7B61FF;display:grid;place-items:center;color:#fff;font-size:50px">✕</div>
+      <div><p class="mono" style="font-size:22px">Formation · maintenant</p><p style="font-size:40px;font-weight:600;margin-top:6px;line-height:1.15">Session complète.<br>Prochaine date : dans 2 mois.</p></div>
+    </div>
+    <span class="emo" style="left:430px;top:1130px;font-size:110px">😩</span>
+  </div></div>
+
+  <!-- 4 : renversement, le « o » devient Lecture -->
+  <div class="f" id="f4"><div class="center">
+    <p class="k">Et si la formation<br>venait à <span class="rb">v</span><span style="display:inline-grid;place-items:center;width:84px;height:84px;border-radius:50%;background:var(--deep);vertical-align:-6px"><svg width="34" height="34" viewBox="0 0 10 10"><path d="M2.5 1.5 L8.5 5 L2.5 8.5 Z" fill="#fff"/></svg></span><span class="rb">us</span> ?</p>
+    
+  </div></div>
+
+  <div class="f" id="f5"><div class="ttl"><p class="k">Vos formations,<br><span class="rb">en vidéo.</span></p></div><div class="phone" style="left:260px;top:500px;transform:scale(1) rotate(0deg);transform-origin:50% 0"><div class="sc"><div class="isl"></div><img src="img/m5-lecon.png"></div></div><div class="pop" style="left:60px;top:1130px;width:860px;transform:rotate(-2deg)"><img src="img/m5b-lecteur.png"></div></div>
+  <div class="f" id="f6"><div class="ttl"><p class="k">4 minutes.<br><span class="rb">Entre deux patients.</span></p></div><div class="laptop" style="left:40px;top:560px;transform:scale(1);transform-origin:50% 0"><div class="lid"><img src="img/d3-lecon.png"></div><div class="base"></div></div><div class="pop" style="left:380px;top:1080px;width:640px;transform:rotate(2deg)"><img src="img/m5c-presente-par.png"></div><div class="touch" style="left:250px;top:880px"></div></div>
+  <div class="f" id="f7"><div class="ttl"><p class="k">Validée.<br><span class="rb">La suivante se débloque.</span></p></div><div class="phone" style="left:260px;top:500px;transform:scale(1) rotate(0deg);transform-origin:50% 0"><div class="sc"><div class="isl"></div><img src="img/m6-liste-lecons.png"></div></div><div class="pill" style="position:absolute;left:90px;top:1180px;background:var(--deep);color:#fff;font-size:48px">✓ Validée</div><div style="position:absolute;right:60px;top:1330px;background:#7B61FF;color:#fff;font-size:40px;font-weight:600;padding:28px 40px;border-radius:44px 44px 12px 44px;box-shadow:0 30px 60px -20px rgba(123,97,255,.6)">🔓 Leçon 2 déverrouillée</div></div>
+  <div class="f" id="f8"><div class="ttl"><p class="k">Quand vous voulez.<br><span class="rb">Où vous voulez.</span></p></div><div class="laptop" style="left:40px;top:620px;transform:scale(1);transform-origin:50% 0"><div class="lid"><img src="img/d1-tableau.png"></div><div class="base"></div></div><div class="phone" style="left:640px;top:900px;transform:scale(0.62) rotate(4deg);transform-origin:50% 0"><div class="sc"><div class="isl"></div><img src="img/m2-tableau-de-bord.png"></div></div><span class="emo" style="left:90px;top:1360px">☕</span><span class="emo" style="left:420px;top:1500px">🏠</span><span class="emo" style="right:60px;top:520px">📱</span></div>
+  <div class="f" id="f9"><div class="ttl"><p class="k">Le parcours<br><span class="rb">de votre machine.</span></p></div><div class="phone" style="left:260px;top:500px;transform:scale(1) rotate(0deg);transform-origin:50% 0"><div class="sc"><div class="isl"></div><img src="img/m3-parcours-cartes.png"></div></div><div class="pop" style="left:70px;top:1020px;width:700px;transform:rotate(-2deg)"><img src="img/m3b-carte-hanover.png"></div></div>
+  <div class="f" id="f10"><div class="ttl"><p class="k">Nos experts,<br><span class="rb">à vos côtés.</span></p></div><div class="laptop" style="left:40px;top:560px;transform:scale(1);transform-origin:50% 0"><div class="lid"><img src="img/d2-parcours.png"></div><div class="base"></div></div><div class="pop" style="left:80px;top:1060px;width:620px;transform:rotate(-2deg)"><img src="img/m4c-intervenants.png"></div><div class="pop" style="left:420px;top:1300px;width:600px;transform:rotate(2deg)"><img src="img/m4d-documents.png"></div></div>
+  <div class="f" id="f11"><div class="ttl"><p class="k">Formation<br><span class="rb">terminée.</span></p></div><div class="phone" style="left:260px;top:500px;transform:scale(1) rotate(0deg);transform-origin:50% 0"><div class="sc"><div class="isl"></div><img src="img/m7-terminee.png"></div></div><div class="pop" style="left:330px;top:1000px;width:660px;transform:rotate(2deg)"><img src="img/m7b-carte-terminee.png"></div><span class="emo" style="left:120px;top:560px">🎉</span></div>
+  <div class="f" id="f12"><div class="ttl"><p class="k">Reprenez où vous<br><span class="rb">vous êtes arrêté.</span></p></div><div class="laptop" style="left:40px;top:620px;transform:scale(1);transform-origin:50% 0"><div class="lid"><img src="img/d1-tableau.png"></div><div class="base"></div></div><div class="pop" style="left:170px;top:1180px;width:740px;transform:rotate(-2deg);border-radius:999px"><img src="img/m3c-bouton-reprendre.png"></div><div class="touch" style="left:760px;top:1220px"></div></div>
+  <div class="f" id="f13"><div class="ttl" style="top:110px"><div class="lift rb" style="font-size:180px">LIFT</div><div class="by" style="font-size:44px">by <b>CELLULIFT</b> Academy</div></div><div class="phone" style="left:260px;top:520px;transform:scale(0.86) rotate(0deg);transform-origin:50% 0"><div class="sc"><div class="isl"></div><img src="img/m8-avant-premiere.png"></div></div><div class="pill" style="position:absolute;left:50%;transform:translateX(-50%);top:1560px;white-space:nowrap;background:var(--deep);color:#fff;box-shadow:0 30px 60px -20px rgba(29,27,38,.55)">Rejoindre l'avant-première →</div><p class="mono" style="position:absolute;left:0;right:0;top:1720px;text-align:center">cellulift.ma · les inscrits entrent en premier</p></div>
+</div>
+<script>
+const blobs = { 1:["#E91E8C",".30","#7B61FF",".22"], 2:["#E91E8C",".34","#FF5722",".22"], 3:["#7B61FF",".30","#E91E8C",".22"], 4:["#00BCD4",".28","#7B61FF",".30"],
+  5:["#7B61FF",".26","#00BCD4",".26"], 6:["#00BCD4",".26","#7B61FF",".26"], 7:["#7B61FF",".30","#E91E8C",".2"], 8:["#FFC107",".26","#E91E8C",".26"],
+  9:["#00BCD4",".24","#7B61FF",".26"], 10:["#E91E8C",".24","#00BCD4",".26"], 11:["#7B61FF",".3","#FF5722",".22"], 12:["#00BCD4",".28","#E91E8C",".26"], 13:["#7B61FF",".3","#00BCD4",".26"] };
+window.show = (n) => {
+  document.querySelectorAll(".f").forEach((e) => e.style.display = "none");
+  document.getElementById("f" + n).style.display = "block";
+  const b = blobs[n]; document.getElementById("bA").style.background = b[0]; document.getElementById("bA").style.opacity = b[1];
+  document.getElementById("bB").style.background = b[2]; document.getElementById("bB").style.opacity = b[3];
+};
+
+</script>
+
+<script>
+// Animation du storyboard v3 : chaque plan a sa fenêtre [a, b].
+const W = [[0,1.7],[1.7,3.1],[3.1,4.5],[4.5,6.3],[6.3,7.8],[7.7,9.5],[9.5,11.1],[11.1,13.1],[13.1,15.1],[15.1,17.1],[17.1,19.1],[19.1,20.8],[20.8,25]];
+const cl = (x) => Math.max(0, Math.min(1, x)), p = (t, a, b) => cl((t - a) / (b - a));
+const eo = (x) => 1 - Math.pow(1 - x, 3), eio = (x) => x < .5 ? 4*x*x*x : 1 - Math.pow(-2*x + 2, 3) / 2;
+const back = (x) => { const c = 1.7; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+// Découpe les titres en mots (le dégradé est porté par chaque mot)
+function split(el, rb) {
+  for (const n of [...el.childNodes]) {
+    if (n.nodeType === 3) {
+      const frag = document.createDocumentFragment();
+      n.textContent.split(/(\s+)/).forEach((w) => { if (!w) return; if (/^\s+$/.test(w)) { frag.append(w); return; }
+        const sp = document.createElement("span"); sp.className = "w" + (rb ? " rb" : ""); sp.textContent = w; frag.append(sp); });
+      n.replaceWith(frag);
+    } else if (n.nodeType === 1 && n.tagName !== "BR" && !n.classList.contains("w")) {
+      if (n.classList.contains("rb")) { n.classList.remove("rb"); split(n, true); }
+      else if (n.tagName === "SPAN" && !n.querySelector("svg")) split(n, rb);
+      else n.classList.add("w");
+    }
+  }
+}
+document.querySelectorAll(".f .k").forEach((k) => split(k, k.classList.contains("rb") && (k.classList.remove("rb"), true)));
+const F = W.map((_, i) => document.getElementById("f" + (i + 1)));
+const items = F.map((f) => ({
+  words: [...f.querySelectorAll(".w")],
+  dev: [...f.querySelectorAll(".phone,.laptop")],
+  pops: [...f.querySelectorAll(".pop,.pill,.glass,.touch,.emo,.av,.mono,.by,.lift,svg:not(.w svg),[style*='border-radius:44px']")].filter((e) => !e.closest(".phone,.laptop") && !e.closest(".k")),
+}));
+items.forEach((it) => { it.dev.forEach((d) => d.dataset.tf = d.style.transform || ""); it.pops.forEach((d) => d.dataset.tf = d.style.transform || ""); });
+const path2 = document.querySelector("#f2 svg path"); const L2 = path2.getTotalLength(); path2.style.strokeDasharray = L2;
+
+const bar6 = null;
+
+window.render = (t) => {
+  // fond vivant
+  document.getElementById("bA").style.transform = `translate(${Math.sin(t*.5)*90}px,${Math.cos(t*.4)*70}px)`;
+  document.getElementById("bB").style.transform = `translate(${Math.cos(t*.45)*90}px,${Math.sin(t*.35)*70}px)`;
+  let cur = 1; W.forEach(([a], i) => { if (t >= a - .1) cur = i + 1; });
+  const bc = blobs[cur]; const A = document.getElementById("bA"), B = document.getElementById("bB");
+  A.style.background = bc[0]; A.style.opacity = bc[1]; B.style.background = bc[2]; B.style.opacity = bc[3]; A.style.transition = B.style.transition = 'none';
+  W.forEach(([a, b], i) => {
+    const f = F[i], it = items[i], last = i === W.length - 1;
+    const inn = eo(p(t, a - .15, a + .25)), out = last ? 0 : i === 3 ? eio(p(t, b - .08, b + .05)) : eio(p(t, b - .25, b + .05));
+    const vis = t >= a - .15 && t <= b + .05;
+    f.style.opacity = vis ? Math.min(inn, 1 - out) : 0;
+    // transition « zoom à travers » : on entre en grossissant légèrement, on sort en avançant vers la caméra
+    f.style.transform = `scale(${(.94 + .06 * inn) * (1 + .12 * out)})`;
+    f.style.filter = `blur(${(1 - inn) * 12 + out * (i === 3 ? 0 : 16)}px)`;
+    if (!vis) return;
+    if (t >= a) cur = i + 1;
+    // mots, un par un
+    it.words.forEach((w, j) => { const v = back(p(t, a + .05 + j * .085, a + .38 + j * .085));
+      w.style.opacity = cl(v); w.style.transform = `translateY(${(1 - v) * 40}px)`; w.style.filter = `blur(${(1 - cl(v)) * 8}px)`; });
+    const tw = a + .05 + it.words.length * .085;
+    // écrans : montent depuis le bas
+    it.dev.forEach((d, j) => { const v = eo(p(t, a + .1 + j * .25, a + .75 + j * .25));
+      d.style.transform = `${d.dataset.tf} translateY(${(1 - v) * 380 + Math.sin(t * 1.2 + j) * 5}px)`; d.style.opacity = v; });
+    // éléments qui sortent de l'écran (rebond)
+    it.pops.forEach((d, j) => { const st = Math.max(a + .55, Math.min(tw, a + .9)) + j * .14, v = back(p(t, st, st + .45));
+      d.style.opacity = cl(v * 1.5); d.style.transform = `${d.dataset.tf} translateY(${(1 - v) * 60 + Math.sin(t * 1.6 + j) * 4}px) scale(${.82 + .18 * v})`; });
+  });
+  // détails par plan
+  path2.style.strokeDashoffset = L2 * (1 - eo(p(t, 2.35, 2.75)));
+  // le bouton Lecture du « vous » grandit jusqu'à remplir l'écran → plan 5
+  const pb = document.querySelector("#f4 .k span[style*='inline-grid']");
+  if (pb) { const g = eio(p(t, 5.85, 6.3)); pb.style.transform = `scale(${1 + g * 28})`; pb.style.position = "relative"; pb.style.zIndex = 5; }
+  // doigt : pression
+  document.querySelectorAll(".touch").forEach((d) => { const k = (t * 2.2) % 1; d.style.boxShadow = `0 0 0 ${10 + k * 40}px rgba(29,27,38,${.12 * (1 - k)})`; });
+};
+render(0);
+</script>
+</body>
+</html>

@@ -1,5 +1,7 @@
 # Teaser LIFT by CELLULIFT Academy
 
+- **`lift-teaser-v3.mp4` : version actuelle** (25 s, 1080×1920, sans son), d'après le storyboard v3 : texte mot par mot, vrais écrans LIFT (téléphone + ordinateur) avec l'élément clé qui sort de l'écran, fin sur la page avant-première. Source : `source/teaser-v3.html`, rendu `source/teaser-v3-render.js`. Les versions précédentes (qui mentionnaient « incluse ») ont été retirées.
+
 - `lift-motion-muet.mp4` : **version motion design** (21,5 s, 9:16), sur le modèle d'une pub « interface en 3D » : caméra plongeante, flou de mouvement, cartes qui se valident en cascade, compteurs. Problème (planning présentiel barré, notifications « 12 patients à reporter », « 3 h 10 de trajet », « session complète ») → solution (leçons validées, 12 leçons / 0 km) → recul sur l'appli → LIFT + « Rejoindre l'avant-première ». Source : `source/motion.html`, rendu `source/mrender.js`.
 
 - `lift-teaser-muet.mp4` : 31 s, 1080×1920 (9:16), sans voix. Fin sur l'appel à l'avant-première (`/academy/avant-premiere`).
