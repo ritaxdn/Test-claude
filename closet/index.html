@@ -533,10 +533,17 @@ $("#shuffle").onclick=()=>{
   const style=(styles.length?styles:STYLES)[Math.floor(Math.random()*(styles.length||STYLES.length))];
   let best=null,bs=-1e9;
   for(let n=0;n<400;n++){
-    const combo=SLOTS.map(s=>{if(!act.includes(s))return null;const l=inSlot(s.key);const pool=l.filter(i=>(i.tags||[]).includes(style));const src=pool.length?pool:l;return src[Math.floor(Math.random()*src.length)]});
+    const combo=SLOTS.map(s=>{if(!act.includes(s))return null;
+      const tg=i=>i.tags||[],sportOnly=i=>tg(i).includes("Sport")&&!tg(i).some(t=>t!=="Sport");
+      const l=inSlot(s.key);
+      let pool;
+      if(style==="Sport"){pool=l.filter(i=>tg(i).includes("Sport"));if(!pool.length)return null} // pas de pièce de ville dans une tenue sport
+      else{const ok=l.filter(i=>!sportOnly(i));pool=ok.filter(i=>tg(i).includes(style));if(!pool.length)pool=ok;if(!pool.length)return null} // jamais de pièce sport dans une tenue de ville
+      return pool[Math.floor(Math.random()*pool.length)]});
     const sc=harmony(combo,style);if(sc>bs){bs=sc;best=combo}
   }
-  SLOTS.forEach((s,i)=>{if(best[i]){sel[s.key]=best[i].id;centerOn(s.key,best[i].id)}});
+  SLOTS.forEach((s,i)=>{if(best[i]){sel[s.key]=best[i].id;centerOn(s.key,best[i].id)}else if(act.includes(s)&&style==="Sport"){shown[s.key]=false}});
+  renderToggles();renderRails();
   markOn();renderLines();renderGrid();saveUi();toast("Tenue "+style.toLowerCase()+" proposée");
 };
 $("#saveLook").onclick=async()=>{
