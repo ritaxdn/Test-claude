@@ -203,6 +203,12 @@ form textarea{min-height:64px;resize:vertical}
 .editing b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .editing button{border:0;background:none;font-size:12px;text-decoration:underline;color:var(--muted);white-space:nowrap}
 .upd{border:1px solid var(--ink);background:var(--ink);color:#fff;font-weight:700;letter-spacing:.06em;font-size:12px;padding:0 18px;height:52px;border-radius:999px;text-transform:uppercase}
+.accrail{padding-top:18px}
+.accgrid{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:4px 18px 6px}
+.accpick{flex:0 0 62px;height:62px;border:1px solid var(--line);border-radius:8px;background:#fff;padding:3px;position:relative;font-size:9px;overflow:hidden}
+.accpick img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
+.accpick.on{border:2px solid var(--ink);padding:2px}
+.accpick.on::after{content:"✓";position:absolute;top:2px;right:3px;font-size:10px;font-weight:700;background:var(--ink);color:#fff;border-radius:50%;width:15px;height:15px;display:grid;place-items:center}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
 
@@ -287,6 +293,11 @@ let shown={jacket:true,dress:false,top:true,bottom:true,shoes:true,bag:true,acc:
 try{const s=JSON.parse(localStorage.getItem("dressing.v2")||"{}");Object.assign(sel,s.sel||{});Object.assign(shown,s.shown||{});if(s.view)view=s.view}catch(e){}
 if(shown.acc===undefined)shown.acc=true;if(shown.jacket===undefined)shown.jacket=true;if(shown.dress===undefined)shown.dress=false;
 function exclusive(k){if(k==="dress"){shown.top=false;shown.bottom=false}else if(k==="top"||k==="bottom"){shown.dress=false}}
+const ids=v=>Array.isArray(v)?v.filter(Boolean):(v?[v]:[]);
+const lookIds=o=>SLOTS.flatMap(s=>ids(o?.[s.key]));
+const lookKey=o=>SLOTS.map(s=>ids(o?.[s.key]).slice().sort().join("+")).join("|");
+const accType=i=>/boucle/i.test(i.name)?"oreilles":/collier|sautoir|ras-de-cou/i.test(i.name)?"cou":/bracelet|jonc|manchette/i.test(i.name)?"poignet":/ceinture/i.test(i.name)?"taille":/bonnet/i.test(i.name)?"tête":"autre";
+sel.acc=ids(sel.acc);
 const saveUi=()=>{try{localStorage.setItem("dressing.v2",JSON.stringify({sel,shown,view}))}catch(e){}};
 
 function toast(t){const el=$("#toast");el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,2200)}
@@ -337,7 +348,7 @@ const swatch=c=>c&&COLORS[c]?`<span class="dot" style="background:${COLORS[c]}">
 function renderGrid(){
   const e=$("#empty");
   if(view==="Mes tenues"){renderLooks();return}
-  const v=filtered(),chosen=new Set(Object.entries(sel).filter(([k])=>shown[k]).map(([,id])=>id));
+  const v=filtered(),chosen=new Set(SLOTS.filter(s=>shown[s.key]).flatMap(s=>ids(sel[s.key])));
   $("#matching").textContent=`Pièces : ${v.length}`;
   $("#grid").className="grid";
   $("#grid").innerHTML=v.map(i=>`<div class="tile${chosen.has(i.id)?" sel":""}" data-id="${i.id}" role="button" tabindex="0" aria-label="Essayer ${esc(i.name)}">
@@ -362,7 +373,7 @@ function renderLooks(){
   if(hideWorn)list=list.filter(l=>!l.worn);
   $("#matching").textContent=`Tenues : ${looks.length} · ${looks.length-nDone} pas encore portée${looks.length-nDone>1?"s":""}`;
   $("#grid").innerHTML=`<div class="lookbar"><button data-hidew aria-pressed="${hideWorn}">Masquer les tenues déjà portées</button></div>`+(hideWorn&&looks.length&&!list.length?'<p class="note lookbar">Tu as porté toutes tes tenues ! Désactive le filtre pour les revoir.</p>':"")+list.map(l=>{
-    const ims=SLOTS.map(s=>byId(l.items?.[s.key])).filter(Boolean);
+    const ims=lookIds(l.items).map(byId).filter(Boolean);
     const done=!!l.worn;
     return `<div class="lk${done?" done":""}">${done?`<span class="worn">✓ Déjà portée${l.worn>1?` ${l.worn}×`:""} · ${fmt(l.lastWorn)}</span>`:'<span class="fresh">Pas encore portée</span>'}<div class="stack">${ims.map(i=>src(i)?`<img src="${esc(src(i))}" alt="${esc(i.name)}">`:`<small class="note">${esc(i.name)}</small>`).join("")}</div>
       <b>${esc(l.name)}</b>${editing===l.id?'<span class="fresh">En cours de modification</span>':""}
@@ -377,8 +388,11 @@ function renderToggles(){
 }
 function renderRails(){
   const r=$("#rails");
+  sel.acc=ids(sel.acc).filter(id=>byId(id));
   r.innerHTML=SLOTS.filter(s=>shown[s.key]).map(s=>{
     const list=inSlot(s.key);
+    if(s.key==="acc"){const ch=ids(sel.acc);
+      return `<div class="rail accrail" data-slot="acc"><span class="rlabel">Accessoires · ${ch.length} choisi${ch.length>1?"s":""} — touche pour ajouter ou retirer</span><div class="accgrid">${list.length?list.map(i=>`<button class="accpick${ch.includes(i.id)?" on":""}" data-acc="${i.id}" aria-pressed="${ch.includes(i.id)}" title="${esc(i.name)}">${src(i)?`<img src="${esc(src(i))}" alt="${esc(i.name)}">`:esc(i.name)}</button>`).join(""):'<button class="ph" data-addcat="Accessoires">+ Ajoute un accessoire</button>'}</div></div>`}
     if(list.length&&!list.some(i=>i.id===sel[s.key]))sel[s.key]=list[0].id;
     const slides=list.length?list.map(i=>`<button class="slide" data-id="${i.id}" aria-label="${esc(i.name)}">${src(i)?`<img src="${esc(src(i))}" alt="">`:`<span class="ph">${esc(i.name)}<br>Photo à ajouter</span>`}</button>`).join("")
       :`<div class="slide on"><button class="ph" data-addcat="${s.add}">+ Ajoute ${s.key==="bag"?"un sac":s.key==="acc"?"un accessoire":s.key==="jacket"?"une veste":s.key==="dress"?"une robe":s.key==="top"?"un haut":s.key==="bottom"?"un bas":"des chaussures"}</button></div>`;
@@ -386,7 +400,7 @@ function renderRails(){
       <div class="track" tabindex="-1">${slides}</div>
       ${list.length>1?'<button class="arrow l" data-dir="-1" aria-label="Précédent">‹</button><button class="arrow r" data-dir="1" aria-label="Suivant">›</button>':""}</div>`}).join("");
   r.querySelectorAll(".rail").forEach(rail=>{
-    const k=rail.dataset.slot,tr=rail.querySelector(".track");
+    const k=rail.dataset.slot,tr=rail.querySelector(".track");if(!tr)return;
     centerOn(k,sel[k],false);
     let t;tr.addEventListener("scroll",()=>{clearTimeout(t);t=setTimeout(()=>{if(Date.now()-(progScroll[k]||0)>900)pickCentered(k)},120)},{passive:true});
   });
@@ -407,7 +421,7 @@ function pickCentered(k){
 }
 function markOn(){document.querySelectorAll(".rail").forEach(r=>{const k=r.dataset.slot;r.querySelectorAll(".slide[data-id]").forEach(s=>s.classList.toggle("on",s.dataset.id===sel[k]))})}
 function renderLines(){
-  const rows=SLOTS.filter(s=>shown[s.key]).map(s=>byId(sel[s.key])).filter(Boolean);
+  const rows=SLOTS.filter(s=>shown[s.key]).flatMap(s=>ids(sel[s.key]).map(byId)).filter(Boolean);
   $("#lines").innerHTML=rows.map(i=>`<div><em>${esc(i.name)}</em><span>${esc(i.brand||"")}</span></div>`).join("");
   $("#lines").hidden=!rows.length;
   $("#tot").textContent=`${rows.length} pièce${rows.length>1?"s":""}`;
@@ -415,10 +429,18 @@ function renderLines(){
 function tryOn(id){
   const it=byId(id),k=it&&slotOf(it.category);
   if(!k){openSheet(id);return}
+  if(k==="acc"){shown.acc=true;toggleAcc(id);renderToggles();if(matchMedia("(max-width:760px)").matches)setTab("look");return}
   sel[k]=id;
   if(!shown[k]){shown[k]=true;exclusive(k);renderToggles();renderRails()} else {centerOn(k,id);markOn();renderLines()}
   saveUi();renderGrid();
   if(matchMedia("(max-width:760px)").matches)setTab("look");
+}
+
+function toggleAcc(id){
+  let a=ids(sel.acc);
+  if(a.includes(id))a=a.filter(x=>x!==id);
+  else{if(a.length>=6){toast("6 accessoires maximum");return}a.push(id)}
+  sel.acc=a;saveUi();renderRails();renderGrid();
 }
 
 /* ---------- fiche (drawer) ---------- */
@@ -478,7 +500,7 @@ function setTab(t){
   document.querySelectorAll(".tabbar [data-tab]").forEach(b=>b.setAttribute("aria-current",b.dataset.tab===t));
   if(t==="looks"){view="Mes tenues";renderAll()}
   else if(t==="closet"&&view==="Mes tenues"){view="Tout";renderAll()}
-  if(t==="look")requestAnimationFrame(()=>SLOTS.forEach(s=>centerOn(s.key,sel[s.key],false)));
+  if(t==="look")requestAnimationFrame(()=>SLOTS.forEach(s=>s.key!=="acc"&&centerOn(s.key,sel[s.key],false)));
   window.scrollTo(0,0);
 }
 
@@ -494,15 +516,15 @@ $("#grid").onclick=async e=>{
   if(e.target.closest("[data-hidew]")){hideWorn=!hideWorn;try{localStorage.setItem("dressing.hideWorn",hideWorn?"1":"")}catch(_){}renderLooks();return}
   const dn=e.target.closest("[data-done]");
   if(dn){const l=looks.find(x=>x.id===dn.dataset.done);if(!l||!lcol)return;
-    const undo=!!l.worn,now=new Date().toISOString(),ids=Object.values(l.items||{}).filter(id=>byId(id));
+    const undo=!!l.worn,now=new Date().toISOString(),pids=lookIds(l.items).filter(id=>byId(id));
     try{
       await lcol.doc(l.id).update(undo?{worn:0,lastWorn:null}:{worn:(l.worn||0)+1,lastWorn:now});
-      for(const id of ids){const it=byId(id);await col.doc(id).update(undo?{wears:Math.max(0,(it.wears||0)-1)}:{wears:(it.wears||0)+1,lastWorn:now})}
+      for(const id of pids){const it=byId(id);await col.doc(id).update(undo?{wears:Math.max(0,(it.wears||0)-1)}:{wears:(it.wears||0)+1,lastWorn:now})}
       toast(undo?"Tenue remise dans « pas encore portée »":"Noté ! Tenue marquée comme portée");
     }catch(err){toast("Échec : "+(err.message||err.code))}
     return}
   const w=e.target.closest("[data-wear]");
-  if(w){const l=looks.find(x=>x.id===w.dataset.wear);SLOTS.forEach(s=>{shown[s.key]=!!l.items?.[s.key]||s.key==="shoes";if(l.items?.[s.key])sel[s.key]=l.items[s.key]});editing=l.id;saveUi();renderToggles();renderRails();renderGrid();renderEditing();
+  if(w){const l=looks.find(x=>x.id===w.dataset.wear);SLOTS.forEach(s=>{const v=ids(l.items?.[s.key]);shown[s.key]=v.length>0||s.key==="shoes";if(v.length)sel[s.key]=s.key==="acc"?v:v[0];else if(s.key==="acc")sel.acc=[]});editing=l.id;saveUi();renderToggles();renderRails();renderGrid();renderEditing();
     if(matchMedia("(max-width:760px)").matches)setTab("look");toast("Tenue chargée : change ce que tu veux puis « Mettre à jour »");return}
   const dl=e.target.closest("[data-dl]");
   if(dl){try{if(editing===dl.dataset.dl){editing=null;renderEditing()}await lcol.doc(dl.dataset.dl).delete();toast("Tenue retirée")}catch(err){toast("Échec : "+(err.message||err.code))}return}
@@ -513,13 +535,14 @@ $("#rails").onclick=e=>{
   if(ar){const k=ar.closest(".rail").dataset.slot,list=inSlot(k),i=list.findIndex(x=>x.id===sel[k]);
     const n=list[(i+(+ar.dataset.dir)+list.length)%list.length];sel[k]=n.id;centerOn(k,n.id);markOn();renderLines();renderGrid();saveUi();return}
   const ph=e.target.closest("[data-addcat]");if(ph){addPiece(ph.dataset.addcat);return}
+  const ap=e.target.closest("[data-acc]");if(ap){toggleAcc(ap.dataset.acc);return}
   const s=e.target.closest(".slide[data-id]");if(!s)return;
   const k=s.closest(".rail").dataset.slot;
   if(s.dataset.id===sel[k])openSheet(s.dataset.id);else{sel[k]=s.dataset.id;centerOn(k,s.dataset.id);markOn();renderLines();renderGrid();saveUi()}};
 $("#toggles").onclick=e=>{const b=e.target.closest("[data-t]");if(!b)return;shown[b.dataset.t]=!shown[b.dataset.t];if(shown[b.dataset.t])exclusive(b.dataset.t);saveUi();renderToggles();renderRails();renderGrid()};
 const NEUTRAL=new Set(["Noir","Blanc","Beige","Marron","Gris","Doré","Argenté",""]);
-function harmony(combo,style){
-  let sc=0;const vals=combo.filter(Boolean);
+function harmonyV(vals,style,key){
+  let sc=0;vals=vals.filter(Boolean);
   const loud=new Set(vals.map(i=>i.color||"").filter(c=>!NEUTRAL.has(c)));
   if(loud.size>1)sc-=6*(loud.size-1);                       // une seule couleur vive
   const metals=new Set(vals.filter(i=>["Sacs","Accessoires"].includes(i.category)||GROUPS[1].cats.includes(i.category)).map(i=>i.color).filter(c=>c==="Doré"||c==="Argenté"));
@@ -529,8 +552,9 @@ function harmony(combo,style){
   vals.forEach(i=>{if((i.tags||[]).includes(style))sc+=3;else if((i.tags||[]).length)sc-=5});
   const prints=vals.filter(i=>/léopard|python|camouflage|imprimé|arc-en-ciel|tapisserie|Multicolore/i.test(i.name+" "+i.color)).length;
   if(prints>1)sc-=5*(prints-1);                             // un seul imprimé fort
-  const done=new Set(looks.map(l=>SLOTS.map(x=>l.items?.[x.key]||"").join("|")));
-  if(done.has(SLOTS.map(x=>combo[SLOTS.indexOf(x)]?.id||"").join("|")))sc-=20; // pas une tenue déjà enregistrée
+  const types=vals.filter(i=>i.category==="Accessoires").map(accType).filter(t=>t!=="poignet");
+  if(new Set(types).size<types.length)sc-=6;                // pas deux colliers ni deux paires de boucles
+  if(key&&looks.some(l=>lookKey(l.items)===key))sc-=20;     // pas une tenue déjà enregistrée
   return sc+Math.random()*2;
 }
 $("#shuffle").onclick=()=>{
@@ -538,23 +562,26 @@ $("#shuffle").onclick=()=>{
   if(!act.length)return;
   const styles=STYLES.filter(t=>act.every(s=>inSlot(s.key).some(i=>(i.tags||[]).includes(t))));
   const style=(styles.length?styles:STYLES)[Math.floor(Math.random()*(styles.length||STYLES.length))];
+  const tg=i=>i.tags||[],sportOnly=i=>tg(i).includes("Sport")&&!tg(i).some(t=>t!=="Sport");
+  const pools={};
+  act.forEach(s=>{const l=inSlot(s.key);
+    if(style==="Sport")pools[s.key]=l.filter(i=>tg(i).includes("Sport"));            // pas de pièce de ville dans une tenue sport
+    else{const ok=l.filter(i=>!sportOnly(i)),p=ok.filter(i=>tg(i).includes(style));pools[s.key]=p.length?p:ok}}); // jamais de sport en ville
+  const rnd=a=>a[Math.floor(Math.random()*a.length)];
   let best=null,bs=-1e9;
   for(let n=0;n<400;n++){
-    const combo=SLOTS.map(s=>{if(!act.includes(s))return null;
-      const tg=i=>i.tags||[],sportOnly=i=>tg(i).includes("Sport")&&!tg(i).some(t=>t!=="Sport");
-      const l=inSlot(s.key);
-      let pool;
-      if(style==="Sport"){pool=l.filter(i=>tg(i).includes("Sport"));if(!pool.length)return null} // pas de pièce de ville dans une tenue sport
-      else{const ok=l.filter(i=>!sportOnly(i));pool=ok.filter(i=>tg(i).includes(style));if(!pool.length)pool=ok;if(!pool.length)return null} // jamais de pièce sport dans une tenue de ville
-      return pool[Math.floor(Math.random()*pool.length)]});
-    const sc=harmony(combo,style);if(sc>bs){bs=sc;best=combo}
+    const c={};
+    act.forEach(s=>{const p=pools[s.key];if(!p.length)return;
+      if(s.key==="acc")c.acc=[...p].sort(()=>Math.random()-.5).slice(0,1+Math.floor(Math.random()*Math.min(3,p.length)));
+      else c[s.key]=rnd(p)});
+    const key=lookKey(Object.fromEntries(Object.entries(c).map(([k,v])=>[k,Array.isArray(v)?v.map(i=>i.id):v.id])));
+    const sc=harmonyV(Object.values(c).flat(),style,key);
+    if(sc>bs){bs=sc;best=c}
   }
-  SLOTS.forEach((s,i)=>{if(best[i]){sel[s.key]=best[i].id;centerOn(s.key,best[i].id)}else if(act.includes(s)&&style==="Sport"){shown[s.key]=false}});
-  renderToggles();renderRails();
-  markOn();renderLines();renderGrid();saveUi();toast("Tenue "+style.toLowerCase()+" proposée");
+  act.forEach(s=>{const v=best[s.key];if(!v){if(style==="Sport")shown[s.key]=false;return}sel[s.key]=s.key==="acc"?v.map(i=>i.id):v.id});
+  saveUi();renderToggles();renderRails();renderGrid();toast("Tenue "+style.toLowerCase()+" proposée");
 };
-function currentLook(){const it={};SLOTS.forEach(s=>{if(shown[s.key]&&sel[s.key]&&byId(sel[s.key]))it[s.key]=sel[s.key]});return it}
-const lookKey=o=>SLOTS.map(x=>(o||{})[x.key]||"").join("|");
+function currentLook(){const it={};SLOTS.forEach(s=>{if(!shown[s.key])return;if(s.key==="acc"){const a=ids(sel.acc).filter(byId);if(a.length)it.acc=a}else if(sel[s.key]&&byId(sel[s.key]))it[s.key]=sel[s.key]});return it}
 function renderEditing(){
   const l=editing&&looks.find(x=>x.id===editing);if(!l)editing=null;
   $("#editing").hidden=!l;$("#updLook").hidden=!l;
@@ -575,10 +602,9 @@ $("#updLook").onclick=async()=>{
 $("#saveLook").onclick=async()=>{
   if(!lcol){toast("Connecte-toi pour enregistrer des tenues");return}
   const b=$("#saveLook");if(b.disabled)return;
-  const it={};SLOTS.forEach(s=>{if(shown[s.key]&&sel[s.key]&&byId(sel[s.key]))it[s.key]=sel[s.key]});
+  const it=currentLook();
   if(!Object.keys(it).length){toast("Choisis au moins une pièce");return}
-  const key=o=>SLOTS.map(x=>o[x.key]||"").join("|");
-  const dup=looks.find(l=>key(l.items||{})===key(it));
+  const dup=looks.find(l=>lookKey(l.items)===lookKey(it));
   if(dup){toast(`Cette tenue existe déjà : « ${dup.name} »`);return}
   b.disabled=true;b.textContent="Enregistrement…";
   try{
@@ -594,7 +620,7 @@ $("#file").onchange=e=>{const f=e.target.files[0];e.target.value="";if(!f)return
   $("#big").innerHTML=`<img src="${URL.createObjectURL(f)}" alt="">`;if(openId)$("#save").textContent="Enregistrer la nouvelle photo"};
 $("#scrim").onclick=closeSheet;
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#drawer").hidden)closeSheet()});
-let rz;addEventListener("resize",()=>{clearTimeout(rz);rz=setTimeout(()=>SLOTS.forEach(s=>centerOn(s.key,sel[s.key],false)),150)});
+let rz;addEventListener("resize",()=>{clearTimeout(rz);rz=setTimeout(()=>SLOTS.forEach(s=>s.key!=="acc"&&centerOn(s.key,sel[s.key],false)),150)});
 
 function renderAll(){
   $("#count").textContent=items.length?`${items.length} pièces · ${looks.length} tenue${looks.length>1?"s":""}`:"Ma garde-robe";
