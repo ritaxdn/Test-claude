@@ -179,12 +179,13 @@ export async function POST(request: Request) {
 
   const attr = attribution(body);
 
-  // Guide gratuit (page /guide) : nom, e-mail, téléphone et ville obligatoires.
+  // Guide gratuit (page /guide) : nom, e-mail, téléphone, ville et activité obligatoires.
   if (body.parcours === "guide") {
     const name = String(body.name ?? "").trim().slice(0, 200), email = String(body.email ?? "").trim().slice(0, 200);
     const phone = String(body.phone ?? "").trim().slice(0, 40), city = String(body.city ?? "").trim().slice(0, 100);
-    if (!name || !emailPattern.test(email) || !isValidPhone(phone) || !city) return NextResponse.json({ ok: false, error: "validation" }, { status: 422 });
-    const g: ContactPayload = { name, email, phone, city, specialty: String(body.specialty ?? "").trim().slice(0, 200) || undefined, subject: "Guide gratuit", message: String(body.message ?? "").slice(0, 1000), lang: body.lang };
+    const specialty = String(body.specialty ?? "").trim().slice(0, 200);
+    if (!name || !emailPattern.test(email) || !isValidPhone(phone) || !city || !specialty) return NextResponse.json({ ok: false, error: "validation" }, { status: 422 });
+    const g: ContactPayload = { name, email, phone, city, specialty, subject: "Guide gratuit", message: String(body.message ?? "").slice(0, 1000), lang: body.lang };
     const [mail, crm] = await Promise.all([sendToCellulift("autre", g, { tag: "GUIDE" }), sendToCrm(crmLead("guide", g, attr))]);
     return mail || crm ? NextResponse.json({ ok: true }) : NextResponse.json({ ok: false, error: "send_failed" }, { status: 502 });
   }

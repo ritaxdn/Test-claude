@@ -48,7 +48,7 @@ export function GuideForm({
   contactHref: string;
 }) {
   const [status, setStatus] = useState<"idle" | "submitting" | "done">("idle");
-  const [errors, setErrors] = useState<{ name?: string; email?: string; phone?: string; city?: string }>({});
+  const [errors, setErrors] = useState<{ name?: string; email?: string; phone?: string; city?: string; specialty?: string }>({});
   const startedAt = useRef(0);
 
   useEffect(() => {
@@ -62,6 +62,7 @@ export function GuideForm({
     const email = String(data.get("email") ?? "").trim();
     const phone = String(data.get("phone") ?? "").trim();
     const city = String(data.get("city") ?? "").trim();
+    const specialty = String(data.get("specialty") ?? "").trim();
     const next: typeof errors = {};
     if (!name) next.name = text.requiredError;
     if (!email) next.email = text.requiredError;
@@ -69,6 +70,7 @@ export function GuideForm({
     if (!phone) next.phone = text.requiredError;
     else if (!isValidPhone(phone)) next.phone = text.phoneError;
     if (!city) next.city = text.requiredError;
+    if (!specialty) next.specialty = text.requiredError;
     setErrors(next);
     if (Object.keys(next).length) return;
 
@@ -82,7 +84,7 @@ export function GuideForm({
           email,
           phone,
           city,
-          specialty: String(data.get("specialty") ?? ""),
+          specialty,
           parcours: "guide",
           subject: "Guide gratuit téléchargé",
           attribution: readAttribution(),
@@ -180,9 +182,11 @@ export function GuideForm({
         {errors.city && <p role="alert" className="mt-1.5 font-sans text-xs text-rainbow-3">{errors.city}</p>}
       </div>
       <div>
-        <label htmlFor="guide-specialty" className="font-sans text-sm text-deep-soft">{text.specialty}</label>
+        <label htmlFor="guide-specialty" className="font-sans text-sm text-deep-soft">
+          {text.specialty} <span className="text-rainbow-3">*</span>
+        </label>
         <div className="relative">
-          <select id="guide-specialty" name="specialty" defaultValue="" className={cn(inputClasses, "appearance-none pr-10")}>
+          <select id="guide-specialty" name="specialty" defaultValue="" className={cn(inputClasses, "appearance-none pr-10")} aria-invalid={!!errors.specialty}>
             <option value="">{text.specialtyPlaceholder}</option>
             {specialtyOptions.map((o) => (
               <option key={o}>{o}</option>
@@ -190,6 +194,7 @@ export function GuideForm({
           </select>
           <ChevronDown size={16} className="pointer-events-none absolute right-4 top-1/2 mt-1 -translate-y-1/2 text-deep-soft" />
         </div>
+        {errors.specialty && <p role="alert" className="mt-1.5 font-sans text-xs text-rainbow-3">{errors.specialty}</p>}
       </div>
       <button
         type="submit"
