@@ -5,18 +5,22 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Loader2, CheckCircle2, Download, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { track } from "@/lib/analytics";
+import { isValidPhone } from "@/lib/contact-rules";
 
 interface GuideFormText {
   title: string;
   text: string;
   name: string;
   email: string;
+  phone: string;
+  phonePlaceholder: string;
   specialty: string;
   specialtyPlaceholder: string;
   submit: string;
   submitting: string;
   requiredError: string;
   emailError: string;
+  phoneError: string;
   successTitle: string;
   successText: string;
   download: string;
@@ -42,7 +46,7 @@ export function GuideForm({
   contactHref: string;
 }) {
   const [status, setStatus] = useState<"idle" | "submitting" | "done">("idle");
-  const [errors, setErrors] = useState<{ name?: string; email?: string }>({});
+  const [errors, setErrors] = useState<{ name?: string; email?: string; phone?: string }>({});
   const startedAt = useRef(0);
 
   useEffect(() => {
@@ -54,10 +58,13 @@ export function GuideForm({
     const data = new FormData(e.currentTarget);
     const name = String(data.get("name") ?? "").trim();
     const email = String(data.get("email") ?? "").trim();
+    const phone = String(data.get("phone") ?? "").trim();
     const next: typeof errors = {};
     if (!name) next.name = text.requiredError;
     if (!email) next.email = text.requiredError;
     else if (!emailPattern.test(email)) next.email = text.emailError;
+    if (!phone) next.phone = text.requiredError;
+    else if (!isValidPhone(phone)) next.phone = text.phoneError;
     setErrors(next);
     if (Object.keys(next).length) return;
 
@@ -69,6 +76,7 @@ export function GuideForm({
         body: JSON.stringify({
           name,
           email,
+          phone,
           specialty: String(data.get("specialty") ?? ""),
           parcours: "guide",
           subject: "Guide gratuit téléchargé",
@@ -135,6 +143,22 @@ export function GuideForm({
         </label>
         <input id="guide-email" name="email" type="email" autoComplete="email" inputMode="email" className={inputClasses} aria-invalid={!!errors.email} />
         {errors.email && <p role="alert" className="mt-1.5 font-sans text-xs text-rainbow-3">{errors.email}</p>}
+      </div>
+      <div>
+        <label htmlFor="guide-phone" className="font-sans text-sm text-deep-soft">
+          {text.phone} <span className="text-rainbow-3">*</span>
+        </label>
+        <input
+          id="guide-phone"
+          name="phone"
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
+          placeholder={text.phonePlaceholder}
+          className={inputClasses}
+          aria-invalid={!!errors.phone}
+        />
+        {errors.phone && <p role="alert" className="mt-1.5 font-sans text-xs text-rainbow-3">{errors.phone}</p>}
       </div>
       <div>
         <label htmlFor="guide-specialty" className="font-sans text-sm text-deep-soft">{text.specialty}</label>

@@ -179,11 +179,12 @@ export async function POST(request: Request) {
 
   const attr = attribution(body);
 
-  // Guide gratuit (page /guide) : seuls le nom et l'e-mail sont demandés.
+  // Guide gratuit (page /guide) : nom, e-mail et téléphone obligatoires.
   if (body.parcours === "guide") {
     const name = String(body.name ?? "").trim().slice(0, 200), email = String(body.email ?? "").trim().slice(0, 200);
-    if (!name || !emailPattern.test(email)) return NextResponse.json({ ok: false, error: "validation" }, { status: 422 });
-    const g: ContactPayload = { name, email, specialty: String(body.specialty ?? "").trim().slice(0, 200) || undefined, subject: "Guide gratuit", message: String(body.message ?? "").slice(0, 1000), lang: body.lang };
+    const phone = String(body.phone ?? "").trim().slice(0, 40);
+    if (!name || !emailPattern.test(email) || !isValidPhone(phone)) return NextResponse.json({ ok: false, error: "validation" }, { status: 422 });
+    const g: ContactPayload = { name, email, phone, specialty: String(body.specialty ?? "").trim().slice(0, 200) || undefined, subject: "Guide gratuit", message: String(body.message ?? "").slice(0, 1000), lang: body.lang };
     const [mail, crm] = await Promise.all([sendToCellulift("autre", g, { tag: "GUIDE" }), sendToCrm(crmLead("guide", g, attr))]);
     return mail || crm ? NextResponse.json({ ok: true }) : NextResponse.json({ ok: false, error: "send_failed" }, { status: 502 });
   }
