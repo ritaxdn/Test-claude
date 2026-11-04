@@ -262,7 +262,7 @@ form textarea{min-height:64px;resize:vertical}
 
 <script>
 const GROUPS=[
-  {name:"Vêtements",cats:["Hauts","Vestes","Robes","Combinaisons","Bas"]},
+  {name:"Vêtements",cats:["Hauts","Vestes","Manteaux","Trenchs","Fourrures","Robes","Combinaisons","Jeans","Pantalons","Jupes","Leggings","Bas"]},
   {name:"Chaussures",cats:["Bottes","Talons","Mules & sandales","Plats","Sneakers"]},
   {name:"Sacs",cats:["Sacs"]},
   {name:"Accessoires",cats:["Accessoires"]},
@@ -270,10 +270,10 @@ const GROUPS=[
 const CATS=GROUPS.flatMap(g=>g.cats);
 const STYLES=["Sport","Soirée","Casual"];
 const SLOTS=[
-  {key:"jacket",label:"Veste",cats:["Vestes"],add:"Vestes"},
+  {key:"jacket",label:"Veste / Manteau",cats:["Vestes","Manteaux","Trenchs","Fourrures"],add:"Vestes"},
   {key:"top",label:"Haut",cats:["Hauts"],add:"Hauts"},
   {key:"dress",label:"Robe / Combi",cats:["Robes","Combinaisons"],add:"Robes"},
-  {key:"bottom",label:"Bas",cats:["Bas"],add:"Bas"},
+  {key:"bottom",label:"Bas",cats:["Jeans","Pantalons","Jupes","Leggings","Bas"],add:"Jeans"},
   {key:"shoes",label:"Chaussures",cats:GROUPS[1].cats,add:"Talons"},
   {key:"bag",label:"Sac",cats:["Sacs"],add:"Sacs"},
   {key:"acc",label:"Accessoires",cats:["Accessoires"],add:"Accessoires"},
@@ -322,7 +322,7 @@ function renderNav(){
   const a=(v,cls,label)=>`<a class="${cls}" data-v="${esc(v)}" aria-current="${view===v}" tabindex="0">${esc(label||v)}<sup>${count(v)}</sup></a>`;
   let h=a("Tout","top","Tout voir")+a("Favoris","top")+STYLES.map(t=>a(t,"top")).join("")+'<div class="gap"></div>';
   for(const g of GROUPS){
-    if(g.cats.length>1){h+=a(g.name,"top");h+=g.cats.filter(c=>count(c)>0).map(c=>a(c,"sub")).join("")}
+    if(g.cats.length>1){h+=a(g.name,"top");h+=g.cats.filter(c=>count(c)>0||(g.name==="Vêtements"&&c!=="Bas")).map(c=>a(c,"sub")).join("")}
     else h+=a(g.name,"top");
     h+='<div class="gap"></div>';
   }
