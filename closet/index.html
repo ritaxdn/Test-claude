@@ -398,7 +398,7 @@ function exclusive(k){if(k==="dress"){shown.top=false;shown.bottom=false}else if
 const ids=v=>Array.isArray(v)?v.filter(Boolean):(v?[v]:[]);
 const lookIds=o=>SLOTS.flatMap(s=>ids(o?.[s.key]));
 const lookKey=o=>SLOTS.map(s=>ids(o?.[s.key]).slice().sort().join("+")).join("|");
-const accType=i=>/boucle/i.test(i.name)?"oreilles":/collier|sautoir|ras-de-cou/i.test(i.name)?"cou":/bracelet|jonc|manchette|montre/i.test(i.name)?"poignet":/bague/i.test(i.name)?"poignet":/ceinture/i.test(i.name)?"taille":/bonnet|chapeau/i.test(i.name)?"tête":/lunettes/i.test(i.name)?"yeux":"autre";
+const accType=i=>/boucle/i.test(i.name)?"oreilles":/collier|sautoir|ras-de-cou/i.test(i.name)?"cou":/bracelet|jonc|manchette|montre/i.test(i.name)?"poignet":/bague/i.test(i.name)?"poignet":/ceinture/i.test(i.name)?"taille":/bonnet|chapeau|casquette/i.test(i.name)?"tête":/lunettes/i.test(i.name)?"yeux":"autre";
 sel.acc=ids(sel.acc);
 const saveUi=()=>{try{localStorage.setItem("dressing.v2",JSON.stringify({sel,shown,view}))}catch(e){}};
 
