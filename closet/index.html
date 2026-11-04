@@ -347,7 +347,7 @@ function renderLooks(){
 
 /* ---------- the look: swipeable rails ---------- */
 function renderToggles(){
-  $("#toggles").innerHTML=SLOTS.filter(s=>s.key!=="shoes").map(s=>`<button data-t="${s.key}" aria-pressed="${!!shown[s.key]}">${s.label}</button>`).join("");
+  $("#toggles").innerHTML=SLOTS.map(s=>`<button data-t="${s.key}" aria-pressed="${!!shown[s.key]}">${s.label}</button>`).join("");
 }
 function renderRails(){
   const r=$("#rails");
