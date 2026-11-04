@@ -382,6 +382,7 @@ const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
 let hideWorn=false;try{hideWorn=!!localStorage.getItem("dressing.hideWorn")}catch(_){}
+let showFiled=false;
 let editing=null,lookOpen=false;try{lookOpen=localStorage.getItem("dressing.look")==="1"}catch(_){}
 const isPhone=()=>matchMedia("(max-width:760px)").matches;
 function setLook(o){lookOpen=o;try{localStorage.setItem("dressing.look",o?"1":"")}catch(_){}
@@ -415,7 +416,7 @@ function count(v){
   if(v==="Tout")return items.length;
   if(v==="Favoris")return items.filter(i=>i.favorite).length;
   if(STYLES.includes(v))return items.filter(i=>(i.tags||[]).includes(v)).length;
-  if(v==="Mes tenues")return looks.length;
+  if(v==="Mes tenues"){const f=new Set(colls.flatMap(c=>c.looks||[]));return looks.filter(l=>!f.has(l.id)).length}
   if(v==="Collections")return colls.length;
   if(TOOLS.includes(v))return "";
   const g=GROUPS.find(g=>g.name===v);
@@ -486,11 +487,14 @@ function renderLooks(coll){
   const fmt=d=>new Date(d).toLocaleDateString("fr-FR",{day:"numeric",month:"short"});
   const nDone=looks.filter(l=>l.worn).length;
   let list=[...looks].sort((a,b)=>(a.worn?1:0)-(b.worn?1:0)||(b.createdAt||0)-(a.createdAt||0));
+  const filed=new Set(colls.flatMap(c=>c.looks||[]));
+  const nFiled=looks.filter(l=>filed.has(l.id)).length;
   if(coll)list=list.filter(l=>(coll.looks||[]).includes(l.id));
+  else if(!showFiled)list=list.filter(l=>!filed.has(l.id));            // rangées dans une collection = cachées ici
   if(hideWorn)list=list.filter(l=>!l.worn);
-  $("#matching").textContent=coll?`${coll.name} · ${(coll.looks||[]).filter(id=>looks.some(l=>l.id===id)).length} tenue(s)`:`Tenues : ${looks.length} · ${looks.length-nDone} pas encore portée${looks.length-nDone>1?"s":""}`;
-  const cpick=l=>colls.length&&!coll?`<select class="cpick" data-cpick="${l.id}" aria-label="Collections de ${esc(l.name)}"><option value="">+ Collection…</option>${colls.map(c=>`<option value="${c.id}">${(c.looks||[]).includes(l.id)?"✓ ":""}${esc(c.name)}</option>`).join("")}</select>`:"";
-  $("#grid").innerHTML=(coll?`<div class="collbar"><button class="btn ghost" data-cback>‹ Toutes les collections</button><span class="note">Ajoute des tenues depuis « Mes tenues » (menu « + Collection »).</span><span class="sp"></span><button class="btn ghost" data-cren="${coll.id}">Renommer</button><button class="btn danger" data-cdel="${coll.id}">Supprimer</button><div id="cconf"></div></div>`:"")+`<div class="lookbar"><button data-hidew aria-pressed="${hideWorn}">Masquer les tenues déjà portées</button></div>`+(hideWorn&&looks.length&&!list.length?'<p class="note lookbar">Tu as porté toutes tes tenues ! Désactive le filtre pour les revoir.</p>':"")+list.map(l=>{
+  $("#matching").textContent=coll?`${coll.name} · ${(coll.looks||[]).filter(id=>looks.some(l=>l.id===id)).length} tenue(s)`:`À ranger : ${looks.filter(l=>!filed.has(l.id)).length} tenue(s) · ${nFiled} rangée(s)`;
+  const cpick=l=>colls.length?`<select class="cpick" data-cpick="${l.id}" aria-label="Collections de ${esc(l.name)}"><option value="">${coll?"Déplacer / ajouter à…":"+ Collection…"}</option>${colls.map(c=>`<option value="${c.id}">${(c.looks||[]).includes(l.id)?"✓ ":""}${esc(c.name)}</option>`).join("")}</select>`:"";
+  $("#grid").innerHTML=(coll?`<div class="collbar"><button class="btn ghost" data-cback>‹ Toutes les collections</button><span class="note">Ajoute des tenues depuis « Mes tenues » (menu « + Collection »).</span><span class="sp"></span><button class="btn ghost" data-cren="${coll.id}">Renommer</button><button class="btn danger" data-cdel="${coll.id}">Supprimer</button><div id="cconf"></div></div>`:"")+`<div class="lookbar"><button data-hidew aria-pressed="${hideWorn}">Masquer les tenues déjà portées</button>${!coll&&nFiled?`<button data-showf aria-pressed="${showFiled}">${showFiled?"Cacher":"Afficher"} les ${nFiled} tenues rangées dans des collections</button>`:""}</div>`+(!coll&&!showFiled&&nFiled&&!list.length?'<p class="note lookbar">Toutes tes tenues sont rangées dans tes collections.</p>':"")+(hideWorn&&looks.length&&!list.length?'<p class="note lookbar">Tu as porté toutes tes tenues ! Désactive le filtre pour les revoir.</p>':"")+list.map(l=>{
     const ims=lookIds(l.items).map(byId).filter(Boolean);
     const done=!!l.worn;
     return `<div class="lk${done?" done":""}">${done?`<span class="worn">✓ Déjà portée${l.worn>1?` ${l.worn}×`:""} · ${fmt(l.lastWorn)}</span>`:'<span class="fresh">Pas encore portée</span>'}<div class="stack">${ims.map(i=>src(i)?`<img src="${esc(src(i))}" alt="${esc(i.name)}">`:`<small class="note">${esc(i.name)}</small>`).join("")}</div>
@@ -709,6 +713,7 @@ $("#grid").onclick=async e=>{
   if(e.target.closest("[data-vsave]")&&valise&&lcol){const b=e.target.closest("[data-vsave]");b.disabled=true;let n=0;
     try{for(const [i,o] of valise.outfits.entries()){if(looks.some(l=>lookKey(l.items)===lookKey(o)))continue;await lcol.add({items:o,name:`Valise ${valise.style.toLowerCase()} · Jour ${i+1}`,createdAt:Date.now()+i,worn:0});n++}
       toast(n?`${n} tenue${n>1?"s":""} ajoutée${n>1?"s":""} à « Mes tenues »`:"Ces tenues existent déjà")}catch(err){toast("Échec : "+(err.message||err.code))}b.disabled=false;return}
+  if(e.target.closest("[data-showf]")){showFiled=!showFiled;renderLooks();return}
   if(e.target.closest("[data-hidew]")){hideWorn=!hideWorn;try{localStorage.setItem("dressing.hideWorn",hideWorn?"1":"")}catch(_){}renderLooks();return}
   const dn=e.target.closest("[data-done]");
   if(dn){const l=looks.find(x=>x.id===dn.dataset.done);if(!l||!lcol)return;
@@ -732,7 +737,7 @@ $("#grid").addEventListener("submit",e=>{
 $("#grid").addEventListener("change",async e=>{
   const s=e.target.closest("[data-cpick]");if(!s||!s.value||!ccol)return;
   const c=colls.find(x=>x.id===s.value),lid=s.dataset.cpick,has=(c.looks||[]).includes(lid);s.value="";
-  try{await ccol.doc(c.id).update({looks:has?(c.looks||[]).filter(x=>x!==lid):[...(c.looks||[]),lid]});toast(has?`Retirée de « ${c.name} »`:`Ajoutée à « ${c.name} »`)}catch(err){toast("Échec : "+(err.message||err.code))}
+  try{await ccol.doc(c.id).update({looks:has?(c.looks||[]).filter(x=>x!==lid):[...(c.looks||[]),lid]});toast(has?`Retirée de « ${c.name} »`:`Rangée dans « ${c.name} »`)}catch(err){toast("Échec : "+(err.message||err.code))}
 });
 $("#grid").addEventListener("submit",async e=>{
   if(e.target.id==="cf"){e.preventDefault();if(!ccol)return;const n=new FormData(e.target).get("name").trim();if(!n)return;
