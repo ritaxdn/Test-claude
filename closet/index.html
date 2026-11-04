@@ -70,6 +70,7 @@ aside.nav{border-right:1px solid var(--line);padding:22px 16px 22px 0}
 .slide img{max-width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;pointer-events:none}
 .rail[data-slot="jacket"] .slide{height:180px}
 .rail[data-slot="top"] .slide{height:190px}
+.rail[data-slot="dress"] .slide{height:300px}
 .rail[data-slot="bottom"] .slide{height:200px}
 .rail[data-slot="shoes"] .slide{height:150px}
 .rail[data-slot="bag"] .slide{height:130px}
@@ -168,6 +169,7 @@ form textarea{min-height:64px;resize:vertical}
   .lookhead{justify-content:center}
   .rail[data-slot="jacket"] .slide{height:min(26vh,200px)}
   .rail[data-slot="top"] .slide{height:min(30vh,220px)}
+  .rail[data-slot="dress"] .slide{height:min(46vh,360px)}
   .rail[data-slot="bottom"] .slide{height:min(30vh,230px)}
   .rail[data-slot="shoes"] .slide{height:min(18vh,150px)}
   .arrow{display:none}
@@ -240,7 +242,8 @@ const GROUPS=[
 const CATS=GROUPS.flatMap(g=>g.cats);
 const SLOTS=[
   {key:"jacket",label:"Veste",cats:["Vestes"],add:"Vestes"},
-  {key:"top",label:"Haut",cats:["Hauts","Robes"],add:"Hauts"},
+  {key:"top",label:"Haut",cats:["Hauts"],add:"Hauts"},
+  {key:"dress",label:"Robe",cats:["Robes"],add:"Robes"},
   {key:"bottom",label:"Bas",cats:["Bas"],add:"Bas"},
   {key:"shoes",label:"Chaussures",cats:GROUPS[1].cats,add:"Talons"},
   {key:"bag",label:"Sac",cats:["Sacs"],add:"Sacs"},
@@ -254,10 +257,11 @@ const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&
 
 let items=[],looks=[],db=null,assets=null,col=null,lcol=null,openId=null,pendingFile=null,presetCat=null;
 let view="Tout";               // category, group name, "Tout", "Favoris", "Mes tenues"
-let sel={jacket:null,top:null,bottom:null,shoes:null,bag:null,acc:null};
-let shown={jacket:true,top:true,bottom:true,shoes:true,bag:true,acc:true};
+let sel={jacket:null,dress:null,top:null,bottom:null,shoes:null,bag:null,acc:null};
+let shown={jacket:true,dress:false,top:true,bottom:true,shoes:true,bag:true,acc:true};
 try{const s=JSON.parse(localStorage.getItem("dressing.v2")||"{}");Object.assign(sel,s.sel||{});Object.assign(shown,s.shown||{});if(s.view)view=s.view}catch(e){}
-if(shown.acc===undefined)shown.acc=true;if(shown.jacket===undefined)shown.jacket=true;
+if(shown.acc===undefined)shown.acc=true;if(shown.jacket===undefined)shown.jacket=true;if(shown.dress===undefined)shown.dress=false;
+function exclusive(k){if(k==="dress"){shown.top=false;shown.bottom=false}else if(k==="top"||k==="bottom"){shown.dress=false}}
 const saveUi=()=>{try{localStorage.setItem("dressing.v2",JSON.stringify({sel,shown,view}))}catch(e){}};
 
 function toast(t){const el=$("#toast");el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,2200)}
@@ -344,7 +348,7 @@ function renderRails(){
     const list=inSlot(s.key);
     if(list.length&&!list.some(i=>i.id===sel[s.key]))sel[s.key]=list[0].id;
     const slides=list.length?list.map(i=>`<button class="slide" data-id="${i.id}" aria-label="${esc(i.name)}">${src(i)?`<img src="${esc(src(i))}" alt="">`:`<span class="ph">${esc(i.name)}<br>Photo à ajouter</span>`}</button>`).join("")
-      :`<div class="slide on"><button class="ph" data-addcat="${s.add}">+ Ajoute ${s.key==="bag"?"un sac":s.key==="acc"?"un accessoire":s.key==="jacket"?"une veste":s.key==="top"?"un haut":s.key==="bottom"?"un bas":"des chaussures"}</button></div>`;
+      :`<div class="slide on"><button class="ph" data-addcat="${s.add}">+ Ajoute ${s.key==="bag"?"un sac":s.key==="acc"?"un accessoire":s.key==="jacket"?"une veste":s.key==="dress"?"une robe":s.key==="top"?"un haut":s.key==="bottom"?"un bas":"des chaussures"}</button></div>`;
     return `<div class="rail" data-slot="${s.key}"><span class="rlabel">${s.label}</span>
       <div class="track" tabindex="-1">${slides}</div>
       ${list.length>1?'<button class="arrow l" data-dir="-1" aria-label="Précédent">‹</button><button class="arrow r" data-dir="1" aria-label="Suivant">›</button>':""}</div>`}).join("");
@@ -375,7 +379,7 @@ function tryOn(id){
   const it=byId(id),k=it&&slotOf(it.category);
   if(!k){openSheet(id);return}
   sel[k]=id;
-  if(!shown[k]){shown[k]=true;renderToggles();renderRails()} else {centerOn(k,id);markOn();renderLines()}
+  if(!shown[k]){shown[k]=true;exclusive(k);renderToggles();renderRails()} else {centerOn(k,id);markOn();renderLines()}
   saveUi();renderGrid();
   if(matchMedia("(max-width:760px)").matches)setTab("look");
 }
@@ -464,7 +468,7 @@ $("#rails").onclick=e=>{
   const s=e.target.closest(".slide[data-id]");if(!s)return;
   const k=s.closest(".rail").dataset.slot;
   if(s.dataset.id===sel[k])openSheet(s.dataset.id);else{sel[k]=s.dataset.id;centerOn(k,s.dataset.id);markOn();renderLines();renderGrid();saveUi()}};
-$("#toggles").onclick=e=>{const b=e.target.closest("[data-t]");if(!b)return;shown[b.dataset.t]=!shown[b.dataset.t];saveUi();renderToggles();renderRails();renderGrid()};
+$("#toggles").onclick=e=>{const b=e.target.closest("[data-t]");if(!b)return;shown[b.dataset.t]=!shown[b.dataset.t];if(shown[b.dataset.t])exclusive(b.dataset.t);saveUi();renderToggles();renderRails();renderGrid()};
 $("#shuffle").onclick=()=>{SLOTS.forEach(s=>{const l=inSlot(s.key);if(shown[s.key]&&l.length){sel[s.key]=l[Math.floor(Math.random()*l.length)].id;centerOn(s.key,sel[s.key])}});markOn();renderLines();renderGrid();saveUi()};
 $("#saveLook").onclick=async()=>{
   if(!lcol){toast("Connecte-toi pour enregistrer des tenues");return}
