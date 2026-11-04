@@ -260,3 +260,25 @@ Environnement : PostgreSQL 16 local, application lancée **avec le compte `acade
 | Conservation | Le fichier est **supprimé 30 jours après la décision**, ce qui laisse le temps d'une contestation. On conserve seulement le type de pièce, le numéro, le vérificateur, la date et la décision. Une suppression automatique, tracée, est prévue. |
 | Demande de suppression | À la fermeture du compte, ou sur demande : suppression du fichier et des données de vérification non obligatoires, tracée. |
 | Cadre légal | Données personnelles de professionnels de santé : **à faire valider** au regard de la loi 09-08 et des formalités auprès de la CNDP. Une mention d'information est affichée au moment du dépôt. |
+
+## 14. Protection contre l'enregistrement d'écran (4 nov. 2026)
+
+### 14.1 Le DRM (comme Netflix) : écran noir à l'enregistrement
+- C'est le **DRM Mux** (Widevine, PlayReady, FairPlay). Une vidéo protégée apparaît comme **un rectangle noir** dans une capture ou un enregistrement d'écran, sur les appareils qui le gèrent : **iPhone, iPad** (avec blocage des sorties HDMI), **Mac sous Safari**, **Android récent** dans la plupart des cas. Sur **Chrome et Edge pour ordinateur**, la protection n'est pas garantie (déchiffrement souvent logiciel) ; Mux peut exiger un niveau matériel sur demande, au prix d'une lecture refusée sur certains ordinateurs. **Filmer l'écran avec un autre appareil n'est jamais bloqué.**
+- **Le code de LIFT est prêt** : un jeton DRM est émis avec le jeton de lecture (`MUX_DRM_ENABLED=true`), et le lecteur le transmet.
+- **À faire par Cellulift** : demander le DRM dans Mux (*Settings → Digital Rights Management*) et un certificat FairPlay à Apple (compte Apple Developer, compte propriétaire ; l'accord prend plusieurs jours). Coût annoncé par Mux : **100 $/mois + 0,003 $ par licence**.
+- **Ensuite, par moi** : vidéos créées avec la politique `drm` en qualité « plus » ou « premium », activation de `MUX_DRM_ENABLED`, puis essais réels (capture et enregistrement) sur iPhone, Mac, Android et Windows, avec un rapport par appareil.
+
+### 14.2 Plein écran : le filigrane ne disparaît plus
+- **Défaut corrigé** : le plein écran natif agrandissait la vidéo seule, et le filigrane nominatif sortait de l'image.
+- **Maintenant** :
+  - le bouton « Plein écran » de LIFT agrandit tout le cadre, vidéo et filigrane compris ;
+  - le plein écran natif est masqué (`controlsList="nofullscreen"`, icône Chrome mobile masquée, bouton Mux masqué, raccourcis Mux désactivés) ;
+  - un plein écran natif déclenché malgré tout (double-clic, raccourci) est **quitté aussitôt**, avec un message ;
+  - sur iPhone, le plein écran natif est repris en plein cadre LIFT.
+- Les boutons de diffusion (Cast, AirPlay) et l'incrustation (PiP) sont masqués.
+- Le filigrane reste toujours entièrement dans le cadre : il passe sur deux lignes et sa zone de déplacement est limitée (vérifié sur téléphone et sur ordinateur).
+- Test S12 (`e2e-securite.mjs`) : plein écran LIFT avec filigrane, plein écran natif de la vidéo seule quitté.
+
+### 14.3 Tests
+MVP 32/32, Formations 16/16, Sécurité 13/13 (dont S12 plein écran et S13 jetons Mux).

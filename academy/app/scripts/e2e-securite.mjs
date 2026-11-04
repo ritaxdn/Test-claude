@@ -4,6 +4,7 @@
 // Optionnel : MUX_BASE_URL = une 2e instance lancée avec VIDEO_PROVIDER=mux et une clé de test.
 import { createHash, randomBytes, randomUUID } from "node:crypto";
 import postgres from "postgres";
+import { chromium } from "playwright";
 
 const BASE = process.env.BASE_URL ?? "http://localhost:3100";
 const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
@@ -111,6 +112,32 @@ try {
   const adminRoute = await req(A, "/admin/medecins/" + B.id);
   expect(adminRoute.status === 307 && !String(adminRoute.headers.get("location")).includes("/admin"), `fiche admin refusée (${adminRoute.status})`);
   ok("Un professionnel n'ouvre pas une fiche de l'administration (autre utilisateur)");
+
+  // ── Plein écran : le filigrane nominatif reste toujours dans l'image ──
+  {
+    const browser = await chromium.launch();
+    const ctx = await browser.newContext();
+    await ctx.addCookies([{ name: "academy_session", value: A.cookie.split("=")[1], url: BASE }]);
+    const page = await ctx.newPage();
+    await page.goto(`${BASE}/parcours/${slug}/${R.l1}`);
+    await page.waitForSelector("video");
+    await page.click(".fs-btn");
+    await page.waitForFunction(() => document.fullscreenElement?.classList.contains("player"), null, { timeout: 5000 });
+    const inFull = await page.evaluate(() => { const f = document.fullscreenElement; const wm = f?.querySelector(".wm"); return !!wm && wm.textContent.length > 3 && getComputedStyle(wm).display !== "none"; });
+    expect(inFull, "plein écran LIFT : le cadre entier est en plein écran, filigrane compris");
+    await page.click(".fs-btn");
+    await page.waitForFunction(() => !document.fullscreenElement, null, { timeout: 5000 });
+    // Plein écran natif de la vidéo seule (comme un double-clic) : doit être quitté aussitôt.
+    await page.evaluate(() => { const b = document.createElement("button"); b.id = "native-fs"; b.textContent = "x"; b.onclick = () => document.querySelector("video").requestFullscreen(); document.body.append(b); });
+    await page.click("#native-fs");
+    await page.waitForTimeout(1200);
+    const native = await page.evaluate(() => ({ el: document.fullscreenElement?.tagName ?? null, warn: document.body.textContent.includes("bouton « Plein écran » du lecteur LIFT") }));
+    expect(native.el !== "VIDEO" && native.warn, `plein écran natif de la vidéo seule quitté (${JSON.stringify(native)})`);
+    const attrs = await page.evaluate(() => document.querySelector("video").getAttribute("controlslist"));
+    expect(attrs.includes("nofullscreen") && attrs.includes("nodownload"), "bouton plein écran natif et téléchargement masqués");
+    await browser.close();
+    ok("Plein écran : le cadre LIFT garde le filigrane ; un plein écran natif de la vidéo seule est quitté aussitôt");
+  }
 
   // ── Jetons Mux : durée calée sur la leçon (si une instance Mux de test est fournie) ──
   if (process.env.MUX_BASE_URL) {

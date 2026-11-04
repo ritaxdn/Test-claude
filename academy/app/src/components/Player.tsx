@@ -14,6 +14,8 @@ export function Player({ lessonId, playback, duration, startAt, maxReached, comp
   const [warn, setWarn] = useState("");
   const [wm, setWm] = useState({ left: 8, top: 78 });
   const [muxReady, setMuxReady] = useState(playback.kind !== "mux");
+  const box = useRef<HTMLDivElement | null>(null);
+  const [full, setFull] = useState(false); // plein écran LIFT (API Fullscreen ou repli plein cadre)
 
   // Lecteur Mux (production) : composant web chargé à la demande.
   useEffect(() => {
@@ -24,8 +26,32 @@ export function Player({ lessonId, playback, duration, startAt, maxReached, comp
     document.head.appendChild(s);
   }, [playback.kind]);
 
+  // Plein écran : toujours sur le cadre LIFT (vidéo + filigrane), jamais sur la vidéo seule, sinon le
+  // filigrane nominatif disparaîtrait de l'image. Un plein écran natif (double-clic, raccourci, bouton
+  // d'un lecteur) est quitté aussitôt. iPhone (pas d'API Fullscreen hors vidéo) : repli plein cadre.
   useEffect(() => {
-    const t = setInterval(() => setWm({ left: 5 + Math.random() * 50, top: 8 + Math.random() * 60 }), 6000);
+    const onChange = () => {
+      const el = document.fullscreenElement;
+      if (el && el !== box.current) { document.exitFullscreen().catch(() => {}); setWarn("Utilisez le bouton « Plein écran » du lecteur LIFT."); }
+      setFull(el === box.current);
+    };
+    const v = ref.current as (HTMLVideoElement & { webkitExitFullscreen?: () => void }) | null;
+    const onIosFull = () => { v?.webkitExitFullscreen?.(); setFull(true); };
+    document.addEventListener("fullscreenchange", onChange);
+    v?.addEventListener("webkitbeginfullscreen", onIosFull);
+    return () => { document.removeEventListener("fullscreenchange", onChange); v?.removeEventListener("webkitbeginfullscreen", onIosFull); };
+  }, [muxReady]);
+  const toggleFull = async () => {
+    const el = box.current;
+    if (!el) return;
+    if (document.fullscreenElement) { await document.exitFullscreen().catch(() => {}); return; }
+    if (full) { setFull(false); return; }
+    if (el.requestFullscreen) await el.requestFullscreen().catch(() => setFull(true));
+    else setFull(true);
+  };
+
+  useEffect(() => {
+    const t = setInterval(() => setWm({ left: 3 + Math.random() * 20, top: 8 + Math.random() * 60 }), 6000);
     return () => clearInterval(t);
   }, []);
 
@@ -71,16 +97,21 @@ export function Player({ lessonId, playback, duration, startAt, maxReached, comp
 
   return (
     <div className="stack" style={{ gap: 12 }}>
-      <div className="player" onContextMenu={(e) => e.preventDefault()}>
+      <div ref={box} className={`player${full ? " is-full" : ""}`} onContextMenu={(e) => e.preventDefault()}>
         {playback.kind === "local" && (
-          <video ref={ref} src={playback.src} controls playsInline preload="metadata" controlsList="nodownload noplaybackrate" disablePictureInPicture aria-label="Vidéo de la leçon" />
+          <video ref={ref} src={playback.src} controls playsInline preload="metadata" controlsList="nodownload noplaybackrate nofullscreen" disablePictureInPicture aria-label="Vidéo de la leçon" />
         )}
         {playback.kind === "mux" && muxReady && (
           // @ts-expect-error composant web Mux
-          <mux-player ref={ref} playback-id={playback.playbackId} playback-token={playback.token} drm-token={playback.drmToken} stream-type="on-demand" accent-color="#7B61FF" />
+          <mux-player ref={ref} nohotkeys playback-id={playback.playbackId} playback-token={playback.token} drm-token={playback.drmToken} stream-type="on-demand" accent-color="#7B61FF" />
         )}
         {playback.kind === "missing" && <div className="empty"><p>La vidéo de cette leçon n'est pas encore disponible.</p></div>}
         {playback.kind !== "missing" && <span className="wm" style={{ left: `${wm.left}%`, top: `${wm.top}%` }} aria-hidden="true">{watermark}</span>}
+        {playback.kind !== "missing" && (
+          <button type="button" className="fs-btn" onClick={toggleFull} aria-pressed={full} aria-label={full ? "Quitter le plein écran" : "Plein écran"}>
+            {full ? "Quitter le plein écran" : "Plein écran"}
+          </button>
+        )}
       </div>
       {warn && <p className="alert info" role="status">{warn}</p>}
       <div className="row between wrap">

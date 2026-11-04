@@ -151,6 +151,16 @@ table.t a:hover { text-decoration: underline; }
 .player { position: relative; aspect-ratio: 16 / 9; max-width: 100%; border-radius: 22px; overflow: hidden; background: #0f1114; box-shadow: 0 40px 80px -40px rgba(29, 27, 38, 0.6); }
 .player video, .player mux-player { width: 100%; height: 100%; display: block; background: #0f1114; }
 .player .wm { position: absolute; font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.06em; color: rgba(255, 255, 255, 0.45); pointer-events: none; transition: left 2s ease, top 2s ease; white-space: nowrap; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5); }
+/* Plein écran LIFT : le cadre entier (vidéo + filigrane) ; repli plein cadre sur iPhone. */
+.player:fullscreen, .player.is-full { aspect-ratio: auto; width: 100vw; height: 100vh; max-width: none; border-radius: 0; }
+.player.is-full { position: fixed; inset: 0; z-index: 1000; }
+.player:fullscreen video, .player:fullscreen mux-player, .player.is-full video, .player.is-full mux-player { object-fit: contain; }
+.player:fullscreen .wm, .player.is-full .wm { font-size: 16px; }
+.player mux-player { --fullscreen-button: none; --pip-button: none; --cast-button: none; --airplay-button: none; }
+.player video::-webkit-media-controls-fullscreen-button { display: none; }
+.player .wm { white-space: normal; max-width: 72%; line-height: 1.35; }
+.player .fs-btn { position: absolute; top: 10px; right: 10px; z-index: 2; font: 500 12px var(--f-sans, sans-serif); color: #fff; background: rgba(15, 17, 20, 0.55); border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 999px; padding: 6px 12px; cursor: pointer; backdrop-filter: blur(6px); }
+.player .fs-btn:focus-visible { outline: 2px solid #7B61FF; outline-offset: 2px; }
 .player .empty { position: absolute; inset: 0; display: grid; place-items: center; color: #ecebe7; text-align: center; padding: 24px; }
 .prose { font-size: 15.5px; line-height: 1.7; color: #33313f; max-width: 72ch; }
 .prose p + p { margin-top: 12px; }
