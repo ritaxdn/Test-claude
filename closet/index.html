@@ -381,11 +381,13 @@ function renderRails(){
   r.querySelectorAll(".rail").forEach(rail=>{
     const k=rail.dataset.slot,tr=rail.querySelector(".track");
     centerOn(k,sel[k],false);
-    let t;tr.addEventListener("scroll",()=>{clearTimeout(t);t=setTimeout(()=>pickCentered(k),90)},{passive:true});
+    let t;tr.addEventListener("scroll",()=>{clearTimeout(t);t=setTimeout(()=>{if(Date.now()-(progScroll[k]||0)>900)pickCentered(k)},120)},{passive:true});
   });
   markOn();renderLines();
 }
+const progScroll={};
 function centerOn(k,id,smooth=true){
+  progScroll[k]=Date.now();
   const tr=document.querySelector(`.rail[data-slot="${k}"] .track`);if(!tr||!id)return;
   const el=tr.querySelector(`.slide[data-id="${id}"]`);if(!el)return;
   tr.scrollTo({left:el.offsetLeft-(tr.clientWidth-el.offsetWidth)/2,behavior:smooth?"smooth":"auto"});
@@ -508,13 +510,50 @@ $("#rails").onclick=e=>{
   const k=s.closest(".rail").dataset.slot;
   if(s.dataset.id===sel[k])openSheet(s.dataset.id);else{sel[k]=s.dataset.id;centerOn(k,s.dataset.id);markOn();renderLines();renderGrid();saveUi()}};
 $("#toggles").onclick=e=>{const b=e.target.closest("[data-t]");if(!b)return;shown[b.dataset.t]=!shown[b.dataset.t];if(shown[b.dataset.t])exclusive(b.dataset.t);saveUi();renderToggles();renderRails();renderGrid()};
-$("#shuffle").onclick=()=>{SLOTS.forEach(s=>{const l=inSlot(s.key);if(shown[s.key]&&l.length){sel[s.key]=l[Math.floor(Math.random()*l.length)].id;centerOn(s.key,sel[s.key])}});markOn();renderLines();renderGrid();saveUi()};
+const NEUTRAL=new Set(["Noir","Blanc","Beige","Marron","Gris","Doré","Argenté",""]);
+function harmony(combo,style){
+  let sc=0;const vals=combo.filter(Boolean);
+  const loud=new Set(vals.map(i=>i.color||"").filter(c=>!NEUTRAL.has(c)));
+  if(loud.size>1)sc-=6*(loud.size-1);                       // une seule couleur vive
+  const metals=new Set(vals.filter(i=>["Sacs","Accessoires"].includes(i.category)||GROUPS[1].cats.includes(i.category)).map(i=>i.color).filter(c=>c==="Doré"||c==="Argenté"));
+  if(metals.size>1)sc-=4;                                   // pas d'or et d'argent mélangés
+  const seas=new Set(vals.map(i=>i.season).filter(x=>x&&x!=="Toute l'année"));
+  if(seas.size>1)sc-=8;                                     // pas été + hiver
+  vals.forEach(i=>{if((i.tags||[]).includes(style))sc+=3;else if((i.tags||[]).length)sc-=5});
+  const prints=vals.filter(i=>/léopard|python|camouflage|imprimé|arc-en-ciel|tapisserie|Multicolore/i.test(i.name+" "+i.color)).length;
+  if(prints>1)sc-=5*(prints-1);                             // un seul imprimé fort
+  const done=new Set(looks.map(l=>SLOTS.map(x=>l.items?.[x.key]||"").join("|")));
+  if(done.has(SLOTS.map(x=>combo[SLOTS.indexOf(x)]?.id||"").join("|")))sc-=20; // pas une tenue déjà enregistrée
+  return sc+Math.random()*2;
+}
+$("#shuffle").onclick=()=>{
+  const act=SLOTS.filter(s=>shown[s.key]&&inSlot(s.key).length);
+  if(!act.length)return;
+  const styles=STYLES.filter(t=>act.every(s=>inSlot(s.key).some(i=>(i.tags||[]).includes(t))));
+  const style=(styles.length?styles:STYLES)[Math.floor(Math.random()*(styles.length||STYLES.length))];
+  let best=null,bs=-1e9;
+  for(let n=0;n<400;n++){
+    const combo=SLOTS.map(s=>{if(!act.includes(s))return null;const l=inSlot(s.key);const pool=l.filter(i=>(i.tags||[]).includes(style));const src=pool.length?pool:l;return src[Math.floor(Math.random()*src.length)]});
+    const sc=harmony(combo,style);if(sc>bs){bs=sc;best=combo}
+  }
+  SLOTS.forEach((s,i)=>{if(best[i]){sel[s.key]=best[i].id;centerOn(s.key,best[i].id)}});
+  markOn();renderLines();renderGrid();saveUi();toast("Tenue "+style.toLowerCase()+" proposée");
+};
 $("#saveLook").onclick=async()=>{
   if(!lcol){toast("Connecte-toi pour enregistrer des tenues");return}
+  const b=$("#saveLook");if(b.disabled)return;
   const it={};SLOTS.forEach(s=>{if(shown[s.key]&&sel[s.key]&&byId(sel[s.key]))it[s.key]=sel[s.key]});
   if(!Object.keys(it).length){toast("Choisis au moins une pièce");return}
-  try{await lcol.add({items:it,name:"Tenue du "+new Date().toLocaleDateString("fr-FR",{day:"numeric",month:"long"}),createdAt:Date.now()});toast("Tenue enregistrée")}
-  catch(err){toast("Échec : "+(err.message||err.code))}};
+  const key=o=>SLOTS.map(x=>o[x.key]||"").join("|");
+  const dup=looks.find(l=>key(l.items||{})===key(it));
+  if(dup){toast(`Cette tenue existe déjà : « ${dup.name} »`);return}
+  b.disabled=true;b.textContent="Enregistrement…";
+  try{
+    const n=looks.length+1;
+    await lcol.add({items:it,name:`Tenue n°${n} · `+new Date().toLocaleDateString("fr-FR",{day:"numeric",month:"long"}),createdAt:Date.now(),worn:0});
+    toast("Tenue enregistrée dans « Mes tenues »");b.textContent="Enregistrée ✓";
+  }catch(err){toast("Échec de l'enregistrement : "+(err.message||err.code||"réessaie"));b.textContent="Enregistrer la tenue"}
+  setTimeout(()=>{b.disabled=false;b.textContent="Enregistrer la tenue"},1500)};
 $("#addBtn").onclick=()=>addPiece(CATS.includes(view)?view:null);
 $("#addTab").onclick=()=>addPiece(CATS.includes(view)?view:null);
 document.querySelectorAll(".tabbar [data-tab]").forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
