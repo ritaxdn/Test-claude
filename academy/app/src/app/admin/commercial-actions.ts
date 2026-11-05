@@ -62,7 +62,8 @@ export async function approveRequest(form: FormData) {
       if (existing?.qualification_status === "verified" && (existing.profession !== r.profession || (existing.professional_id ?? "").toLowerCase() !== (r.professional_id ?? "").toLowerCase()))
         throw new Error("Un compte existant porte une qualification vérifiée différente : acceptation bloquée. Vérifiez l'identité du demandeur.");
       if (existing) {
-        const [busy] = await tx`select 1 from orders where user_id = ${existing.id} and program_id = ${r.program_id} and status in ('pending', 'paid') limit 1`;
+        const [busy] = await tx`select 1 from orders o where o.user_id = ${existing.id} and o.program_id = ${r.program_id}
+          and (o.status = 'pending' or (o.status = 'paid' and exists (select 1 from access_grants g where g.order_id = o.id and g.revoked_at is null and (g.expires_at is null or g.expires_at > now())))) limit 1`;
         if (busy) throw new Error("Ce professionnel a déjà une commande en cours ou payée pour cette formation.");
       }
       const userId = existing?.id ?? (await tx<{ id: string }[]>`insert into users (email, full_name) values (${r.email}, ${r.full_name}) returning id`)[0].id;
@@ -75,7 +76,7 @@ export async function approveRequest(form: FormData) {
         values (${userId}, ${r.program_id}, ${currency}, ${amount}, 'virement', ${admin.id}, ${`Demande ${r.id}`}) returning id, payment_reference`;
       const done = await tx`update enrollment_requests set status = 'approved', reviewed_by = ${admin.id}, reviewed_at = now(), user_id = ${userId}, order_id = ${o.id} where id = ${r.id} and status = 'new'`;
       if (done.count !== 1) throw new Error("Cette demande a déjà été traitée.");
-      await tx`update qualification_documents set purge_after = now() + interval '30 days' where request_id = ${r.id} and purged_at is null`;
+      await tx`update qualification_documents set purge_after = least(purge_after, now() + interval '30 days') where request_id = ${r.id} and purged_at is null`;
       return o;
     });
   } catch (e) {
@@ -99,8 +100,9 @@ export async function rejectRequest(form: FormData) {
   if (reason.length < 3) back(page, { erreur: "Indiquez le motif du refus (il est envoyé au demandeur)." });
   try {
     await withActor(admin.id, async (tx) => {
-      await tx`update enrollment_requests set status = 'rejected', reviewed_by = ${admin.id}, reviewed_at = now(), reject_reason = ${reason} where id = ${r.id} and status = 'new'`;
-      await tx`update qualification_documents set purge_after = now() + interval '30 days' where request_id = ${r.id} and purged_at is null`;
+      const done = await tx`update enrollment_requests set status = 'rejected', reviewed_by = ${admin.id}, reviewed_at = now(), reject_reason = ${reason} where id = ${r.id} and status = 'new'`;
+      if (done.count !== 1) throw new Error("Cette demande a déjà été traitée.");
+      await tx`update qualification_documents set purge_after = least(purge_after, now() + interval '30 days') where request_id = ${r.id} and purged_at is null`;
     });
   } catch (e) {
     back(page, { erreur: dbMessage(e) });
@@ -121,7 +123,8 @@ export async function cancelRequest(form: FormData) {
   if (reason.length < 3) back(`/admin/demandes/${r.id}`, { erreur: "Indiquez le motif de l'annulation." });
   try {
     await withActor(admin.id, async (tx) => {
-      await tx`update enrollment_requests set status = 'cancelled', reviewed_by = ${admin.id}, reviewed_at = now(), reject_reason = ${reason} where id = ${r.id} and status = 'new'`;
+      const done = await tx`update enrollment_requests set status = 'cancelled', reviewed_by = ${admin.id}, reviewed_at = now(), reject_reason = ${reason} where id = ${r.id} and status = 'new'`;
+      if (done.count !== 1) throw new Error("Cette demande a déjà été traitée.");
       await tx`update qualification_documents set purge_after = least(purge_after, now() + interval '30 days') where request_id = ${r.id} and purged_at is null`;
     });
   } catch (e) {
@@ -158,6 +161,9 @@ export async function markOrderPaid(form: FormData) {
       const upd = await tx`update orders set status = 'paid', paid_checked_by = ${admin.id}, paid_checked_at = now(), reference = ${bankRef}, amount_received = ${received.toFixed(2)}
                             where id = ${o.id} and status = 'pending'`;
       if (upd.count !== 1) throw new Error("Cette commande n'est plus en attente de paiement (déjà validée ou annulée).");
+      // Renouvellement : un accès précédent arrivé à expiration est clos (tracé) avant d'ouvrir le nouveau.
+      await tx`update access_grants set revoked_at = now(), revoked_by = ${admin.id}, revoke_reason = 'Accès expiré, remplacé par un renouvellement'
+               where user_id = ${o.user_id} and program_id = ${o.program_id} and revoked_at is null and expires_at is not null and expires_at <= now()`;
       await tx`insert into access_grants (user_id, program_id, source, order_id, granted_by, expires_at)
                values (${o.user_id}, ${o.program_id}, 'purchase', ${o.id}, ${admin.id},
                        case when ${o.access_months}::int is null then null else now() + make_interval(months => ${o.access_months}::int) end)`;

@@ -60,7 +60,11 @@ export async function removeMachine(form: FormData) {
 export async function newLink(form: FormData) {
   const admin = await requireAdmin();
   const userId = s(form, "user_id"), kind = s(form, "kind") === "reset" ? "reset" : "invite";
-  const [u] = await sql<{ email: string; full_name: string }[]>`select email, full_name from users where id = ${userId}`;
+  // Uniquement pour un professionnel : jamais de lien vers le compte d'un autre administrateur.
+  const [u] = await sql<{ email: string; full_name: string; password_hash: string | null }[]>`select email, full_name, password_hash from users where id = ${userId} and role = 'doctor'`;
+  if (!u) back("/admin", { erreur: "Compte introuvable." });
+  // Un compte déjà activé reçoit un lien de réinitialisation, jamais une nouvelle invitation.
+  if (kind === "invite" && u.password_hash) back(`/admin/medecins/${userId}`, { erreur: "Ce compte est déjà activé : utilisez le lien de réinitialisation." });
   const link = await issueToken(userId, kind, admin.id);
   let sent = false;
   if (kind === "invite") {
@@ -76,6 +80,8 @@ export async function setUserStatus(form: FormData) {
   const admin = await requireAdmin();
   const userId = s(form, "user_id"), status = s(form, "status");
   if (userId === admin.id) back(`/admin/medecins/${userId}`, { erreur: "Vous ne pouvez pas désactiver votre propre compte." });
+  const [target] = await sql`select 1 from users where id = ${userId} and role = 'doctor'`;
+  if (!target) back("/admin", { erreur: "Compte introuvable." }); // jamais sur un compte administrateur
   if (status === "disabled") {
     await sql.begin(async (tx) => {
       await tx`update users set status = 'disabled' where id = ${userId}`;

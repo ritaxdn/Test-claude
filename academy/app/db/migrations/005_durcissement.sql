@@ -47,11 +47,12 @@ end $$;
 -- ── 2. Paiement : un même virement ne valide jamais deux commandes ──
 do $$
 begin
-  if exists (select lower(reference) from orders where status in ('paid', 'refunded') and reference is not null group by 1 having count(*) > 1) then
+  if exists (select regexp_replace(upper(reference), '[^A-Z0-9]', '', 'g') from orders where status in ('paid', 'refunded') and reference is not null group by 1 having count(*) > 1) then
     raise exception 'Migration arrêtée : une même référence de virement valide plusieurs commandes. Vérifier ces commandes avant de migrer.';
   end if;
 end $$;
-create unique index if not exists orders_bank_reference_once on orders (lower(reference)) where status in ('paid', 'refunded') and reference is not null;
+-- Normalisée : « VIR 123 », « vir-123 » et « VIR123 » sont le même virement.
+create unique index if not exists orders_bank_reference_once on orders (regexp_replace(upper(reference), '[^A-Z0-9]', '', 'g')) where status in ('paid', 'refunded') and reference is not null;
 alter table orders add column if not exists amount_received numeric(12,2);
 do $$
 begin

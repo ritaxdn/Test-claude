@@ -2,7 +2,7 @@
 
 > 5 nov. 2026 · branche `claude/lift-formations-acces` · **rien n'est déployé, la production n'est pas modifiée.**
 > Méthode : relecture du code (application et base), vérification de chaque soupçon en conditions réelles (application lancée avec le compte `academy_app`, navigateur réel), puis revue indépendante du code par un second relecteur (§11).
-> Les défauts corrigés le sont sur la branche, avec un test chacun. Résultats : **MVP 32/32, Formations 16/16, Sécurité 13/13, Parcours commercial 22/22**.
+> Les défauts corrigés le sont sur la branche, avec un test chacun. Résultats : **MVP 32/32, Formations 16/16, Sécurité 13/13, Parcours commercial 25/25**.
 
 ## 1. Synthèse
 
@@ -10,6 +10,10 @@
 |---|---|---|
 | **Critique** | Les liens de création ou de réinitialisation du mot de passe passaient dans l'adresse des pages admin (`?lien=…`). Ils finissaient donc dans l'historique du navigateur et dans les journaux du serveur (Vercel). Quiconque y a accès pouvait **prendre le contrôle d'un compte invité**. | **Corrigé** |
 | **Critique (juridique)** | Les traitements de données personnelles n'ont pas de base juridique validée : déclaration ou autorisation CNDP, transferts hors du Maroc, CGV, politique de confidentialité. | **À valider par un juriste avant ouverture** (§10) |
+| **Critique** (revue indépendante) | Un administrateur pouvait générer un lien de réinitialisation pour **le compte d'un autre administrateur** (l'action serveur ne vérifiait pas le rôle de la cible), le lire, prendre ce compte et s'accorder ainsi le droit de vérification. Il pouvait aussi désactiver un autre administrateur. Une invitation pouvait par ailleurs écraser le mot de passe d'un compte déjà activé. | **Corrigé** |
+| Important (revue indépendante) | Un refus ou une annulation « en retard » (écran ouvert avant l'acceptation) envoyait un e-mail de refus contradictoire et repoussait la suppression du justificatif. | Corrigé |
+| Important (revue indépendante) | Un tiers pouvait bloquer pendant 30 jours l'inscription d'un prospect en déposant une demande à son adresse. | Corrigé |
+| Important (revue indépendante) | Le plafond global peut être saturé par une attaque répartie et bloquer toutes les inscriptions. | **Anti-robot (type Turnstile) à ajouter avant ouverture** ; plafond porté à 300/h en attendant |
 | Important | Une demande publique pouvait **remplacer en silence** la profession et le n° d'Ordre d'un compte existant déjà vérifié. | Corrigé |
 | Important | Le paiement était validé sur simple saisie d'une référence : **ni contrôle du montant, ni unicité du virement**. | Corrigé |
 | Important | Aucune preuve que le demandeur possède l'adresse e-mail saisie : fausses demandes, et envoi d'e-mails vers des adresses de tiers. | Corrigé (confirmation obligatoire) |
@@ -20,6 +24,10 @@
 | Important | Un admin à la fois vérificateur peut accepter une demande **et** valider le paiement seul (pas de séparation des tâches). | **À décider** (§5) |
 | Important | Lecture DRM et lecture signée Mux non encore actives en production ; compartiments de stockage à confirmer privés. | Configuration avant ouverture (§7) |
 | Mineur | Double clic sur une action admin : message d'erreur trompeur (données intactes). | Corrigé |
+| Mineur (revue indépendante) | Référence de virement : « VIR 123 » et « vir-123 » étaient considérées comme deux virements différents. | Corrigé (normalisée) |
+| Mineur (revue indépendante) | Jetons d'invitation et de réinitialisation : deux envois simultanés pouvaient passer tous les deux. | Corrigé (consommation atomique) |
+| Mineur (revue indépendante) | Renouvellement impossible après l'expiration d'un accès (refus propre, sans incohérence). | Corrigé (l'accès expiré est clos et tracé au renouvellement) |
+| Mineur (revue indépendante) | Limites par adresse et doublons non atomiques : des envois strictement simultanés peuvent les dépasser de quelques unités. | Accepté (l'anti-robot le couvre) |
 | Mineur | Échecs d'envoi d'e-mail non journalisés. | Corrigé |
 | Mineur | Pas de politique de sécurité du contenu (CSP) globale ; empreinte d'IP salée par une valeur par défaut si `SESSION_SECRET` manque. | Recommandé (§9) |
 
@@ -148,7 +156,13 @@
 | J9 | **Vérification des qualifications** | N° d'Ordre et justificatif, vus par les vérificateurs | Légitimité de la collecte, accès restreint, éventuelle vérification auprès de l'Ordre |
 
 ## 11. Revue indépendante
-Une seconde relecture du code, sans connaissance de mes conclusions, a été menée sur le même périmètre. Ses constats et leur traitement sont dans l'annexe ci-dessous.
+Une seconde relecture du code, faite sans connaître mes conclusions, a couvert le même périmètre. Elle a trouvé **un défaut critique que j'avais manqué**, la prise de compte d'un administrateur par un autre, ainsi que trois défauts importants ou mineurs. Tous sont **confirmés dans le code, corrigés et couverts par un test** :
+- **C15** : liens et désactivation impossibles sur un autre administrateur, pas de nouvelle invitation sur un compte activé ;
+- **C16** : refus tardif sans effet ;
+- **C14** : référence de virement écrite autrement ;
+- **C23** : renouvellement.
+
+Elle confirme sains, de bout en bout : le contrôle d'accès, la séparation Formations / Mes technologies, le paiement vérifié, les justificatifs, les liens de mot de passe, l'absence de redirection ouverte et les routes vidéo, documents et progression.
 
 ## 12. CRM : synchronisation proposée (rien n'est envoyé aujourd'hui)
 Voir `docs/10-sync-crm-prospects.md`.
@@ -165,6 +179,13 @@ Voir `docs/10-sync-crm-prospects.md`.
 - [x] limites de fréquence fiables ;
 - [x] doubles clics ;
 - [x] journalisation des échecs d'envoi.
+
+- [x] comptes administrateurs protégés, refus tardifs, jetons atomiques, renouvellement (revue indépendante).
+
+**Encore à faire, côté code :**
+- [ ] test anti-robot sur le formulaire d'inscription (type Cloudflare Turnstile) : il faut une clé du service ;
+- [ ] CSP globale ;
+- [ ] expiration des demandes non confirmées.
 
 **À faire par Cellulift :**
 - [ ] validation juridique J1 à J9 ;

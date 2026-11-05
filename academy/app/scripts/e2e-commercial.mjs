@@ -218,10 +218,42 @@ try {
     const [o3] = await as(V.id, (tx) => tx`insert into orders (user_id, program_id, currency, amount, method, created_by) values (${o1.uid}, ${U.id}, 'MAD', 500, 'virement', ${V.id}) returning id`);
     await vp.goto(`${BASE}/admin/medecins/${o1.uid}`);
     const f = vp.locator(`form:has(input[name=order_id][value="${o3.id}"]):has(input[name=bank_reference])`);
-    await f.locator("input[name=bank_reference]").fill(`VIR-BMCE-${run}`); await f.locator("input[name=amount_received]").fill("500"); await f.locator("button").click();
+    await f.locator("input[name=bank_reference]").fill(`vir bmce ${run}`); await f.locator("input[name=amount_received]").fill("500"); await f.locator("button").click();
     await vp.waitForSelector(".alert.err");
     expect((await vp.textContent(".alert.err")).includes("déjà servi") && (await sql`select status from orders where id = ${o3.id}`)[0].status === "pending", "référence de virement réutilisée : refus");
-    ok("Paiement : une référence de virement déjà utilisée ne valide pas une seconde commande");
+    ok("Paiement : une référence de virement déjà utilisée (même écrite autrement : casse, espaces) ne valide pas une seconde commande");
+
+    // Revue indépendante : un admin ne peut pas cibler le compte d'un autre admin, ni ré-inviter un compte activé.
+    await vp.goto(`${BASE}/admin/medecins/${o1.uid}`);
+    await vp.evaluate((target) => { const f = [...document.querySelectorAll("form")].find((x) => x.querySelector("input[name=kind]")); f.querySelector("input[name=user_id]").value = target; f.querySelector("input[name=kind]").value = "reset"; f.requestSubmit(); }, N.id);
+    await vp.waitForURL(/erreur=/);
+    const [tk] = await sql`select count(*)::int as n from auth_tokens where user_id = ${N.id}`;
+    expect(tk.n === 0, "aucun lien émis pour le compte d'un autre admin");
+    await vp.goto(`${BASE}/admin/medecins/${o1.uid}`);
+    await vp.evaluate((target) => { const f = [...document.querySelectorAll("form")].find((x) => x.querySelector("input[name=status]")); f.querySelector("input[name=user_id]").value = target; f.querySelector("input[name=status]").value = "disabled"; f.requestSubmit(); }, N.id);
+    await vp.waitForURL(/erreur=/);
+    expect((await sql`select status from users where id = ${N.id}`)[0].status === "active", "un admin ne désactive pas un autre admin par l'action des médecins");
+    await vp.goto(`${BASE}/admin/medecins/${o1.uid}`);
+    await vp.evaluate(() => { const f = [...document.querySelectorAll("form")].find((x) => x.querySelector("input[name=kind]")); f.querySelector("input[name=kind]").value = "invite"; f.requestSubmit(); });
+    await vp.waitForURL(/erreur=/);
+    expect((new URL(vp.url()).searchParams.get("erreur") ?? "").includes("déjà activé"), "pas de nouvelle invitation sur un compte activé");
+    ok("Comptes : impossible de générer un lien ou de désactiver le compte d'un autre admin ; un compte activé ne reçoit pas de nouvelle invitation");
+  }
+
+  // Revue indépendante : refus « en retard » (écran ouvert avant l'acceptation) sans effet ni e-mail.
+  {
+    const pfr = await pageFor(null);
+    const er = `tardif-${run}@x.test`;
+    await fill(pfr, { name: "Dr Tardif", email: er, file: proof }); await pfr.waitForTimeout(3100); await pfr.click("button[type=submit]"); await pfr.waitForURL(/merci/);
+    await confirmEmail(er);
+    const [rq] = await sql`select r.id, d.id as doc from enrollment_requests r join qualification_documents d on d.request_id = r.id where r.email = ${er}`;
+    const tabB = await pageFor(V); await tabB.goto(`${BASE}/admin/demandes/${rq.id}`);
+    const tabA = await pageFor(V); await tabA.goto(`${BASE}/admin/demandes/${rq.id}`); await tabA.click("button:has-text('Qualification vérifiée')"); await tabA.waitForSelector(".alert.ok");
+    const [p1] = await sql`select purge_after from qualification_documents where id = ${rq.doc}`;
+    await tabB.fill("#reason", "Refus tardif"); await tabB.click("button:has-text('Refuser')"); await tabB.waitForSelector(".alert.err");
+    const [after] = await sql`select r.status, d.purge_after from enrollment_requests r join qualification_documents d on d.request_id = r.id where r.id = ${rq.id}`;
+    expect((await tabB.textContent(".alert.err")).includes("déjà été traitée") && after.status === "approved" && +after.purge_after === +p1.purge_after, "refus tardif sans effet");
+    ok("Refus après acceptation (deux écrans) : refusé, statut et échéance du justificatif inchangés, aucun e-mail de refus");
   }
 
   // ── Identité d'un compte existant jamais écrasée par une demande ──
@@ -292,6 +324,18 @@ try {
   expect(ce.includes("Accès terminé") && ce.includes(`Lasers et phototypes E2E ${run}`) && ce.includes("Mes technologies"), "accès expiré affiché");
   expect((await cp.goto(`${BASE}/parcours/${slug}`)).status() === 404, "accès expiré : formation fermée");
   ok("Client existant : « Mes technologies » intact (« Votre HANOVER 5G ») ; formation expirée : « Accès terminé », contenu fermé");
+  // Renouvellement après expiration : nouvelle commande payée → ancien accès clos (tracé), nouvel accès ouvert.
+  {
+    const [o5] = await as(V.id, (tx) => tx`insert into orders (user_id, program_id, currency, amount, method, created_by) values (${client.id}, ${T.id}, 'MAD', 2600, 'virement', ${V.id}) returning id`);
+    await vp.goto(`${BASE}/admin/medecins/${client.id}`);
+    const f = vp.locator(`form:has(input[name=order_id][value="${o5.id}"]):has(input[name=bank_reference])`);
+    await f.locator("input[name=bank_reference]").fill(`RENOUV-${run}`); await f.locator("input[name=amount_received]").fill("2600"); await f.locator("button").click();
+    await vp.waitForSelector(".alert.ok");
+    const gs = await sql`select revoked_at is not null as revoked, revoke_reason, source from access_grants where user_id = ${client.id} and program_id = ${T.id} order by granted_at`;
+    expect(gs.length === 2 && gs[0].revoked && gs[0].revoke_reason.includes("renouvellement") && !gs[1].revoked && gs[1].source === "purchase", "renouvellement");
+    expect((await cp.goto(`${BASE}/parcours/${slug}`)).status() === 200, "accès renouvelé ouvert");
+    ok("Renouvellement après expiration : l'ancien accès est clos (tracé), le nouvel accès acheté s'ouvre");
+  }
 
   // ── Fiche commerciale et vérificateurs (écrans admin) ──
   await vp.goto(`${BASE}/admin/parcours/${T.id}`);

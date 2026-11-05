@@ -58,9 +58,10 @@ export async function requestEnrollment(_prev: FormState, form: FormData): Promi
   // IP : en-têtes posés par l'hébergeur (non falsifiables) d'abord ; x-forwarded-for en dernier recours.
   const ip = h.get("x-vercel-forwarded-for") ?? h.get("x-real-ip") ?? ((h.get("x-forwarded-for") ?? "").split(",")[0].trim() || "local");
   const ipHash = createHash("sha256").update(`${process.env.SESSION_SECRET ?? "lift"}:${ip}`).digest("hex");
-  // Plafond global (attaque répartie sur de nombreuses adresses) : 100 demandes par heure.
+  // Plafond global (attaque répartie sur de nombreuses adresses) : 300 demandes par heure. Avant l'ouverture, un
+  // test anti-robot (type Turnstile) doit compléter ce plafond, qu'une attaque répartie peut sinon saturer.
   const [{ total }] = await sql<{ total: number }[]>`select count(*)::int as total from enrollment_requests where created_at > now() - interval '1 hour'`;
-  if (total >= 100) return fail("Le service reçoit beaucoup de demandes. Merci de réessayer dans une heure.");
+  if (total >= 300) return fail("Le service reçoit beaucoup de demandes. Merci de réessayer dans une heure.");
   const [{ byIp }] = await sql<{ byIp: number }[]>`select count(*)::int as "byIp" from enrollment_requests where ip_hash = ${ipHash} and created_at > now() - interval '1 hour'`;
   const [{ byMail }] = await sql<{ byMail: number }[]>`select count(*)::int as "byMail" from enrollment_requests where email = ${values.email} and program_id = ${p.id} and created_at > now() - interval '1 day'`;
   if (byIp >= 5 || byMail >= 3) return fail("Trop de demandes en peu de temps. Merci de réessayer plus tard.");
@@ -68,7 +69,10 @@ export async function requestEnrollment(_prev: FormState, form: FormData): Promi
   const [dup] = await sql<{ x: number }[]>`
     select 1 as x from enrollment_requests r left join orders o on o.id = r.order_id
      where r.email = ${values.email} and r.program_id = ${p.id} and r.created_at > now() - interval '30 days'
-       and (r.status = 'new' or (r.status = 'approved' and o.status in ('pending', 'paid')))
+       -- une demande non confirmée dont le lien a expiré ne bloque personne (sinon un tiers pourrait
+       -- empêcher un prospect de s'inscrire en déposant une demande à son adresse)
+       and ((r.status = 'new' and (r.email_confirmed_at is not null or r.confirm_expires_at > now()))
+            or (r.status = 'approved' and o.status = 'pending'))
     union all
     select 1 from access_grants g join users u on u.id = g.user_id
      where u.email = ${values.email} and g.program_id = ${p.id} and g.revoked_at is null and (g.expires_at is null or g.expires_at > now())

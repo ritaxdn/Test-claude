@@ -1,7 +1,7 @@
 "use server";
 import { redirect } from "next/navigation";
 import { sql } from "@/lib/db";
-import { createSession, destroySession, findToken, hashPassword, issueToken, passwordProblem, recordAttempt, tooManyAttempts, verifyPassword } from "@/lib/auth";
+import { createSession, destroySession, findToken, hashPassword, issueToken, passwordProblem, recordAttempt, sha256, tooManyAttempts, verifyPassword } from "@/lib/auth";
 import { audit } from "@/lib/db";
 
 const str = (f: FormData, k: string) => String(f.get(k) ?? "").trim();
@@ -35,10 +35,17 @@ export async function acceptInvitation(form: FormData) {
   if (password !== String(form.get("password2") ?? "")) redirect(`/invitation/${encodeURIComponent(token)}?erreur=${encodeURIComponent("Les deux mots de passe ne sont pas identiques.")}`);
   if (form.get("cgu") !== "on") redirect(`/invitation/${encodeURIComponent(token)}?erreur=${encodeURIComponent("Merci d'accepter les conditions d'utilisation.")}`);
   const hash = await hashPassword(password);
-  await sql.begin(async (tx) => {
+  // Consommation atomique du jeton (deux envois simultanés : un seul passe) ; une invitation n'écrase
+  // jamais le mot de passe d'un compte déjà activé.
+  const ok = await sql.begin(async (tx) => {
+    const used = await tx`update auth_tokens set used_at = now() where token_hash = ${sha256(token)} and kind = 'invite' and used_at is null and expires_at > now() returning user_id`;
+    if (used.count !== 1) return false;
     await tx`update auth_tokens set used_at = now() where user_id = ${t.user_id} and kind = 'invite' and used_at is null`;
-    await tx`update users set password_hash = ${hash}, status = 'active', activated_at = coalesce(activated_at, now()) where id = ${t.user_id}`;
-  });
+    const upd = await tx`update users set password_hash = ${hash}, status = 'active', activated_at = coalesce(activated_at, now()) where id = ${t.user_id} and password_hash is null and status <> 'disabled'`;
+    if (upd.count !== 1) throw new Error("compte déjà activé");
+    return true;
+  }).catch(() => false);
+  if (!ok) redirect(`/invitation/${encodeURIComponent(token)}`);
   await audit(t.user_id, "user.activate", t.email);
   await createSession(t.user_id);
   redirect("/tableau-de-bord?bienvenue=1");
@@ -65,11 +72,15 @@ export async function resetPassword(form: FormData) {
   const problem = passwordProblem(password) ?? (password !== String(form.get("password2") ?? "") ? "Les deux mots de passe ne sont pas identiques." : null);
   if (problem) redirect(`/reinitialiser/${encodeURIComponent(token)}?erreur=${encodeURIComponent(problem)}`);
   const hash = await hashPassword(password);
-  await sql.begin(async (tx) => {
+  const ok = await sql.begin(async (tx) => {
+    const used = await tx`update auth_tokens set used_at = now() where token_hash = ${sha256(token)} and kind = 'reset' and used_at is null and expires_at > now() returning user_id`;
+    if (used.count !== 1) return false;
     await tx`update auth_tokens set used_at = now() where user_id = ${t.user_id} and kind = 'reset' and used_at is null`;
     await tx`update users set password_hash = ${hash} where id = ${t.user_id}`;
     await tx`delete from sessions where user_id = ${t.user_id}`;
+    return true;
   });
+  if (!ok) redirect(`/reinitialiser/${encodeURIComponent(token)}`);
   await audit(t.user_id, "user.password_reset", t.email);
   await createSession(t.user_id);
   redirect("/");
