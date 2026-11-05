@@ -1,10 +1,19 @@
 export const academyPageContent = {
   fr: {
+    faqTitle: "Questions fréquentes sur les formations",
+    faq: [
+      { q: "Où ont lieu les formations ?", a: "À Casablanca : dans les locaux de Cellulift (Quartier des Hôpitaux) et, pour les masterclasses, dans des lieux partenaires comme le Kenzi Tower Hotel." },
+      { q: "À qui s'adressent les formations Cellulift Academy ?", a: "Aux médecins esthétiques, dermatologues, gynécologues et praticiens, qu'ils soient déjà équipés ou en projet d'équipement." },
+      { q: "Un certificat est-il délivré ?", a: "Oui. Un certificat valide les compétences acquises à l'issue de la formation." },
+      { q: "La formation est-elle incluse à l'achat d'une machine ?", a: "Oui. Chaque technologie est livrée avec la formation initiale Cellulift Academy et ses protocoles de traitement." },
+      { q: "Comment s'inscrire ?", a: "Choisissez une session dans le calendrier ci-dessus et cliquez sur « S'inscrire », ou appelez l'Academy au +212 665 614049." },
+    ],
     hero: {
       eyebrow: "Cellulift Academy",
-      title: "La technologie s'acquiert. La maîtrise se construit.",
+      // H1 descriptif (recherche « formation médecine esthétique casablanca »), la signature passe dans le sous-titre.
+      title: "Formations en médecine esthétique à Casablanca",
       subtitle:
-        "Cellulift Academy accompagne médecins et praticiens de l'installation à la maîtrise clinique : formation initiale, protocoles, workshops et perfectionnement.",
+        "La technologie s'acquiert, la maîtrise se construit. Cellulift Academy accompagne médecins et praticiens de l'installation à la maîtrise clinique : formation initiale, protocoles, masterclasses, workshops et perfectionnement.",
     },
     whyTraining: {
       eyebrow: "Le parcours Academy",
@@ -69,11 +78,19 @@ export const academyPageContent = {
     },
   },
   en: {
+    faqTitle: "Training: frequently asked questions",
+    faq: [
+      { q: "Where does the training take place?", a: "In Casablanca: at Cellulift's premises (Quartier des Hôpitaux) and, for masterclasses, at partner venues such as the Kenzi Tower Hotel." },
+      { q: "Who is Cellulift Academy training for?", a: "Aesthetic physicians, dermatologists, gynaecologists and practitioners, whether already equipped or planning to equip." },
+      { q: "Is a certificate issued?", a: "Yes. A certificate confirms the skills acquired at the end of the training." },
+      { q: "Is training included when buying a device?", a: "Yes. Every technology comes with initial Cellulift Academy training and its treatment protocols." },
+      { q: "How do I register?", a: "Pick a session in the calendar above and click \u201cRegister\u201d, or call the Academy on +212 665 614049." },
+    ],
     hero: {
       eyebrow: "Cellulift Academy",
-      title: "Technology can be acquired. Mastery is built.",
+      title: "Aesthetic medicine training in Casablanca",
       subtitle:
-        "Cellulift Academy supports physicians and practitioners from installation to clinical mastery: initial training, protocols, workshops and advanced courses.",
+        "Technology can be acquired, mastery is built. Cellulift Academy supports physicians and practitioners from installation to clinical mastery: initial training, protocols, masterclasses, workshops and advanced courses.",
     },
     whyTraining: {
       eyebrow: "The Academy journey",

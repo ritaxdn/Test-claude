@@ -15,6 +15,7 @@ import { SignalLine } from "@/components/system/SignalPath";
 import photoSizes from "@/content/photo-sizes.json";
 import { PhotoCarousel } from "@/components/technologies/PhotoCarousel";
 import { loc, richSheets } from "@/content/technology-rich";
+import { indicationKeys, indicationPath, indications } from "@/content/indications";
 import { company } from "@/content/company";
 import { SITE_URL } from "@/lib/site";
 import { landingForCategory, landingPath } from "@/content/category-landings";
@@ -447,6 +448,22 @@ export default async function TechnologyDetailPage({
               }}
             />
           </>
+        )}
+
+        {/* Pages par indication qui citent cette machine (maillage interne) */}
+        {indicationKeys.some((k) => indications[k].slugs.includes(tech.slug)) && (
+          <Reveal className="mt-16">
+            <p className="data-label text-deep-soft">{lang === "fr" ? "Indications" : "Indications"}</p>
+            <div className="mt-5 flex flex-wrap gap-2">
+              {indicationKeys
+                .filter((k) => indications[k].slugs.includes(tech.slug))
+                .map((k) => (
+                  <Link key={k} href={`/${lang}${indicationPath(k)}`} className="glass-soft rounded-full px-4 py-2 font-sans text-sm text-deep transition-colors hover:bg-white">
+                    {indications[k].name[lang]}
+                  </Link>
+                ))}
+            </div>
+          </Reveal>
         )}
 
         {family.length > 0 && (

@@ -9,6 +9,7 @@ import { Footer } from "@/components/layout/Footer";
 import { MobileTabBar } from "@/components/layout/MobileTabBar";
 import { CookieConsent, CONSENT_PRELOAD } from "@/components/layout/CookieConsent";
 import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
+import { ClickTracking } from "@/components/layout/ClickTracking";
 import { AttributionCapture } from "@/components/layout/AttributionCapture";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -84,6 +85,7 @@ export default async function LangLayout({
         <main id="contenu" className="flex-1">{children}</main>
         <Footer locale={lang} dict={dict} />
         <WhatsAppButton locale={lang} />
+        <ClickTracking />
         <MobileTabBar locale={lang} dict={dict} />
         <CookieConsent locale={lang} />
         {/* Mesure d'audience Vercel : anonyme et sans cookie */}

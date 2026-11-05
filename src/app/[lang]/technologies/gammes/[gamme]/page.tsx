@@ -17,6 +17,7 @@ import { TechnologyCard } from "@/components/technologies/TechnologyCard";
 import { IncludedServices } from "@/components/technologies/IncludedServices";
 import { GuideBanner } from "@/components/guide/GuideBanner";
 import { FinalCta } from "@/components/sections/FinalCta";
+import { Faq } from "@/components/system/Faq";
 
 // Seules les gammes validées ont une page : toute autre adresse /technologies/gammes/… renvoie une 404.
 export const dynamicParams = false;
@@ -112,6 +113,8 @@ export default async function RangePage({ params }: { params: Promise<{ lang: st
           <GuideBanner locale={lang} className="mt-2" />
         </Container>
       </section>
+
+      {l.faq && <Faq locale={lang} title={lang === "fr" ? "Questions fréquentes" : "Frequently asked questions"} items={l.faq.map(([q, a]) => ({ q: q[lang], a: a[lang] }))} />}
 
       <FinalCta
         locale={lang}

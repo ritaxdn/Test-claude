@@ -3,11 +3,12 @@ import { locales } from "@/lib/i18n/config";
 import { technologies } from "@/content/technologies";
 import { landingKeys, landingPath } from "@/content/category-landings";
 import { agencyKeys, agencyPath } from "@/content/agencies";
+import { indicationKeys, indicationPath } from "@/content/indications";
 import { SITE_URL } from "@/lib/site";
 
-const staticPaths = ["", "/about", "/technologies", "/lgl-expert", "/guide", "/academy", "/support", "/contact", "/privacy", "/terms"];
+const staticPaths = ["", "/about", "/technologies", "/lgl-expert", "/indications", "/guide", "/academy", "/support", "/contact", "/privacy", "/terms"];
 // Pages de gamme (une par gamme du catalogue)
-const rangePaths = [...landingKeys.map(landingPath), ...agencyKeys.map(agencyPath)];  // + pages agences
+const rangePaths = [...landingKeys.map(landingPath), ...agencyKeys.map(agencyPath), ...indicationKeys.map(indicationPath)];  // + pages agences
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const entries: MetadataRoute.Sitemap = [];
