@@ -123,6 +123,16 @@ aside.nav{border-right:1px solid var(--line);padding:22px 16px 22px 0}
 .lookbar{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .lookbar button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-size:12px}
 .lookbar button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.lk{position:relative}
+.lk.pick{outline:2px solid var(--ink);outline-offset:-1px}
+.selmode .lk{cursor:pointer}
+.lkchk{position:absolute;top:8px;right:8px;z-index:2;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--ink);background:#fff;font-size:13px;font-weight:700;display:grid;place-items:center;padding:0}
+.lk.pick .lkchk{background:var(--ink);color:#fff}
+.selbar{grid-column:1/-1;position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:var(--ink);color:#fff;border-radius:10px;padding:10px 12px;font-size:13px}
+.selbar select{border-radius:999px;border:0;padding:7px 10px;font-size:12px;min-width:0;flex:1 1 180px;background:#fff;color:#111}
+.selmode .lk .row,.selmode .lk .cpick{display:none}
+.selbar button{border:1px solid rgba(255,255,255,.5);background:transparent;color:#fff;border-radius:999px;padding:6px 12px;font-size:12px}
+.selbar select:disabled{opacity:.5}
 .lk .row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:auto}
 .lk .row .wearbtn{font-size:12px}
 .lk .row button{font-size:12px;padding:8px 10px}
@@ -382,7 +392,7 @@ const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
 let hideWorn=false;try{hideWorn=!!localStorage.getItem("dressing.hideWorn")}catch(_){}
-let showFiled=false;
+let showFiled=false,selMode=false,lastList=[];const picked=new Set();
 let editing=null,lookOpen=false;try{lookOpen=localStorage.getItem("dressing.look")==="1"}catch(_){}
 const isPhone=()=>matchMedia("(max-width:760px)").matches;
 function setLook(o){lookOpen=o;try{localStorage.setItem("dressing.look",o?"1":"")}catch(_){}
@@ -493,11 +503,14 @@ function renderLooks(coll){
   else if(!showFiled)list=list.filter(l=>!filed.has(l.id));            // rangées dans une collection = cachées ici
   if(hideWorn)list=list.filter(l=>!l.worn);
   $("#matching").textContent=coll?`${coll.name} · ${(coll.looks||[]).filter(id=>looks.some(l=>l.id===id)).length} tenue(s)`:`À ranger : ${looks.filter(l=>!filed.has(l.id)).length} tenue(s) · ${nFiled} rangée(s)`;
-  const cpick=l=>colls.length?`<select class="cpick" data-cpick="${l.id}" aria-label="Collections de ${esc(l.name)}"><option value="">${coll?"Déplacer / ajouter à…":"+ Collection…"}</option>${colls.map(c=>`<option value="${c.id}">${(c.looks||[]).includes(l.id)?"✓ ":""}${esc(c.name)}</option>`).join("")}</select>`:"";
-  $("#grid").innerHTML=(coll?`<div class="collbar"><button class="btn ghost" data-cback>‹ Toutes les collections</button><span class="note">Ajoute des tenues depuis « Mes tenues » (menu « + Collection »).</span><span class="sp"></span><button class="btn ghost" data-cren="${coll.id}">Renommer</button><button class="btn danger" data-cdel="${coll.id}">Supprimer</button><div id="cconf"></div></div>`:"")+`<div class="lookbar"><button data-hidew aria-pressed="${hideWorn}">Masquer les tenues déjà portées</button>${!coll&&nFiled?`<button data-showf aria-pressed="${showFiled}">${showFiled?"Cacher":"Afficher"} les ${nFiled} tenues rangées dans des collections</button>`:""}</div>`+(!coll&&!showFiled&&nFiled&&!list.length?'<p class="note lookbar">Toutes tes tenues sont rangées dans tes collections.</p>':"")+(hideWorn&&looks.length&&!list.length?'<p class="note lookbar">Tu as porté toutes tes tenues ! Désactive le filtre pour les revoir.</p>':"")+list.map(l=>{
+  const cpick=l=>colls.length?`<select class="cpick" data-cpick="${l.id}" aria-label="Collections de ${esc(l.name)}"><option value="">${coll?"Déplacer vers…":"+ Collection…"}</option>${colls.filter(c=>!coll||c.id!==coll.id).map(c=>`<option value="${c.id}">${(c.looks||[]).includes(l.id)?"✓ ":""}${esc(c.name)}</option>`).join("")}</select>`:"";
+  lastList=list.map(l=>l.id);[...picked].forEach(id=>{if(!looks.some(l=>l.id===id))picked.delete(id)});
+  $("#grid").classList.toggle("selmode",selMode);
+  const selbar=selMode?`<div class="selbar"><b>${picked.size} tenue${picked.size>1?"s":""} sélectionnée${picked.size>1?"s":""}</b><select data-movesel aria-label="Déplacer la sélection vers une collection" ${picked.size?"":"disabled"}><option value="">Déplacer vers…</option>${colls.filter(c=>!coll||c.id!==coll.id).map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join("")}${coll?'<option value="__out">Sortir de la collection</option>':""}</select><button data-selall>Tout sélectionner</button><button data-selm>Annuler</button></div>`:"";
+  $("#grid").innerHTML=(coll?`<div class="collbar"><button class="btn ghost" data-cback>‹ Toutes les collections</button><span class="note">Ajoute des tenues depuis « Mes tenues » (menu « + Collection »).</span><span class="sp"></span><button class="btn ghost" data-cren="${coll.id}">Renommer</button><button class="btn danger" data-cdel="${coll.id}">Supprimer</button><div id="cconf"></div></div>`:"")+`<div class="lookbar">${colls.length&&list.length?`<button data-selm aria-pressed="${selMode}">${selMode?"Terminer la sélection":"Sélectionner des tenues"}</button>`:""}<button data-hidew aria-pressed="${hideWorn}">Masquer les tenues déjà portées</button>${!coll&&nFiled?`<button data-showf aria-pressed="${showFiled}">${showFiled?"Cacher":"Afficher"} les ${nFiled} tenues rangées dans des collections</button>`:""}</div>`+selbar+(!coll&&!showFiled&&nFiled&&!list.length?'<p class="note lookbar">Toutes tes tenues sont rangées dans tes collections.</p>':"")+(hideWorn&&looks.length&&!list.length?'<p class="note lookbar">Tu as porté toutes tes tenues ! Désactive le filtre pour les revoir.</p>':"")+list.map(l=>{
     const ims=lookIds(l.items).map(byId).filter(Boolean);
     const done=!!l.worn;
-    return `<div class="lk${done?" done":""}">${done?`<span class="worn">✓ Déjà portée${l.worn>1?` ${l.worn}×`:""} · ${fmt(l.lastWorn)}</span>`:'<span class="fresh">Pas encore portée</span>'}<div class="stack">${ims.map(i=>src(i)?`<img src="${esc(src(i))}" alt="${esc(i.name)}">`:`<small class="note">${esc(i.name)}</small>`).join("")}</div>
+    return `<div class="lk${done?" done":""}${picked.has(l.id)?" pick":""}" data-lk="${l.id}">${selMode?`<button class="lkchk" data-pk="${l.id}" aria-pressed="${picked.has(l.id)}" aria-label="Sélectionner ${esc(l.name)}">${picked.has(l.id)?"✓":""}</button>`:""}${done?`<span class="worn">✓ Déjà portée${l.worn>1?` ${l.worn}×`:""} · ${fmt(l.lastWorn)}</span>`:'<span class="fresh">Pas encore portée</span>'}<div class="stack">${ims.map(i=>src(i)?`<img src="${esc(src(i))}" alt="${esc(i.name)}">`:`<small class="note">${esc(i.name)}</small>`).join("")}</div>
       <b>${esc(l.name)}</b>${editing===l.id?'<span class="fresh">En cours de modification</span>':""}
       <div class="row"><button class="btn wearbtn${done?" undo":""}" data-done="${l.id}">${done?"Annuler « portée »":"Je l'ai portée aujourd'hui"}</button><button class="btn" data-wear="${l.id}">Essayer</button>${coll?`<button class="btn ghost" data-cout="${l.id}">Sortir de la collection</button>`:`<button class="btn ghost" data-dl="${l.id}">Retirer</button>`}</div>${cpick(l)}</div>`}).join("");
   if(coll){e.hidden=!!list.length;if(!list.length)e.innerHTML='<h3>Collection vide</h3><p>Va dans « Mes tenues » et choisis cette collection dans le menu « + Collection » d\'une tenue.</p>';return}
@@ -694,7 +707,7 @@ function setTab(t){
 }
 
 /* ---------- events ---------- */
-function goView(v){if(v!=="Collections")openColl=null;view=v;saveUi();renderAll();
+function goView(v){if(v!=="Collections")openColl=null;selMode=false;picked.clear();view=v;saveUi();renderAll();
   if(matchMedia("(max-width:760px)").matches&&document.body.dataset.tab==="look")setTab(v==="Mes tenues"?"looks":"closet")}
 $("#nav").onclick=e=>{const a=e.target.closest("[data-v]");if(a)goView(a.dataset.v)};
 $("#nav").onkeydown=e=>{if(e.key==="Enter"){const a=e.target.closest("[data-v]");if(a)goView(a.dataset.v)}};
@@ -702,8 +715,8 @@ $("#chips").onclick=e=>{const b=e.target.closest("[data-v]");if(b)goView(b.datas
 $("#q").oninput=renderGrid;
 $("#grid").onclick=async e=>{
   const info=e.target.closest("[data-info]");if(info){openSheet(info.dataset.info);return}
-  const co=e.target.closest("[data-copen]");if(co){openColl=co.dataset.copen;renderGrid();window.scrollTo(0,0);return}
-  if(e.target.closest("[data-cback]")){openColl=null;renderGrid();return}
+  const co=e.target.closest("[data-copen]");if(co){openColl=co.dataset.copen;selMode=false;picked.clear();renderGrid();window.scrollTo(0,0);return}
+  if(e.target.closest("[data-cback]")){openColl=null;selMode=false;picked.clear();renderGrid();return}
   const cr=e.target.closest("[data-cren]");if(cr){const c=colls.find(x=>x.id===cr.dataset.cren);
     $("#cconf").innerHTML=`<form class="cform" id="crf"><input id="c-rename" name="name" value="${esc(c.name)}" required maxlength="60"><button class="btn" type="submit">Renommer</button></form>`;$("#c-rename").focus();return}
   const cd=e.target.closest("[data-cdel]");if(cd){$("#cconf").innerHTML=`<div class="confirm">Supprimer cette collection ? Les tenues restent dans « Mes tenues ». <button class="btn danger" data-cyes="${cd.dataset.cdel}">Oui, supprimer</button></div>`;return}
@@ -713,6 +726,10 @@ $("#grid").onclick=async e=>{
   if(e.target.closest("[data-vsave]")&&valise&&lcol){const b=e.target.closest("[data-vsave]");b.disabled=true;let n=0;
     try{for(const [i,o] of valise.outfits.entries()){if(looks.some(l=>lookKey(l.items)===lookKey(o)))continue;await lcol.add({items:o,name:`Valise ${valise.style.toLowerCase()} · Jour ${i+1}`,createdAt:Date.now()+i,worn:0});n++}
       toast(n?`${n} tenue${n>1?"s":""} ajoutée${n>1?"s":""} à « Mes tenues »`:"Ces tenues existent déjà")}catch(err){toast("Échec : "+(err.message||err.code))}b.disabled=false;return}
+  if(e.target.closest("[data-selm]")){selMode=!selMode;picked.clear();renderGrid();return}
+  if(e.target.closest("[data-selall]")){const all=lastList.every(id=>picked.has(id));lastList.forEach(id=>all?picked.delete(id):picked.add(id));renderGrid();return}
+  if(selMode&&!e.target.closest("select")){const pk=e.target.closest("[data-pk]")||e.target.closest("[data-lk]");
+    if(pk){const id=pk.dataset.pk||pk.dataset.lk;picked.has(id)?picked.delete(id):picked.add(id);renderGrid();return}}
   if(e.target.closest("[data-showf]")){showFiled=!showFiled;renderLooks();return}
   if(e.target.closest("[data-hidew]")){hideWorn=!hideWorn;try{localStorage.setItem("dressing.hideWorn",hideWorn?"1":"")}catch(_){}renderLooks();return}
   const dn=e.target.closest("[data-done]");
@@ -735,9 +752,26 @@ $("#grid").addEventListener("submit",e=>{
   const f=Object.fromEntries(new FormData(e.target));valise=buildValise(Math.max(1,Math.min(14,+f.days||5)),f.style,f.season);renderValise();
 });
 $("#grid").addEventListener("change",async e=>{
+  const mv=e.target.closest("[data-movesel]");
+  if(mv){if(!mv.value||!ccol||!picked.size)return;const target=mv.value,ids=[...picked],n=ids.length;mv.disabled=true;
+    const tc=colls.find(c=>c.id===target);
+    try{for(const c of colls){const cur=c.looks||[];let next;
+        if(c.id===target)next=[...cur,...ids.filter(id=>!cur.includes(id))];
+        else next=cur.filter(id=>!ids.includes(id));             // déplacer = la tenue ne reste que dans la collection choisie
+        if(next.length!==cur.length)await ccol.doc(c.id).update({looks:next})}
+      picked.clear();selMode=false;
+      toast(target==="__out"?`${n} tenue${n>1?"s":""} sortie${n>1?"s":""} des collections`:`${n} tenue${n>1?"s":""} déplacée${n>1?"s":""} dans « ${tc.name} »`);renderGrid()
+    }catch(err){toast("Échec : "+(err.message||err.code));mv.disabled=false}
+    return}
   const s=e.target.closest("[data-cpick]");if(!s||!s.value||!ccol)return;
   const c=colls.find(x=>x.id===s.value),lid=s.dataset.cpick,has=(c.looks||[]).includes(lid);s.value="";
-  try{await ccol.doc(c.id).update({looks:has?(c.looks||[]).filter(x=>x!==lid):[...(c.looks||[]),lid]});toast(has?`Retirée de « ${c.name} »`:`Rangée dans « ${c.name} »`)}catch(err){toast("Échec : "+(err.message||err.code))}
+  const from=openColl&&view==="Collections"?colls.find(x=>x.id===openColl):null;
+  try{
+    if(from&&from.id!==c.id){                                   // dans une collection : vrai déplacement
+      if(!has)await ccol.doc(c.id).update({looks:[...(c.looks||[]),lid]});
+      await ccol.doc(from.id).update({looks:(from.looks||[]).filter(x=>x!==lid)});
+      toast(`Déplacée dans « ${c.name} »`);return}
+    await ccol.doc(c.id).update({looks:has?(c.looks||[]).filter(x=>x!==lid):[...(c.looks||[]),lid]});toast(has?`Retirée de « ${c.name} »`:`Rangée dans « ${c.name} »`)}catch(err){toast("Échec : "+(err.message||err.code))}
 });
 $("#grid").addEventListener("submit",async e=>{
   if(e.target.id==="cf"){e.preventDefault();if(!ccol)return;const n=new FormData(e.target).get("name").trim();if(!n)return;
