@@ -13,6 +13,7 @@ import { FinalCta } from "@/components/sections/FinalCta";
 import { ProtocolPath } from "@/components/system/SignalPath";
 import { Faculty } from "@/components/sections/Faculty";
 import { AcademyNewsletter } from "@/components/academy/AcademyNewsletter";
+import { Faq } from "@/components/system/Faq";
 
 // Les sessions passées disparaissent : la page est régénérée chaque jour.
 export const revalidate = 86400;
@@ -28,11 +29,11 @@ export async function generateMetadata({
     lang,
     path: "/academy",
     absoluteTitle: isFr
-      ? "Cellulift Academy | Formations et masterclasses en médecine esthétique"
-      : "Cellulift Academy | Aesthetic medicine training and masterclasses",
+      ? "Formation médecine esthétique à Casablanca, Maroc | CELLULIFT Academy"
+      : "Aesthetic medicine training in Casablanca, Morocco | CELLULIFT Academy",
     description: isFr
-      ? "Masterclasses, formations certifiantes et expertise médicale pour une pratique sûre des technologies médico-esthétiques."
-      : "Masterclasses, certified training and medical expertise for a safe practice of medical aesthetic technologies.",
+      ? "Formations en médecine esthétique pour médecins à Casablanca : lasers, HIFU, injections, gynécologie esthétique. Masterclasses, workshops et certificat."
+      : "Aesthetic medicine training for physicians in Casablanca: lasers, HIFU, injectables, aesthetic gynaecology. Masterclasses, workshops and certificate.",
   });
 }
 
@@ -81,6 +82,8 @@ export default async function AcademyPage({
         title={content.faculty.title}
         members={content.faculty.members}
       />
+
+      <Faq locale={lang} title={content.faqTitle} items={[...content.faq]} />
 
       <FinalCta
         locale={lang}

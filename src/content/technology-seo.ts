@@ -39,6 +39,13 @@ export const technologySeo: Record<string, { title: LocalizedText; description: 
       en: "Steel Muscle by LGL Expert: up to 20,000 contractions in 30 minutes to lose fat and build muscle, 4 arms. Demo, training and after-sales in Morocco.",
     },
   },
+  rejuvskin: {
+    title: { fr: "REJUVSKIN — Machine HIFU visage, lipo HIFU et zone intime", en: "REJUVSKIN — HIFU machine for face, lipo HIFU and intimate area" },
+    description: {
+      fr: "Rejuvskin by LGL Expert : HIFU jusqu'à 13 mm pour le lifting du visage, la lipo HIFU et la zone intime. Prix sur demande, démo, formation et SAV au Maroc.",
+      en: "Rejuvskin by LGL Expert: HIFU down to 13 mm for face lifting, lipo HIFU and the intimate area. Price on request, demo, training and after-sales in Morocco.",
+    },
+  },
   "frac-cov-4": {
     title: {
       fr: "FRAC’COV 4 — Laser CO2 fractionné professionnel",

@@ -779,4 +779,81 @@ export const richSheets: Record<string, RichSheet> = {
       ...commonFaq("Steel Muscle", "Steel Muscle"),
     ],
   },
+  rejuvskin: {
+    h1: t("plateforme HIFU professionnelle pour le visage, le corps et la zone intime", "professional HIFU platform for face, body and intimate area"),
+    hook: t(
+      "Les ultrasons focalisés de haute intensité agissent de la surface jusqu'à 13 mm de profondeur, selon la tête utilisée : lifting du visage, lipo HIFU sur la graisse localisée et raffermissement intime, sans cicatrice ni anesthésie. Les résultats sont visibles dès la première séance.",
+      "High-intensity focused ultrasound works from the surface down to 13 mm, depending on the head: face lifting, lipo HIFU on localised fat and intimate tightening, with no scarring and no anaesthesia. Results show from the first session."
+    ),
+    brand: "LGL Expert",
+    modulesTitle: t("Une plateforme, 3 zones de traitement", "One platform, 3 treatment areas"),
+    modules: [
+      {
+        name: t("HIFU visage", "Face HIFU"),
+        spec: t("Lifting", "Lifting"),
+        text: t("Rides, paupières, double menton, ovale du visage et bajoues : les tissus relâchés sont retendus en profondeur.", "Wrinkles, eyelids, double chin, jawline and jowls: lax tissue is tightened in depth."),
+      },
+      {
+        name: t("Lipo HIFU corps", "Body lipo HIFU"),
+        spec: t("Graisse et relâchement", "Fat and laxity"),
+        text: t("Relâchement des bras, des cuisses, de la poitrine et du bas-ventre ; poignées d'amour : les ultrasons éliminent les adipocytes.", "Laxity of arms, thighs, chest and lower abdomen; love handles: the ultrasound eliminates fat cells."),
+      },
+      {
+        name: t("HIFU zone intime", "Intimate HIFU"),
+        spec: t("Gynécologie esthétique", "Aesthetic gynaecology"),
+        text: t("Sécheresse, incontinence, suites d'accouchement.", "Dryness, incontinence, after childbirth."),
+      },
+    ],
+    forWho: [
+      t("Les médecins esthétiques qui veulent proposer un lifting sans chirurgie, très demandé par les patients.", "Aesthetic physicians who want to offer non-surgical lifting, in high patient demand."),
+      t("Les centres de remodelage qui ajoutent la lipo HIFU à leurs soins minceur.", "Body contouring centres adding lipo HIFU to their slimming treatments."),
+      t("Les gynécologues qui veulent traiter la zone intime avec la même plateforme.", "Gynaecologists who want to treat the intimate area with the same platform."),
+    ],
+    protocol: t(
+      "La profondeur d'action dépend de la tête choisie, jusqu'à 13 mm. Les résultats sont visibles dès la première séance et s'optimisent dans les 15 jours, et le nombre de séances dépend de chaque patient. La formation CELLULIFT Academy vous apprend à choisir la tête et les paramètres pour chaque zone.",
+      "Treatment depth depends on the head, down to 13 mm. Results show from the first session and improve over 15 days, and the number of sessions depends on each patient. CELLULIFT Academy training teaches you to pick the head and settings for each area."
+    ),
+    indications: [
+      { indication: t("Rides, paupières, ovale, bajoues", "Wrinkles, eyelids, jawline, jowls"), tech: t("HIFU visage", "Face HIFU") },
+      { indication: t("Double menton", "Double chin"), tech: t("HIFU visage", "Face HIFU") },
+      { indication: t("Relâchement des bras, cuisses, poitrine, bas-ventre", "Laxity of arms, thighs, chest, lower abdomen"), tech: t("HIFU corps", "Body HIFU") },
+      { indication: t("Poignées d'amour, surpoids", "Love handles, excess weight"), tech: "Lipo HIFU" },
+      { indication: t("Sécheresse, incontinence, post-accouchement", "Dryness, incontinence, post-partum"), tech: t("HIFU zone intime", "Intimate HIFU") },
+    ],
+    profit: t(
+      "Le lifting sans chirurgie et la lipo HIFU font partie des soins les plus recherchés par les patients. Une seule plateforme couvre le visage, le corps et la zone intime : vous élargissez votre carte de soins avec un seul investissement.",
+      "Non-surgical lifting and lipo HIFU are among the treatments patients look for most. A single platform covers face, body and intimate area: you widen your treatment menu with one investment."
+    ),
+    specs: [
+      [t("Technologie", "Technology"), t("Ultrasons focalisés de haute intensité (HIFU)", "High-intensity focused ultrasound (HIFU)")],
+      [t("Profondeur d'action", "Treatment depth"), t("De la surface jusqu'à 13 mm, selon la tête", "From the surface down to 13 mm, depending on the head")],
+      [t("Zones", "Areas"), t("Visage, corps, zone intime", "Face, body, intimate area")],
+      [t("Effet liftant", "Lifting effect"), t("Jusqu'à 2 ans", "Up to 2 years")],
+      [t("Phototypes", "Skin types"), t("Tous, en toute saison", "All, all year round")],
+      [t("Fabricant", "Manufacturer"), t("LGL Expert", "LGL Expert")],
+    ],
+    related: ["perfect-lift", "frac-cov-4"],
+    faq: [
+      {
+        q: t("Qu'est-ce que la lipo HIFU ?", "What is lipo HIFU?"),
+        a: t(
+          "C'est l'utilisation des ultrasons focalisés sur le corps : ils éliminent les adipocytes et retendent les tissus relâchés, par exemple sur les poignées d'amour, le ventre, les bras ou les cuisses.",
+          "It is focused ultrasound used on the body: it eliminates fat cells and tightens lax tissue, for example on love handles, belly, arms or thighs."
+        ),
+      },
+      {
+        q: t("Quelles zones peut-on traiter avec Rejuvskin ?", "Which areas can Rejuvskin treat?"),
+        a: t("Le visage (rides, paupières, double menton, ovale, bajoues), le corps (bras, cuisses, poitrine, bas-ventre, poignées d'amour) et la zone intime.", "The face (wrinkles, eyelids, double chin, jawline, jowls), the body (arms, thighs, chest, lower abdomen, love handles) and the intimate area."),
+      },
+      {
+        q: t("Quand voit-on les résultats ?", "When do results show?"),
+        a: t("Dès la première séance, et ils s'optimisent dans les 15 jours. L'effet liftant peut durer jusqu'à 2 ans.", "From the first session, improving over 15 days. The lifting effect can last up to 2 years."),
+      },
+      {
+        q: t("Y a-t-il une éviction sociale ?", "Is there any downtime?"),
+        a: t("Non : pas de cicatrice, pas d'anesthésie et pas de récupération. Le traitement convient à tous les phototypes, en toute saison.", "No: no scarring, no anaesthesia and no recovery time. It suits all skin types, all year round."),
+      },
+      ...commonFaq("Rejuvskin", "Rejuvskin"),
+    ],
+  },
 };
