@@ -15,6 +15,7 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
     { href: `/${locale}`, label: dict.nav.home },
     { href: `/${locale}/about`, label: dict.nav.about },
     { href: `/${locale}/technologies`, label: dict.nav.technologies },
+    { href: `/${locale}/indications`, label: locale === "fr" ? "Machines par indication" : "Machines by indication" },
     { href: `/${locale}/lgl-expert`, label: locale === "fr" ? "LGL Expert au Maroc" : "LGL Expert in Morocco" },
     { href: `/${locale}/guide`, label: locale === "fr" ? "Guide gratuit" : "Free guide" },
     { href: `/${locale}/academy`, label: dict.nav.academy },
