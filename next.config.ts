@@ -4,11 +4,14 @@ import type { NextConfig } from "next";
 // (Next.js injecte des scripts en ligne : 'unsafe-inline' reste nécessaire sans nonce.)
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://va.vercel-scripts.com https://*.clarity.ms",
-  "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://vitals.vercel-insights.com https://*.clarity.ms",
+  // cdn.jsdelivr.net + cdnjs : bibliothèques chargées par le CRM (/crm), dont Supabase JS.
+  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://va.vercel-scripts.com https://*.clarity.ms https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
+  // *.supabase.co : API (REST) et temps réel (WebSocket) du CRM.
+  "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://vitals.vercel-insights.com https://*.clarity.ms https://*.supabase.co wss://*.supabase.co",
   "img-src 'self' data: blob: https://*.google-analytics.com https://www.googletagmanager.com https://*.clarity.ms https://c.bing.com",
-  "style-src 'self' 'unsafe-inline'",
-  "font-src 'self' data:",
+  // fonts.googleapis.com (feuille de style) + fonts.gstatic.com (fichiers de police) : polices Google du site et du CRM.
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' data: https://fonts.gstatic.com",
   "media-src 'self'",
   "frame-src https://www.youtube-nocookie.com https://www.instagram.com",
   "frame-ancestors 'self'",
