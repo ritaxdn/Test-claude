@@ -25,6 +25,20 @@ export const technologySeo: Record<string, { title: LocalizedText; description: 
       en: "Red, blue, green and yellow LED photomodulation for acne, redness and cell regeneration, face and body. Installation, training and after-sales in Morocco.",
     },
   },
+  fotokrom: {
+    title: { fr: "FOTOKROM — Laser Nd:YAG, IPL et radiofréquence au Maroc", en: "FOTOKROM — Nd:YAG laser, IPL and radiofrequency in Morocco" },
+    description: {
+      fr: "Fotokrom by LGL Expert : laser Nd:YAG pour le détatouage et les pigments, IPL pour l'épilation, radiofréquence bipolaire pour le raffermissement. Démo et SAV au Maroc.",
+      en: "Fotokrom by LGL Expert: Nd:YAG laser for tattoos and pigment, IPL for hair removal, bipolar radiofrequency for firming. Demo and after-sales in Morocco.",
+    },
+  },
+  "steel-muscle": {
+    title: { fr: "STEEL MUSCLE — Stimulation électromagnétique muscle et graisse", en: "STEEL MUSCLE — Electromagnetic muscle and fat treatment" },
+    description: {
+      fr: "Steel Muscle by LGL Expert : jusqu'à 20 000 contractions en 30 minutes pour perdre de la graisse et gagner du muscle, 4 bras. Démo, formation et SAV au Maroc.",
+      en: "Steel Muscle by LGL Expert: up to 20,000 contractions in 30 minutes to lose fat and build muscle, 4 arms. Demo, training and after-sales in Morocco.",
+    },
+  },
   "frac-cov-4": {
     title: {
       fr: "FRAC’COV 4 — Laser CO2 fractionné professionnel",
