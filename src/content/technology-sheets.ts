@@ -163,6 +163,23 @@ export const sheets: Record<string, Sheet> = {
       t("Usage thérapeutique et esthétique", "Therapeutic and aesthetic use"),
     ],
   },
+  "steel-muscle": {
+    tagline: t("Énergie électromagnétique 2-en-1 : moins de graisse, plus de muscle.", "2-in-1 electromagnetic energy: less fat, more muscle."),
+    description: t(
+      "L'énergie électromagnétique focalisée de haute intensité provoque jusqu'à 20 000 contractions musculaires en 30 minutes : tonification, renforcement musculaire et perte de masse grasse, sans éviction sociale.",
+      "High-intensity focused electromagnetic energy triggers up to 20,000 muscle contractions in 30 minutes: toning, muscle strengthening and fat loss, with no downtime."
+    ),
+    indications: [
+      t("Réduction de la masse grasse", "Fat mass reduction"),
+      t("Renforcement et tonification musculaire", "Muscle strengthening and toning"),
+      t("Remodelage de la silhouette", "Body shaping"),
+    ],
+    benefits: [
+      t("4 séances de 30 minutes en moyenne", "About 4 sessions of 30 minutes"),
+      t("Non invasif, sans convalescence", "Non-invasive, no recovery time"),
+      t("Programmes personnalisables, 4 bras", "Tailored programmes, 4 arms"),
+    ],
+  },
   shocsteel: {
     tagline: t("Ondes de choc balistiques contre la douleur chronique et la cellulite.", "Ballistic shockwaves for chronic pain and cellulite."),
     description: t(
@@ -290,6 +307,24 @@ export const sheets: Record<string, Sheet> = {
       t("Résultat dès la première séance", "Results from the first session"),
       t("Traitement indolore", "Painless treatment"),
       t("Sans éviction socio-professionnelle", "No time off work"),
+    ],
+  },
+  fotokrom: {
+    tagline: t("Laser Nd:YAG, IPL et radiofréquence bipolaire sur une seule plateforme.", "Nd:YAG laser, IPL and bipolar radiofrequency on a single platform."),
+    description: t(
+      "Laser Nd:YAG 532/755/1064 nm pour les pigments, les tatouages et le Carbon Peel, lumière pulsée 420–1200 nm pour l'épilation et le rajeunissement, radiofréquence bipolaire pour le raffermissement : pour tous les types de peau.",
+      "532/755/1064 nm Nd:YAG laser for pigment, tattoos and Carbon Peel, 420–1200 nm pulsed light for hair removal and rejuvenation, bipolar radiofrequency for firming: for all skin types."
+    ),
+    indications: [
+      t("Détatouage, tous les teints", "Tattoo removal, all skin tones"),
+      t("Lésions pigmentaires, Carbon Peel", "Pigmented lesions, Carbon Peel"),
+      t("Poils indésirables", "Unwanted hair"),
+      t("Rides, ridules, raffermissement", "Wrinkles, fine lines, firming"),
+    ],
+    benefits: [
+      t("3 technologies en une plateforme", "3 technologies in one platform"),
+      t("Refroidissement intégré", "Built-in cooling"),
+      t("Tous types de peau", "All skin types"),
     ],
   },
   "la-queen": {

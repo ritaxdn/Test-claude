@@ -5,8 +5,8 @@ import type { CategoryKey } from "./technologies";
  * Machines LGL Expert du catalogue : celles dont la brochure Cellulift porte le logo LGL Expert.
  */
 export const lglExpertSlugs = [
-  "bodytech-9", "elitecolombia", "hot-power", "longishape", "pandaslim", "slimax-lipo-3", "slimax-lipo-7",
-  "alex-yag-ultra", "frac-cov-4", "hanover-5g", "la-queen", "laser-shock", "sevenwaves", "synergy-plus",
+  "bodytech-9", "elitecolombia", "hot-power", "longishape", "pandaslim", "slimax-lipo-3", "slimax-lipo-7", "steel-muscle",
+  "alex-yag-ultra", "fotokrom", "frac-cov-4", "hanover-5g", "la-queen", "laser-shock", "sevenwaves", "synergy-plus",
   "dermabrasif-6g", "frequencious", "pistor-plus-34", "skin-analyser-g7", "skin-bright",
   "led-bio-light", "led-fotoskin-ultra", "vagilase", "rejuvskin", "frequentazia", "t-care-6g",
 ];

@@ -584,4 +584,199 @@ export const richSheets: Record<string, RichSheet> = {
       ...commonFaq("Brasilift", "Brasilift"),
     ],
   },
+  fotokrom: {
+    h1: t("plateforme 3-en-1 laser Nd:YAG, IPL et radiofréquence bipolaire", "3-in-1 platform: Nd:YAG laser, IPL and bipolar radiofrequency"),
+    hook: t(
+      "Trois technologies sur une seule plateforme : le laser Nd:YAG pour les pigments, les tatouages et le Carbon Peel, la lumière pulsée pour l'épilation et le rajeunissement, la radiofréquence bipolaire pour le raffermissement. Pour tous les types de peau, avec un refroidissement intégré.",
+      "Three technologies on a single platform: Nd:YAG laser for pigment, tattoos and Carbon Peel, intense pulsed light for hair removal and rejuvenation, bipolar radiofrequency for firming. For all skin types, with built-in cooling."
+    ),
+    brand: "LGL Expert",
+    modulesTitle: t("3 technologies dans une seule plateforme", "3 technologies in a single platform"),
+    modules: [
+      {
+        name: "Laser Nd:YAG",
+        spec: "532 · 755 · 1064 nm",
+        text: t(
+          "Lésions pigmentaires, tatouages de tous les teints et peeling laser « Carbon Peel », qui stimule la production de collagène.",
+          "Pigmented lesions, tattoos on all skin tones and Carbon Peel laser peeling, which stimulates collagen production."
+        ),
+      },
+      {
+        name: t("Lumière pulsée (IPL)", "Intense pulsed light (IPL)"),
+        spec: "420–1200 nm",
+        text: t("Traitement des poils indésirables et rajeunissement cutané : rides et ridules.", "Unwanted hair and skin rejuvenation: wrinkles and fine lines."),
+      },
+      {
+        name: t("Radiofréquence bipolaire", "Bipolar radiofrequency"),
+        spec: t("Raffermissement", "Firming"),
+        text: t(
+          "Raffermissement de la peau et remodelage du corps : stimule la production de collagène pour une peau plus ferme et plus lisse.",
+          "Skin firming and body contouring: stimulates collagen production for firmer, smoother skin."
+        ),
+      },
+    ],
+    forWho: [
+      t(
+        "Les cabinets de dermatologie et de médecine esthétique qui traitent le détatouage et les lésions pigmentaires, sur tous les teints.",
+        "Dermatology and aesthetic medicine practices treating tattoo removal and pigmented lesions, on all skin tones."
+      ),
+      t(
+        "Les centres qui veulent réunir épilation, rajeunissement et raffermissement sur une seule machine.",
+        "Centres that want hair removal, rejuvenation and firming on a single device."
+      ),
+      t(
+        "Les praticiens qui cherchent une plateforme polyvalente pour répondre à la majorité des demandes de peau de leurs patients.",
+        "Practitioners looking for a versatile platform that covers most of their patients' skin requests."
+      ),
+    ],
+    protocol: t(
+      "Le nombre de séances dépend de chaque patient : type de peau, indication, profondeur du pigment ou couleurs du tatouage. La formation CELLULIFT Academy vous apprend à construire chaque protocole, technologie par technologie.",
+      "The number of sessions depends on each patient: skin type, indication, pigment depth or tattoo colours. CELLULIFT Academy training teaches you to build each protocol, technology by technology."
+    ),
+    indications: [
+      { indication: t("Détatouage, tous les teints", "Tattoo removal, all skin tones"), tech: "Nd:YAG" },
+      { indication: t("Lésions pigmentaires", "Pigmented lesions"), tech: "Nd:YAG" },
+      { indication: t("Carbon Peel", "Carbon Peel"), tech: "Nd:YAG" },
+      { indication: t("Poils indésirables", "Unwanted hair"), tech: "IPL" },
+      { indication: t("Rides et ridules", "Wrinkles and fine lines"), tech: "IPL" },
+      { indication: t("Raffermissement de la peau, remodelage du corps", "Skin firming, body contouring"), tech: t("Radiofréquence bipolaire", "Bipolar radiofrequency") },
+    ],
+    profit: t(
+      "Une seule machine pour trois familles d'actes : pigmentaire et détatouage, épilation et rajeunissement, raffermissement. Vous élargissez votre carte de soins sans multiplier les équipements, sur des indications qui demandent plusieurs séances.",
+      "A single device for three families of treatments: pigment and tattoo removal, hair removal and rejuvenation, firming. You widen your treatment menu without multiplying equipment, on indications that take several sessions."
+    ),
+    specs: [
+      [t("Technologies", "Technologies"), t("Laser Nd:YAG + IPL + RF bipolaire", "Nd:YAG laser + IPL + bipolar RF")],
+      [t("Laser Nd:YAG", "Nd:YAG laser"), t("532 / 755 / 1064 nm", "532 / 755 / 1064 nm")],
+      [t("IPL", "IPL"), t("420 à 1200 nm", "420 to 1200 nm")],
+      [t("Largeur d'impulsion", "Pulse width"), t("1 à 400 ms", "1 to 400 ms")],
+      [t("Fréquence", "Frequency"), t("1 à 10 Hz", "1 to 10 Hz")],
+      [t("Énergie", "Energy"), t("1 à 380 J/cm²", "1 to 380 J/cm²")],
+      [t("Puissance de sortie", "Output power"), t("800 W", "800 W")],
+      [t("Refroidissement", "Cooling"), t("Intégré", "Built-in")],
+      [t("Fabricant", "Manufacturer"), t("LGL Expert", "LGL Expert")],
+    ],
+    related: ["laser-shock", "la-queen"],
+    faq: [
+      {
+        q: t("Que traite Fotokrom ?", "What does Fotokrom treat?"),
+        a: t(
+          "Les tatouages et les lésions pigmentaires (laser Nd:YAG), le Carbon Peel, les poils indésirables et les rides (lumière pulsée), et le relâchement de la peau (radiofréquence bipolaire).",
+          "Tattoos and pigmented lesions (Nd:YAG laser), Carbon Peel, unwanted hair and wrinkles (pulsed light), and skin laxity (bipolar radiofrequency)."
+        ),
+      },
+      {
+        q: t("Fotokrom convient-il à tous les types de peau ?", "Is Fotokrom suitable for all skin types?"),
+        a: t(
+          "Oui. Sa brochure le présente comme adapté à tous les types de peau, avec un laser efficace sur les tatouages de tous les teints.",
+          "Yes. Its brochure presents it as suitable for all skin types, with a laser that treats tattoos on all skin tones."
+        ),
+      },
+      {
+        q: t("Le traitement est-il confortable ?", "Is the treatment comfortable?"),
+        a: t("Fotokrom intègre une technologie de refroidissement pour un traitement confortable.", "Fotokrom has built-in cooling for a comfortable treatment."),
+      },
+      {
+        q: t("Combien de séances faut-il ?", "How many sessions are needed?"),
+        a: t(
+          "Cela dépend du patient et de l'indication. La formation CELLULIFT Academy vous apprend à adapter le protocole à chaque cas.",
+          "It depends on the patient and the indication. CELLULIFT Academy training teaches you to adapt the protocol to each case."
+        ),
+      },
+      ...commonFaq("Fotokrom", "Fotokrom"),
+    ],
+  },
+  "steel-muscle": {
+    h1: t("énergie électromagnétique pour perdre de la graisse et gagner du muscle", "electromagnetic energy to lose fat and build muscle"),
+    hook: t(
+      "Une technologie 2-en-1 : l'énergie électromagnétique focalisée de haute intensité provoque des milliers de contractions musculaires puissantes, jusqu'à 20 000 en 30 minutes. Moins de graisse, plus de muscle, sans aiguille ni éviction sociale.",
+      "A 2-in-1 technology: high-intensity focused electromagnetic energy triggers thousands of powerful muscle contractions, up to 20,000 in 30 minutes. Less fat, more muscle, with no needles and no downtime."
+    ),
+    brand: "LGL Expert",
+    modulesTitle: t("Comment agit Steel Muscle", "How Steel Muscle works"),
+    modules: [
+      {
+        name: t("Supracontractions", "Supramaximal contractions"),
+        spec: t("Champ électromagnétique", "Electromagnetic field"),
+        text: t(
+          "Le champ électromagnétique stimule les récepteurs neuromusculaires et provoque des contractions que l'effort volontaire ne permet pas : tonification et renforcement musculaire.",
+          "The electromagnetic field stimulates neuromuscular receptors and triggers contractions beyond voluntary effort: toning and muscle strengthening."
+        ),
+      },
+      {
+        name: t("Graisse", "Fat"),
+        spec: t("Métabolisme", "Metabolism"),
+        text: t(
+          "Les contractions augmentent le flux sanguin et le métabolisme, et agissent sur les cellules graisseuses : perte de masse grasse et gain de masse maigre.",
+          "The contractions boost blood flow and metabolism and act on fat cells: fat loss and lean mass gain."
+        ),
+      },
+      {
+        name: t("4 bras", "4 arms"),
+        spec: t("Programmes", "Programmes"),
+        text: t(
+          "Plusieurs applicateurs et une multitude de programmes personnalisables selon les objectifs de chaque patient.",
+          "Several applicators and many programmes tailored to each patient's goals."
+        ),
+      },
+    ],
+    forWho: [
+      t("Les centres de remodelage corporel qui veulent une offre « moins de graisse, plus de muscle ».", "Body contouring centres that want a “less fat, more muscle” offer."),
+      t("Les cabinets qui reçoivent tout type de patientèle : la machine se propose à tous, avec des programmes personnalisables.", "Practices with all kinds of patients: the device suits everyone, with tailored programmes."),
+      t("Les praticiens qui cherchent un soin sans préparation ni convalescence : le patient reprend sa journée normalement.", "Practitioners looking for a treatment with no preparation or recovery: patients go straight back to their day."),
+    ],
+    protocol: t(
+      "Selon la brochure, le traitement dure en moyenne 30 minutes, à raison de 4 séances espacées de 2 à 3 jours. Les résultats sont visibles dès la fin du traitement et continuent de s'améliorer pendant plusieurs semaines. La formation CELLULIFT Academy vous apprend à choisir le programme selon chaque patient.",
+      "According to the brochure, a treatment lasts about 30 minutes, over 4 sessions spaced 2 to 3 days apart. Results show by the end of the treatment and keep improving for several weeks. CELLULIFT Academy training teaches you to pick the programme for each patient."
+    ),
+    indications: [
+      { indication: t("Réduction de la masse grasse", "Fat mass reduction"), tech: t("Électromagnétique", "Electromagnetic") },
+      { indication: t("Renforcement et tonification musculaire", "Muscle strengthening and toning"), tech: t("Supracontractions", "Supramaximal contractions") },
+      { indication: t("Remodelage de la silhouette (ventre, fessiers…)", "Body shaping (abdomen, buttocks…)"), tech: t("Programmes personnalisables", "Tailored programmes") },
+    ],
+    profit: t(
+      "Un protocole court et répétable (4 séances de 30 minutes), sans aiguille ni éviction sociale, sur une demande très forte : perdre de la graisse et gagner du muscle.",
+      "A short, repeatable protocol (4 sessions of 30 minutes), with no needles and no downtime, on very strong demand: losing fat and building muscle."
+    ),
+    specs: [
+      [t("Mode de travail", "Mode"), t("Myostimulation électromagnétique", "Electromagnetic muscle stimulation")],
+      [t("Applicateurs", "Applicators"), t("4 bras", "4 arms")],
+      [t("Séance", "Session"), t("30 minutes en moyenne", "About 30 minutes")],
+      [t("Contractions", "Contractions"), t("Jusqu'à 20 000 en 30 minutes", "Up to 20,000 in 30 minutes")],
+      [t("Alimentation", "Power supply"), t("110 V / 220 V, 50–60 Hz", "110 V / 220 V, 50–60 Hz")],
+      [t("Fabricant", "Manufacturer"), t("LGL Expert", "LGL Expert")],
+    ],
+    related: ["hot-power", "longishape"],
+    faq: [
+      {
+        q: t("Comment fonctionne Steel Muscle ?", "How does Steel Muscle work?"),
+        a: t(
+          "L'énergie électromagnétique focalisée de haute intensité provoque des milliers de contractions musculaires puissantes, jusqu'à 20 000 en 30 minutes, qui renforcent le muscle et agissent sur les cellules graisseuses.",
+          "High-intensity focused electromagnetic energy triggers thousands of powerful muscle contractions, up to 20,000 in 30 minutes, which strengthen muscle and act on fat cells."
+        ),
+      },
+      {
+        q: t("Combien de séances faut-il ?", "How many sessions are needed?"),
+        a: t(
+          "En moyenne 4 séances de 30 minutes, espacées de 2 à 3 jours. Le programme s'adapte aux objectifs de chaque patient.",
+          "On average 4 sessions of 30 minutes, spaced 2 to 3 days apart. The programme adapts to each patient's goals."
+        ),
+      },
+      {
+        q: t("Que ressent le patient ?", "What does the patient feel?"),
+        a: t(
+          "Des sensations semblables à celles d'une séance de sport intense. Le patient reprend sa journée normalement : pas de préparation ni de convalescence.",
+          "Sensations similar to an intense workout. Patients go straight back to their day: no preparation and no recovery time."
+        ),
+      },
+      {
+        q: t("Quand voit-on les résultats ?", "When do results show?"),
+        a: t(
+          "Des résultats sont visibles dès la fin du traitement ; les patients constatent généralement des effets deux à quatre semaines après la dernière séance, et les améliorations continuent pendant plusieurs semaines.",
+          "Results show by the end of the treatment; patients usually see effects two to four weeks after the last session, and improvements continue for several weeks."
+        ),
+      },
+      ...commonFaq("Steel Muscle", "Steel Muscle"),
+    ],
+  },
 };
