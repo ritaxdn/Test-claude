@@ -1758,7 +1758,14 @@ async function chargerDoublons(){
   const {data,error}=await sb.rpc("doublons_base"); if(!document.contains(el)) return;
   if(error){ el.innerHTML=`<p class="hint">${esc(errorCopy(error)[1])}</p>`; return; }
   const paires=(data||[]).map(r=>({a:byId(state.comptes,r.a),b:byId(state.comptes,r.b),motif:r.motif})).filter(p=>p.a&&p.b);
-  const ligne=c=>`<button class="linkish" data-act="open-compte" data-id="${c.id}"><b>${esc(c.nom)}</b></button><div class="hint" style="margin:0">${esc([c.ville,c.telephone,c.telephone_2,c.commercial_id?nomMembre(c.commercial_id):"non assigné"].filter(Boolean).join(" · "))}</div>`;
+  const histo=c=>{
+    const opp=state.opportunites.filter(o=>o.compte_id===c.id), dev=state.devis.filter(d=>d.compte_id===c.id),
+          act=state.activites.filter(a=>a.compte_id===c.id), pai=state.paiements.filter(p=>p.compte_id===c.id);
+    const ds=act.map(a=>a.date_activite).filter(Boolean).sort(); const dc=ds.length?ds[ds.length-1]:null;
+    const parts=[opp.length&&opp.length+" opp.",dev.length&&dev.length+" devis",act.length&&act.length+" activ.",pai.length&&pai.length+" paiement"+(pai.length>1?"s":"")].filter(Boolean);
+    return {dc,resume:parts.join(" · ")||"aucun historique"};
+  };
+  const ligne=c=>{ const h=histo(c); return `<button class="linkish" data-act="open-compte" data-id="${c.id}"><b>${esc(c.nom)}</b></button><div class="hint" style="margin:0">${esc([c.ville,c.telephone,c.telephone_2,c.commercial_id?nomMembre(c.commercial_id):"non assigné"].filter(Boolean).join(" · "))}</div><div class="hint" style="margin:0">Dernier contact : ${h.dc?esc(fmtDate(h.dc)):"jamais"} · ${esc(h.resume)}</div>`; };
   el.innerHTML=paires.length?`<p class="hint" style="margin-top:0">${paires.length} paire${paires.length>1?"s":""}${paires.length>=500?" (500 premières)":""}</p><div class="closed-list">${paires.slice(0,100).map(p=>`<div class="closed-row"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1;min-width:0"><div>${ligne(p.a)}</div><div>${ligne(p.b)}</div></div><div class="tools"><span class="pill">${esc(p.motif)}</span><button class="btn small" data-act="fusion" data-a="${p.a.id}" data-b="${p.b.id}">Traiter</button></div></div>`).join("")}</div>${paires.length>100?`<p class="hint">Les 100 premières sont affichées ; fusionnez-les pour voir la suite.</p>`:""}`
     :`<p class="hint">Aucun doublon détecté.</p>`;
 }
