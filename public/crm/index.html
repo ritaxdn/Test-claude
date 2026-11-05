@@ -2019,7 +2019,7 @@ function formOpp(o,presetCompte,opts){
 function afficherDoublons(dups,submit){
   const box=$("#merr"); box.className="";
   box.innerHTML=`<div class="banner warn" role="alert"><div style="flex:1"><b>Ce client existe peut-être déjà</b>
-    <div class="closed-list" style="margin:8px 0">${dups.map(d=>`<div class="closed-row"><div><b>${esc(d.nom)}</b><div class="hint" style="margin:0">${esc([d.ville,d.motif,d.a_moi?"dans tes clients":"suivi par "+(d.suivi_par||"personne")].filter(Boolean).join(" · "))}</div></div>
+    <div class="closed-list" style="margin:8px 0">${dups.map(d=>`<div class="closed-row"><div><b>${esc(d.nom)}</b><div class="hint" style="margin:0">${esc([d.ville,d.motif,d.a_moi?"dans tes clients":"suivi par "+(d.suivi_par||"personne"),"dernier contact : "+(d.dernier_contact?fmtDate(d.dernier_contact):"jamais")].filter(Boolean).join(" · "))}</div></div>
       <div class="tools">${d.a_moi?`<button type="button" class="btn small" data-act="open-compte" data-id="${d.id}">Ouvrir</button>`:`<button type="button" class="btn small" data-act="demande-transfert" data-id="${d.id}">Demander le transfert</button>`}</div></div>`).join("")}</div>
     <span>Si c’est bien le même client, ne le recrée pas : ${dups.some(d=>!d.a_moi)?"demande le transfert, le superviseur sera prévenu.":"ouvre sa fiche."}</span>
     <div class="tools" style="margin-top:10px"><button type="button" class="btn small" id="dup-force">Ce n’est pas le même, enregistrer quand même</button></div></div></div>`;
