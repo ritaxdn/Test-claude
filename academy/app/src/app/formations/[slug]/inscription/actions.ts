@@ -21,7 +21,7 @@ function sniff(b: Buffer): "application/pdf" | "image/jpeg" | "image/png" | null
 
 export async function requestEnrollment(_prev: FormState, form: FormData): Promise<FormState> {
   const v = (k: string) => String(form.get(k) ?? "").trim();
-  const values = { full_name: v("full_name"), email: v("email").toLowerCase(), phone: v("phone"), country: v("country"), profession: v("profession"), professional_id: v("professional_id"), message: v("message") };
+  const values = { full_name: v("full_name"), email: v("email").toLowerCase(), phone: v("phone"), country: v("country"), profession: v("profession"), professional_id: v("professional_id"), message: v("message"), consent: form.get("consent") === "on" ? "1" : "", marketing: form.get("marketing") === "on" ? "1" : "" };
   const fail = (error: string): FormState => ({ error, values });
   const slug = v("slug");
 

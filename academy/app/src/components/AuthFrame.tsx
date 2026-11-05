@@ -12,7 +12,7 @@ export function AuthFrame({ children }: { children: ReactNode }) {
           <h1 className="display" style={{ fontSize: "clamp(2.2rem, 3.6vw, 3.2rem)", marginTop: 16 }}>
             La technologie s'acquiert.<br /><span className="iri">La maîtrise</span> se construit.
           </h1>
-          <p className="muted" style={{ marginTop: 18 }}>Les parcours de formation de vos technologies CELLULIFT : vidéos, protocoles et suivi de votre progression.</p>
+          <p className="muted" style={{ marginTop: 18 }}>Des formations en médecine esthétique conçues et présentées par des praticiens : parcours vidéo, protocoles et suivi de votre progression.</p>
         </div>
         <span className="mono">© CELLULIFT · Maroc</span>
       </section>

@@ -16,7 +16,7 @@ export default async function Invitation({ params, searchParams }: { params: Pro
         {!t ? (
           <>
             <h2 className="display h2">Lien expiré ou déjà utilisé</h2>
-            <p className="muted">Ce lien d'invitation n'est plus valable. Si vous avez déjà créé votre accès, connectez-vous. Sinon, demandez une nouvelle invitation à votre conseiller CELLULIFT.</p>
+            <p className="muted">Ce lien d'invitation n'est plus valable. Si vous avez déjà créé votre accès, connectez-vous. Sinon, demandez un nouveau lien à l&apos;équipe CELLULIFT Academy.</p>
             <a className="btn solid" href="/connexion">Se connecter</a>
           </>
         ) : (

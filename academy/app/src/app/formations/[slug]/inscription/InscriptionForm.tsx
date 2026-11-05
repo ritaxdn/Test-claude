@@ -27,11 +27,11 @@ export function InscriptionForm({ slug, professions, countries }: { slug: string
         <div className="field full"><label htmlFor="message">Message (facultatif)</label><textarea className="input" id="message" name="message" maxLength={1000} defaultValue={val("message")} key={`m${val("message")}`} /></div>
       </div>
       <label className="row small" style={{ alignItems: "flex-start", gap: 10 }}>
-        <input type="checkbox" name="consent" required style={{ marginTop: 3 }} />
+        <input type="checkbox" name="consent" required style={{ marginTop: 3 }} defaultChecked={val("consent") === "1"} key={`k${val("consent")}${state.error ?? ""}`} />
         <span>J&apos;accepte que CELLULIFT Academy utilise ces informations pour vérifier ma qualification et traiter ma demande. Un justificatif éventuel est supprimé 30 jours après la décision.</span>
       </label>
       <label className="row small" style={{ alignItems: "flex-start", gap: 10 }}>
-        <input type="checkbox" name="marketing" style={{ marginTop: 3 }} />
+        <input type="checkbox" name="marketing" style={{ marginTop: 3 }} defaultChecked={val("marketing") === "1"} key={`m${val("marketing")}${state.error ?? ""}`} />
         <span>J&apos;accepte d&apos;être contacté(e) par CELLULIFT Academy au sujet de ses formations et de ses services (facultatif, révocable à tout moment).</span>
       </label>
       <SubmitButton className="btn solid">Envoyer ma demande</SubmitButton>

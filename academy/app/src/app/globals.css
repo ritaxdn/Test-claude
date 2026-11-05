@@ -177,7 +177,8 @@ table.t a:hover { text-decoration: underline; }
 @media (max-width: 640px) {
   .top { position: static; }                 /* sur téléphone, la barre défile avec la page */
   .top .who > span.small { display: none; }  /* l'avatar suffit */
-  .g2, .g3 { grid-template-columns: 1fr; }
+  .g2, .g3 { grid-template-columns: minmax(0, 1fr); }
+  .card .btn { white-space: normal; text-align: center; line-height: 1.3; padding-top: 9px; padding-bottom: 9px; }
   .form-grid { grid-template-columns: 1fr; }
   .top-in { gap: 10px; flex-wrap: wrap; }
   .nav { order: 3; width: 100%; overflow-x: auto; flex-wrap: nowrap; }

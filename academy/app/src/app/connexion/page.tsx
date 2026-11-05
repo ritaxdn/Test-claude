@@ -26,7 +26,7 @@ export default async function Connexion({ searchParams }: { searchParams: Promis
         </form>
         <p className="small muted"><a href="/mot-de-passe-oublie">Mot de passe oublié ?</a></p>
         <hr className="signal" />
-        <p className="small muted">L'accès est réservé aux praticiens invités par CELLULIFT après l'installation de leur machine. Vous n'avez pas reçu d'invitation ? Contactez votre conseiller CELLULIFT.</p>
+        <p className="small muted">Pas encore de compte ? <a href="/formations">Découvrez les formations</a> et demandez votre inscription. Clients CELLULIFT : votre accès vous est envoyé par e-mail après l&apos;installation de votre machine.</p>
       </div>
     </AuthFrame>
   );
