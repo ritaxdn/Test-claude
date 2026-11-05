@@ -5,6 +5,7 @@ import { requireAdmin, issueToken } from "@/lib/auth";
 import { sql, audit } from "@/lib/db";
 import { sendInvitation } from "@/lib/mail";
 import { putDocument } from "@/lib/storage";
+import { flashLink } from "@/lib/flash";
 
 const s = (f: FormData, k: string) => String(f.get(k) ?? "").trim();
 const opt = (f: FormData, k: string) => s(f, k) || null;
@@ -33,7 +34,8 @@ export async function inviteDoctor(form: FormData) {
   const link = await issueToken(u.id, "invite", admin.id);
   const sent = await sendInvitation(email, name, link, machines);
   await audit(admin.id, "user.invite", email, { machines, email_sent: sent });
-  back(`/admin/medecins/${u.id}`, { lien: link, envoye: sent ? "1" : "0" });
+  await flashLink(link);
+  back(`/admin/medecins/${u.id}`, { lien: "1", envoye: sent ? "1" : "0" });
 }
 
 export async function addMachine(form: FormData) {
@@ -66,7 +68,8 @@ export async function newLink(form: FormData) {
     sent = await sendInvitation(u.email, u.full_name, link, ms.map((m) => m.name));
   }
   await audit(admin.id, kind === "invite" ? "user.reinvite" : "user.reset_link", u.email);
-  back(`/admin/medecins/${userId}`, { lien: link, envoye: sent ? "1" : "0", type: kind });
+  await flashLink(link);
+  back(`/admin/medecins/${userId}`, { lien: "1", envoye: sent ? "1" : "0", type: kind });
 }
 
 export async function setUserStatus(form: FormData) {

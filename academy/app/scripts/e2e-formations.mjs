@@ -78,15 +78,15 @@ try {
 
   // ── 11 (base). Un non-admin ne crée ni commande, ni accès, ni validation ──
   await refused(() => sql`insert into orders (user_id, program_id, currency, amount, method, created_by) values (${pro.id}, ${T.id}, 'MAD', 1, 'virement', ${fake.id})`, "administrateur actif", "commande créée par un non-admin");
-  await refused(() => sql`update orders set status = 'paid', paid_checked_by = ${fake.id}, paid_checked_at = now(), reference = 'VIR-FAUX' where id = ${o1.id}`, "administrateur actif", "paiement validé par un non-admin");
+  await refused(() => sql`update orders set status = 'paid', paid_checked_by = ${fake.id}, paid_checked_at = now(), reference = ${'VIR-FAUX-' + run}, amount_received = amount where id = ${o1.id}`, "administrateur actif", "paiement validé par un non-admin");
   await refused(() => sql`insert into access_grants (user_id, program_id, source, reason, granted_by) values (${pro.id}, ${T.id}, 'offered', 'cadeau', ${fake.id})`, "administrateur actif", "accès offert par un non-admin");
   await refused(() => sql`update users set qualification_status = 'verified', qualification_checked_by = ${fake.id}, qualification_checked_at = now() where id = ${pro.id}`, "administrateur actif", "qualification validée par un non-admin");
   await refused(() => as(boss.id, (tx) => tx`update users set qualification_status = 'verified', qualification_checked_by = ${boss.id}, qualification_checked_at = now() where id = ${pro.id}`), "habilité", "qualification validée par un admin NON habilité");
-  await refused(() => sql`update orders set status = 'paid', paid_checked_by = ${admin.id}, paid_checked_at = now() where id = ${o1.id}`, "orders_check", "paiement validé sans référence");
+  await refused(() => sql`update orders set status = 'paid', paid_checked_by = ${admin.id}, paid_checked_at = now(), amount_received = amount where id = ${o1.id}`, "orders_check", "paiement validé sans référence");
   ok("Refusé par la base : commande, paiement, accès et qualification par un non-admin ; qualification par un admin non habilité ; paiement sans référence");
 
   // ── 1 + 3. Paiement vérifié, accès acheté… mais qualification en attente → toujours fermé ──
-  await as(admin.id, (tx) => tx`update orders set status = 'paid', paid_checked_by = ${admin.id}, paid_checked_at = now(), reference = 'VIR-E2E-0001' where id = ${o1.id}`);
+  await as(admin.id, (tx) => tx`update orders set status = 'paid', paid_checked_by = ${admin.id}, paid_checked_at = now(), reference = ${'VIR-E2E-0001-' + run}, amount_received = amount where id = ${o1.id}`);
   const [g1] = await as(admin.id, (tx) => tx`insert into access_grants (user_id, program_id, source, order_id, granted_by, expires_at) values (${pro.id}, ${T.id}, 'purchase', ${o1.id}, ${admin.id}, now() + interval '12 months') returning id`);
   let r = await reach(pro, T);
   expect(closed(r), `qualification en attente : tout doit être fermé ${JSON.stringify(r)}`);
@@ -133,7 +133,7 @@ try {
 
   // ── 6. Remboursement intégral confirmé → accès acheté révoqué automatiquement ──
   const [o2] = await as(admin.id, (tx) => tx`insert into orders (user_id, program_id, currency, amount, method, created_by) values (${pro.id}, ${T.id}, 'EUR', 150, 'carte', ${admin.id}) returning id`);
-  await as(admin.id, (tx) => tx`update orders set status = 'paid', paid_checked_by = ${admin.id}, paid_checked_at = now(), reference = 'TPE-E2E-0002' where id = ${o2.id}`);
+  await as(admin.id, (tx) => tx`update orders set status = 'paid', paid_checked_by = ${admin.id}, paid_checked_at = now(), reference = ${'TPE-E2E-0002-' + run}, amount_received = amount where id = ${o2.id}`);
   const [g2] = await as(admin.id, (tx) => tx`insert into access_grants (user_id, program_id, source, order_id, granted_by) values (${pro.id}, ${T.id}, 'purchase', ${o2.id}, ${admin.id}) returning id`);
   expect(open(await reach(pro, T)), "nouvel achat : accès rouvert");
   await refused(() => as(admin.id, (tx) => tx`update orders set status = 'refunded' where id = ${o2.id}`), "administrateur actif", "remboursement sans auteur ni motif");

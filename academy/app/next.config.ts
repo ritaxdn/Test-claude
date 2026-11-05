@@ -16,7 +16,14 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   experimental: { serverActions: { bodySizeLimit: "26mb" } }, // documents jusqu'à 25 Mo
   async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }];
+    // Pages qui portent un jeton dans l'adresse : aucun référent transmis, jamais en cache.
+    const tokenPage = [{ key: "Referrer-Policy", value: "no-referrer" }, { key: "Cache-Control", value: "no-store" }];
+    return [
+      { source: "/:path*", headers: securityHeaders },
+      { source: "/invitation/:token*", headers: tokenPage },
+      { source: "/reinitialiser/:token*", headers: tokenPage },
+      { source: "/formations/confirmer/:token*", headers: tokenPage },
+    ];
   },
 };
 

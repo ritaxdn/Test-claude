@@ -34,6 +34,15 @@ async function pageFor(who, viewport = { width: 1280, height: 900 }) {
 }
 const norm = (t) => (t ?? "").replace(/[\u202f\u00a0]/g, " ");
 const text = async (p) => norm(await p.textContent("main"));
+const sha = (t) => createHash("sha256").update(t).digest("hex");
+async function confirmEmail(email) {
+  const tok = randomBytes(32).toString("base64url");
+  await sql`update enrollment_requests set confirm_token_hash = ${sha(tok)} where email = ${email} and email_confirmed_at is null and status = 'new'`;
+  const p = await pageFor(null);
+  await p.goto(`${BASE}/formations/confirmer/${tok}`);
+  await p.click("button:has-text('Confirmer ma demande')"); await p.waitForURL(/confirmer\/ok/);
+  return tok;
+}
 
 try {
   // ── Préparation : un vérificateur habilité, un admin non habilité, une formation au catalogue ──
@@ -79,6 +88,7 @@ try {
     await p.selectOption("#country", o.country ?? "MA"); await p.selectOption("#profession", o.profession ?? "dermatologue");
     await p.fill("#professional_id", o.ordre ?? "ORDRE-12345"); await p.check("input[name=consent]");
     if (o.file) await p.setInputFiles("#proof", o.file);
+    if (o.marketing) await p.check("input[name=marketing]");
   };
   const count = async (email) => (await sql`select count(*)::int as n from enrollment_requests where email = ${email}`)[0].n;
   let pf = await pageFor(null);
@@ -106,11 +116,32 @@ try {
   // ── C4. Demande valide avec justificatif (Maroc → MAD) ──
   const proof = path.join(tmp, "carte.pdf"); writeFileSync(proof, "%PDF-1.4\n% carte professionnelle de test\n%%EOF\n");
   const email = `ines-${run}@cabinet.test`;
-  await fill(pf, { file: proof }); await pf.waitForTimeout(3100); await pf.click("button[type=submit]"); await pf.waitForURL(/merci/);
-  expect((await text(pf)).includes("votre demande est enregistrée"), "page de confirmation");
-  const [req] = await sql`select r.id, r.status, d.id as doc_id, d.storage_key, d.sha256, d.mime_type from enrollment_requests r join qualification_documents d on d.request_id = r.id where r.email = ${email}`;
+  await fill(pf, { file: proof, marketing: true }); await pf.waitForTimeout(3100); await pf.click("button[type=submit]"); await pf.waitForURL(/merci/);
+  expect((await text(pf)).includes("votre demande est enregistrée") && (await text(pf)).includes("confirmez votre adresse e-mail"), "page de confirmation");
+  const [req] = await sql`select r.id, r.status, r.marketing_consent_at is not null as marketing, r.email_confirmed_at, d.id as doc_id, d.storage_key, d.sha256, d.mime_type from enrollment_requests r join qualification_documents d on d.request_id = r.id where r.email = ${email}`;
   expect(req?.status === "new" && req.mime_type === "application/pdf" && existsSync(path.join(process.cwd(), "private-media", "justificatifs", req.storage_key)), "demande + justificatif enregistrés");
-  ok("Demande valide : page de confirmation ; demande « nouvelle » et justificatif privé enregistrés (type réel, empreinte)");
+  expect(req.marketing && req.email_confirmed_at === null, "consentement commercial enregistré, adresse pas encore confirmée");
+  ok("Demande valide : page de confirmation ; demande « nouvelle » et justificatif privé enregistrés (type réel, empreinte) ; consentement commercial distinct");
+
+  // ── Adresse e-mail à confirmer avant toute décision ──
+  {
+    const vq = await pageFor(V);
+    await vq.goto(`${BASE}/admin/demandes/${req.id}`);
+    expect((await text(vq)).includes("pas encore confirmée") && (await vq.locator("button:has-text('accepter')").count()) === 0, "non confirmée : pas d'acceptation à l'écran");
+    let blocked = false;
+    try { await as(V.id, (tx) => tx`update enrollment_requests set status = 'approved', reviewed_by = ${V.id}, reviewed_at = now() where id = ${req.id}`); } catch (e) { blocked = /non confirmée/.test(e.message); }
+    expect(blocked, "non confirmée : acceptation refusée par la base");
+    const tok = await confirmEmail(email);
+    const again = await pageFor(null); await again.goto(`${BASE}/formations/confirmer/${tok}`); await again.click("button:has-text('Confirmer ma demande')"); await again.waitForURL(/invalide/);
+    const [c] = await sql`select email_confirmed_at is not null as ok, confirm_token_hash from enrollment_requests where id = ${req.id}`;
+    expect(c.ok && c.confirm_token_hash === null, "adresse confirmée, jeton consommé");
+    const pdup = await pageFor(null);
+    await fill(pdup, { file: proof }); await pdup.waitForTimeout(3100); await pdup.click("button[type=submit]"); await pdup.waitForSelector(".alert.err");
+    expect((await pdup.textContent(".alert.err")).includes("déjà en cours"), "doublon refusé");
+    await fill(pdup, { name: "Dr Ines http://phishing.example", email: `nom-${run}@x.test` }); await pdup.waitForTimeout(3100); await pdup.click("button[type=submit]"); await pdup.waitForSelector(".alert.err");
+    expect((await pdup.textContent(".alert.err")).includes("lettres uniquement") && (await count(`nom-${run}@x.test`)) === 0, "nom avec un lien refusé");
+    ok("E-mail : demande non confirmée impossible à accepter (écran et base) ; confirmation par bouton, lien à usage unique ; doublon refusé ; nom contenant un lien refusé");
+  }
 
   // ── C7. Justificatif : vérificateur seulement, consultation tracée ──
   const proofUrl = `${BASE}/api/justificatifs/${req.doc_id}`;
@@ -143,8 +174,12 @@ try {
   await vp.goto(`${BASE}/admin/demandes/${req.id}`);
   await vp.click("button:has-text('Paiement vérifié')"); // champ requis vide : le navigateur bloque
   expect((await sql`select status from orders where id = ${o1.id}`)[0].status === "pending", "référence bancaire obligatoire");
-  await vp.fill("#bank_reference", "VIR-BMCE-778899"); await vp.click("button:has-text('Paiement vérifié')");
+  await vp.fill("#bank_reference", `VIR-BMCE-${run}`); await vp.fill("#amount_received", "2000"); await vp.click("button:has-text('Paiement vérifié')");
+  await vp.waitForSelector(".alert.err");
+  expect((await vp.textContent(".alert.err")).includes("différent du montant dû") && (await sql`select status from orders where id = ${o1.id}`)[0].status === "pending", "montant reçu différent : refus");
+  await vp.fill("#bank_reference", `VIR-BMCE-${run}`); await vp.fill("#amount_received", "2 400"); await vp.click("button:has-text('Paiement vérifié')");
   await vp.waitForSelector(".copy input");
+  expect(!vp.url().includes("/invitation/") && !vp.url().match(/[\w-]{40,}/), `aucun jeton dans l'adresse de la page (${vp.url()})`);
   const link = (await vp.inputValue(".copy input")).replace(/^https?:\/\/[^/]+/, BASE);
   const [g1] = await sql`select source, expires_at > now() + interval '11 months' as twelve from access_grants where order_id = ${o1.id} and revoked_at is null`;
   expect(g1?.source === "purchase" && g1.twelve, "accès acheté, 12 mois");
@@ -155,7 +190,7 @@ try {
   const dash = await text(pro);
   expect(dash.includes("Formations") && dash.includes(`Lasers et phototypes E2E ${run}`) && !dash.includes("Mes technologies") && !dash.includes("Aucune machine"), "tableau de bord : section Formations seulement");
   await pro.click("a.btn.solid"); await pro.waitForSelector("video");
-  ok("Paiement vérifié (référence bancaire obligatoire) : accès acheté de 12 mois, lien, mot de passe ; tableau de bord « Formations » seul (pas de bloc machines) ; leçon ouverte");
+  ok("Paiement vérifié (référence et montant reçu obligatoires, montant faux refusé ; lien hors de l'adresse de la page) : accès acheté de 12 mois, lien, mot de passe ; tableau de bord « Formations » seul (pas de bloc machines) ; leçon ouverte");
   await pro.goto(`${BASE}/mon-compte`);
   const acc = await text(pro);
   expect(acc.includes("Qualification : Vérifiée") && acc.includes(o1.payment_reference) && acc.includes("Payée"), "mon compte");
@@ -165,26 +200,61 @@ try {
   const pf2 = await pageFor(null);
   const email2 = `marc-${run}@clinique.test`;
   await fill(pf2, { name: "Dr Marc Lefèvre", email: email2, country: "FR", profession: "medecin_esthetique" }); await pf2.waitForTimeout(3100); await pf2.click("button[type=submit]"); await pf2.waitForURL(/merci/);
-  const [req2] = await sql`select id from enrollment_requests where email = ${email2}`;
+  const [req2] = await sql`select id, marketing_consent_at from enrollment_requests where email = ${email2}`;
+  expect(req2.marketing_consent_at === null, "case commerciale non cochée : aucun consentement");
+  await confirmEmail(email2);
   await vp.goto(`${BASE}/admin/demandes/${req2.id}`); await vp.click("button:has-text('Qualification vérifiée')"); await vp.waitForSelector(".alert.ok");
   const [o2] = await sql`select o.id, o.currency, o.amount::text, o.payment_reference from enrollment_requests r join orders o on o.id = r.order_id where r.id = ${req2.id}`;
   expect(o2.currency === "EUR" && o2.amount === "220.00" && o2.payment_reference !== o1.payment_reference, "France : 220 EUR, référence unique");
-  await vp.goto(`${BASE}/admin/demandes/${req2.id}`); await vp.fill("#bank_reference", "SEPA-FR-0001"); await vp.click("button:has-text('Paiement vérifié')"); await vp.waitForSelector(".copy input");
+  await vp.goto(`${BASE}/admin/demandes/${req2.id}`); await vp.fill("#bank_reference", `SEPA-FR-${run}`); await vp.fill("#amount_received", "220"); await vp.click("button:has-text('Paiement vérifié')"); await vp.waitForSelector(".copy input");
   await vp.goto(`${BASE}/admin/demandes/${req2.id}`); await vp.click("summary:has-text('remboursement')");
   await vp.fill("form:has(input[name=confirm]) input[name=reason]", "Demande du client sous 14 jours"); await vp.check("input[name=confirm]"); await vp.click("button:has-text('Enregistrer le remboursement')"); await vp.waitForSelector(".alert.ok");
   const [g2] = await sql`select revoked_at is not null as revoked, revoke_reason from access_grants where order_id = ${o2.id}`;
   expect(g2.revoked && g2.revoke_reason.startsWith("Remboursement intégral"), "remboursement : accès révoqué");
   ok("Hors Maroc : 220 € (prix fixé, pas de conversion), référence unique ; remboursement intégral confirmé : accès révoqué");
 
+  // ── Un même virement ne valide jamais deux commandes ──
+  {
+    const [o3] = await as(V.id, (tx) => tx`insert into orders (user_id, program_id, currency, amount, method, created_by) values (${o1.uid}, ${U.id}, 'MAD', 500, 'virement', ${V.id}) returning id`);
+    await vp.goto(`${BASE}/admin/medecins/${o1.uid}`);
+    const f = vp.locator(`form:has(input[name=order_id][value="${o3.id}"]):has(input[name=bank_reference])`);
+    await f.locator("input[name=bank_reference]").fill(`VIR-BMCE-${run}`); await f.locator("input[name=amount_received]").fill("500"); await f.locator("button").click();
+    await vp.waitForSelector(".alert.err");
+    expect((await vp.textContent(".alert.err")).includes("déjà servi") && (await sql`select status from orders where id = ${o3.id}`)[0].status === "pending", "référence de virement réutilisée : refus");
+    ok("Paiement : une référence de virement déjà utilisée ne valide pas une seconde commande");
+  }
+
+  // ── Identité d'un compte existant jamais écrasée par une demande ──
+  {
+    const slug2 = `formation-com2-${run}`;
+    await as(V.id, (tx) => tx`insert into programs (slug, title, kind, eligible_professions, published, listed, price_mad, price_eur) values (${slug2}, ${`Deuxième formation E2E ${run}`}, 'training', '{dermatologue,medecin_esthetique}', true, true, 900, 90)`);
+    const pi = await pageFor(null);
+    await pi.goto(`${BASE}/formations/${slug2}/inscription`);
+    await pi.fill("#full_name", "Dr Usurpateur"); await pi.fill("#email", email); await pi.selectOption("#profession", "medecin_esthetique"); await pi.fill("#professional_id", "AUTRE-999"); await pi.check("input[name=consent]");
+    await pi.waitForTimeout(3100); await pi.click("button[type=submit]"); await pi.waitForURL(/merci/);
+    await confirmEmail(email);
+    const [ri] = await sql`select r.id from enrollment_requests r join programs p on p.id = r.program_id where r.email = ${email} and p.slug = ${slug2}`;
+    await vp.goto(`${BASE}/admin/demandes/${ri.id}`);
+    expect((await text(vp)).includes("qualification vérifiée différente"), "avertissement à l'écran");
+    await vp.click("button:has-text('Qualification vérifiée')"); await vp.waitForSelector(".alert.err");
+    const [still] = await sql`select profession, professional_id from users where id = ${o1.uid}`;
+    expect(still.profession === "dermatologue" && still.professional_id === "ORDRE-12345", "identité inchangée");
+    ok("Compte existant : une demande avec une autre identité professionnelle est signalée et ne peut pas être acceptée ; le compte reste intact");
+  }
+
   // ── Refus motivé ──
   const pf3 = await pageFor(null);
   const email3 = `refus-${run}@x.test`;
   await fill(pf3, { name: "Dr Refus Test", email: email3 }); await pf3.waitForTimeout(3100); await pf3.click("button[type=submit]"); await pf3.waitForURL(/merci/);
   const [req3] = await sql`select id from enrollment_requests where email = ${email3}`;
+  await confirmEmail(email3);
   await vp.goto(`${BASE}/admin/demandes/${req3.id}`); await vp.fill("#reason", "Numéro d'Ordre introuvable"); await vp.click("button:has-text('Refuser')"); await vp.waitForSelector(".alert.ok");
   const [r3] = await sql`select status, reject_reason, user_id from enrollment_requests where id = ${req3.id}`;
   expect(r3.status === "rejected" && r3.reject_reason === "Numéro d'Ordre introuvable" && r3.user_id === null, "refus");
   ok("Refus motivé : demande refusée, aucun compte créé");
+  const [leak] = await sql`select count(*)::int as n from audit_log where action like 'enrollment_requests.%' and (details::text ilike ${'%' + email + '%'} or details::text ilike ${'%' + email2 + '%'} or details::text like '%ORDRE-12345%')`;
+  expect(leak.n === 0, `journal sans e-mail ni n° d'Ordre (${leak.n})`);
+  ok("Journal : les demandes sont tracées sans e-mail, téléphone ni n° d'Ordre (minimisation)");
 
   // ── Limite de fréquence (5 demandes par heure et par connexion) ──
   if (!process.env.SESSION_SECRET) {

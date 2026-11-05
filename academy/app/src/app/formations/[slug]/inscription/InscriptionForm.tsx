@@ -30,6 +30,10 @@ export function InscriptionForm({ slug, professions, countries }: { slug: string
         <input type="checkbox" name="consent" required style={{ marginTop: 3 }} />
         <span>J&apos;accepte que CELLULIFT Academy utilise ces informations pour vérifier ma qualification et traiter ma demande. Un justificatif éventuel est supprimé 30 jours après la décision.</span>
       </label>
+      <label className="row small" style={{ alignItems: "flex-start", gap: 10 }}>
+        <input type="checkbox" name="marketing" style={{ marginTop: 3 }} />
+        <span>J&apos;accepte d&apos;être contacté(e) par CELLULIFT Academy au sujet de ses formations et de ses services (facultatif, révocable à tout moment).</span>
+      </label>
       <SubmitButton className="btn solid">Envoyer ma demande</SubmitButton>
       <p className="small muted">Aucun paiement à cette étape : les modalités de paiement vous sont envoyées après vérification.</p>
     </form>

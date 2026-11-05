@@ -11,15 +11,15 @@ export default async function Demandes({ searchParams }: { searchParams: Promise
   const { etape = "toutes", erreur, info } = await searchParams;
   const all = await requestRows();
   const f = await funnel();
-  const rows = all.filter((r) => etape === "toutes" || stageOf(r.status, r.order_status) === etape);
-  const count = (k: string) => all.filter((r) => stageOf(r.status, r.order_status) === k).length;
+  const rows = all.filter((r) => etape === "toutes" || stageOf(r.status, r.order_status, r.confirmed) === etape);
+  const count = (k: string) => all.filter((r) => stageOf(r.status, r.order_status, r.confirmed) === k).length;
   return (
     <Shell user={admin} active="/admin/demandes">
       <div className="page-head"><div><span className="eyebrow">Formations · ventes</span><h1 className="display h1">Demandes d&apos;inscription</h1></div></div>
       {erreur && <p className="alert err" role="alert" style={{ marginBottom: 16 }}>{erreur}</p>}
       {info && <p className="alert ok" role="status" style={{ marginBottom: 16 }}>{info}</p>}
       <div className="grid g4" style={{ marginBottom: 22 }}>
-        {[["Demandes", f.demandes], ["Vérifiées", f.verifiees], ["Payées", f.payees], ["Formation commencée", f.commencees]].map(([l, v]) => (
+        {[["Demandes confirmées", f.confirmees], ["Vérifiées", f.verifiees], ["Payées", f.payees], ["Formation commencée", f.commencees]].map(([l, v]) => (
           <div key={String(l)} className="glass card kpi"><span className="eyebrow">{l}</span><div className="v">{v}</div></div>
         ))}
       </div>
@@ -33,7 +33,7 @@ export default async function Demandes({ searchParams }: { searchParams: Promise
               <thead><tr><th>Demandeur</th><th>Formation</th><th>Profession</th><th>Commande</th><th>Étape</th><th>Reçue le</th></tr></thead>
               <tbody>
                 {rows.map((r) => {
-                  const [label, cls] = stageLabel[stageOf(r.status, r.order_status)];
+                  const [label, cls] = stageLabel[stageOf(r.status, r.order_status, r.confirmed)];
                   return (
                     <tr key={r.id}>
                       <td><a href={`/admin/demandes/${r.id}`}><b>{r.full_name}</b></a><div className="small muted">{r.email} · {r.country}</div></td>

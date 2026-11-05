@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { requireAdmin, issueToken, type User } from "@/lib/auth";
 import { sql, withActor } from "@/lib/db";
 import { sendMail } from "@/lib/mail";
+import { flashLink } from "@/lib/flash";
 import { currencyFor, fmtPrice, isProfession, type Currency } from "@/lib/professions";
 
 const s = (f: FormData, k: string) => String(f.get(k) ?? "").trim();
@@ -13,7 +14,10 @@ const back = (path: string, params: Record<string, string>): never => redirect(`
 /** Message lisible à partir d'un refus de la base (garde-fous) ; jamais de détail technique brut. */
 const dbMessage = (e: unknown) => {
   const m = e instanceof Error ? e.message : String(e);
-  return /violates|syntax|relation|column/.test(m) ? "Opération refusée par les règles de LIFT." : m;
+  if (/orders_bank_reference_once/.test(m)) return "Cette référence de virement a déjà servi à valider une autre commande : vérifiez le relevé.";
+  if (/access_grants_one_active/.test(m)) return "Ce professionnel a déjà un accès actif à cette formation.";
+  if (/violates|syntax|relation|column|duplicate key/.test(m)) { console.error("[admin] refus de la base :", m); return "Opération refusée par les règles de LIFT."; }
+  return m;
 };
 const appUrl = () => process.env.APP_URL ?? "http://localhost:3100";
 
@@ -50,9 +54,17 @@ export async function approveRequest(form: FormData) {
   let order: { id: string; payment_reference: string } | undefined;
   try {
     order = await withActor(admin.id, async (tx) => {
-      const [existing] = await tx<{ id: string; role: string }[]>`select id, role from users where email = ${r.email}`;
+      const [existing] = await tx<{ id: string; role: string; profession: string | null; professional_id: string | null; qualification_status: string }[]>`
+        select id, role, profession, professional_id, qualification_status from users where email = ${r.email} for update`;
       if (existing?.role === "admin") throw new Error("Cette adresse appartient à un compte administrateur.");
       if (existing?.id === admin.id) throw new Error("On ne vérifie pas sa propre qualification.");
+      // Une demande (formulaire public) ne remplace jamais en silence l'identité professionnelle déjà vérifiée d'un compte.
+      if (existing?.qualification_status === "verified" && (existing.profession !== r.profession || (existing.professional_id ?? "").toLowerCase() !== (r.professional_id ?? "").toLowerCase()))
+        throw new Error("Un compte existant porte une qualification vérifiée différente : acceptation bloquée. Vérifiez l'identité du demandeur.");
+      if (existing) {
+        const [busy] = await tx`select 1 from orders where user_id = ${existing.id} and program_id = ${r.program_id} and status in ('pending', 'paid') limit 1`;
+        if (busy) throw new Error("Ce professionnel a déjà une commande en cours ou payée pour cette formation.");
+      }
       const userId = existing?.id ?? (await tx<{ id: string }[]>`insert into users (email, full_name) values (${r.email}, ${r.full_name}) returning id`)[0].id;
       // Deux temps : une nouvelle profession remet la vérification à zéro, puis le vérificateur la valide.
       await tx`update users set profession = ${r.profession}, professional_id = ${r.professional_id}, country = ${r.country}, qualification_status = 'pending' where id = ${userId}`;
@@ -61,7 +73,8 @@ export async function approveRequest(form: FormData) {
       const [o] = await tx<{ id: string; payment_reference: string }[]>`
         insert into orders (user_id, program_id, currency, amount, method, created_by, note)
         values (${userId}, ${r.program_id}, ${currency}, ${amount}, 'virement', ${admin.id}, ${`Demande ${r.id}`}) returning id, payment_reference`;
-      await tx`update enrollment_requests set status = 'approved', reviewed_by = ${admin.id}, reviewed_at = now(), user_id = ${userId}, order_id = ${o.id} where id = ${r.id}`;
+      const done = await tx`update enrollment_requests set status = 'approved', reviewed_by = ${admin.id}, reviewed_at = now(), user_id = ${userId}, order_id = ${o.id} where id = ${r.id} and status = 'new'`;
+      if (done.count !== 1) throw new Error("Cette demande a déjà été traitée.");
       await tx`update qualification_documents set purge_after = now() + interval '30 days' where request_id = ${r.id} and purged_at is null`;
       return o;
     });
@@ -107,7 +120,10 @@ export async function cancelRequest(form: FormData) {
   const reason = s(form, "reason");
   if (reason.length < 3) back(`/admin/demandes/${r.id}`, { erreur: "Indiquez le motif de l'annulation." });
   try {
-    await withActor(admin.id, (tx) => tx`update enrollment_requests set status = 'cancelled', reviewed_by = ${admin.id}, reviewed_at = now(), reject_reason = ${reason} where id = ${r.id} and status = 'new'`);
+    await withActor(admin.id, async (tx) => {
+      await tx`update enrollment_requests set status = 'cancelled', reviewed_by = ${admin.id}, reviewed_at = now(), reject_reason = ${reason} where id = ${r.id} and status = 'new'`;
+      await tx`update qualification_documents set purge_after = least(purge_after, now() + interval '30 days') where request_id = ${r.id} and purged_at is null`;
+    });
   } catch (e) {
     back(`/admin/demandes/${r.id}`, { erreur: dbMessage(e) });
   }
@@ -134,11 +150,14 @@ export async function markOrderPaid(form: FormData) {
   const page = returnTo(form, `/admin/medecins/${o.user_id}`);
   const bankRef = s(form, "bank_reference");
   if (bankRef.length < 3) back(page, { erreur: "Indiquez la référence du virement reçu (relevé bancaire)." });
+  const received = Number(s(form, "amount_received").replace(/\s/g, "").replace(",", "."));
+  if (!Number.isFinite(received) || received <= 0) back(page, { erreur: "Indiquez le montant effectivement reçu sur le compte." });
+  if (received.toFixed(2) !== Number(o.amount).toFixed(2)) back(page, { erreur: `Montant reçu (${received}) différent du montant dû (${Number(o.amount)} ${o.currency}) : paiement non validé. En cas de virement partiel, contactez le professionnel.` });
   try {
     await withActor(admin.id, async (tx) => {
-      await tx`update orders set status = 'paid', paid_checked_by = ${admin.id}, paid_checked_at = now(), reference = ${bankRef} where id = ${o.id} and status = 'pending'`;
-      const [still] = await tx<{ status: string }[]>`select status from orders where id = ${o.id}`;
-      if (still.status !== "paid") throw new Error("Cette commande n'est plus en attente de paiement.");
+      const upd = await tx`update orders set status = 'paid', paid_checked_by = ${admin.id}, paid_checked_at = now(), reference = ${bankRef}, amount_received = ${received.toFixed(2)}
+                            where id = ${o.id} and status = 'pending'`;
+      if (upd.count !== 1) throw new Error("Cette commande n'est plus en attente de paiement (déjà validée ou annulée).");
       await tx`insert into access_grants (user_id, program_id, source, order_id, granted_by, expires_at)
                values (${o.user_id}, ${o.program_id}, 'purchase', ${o.id}, ${admin.id},
                        case when ${o.access_months}::int is null then null else now() + make_interval(months => ${o.access_months}::int) end)`;
@@ -152,7 +171,8 @@ export async function markOrderPaid(form: FormData) {
     `Nous avons bien reçu votre paiement (référence ${o.payment_reference}). Votre accès à « ${o.title} » est ouvert${o.access_months ? ` pour ${o.access_months} mois` : ""}.`,
     o.password_hash ? "Connectez-vous avec votre adresse e-mail habituelle." : "Créez votre mot de passe avec ce lien personnel (valable 14 jours).",
   ], { label: o.password_hash ? "Me connecter" : "Créer mon accès", href: link });
-  back(page, o.password_hash ? { info: `Paiement enregistré, accès ouvert.${sent ? " E-mail envoyé." : ""}` } : { info: "Paiement enregistré, accès ouvert.", lien: link, envoye: sent ? "1" : "0" });
+  if (!o.password_hash) await flashLink(link);
+  back(page, o.password_hash ? { info: `Paiement enregistré, accès ouvert.${sent ? " E-mail envoyé." : ""}` } : { info: "Paiement enregistré, accès ouvert.", lien: "1", envoye: sent ? "1" : "0" });
 }
 
 export async function cancelOrder(form: FormData) {

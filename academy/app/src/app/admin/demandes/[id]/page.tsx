@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Shell, fmtDate } from "@/components/Shell";
 import { CopyField } from "@/components/CopyField";
+import { readFlashLink } from "@/lib/flash";
 import { SubmitButton } from "@/components/SubmitButton";
 import { requireAdmin } from "@/lib/auth";
 import { sql } from "@/lib/db";
@@ -15,6 +16,7 @@ export default async function Demande({ params, searchParams }: { params: Promis
   const admin = await requireAdmin();
   const { id } = await params;
   const sp = await searchParams;
+  const flash = sp.lien ? await readFlashLink() : null;
   if (!/^[0-9a-f-]{36}$/i.test(id)) notFound();
   const [r] = await requestRows(id);
   if (!r) notFound();
@@ -26,7 +28,11 @@ export default async function Demande({ params, searchParams }: { params: Promis
   const proofs = await sql<{ id: string; mime_type: string; size_bytes: number; uploaded_at: Date; purge_after: Date | null; purged_at: Date | null }[]>`
     select id, mime_type, size_bytes, uploaded_at, purge_after, purged_at from qualification_documents where request_id = ${id} order by uploaded_at`;
   const [me] = await sql<{ v: boolean }[]>`select can_verify_qualifications as v from users where id = ${admin.id}`;
-  const stage = stageOf(r.status, r.order_status);
+  // Compte existant avec la même adresse : à comparer avant d'accepter (pas d'écrasement silencieux).
+  const [acct] = await sql<{ id: string; role: string; profession: string | null; professional_id: string | null; qualification_status: string }[]>`
+    select id, role, profession, professional_id, qualification_status from users where email = ${r.email}`;
+  const conflict = acct && acct.qualification_status === "verified" && (acct.profession !== r.profession || (acct.professional_id ?? "").toLowerCase() !== (d.professional_id ?? "").toLowerCase());
+  const stage = stageOf(r.status, r.order_status, r.confirmed);
   const [label, cls] = stageLabel[stage];
   const cur = currencyFor(r.country) as Currency;
   const price = cur === "MAD" ? d.price_mad : cur === "EUR" ? d.price_eur : d.price_usd;
@@ -40,11 +46,11 @@ export default async function Demande({ params, searchParams }: { params: Promis
       </div>
       {sp.erreur && <p className="alert err" role="alert" style={{ marginBottom: 16 }}>{sp.erreur}</p>}
       {sp.info && <p className="alert ok" role="status" style={{ marginBottom: 16 }}>{sp.info}</p>}
-      {sp.lien && (
+      {flash && (
         <div className="glass card stack" style={{ marginBottom: 20, gap: 10 }}>
           <b>Lien de création du mot de passe (14 jours)</b>
           <p className="small muted">{sp.envoye === "1" ? "L'e-mail « accès ouvert » est parti. Vous pouvez aussi transmettre ce lien." : "Aucun e-mail n'a été envoyé (envoi non configuré) : transmettez ce lien au professionnel."}</p>
-          <CopyField value={sp.lien} label="Lien à transmettre" />
+          <CopyField value={flash} label="Lien à transmettre" />
         </div>
       )}
       <div className="cols">
@@ -55,6 +61,8 @@ export default async function Demande({ params, searchParams }: { params: Promis
             <p className="small">{professionLabel(r.profession)} · {COUNTRIES.find(([c]) => c === r.country)?.[1] ?? r.country} · n° d&apos;Ordre : <b>{d.professional_id ?? "—"}</b></p>
             {d.message && <p className="small muted">« {d.message} »</p>}
             <p className="small muted">Consentement donné le {fmtDate(d.consent_at)} (version {d.terms_version}).</p>
+            <p className="small">{r.confirmed ? "Adresse e-mail confirmée par le demandeur." : <b>Adresse e-mail pas encore confirmée : la demande ne peut pas être acceptée.</b>}{r.marketing ? " · Accepte d'être contacté(e) commercialement." : " · Pas de consentement commercial."}</p>
+            {acct && !d.user_id && <p className={`alert ${conflict ? "err" : "info"} small`}>{acct.role === "admin" ? "Cette adresse appartient à un compte administrateur : la demande ne peut pas être acceptée." : conflict ? `Un compte existant porte déjà une qualification vérifiée différente (${professionLabel(acct.profession)}, n° ${acct.professional_id ?? "—"}). L'acceptation est bloquée : vérifiez l'identité du demandeur.` : "Un compte existe déjà avec cette adresse (client ou ancien inscrit) : la commande lui sera rattachée."} <a href={`/admin/medecins/${acct.id}`}>Voir le compte</a></p>}
             {d.user_id && <p className="small"><a href={`/admin/medecins/${d.user_id}`}>Voir la fiche du professionnel</a></p>}
           </section>
           <section className="glass card stack" style={{ gap: 8 }}>
@@ -73,11 +81,13 @@ export default async function Demande({ params, searchParams }: { params: Promis
           {d.reviewed_at && <p className="small muted">Traitée le {fmtDate(d.reviewed_at)} par {d.reviewer}{d.reject_reason ? ` · motif : ${d.reject_reason}` : ""}.</p>}
         </div>
         <aside className="stack">
+          {stage === "non_confirmee" && <section className="glass card"><p className="small muted">En attente de la confirmation de l&apos;adresse e-mail par le demandeur (lien valable 48 heures).</p></section>}
           {stage === "nouvelle" && (
             me?.v ? (
               <section className="glass card stack" style={{ gap: 12 }}>
                 <span className="eyebrow">Vérification</span>
                 <p className="small">Profession autorisée : {d.eligible.includes(r.profession) ? "oui" : <b>non</b>}. Prix ({cur}) : <b>{fmtPrice(price, cur) ?? "non défini"}</b>.</p>
+                <p className="small muted">Devise appliquée selon le pays déclaré : vérifiez qu&apos;il correspond à l&apos;inscription à l&apos;Ordre.</p>
                 <form action={approveRequest} className="stack" style={{ gap: 8 }}>
                   <input type="hidden" name="request_id" value={id} />
                   <SubmitButton className="btn solid">Qualification vérifiée · accepter</SubmitButton>
@@ -92,7 +102,7 @@ export default async function Demande({ params, searchParams }: { params: Promis
               </section>
             ) : <section className="glass card"><p className="small muted">Seul un vérificateur habilité peut accepter ou refuser cette demande.</p></section>
           )}
-          {stage === "nouvelle" && (
+          {(stage === "nouvelle" || stage === "non_confirmee") && (
             <details className="glass card"><summary className="small" style={{ cursor: "pointer" }}>Annuler la demande (doublon, demande retirée…)</summary>
               <form action={cancelRequest} className="stack" style={{ gap: 8, marginTop: 10 }}><input type="hidden" name="request_id" value={id} />
                 <input className="input" name="reason" required minLength={3} placeholder="Motif" /><SubmitButton className="btn sm">Annuler la demande</SubmitButton></form></details>
@@ -107,6 +117,8 @@ export default async function Demande({ params, searchParams }: { params: Promis
                     <input type="hidden" name="order_id" value={r.order_id} /><input type="hidden" name="return_to" value={page} />
                     <label className="small" htmlFor="bank_reference">Référence du virement reçu (relevé bancaire)</label>
                     <input className="input" id="bank_reference" name="bank_reference" required minLength={3} maxLength={200} />
+                    <label className="small" htmlFor="amount_received">Montant reçu sur le compte ({r.currency})</label>
+                    <input className="input" id="amount_received" name="amount_received" required inputMode="decimal" />
                     <SubmitButton className="btn solid">Paiement vérifié · ouvrir l&apos;accès</SubmitButton>
                   </form>
                   <details><summary className="small" style={{ cursor: "pointer" }}>Annuler la commande</summary>

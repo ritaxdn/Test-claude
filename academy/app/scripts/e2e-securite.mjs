@@ -56,7 +56,7 @@ try {
   const C = await account("Dr C (client HANOVER)");
   await as(admin.id, (tx) => tx`insert into device_ownerships (user_id, device_model_id, serial_number) values (${C.id}, ${hanover.device_model_id}, ${`HN-S-${run}`})`);
   const [o] = await as(admin.id, (tx) => tx`insert into orders (user_id, program_id, currency, amount, method, created_by) values (${A.id}, ${t.id}, 'MAD', 1000, 'virement', ${admin.id}) returning id`);
-  await as(admin.id, (tx) => tx`update orders set status = 'paid', paid_checked_by = ${admin.id}, paid_checked_at = now(), reference = 'VIR-SECU-1' where id = ${o.id}`);
+  await as(admin.id, (tx) => tx`update orders set status = 'paid', paid_checked_by = ${admin.id}, paid_checked_at = now(), reference = ${'VIR-SECU-1-' + run}, amount_received = amount where id = ${o.id}`);
   await as(admin.id, (tx) => tx`insert into access_grants (user_id, program_id, source, order_id, granted_by) values (${A.id}, ${t.id}, 'purchase', ${o.id}, ${admin.id})`);
   const sa = await statuses(A, R);
   expect(sa.page === 200 && sa.lesson === 200 && sa.video === 200 && sa.doc === 200 && sa.prog === 200, `A doit tout ouvrir ${JSON.stringify(sa)}`);

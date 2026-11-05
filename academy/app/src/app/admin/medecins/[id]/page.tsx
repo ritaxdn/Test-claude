@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Shell, Progress, pct, fmtDate } from "@/components/Shell";
 import { CopyField } from "@/components/CopyField";
+import { readFlashLink } from "@/lib/flash";
 import { requireAdmin } from "@/lib/auth";
 import { sql } from "@/lib/db";
 import { doctorRows, trainingStatus } from "@/lib/admin-data";
@@ -16,6 +17,7 @@ export default async function Medecin({ params, searchParams }: { params: Promis
   const admin = await requireAdmin();
   const { id } = await params;
   const sp = await searchParams;
+  const flash = sp.lien ? await readFlashLink() : null;
   if (!/^[0-9a-f-]{36}$/i.test(id)) notFound();
   const [u] = await sql<{ id: string; full_name: string; email: string; status: string; specialty: string | null; clinic: string | null; city: string | null; created_at: Date; activated_at: Date | null; last_login_at: Date | null }[]>`
     select id, full_name, email, status, specialty, clinic, city, created_at, activated_at, last_login_at from users where id = ${id} and role = 'doctor'`;
@@ -49,11 +51,11 @@ export default async function Medecin({ params, searchParams }: { params: Promis
       </div>
       {sp.erreur && <p className="alert err" role="alert" style={{ marginBottom: 16 }}>{sp.erreur}</p>}
       {sp.info && <p className="alert ok" role="status" style={{ marginBottom: 16 }}>{sp.info}</p>}
-      {sp.lien && (
+      {flash && (
         <div className="glass card stack" style={{ marginBottom: 20, gap: 10 }}>
           <b>{sp.type === "reset" ? "Lien de réinitialisation (1 heure)" : "Lien d'invitation (14 jours)"}</b>
           <p className="small muted">{sp.envoye === "1" ? "L'e-mail est parti. Vous pouvez aussi transmettre ce lien directement." : "Aucun e-mail n'a été envoyé (envoi non configuré) : transmettez ce lien au médecin, par e-mail ou WhatsApp."}</p>
-          <CopyField value={sp.lien} label="Lien à transmettre" />
+          <CopyField value={flash} label="Lien à transmettre" />
         </div>
       )}
       <div className="cols">
@@ -118,6 +120,7 @@ export default async function Medecin({ params, searchParams }: { params: Promis
                 {o.status === "pending" && (
                   <form action={markOrderPaid} className="row wrap" style={{ gap: 6 }}><input type="hidden" name="order_id" value={o.id} /><input type="hidden" name="return_to" value={page} />
                     <input className="input" name="bank_reference" required minLength={3} placeholder="Référence du virement reçu" aria-label="Référence du virement reçu" style={{ flex: 1, minWidth: 160 }} />
+                    <input className="input" name="amount_received" required inputMode="decimal" placeholder={`Montant reçu (${o.currency})`} aria-label="Montant reçu" style={{ width: 150 }} />
                     <button className="btn sm solid" type="submit">Paiement vérifié</button></form>
                 )}
                 {o.status === "pending" && (

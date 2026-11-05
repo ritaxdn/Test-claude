@@ -63,8 +63,10 @@ export async function sendMail(to: string, subject: string, lines: string[], cta
       body: JSON.stringify({ from: FROM(), to, subject, html, text: [...lines, cta ? `${cta.label} : ${cta.href}` : ""].join("\n\n") }),
       signal: AbortSignal.timeout(8000),
     });
+    if (!res.ok) console.error(`[mail] envoi refusé (${res.status}) : ${subject}`);
     return res.ok;
-  } catch {
+  } catch (e) {
+    console.error(`[mail] envoi impossible : ${subject}`, e instanceof Error ? e.message : e);
     return false;
   }
 }
