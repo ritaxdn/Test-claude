@@ -28,8 +28,8 @@ export default async function Medecin({ params, searchParams }: { params: Promis
   const [q] = await sql<{ profession: string | null; professional_id: string | null; country: string | null; qualification_status: string; checked_at: Date | null; checker: string | null; qualification_note: string | null }[]>`
     select u.profession, u.professional_id, u.country, u.qualification_status, u.qualification_checked_at as checked_at, c.full_name as checker, u.qualification_note
       from users u left join users c on c.id = u.qualification_checked_by where u.id = ${id}`;
-  const orders = await sql<{ id: string; title: string; status: string; payment_reference: string; amount: string; currency: Currency; reference: string | null; created_at: Date; paid_checked_at: Date | null; close_reason: string | null }[]>`
-    select o.id, p.title, o.status, o.payment_reference, o.amount, o.currency, o.reference, o.created_at, o.paid_checked_at, o.close_reason
+  const orders = await sql<{ created_by: string; id: string; title: string; status: string; payment_reference: string; amount: string; currency: Currency; reference: string | null; created_at: Date; paid_checked_at: Date | null; close_reason: string | null }[]>`
+    select o.id, p.title, o.status, o.payment_reference, o.amount, o.currency, o.reference, o.created_at, o.paid_checked_at, o.close_reason, o.created_by
       from orders o join programs p on p.id = o.program_id where o.user_id = ${id} order by o.created_at desc`;
   const grants = await sql<{ id: string; title: string; source: string; reason: string | null; granted_at: Date; expires_at: Date | null; revoked_at: Date | null; revoke_reason: string | null; granter: string | null }[]>`
     select g.id, p.title, g.source, g.reason, g.granted_at, g.expires_at, g.revoked_at, g.revoke_reason, a.full_name as granter
@@ -38,6 +38,7 @@ export default async function Medecin({ params, searchParams }: { params: Promis
   const qLabel: Record<string, [string, string]> = { none: ["Non renseignée", "lock"], pending: ["En attente de vérification", "warn"], verified: ["Vérifiée", "ok"], rejected: ["Refusée", "lock"] };
   const oLabel: Record<string, [string, string]> = { pending: ["En attente de paiement", "warn"], paid: ["Payée", "ok"], cancelled: ["Annulée", "lock"], refunded: ["Remboursée", "lock"] };
   const page = `/admin/medecins/${id}`;
+  const [{ fourEyes, checker_id }] = await sql<{ fourEyes: boolean; checker_id: string | null }[]>`select lift_four_eyes() as "fourEyes", qualification_checked_by as checker_id from users where id = ${id}`;
   const rows = (await doctorRows(id)).filter((r) => r.program_id);
   const details = await Promise.all(rows.map((r) => programLessons(id, r.program_id!)));
   const accountBadge = u.status === "active" ? <span className="badge ok">Compte actif</span> : u.status === "invited" ? <span className="badge warn">Invitation en attente</span> : <span className="badge lock">Accès désactivé</span>;
@@ -117,7 +118,8 @@ export default async function Medecin({ params, searchParams }: { params: Promis
               <div key={o.id} className="stack" style={{ gap: 6, borderTop: "1px solid var(--line)", paddingTop: 8 }}>
                 <div className="row between wrap"><b className="small">{o.title}</b><span className={`badge ${oLabel[o.status][1]}`}>{oLabel[o.status][0]}</span></div>
                 <p className="small muted">{o.payment_reference} · {fmtPrice(o.amount, o.currency)} · créée le {fmtDate(o.created_at)}{o.reference ? ` · virement ${o.reference}` : ""}{o.close_reason ? ` · ${o.close_reason}` : ""}</p>
-                {o.status === "pending" && (
+                {o.status === "pending" && fourEyes && o.created_by === admin.id && <p className="small muted">Séparation des tâches : une autre personne valide ce paiement.</p>}
+                {o.status === "pending" && !(fourEyes && o.created_by === admin.id) && (
                   <form action={markOrderPaid} className="row wrap" style={{ gap: 6 }}><input type="hidden" name="order_id" value={o.id} /><input type="hidden" name="return_to" value={page} />
                     <input className="input" name="bank_reference" required minLength={3} placeholder="Référence du virement reçu" aria-label="Référence du virement reçu" style={{ flex: 1, minWidth: 160 }} />
                     <input className="input" name="amount_received" required inputMode="decimal" placeholder={`Montant reçu (${o.currency})`} aria-label="Montant reçu" style={{ width: 150 }} />
@@ -150,6 +152,7 @@ export default async function Medecin({ params, searchParams }: { params: Promis
             ))}
             {trainings.length > 0 && (
               <details><summary className="small" style={{ cursor: "pointer" }}>Offrir l&apos;accès à une formation</summary>
+                {fourEyes && checker_id === admin.id && <p className="small muted" style={{ marginTop: 6 }}>Séparation des tâches : vous avez vérifié la qualification de ce professionnel, une autre personne doit offrir l&apos;accès.</p>}
                 <form action={offerAccess} className="stack" style={{ gap: 6, marginTop: 6 }}><input type="hidden" name="user_id" value={u.id} />
                   <select className="input" name="program_id" required defaultValue="" aria-label="Formation"><option value="" disabled>Formation…</option>{trainings.map((t) => <option key={t.id} value={t.id}>{t.title}</option>)}</select>
                   <input className="input" name="reason" required minLength={3} placeholder="Motif (obligatoire, tracé)" aria-label="Motif" />

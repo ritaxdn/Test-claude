@@ -37,6 +37,10 @@ export default async function Demande({ params, searchParams }: { params: Promis
   const cur = currencyFor(r.country) as Currency;
   const price = cur === "MAD" ? d.price_mad : cur === "EUR" ? d.price_eur : d.price_usd;
   const page = `/admin/demandes/${id}`;
+  const [fe] = await sql<{ on: boolean; creator: string | null; creator_name: string | null }[]>`
+    select lift_four_eyes() as on, o.created_by as creator, u.full_name as creator_name from (select 1) x
+      left join orders o on o.id = ${r.order_id ?? null} left join users u on u.id = o.created_by`;
+  const sameHands = fe.on && fe.creator === admin.id;
   return (
     <Shell user={admin} active="/admin/demandes">
       <p className="crumbs mono"><a href="/admin/demandes">Demandes</a> / {r.full_name}</p>
@@ -111,7 +115,8 @@ export default async function Demande({ params, searchParams }: { params: Promis
             <section className="glass card stack" style={{ gap: 12 }}>
               <span className="eyebrow">Commande</span>
               <p><b>{r.payment_reference}</b> · {fmtPrice(r.amount, r.currency as Currency)}</p>
-              {r.order_status === "pending" && (
+              {r.order_status === "pending" && sameHands && <p className="alert info small">Séparation des tâches : vous avez accepté cette demande, le paiement doit être validé par une autre personne de l&apos;équipe.</p>}
+              {r.order_status === "pending" && !sameHands && (
                 <>
                   <form action={markOrderPaid} className="stack" style={{ gap: 8 }}>
                     <input type="hidden" name="order_id" value={r.order_id} /><input type="hidden" name="return_to" value={page} />

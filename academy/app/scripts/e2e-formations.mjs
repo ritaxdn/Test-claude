@@ -75,6 +75,8 @@ try {
   const [o1] = await as(admin.id, (tx) => tx`insert into orders (user_id, program_id, currency, amount, method, created_by) values (${pro.id}, ${T.id}, 'MAD', 1500, 'virement', ${admin.id}) returning id`);
   await refused(() => as(admin.id, (tx) => tx`insert into access_grants (user_id, program_id, source, order_id, granted_by) values (${pro.id}, ${T.id}, 'purchase', ${o1.id}, ${admin.id})`), "pas payée", "accès « achat » avec une commande en attente");
   ok("Accès « achat » refusé par la base tant que la commande n'est pas payée");
+  await refused(() => as(admin.id, (tx) => tx`update orders set status = 'paid', paid_checked_by = ${admin.id}, paid_checked_at = now(), reference = ${'VIR-SEUL-' + run}, amount_received = amount where id = ${o1.id}`), "Séparation des tâches", "paiement validé par la personne qui a créé la commande");
+  ok("Séparation des tâches : la personne qui a créé la commande ne peut pas valider son paiement");
 
   // ── 11 (base). Un non-admin ne crée ni commande, ni accès, ni validation ──
   await refused(() => sql`insert into orders (user_id, program_id, currency, amount, method, created_by) values (${pro.id}, ${T.id}, 'MAD', 1, 'virement', ${fake.id})`, "administrateur actif", "commande créée par un non-admin");
@@ -82,11 +84,11 @@ try {
   await refused(() => sql`insert into access_grants (user_id, program_id, source, reason, granted_by) values (${pro.id}, ${T.id}, 'offered', 'cadeau', ${fake.id})`, "administrateur actif", "accès offert par un non-admin");
   await refused(() => sql`update users set qualification_status = 'verified', qualification_checked_by = ${fake.id}, qualification_checked_at = now() where id = ${pro.id}`, "administrateur actif", "qualification validée par un non-admin");
   await refused(() => as(boss.id, (tx) => tx`update users set qualification_status = 'verified', qualification_checked_by = ${boss.id}, qualification_checked_at = now() where id = ${pro.id}`), "habilité", "qualification validée par un admin NON habilité");
-  await refused(() => sql`update orders set status = 'paid', paid_checked_by = ${admin.id}, paid_checked_at = now(), amount_received = amount where id = ${o1.id}`, "orders_check", "paiement validé sans référence");
+  await refused(() => sql`update orders set status = 'paid', paid_checked_by = ${boss.id}, paid_checked_at = now(), amount_received = amount where id = ${o1.id}`, "orders_check", "paiement validé sans référence");
   ok("Refusé par la base : commande, paiement, accès et qualification par un non-admin ; qualification par un admin non habilité ; paiement sans référence");
 
   // ── 1 + 3. Paiement vérifié, accès acheté… mais qualification en attente → toujours fermé ──
-  await as(admin.id, (tx) => tx`update orders set status = 'paid', paid_checked_by = ${admin.id}, paid_checked_at = now(), reference = ${'VIR-E2E-0001-' + run}, amount_received = amount where id = ${o1.id}`);
+  await as(boss.id, (tx) => tx`update orders set status = 'paid', paid_checked_by = ${boss.id}, paid_checked_at = now(), reference = ${'VIR-E2E-0001-' + run}, amount_received = amount where id = ${o1.id}`);
   const [g1] = await as(admin.id, (tx) => tx`insert into access_grants (user_id, program_id, source, order_id, granted_by, expires_at) values (${pro.id}, ${T.id}, 'purchase', ${o1.id}, ${admin.id}, now() + interval '12 months') returning id`);
   let r = await reach(pro, T);
   expect(closed(r), `qualification en attente : tout doit être fermé ${JSON.stringify(r)}`);
@@ -110,7 +112,7 @@ try {
 
   // ── 8. Étanchéité : l'achat n'ouvre pas les parcours technologie ; un parcours technologie ne s'achète pas ──
   expect((await get(pro, "/parcours/hanover-5g")).status === 404, "un acheteur de formation n'ouvre pas HANOVER 5G");
-  await refused(() => as(admin.id, (tx) => tx`insert into access_grants (user_id, program_id, source, reason, granted_by) values (${pro.id}, ${hanover.id}, 'offered', 'essai', ${admin.id})`), "jamais sur un parcours technologie", "accès offert sur un parcours technologie");
+  await refused(() => as(boss.id, (tx) => tx`insert into access_grants (user_id, program_id, source, reason, granted_by) values (${pro.id}, ${hanover.id}, 'offered', 'essai', ${boss.id})`), "jamais sur un parcours technologie", "accès offert sur un parcours technologie");
   await refused(() => as(admin.id, (tx) => tx`insert into orders (user_id, program_id, currency, amount, method, created_by) values (${pro.id}, ${hanover.id}, 'MAD', 1, 'virement', ${admin.id})`), "que sur une formation", "commande sur un parcours technologie");
   ok("Étanchéité : l'achat n'ouvre pas HANOVER 5G ; impossible d'acheter ou d'offrir un parcours technologie");
 
@@ -133,7 +135,7 @@ try {
 
   // ── 6. Remboursement intégral confirmé → accès acheté révoqué automatiquement ──
   const [o2] = await as(admin.id, (tx) => tx`insert into orders (user_id, program_id, currency, amount, method, created_by) values (${pro.id}, ${T.id}, 'EUR', 150, 'carte', ${admin.id}) returning id`);
-  await as(admin.id, (tx) => tx`update orders set status = 'paid', paid_checked_by = ${admin.id}, paid_checked_at = now(), reference = ${'TPE-E2E-0002-' + run}, amount_received = amount where id = ${o2.id}`);
+  await as(boss.id, (tx) => tx`update orders set status = 'paid', paid_checked_by = ${boss.id}, paid_checked_at = now(), reference = ${'TPE-E2E-0002-' + run}, amount_received = amount where id = ${o2.id}`);
   const [g2] = await as(admin.id, (tx) => tx`insert into access_grants (user_id, program_id, source, order_id, granted_by) values (${pro.id}, ${T.id}, 'purchase', ${o2.id}, ${admin.id}) returning id`);
   expect(open(await reach(pro, T)), "nouvel achat : accès rouvert");
   await refused(() => as(admin.id, (tx) => tx`update orders set status = 'refunded' where id = ${o2.id}`), "administrateur actif", "remboursement sans auteur ni motif");
@@ -145,15 +147,16 @@ try {
   ok("Remboursement intégral confirmé : accès révoqué automatiquement (motif tracé) ; statut irréversible");
 
   // ── Exception tracée : accès offert avec motif après remboursement ──
-  await refused(() => as(admin.id, (tx) => tx`insert into access_grants (user_id, program_id, source, granted_by) values (${pro.id}, ${T.id}, 'offered', ${admin.id})`), "access_grants_check", "accès offert sans motif");
-  const [g3] = await as(admin.id, (tx) => tx`insert into access_grants (user_id, program_id, source, reason, granted_by) values (${pro.id}, ${T.id}, 'offered', 'Exception commerciale validée par la direction (test)', ${admin.id}) returning id`);
+  await refused(() => as(boss.id, (tx) => tx`insert into access_grants (user_id, program_id, source, granted_by) values (${pro.id}, ${T.id}, 'offered', ${boss.id})`), "access_grants_check", "accès offert sans motif");
+  const [g3] = await as(boss.id, (tx) => tx`insert into access_grants (user_id, program_id, source, reason, granted_by) values (${pro.id}, ${T.id}, 'offered', 'Exception commerciale validée par la direction (test)', ${boss.id}) returning id`);
   expect(open(await reach(pro, T)), "accès offert : ouvert");
-  await refused(() => as(admin.id, (tx) => tx`insert into access_grants (user_id, program_id, source, reason, granted_by) values (${pro.id}, ${T.id}, 'offered', 'doublon', ${admin.id})`), "access_grants_one_active", "deux accès actifs pour la même formation");
-  ok("Exception : accès offert avec motif obligatoire, tracé ; un seul accès actif par formation");
+  await refused(() => as(boss.id, (tx) => tx`insert into access_grants (user_id, program_id, source, reason, granted_by) values (${pro.id}, ${T.id}, 'offered', 'doublon', ${boss.id})`), "access_grants_one_active", "deux accès actifs pour la même formation");
+  await refused(() => as(admin.id, (tx) => tx`insert into access_grants (user_id, program_id, source, reason, granted_by) values (${pro.id}, ${T.id}, 'offered', 'Auto-offert', ${admin.id})`), "Séparation des tâches", "accès offert par la personne qui a vérifié la qualification");
+  ok("Exception : accès offert avec motif obligatoire, tracé ; un seul accès actif par formation ; jamais offert par la personne qui a vérifié la qualification");
 
   // ── 10. Accès expiré ──
   await as(admin.id, (tx) => tx`update access_grants set revoked_at = now(), revoked_by = ${admin.id}, revoke_reason = 'Remplacé (test expiration)' where id = ${g3.id}`);
-  await as(admin.id, (tx) => tx`insert into access_grants (user_id, program_id, source, reason, granted_by, granted_at, expires_at) values (${pro.id}, ${T.id}, 'offered', 'Accès de 1 jour (test)', ${admin.id}, now() - interval '2 days', now() - interval '1 day')`);
+  await as(boss.id, (tx) => tx`insert into access_grants (user_id, program_id, source, reason, granted_by, granted_at, expires_at) values (${pro.id}, ${T.id}, 'offered', 'Accès de 1 jour (test)', ${boss.id}, now() - interval '2 days', now() - interval '1 day')`);
   expect(closed(await reach(pro, T)), "expiré : fermé");
   ok("Accès expiré : fermé partout");
 
@@ -163,7 +166,7 @@ try {
   expect((await get(client, "/parcours/hanover-5g")).status === 200, "client : HANOVER 5G ouvert");
   expect(closed(await reach(client, T)), "la machine n'ouvre pas la formation");
   await as(admin.id, (tx) => tx`update users set profession = 'dermatologue', qualification_status = 'verified', qualification_checked_by = ${admin.id}, qualification_checked_at = now() where id = ${client.id}`);
-  const [g4] = await as(admin.id, (tx) => tx`insert into access_grants (user_id, program_id, source, reason, granted_by) values (${client.id}, ${T.id}, 'offered', 'Client partenaire (test)', ${admin.id}) returning id`);
+  const [g4] = await as(boss.id, (tx) => tx`insert into access_grants (user_id, program_id, source, reason, granted_by) values (${client.id}, ${T.id}, 'offered', 'Client partenaire (test)', ${boss.id}) returning id`);
   const dash = await dashboard(client);
   expect(dash.includes("HANOVER 5G — Programme opérateur") && dash.includes("Formation E2E — Lasers"), "les deux parcours au tableau de bord");
   await sql`update device_ownerships set revoked_at = now() where id = ${own.id}`;
@@ -179,7 +182,7 @@ try {
   ok("Un professionnel est renvoyé hors de l'administration");
 
   // ── 12. Traçabilité : chaque changement journalisé avec son auteur ──
-  const logs = await sql`select action, count(*)::int as n from audit_log where actor_id = ${admin.id} group by action order by action`;
+  const logs = await sql`select action, count(*)::int as n from audit_log where actor_id in (${admin.id}, ${boss.id}) group by action order by action`;
   const n = Object.fromEntries(logs.map((x) => [x.action, x.n]));
   expect(n["orders.insert"] === 2 && n["orders.update"] >= 3, `commandes journalisées ${JSON.stringify(n)}`);
   expect(n["access_grants.insert"] === 5 && n["access_grants.update"] >= 4, `accès journalisés ${JSON.stringify(n)}`);

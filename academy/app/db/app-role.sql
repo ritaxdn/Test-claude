@@ -40,3 +40,12 @@ begin
     grant execute on function lift_is_admin(uuid) to academy_app;
   end if;
 end $$;
+
+-- Réglages (séparation des tâches…) : lecture seule pour l'application, modifiables par le propriétaire seulement.
+do $$
+begin
+  if exists (select 1 from pg_tables where schemaname = 'public' and tablename = 'lift_settings') then
+    revoke insert, update, delete, truncate on lift_settings from academy_app;
+    grant execute on function lift_four_eyes() to academy_app;
+  end if;
+end $$;

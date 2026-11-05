@@ -2,7 +2,7 @@
 
 > 5 nov. 2026 · branche `claude/lift-formations-acces` · **rien n'est déployé, la production n'est pas modifiée.**
 > Méthode : relecture du code (application et base), vérification de chaque soupçon en conditions réelles (application lancée avec le compte `academy_app`, navigateur réel), puis revue indépendante du code par un second relecteur (§11).
-> Les défauts corrigés le sont sur la branche, avec un test chacun. Résultats : **MVP 32/32, Formations 16/16, Sécurité 13/13, Parcours commercial 25/25**.
+> Les défauts corrigés le sont sur la branche, avec un test chacun. Résultats : **MVP 32/32, Formations 17/17, Sécurité 13/13, Parcours commercial 26/26**.
 
 ## 1. Synthèse
 
@@ -21,7 +21,7 @@
 | Important | Justificatifs **sans échéance de suppression** si la demande n'était jamais traitée ou était annulée ; fichier orphelin si l'enregistrement échouait. | Corrigé |
 | Important | Le journal conservait **sans limite** une copie complète des demandes (e-mail, téléphone, n° d'Ordre, message). | Corrigé (minimisation + nettoyage de l'existant) |
 | Important | Limite de fréquence contournable : l'IP était lue dans un en-tête falsifiable, et aucun plafond global n'existait. | Corrigé |
-| Important | Un admin à la fois vérificateur peut accepter une demande **et** valider le paiement seul (pas de séparation des tâches). | **À décider** (§5) |
+| Important | Un admin à la fois vérificateur peut accepter une demande **et** valider le paiement seul (pas de séparation des tâches). | **Corrigé** (migration 006, §5) |
 | Important | Lecture DRM et lecture signée Mux non encore actives en production ; compartiments de stockage à confirmer privés. | Configuration avant ouverture (§7) |
 | Mineur | Double clic sur une action admin : message d'erreur trompeur (données intactes). | Corrigé |
 | Mineur (revue indépendante) | Référence de virement : « VIR 123 » et « vir-123 » étaient considérées comme deux virements différents. | Corrigé (normalisée) |
@@ -87,7 +87,13 @@
 - un compte désactivé perd ses sessions ;
 - un administrateur non vérificateur ne peut pas ouvrir une formation à une personne non vérifiée.
 
-**À décider (important) : la séparation des tâches.** Aujourd'hui, une même personne vérificatrice peut accepter une demande, valider le paiement et offrir un accès. Deux options :
+**Séparation des tâches : mise en place (migration 006, décision Cellulift du 5 nov. 2026).**
+- La personne qui **valide un paiement** est différente de celle qui a créé la commande (celle qui a accepté la demande).
+- Un **accès offert** est accordé par une autre personne que celle qui a vérifié la qualification.
+- Les deux règles sont imposées **par la base** et signalées à l'écran (le bouton est remplacé par une explication). Tests F04, F13 et C11.
+- Réglage `lift_settings.separation_of_duties` (actif par défaut) : **modifiable seulement par le compte propriétaire de la base**, jamais par l'application ; chaque changement est journalisé. À n'utiliser que si l'équipe ne compte temporairement qu'une seule personne.
+
+Analyse initiale : Aujourd'hui, une même personne vérificatrice peut accepter une demande, valider le paiement et offrir un accès. Deux options :
 1. **Recommandée dès que l'équipe compte au moins deux personnes** : la validation d'un paiement et l'accès offert doivent être faits par une autre personne que celle qui a accepté la demande. C'est un contrôle de quelques lignes en base, que je peux ajouter.
 2. Garder l'organisation actuelle, avec le rapprochement mensuel décrit au §3.
 
@@ -190,7 +196,7 @@ Voir `docs/10-sync-crm-prospects.md`.
 **À faire par Cellulift :**
 - [ ] validation juridique J1 à J9 ;
 - [ ] CGV et politique de confidentialité ;
-- [ ] décision sur la séparation des tâches (§5) ;
+- [x] séparation des tâches (§5) ;
 - [ ] désignation des vérificateurs.
 
 **À faire à la mise en ligne (technique) :**

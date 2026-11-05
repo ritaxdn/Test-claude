@@ -172,15 +172,21 @@ try {
 
   // ── C12. Paiement vérifié → accès ouvert (12 mois) → lien → mot de passe → formation ──
   await vp.goto(`${BASE}/admin/demandes/${req.id}`);
-  await vp.click("button:has-text('Paiement vérifié')"); // champ requis vide : le navigateur bloque
+  expect((await text(vp)).includes("le paiement doit être validé par une autre personne") && (await vp.locator("button:has-text('Paiement vérifié')").count()) === 0, "séparation des tâches : pas de validation par la personne qui a accepté");
+  let blocked4 = false;
+  try { await as(V.id, (tx) => tx`update orders set status = 'paid', paid_checked_by = ${V.id}, paid_checked_at = now(), reference = ${'SEUL-' + run}, amount_received = amount where id = ${o1.id}`); } catch (e) { blocked4 = /Séparation des tâches/.test(e.message); }
+  expect(blocked4, "séparation des tâches : refus de la base");
+  ok("Séparation des tâches : la personne qui a accepté la demande ne valide pas le paiement (écran et base)");
+  await np.goto(`${BASE}/admin/demandes/${req.id}`);
+  await np.click("button:has-text('Paiement vérifié')"); // champ requis vide : le navigateur bloque
   expect((await sql`select status from orders where id = ${o1.id}`)[0].status === "pending", "référence bancaire obligatoire");
-  await vp.fill("#bank_reference", `VIR-BMCE-${run}`); await vp.fill("#amount_received", "2000"); await vp.click("button:has-text('Paiement vérifié')");
-  await vp.waitForSelector(".alert.err");
-  expect((await vp.textContent(".alert.err")).includes("différent du montant dû") && (await sql`select status from orders where id = ${o1.id}`)[0].status === "pending", "montant reçu différent : refus");
-  await vp.fill("#bank_reference", `VIR-BMCE-${run}`); await vp.fill("#amount_received", "2 400"); await vp.click("button:has-text('Paiement vérifié')");
-  await vp.waitForSelector(".copy input");
-  expect(!vp.url().includes("/invitation/") && !vp.url().match(/[\w-]{40,}/), `aucun jeton dans l'adresse de la page (${vp.url()})`);
-  const link = (await vp.inputValue(".copy input")).replace(/^https?:\/\/[^/]+/, BASE);
+  await np.fill("#bank_reference", `VIR-BMCE-${run}`); await np.fill("#amount_received", "2000"); await np.click("button:has-text('Paiement vérifié')");
+  await np.waitForSelector(".alert.err");
+  expect((await np.textContent(".alert.err")).includes("différent du montant dû") && (await sql`select status from orders where id = ${o1.id}`)[0].status === "pending", "montant reçu différent : refus");
+  await np.fill("#bank_reference", `VIR-BMCE-${run}`); await np.fill("#amount_received", "2 400"); await np.click("button:has-text('Paiement vérifié')");
+  await np.waitForSelector(".copy input");
+  expect(!np.url().includes("/invitation/") && !np.url().match(/[\w-]{40,}/), `aucun jeton dans l'adresse de la page (${np.url()})`);
+  const link = (await np.inputValue(".copy input")).replace(/^https?:\/\/[^/]+/, BASE);
   const [g1] = await sql`select source, expires_at > now() + interval '11 months' as twelve from access_grants where order_id = ${o1.id} and revoked_at is null`;
   expect(g1?.source === "purchase" && g1.twelve, "accès acheté, 12 mois");
   const pro = await pageFor(null, { width: 390, height: 844 });
@@ -206,7 +212,7 @@ try {
   await vp.goto(`${BASE}/admin/demandes/${req2.id}`); await vp.click("button:has-text('Qualification vérifiée')"); await vp.waitForSelector(".alert.ok");
   const [o2] = await sql`select o.id, o.currency, o.amount::text, o.payment_reference from enrollment_requests r join orders o on o.id = r.order_id where r.id = ${req2.id}`;
   expect(o2.currency === "EUR" && o2.amount === "220.00" && o2.payment_reference !== o1.payment_reference, "France : 220 EUR, référence unique");
-  await vp.goto(`${BASE}/admin/demandes/${req2.id}`); await vp.fill("#bank_reference", `SEPA-FR-${run}`); await vp.fill("#amount_received", "220"); await vp.click("button:has-text('Paiement vérifié')"); await vp.waitForSelector(".copy input");
+  await np.goto(`${BASE}/admin/demandes/${req2.id}`); await np.fill("#bank_reference", `SEPA-FR-${run}`); await np.fill("#amount_received", "220"); await np.click("button:has-text('Paiement vérifié')"); await np.waitForSelector(".copy input");
   await vp.goto(`${BASE}/admin/demandes/${req2.id}`); await vp.click("summary:has-text('remboursement')");
   await vp.fill("form:has(input[name=confirm]) input[name=reason]", "Demande du client sous 14 jours"); await vp.check("input[name=confirm]"); await vp.click("button:has-text('Enregistrer le remboursement')"); await vp.waitForSelector(".alert.ok");
   const [g2] = await sql`select revoked_at is not null as revoked, revoke_reason from access_grants where order_id = ${o2.id}`;
@@ -216,11 +222,11 @@ try {
   // ── Un même virement ne valide jamais deux commandes ──
   {
     const [o3] = await as(V.id, (tx) => tx`insert into orders (user_id, program_id, currency, amount, method, created_by) values (${o1.uid}, ${U.id}, 'MAD', 500, 'virement', ${V.id}) returning id`);
-    await vp.goto(`${BASE}/admin/medecins/${o1.uid}`);
-    const f = vp.locator(`form:has(input[name=order_id][value="${o3.id}"]):has(input[name=bank_reference])`);
+    await np.goto(`${BASE}/admin/medecins/${o1.uid}`);
+    const f = np.locator(`form:has(input[name=order_id][value="${o3.id}"]):has(input[name=bank_reference])`);
     await f.locator("input[name=bank_reference]").fill(`vir bmce ${run}`); await f.locator("input[name=amount_received]").fill("500"); await f.locator("button").click();
-    await vp.waitForSelector(".alert.err");
-    expect((await vp.textContent(".alert.err")).includes("déjà servi") && (await sql`select status from orders where id = ${o3.id}`)[0].status === "pending", "référence de virement réutilisée : refus");
+    await np.waitForSelector(".alert.err");
+    expect((await np.textContent(".alert.err")).includes("déjà servi") && (await sql`select status from orders where id = ${o3.id}`)[0].status === "pending", "référence de virement réutilisée : refus");
     ok("Paiement : une référence de virement déjà utilisée (même écrite autrement : casse, espaces) ne valide pas une seconde commande");
 
     // Revue indépendante : un admin ne peut pas cibler le compte d'un autre admin, ni ré-inviter un compte activé.
@@ -318,7 +324,7 @@ try {
   const cd = await text(cp);
   expect(cd.includes("Mes technologies") && cd.includes("HANOVER 5G — Programme opérateur") && cd.includes("Votre HANOVER 5G") && !cd.includes("Inclus avec"), "client : Mes technologies");
   await as(V.id, (tx) => tx`update users set profession = 'dermatologue', qualification_status = 'verified', qualification_checked_by = ${V.id}, qualification_checked_at = now() where id = ${client.id}`);
-  await as(V.id, (tx) => tx`insert into access_grants (user_id, program_id, source, reason, granted_by, granted_at, expires_at) values (${client.id}, ${T.id}, 'offered', 'Essai expiré (test)', ${V.id}, now() - interval '2 days', now() - interval '1 day')`);
+  await as(N.id, (tx) => tx`insert into access_grants (user_id, program_id, source, reason, granted_by, granted_at, expires_at) values (${client.id}, ${T.id}, 'offered', 'Essai expiré (test)', ${N.id}, now() - interval '2 days', now() - interval '1 day')`);
   await cp.goto(`${BASE}/tableau-de-bord`);
   const ce = await text(cp);
   expect(ce.includes("Accès terminé") && ce.includes(`Lasers et phototypes E2E ${run}`) && ce.includes("Mes technologies"), "accès expiré affiché");
@@ -327,10 +333,10 @@ try {
   // Renouvellement après expiration : nouvelle commande payée → ancien accès clos (tracé), nouvel accès ouvert.
   {
     const [o5] = await as(V.id, (tx) => tx`insert into orders (user_id, program_id, currency, amount, method, created_by) values (${client.id}, ${T.id}, 'MAD', 2600, 'virement', ${V.id}) returning id`);
-    await vp.goto(`${BASE}/admin/medecins/${client.id}`);
-    const f = vp.locator(`form:has(input[name=order_id][value="${o5.id}"]):has(input[name=bank_reference])`);
+    await np.goto(`${BASE}/admin/medecins/${client.id}`);
+    const f = np.locator(`form:has(input[name=order_id][value="${o5.id}"]):has(input[name=bank_reference])`);
     await f.locator("input[name=bank_reference]").fill(`RENOUV-${run}`); await f.locator("input[name=amount_received]").fill("2600"); await f.locator("button").click();
-    await vp.waitForSelector(".alert.ok");
+    await np.waitForSelector(".alert.ok");
     const gs = await sql`select revoked_at is not null as revoked, revoke_reason, source from access_grants where user_id = ${client.id} and program_id = ${T.id} order by granted_at`;
     expect(gs.length === 2 && gs[0].revoked && gs[0].revoke_reason.includes("renouvellement") && !gs[1].revoked && gs[1].source === "purchase", "renouvellement");
     expect((await cp.goto(`${BASE}/parcours/${slug}`)).status() === 200, "accès renouvelé ouvert");
