@@ -71,7 +71,7 @@ aside.nav{border-right:1px solid var(--line);padding:22px 16px 22px 0}
 .slide.on{opacity:1;transform:none}
 .slide img{max-width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;pointer-events:none}
 .rail[data-slot="jacket"] .slide{height:180px}
-.rail[data-slot="top"] .slide{height:190px}
+.rail[data-slot="top"] .slide,.rail[data-slot="layer"] .slide{height:190px}
 .rail[data-slot="dress"] .slide{height:300px}
 .rail[data-slot="bottom"] .slide{height:200px}
 .rail[data-slot="shoes"] .slide{height:150px}
@@ -197,7 +197,7 @@ form textarea{min-height:64px;resize:vertical}
   .toggles button{white-space:nowrap}
   .lookhead{justify-content:center}
   .rail[data-slot="jacket"] .slide{height:min(26vh,200px)}
-  .rail[data-slot="top"] .slide{height:min(30vh,220px)}
+  .rail[data-slot="top"] .slide,.rail[data-slot="layer"] .slide{height:min(30vh,220px)}
   .rail[data-slot="dress"] .slide{height:min(46vh,360px)}
   .rail[data-slot="bottom"] .slide{height:min(30vh,230px)}
   .rail[data-slot="shoes"] .slide{height:min(18vh,150px)}
@@ -378,6 +378,7 @@ let colls=[],ccol=null,openColl=null;
 let valise=null;
 const SLOTS=[
   {key:"jacket",label:"Veste / Manteau",cats:["Vestes","Manteaux","Trenchs","Fourrures"],add:"Vestes"},
+  {key:"layer",label:"Haut par-dessus",cats:["Hauts","Chemises"],add:"Hauts"},   // pull, cardigan, gilet porté sur le haut
   {key:"top",label:"Haut",cats:["Hauts","Chemises"],add:"Hauts"},
   {key:"dress",label:"Robe / Combi",cats:["Robes","Combinaisons"],add:"Robes"},
   {key:"bottom",label:"Bas",cats:["Jeans","Pantalons","Jupes","Leggings","Bas"],add:"Jeans"},
@@ -385,7 +386,7 @@ const SLOTS=[
   {key:"bag",label:"Sac",cats:["Sacs"],add:"Sacs"},
   {key:"acc",label:"Accessoires",cats:["Accessoires"],add:"Accessoires"},
 ];
-const slotOf=c=>SLOTS.find(s=>s.cats.includes(c))?.key;
+const slotOf=c=>SLOTS.find(s=>s.key!=="layer"&&s.cats.includes(c))?.key;
 const COLORS={"Noir":"#111","Blanc":"#fff","Beige":"#e3d3bd","Marron":"#7a4b2b","Doré":"#c9a646","Argenté":"#c5c7cb","Gris":"#6b6f73","Rose":"#d6337a","Rouge":"#c0272d","Orange":"#e8890c","Jaune":"#f2d230","Bleu":"#2446b5","Vert":"#5f9a4b","Violet":"#8d4bc4","Multicolore":"conic-gradient(#d6337a,#c9a646,#5f9a4b,#2446b5,#d6337a)"};
 const SEASONS=["Toute l'année","Printemps / Été","Automne / Hiver"];
 const $=s=>document.querySelector(s);
@@ -400,10 +401,10 @@ function setLook(o){lookOpen=o;try{localStorage.setItem("dressing.look",o?"1":""
   if(o)requestAnimationFrame(()=>SLOTS.forEach(s=>s.key!=="acc"&&centerOn(s.key,sel[s.key],false)));renderGrid()}
 let items=[],looks=[],db=null,assets=null,col=null,lcol=null,openId=null,pendingFile=null,presetCat=null;
 let view="Tout";               // category, group name, "Tout", "Favoris", "Mes tenues"
-let sel={jacket:null,dress:null,top:null,bottom:null,shoes:null,bag:null,acc:null};
-let shown={jacket:true,dress:false,top:true,bottom:true,shoes:true,bag:true,acc:true};
+let sel={jacket:null,layer:null,dress:null,top:null,bottom:null,shoes:null,bag:null,acc:null};
+let shown={jacket:true,layer:false,dress:false,top:true,bottom:true,shoes:true,bag:true,acc:true};
 try{const s=JSON.parse(localStorage.getItem("dressing.v2")||"{}");Object.assign(sel,s.sel||{});Object.assign(shown,s.shown||{});if(s.view)view=s.view}catch(e){}
-if(shown.acc===undefined)shown.acc=true;if(shown.jacket===undefined)shown.jacket=true;if(shown.dress===undefined)shown.dress=false;
+if(shown.acc===undefined)shown.acc=true;if(shown.layer===undefined)shown.layer=false;if(shown.jacket===undefined)shown.jacket=true;if(shown.dress===undefined)shown.dress=false;
 function exclusive(k){if(k==="dress"){shown.top=false;shown.bottom=false}else if(k==="top"||k==="bottom"){shown.dress=false}}
 const ids=v=>Array.isArray(v)?v.filter(Boolean):(v?[v]:[]);
 const lookIds=o=>SLOTS.flatMap(s=>ids(o?.[s.key]));
@@ -529,9 +530,9 @@ function renderRails(){
     const list=inSlot(s.key);
     if(s.key==="acc"){const ch=ids(sel.acc);
       return `<div class="rail accrail" data-slot="acc"><span class="rlabel">Accessoires · ${ch.length} choisi${ch.length>1?"s":""} — touche pour ajouter ou retirer</span><div class="accgrid">${list.length?list.map(i=>`<button class="accpick${ch.includes(i.id)?" on":""}" data-acc="${i.id}" aria-pressed="${ch.includes(i.id)}" title="${esc(i.name)}">${src(i)?`<img src="${esc(src(i))}" alt="${esc(i.name)}">`:esc(i.name)}</button>`).join(""):'<button class="ph" data-addcat="Accessoires">+ Ajoute un accessoire</button>'}</div></div>`}
-    if(list.length&&!list.some(i=>i.id===sel[s.key]))sel[s.key]=list[0].id;
+    if(list.length&&!list.some(i=>i.id===sel[s.key]))sel[s.key]=(s.key==="layer"?list.find(i=>i.id!==sel.top)||list[0]:list[0]).id;
     const slides=list.length?list.map(i=>`<button class="slide" data-id="${i.id}" aria-label="${esc(i.name)}">${src(i)?`<img src="${esc(src(i))}" alt="">`:`<span class="ph">${esc(i.name)}<br>Photo à ajouter</span>`}</button>`).join("")
-      :`<div class="slide on"><button class="ph" data-addcat="${s.add}">+ Ajoute ${s.key==="bag"?"un sac":s.key==="acc"?"un accessoire":s.key==="jacket"?"une veste":s.key==="dress"?"une robe":s.key==="top"?"un haut":s.key==="bottom"?"un bas":"des chaussures"}</button></div>`;
+      :`<div class="slide on"><button class="ph" data-addcat="${s.add}">+ Ajoute ${s.key==="bag"?"un sac":s.key==="acc"?"un accessoire":s.key==="jacket"?"une veste":s.key==="dress"?"une robe":s.key==="top"||s.key==="layer"?"un haut":s.key==="bottom"?"un bas":"des chaussures"}</button></div>`;
     return `<div class="rail" data-slot="${s.key}"><span class="rlabel">${s.label}</span>
       <div class="track" tabindex="-1">${slides}</div>
       ${list.length>1?'<button class="arrow l" data-dir="-1" aria-label="Précédent">‹</button><button class="arrow r" data-dir="1" aria-label="Suivant">›</button>':""}</div>`}).join("");
@@ -817,7 +818,9 @@ $("#shuffle").onclick=()=>{
   const sty=cand.filter(t=>t!==lastStyle);const style=(sty.length?sty:cand.length?cand:STYLES)[Math.floor(Math.random()*(sty.length||cand.length||STYLES.length))];
   const tg=i=>i.tags||[],sportOnly=i=>tg(i).includes("Sport")&&!tg(i).some(t=>t!=="Sport");
   const pools={};
-  act.forEach(s=>{const l=inSlot(s.key);
+  const OVER=/pull|cardigan|gilet|sweat|hoodie|chemise|surchemise|maille/i;
+  act.forEach(s=>{let l=inSlot(s.key);
+    if(s.key==="layer"){const o=l.filter(i=>OVER.test(i.name));if(o.length)l=o}        // par-dessus : pull, cardigan, gilet, chemise ouverte
     if(style==="Sport")pools[s.key]=l.filter(i=>tg(i).includes("Sport"));            // pas de pièce de ville dans une tenue sport
     else{const ok=l.filter(i=>!sportOnly(i)),p=ok.filter(i=>tg(i).includes(style));
       pools[s.key]=p.length>=3?p:ok}});                                               // jamais de sport en ville, et assez de choix
@@ -834,6 +837,7 @@ $("#shuffle").onclick=()=>{
         for(const i of [...p].sort(()=>Math.random()-.5)){const t=accType(i);if(t!=="poignet"&&seenT.has(t))continue;seenT.add(t);out.push(i);if(out.length>=want)break}
         c.acc=out}                                                               // jamais deux colliers ni deux paires de boucles
       else c[s.key]=rnd(p)});
+    if(c.layer&&c.top&&c.layer.id===c.top.id)delete c.layer;                  // jamais deux fois le même haut
     const vals=Object.values(c).flat();
     const key=lookKey(Object.fromEntries(Object.entries(c).map(([k,v])=>[k,Array.isArray(v)?v.map(i=>i.id):v.id])));
     const sc=harmonyV(vals,style,key)+vals.reduce((a,i)=>a+fresh(i),0)/Math.max(1,vals.length)*2.5+Math.random()*4;
@@ -846,7 +850,7 @@ $("#shuffle").onclick=()=>{
   try{localStorage.setItem("dressing.shuf",JSON.stringify(shufHist))}catch(_){}
   saveUi();renderToggles();renderRails();renderGrid();toast("Tenue "+style.toLowerCase()+" proposée");
 };
-function currentLook(){const it={};SLOTS.forEach(s=>{if(!shown[s.key])return;if(s.key==="acc"){const a=ids(sel.acc).filter(byId);if(a.length)it.acc=a}else if(sel[s.key]&&byId(sel[s.key]))it[s.key]=sel[s.key]});return it}
+function currentLook(){const it={};SLOTS.forEach(s=>{if(!shown[s.key])return;if(s.key==="acc"){const a=ids(sel.acc).filter(byId);if(a.length)it.acc=a}else if(sel[s.key]&&byId(sel[s.key]))it[s.key]=sel[s.key]});if(it.layer&&it.layer===it.top)delete it.layer;return it}
 function renderEditing(){
   const l=editing&&looks.find(x=>x.id===editing);if(!l)editing=null;
   $("#editing").hidden=!l;$("#updLook").hidden=!l;
