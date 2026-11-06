@@ -368,23 +368,26 @@ body[data-tab="closet"] .tile.sel{background:none}
 
 <script>
 const GROUPS=[
-  {name:"Vêtements",cats:["Hauts","Chemises","Vestes","Manteaux","Trenchs","Fourrures","Robes","Combinaisons","Jeans","Pantalons","Jupes","Leggings","Bas"]},
+  {name:"Hauts",cats:["T-shirts","Débardeurs","Crop tops","Bodies","Blouses & tops","Chemises","Pulls & gilets"]},
+  {name:"Vêtements",cats:["Vestes","Manteaux","Trenchs","Fourrures","Robes","Combinaisons","Jeans","Pantalons","Jupes","Leggings","Bas"]},
   {name:"Chaussures",cats:["Bottes","Talons","Mules & sandales","Plats","Sneakers"]},
   {name:"Sacs",cats:["Sacs"]},
   {name:"Accessoires",cats:["Accessoires"]},
 ];
 const CATS=GROUPS.flatMap(g=>g.cats);
+const TOPCATS=[...GROUPS[0].cats,"Hauts"];          // "Hauts" = ancienne catégorie, toujours acceptée
+const SHOECATS=GROUPS.find(g=>g.name==="Chaussures").cats;
 const STYLES=["Sport","Soirée","Casual"];
 const TOOLS=["Mes tenues","Collections","Statistiques","Mode valise"];
 let colls=[],ccol=null,openColl=null;
 let valise=null;
 const SLOTS=[
   {key:"jacket",label:"Veste / Manteau",cats:["Vestes","Manteaux","Trenchs","Fourrures"],add:"Vestes"},
-  {key:"layer",label:"Haut par-dessus",cats:["Hauts","Chemises"],add:"Hauts"},   // pull, cardigan, gilet porté sur le haut
-  {key:"top",label:"Haut",cats:["Hauts","Chemises"],add:"Hauts"},
+  {key:"layer",label:"Haut par-dessus",cats:TOPCATS,add:"Pulls & gilets"},   // pull, cardigan, gilet porté sur le haut
+  {key:"top",label:"Haut",cats:TOPCATS,add:"T-shirts"},
   {key:"dress",label:"Robe / Combi",cats:["Robes","Combinaisons"],add:"Robes"},
   {key:"bottom",label:"Bas",cats:["Jeans","Pantalons","Jupes","Leggings","Bas"],add:"Jeans"},
-  {key:"shoes",label:"Chaussures",cats:GROUPS[1].cats,add:"Talons"},
+  {key:"shoes",label:"Chaussures",cats:SHOECATS,add:"Talons"},
   {key:"bag",label:"Sac",cats:["Sacs"],add:"Sacs"},
   {key:"acc",label:"Accessoires",cats:["Accessoires"],add:"Accessoires"},
 ];
@@ -433,7 +436,7 @@ function count(v){
   if(v==="Collections")return colls.length;
   if(TOOLS.includes(v))return "";
   const g=GROUPS.find(g=>g.name===v);
-  return items.filter(i=>g?g.cats.includes(i.category):i.category===v).length;
+  return items.filter(i=>g?(g.cats.includes(i.category)||(g.name==="Hauts"&&i.category==="Hauts")):i.category===v).length;
 }
 function renderNav(){
   const a=(v,cls,label)=>{const c=count(v);return `<a class="${cls}" data-v="${esc(v)}" aria-current="${view===v}" tabindex="0">${esc(label||v)}${c===""?"":`<sup>${c}</sup>`}</a>`};
@@ -457,7 +460,7 @@ function filtered(){
   return items.filter(i=>{
     if(view==="Favoris"&&!i.favorite)return false;
     if(STYLES.includes(view)&&!(i.tags||[]).includes(view))return false;
-    if(g&&!g.cats.includes(i.category))return false;
+    if(g&&!g.cats.includes(i.category)&&!(g.name==="Hauts"&&i.category==="Hauts"))return false;
     if(!g&&CATS.includes(view)&&i.category!==view)return false;
     return !q||[i.name,i.brand,i.color,i.category,i.notes].join(" ").toLowerCase().includes(q);
   }).sort((a,b)=>(CATS.indexOf(a.category)-CATS.indexOf(b.category))||String(a.name).localeCompare(String(b.name),"fr"));
@@ -650,7 +653,7 @@ function toggleAcc(id){
 /* ---------- fiche (drawer) ---------- */
 function opts(arr,val){return arr.map(o=>`<option${o===val?" selected":""}>${esc(o)}</option>`).join("")}
 function openSheet(id){
-  const it=id?byId(id):{name:"",brand:"",category:presetCat||"Hauts",color:"",season:"Toute l'année",notes:"",wears:0};
+  const it=id?byId(id):{name:"",brand:"",category:presetCat||"T-shirts",color:"",season:"Toute l'année",notes:"",wears:0};
   if(!it)return closeSheet();
   openId=id;pendingFile=null;
   const ro=!db;
@@ -798,7 +801,7 @@ function harmonyV(vals,style,key){
   let sc=0;vals=vals.filter(Boolean);
   const loud=new Set(vals.map(i=>i.color||"").filter(c=>!NEUTRAL.has(c)));
   if(loud.size>1)sc-=6*(loud.size-1);                       // une seule couleur vive
-  const metals=new Set(vals.filter(i=>["Sacs","Accessoires"].includes(i.category)||GROUPS[1].cats.includes(i.category)).map(i=>i.color).filter(c=>c==="Doré"||c==="Argenté"));
+  const metals=new Set(vals.filter(i=>["Sacs","Accessoires"].includes(i.category)||SHOECATS.includes(i.category)).map(i=>i.color).filter(c=>c==="Doré"||c==="Argenté"));
   if(metals.size>1)sc-=4;                                   // pas d'or et d'argent mélangés
   const seas=new Set(vals.map(i=>i.season).filter(x=>x&&x!=="Toute l'année"));
   if(seas.size>1)sc-=8;                                     // pas été + hiver
