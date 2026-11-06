@@ -2064,7 +2064,7 @@ function formMembre(m){
    ${fld("m-role","Rôle dans le CRM",`<select id="m-role" name="role">${opt(Object.entries(ROLES),m.role||"commercial")}</select>`)}
    ${fld("m-sr","Showroom",`<select id="m-sr" name="showroom">${opt(Object.entries(SHOWROOMS),m.showroom||"","Non renseigné")}</select>`)}
    ${fld("m-ville","Ville",`<input id="m-ville" name="ville" list="dl-villes" autocomplete="off" placeholder="Ex. Tanger…" value="${esc(m.ville||"")}"><datalist id="dl-villes">${villes().map(x=>`<option value="${esc(x)}">`).join("")}</datalist>`)}
-   ${m.id?fld("m-act","Statut",`<select id="m-act" name="actif"><option value="1" ${m.actif&&!m.parti_le?"selected":""}>Accès actif</option><option value="" ${!m.actif&&!m.parti_le?"selected":""}>Sans accès</option><option value="parti" ${m.parti_le?"selected":""}>A quitté Cellulift</option></select>`):""}</div>
+   ${m.id?fld("m-act","Statut",`<select id="m-act" name="actif"><option value="1" ${m.actif&&!m.parti_le?"selected":""}>Accès actif</option><option value="" ${!m.actif&&!m.parti_le?"selected":""}>Sans accès</option><option value="parti" ${m.parti_le?"selected":""}>A quitté Cellulift</option></select>`):""}${m.id&&me&&me.role==="admin"?`<div class="field" style="grid-column:1/-1"><label>Mot de passe</label><div class="tools"><button type="button" class="btn small" id="m-resetpw">Réinitialiser le mot de passe</button><span id="m-resetpw-msg" class="hint" aria-live="polite" style="margin:0"></span></div><span class="hint" style="margin:4px 0 0">Définit un nouveau mot de passe pour ce membre ; tu le lui communiques.</span></div>`:""}</div>
    <div class="field" style="grid-column:1/-1"><label for="m-photo">Photo</label><div style="display:flex;align-items:center;gap:12px">${m.id?avatar(m,48):""}<input id="m-photo" type="file" accept="image/jpeg,image/png,image/webp"></div><span class="hint" style="margin:4px 0 0">JPEG, PNG ou WebP, 2 Mo maximum.</span></div>
   </div>
    ${m.id?`<p class="hint">Pour un départ, utilise plutôt « Départ / transfert » : tu pourras donner ses clients à quelqu’un d’autre en même temps.</p>`:""}`;
@@ -2087,6 +2087,17 @@ function formMembre(m){
   submit.validate=f=>!f.nom.trim()?["nom","Indiquez le nom."]:(!f.hors_crm&&!String(f.email||"").trim())?["email","Indiquez l’email de connexion, ou cochez « N’utilise pas le CRM »."]:null;
   modal(m.id?"Modifier le membre":"Nouveau membre",h,submit,m.id?"Enregistrer":"Ajouter");
   const majHors=()=>{ $("#m-crm").hidden=$("#m-hors").checked; }; $("#m-hors").addEventListener("change",majHors); majHors();
+  const rb=$("#m-resetpw");
+  if(rb) rb.addEventListener("click",async()=>{
+    const msg=$("#m-resetpw-msg");
+    if(!m.email){ msg.style.color="var(--bad)"; msg.textContent="Ce membre n’a pas d’email de connexion."; return; }
+    if(!confirm("Définir un nouveau mot de passe pour "+(m.nom||m.email)+" ? Tu devras le lui communiquer.")) return;
+    rb.disabled=true; msg.style.color=""; msg.textContent="Réinitialisation…";
+    const {data,error}=await sb.functions.invoke("admin-reset-password",{body:{email:m.email}});
+    if(error){ let d=""; try{ d=(await error.context.json()).error; }catch(_){} msg.style.color="var(--bad)"; msg.textContent="Échec : "+(d||error.message||"erreur"); rb.disabled=false; return; }
+    msg.style.color="var(--ok)"; msg.innerHTML="Nouveau mot de passe : <b>"+esc(data.password)+"</b> — communique-le à "+esc(data.nom||m.nom||"ce membre")+" (à changer ensuite dans son compte).";
+    rb.disabled=false;
+  });
 }
 // Organigramme : arbre à partir de « Rattaché à » ; les personnes sans rattachement ni équipe sont listées à part
 let equipeVue="liste";
@@ -4882,10 +4893,10 @@ function showLogin(msg){
     const email=$("#l-mail").value.trim().toLowerCase();
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ $("#l-err").textContent="Saisis d’abord ton email professionnel, puis clique sur « Mot de passe oublié ? »."; $("#l-mail").focus(); return; }
     $("#l-forgot").disabled=true;
-    const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+"/crm"});
+    try{ await fetch("/api/crm-reset-request",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email})}); }catch(_){}
     $("#l-forgot").disabled=false;
-    $("#l-err").style.color=error?"var(--bad)":"var(--ok)";
-    $("#l-err").textContent=error?(/rate|limit/i.test(error.message||"")?"Trop de demandes : réessaie dans quelques minutes.":"Envoi impossible : "+error.message):"Si cet email est enregistré, un lien pour choisir un nouveau mot de passe vient d’être envoyé. Pense à regarder dans les indésirables.";
+    $("#l-err").style.color="var(--ok)";
+    $("#l-err").textContent="Demande envoyée à l’administrateur : il va réinitialiser ton mot de passe et te le communiquer.";
   });
   $("#l-mail").focus();
 }
