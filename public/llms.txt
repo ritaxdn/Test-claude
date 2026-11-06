@@ -8,6 +8,15 @@ Coordonnées : +212 5 22 49 01 09 · WhatsApp +212 670 842795 · admin@cellulift
 - [Accueil](https://www.cellulift.ma/fr): présentation, gammes, agences, FAQ
 - [Toutes les technologies](https://www.cellulift.ma/fr/technologies): le catalogue complet, par gamme
 - [Où acheter des appareils esthétiques au Maroc](https://www.cellulift.ma/fr/acheter-appareils-esthetiques): guide d'achat, points à vérifier, agences
+- [Laser esthétique professionnel au Maroc](https://www.cellulift.ma/fr/laser-esthetique): laser diode, Alexandrite, Nd:YAG, CO2 fractionné, IPL, endolift
+  - [Laser diode professionnel (808, 755/808/1064 nm)](https://www.cellulift.ma/fr/laser-esthetique/laser-diode)
+  - [Laser Alexandrite 755 nm](https://www.cellulift.ma/fr/laser-esthetique/alexandrite)
+  - [Laser Nd:YAG et Q-switched (détatouage, taches, Carbon Peel)](https://www.cellulift.ma/fr/laser-esthetique/nd-yag)
+  - [Laser CO2 fractionné](https://www.cellulift.ma/fr/laser-esthetique/co2-fractionne)
+  - [Appareil IPL professionnel](https://www.cellulift.ma/fr/laser-esthetique/ipl)
+  - [Laser endolift](https://www.cellulift.ma/fr/laser-esthetique/endolift)
+- [Radiofréquence esthétique](https://www.cellulift.ma/fr/radiofrequence-esthetique): remodelage, radiofréquence microneedling, radiofréquence intime
+  - [Radiofréquence microneedling](https://www.cellulift.ma/fr/radiofrequence-esthetique/microneedling)
 - [Machines par indication](https://www.cellulift.ma/fr/indications): épilation laser, détatouage, taches pigmentaires, couperose, cellulite, relâchement cutané, acné, rides, gynécologie esthétique
 - [LGL Expert au Maroc](https://www.cellulift.ma/fr/lgl-expert): la gamme LGL Expert, distributeur officiel
 - [CELLULIFT Academy](https://www.cellulift.ma/fr/academy): formations, masterclasses et workshops pour médecins
