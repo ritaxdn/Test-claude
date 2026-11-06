@@ -1266,6 +1266,8 @@ async function load(){
     if(vrai) sb.from("preferences_membre").select("navigation,barre_reduite").eq("membre_id",vrai.id).maybeSingle().then(r=>{ if(r&&r.data){ navPref=Object.assign({},navPref,r.data); try{ localStorage.setItem("cl-nav",JSON.stringify(navPref)); }catch(_){} renderSidenav(); } },()=>{});
     loadNotifs();
     loaded = true; clearBanner();
+    // Première connexion : on lance la visite guidée de l'interface (une seule fois par personne).
+    if(me && me.id){ try{ if(!localStorage.getItem("cl-guide-"+me.id)) setTimeout(()=>{ try{ guideAccueil(true); }catch(_){} },900); }catch(_){} }
     setStatus("ok","À jour · "+new Date().toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}));
   }catch(e){
     setStatus("bad","Hors ligne"); showBanner(e);
@@ -2505,12 +2507,14 @@ function formNavAide(){
   const now=Date.now(), mes=state.opportunites.filter(o=>o.issue==="en_cours"&&o.commercial_id===me.id).sort((a,b)=>(+b.montant_mad||0)-(+a.montant_mad||0));
   const dem=(state.aides||[]).filter(x=>x.auteur_id===me.id).slice(0,5);
   const ST={en_attente:"En attente",repondue:"Répondu",resolue:"Réglé"};
-  const h=`<p style="margin-top:0">Bloqué sur une affaire ? Choisis-la : ton superviseur reçoit ta demande avec tout le contexte.</p>
+  const h=`<button type="button" class="btn" id="na-guide" style="width:100%;margin-bottom:14px">📖 Revoir le guide de l’interface</button>
+   <p style="margin-top:0">Bloqué sur une affaire ? Choisis-la : ton superviseur reçoit ta demande avec tout le contexte.</p>
    ${fld("na-o","Affaire",`<select id="na-o" name="opp">${opt(mes.map(o=>[o.id,`${nomClient(o)} — ${o.titre||ETAPE_LABEL[o.etape]}`]),"","Choisir une affaire…")}</select>`,true)}
    ${dem.length?`<div class="lab-mono" style="margin-top:14px">Mes dernières demandes</div>${dem.map(x=>{ const o=byId(state.opportunites,x.opportunite_id); return `<div class="na-row"><span>${esc(o?nomClient(o):"Affaire")}<small>${esc(ago(x.created_at))}</small></span><span class="pill ${x.statut==="repondue"?"vio":x.statut==="resolue"?"ok":""}">${ST[x.statut]||x.statut}</span></div>${x.reponse?`<p class="hint" style="margin:0 0 8px">« ${esc(x.reponse)} »</p>`:""}`; }).join("")}`:""}`;
   const submit=async f=>{ const o=byId(state.opportunites,f.opp); closeModal(true); if(o) formAide(o); return true; };
   submit.validate=f=>!f.opp?["opp","Choisis l’affaire concernée."]:null;
   modal("Aide",h,submit,"Continuer");
+  const gb=$("#na-guide"); if(gb) gb.onclick=()=>{ closeModal(true); setTimeout(()=>{ try{ guideAccueil(false); }catch(_){} },150); };
 }
 async function navEnregistrer(patch){
   navPref=Object.assign({},navPref,patch); try{ localStorage.setItem("cl-nav",JSON.stringify(navPref)); }catch(_){}
@@ -4920,6 +4924,77 @@ function formNouveauMotDePasse(){
   submit.validate=f=>(f.p1||"").length<8?["p1","8 caractères minimum."]:f.p1!==f.p2?["p2","Les deux mots de passe ne sont pas identiques."]:null;
   modal("Nouveau mot de passe",h,submit,"Enregistrer");
 }
+
+// Visite guidée de l'interface — lancée automatiquement à la première connexion (une fois
+// par personne), et re-lançable depuis « Aide ». Autonome : elle crée son propre calque,
+// met en surbrillance chaque élément du menu et explique à quoi il sert.
+function guideAccueil(auto){
+  if(document.getElementById("guide-ov")) return;
+  if(auto){ try{ localStorage.setItem("cl-guide-"+((me&&me.id)||"x"),"1"); }catch(_){} }
+  const vis=el=>{ if(!el) return false; const r=el.getBoundingClientRect(); return r.width>0&&r.height>0&&el.offsetParent!==null; };
+  const trouver=sels=>{ for(const s of sels){ for(const el of document.querySelectorAll(s)){ if(vis(el)) return el; } } return null; };
+  const TOUT=[
+    {title:"Bienvenue 👋",text:"Voici ton CRM Cellulift. En une minute, je te montre à quoi sert chaque chose. Tu peux passer quand tu veux."},
+    {sel:['[data-tab="aujourdhui"]'],title:"Aujourd’hui",text:"Ton tableau de bord du jour : tâches, rappels et rendez-vous à faire aujourd’hui. Commence toujours par ici."},
+    {sel:['[data-tab="pipeline"]'],title:"Pipeline",text:"Toutes tes affaires en cours, rangées par étape (de la qualification à la vente). Fais avancer une affaire quand elle progresse."},
+    {sel:['[data-tab="comptes"]'],title:"Clients",text:"Tes clients et prospects : recherche, filtres (ville, spécialité) et tout l’historique de chaque fiche."},
+    {sel:['#sn-new','[data-act="nav-creer-m"]','#more-btn'],title:"Créer",text:"Le bouton le plus utile : ajoute en 2 secondes une visite, un appel, un client, une affaire ou un devis."},
+    {sel:['[data-tab="terrain"]'],title:"Voix du terrain",text:"Note ce que tu observes sur le terrain (concurrents, prix, besoins)… c’est précieux pour toute l’équipe."},
+    {sel:['[data-tab="activites"]'],title:"Activités",text:"L’historique de tout ce que tu fais : appels, visites, relances. Rien ne se perd."},
+    {sel:['[data-tab="devis"]'],title:"Devis",text:"Crée, envoie et suis tes devis, puis transforme-les en vente."},
+    {sel:['#sn-bell','#bell'],title:"Notifications",text:"Nouveaux leads à rappeler, rappels et messages de ton superviseur arrivent ici."},
+    {sel:['#sn-me','#acct-btn'],title:"Ton compte",text:"Ton profil : change ton mot de passe et déconnecte-toi ici."},
+    {title:"À toi de jouer 🚀",text:"Tu pourras revoir ce guide à tout moment depuis le bouton « Aide ». Bon travail !"}
+  ];
+  const etapes=TOUT.filter(s=>!s.sel||trouver(s.sel));
+  if(!document.getElementById("guide-css")){ const st=document.createElement("style"); st.id="guide-css"; st.textContent=
+    "#guide-ov{position:fixed;inset:0;z-index:99999}"+
+    "#guide-hole{position:absolute;border-radius:12px;box-shadow:0 0 0 9999px rgba(10,12,20,.62);transition:all .25s cubic-bezier(.16,1,.3,1);pointer-events:none;outline:2px solid #7B61FF}"+
+    "#guide-card{position:absolute;background:var(--bg,#fff);color:var(--fg,#17151f);border:1px solid var(--line,rgba(0,0,0,.12));border-radius:16px;box-shadow:0 24px 60px -18px rgba(0,0,0,.55);padding:18px 18px 16px;font-size:14px;line-height:1.5}"+
+    "#guide-card h4{margin:0 0 6px;font-size:16px}"+
+    "#guide-card .g-step{font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.55;margin-bottom:6px}"+
+    "#guide-card .g-txt{margin:0 0 14px}"+
+    "#guide-card .g-bar{display:flex;gap:10px;align-items:center;justify-content:space-between}"+
+    "#guide-card .g-dots{display:flex;gap:5px}"+
+    "#guide-card .g-dot{width:6px;height:6px;border-radius:50%;background:var(--line,#ccc)}"+
+    "#guide-card .g-dot.on{background:#7B61FF}"+
+    "#guide-card button{font:inherit;cursor:pointer;border-radius:999px;padding:7px 14px;border:1px solid var(--line,#ccc);background:transparent;color:inherit}"+
+    "#guide-card button.g-next{background:#1D1B26;color:#fff;border:0}"+
+    "#guide-card .g-skip{position:absolute;top:8px;right:10px;padding:2px 8px;font-size:12px;opacity:.6;border:0}";
+    document.head.appendChild(st); }
+  const ov=document.createElement("div"); ov.id="guide-ov";
+  ov.innerHTML='<div id="guide-hole"></div><div id="guide-card" role="dialog" aria-modal="true" aria-labelledby="guide-t"></div>';
+  document.body.appendChild(ov);
+  const hole=ov.querySelector("#guide-hole"), card=ov.querySelector("#guide-card");
+  let i=0;
+  const fin=()=>{ try{ localStorage.setItem("cl-guide-"+((me&&me.id)||"x"),"1"); }catch(_){} ov.remove(); document.removeEventListener("keydown",onKey); window.removeEventListener("resize",place); };
+  function place(){
+    const s=etapes[i], t=s.sel?trouver(s.sel):null;
+    if(t) t.scrollIntoView({block:"center",behavior:"smooth"});
+    setTimeout(()=>{
+      if(t){ const r=t.getBoundingClientRect(), p=6; hole.style.display="block"; ov.style.background="transparent";
+        hole.style.left=(r.left-p)+"px"; hole.style.top=(r.top-p)+"px"; hole.style.width=(r.width+2*p)+"px"; hole.style.height=(r.height+2*p)+"px";
+      } else { hole.style.display="none"; ov.style.background="rgba(10,12,20,.6)"; }
+      const dots=etapes.map((_,k)=>'<span class="g-dot'+(k===i?" on":"")+'"></span>').join("");
+      card.innerHTML='<button class="g-skip" id="g-skip">Passer</button><div class="g-step">Étape '+(i+1)+" / "+etapes.length+'</div><h4 id="guide-t">'+s.title+'</h4><p class="g-txt">'+s.text+'</p><div class="g-bar"><div class="g-dots">'+dots+'</div><div style="display:flex;gap:8px">'+(i>0?'<button id="g-prev">Précédent</button>':"")+'<button class="g-next" id="g-next">'+(i<etapes.length-1?"Suivant":"Terminer")+"</button></div></div>";
+      const cw=Math.min(320,innerWidth-24); card.style.width=cw+"px"; const ch=card.offsetHeight||190;
+      let cx,cy;
+      if(t){ const r=t.getBoundingClientRect();
+        if(r.right+cw+20<innerWidth && innerWidth>640){ cx=r.right+16; cy=Math.max(12,Math.min(r.top,innerHeight-ch-12)); }
+        else if(r.bottom+ch+16<innerHeight){ cx=Math.max(12,Math.min(r.left,innerWidth-cw-12)); cy=r.bottom+14; }
+        else { cx=Math.max(12,Math.min(r.left,innerWidth-cw-12)); cy=Math.max(12,r.top-ch-14); }
+      } else { cx=(innerWidth-cw)/2; cy=Math.max(16,(innerHeight-ch)/2); }
+      card.style.left=cx+"px"; card.style.top=cy+"px";
+      const pv=card.querySelector("#g-prev"); if(pv) pv.onclick=()=>{ i--; place(); };
+      card.querySelector("#g-next").onclick=()=>{ if(i<etapes.length-1){ i++; place(); } else fin(); };
+      card.querySelector("#g-skip").onclick=fin;
+    }, t?260:0);
+  }
+  function onKey(e){ if(e.key==="Escape") fin(); else if(e.key==="ArrowRight"&&i<etapes.length-1){ i++; place(); } else if(e.key==="ArrowLeft"&&i>0){ i--; place(); } }
+  document.addEventListener("keydown",onKey); window.addEventListener("resize",place);
+  place();
+}
+
 sb.auth.onAuthStateChange((event,session)=>{
   if(event==="PASSWORD_RECOVERY") setTimeout(formNouveauMotDePasse,400);
   if(session && (!booted || event==="SIGNED_IN") && (!currentUser || currentUser.id!==session.user.id)){ booted=true; enterApp(session); }
