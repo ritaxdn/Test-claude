@@ -1438,7 +1438,7 @@ function viewComptes(v){
   const page=list.slice(0,shown);
   const nf=new Intl.NumberFormat("fr-FR");
   v.innerHTML=`<div class="section-head"><div><h2>${estPilote()?"Clients":"Mes clients"}</h2><p class="hint">${estPilote()?"":"Tu vois les clients que tu suis ou que tu as créés. "}Médecins et non-médecins, classés par spécialité${(n=>n?` · <button class="linkish" data-act="f-a-classer">${new Intl.NumberFormat("fr-FR").format(n)} à classer</button>`:"")(state.comptes.filter(c=>c.metier_a_verifier&&(estPilote()||!me||c.commercial_id===me.id)).length)}</p></div>
-    <div class="tools">${me&&["admin","superviseur"].includes(me.role)?`<button class="btn" data-act="import">Importer (Excel)</button>`:""}<button class="btn primary" data-act="new-compte">+ Compte</button></div></div>
+    <div class="tools"><button class="btn primary" data-act="new-compte">+ Compte</button></div></div>
   <div class="panel">
     <div class="filters" style="margin-bottom:12px">
       <input id="f-q" type="search" placeholder="Nom, spécialité, téléphone…" value="${esc(filt.q)}" aria-label="Rechercher un compte" autocomplete="off" spellcheck="false">
@@ -1622,9 +1622,10 @@ function viewSuperviseur(v){
   <details class="panel" style="margin-top:16px"><summary style="cursor:pointer;font-weight:600;min-height:32px">Voir le détail par commercial</summary><div class="tbl-wrap" style="margin-top:8px"><table><thead><tr><th>Commercial</th>${ETAPES.map(s=>`<th class="num">${ETAPE_LABEL[s].slice(0,5)}.</th>`).join("")}<th class="num">Pipeline MAD</th><th class="num">Pondéré MAD</th><th class="num">Gagné MAD</th><th class="num">Comptes</th><th class="num">Activités 7 j</th></tr></thead><tbody>
   ${rows.map(r=>`<tr><td><b>${esc(r.e.nom)}</b><div class="hint" style="margin:0">${[r.e.showroom?SHOWROOMS[r.e.showroom]:"",r.e.role?ROLES[r.e.role]+(r.e.actif?"":" · sans accès"):""].filter(Boolean).join(" · ")}</div></td>${ETAPES.map(s=>`<td class="num">${r.by[s]||"·"}</td>`).join("")}<td class="num">${mad(r.tot)}</td><td class="num">${mad(r.pond)}</td><td class="num">${mad(r.won)}</td><td class="num">${r.comptes}</td><td class="num">${r.act||"·"}</td></tr>`).join("")}
   </tbody></table></div></details>
-  <div class="panel" style="margin-top:16px"><div class="section-head" style="margin:0 0 8px"><h3>Dernières actions de l’équipe</h3><select id="f-hist" aria-label="Filtrer les actions" style="width:auto"><option value="">Toutes</option><option value="suppression">Suppressions uniquement</option></select></div><div id="sup-hist"></div></div>`;
+  <details class="panel" style="margin-top:16px"><summary style="cursor:pointer;font-weight:600;min-height:32px;list-style:none">Dernières actions de l’équipe <span class="hint" style="font-weight:400">— en savoir plus</span></summary><div class="section-head" style="margin:12px 0 8px"><p class="hint" style="margin:0">Modifications et suppressions récentes dans le CRM</p><select id="f-hist" aria-label="Filtrer les actions" style="width:auto"><option value="">Toutes</option><option value="suppression">Suppressions uniquement</option></select></div><div id="sup-hist"></div></details>`;
   const histEl=$("#sup-hist"); const lh=()=>{ const f=$("#f-hist").value; if(f){ histEl.innerHTML=""; sb.from("historique").select("*").eq("action",f).order("created_at",{ascending:false}).limit(60).then(({data,error})=>{ histEl.innerHTML=error?`<p class="hint">${esc(errorCopy(error)[1])}</p>`:data.length?`<div class="feed">${data.map(histItem).join("")}</div>`:`<p class="hint">Aucune suppression.</p>`; }); } else loadHistorique(histEl,null,null,30); };
-  $("#f-hist").addEventListener("change",lh); lh();
+  $("#f-hist").addEventListener("change",lh);
+  const histDet=histEl.closest("details"); let histCharge=false; if(histDet) histDet.addEventListener("toggle",()=>{ if(histDet.open&&!histCharge){ histCharge=true; lh(); } });
   $("#f-sr").addEventListener("change",e=>{ supShowroom=e.target.value; viewSuperviseur(v); });
 }
 
@@ -1864,7 +1865,7 @@ function formFusion(aId,bId){
 function viewEquipe(v){
   setTimeout(chargerDoublons,0); setTimeout(chargerLeads,0);
   v.innerHTML=`<div class="section-head"><div><h2>Équipe &amp; catalogue</h2><p class="hint">Un membre « sans accès » ne peut pas se connecter. Activez-le dans « Modifier » ; il se connecte ensuite avec l’email indiqué ici.</p></div>
-   <div class="tools"><button class="btn" data-act="objectifs">Objectifs mensuels</button><button class="btn" data-act="import">Importer des contacts (Excel)</button><button class="btn" data-act="new-produit">+ Machine</button><button class="btn primary" data-act="new-membre">+ Membre</button></div></div>
+   <div class="tools"><button class="btn" data-act="objectifs">Objectifs mensuels</button><button class="btn" data-act="new-produit">+ Machine</button><button class="btn primary" data-act="new-membre">+ Membre</button></div></div>
   <div class="panel" style="margin-bottom:16px"><div class="section-head" style="margin:0 0 8px"><h3>Équipe</h3><div class="chips" role="group" aria-label="Affichage"><button class="chip" data-act="equipe-vue" data-v="liste" aria-pressed="${equipeVue==="liste"}">Liste</button><button class="chip" data-act="equipe-vue" data-v="org" aria-pressed="${equipeVue==="org"}">Organigramme</button></div></div>
   ${equipeVue==="org"?vueOrganigramme():`<div class="tbl-wrap" style="margin-top:8px"><table><thead><tr><th>Nom</th><th>Email</th><th>Rôle</th><th>Showroom</th><th>Statut</th><th></th></tr></thead><tbody>
   ${[...orgTous()].sort((a,b)=>(!!a.parti_le-!!b.parti_le)).map(e=>`<tr${e.parti_le?' style="opacity:.7"':""}><td><div class="ws-who" style="gap:10px">${avatar(e,30)}<span><b>${esc(e.nom)}</b>${e.poste?`<br><small class="hint" style="margin:0">${esc(e.poste)}</small>`:""}</span></div></td><td>${esc(e.email||"—")}</td><td>${e.hors_crm?`<span class="pill">Hors CRM</span>`:ROLES[e.role]}</td><td>${e.showroom?esc(SHOWROOMS[e.showroom].replace("Showroom ","")):"—"}</td><td>${e.parti_le?`<span class="pill">Parti·e le ${esc(new Date(e.parti_le+"T12:00").toLocaleDateString("fr-FR",{day:"numeric",month:"short",year:"numeric"}))}</span>`:`<span class="pill ${e.actif?"ok":""}">${e.actif?"Accès actif":"Sans accès"}</span>`}${(()=>{ const n=state.comptes.filter(c=>c.commercial_id===e.id).length; return n?`<div class="hint" style="margin:2px 0 0">${n} client${n>1?"s":""}</div>`:""; })()}</td><td><div class="tools" style="flex-wrap:nowrap"><button class="btn small" data-act="edit-membre" data-id="${e.id}">Modifier</button>${e.role!=="admin"&&!e.parti_le?`<button class="btn small" data-act="voir-comme" data-id="${e.id}" title="Voir le CRM comme ce membre, en lecture seule">Voir comme</button>`:""}${e.role!=="admin"?`<button class="btn small" data-act="depart-membre" data-id="${e.id}">${e.parti_le?"Transférer":"Départ / transfert"}</button>`:""}</div></td></tr>`).join("")}
@@ -2562,7 +2563,7 @@ function viewReglages(v){
      <button class="rg-tile" data-act="seuils"><b>Pipeline & alertes</b><span>Seuils de risque par étape</span></button>
      <button class="rg-tile" data-act="sommeil"><b>Mise en sommeil</b><span>Affaires sans action depuis longtemps</span></button>
      <button class="rg-tile" data-act="objectifs"><b>Objectifs</b><span>Objectifs mensuels par commercial</span></button>
-     <a class="rg-tile" href="#equipe" data-tab="equipe"><b>Leads, catalogue & imports</b><span>Sources du site, attribution, machines, import Excel</span></a></div></section>`:""}
+     <a class="rg-tile" href="#equipe" data-tab="equipe"><b>Leads & catalogue</b><span>Sources du site, attribution, machines</span></a></div></section>`:""}
   </div>`;
 }
 
