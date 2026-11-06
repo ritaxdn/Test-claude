@@ -6,7 +6,7 @@ import { agencyKeys, agencyPath } from "@/content/agencies";
 import { indicationKeys, indicationPath } from "@/content/indications";
 import { SITE_URL } from "@/lib/site";
 
-const staticPaths = ["", "/about", "/technologies", "/lgl-expert", "/indications", "/guide", "/academy", "/support", "/contact", "/privacy", "/terms"];
+const staticPaths = ["", "/about", "/technologies", "/lgl-expert", "/indications", "/acheter-appareils-esthetiques", "/guide", "/academy", "/support", "/contact", "/privacy", "/terms"];
 // Pages de gamme (une par gamme du catalogue)
 const rangePaths = [...landingKeys.map(landingPath), ...agencyKeys.map(agencyPath), ...indicationKeys.map(indicationPath)];  // + pages agences
 
