@@ -89,6 +89,17 @@ export function AcademyNewsletter({ locale }: { locale: Locale }) {
 
   // Ouverture différée : pas déjà inscrit, pas fermée récemment, bandeau cookies déjà réglé.
   useEffect(() => {
+    // Lien direct (story Instagram, e-mail…) : /fr/academy?newsletter ouvre la fenêtre tout de suite,
+    // même si elle a été fermée récemment ou si le bandeau cookies n'a pas encore reçu de réponse.
+    if (new URLSearchParams(window.location.search).has("newsletter")) {
+      const t = window.setTimeout(() => {
+        returnFocus.current = document.activeElement;
+        openedAt.current = Date.now();
+        setOpen(true);
+        track("newsletter_academy_affichee", { source: "lien" });
+      }, 600);
+      return () => window.clearTimeout(t);
+    }
     const s = readState();
     if (s === "inscrit" || (s && Date.now() - Number(s) < SNOOZE_MS)) return;
     let timer = 0;
