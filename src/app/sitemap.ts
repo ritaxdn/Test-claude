@@ -4,11 +4,12 @@ import { technologies } from "@/content/technologies";
 import { landingKeys, landingPath } from "@/content/category-landings";
 import { agencyKeys, agencyPath } from "@/content/agencies";
 import { indicationKeys, indicationPath } from "@/content/indications";
+import { topicKeys, topicPath } from "@/content/tech-topics";
 import { SITE_URL } from "@/lib/site";
 
 const staticPaths = ["", "/about", "/technologies", "/lgl-expert", "/indications", "/acheter-appareils-esthetiques", "/guide", "/academy", "/support", "/contact", "/privacy", "/terms"];
 // Pages de gamme (une par gamme du catalogue)
-const rangePaths = [...landingKeys.map(landingPath), ...agencyKeys.map(agencyPath), ...indicationKeys.map(indicationPath)];  // + pages agences
+const rangePaths = [...landingKeys.map(landingPath), ...agencyKeys.map(agencyPath), ...indicationKeys.map(indicationPath), ...topicKeys.map(topicPath)];  // + pages agences
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const entries: MetadataRoute.Sitemap = [];
