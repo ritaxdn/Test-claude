@@ -31,14 +31,22 @@ export function AcademyHighlight({ locale, full = false }: { locale: Locale; ful
             "@context": "https://schema.org",
             "@type": "EducationEvent",
             name: `${h.kicker.fr} ${h.title.join(" ")} : ${h.subtitle.fr}`,
+            description: `${h.subtitle[locale]}. ${h.speaker.name} (${h.speaker.expertise[locale]}). ${h.partners[locale]}. ${h.registration[locale]}.`,
+            inLanguage: "fr",
             startDate: `${h.start}T16:00:00+01:00`,
             endDate: `${h.start}T21:00:00+01:00`,
             eventStatus: "https://schema.org/EventScheduled",
             eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-            location: { "@type": "Place", name: "Kenzi Tower Hotel", address: { "@type": "PostalAddress", addressLocality: "Casablanca", addressCountry: "MA" } },
+            location: {
+              "@type": "Place",
+              name: "Kenzi Tower Hotel",
+              address: { "@type": "PostalAddress", streetAddress: "Boulevard Mohammed Zerktouni", addressLocality: "Casablanca", addressCountry: "MA" },
+            },
             image: `${SITE_URL}${h.speaker.photo}`,
             performer: { "@type": "Person", name: h.speaker.name },
-            organizer: { "@id": `${SITE_URL}/#organization` },
+            organizer: { "@type": "Organization", name: "CELLULIFT Academy", url: `${SITE_URL}/${locale}/academy` },
+            // Inscription (sans prix : la page ne publie pas de tarif)
+            offers: { "@type": "Offer", url: register, availability: "https://schema.org/InStock", validFrom: "2026-10-29T00:00:00+01:00" },
             url: `${SITE_URL}/${locale}/academy#masterclass`,
           }}
         />
