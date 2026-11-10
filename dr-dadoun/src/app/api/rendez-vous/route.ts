@@ -36,6 +36,8 @@ export async function POST(request: Request) {
     email: clean(body.email),
     ageRange: clean(body.ageRange, 30),
     domain: clean(body.domain, 60),
+    // Rempli seulement quand le patient arrive depuis la carte de parrainage.
+    referrer: clean(body.referrer),
     // Seuls les besoins de la liste proposée sont acceptés.
     needs: Array.isArray(body.needs)
       ? body.needs.filter((n: unknown): n is string => typeof n === "string" && allNeeds.has(n)).slice(0, 20)
@@ -76,6 +78,7 @@ export async function POST(request: Request) {
     ["E-mail", data.email || "—"],
     ["Domaine", data.domain || "—"],
     ["Préoccupation", data.needs.length ? data.needs.join(", ") : "—"],
+    ...(data.referrer ? ([["Parrainé par", data.referrer]] as [string, string][]) : []),
   ];
 
   const res = await fetch("https://api.resend.com/emails", {
@@ -85,7 +88,7 @@ export async function POST(request: Request) {
       from: BOOKING_EMAIL_FROM,
       to: BOOKING_EMAIL_TO,
       ...(data.email ? { reply_to: data.email } : {}),
-      subject: oneLine(`Demande de RDV — ${data.firstName} ${data.lastName} — ${when}`),
+      subject: oneLine(`${data.referrer ? "[Parrainage] " : ""}Demande de RDV — ${data.firstName} ${data.lastName} — ${when}`),
       html: `<h2>Nouvelle demande de rendez-vous</h2><p><a href="tel:${escape(data.phone.replace(/[^\d+]/g, ""))}" style="display:inline-block;padding:12px 20px;border-radius:999px;background:#0a1b21;color:#fff;text-decoration:none;font:600 15px sans-serif">Appeler ${escape(data.firstName)} pour confirmer · ${escape(data.phone)}</a></p><table>${rows
         .map(([k, v]) => `<tr><td style="padding:4px 12px 4px 0;color:#8d7c72">${k}</td><td>${escape(v)}</td></tr>`)
         .join("")}</table><p>À confirmer par téléphone auprès du patient.</p>`,
