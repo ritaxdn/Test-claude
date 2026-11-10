@@ -58,6 +58,12 @@ function Calendar() {
   const [time, setTime] = useState<string | null>(null);
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState("");
+  // Arrivée depuis la carte de parrainage (QR code : ?utm_campaign=parrainage) : on demande qui a recommandé le cabinet.
+  const fromReferral = useSyncExternalStore(
+    subscribe,
+    () => new URLSearchParams(window.location.search).get("utm_campaign") === "parrainage",
+    () => false,
+  );
   // Qualification du patient : domaine puis préoccupation principale (facultatifs).
   const [domain, setDomain] = useState("");
   const [concern, setConcern] = useState("");
@@ -244,6 +250,11 @@ function Calendar() {
             <Field label="Nom" name="lastName" autoComplete="family-name" />
             <Field label="Téléphone" name="phone" type="tel" autoComplete="tel" />
             <Field label="E-mail" name="email" type="email" autoComplete="email" optional />
+            {fromReferral && (
+              <div className="sm:col-span-2">
+                <Field label="Qui vous a recommandé le cabinet ? (nom et prénom)" name="referrer" autoComplete="off" />
+              </div>
+            )}
             <label className={label}>
               <span className="text-ink-soft">
                 Tranche d&apos;âge <span className="text-muted">(facultatif)</span>
