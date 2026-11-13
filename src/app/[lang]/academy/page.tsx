@@ -7,7 +7,6 @@ import { academyPageContent } from "@/content/academy-page";
 import { company } from "@/content/company";
 import { PageHero } from "@/components/sections/PageHero";
 import { AcademySessions } from "@/components/sections/AcademySessions";
-import { AcademyHighlight } from "@/components/sections/AcademyHighlight";
 import { WhyCellulift } from "@/components/sections/WhyCellulift";
 import { FinalCta } from "@/components/sections/FinalCta";
 import { ProtocolPath } from "@/components/system/SignalPath";
@@ -68,7 +67,6 @@ export default async function AcademyPage({
         </div>
       </section>
 
-      <AcademyHighlight locale={lang} full />
       <AcademySessions locale={lang} eyebrow={content.programsEyebrow} title={content.programsTitle} />
 
       <WhyCellulift

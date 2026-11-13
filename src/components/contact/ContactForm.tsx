@@ -81,7 +81,7 @@ export function ContactForm({
   const [parcours, setParcours] = useState<Parcours>("demo");
   // Machine d'origine (bouton d'une fiche : ?machine=frac-cov-4)
   const [machine, setMachine] = useState<{ slug: string; name: string } | null>(null);
-  // Session d'origine (bouton « S'inscrire » d'une masterclass : ?session=2026-11-12)
+  // Session d'origine (bouton « S'inscrire » d'une masterclass : ?session=AAAA-MM-JJ)
   const [presetSession, setPresetSession] = useState("");
   // Anti-spam : heure d'affichage du formulaire (un humain met plus de quelques secondes à le remplir).
   const startedAt = useRef(0);
