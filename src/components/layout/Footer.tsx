@@ -19,6 +19,7 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
     { href: `/${locale}/laser-esthetique`, label: locale === "fr" ? "Laser esthétique professionnel" : "Professional aesthetic lasers" },
     { href: `/${locale}/radiofrequence-esthetique`, label: locale === "fr" ? "Radiofréquence esthétique" : "Aesthetic radiofrequency" },
     { href: `/${locale}/indications`, label: locale === "fr" ? "Machines par indication" : "Machines by indication" },
+    { href: `/${locale}/appareils-esthetiques-senegal`, label: locale === "fr" ? "Appareils esthétiques au Sénégal" : "Aesthetic devices in Senegal" },
     { href: `/${locale}/lgl-expert`, label: locale === "fr" ? "LGL Expert au Maroc" : "LGL Expert in Morocco" },
     { href: `/${locale}/guide`, label: locale === "fr" ? "Guide gratuit" : "Free guide" },
     { href: `/${locale}/academy`, label: dict.nav.academy },

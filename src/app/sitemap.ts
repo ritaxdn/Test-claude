@@ -7,7 +7,7 @@ import { indicationKeys, indicationPath } from "@/content/indications";
 import { topicKeys, topicPath } from "@/content/tech-topics";
 import { SITE_URL } from "@/lib/site";
 
-const staticPaths = ["", "/about", "/technologies", "/lgl-expert", "/indications", "/acheter-appareils-esthetiques", "/guide", "/academy", "/support", "/contact", "/privacy", "/terms"];
+const staticPaths = ["", "/about", "/technologies", "/lgl-expert", "/indications", "/acheter-appareils-esthetiques", "/appareils-esthetiques-senegal", "/guide", "/academy", "/support", "/contact", "/privacy", "/terms"];
 // Pages de gamme (une par gamme du catalogue)
 const rangePaths = [...landingKeys.map(landingPath), ...agencyKeys.map(agencyPath), ...indicationKeys.map(indicationPath), ...topicKeys.map(topicPath)];  // + pages agences
 
