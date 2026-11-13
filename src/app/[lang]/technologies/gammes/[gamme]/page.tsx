@@ -12,7 +12,8 @@ import { homeContent } from "@/content/home";
 import { categoryLandings, landingKeys, landingLabels, landingPath, type LandingKey } from "@/content/category-landings";
 import { PageHero } from "@/components/sections/PageHero";
 import { Container } from "@/components/ui/Container";
-import { RevealGroup, RevealItem } from "@/components/ui/Reveal";
+import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
+import { Check } from "lucide-react";
 import { TechnologyCard } from "@/components/technologies/TechnologyCard";
 import { IncludedServices } from "@/components/technologies/IncludedServices";
 import { GuideBanner } from "@/components/guide/GuideBanner";
@@ -105,6 +106,31 @@ export default async function RangePage({ params }: { params: Promise<{ lang: st
                 ))}
               </dl>
             </div>
+          )}
+
+          {l.know && (
+            <Reveal className="glass mt-16 rounded-[1.75rem] p-8 md:p-10">
+              <h2 className="display text-2xl text-deep md:text-3xl">{l.know.title[lang]}</h2>
+              <ul className="mt-6 space-y-4">
+                {l.know.points.map(([h, d]) => (
+                  <li key={h.fr} className="flex items-start gap-3 font-sans text-deep">
+                    <Check size={16} className="mt-1 shrink-0 text-[var(--rainbow-2)]" />
+                    <span>
+                      <strong className="font-medium">{h[lang]}</strong> : {d[lang]}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              {l.links && (
+                <div className="mt-8 flex flex-wrap gap-2">
+                  {l.links.map(([label, path]) => (
+                    <Link key={path} href={`/${lang}${path}`} className="glass-soft rounded-full px-4 py-2 font-sans text-sm text-deep transition-colors hover:bg-white">
+                      {label[lang]}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </Reveal>
           )}
 
           <div className="mt-16">
