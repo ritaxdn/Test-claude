@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useFormAction } from "@/hooks/use-form-action";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input, NativeSelect, Textarea } from "@/components/ui/input";
@@ -13,11 +13,11 @@ import type { Project } from "@/lib/types";
 
 export function ProjectForm({ project }: { project?: Project }) {
   const action = project ? updateProject.bind(null, project.id) : createProject;
-  const [state, formAction, pending] = useActionState(action, null);
+  const [state, onSubmit, pending] = useFormAction(action);
   const fe = state && !state.ok ? state.fieldErrors : undefined;
 
   return (
-    <form action={formAction} className="grid gap-8">
+    <form onSubmit={onSubmit} className="grid gap-8" noValidate>
       <Section title="The pitch">
         <Field label="Project name" htmlFor="title" error={fe?.title}>
           <Input id="title" name="title" defaultValue={project?.title} maxLength={80} required aria-invalid={!!fe?.title || undefined} />

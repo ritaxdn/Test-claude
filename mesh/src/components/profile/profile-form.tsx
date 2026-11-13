@@ -1,7 +1,7 @@
 "use client";
 
+import { useFormAction } from "@/hooks/use-form-action";
 import * as React from "react";
-import { useActionState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,7 @@ const STEPS = [
 ] as const;
 
 export function ProfileForm({ profile, mode }: { profile: Profile; mode: "onboarding" | "edit" }) {
-  const [state, action, pending] = useActionState(saveProfile, null);
+  const [state, onSubmit, pending] = useFormAction(saveProfile);
   const [step, setStep] = React.useState(0);
   const [clientError, setClientError] = React.useState<string | null>(null);
   const formRef = React.useRef<HTMLFormElement>(null);
@@ -55,16 +55,16 @@ export function ProfileForm({ profile, mode }: { profile: Profile; mode: "onboar
     if (!err) setStep((s) => Math.min(s + 1, STEPS.length - 1));
   };
 
-  const section = (i: number) => cn(wizard && step !== i && "hidden", "grid gap-6");
+  const section = (i: number) => cn("grid gap-6", wizard && step !== i && "hidden");
 
   return (
     <form
       ref={formRef}
-      action={action}
+      onSubmit={onSubmit}
       className="grid gap-8"
       onKeyDown={(e) => {
         // Enter in a text field moves forward rather than submitting early.
-        if (wizard && e.key === "Enter" && step < STEPS.length - 1 && (e.target as HTMLElement).tagName === "INPUT") {
+        if (wizard && e.key === "Enter" && !e.defaultPrevented && step < STEPS.length - 1 && (e.target as HTMLElement).tagName === "INPUT") {
           e.preventDefault();
           next();
         }
@@ -153,11 +153,13 @@ export function ProfileForm({ profile, mode }: { profile: Profile; mode: "onboar
             <ArrowLeft /> Back
           </Button>
           {step < STEPS.length - 1 ? (
-            <Button type="button" onClick={next}>
+            // Distinct keys: otherwise React morphs this <button> into the submit
+            // button mid-click and the browser submits the form early.
+            <Button key="continue" type="button" onClick={next}>
               Continue <ArrowRight />
             </Button>
           ) : (
-            <Button type="submit" loading={pending}>
+            <Button key="finish" type="submit" loading={pending}>
               Finish &amp; explore
             </Button>
           )}

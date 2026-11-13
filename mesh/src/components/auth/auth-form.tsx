@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useFormAction } from "@/hooks/use-form-action";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Field } from "@/components/ui/label";
@@ -8,11 +8,11 @@ import { FormAlert } from "@/components/ui/misc";
 import { signIn, signUp } from "@/lib/actions/auth";
 
 export function AuthForm({ mode, next }: { mode: "signin" | "signup"; next?: string }) {
-  const [state, action, pending] = useActionState(mode === "signin" ? signIn : signUp, null);
+  const [state, onSubmit, pending] = useFormAction(mode === "signin" ? signIn : signUp);
   const fe = state && !state.ok ? state.fieldErrors : undefined;
 
   return (
-    <form action={action} className="grid gap-4" noValidate>
+    <form onSubmit={onSubmit} className="grid gap-4" noValidate>
       {next && <input type="hidden" name="next" value={next} />}
       <Field label="Email" htmlFor="email" error={fe?.email}>
         <Input

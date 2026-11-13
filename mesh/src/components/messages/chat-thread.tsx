@@ -49,23 +49,34 @@ export function ChatThread({
   // Realtime: new rows arrive via Postgres changes (RLS-filtered). Polling is a fallback.
   React.useEffect(() => {
     const supabase = createClient();
-    const channel = supabase
-      .channel(`messages:${matchId}`)
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "messages", filter: `match_id=eq.${matchId}` },
-        (payload: { new: Record<string, unknown> }) => {
-          const row = payload.new as unknown as Message;
-          setLive((cur) => (cur.some((m) => m.id === row.id) ? cur : [...cur, row]));
-        },
-      )
-      .subscribe();
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    let cancelled = false;
+
+    (async () => {
+      // Authenticate the socket first; otherwise RLS sees an anonymous subscriber.
+      const { data } = await supabase.auth.getSession();
+      if (cancelled) return;
+      if (data.session) await supabase.realtime.setAuth(data.session.access_token);
+      channel = supabase
+        .channel(`messages:${matchId}`)
+        .on(
+          "postgres_changes",
+          { event: "INSERT", schema: "public", table: "messages", filter: `match_id=eq.${matchId}` },
+          (payload: { new: Record<string, unknown> }) => {
+            const row = payload.new as unknown as Message;
+            setLive((cur) => (cur.some((m) => m.id === row.id) ? cur : [...cur, row]));
+          },
+        )
+        .subscribe();
+    })();
+
     const poll = setInterval(() => {
       if (document.visibilityState === "visible") router.refresh();
     }, 20000);
     return () => {
+      cancelled = true;
       clearInterval(poll);
-      supabase.removeChannel(channel);
+      if (channel) supabase.removeChannel(channel);
     };
   }, [matchId, router]);
 
