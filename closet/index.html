@@ -525,13 +525,13 @@ function renderLooks(coll){
   const cpick=l=>colls.length?`<select class="cpick" data-cpick="${l.id}" aria-label="Collections de ${esc(l.name)}"><option value="">${coll?"Déplacer vers…":"+ Collection…"}</option>${colls.filter(c=>!coll||c.id!==coll.id).map(c=>`<option value="${c.id}">${(c.looks||[]).includes(l.id)?"✓ ":""}${esc(c.name)}</option>`).join("")}</select>`:"";
   lastList=list.map(l=>l.id);[...picked].forEach(id=>{if(!looks.some(l=>l.id===id))picked.delete(id)});
   $("#grid").classList.toggle("selmode",selMode);
-  const selbar=selMode?`<div class="selbar"><b>${picked.size} tenue${picked.size>1?"s":""} sélectionnée${picked.size>1?"s":""}</b><select data-movesel aria-label="Déplacer la sélection vers une collection" ${picked.size?"":"disabled"}><option value="">Déplacer vers…</option>${colls.filter(c=>!coll||c.id!==coll.id).map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join("")}${coll?'<option value="__out">Sortir de la collection</option>':""}</select><button data-selall>Tout sélectionner</button><button data-selm>Annuler</button></div>`:"";
+  const selbar=selMode?`<div class="selbar"><b>${picked.size} tenue${picked.size>1?"s":""} sélectionnée${picked.size>1?"s":""}</b><select data-movesel aria-label="Déplacer la sélection vers une collection" ${picked.size?"":"disabled"}><option value="">Déplacer vers…</option>${colls.filter(c=>!coll||c.id!==coll.id).map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join("")}${coll?'<option value="__out">Supprimer ces tenues</option>':""}</select><button data-selall>Tout sélectionner</button><button data-selm>Annuler</button></div>`:"";
   $("#grid").innerHTML=(coll?`<div class="collbar"><button class="btn ghost" data-cback>‹ Toutes les collections</button><span class="note">Ajoute des tenues depuis « Mes tenues » (menu « + Collection »).</span><span class="sp"></span><button class="btn ghost" data-cren="${coll.id}">Renommer</button><button class="btn danger" data-cdel="${coll.id}">Supprimer</button><div id="cconf"></div></div>`:"")+`<div class="lookbar">${colls.length&&list.length?`<button data-selm aria-pressed="${selMode}">${selMode?"Terminer la sélection":"Sélectionner des tenues"}</button>`:""}<button data-hidew aria-pressed="${hideWorn}">Masquer les tenues déjà portées</button>${!coll&&nFiled?`<button data-showf aria-pressed="${showFiled}">${showFiled?"Cacher":"Afficher"} les ${nFiled} tenues rangées dans des collections</button>`:""}</div>`+selbar+(!coll&&!showFiled&&nFiled&&!list.length?'<p class="note lookbar">Toutes tes tenues sont rangées dans tes collections.</p>':"")+(hideWorn&&looks.length&&!list.length?'<p class="note lookbar">Tu as porté toutes tes tenues ! Désactive le filtre pour les revoir.</p>':"")+list.map(l=>{
     const ims=lookIds(l.items).map(byId).filter(Boolean);
     const done=!!l.worn;
     return `<div class="lk${done?" done":""}${picked.has(l.id)?" pick":""}" data-lk="${l.id}">${selMode?`<button class="lkchk" data-pk="${l.id}" aria-pressed="${picked.has(l.id)}" aria-label="Sélectionner ${esc(l.name)}">${picked.has(l.id)?"✓":""}</button>`:""}${done?`<span class="worn">✓ Déjà portée${l.worn>1?` ${l.worn}×`:""} · ${fmt(l.lastWorn)}</span>`:'<span class="fresh">Pas encore portée</span>'}<div class="stack">${ims.map(i=>src(i)?`<img src="${esc(src(i))}" alt="${esc(i.name)}">`:`<small class="note">${esc(i.name)}</small>`).join("")}</div>
       <b>${esc(l.name)}</b>${l.refNote?`<small class="refnote">${esc(l.refNote)}</small>`:""}${/^https:\/\//.test(l.ref||"")?`<a class="ref" href="${esc(l.ref)}" target="_blank" rel="noopener">Voir le défilé ↗</a>`:""}${editing===l.id?'<span class="fresh">En cours de modification</span>':""}
-      <div class="row"><button class="btn wearbtn${done?" undo":""}" data-done="${l.id}">${done?"Annuler « portée »":"Je l'ai portée aujourd'hui"}</button><button class="btn" data-wear="${l.id}">Essayer</button>${coll?`<button class="btn ghost" data-cout="${l.id}">Sortir de la collection</button>`:`<button class="btn ghost" data-dl="${l.id}">Retirer</button>`}</div>${cpick(l)}</div>`}).join("");
+      <div class="row"><button class="btn wearbtn${done?" undo":""}" data-done="${l.id}">${done?"Annuler « portée »":"Je l'ai portée aujourd'hui"}</button><button class="btn" data-wear="${l.id}">Essayer</button>${coll?`<button class="btn ghost" data-cout="${l.id}">Supprimer la tenue</button>`:`<button class="btn ghost" data-dl="${l.id}">Retirer</button>`}</div>${cpick(l)}</div>`}).join("");
   if(coll){e.hidden=!!list.length;if(!list.length)e.innerHTML='<h3>Collection vide</h3><p>Va dans « Mes tenues » et choisis cette collection dans le menu « + Collection » d\'une tenue.</p>';return}
   e.hidden=!!looks.length;
   if(!looks.length)e.innerHTML='<h3>Aucune tenue</h3><p>Compose un look au centre puis clique sur « Enregistrer la tenue ».</p>';
@@ -740,7 +740,10 @@ $("#grid").onclick=async e=>{
     $("#cconf").innerHTML=`<form class="cform" id="crf"><input id="c-rename" name="name" value="${esc(c.name)}" required maxlength="60"><button class="btn" type="submit">Renommer</button></form>`;$("#c-rename").focus();return}
   const cd=e.target.closest("[data-cdel]");if(cd){$("#cconf").innerHTML=`<div class="confirm">Supprimer cette collection ? Les tenues restent dans « Mes tenues ». <button class="btn danger" data-cyes="${cd.dataset.cdel}">Oui, supprimer</button></div>`;return}
   const ct=e.target.closest("[data-cout]");if(ct){const c=colls.find(x=>x.id===openColl);if(!c)return;
-    try{await ccol.doc(c.id).update({looks:(c.looks||[]).filter(x=>x!==ct.dataset.cout)});toast("Tenue sortie de la collection")}catch(err){toast("Échec : "+(err.message||err.code))}return}
+    if(ct.dataset.sure!=="1"){ct.dataset.sure="1";ct.textContent="Confirmer la suppression";ct.classList.add("danger");return}
+    const lid=ct.dataset.cout;
+    try{for(const cc of colls){if((cc.looks||[]).includes(lid))await ccol.doc(cc.id).update({looks:cc.looks.filter(x=>x!==lid)})}
+      if(editing===lid){editing=null;renderEditing()}await lcol.doc(lid).delete();toast("Tenue supprimée")}catch(err){toast("Échec : "+(err.message||err.code))}return}
   const cy=e.target.closest("[data-cyes]");if(cy){try{await ccol.doc(cy.dataset.cyes).delete();openColl=null;toast("Collection supprimée")}catch(err){toast("Échec : "+(err.message||err.code))}return}
   if(e.target.closest("[data-vsave]")&&valise&&lcol){const b=e.target.closest("[data-vsave]");b.disabled=true;let n=0;
     try{for(const [i,o] of valise.outfits.entries()){if(looks.some(l=>lookKey(l.items)===lookKey(o)))continue;await lcol.add({items:o,name:`Valise ${valise.style.toLowerCase()} · Jour ${i+1}`,createdAt:Date.now()+i,worn:0});n++}
@@ -778,8 +781,9 @@ $("#grid").addEventListener("change",async e=>{
         if(c.id===target)next=[...cur,...ids.filter(id=>!cur.includes(id))];
         else next=cur.filter(id=>!ids.includes(id));             // déplacer = la tenue ne reste que dans la collection choisie
         if(next.length!==cur.length)await ccol.doc(c.id).update({looks:next})}
+      if(target==="__out"){for(const id of ids){if(editing===id){editing=null;renderEditing()}await lcol.doc(id).delete()}}   // « supprimer » = la tenue disparaît
       picked.clear();selMode=false;
-      toast(target==="__out"?`${n} tenue${n>1?"s":""} sortie${n>1?"s":""} des collections`:`${n} tenue${n>1?"s":""} déplacée${n>1?"s":""} dans « ${tc.name} »`);renderGrid()
+      toast(target==="__out"?`${n} tenue${n>1?"s":""} supprimée${n>1?"s":""}`:`${n} tenue${n>1?"s":""} déplacée${n>1?"s":""} dans « ${tc.name} »`);renderGrid()
     }catch(err){toast("Échec : "+(err.message||err.code));mv.disabled=false}
     return}
   const s=e.target.closest("[data-cpick]");if(!s||!s.value||!ccol)return;
