@@ -749,7 +749,7 @@ export const richSheets: Record<string, RichSheet> = {
       [t("Fabricant", "Manufacturer"), t("LGL Expert", "LGL Expert")],
     ],
     related: ["hot-power", "longishape"],
-    seeAlso: [[t("Alternative à Emsculpt au Maroc", "Emsculpt alternative in Morocco"), "/alternative-emsculpt-maroc"]],
+    seeAlso: [[t("Machine de sculpture musculaire au Maroc", "Muscle sculpting machine in Morocco"), "/machine-sculpture-musculaire"]],
     faq: [
       {
         q: t("Comment fonctionne Steel Muscle ?", "How does Steel Muscle work?"),

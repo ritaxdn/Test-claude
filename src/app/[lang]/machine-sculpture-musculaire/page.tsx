@@ -9,7 +9,7 @@ import { Breadcrumbs, JsonLd } from "@/components/seo/JsonLd";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { homeContent } from "@/content/home";
 import { technologies } from "@/content/technologies";
-import { emsculptAlt } from "@/content/emsculpt-alternative";
+import { muscleSculpting } from "@/content/muscle-sculpting";
 import { PageHero } from "@/components/sections/PageHero";
 import { Container } from "@/components/ui/Container";
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
@@ -18,20 +18,20 @@ import { Faq } from "@/components/system/Faq";
 import { TechnologyCard } from "@/components/technologies/TechnologyCard";
 import { FinalCta } from "@/components/sections/FinalCta";
 
-const PATH = "/alternative-emsculpt-maroc";
+const PATH = "/machine-sculpture-musculaire";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
   if (!isLocale(lang)) return {};
-  const c = emsculptAlt[lang];
+  const c = muscleSculpting[lang];
   return pageMetadata({ lang, path: PATH, title: c.meta.title, description: c.meta.description });
 }
 
-/** Page « Alternative à Emsculpt » : Steel Muscle (LGL Expert), sans donnée chiffrée sur les machines concurrentes. */
-export default async function EmsculptAlternativePage({ params }: { params: Promise<{ lang: string }> }) {
+/** Page « Machine de sculpture musculaire » : Steel Muscle (LGL Expert). */
+export default async function MuscleSculptingPage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
-  const c = emsculptAlt[lang];
+  const c = muscleSculpting[lang];
   const dict = getDictionary(lang);
   const cta = homeContent[lang].finalCta;
   const steel = technologies.find((m) => m.slug === "steel-muscle");
@@ -132,12 +132,6 @@ export default async function EmsculptAlternativePage({ params }: { params: Prom
       </section>
 
       <Faq locale={lang} title={c.faqTitle} items={c.faq.map(([q, a]) => ({ q, a }))} />
-
-      <section className="px-3 pb-12 md:px-5 md:pb-16">
-        <Container>
-          <p className="max-w-3xl font-sans text-xs leading-relaxed text-deep-soft">{c.disclaimer}</p>
-        </Container>
-      </section>
 
       <FinalCta
         locale={lang}
