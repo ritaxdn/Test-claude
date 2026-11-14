@@ -424,6 +424,7 @@ export default async function TechnologyDetailPage({
                     const x = technologies.find((m) => m.slug === r);
                     return x ? [[x.name, `/${lang}/technologies/${x.slug}`]] : [];
                   }),
+                  ...(rich.seeAlso ?? []).map(([label, path]) => [label[lang], `/${lang}${path}`]),
                   ...(rich.brand === "LGL Expert" ? [[lang === "fr" ? "LGL Expert au Maroc" : "LGL Expert in Morocco", `/${lang}/lgl-expert`]] : []),
                   [l.academyLink, `/${lang}/academy`],
                   [l.guideLink, `/${lang}/guide`],
