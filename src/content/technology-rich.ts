@@ -28,6 +28,8 @@ export type RichSheet = {
   specs: [LocalizedText, LocalizedText][];
   /** Maillage : fiches proches */
   related: string[];
+  /** Pages du site à ajouter dans « Pour aller plus loin » : [libellé, chemin sans langue] (facultatif) */
+  seeAlso?: [LocalizedText, string][];
   faq: { q: LocalizedText; a: LocalizedText }[];
   /** Vidéo Instagram de la machine (reel) */
   instagram?: string;
@@ -747,6 +749,7 @@ export const richSheets: Record<string, RichSheet> = {
       [t("Fabricant", "Manufacturer"), t("LGL Expert", "LGL Expert")],
     ],
     related: ["hot-power", "longishape"],
+    seeAlso: [[t("Alternative à Emsculpt au Maroc", "Emsculpt alternative in Morocco"), "/alternative-emsculpt-maroc"]],
     faq: [
       {
         q: t("Comment fonctionne Steel Muscle ?", "How does Steel Muscle work?"),
