@@ -248,6 +248,14 @@ form textarea{min-height:64px;resize:vertical}
 .vday .stack>*{aspect-ratio:1;display:grid;place-items:center;overflow:hidden;font-size:10px;text-align:center}
 .vday .stack img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
 .row1{display:flex;gap:8px}
+.chiprow{display:flex;flex-wrap:wrap;gap:6px;flex:1 1 100%}
+.chiprow button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 12px;font:inherit;font-size:13px;cursor:pointer}
+.chiprow button[aria-pressed="true"]{background:var(--ink);color:var(--on-ink);border-color:var(--ink)}
+.vform input[type=file]{padding:6px;font-size:12px}
+.vday select{border:1px solid var(--line);border-radius:8px;padding:8px;font:inherit;font-size:12px;background:var(--card);color:var(--ink);min-width:0;width:100%}
+.vday small{font-size:11px;color:var(--muted)}
+.lk .stack.one{grid-template-columns:1fr}
+.lk .stack.one>*{aspect-ratio:4/3}
 @media (max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}.kpis div:nth-child(3){padding-left:0;border-left:0}}
 /* ---- interface apaisée ---- */
 header{border-bottom-color:transparent;padding-block:22px 10px}
@@ -388,7 +396,7 @@ const CATS=GROUPS.flatMap(g=>g.cats);
 const TOPCATS=[...GROUPS[0].cats,"Hauts"];          // "Hauts" = ancienne catégorie, toujours acceptée
 const SHOECATS=GROUPS.find(g=>g.name==="Chaussures").cats;
 const STYLES=["Sport","Soirée","Casual"];
-const TOOLS=["Mes tenues","Collections","Statistiques","Mode valise"];
+const TOOLS=["Aujourd'hui","Styliste IA","Planning","Envies","Mes tenues","Collections","Statistiques","Mode valise"];
 let colls=[],ccol=null,openColl=null;
 let valise=null;
 const SLOTS=[
@@ -447,6 +455,8 @@ function count(v){
   if(STYLES.includes(v))return items.filter(i=>(i.tags||[]).includes(v)).length;
   if(v==="Mes tenues"){const f=new Set(colls.flatMap(c=>c.looks||[]));return looks.filter(l=>!f.has(l.id)).length}
   if(v==="Collections")return colls.length;
+  if(v==="Envies")return wishes.length||"";
+  if(v==="Planning"){const t=todayKey();return looks.filter(l=>l.plannedFor&&l.plannedFor>=t).length||""}
   if(TOOLS.includes(v))return "";
   const g=GROUPS.find(g=>g.name===v);
   return items.filter(i=>g?(g.cats.includes(i.category)||(g.name==="Hauts"&&i.category==="Hauts")):i.category===v).length;
@@ -462,7 +472,7 @@ function renderNav(){
   }
   h+=TOOLS.map(t=>a(t,"top")).join("");
   $("#nav").innerHTML=h;
-  const chipList=["Tout","Favoris","Collections","Statistiques","Mode valise",...STYLES,...GROUPS.map(g=>g.name),...CATS.filter(c=>count(c)>0&&!GROUPS.some(g=>g.name===c))];
+  const chipList=["Tout","Aujourd'hui","Styliste IA","Planning","Envies","Favoris","Collections","Statistiques","Mode valise",...STYLES,...GROUPS.map(g=>g.name),...CATS.filter(c=>count(c)>0&&!GROUPS.some(g=>g.name===c))];
   $("#chips").innerHTML=chipList.filter(v=>v==="Tout"||TOOLS.includes(v)||count(v)>0||v===view).map(v=>`<button data-v="${esc(v)}" aria-pressed="${view===v}">${esc(v==="Tout"?"Tout voir":v)}</button>`).join("");
 }
 
@@ -482,6 +492,10 @@ const swatch=c=>c&&COLORS[c]?`<span class="dot" style="background:${COLORS[c]}">
 function renderGrid(){
   const e=$("#empty");
   if(view==="Mes tenues"){renderLooks();return}
+  if(view==="Aujourd'hui"){renderToday();return}
+  if(view==="Styliste IA"){renderStylist();return}
+  if(view==="Planning"){renderPlanning();return}
+  if(view==="Envies"){renderWishes();return}
   if(view==="Statistiques"){renderStats();return}
   if(view==="Mode valise"){renderValise();return}
   if(view==="Collections"&&!colls.find(c=>c.id===openColl)){renderColls();return}
@@ -604,13 +618,117 @@ function renderStats(){
   const colors=tally(i=>i.color),brands=tally(i=>i.brand).slice(0,8),cats=tally(i=>i.category);
   const styles=STYLES.map(t=>[t,items.filter(i=>(i.tags||[]).includes(t)).length]).sort((a,b)=>b[1]-a[1]);
   const top=items.filter(i=>i.wears).sort((a,b)=>b.wears-a.wears).slice(0,6);
+  const priced=items.filter(i=>+i.price>0).map(i=>({...i,price:+i.price}));const eur=n=>n.toLocaleString("fr-FR",{style:"currency",currency:"EUR",maximumFractionDigits:n<10?2:0});
   g.innerHTML=`<div class="kpis"><div><b>${items.length}</b><span>pièces</span></div><div><b>${worn.length}</b><span>déjà portées</span></div><div><b>${never.length}</b><span>jamais portées</span></div><div><b>${looks.filter(l=>l.worn).length}/${looks.length}</b><span>tenues portées</span></div></div>
   <section><h4>Couleurs dominantes</h4>${bars(colors,true)}</section>
   <section><h4>Marques préférées</h4>${brands.length?bars(brands):'<p class="note">Ajoute les marques dans les fiches.</p>'}</section>
   <section><h4>Par rubrique</h4>${bars(cats)}</section>
   <section><h4>Par style</h4>${bars(styles)}</section>
   <section class="wide"><h4>Les plus portées</h4>${top.length?`<div class="minis">${top.map(i=>mini(i,i.wears+"×")).join("")}</div>`:'<p class="note">Clique « Je l\'ai portée aujourd\'hui » sur une tenue pour commencer le suivi.</p>'}</section>
+  ${priced.length?`<section class="wide"><h4>Coût par port · ${priced.length} pièce${priced.length>1?"s":""} avec un prix · ${eur(priced.reduce((a,i)=>a+i.price,0))} au total</h4><p class="note">Plus tu portes une pièce, moins elle te coûte. Celles-ci sont à ressortir :</p><div class="minis">${priced.sort((a,b)=>b.price/Math.max(1,b.wears||0)-a.price/Math.max(1,a.wears||0)).slice(0,8).map(i=>mini(i,eur(i.price/Math.max(1,i.wears||0))+"/port")).join("")}</div></section>`:'<section class="wide"><h4>Coût par port</h4><p class="note">Ajoute le prix dans la fiche d\'une pièce pour savoir combien elle te coûte à chaque fois que tu la portes.</p></section>'}
   <section class="wide"><h4>Jamais portées · ${never.length}</h4><div class="minis">${never.map(i=>mini(i,"")).join("")}</div></section>`;
+}
+
+/* ---------- façon Alta : aujourd'hui, styliste IA, planning, envies ---------- */
+const WEATHER=[["Froid","❄️","Automne / Hiver"],["Frais","🍂","Automne / Hiver"],["Doux","⛅",""],["Chaud","☀️","Printemps / Été"],["Pluie","🌧","Automne / Hiver"]];
+let meteo="Doux";try{meteo=localStorage.getItem("dressing.meteo")||"Doux"}catch(_){}
+let todayOcc="",todaySkip=[],wishes=[],wcol=null,stylist=null,stylistBusy=false;const wishStyle={};
+const dayKey=d=>{const x=new Date(d);x.setMinutes(x.getMinutes()-x.getTimezoneOffset());return x.toISOString().slice(0,10)};
+const todayKey=()=>dayKey(new Date());
+const dayLabel=k=>{const d=new Date(k+"T12:00:00"),t=todayKey();return k===t?"Aujourd'hui":k===dayKey(Date.now()+864e5)?"Demain":d.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"})};
+const seasonOk=(i,season)=>!season||!i.season||i.season==="Toute l'année"||i.season===season;
+const lookOk=l=>lookIds(l.items).some(byId);
+const cardOf=(o,title,note,extra,first)=>`<div class="lk"><div class="stack">${first||""}${stackHtml(o)}</div><b>${esc(title)}</b>${note?`<p class="refnote">${esc(note)}</p>`:""}${extra||""}</div>`;
+function loadIntoLook(o,editId){SLOTS.forEach(s=>{const v=ids(o?.[s.key]);shown[s.key]=v.length>0||s.key==="shoes";if(v.length)sel[s.key]=s.key==="acc"?v:v[0];else if(s.key==="acc")sel.acc=[]});
+  editing=editId||null;if(!isPhone())setLook(true);saveUi();renderToggles();renderRails();renderGrid();renderEditing();if(isPhone())setTab("look")}
+function pickToday(){
+  const w=WEATHER.find(x=>x[0]===meteo)||WEATHER[2],coll=colls.find(c=>c.id===todayOcc);
+  let pool=looks.filter(l=>lookOk(l)&&!todaySkip.includes(l.id)&&lookIds(l.items).map(byId).filter(Boolean).every(i=>seasonOk(i,w[2])));
+  if(coll)pool=pool.filter(l=>(coll.looks||[]).includes(l.id));
+  const shoes=l=>ids(l.items.shoes).map(byId).filter(Boolean);
+  if(meteo==="Pluie")pool=pool.filter(l=>!shoes(l).some(i=>/sandale|tong|mule/i.test(i.name+" "+i.category)));
+  if(meteo==="Froid")pool=pool.filter(l=>ids(l.items.jacket).length);
+  if(meteo==="Chaud")pool=pool.filter(l=>!lookIds(l.items).map(byId).some(i=>i&&/manteau|fourrure|trench|bottes/i.test(i.name+" "+i.category)));
+  const age=l=>l.lastWorn?(Date.now()-new Date(l.lastWorn))/864e5:400;
+  return pool.map(l=>({l,s:Math.min(age(l),400)+(l.plannedFor?-500:0)+Math.random()*120})).sort((a,b)=>b.s-a.s)[0]?.l||null;
+}
+function renderToday(){
+  const g=$("#grid");g.className="valise";$("#empty").hidden=true;$("#matching").textContent="Aujourd'hui";
+  const planned=looks.filter(l=>l.plannedFor===todayKey()&&lookOk(l));
+  if(!renderToday.cur||!looks.some(l=>l.id===renderToday.cur))renderToday.cur=pickToday()?.id;
+  const l=looks.find(x=>x.id===renderToday.cur);
+  const btns=x=>`<div class="row"><button class="btn wearbtn${x.worn&&x.lastWorn&&dayKey(x.lastWorn)===todayKey()?" undo":""}" data-done="${x.id}">${x.worn&&x.lastWorn&&dayKey(x.lastWorn)===todayKey()?"Portée aujourd'hui ✓":"Je la porte aujourd'hui"}</button><button class="btn" data-wear="${x.id}">Modifier</button></div>`;
+  g.innerHTML=`<div class="vform"><div class="chiprow" role="group" aria-label="Météo du jour">${WEATHER.map(([n,e])=>`<button type="button" data-meteo="${n}" aria-pressed="${meteo===n}">${e} ${n}</button>`).join("")}</div>
+    <label>Occasion<select data-tocc><option value="">Toutes mes tenues</option>${colls.map(c=>`<option value="${c.id}" ${todayOcc===c.id?"selected":""}>${esc(c.name)}</option>`).join("")}</select></label></div>`+
+    (planned.length?`<section class="wide"><h4>Prévue pour aujourd'hui</h4></section>`+planned.map(x=>cardOf(x.items,x.name,x.refNote,btns(x))).join(""):"")+
+    `<section class="wide"><h4>Ma suggestion · ${esc(meteo.toLowerCase())}${todayOcc&&colls.find(c=>c.id===todayOcc)?" · "+esc(colls.find(c=>c.id===todayOcc).name):""}</h4></section>`+
+    (l?cardOf(l.items,l.name,l.refNote,btns(l)+`<div class="row"><button class="btn" data-tnext>Une autre</button><button class="btn" data-tplan="${l.id}">Pour demain</button></div>`)
+      :`<p class="note wide">Aucune tenue ne correspond à cette météo${todayOcc?" dans cette collection":""}. Change la météo ou l'occasion, ou demande au styliste IA.</p>`)+
+    `<p class="note wide">Je choisis parmi tes tenues enregistrées : la saison des pièces doit aller avec la météo, et celles que tu n'as pas portées depuis longtemps passent en premier.</p>`;
+}
+const CATALOG=()=>items.map(i=>`${i.id}|${i.name}|${i.category}|${i.color||""}|${i.season||""}`).join("\n");
+function cleanOutfit(o,exclude){
+  const out={};if(!o||typeof o!=="object")return out;
+  SLOTS.forEach(s=>{const v=o[s.key];if(s.key==="acc"){const a=ids(v).filter(id=>byId(id)&&s.cats.includes(byId(id).category)).slice(0,3);if(a.length)out.acc=a;return}
+    const id=Array.isArray(v)?v[0]:v;if(id&&byId(id)&&s.cats.includes(byId(id).category)&&id!==exclude)out[s.key]=id});
+  if(out.dress){delete out.top;delete out.bottom;delete out.layer}
+  if(out.layer&&out.layer===out.top)delete out.layer;
+  return out;
+}
+async function askStylist(request,wish){
+  const s=await window.claude?.use?.("sample");if(!s)throw{message:"Le styliste IA n'est pas disponible ici. Ouvre le dressing depuis claude.ai."};
+  const prompt=`Tu es une styliste de mode exigeante, avec du goût et une vraie vision : une idée forte par tenue, pas de tenue générique.
+Garde-robe de la cliente (id|nom|catégorie|couleur|saison) :
+${CATALOG()}
+
+${wish?`Elle hésite à acheter cette pièce : « ${wish.name}${wish.brand?" ("+wish.brand+")":""} », catégorie ${wish.category||"?"}, couleur ${wish.color||"?"}. Construis une tenue AUTOUR de cette pièce avec ses vêtements à elle ; ne mets pas cette pièce dans "items" (elle est ajoutée à part) et laisse vide l'emplacement qu'elle occupe.\n`:""}Demande : ${request||"une tenue pour aujourd'hui"}
+Météo : ${meteo}.
+Règles : uniquement des id de la liste ; soit "dress", soit "top" + "bottom" ; des chaussures ; "layer" seulement pour un pull, cardigan ou chemise ouverte porté sur le haut ; 0 à 3 accessoires, jamais deux colliers ni deux paires de boucles ; pas d'or et d'argent mélangés ; un seul imprimé fort ; respecte la saison et la météo.
+Réponds uniquement en JSON : {"name":"titre court en français","note":"1 ou 2 phrases en français qui expliquent l'idée de la tenue","items":{"jacket":null,"layer":null,"top":null,"dress":null,"bottom":null,"shoes":null,"bag":null,"acc":[]}}`;
+  const r=await s.json(prompt,{modelTier:"default",cache:false});
+  return{name:String(r?.name||"Tenue du styliste").slice(0,80),note:String(r?.note||"").slice(0,400),items:cleanOutfit(r?.items,null)};
+}
+function renderStylist(){
+  const g=$("#grid");g.className="valise";$("#empty").hidden=true;$("#matching").textContent="Styliste IA";
+  const st=stylist;
+  g.innerHTML=`<form class="vform" id="sf"><label style="flex:3 1 260px">Ta demande<input name="q" placeholder="Ex. dîner en terrasse samedi soir, un look à la Jane Birkin, entretien d'embauche…" value="${esc(st?.q||"")}" maxlength="200"></label>
+    <label>Météo<select name="meteo">${WEATHER.map(([n,e])=>`<option value="${n}" ${meteo===n?"selected":""}>${e} ${n}</option>`).join("")}</select></label>
+    <button class="btn" type="submit" ${stylistBusy?"disabled":""}>${stylistBusy?"Je réfléchis…":st?.items?"Une autre idée":"Créer ma tenue"}</button></form>`+
+    (st?.err?`<p class="note wide">${esc(st.err)}</p>`:"")+
+    (st?.items&&Object.keys(st.items).length?cardOf(st.items,st.name,st.note,`<div class="row"><button class="btn wearbtn" data-ssave>Enregistrer la tenue</button><button class="btn" data-stry>Essayer dans le look</button></div>`)
+      :st?.items?`<p class="note wide">Le styliste n'a pas trouvé de pièces qui vont ensemble pour cette demande. Reformule-la ?</p>`:`<p class="note wide">Décris l'occasion, une ambiance ou une icône : le styliste compose une tenue avec tes pièces et t'explique son idée.</p>`);
+}
+async function runStylist(q){
+  if(stylistBusy)return;stylistBusy=true;stylist={q};renderStylist();
+  try{stylist={q,...await askStylist(q)}}catch(e){stylist={q,err:e?.code==="not_granted"?"Tu as refusé l'accès à Claude pour cette page.":e?.code==="rate_limited"?"Trop de demandes d'un coup : réessaie dans un moment.":"Le styliste n'a pas pu répondre : "+(e?.message||e?.code||"réessaie")}}
+  stylistBusy=false;if(view==="Styliste IA")renderStylist();
+}
+function renderPlanning(){
+  const g=$("#grid");g.className="valise";$("#empty").hidden=true;$("#matching").textContent="Planning";
+  const opts=[...looks].filter(lookOk).sort((a,b)=>(a.worn?1:0)-(b.worn?1:0)||String(a.name).localeCompare(String(b.name),"fr"));
+  const days=[...Array(14)].map((_,n)=>dayKey(Date.now()+n*864e5));
+  g.innerHTML=`<p class="note wide">Prévois tes tenues pour les deux prochaines semaines. Celle du jour s'affiche aussi dans « Aujourd'hui ».</p>`+days.map(k=>{
+    const ls=looks.filter(l=>l.plannedFor===k&&lookOk(l));
+    return `<div class="vday"><b>${esc(dayLabel(k))}</b>${ls.map(l=>`<div class="stack">${stackHtml(l.items)}</div><small>${esc(l.name)}</small><button class="btn ghost" data-unplan="${l.id}">Retirer</button>`).join("")}
+      <select data-plan="${k}" aria-label="Choisir une tenue pour ${esc(dayLabel(k))}"><option value="">${ls.length?"+ Ajouter une tenue…":"Choisir une tenue…"}</option>${opts.map(l=>`<option value="${l.id}">${l.worn?"":"• "}${esc(l.name)}</option>`).join("")}</select></div>`}).join("")+
+    `<p class="note wide">• = pas encore portée</p>`;
+}
+const safeUrl=u=>/^https?:\/\//i.test(u||"")?u:"";
+function renderWishes(){
+  const g=$("#grid");g.className="valise";$("#empty").hidden=true;$("#matching").textContent=`Envies : ${wishes.length}`;
+  g.innerHTML=`<form class="vform" id="wf"><label style="flex:2 1 200px">Pièce<input name="name" required maxlength="80" placeholder="Ex. Ballerines rouges vernies"></label>
+    <label>Marque<input name="brand" maxlength="40"></label><label>Prix (€)<input name="price" type="number" min="0" step="0.01"></label>
+    <label>Catégorie<select name="category">${GROUPS.map(gr=>`<optgroup label="${esc(gr.name)}">${opts(gr.cats,"")}</optgroup>`).join("")}</select></label>
+    <label>Couleur<select name="color"><option value=""></option>${opts(Object.keys(COLORS),"")}</select></label>
+    <label style="flex:2 1 200px">Lien<input name="link" type="url" placeholder="https://…"></label>
+    <label>Photo<input name="photo" type="file" accept="image/*"></label><button class="btn" type="submit">Ajouter à mes envies</button></form>`+
+    (wishes.length?wishes.map(w=>{const ws=wishStyle[w.id];return `<div class="lk"><div class="stack one">${w.thumb?`<img src="${esc(w.thumb)}" alt="">`:`<small class="note">${esc(w.name)}</small>`}</div>
+      <b>${esc(w.name)}</b><p class="refnote">${esc([w.brand,w.price?Number(w.price).toLocaleString("fr-FR",{style:"currency",currency:"EUR"}):""].filter(Boolean).join(" · "))}</p>
+      ${safeUrl(w.link)?`<a class="ref" href="${esc(safeUrl(w.link))}" target="_blank" rel="noopener">Voir la pièce ↗</a>`:""}
+      <div class="row"><button class="btn wearbtn" data-wstyle="${w.id}" ${ws==="busy"?"disabled":""}>${ws==="busy"?"Je réfléchis…":ws?"Une autre tenue":"Styler avec mon dressing"}</button><button class="btn" data-wbuy="${w.id}">Je l'ai achetée</button></div>
+      <div class="row"><button class="btn" data-wdel="${w.id}">Retirer</button></div></div>
+      ${ws&&ws!=="busy"?(ws.err?`<p class="note">${esc(ws.err)}</p>`:cardOf(ws.items,ws.name,ws.note,"",w.thumb?`<img src="${esc(w.thumb)}" alt="${esc(w.name)}">`:"")):""}`}).join("")
+    :`<p class="note wide">Ajoute les pièces que tu as envie d'acheter : le styliste te montre ce que tu pourrais porter avec avant de passer à la caisse.</p>`);
 }
 
 /* ---------- mode valise ---------- */
@@ -620,12 +738,14 @@ function renderValise(){
   g.innerHTML=`<form class="vform" id="vf"><label>Nombre de jours<input id="v-days" name="days" type="number" min="1" max="14" value="${v?.days||5}"></label>
     <label>Style<select id="v-style" name="style">${["Mixte","Casual","Soirée","Sport"].map(x=>`<option ${v?.style===x?"selected":""}>${x}</option>`).join("")}</select></label>
     <label>Saison<select id="v-season" name="season">${["Printemps / Été","Automne / Hiver"].map(x=>`<option ${v?.season===x?"selected":""}>${x}</option>`).join("")}</select></label>
+    <label>Bagage<select id="v-bag" name="bag">${["Cabine","Soute"].map(x=>`<option ${(v?.bag||"Cabine")===x?"selected":""}>${x}</option>`).join("")}</select></label>
     <button class="btn" type="submit">${v?"Refaire ma valise":"Préparer ma valise"}</button></form>`+
     (v?(v.outfits.length?`<section class="wide"><h4>À mettre dans la valise · ${v.pack.length} pièces pour ${v.days} jour${v.days>1?"s":""}</h4><div class="minis">${v.pack.map(i=>mini(i,"")).join("")}</div></section>
     ${v.outfits.map((o,n)=>`<div class="vday"><b>Jour ${n+1}</b><div class="stack">${stackHtml(o)}</div></div>`).join("")}
-    <div class="row1"><button class="btn" data-vsave>Enregistrer ces ${v.outfits.length} tenues dans « Mes tenues »</button></div>`:'<p class="note wide">Pas assez de pièces pour ce style et cette saison. Essaie « Mixte » ou une autre saison.</p>'):'<p class="note wide">Choisis la durée, le style et la saison : je choisis le minimum de pièces pour faire une tenue différente chaque jour.</p>');
+    <div class="row1"><button class="btn" data-vsave>Enregistrer ces ${v.outfits.length} tenues dans « Mes tenues »</button></div>`:'<p class="note wide">Pas assez de pièces pour ce style et cette saison. Essaie « Mixte » ou une autre saison.</p>'):'<p class="note wide">Choisis la durée, le style, la saison et ton bagage (cabine = le strict minimum) : je choisis le minimum de pièces pour faire une tenue différente chaque jour.</p>');
 }
-function buildValise(days,style,season){
+function buildValise(days,style,season,bag){
+  const cab=bag!=="Soute";
   const st=style==="Mixte"?"Casual":style;
   const tg=i=>i.tags||[],sportOnly=i=>tg(i).includes("Sport")&&!tg(i).some(t=>t!=="Sport");
   const okS=i=>!i.season||i.season==="Toute l'année"||i.season===season;
@@ -634,8 +754,8 @@ function buildValise(days,style,season){
   const pick=(a,n)=>[...a].sort(()=>Math.random()-.5).slice(0,Math.max(0,Math.min(n,a.length)));
   let best=null;
   for(let t=0;t<300;t++){
-    const cap={top:pick(P.top,Math.min(4,Math.ceil(days/2)+1)),bottom:pick(P.bottom,Math.min(3,Math.ceil(days/3)+1)),dress:days>=3?pick(P.dress,days>=6?2:1):[],
-      jacket:pick(P.jacket,1),shoes:pick(P.shoes,days>=4?2:1),bag:pick(P.bag,1),acc:pick(P.acc,2)};
+    const cap={top:pick(P.top,Math.min(cab?4:6,Math.ceil(days/2)+(cab?1:2))),bottom:pick(P.bottom,Math.min(cab?3:4,Math.ceil(days/3)+1)),dress:days>=3?pick(P.dress,days>=6?(cab?2:3):1):[],
+      jacket:pick(P.jacket,cab?1:2),shoes:pick(P.shoes,cab?(days>=4?2:1):(days>=4?3:2)),bag:pick(P.bag,cab?1:2),acc:pick(P.acc,cab?2:4)};
     const sh=cap.shoes.length?cap.shoes:[null],combos=[];
     for(const s of sh){for(const a of cap.top)for(const b of cap.bottom)combos.push({top:a,bottom:b,shoes:s});for(const d of cap.dress)combos.push({dress:d,shoes:s})}
     if(!combos.length)continue;
@@ -644,7 +764,7 @@ function buildValise(days,style,season){
     const score=Math.min(good.length,days)*10-n*1.5+good.slice(0,days).reduce((a,x)=>a+x.s,0)/days;
     if(!best||score>best.score)best={score,cap,list:good.length?good:sc};
   }
-  if(!best)return{days,style,season,pack:[],outfits:[]};
+  if(!best)return{days,style,season,bag,pack:[],outfits:[]};
   // varier : on prend à chaque fois la tenue qui réutilise le moins les pièces des jours précédents
   const used={},chosen=[],pool=[...best.list];
   for(let d=0;d<days&&pool.length;d++){
@@ -654,7 +774,7 @@ function buildValise(days,style,season){
   const outfits=[];
   for(let d=0;d<days;d++){const x=chosen[d%chosen.length],o={};SLOTS.forEach(s=>{if(s.key==="acc"){if(best.cap.acc.length)o.acc=best.cap.acc.map(i=>i.id)}else if(x.o[s.key])o[s.key]=x.o[s.key].id});outfits.push(o)}
   const pack=[...new Map(Object.values(best.cap).flat().map(i=>[i.id,i])).values()].sort((a,b)=>CATS.indexOf(a.category)-CATS.indexOf(b.category));
-  return{days,style,season,pack,outfits};
+  return{days,style,season,bag,pack,outfits};
 }
 function toggleAcc(id){
   let a=ids(sel.acc);
@@ -683,6 +803,7 @@ function openSheet(id){
       <label>Catégorie<select id="f-cat" name="category" ${ro?"disabled":""}>${GROUPS.map(g=>`<optgroup label="${esc(g.name)}">${opts(g.cats,it.category)}</optgroup>`).join("")}</select></label>
       <label>Couleur<select id="f-color" name="color" ${ro?"disabled":""}><option value=""></option>${opts(Object.keys(COLORS),it.color)}</select></label>
       <label>Saison<select id="f-season" name="season" ${ro?"disabled":""}>${opts(SEASONS,it.season)}</select></label>
+      <label>Prix (€)<input id="f-price" name="price" type="number" min="0" step="0.01" value="${it.price??""}" ${ro?"disabled":""}></label>
       <fieldset class="full tags"><legend>Style</legend>${STYLES.map(t=>`<label class="tag"><input type="checkbox" name="tags" value="${t}" ${(it.tags||[]).includes(t)?"checked":""} ${ro?"disabled":""}> ${t}</label>`).join("")}</fieldset>
       <label class="full">Notes<textarea id="f-notes" name="notes" placeholder="Taille, avec quoi la porter, où je l'ai achetée…" ${ro?"disabled":""}>${esc(it.notes)}</textarea></label>
       ${ro?"":`<div class="brow" style="grid-column:1/-1"><button class="btn" type="submit" id="save">${id?"Enregistrer":"Ajouter au dressing"}</button>${id?'<button class="btn danger" type="button" id="del">Retirer</button>':""}</div>`}
@@ -701,7 +822,7 @@ function openSheet(id){
     $("#yes").onclick=async()=>{try{await col.doc(id).delete();closeSheet();toast("Pièce retirée")}catch(e){toast("Impossible de retirer : "+(e.message||e.code))}}});
   $("#f").onsubmit=async ev=>{
     ev.preventDefault();const b=$("#save");b.disabled=true;
-    const fdata=new FormData(ev.target);const fd=Object.fromEntries(fdata);fd.tags=fdata.getAll("tags");const wantC=fdata.getAll("colls");delete fd.colls;
+    const fdata=new FormData(ev.target);const fd=Object.fromEntries(fdata);fd.tags=fdata.getAll("tags");const wantC=fdata.getAll("colls");delete fd.colls;if(fd.price==="")fd.price=null;else fd.price=Math.max(0,+fd.price||0);
     try{
       if(pendingFile){b.textContent="Envoi de la photo…";fd.thumb=await makeThumb(pendingFile);try{const a=await assets.upload(pendingFile);fd.img=a.url;fd.assetId=a.id}catch(e){}}
       if(id){await col.doc(id).update(fd);
@@ -748,6 +869,21 @@ $("#grid").onclick=async e=>{
   if(e.target.closest("[data-vsave]")&&valise&&lcol){const b=e.target.closest("[data-vsave]");b.disabled=true;let n=0;
     try{for(const [i,o] of valise.outfits.entries()){if(looks.some(l=>lookKey(l.items)===lookKey(o)))continue;await lcol.add({items:o,name:`Valise ${valise.style.toLowerCase()} · Jour ${i+1}`,createdAt:Date.now()+i,worn:0});n++}
       toast(n?`${n} tenue${n>1?"s":""} ajoutée${n>1?"s":""} à « Mes tenues »`:"Ces tenues existent déjà")}catch(err){toast("Échec : "+(err.message||err.code))}b.disabled=false;return}
+  const mt=e.target.closest("[data-meteo]");if(mt){meteo=mt.dataset.meteo;try{localStorage.setItem("dressing.meteo",meteo)}catch(_){}todaySkip=[];renderToday.cur=null;renderToday();return}
+  if(e.target.closest("[data-tnext]")){if(renderToday.cur)todaySkip.push(renderToday.cur);renderToday.cur=null;if(!pickToday()){todaySkip=[]}renderToday();return}
+  const tp=e.target.closest("[data-tplan]");if(tp&&lcol){try{await lcol.doc(tp.dataset.tplan).update({plannedFor:dayKey(Date.now()+864e5)});toast("Prévue pour demain")}catch(err){toast("Échec : "+(err.message||err.code))}return}
+  const up=e.target.closest("[data-unplan]");if(up&&lcol){try{await lcol.doc(up.dataset.unplan).update({plannedFor:null});toast("Retirée du planning")}catch(err){toast("Échec : "+(err.message||err.code))}return}
+  if(e.target.closest("[data-stry]")&&stylist?.items){loadIntoLook(stylist.items);toast("Tenue du styliste chargée dans le look");return}
+  const ss=e.target.closest("[data-ssave]");if(ss&&stylist?.items&&lcol){const dup=looks.find(l=>lookKey(l.items)===lookKey(stylist.items));if(dup){toast(`Cette tenue existe déjà : « ${dup.name} »`);return}
+    ss.disabled=true;try{await lcol.add({items:stylist.items,name:"Styliste · "+stylist.name,refNote:stylist.note,createdAt:Date.now(),worn:0});ss.textContent="Enregistrée ✓";toast("Tenue enregistrée dans « Mes tenues »")}catch(err){ss.disabled=false;toast("Échec : "+(err.message||err.code))}return}
+  const wst=e.target.closest("[data-wstyle]");if(wst){const w=wishes.find(x=>x.id===wst.dataset.wstyle);if(!w||wishStyle[w.id]==="busy")return;wishStyle[w.id]="busy";renderWishes();
+    try{wishStyle[w.id]=await askStylist("une tenue qui met en valeur cette nouvelle pièce",w)}catch(err){wishStyle[w.id]={err:err?.code==="not_granted"?"Tu as refusé l'accès à Claude pour cette page.":"Le styliste n'a pas pu répondre : "+(err?.message||err?.code||"réessaie")}}
+    if(view==="Envies")renderWishes();return}
+  const wb=e.target.closest("[data-wbuy]");if(wb&&col&&wcol){const w=wishes.find(x=>x.id===wb.dataset.wbuy);if(!w)return;wb.disabled=true;
+    try{const it={name:w.name,brand:w.brand||"",category:w.category||"T-shirts",color:w.color||"",season:"Toute l'année",notes:safeUrl(w.link)?"Achetée ici : "+w.link:"",tags:[],createdAt:Date.now(),wears:0,favorite:false};if(w.thumb)it.thumb=w.thumb;if(+w.price>0)it.price=+w.price;
+      await col.add(it);await wcol.doc(w.id).delete();toast("Ajoutée à ton dressing 🎉")}catch(err){wb.disabled=false;toast("Échec : "+(err.message||err.code))}return}
+  const wd=e.target.closest("[data-wdel]");if(wd&&wcol){if(wd.dataset.sure!=="1"){wd.dataset.sure="1";wd.textContent="Confirmer";wd.classList.add("danger");return}
+    try{await wcol.doc(wd.dataset.wdel).delete();toast("Retirée de tes envies")}catch(err){toast("Échec : "+(err.message||err.code))}return}
   if(e.target.closest("[data-selm]")){selMode=!selMode;picked.clear();renderGrid();return}
   if(e.target.closest("[data-selall]")){const all=lastList.every(id=>picked.has(id));lastList.forEach(id=>all?picked.delete(id):picked.add(id));renderGrid();return}
   if(selMode&&!e.target.closest("select")){const pk=e.target.closest("[data-pk]")||e.target.closest("[data-lk]");
@@ -756,7 +892,7 @@ $("#grid").onclick=async e=>{
   if(e.target.closest("[data-hidew]")){hideWorn=!hideWorn;try{localStorage.setItem("dressing.hideWorn",hideWorn?"1":"")}catch(_){}renderLooks();return}
   const dn=e.target.closest("[data-done]");
   if(dn){const l=looks.find(x=>x.id===dn.dataset.done);if(!l||!lcol)return;
-    const undo=!!l.worn,now=new Date().toISOString(),pids=lookIds(l.items).filter(id=>byId(id));
+    const undo=view==="Aujourd'hui"?!!(l.lastWorn&&dayKey(l.lastWorn)===todayKey()):!!l.worn,now=new Date().toISOString(),pids=lookIds(l.items).filter(id=>byId(id));
     try{
       await lcol.doc(l.id).update(undo?{worn:0,lastWorn:null}:{worn:(l.worn||0)+1,lastWorn:now});
       for(const id of pids){const it=byId(id);await col.doc(id).update(undo?{wears:Math.max(0,(it.wears||0)-1)}:{wears:(it.wears||0)+1,lastWorn:now})}
@@ -769,11 +905,19 @@ $("#grid").onclick=async e=>{
   const dl=e.target.closest("[data-dl]");
   if(dl){try{if(editing===dl.dataset.dl){editing=null;renderEditing()}await lcol.doc(dl.dataset.dl).delete();toast("Tenue retirée")}catch(err){toast("Échec : "+(err.message||err.code))}return}
   const t=e.target.closest(".tile");if(t){if(!lookOpen&&!isPhone())openSheet(t.dataset.id);else tryOn(t.dataset.id)}};
-$("#grid").addEventListener("submit",e=>{
+$("#grid").addEventListener("submit",async e=>{
+  if(e.target.id==="sf"){e.preventDefault();const f=Object.fromEntries(new FormData(e.target));meteo=f.meteo||meteo;try{localStorage.setItem("dressing.meteo",meteo)}catch(_){}runStylist(String(f.q||"").trim());return}
+  if(e.target.id==="wf"){e.preventDefault();if(!wcol){toast("Connecte-toi pour ajouter des envies");return}const fdata=new FormData(e.target),file=fdata.get("photo"),b=e.target.querySelector("button[type=submit]");b.disabled=true;
+    const w={name:String(fdata.get("name")||"").trim(),brand:String(fdata.get("brand")||"").trim(),category:fdata.get("category"),color:fdata.get("color")||"",link:safeUrl(String(fdata.get("link")||"").trim()),createdAt:Date.now()};
+    if(fdata.get("price"))w.price=Math.max(0,+fdata.get("price")||0);
+    try{if(file&&file.size)w.thumb=await makeThumb(file);await wcol.add(w);toast("Ajoutée à tes envies");e.target.reset()}catch(err){toast("Échec : "+(err.message||err.code))}b.disabled=false;return}
   if(e.target.id!=="vf")return;e.preventDefault();
-  const f=Object.fromEntries(new FormData(e.target));valise=buildValise(Math.max(1,Math.min(14,+f.days||5)),f.style,f.season);renderValise();
+  const f=Object.fromEntries(new FormData(e.target));valise=buildValise(Math.max(1,Math.min(14,+f.days||5)),f.style,f.season,f.bag);renderValise();
 });
 $("#grid").addEventListener("change",async e=>{
+  if(e.target.matches("[data-tocc]")){todayOcc=e.target.value;todaySkip=[];renderToday.cur=null;renderToday();return}
+  const pl=e.target.closest("[data-plan]");if(pl){if(!pl.value||!lcol)return;const id=pl.value,k=pl.dataset.plan;pl.disabled=true;
+    try{await lcol.doc(id).update({plannedFor:k});toast("Tenue prévue : "+dayLabel(k).toLowerCase())}catch(err){toast("Échec : "+(err.message||err.code));pl.disabled=false}return}
   const mv=e.target.closest("[data-movesel]");
   if(mv){if(!mv.value||!ccol||!picked.size)return;const target=mv.value,ids=[...picked],n=ids.length;mv.disabled=true;
     const tc=colls.find(c=>c.id===target);
@@ -940,6 +1084,8 @@ renderAll();
       if(!items.length)$("#empty").innerHTML='<h3>Ton dressing est vide</h3><p>Clique sur « Ajouter » et choisis une photo pour commencer.</p>';
       renderAll()},
     err=>{clearTimeout(timer);fail(esc(err.message||err.code))});
+  wcol=db.collection("wishes");
+  wcol.onSnapshot(s=>{wishes=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));renderNav();if(view==="Envies")renderGrid()},()=>{});
   ccol.onSnapshot(s=>{colls=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));renderNav();if(view==="Collections")renderGrid()},()=>{});
   lcol.onSnapshot(s=>{looks=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));renderAll()},()=>{});
 })();
