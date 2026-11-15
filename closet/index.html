@@ -336,7 +336,7 @@ body[data-tab="closet"] .tile.sel{background:none}
   .shophead{margin-bottom:10px;flex-wrap:nowrap}
   .shophead span{flex:0 1 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .shophead input{width:auto;flex:1 1 140px;padding:9px 12px;font-size:16px}
-  body[data-kind="tool"] .shophead input,body[data-kind="looks"] .shophead input{display:none}
+  body[data-kind="tool"] .shophead input{display:none}
   .grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:14px 8px!important}
   .tile{padding:4px 2px!important;gap:2px}
   .tile b{font-size:11px;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
@@ -577,7 +577,7 @@ function renderGrid(){
   if(view==="Envies"){renderWishes();return}
   if(view==="Statistiques"){renderStats();return}
   if(view==="Mode valise"){renderValise();return}
-  if(view==="Collections"&&!colls.find(c=>c.id===openColl)){renderColls();return}
+  if(view==="Collections"&&!colls.find(c=>c.id===openColl)){if($("#q").value.trim())renderLooks();else renderColls();return}
   if(view==="Collections"){renderLooks(colls.find(c=>c.id===openColl));return}
   const coll=null;
   const v=filtered(),chosen=new Set(SLOTS.filter(s=>shown[s.key]).flatMap(s=>ids(sel[s.key])));
@@ -611,15 +611,19 @@ function renderLooks(coll){
   let list=[...looks].sort((a,b)=>(a.worn?1:0)-(b.worn?1:0)||(b.createdAt||0)-(a.createdAt||0));
   const filed=new Set(colls.flatMap(c=>c.looks||[]));
   const nFiled=looks.filter(l=>filed.has(l.id)).length;
+  const lq=$("#q").value.trim().toLowerCase();
+  const norm=s=>String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
   if(coll)list=list.filter(l=>(coll.looks||[]).includes(l.id));
-  else if(!showFiled)list=list.filter(l=>!filed.has(l.id));            // rangées dans une collection = cachées ici
+  else if(!showFiled&&!lq)list=list.filter(l=>!filed.has(l.id));            // rangées dans une collection = cachées ici (sauf pendant une recherche)
   if(hideWorn)list=list.filter(l=>!l.worn);
-  $("#matching").textContent=coll?`${coll.name} · ${(coll.looks||[]).filter(id=>looks.some(l=>l.id===id)).length} tenue(s)`:`À ranger : ${looks.filter(l=>!filed.has(l.id)).length} tenue(s) · ${nFiled} rangée(s)`;
+  if(lq){const words=norm(lq).split(/\s+/).filter(Boolean);
+    list=list.filter(l=>{const txt=norm([l.name,l.refNote,...lookIds(l.items).map(byId).filter(Boolean).flatMap(i=>[i.name,i.brand,i.color]),...colls.filter(c=>(c.looks||[]).includes(l.id)).map(c=>c.name)].join(" "));return words.every(w=>txt.includes(w))})}
+  $("#matching").textContent=lq?`Recherche « ${$("#q").value.trim()} » · ${list.length} tenue${list.length>1?"s":""}${coll?" dans "+coll.name:""}`:coll?`${coll.name} · ${(coll.looks||[]).filter(id=>looks.some(l=>l.id===id)).length} tenue(s)`:`À ranger : ${looks.filter(l=>!filed.has(l.id)).length} tenue(s) · ${nFiled} rangée(s)`;
   const cpick=l=>colls.length?`<select class="cpick" data-cpick="${l.id}" aria-label="Collections de ${esc(l.name)}"><option value="">${coll?"Déplacer vers…":"+ Collection…"}</option>${colls.filter(c=>!coll||c.id!==coll.id).map(c=>`<option value="${c.id}">${(c.looks||[]).includes(l.id)?"✓ ":""}${esc(c.name)}</option>`).join("")}</select>`:"";
   lastList=list.map(l=>l.id);[...picked].forEach(id=>{if(!looks.some(l=>l.id===id))picked.delete(id)});
   $("#grid").classList.toggle("selmode",selMode);
   const selbar=selMode?`<div class="selbar"><b>${picked.size} tenue${picked.size>1?"s":""} sélectionnée${picked.size>1?"s":""}</b><select data-movesel aria-label="Déplacer la sélection vers une collection" ${picked.size?"":"disabled"}><option value="">Déplacer vers…</option>${colls.filter(c=>!coll||c.id!==coll.id).map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join("")}${coll?'<option value="__out">Supprimer ces tenues</option>':""}</select><button data-selall>Tout sélectionner</button><button data-selm>Annuler</button></div>`:"";
-  $("#grid").innerHTML=(coll?`<div class="collbar"><button class="btn ghost" data-cback>‹ Toutes les collections</button><span class="note">Ajoute des tenues depuis « Mes tenues » (menu « + Collection »).</span><span class="sp"></span><button class="btn ghost" data-cren="${coll.id}">Renommer</button><button class="btn danger" data-cdel="${coll.id}">Supprimer</button><div id="cconf"></div></div>`:"")+`<div class="lookbar">${colls.length&&list.length?`<button data-selm aria-pressed="${selMode}">${selMode?"Terminer la sélection":"Sélectionner des tenues"}</button>`:""}<button data-hidew aria-pressed="${hideWorn}">Masquer les tenues déjà portées</button>${!coll&&nFiled?`<button data-showf aria-pressed="${showFiled}">${showFiled?"Cacher":"Afficher"} les ${nFiled} tenues rangées dans des collections</button>`:""}</div>`+selbar+(!coll&&!showFiled&&nFiled&&!list.length?'<p class="note lookbar">Toutes tes tenues sont rangées dans tes collections.</p>':"")+(hideWorn&&looks.length&&!list.length?'<p class="note lookbar">Tu as porté toutes tes tenues ! Désactive le filtre pour les revoir.</p>':"")+list.map(l=>{
+  $("#grid").innerHTML=(coll?`<div class="collbar"><button class="btn ghost" data-cback>‹ Toutes les collections</button><span class="note">Ajoute des tenues depuis « Mes tenues » (menu « + Collection »).</span><span class="sp"></span><button class="btn ghost" data-cren="${coll.id}">Renommer</button><button class="btn danger" data-cdel="${coll.id}">Supprimer</button><div id="cconf"></div></div>`:"")+`<div class="lookbar">${colls.length&&list.length?`<button data-selm aria-pressed="${selMode}">${selMode?"Terminer la sélection":"Sélectionner des tenues"}</button>`:""}<button data-hidew aria-pressed="${hideWorn}">Masquer les tenues déjà portées</button>${!coll&&nFiled?`<button data-showf aria-pressed="${showFiled}">${showFiled?"Cacher":"Afficher"} les ${nFiled} tenues rangées dans des collections</button>`:""}</div>`+selbar+(lq&&!list.length?`<p class="note lookbar">Aucune tenue ne correspond à « ${esc($("#q").value.trim())} ». Essaie un nom de pièce, une couleur ou une marque.</p>`:"")+(!lq&&!coll&&!showFiled&&nFiled&&!list.length?'<p class="note lookbar">Toutes tes tenues sont rangées dans tes collections.</p>':"")+(hideWorn&&looks.length&&!list.length?'<p class="note lookbar">Tu as porté toutes tes tenues ! Désactive le filtre pour les revoir.</p>':"")+list.map(l=>{
     const ims=lookIds(l.items).map(byId).filter(Boolean);
     const done=!!l.worn;
     return `<div class="lk${done?" done":""}${picked.has(l.id)?" pick":""}" data-lk="${l.id}">${selMode?`<button class="lkchk" data-pk="${l.id}" aria-pressed="${picked.has(l.id)}" aria-label="Sélectionner ${esc(l.name)}">${picked.has(l.id)?"✓":""}</button>`:""}${done?`<span class="worn">✓ Déjà portée${l.worn>1?` ${l.worn}×`:""} · ${fmt(l.lastWorn)}</span>`:'<span class="fresh">Pas encore portée</span>'}<div class="stack">${ims.map(i=>src(i)?`<img src="${esc(src(i))}" alt="${esc(i.name)}">`:`<small class="note">${esc(i.name)}</small>`).join("")}</div>
@@ -919,15 +923,19 @@ function addPiece(cat){if(!db){toast("Connecte-toi pour ajouter des pièces");re
 const LOOKVIEWS=["Mes tenues","Collections","Planning"],MOREVIEWS=["Styliste IA","Envies","Mode valise","Statistiques"];
 const tabFor=v=>v==="Aujourd'hui"?"today":LOOKVIEWS.includes(v)?"looks":MOREVIEWS.includes(v)?"more":"closet";
 function markTabs(){const t=document.body.dataset.tab==="look"?"":tabFor(view);document.querySelectorAll(".tabbar [data-tab]").forEach(b=>b.setAttribute("aria-current",b.dataset.tab===t));
-  document.body.dataset.kind=TOOLS.includes(view)&&view!=="Mes tenues"?"tool":view==="Mes tenues"?"looks":"pieces"}
+  const lk=view==="Mes tenues"||view==="Collections";
+  document.body.dataset.kind=lk?"looks":TOOLS.includes(view)?"tool":"pieces";
+  const qi=$("#q");if(qi){qi.placeholder=lk?"Rechercher une tenue…":"Rechercher une pièce…";qi.hidden=TOOLS.includes(view)&&!lk}}
 function toggleMore(force){const m=$("#moreMenu"),o=force??m.hidden;m.hidden=!o;if(o){toggleAddMenu(false);$("#moreTheme").firstChild.textContent=document.documentElement.dataset.theme==="dark"?"Mode clair":"Mode sombre"}}
 function setTab(t){
   if(t==="more"){toggleMore();return}
   toggleMore(false);
   document.body.dataset.tab=t==="look"?"look":"closet";
+  const pv=view;
   if(t==="today")view="Aujourd'hui";
   else if(t==="looks"&&!LOOKVIEWS.includes(view))view="Mes tenues";
   else if(t==="closet"&&TOOLS.includes(view))view="Tout";
+  if(pv!==view&&!(LOOKVIEWS.includes(pv)&&LOOKVIEWS.includes(view)))$("#q").value="";
   if(t!=="look"){openColl=t==="looks"&&view==="Collections"?openColl:null;saveUi();renderAll()}
   markTabs();
   if(t==="look")requestAnimationFrame(()=>SLOTS.forEach(s=>s.key!=="acc"&&centerOn(s.key,sel[s.key],false)));
@@ -935,7 +943,7 @@ function setTab(t){
 }
 
 /* ---------- events ---------- */
-function goView(v){if(v!=="Collections")openColl=null;selMode=false;picked.clear();view=v;saveUi();
+function goView(v){const kind=x=>x==="Mes tenues"||x==="Collections"?"l":TOOLS.includes(x)?"t":"p";if(kind(v)!==kind(view))$("#q").value="";if(v!=="Collections")openColl=null;selMode=false;picked.clear();view=v;saveUi();
   if(isPhone()){document.body.dataset.tab="closet";toggleMore(false);window.scrollTo(0,0)}renderAll();markTabs()}
 $("#nav").onclick=e=>{const a=e.target.closest("[data-v]");if(a)goView(a.dataset.v)};
 $("#nav").onkeydown=e=>{if(e.key==="Enter"){const a=e.target.closest("[data-v]");if(a)goView(a.dataset.v)}};
