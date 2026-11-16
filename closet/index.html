@@ -254,6 +254,19 @@ form textarea{min-height:64px;resize:vertical}
 .vform input[type=file]{padding:6px;font-size:12px}
 .vday select{border:1px solid var(--line);border-radius:8px;padding:8px;font:inherit;font-size:12px;background:var(--card);color:var(--ink);min-width:0;width:100%}
 .vday small{font-size:11px;color:var(--muted)}
+.pickbtn{width:100%;margin-top:auto}
+.pkq{border:1px solid var(--line);border-radius:999px;padding:10px 14px;font-size:16px;background:var(--soft);color:var(--ink);width:100%}
+.pkchips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;flex:0 0 auto;margin-inline:-4px;padding-inline:4px}
+.pkchips::-webkit-scrollbar{display:none}
+.pkchips button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:7px 12px;font-size:12px;white-space:nowrap}
+.pkchips button[aria-pressed="true"]{background:var(--ink);color:var(--on-ink);border-color:var(--ink)}
+.pklist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.pkcard{border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);padding:8px;display:flex;flex-direction:column;gap:6px;text-align:left;cursor:pointer;min-width:0}
+.pkcard:hover{border-color:var(--ink)}
+.pkims{display:grid;grid-template-columns:1fr 1fr;gap:3px;aspect-ratio:1}
+.pkims img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;min-height:0}
+.pkcard b{font-size:12px;font-weight:600;line-height:1.25}
+.pkcard small{font-size:10.5px;color:var(--muted)}
 .lk .stack.one{grid-template-columns:1fr}
 .lk .stack.one>*{aspect-ratio:4/3}
 @media (max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}.kpis div:nth-child(3){padding-left:0;border-left:0}}
@@ -793,8 +806,37 @@ function renderPlanning(){
   g.innerHTML=`<p class="note wide">Prévois tes tenues pour les deux prochaines semaines. Celle du jour s'affiche aussi dans « Aujourd'hui ».</p>`+days.map(k=>{
     const ls=looks.filter(l=>l.plannedFor===k&&lookOk(l));
     return `<div class="vday"><b>${esc(dayLabel(k))}</b>${ls.map(l=>`<div class="stack">${stackHtml(l.items)}</div><small>${esc(l.name)}</small><button class="btn ghost" data-unplan="${l.id}">Retirer</button>`).join("")}
-      <select data-plan="${k}" aria-label="Choisir une tenue pour ${esc(dayLabel(k))}"><option value="">${ls.length?"+ Ajouter une tenue…":"Choisir une tenue…"}</option>${opts.map(l=>`<option value="${l.id}">${l.worn?"":"• "}${esc(l.name)}</option>`).join("")}</select></div>`}).join("")+
-    `<p class="note wide">• = pas encore portée</p>`;
+      <button class="btn ghost pickbtn" data-pickday="${k}">${ls.length?"+ Ajouter une tenue":"Choisir une tenue"}</button></div>`}).join("");
+}
+/* sélecteur visuel de tenue (planning) */
+let pickDay=null,pickColl="",pickQ="";
+const normTxt=s=>String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+function pickList(){
+  const fil=pickColl?colls.find(c=>c.id===pickColl):null,words=normTxt(pickQ).split(/\s+/).filter(Boolean);
+  let ls=looks.filter(lookOk);
+  if(fil)ls=ls.filter(l=>(fil.looks||[]).includes(l.id));
+  if(words.length)ls=ls.filter(l=>{const t=normTxt([l.name,l.refNote,...lookIds(l.items).map(byId).filter(Boolean).flatMap(i=>[i.name,i.brand,i.color])].join(" "));return words.every(w=>t.includes(w))});
+  ls.sort((a,b)=>(a.worn?1:0)-(b.worn?1:0)||(b.createdAt||0)-(a.createdAt||0));
+  $("#pkcount").textContent=`${ls.length} tenue${ls.length>1?"s":""}`;
+  $("#pklist").innerHTML=ls.length?ls.map(l=>{const ims=lookIds(l.items).map(byId).filter(i=>i&&src(i)).slice(0,4);
+    return `<button class="pkcard" data-pickl="${l.id}"><div class="pkims">${ims.map(i=>`<img src="${esc(src(i))}" alt="" loading="lazy">`).join("")}</div><b>${esc(l.name)}</b>${l.worn?"":'<small>pas encore portée</small>'}</button>`}).join(""):'<p class="note">Aucune tenue ne correspond.</p>';
+}
+function openPlanPicker(k){
+  pickDay=k;pickQ="";openId=null;
+  const cs=colls.filter(c=>(c.looks||[]).some(id=>looks.some(l=>l.id===id)));
+  $("#drawer").innerHTML=`<div class="dhead"><small>Planning</small><button class="x" id="close" aria-label="Fermer">×</button></div>
+    <h2 id="dTitle">Tenue pour ${esc(dayLabel(k).toLowerCase())}</h2>
+    <input id="pkq" class="pkq" type="search" placeholder="Chercher : jean, kimono, soirée…" aria-label="Chercher une tenue">
+    <div class="pkchips" role="group" aria-label="Collections"><button data-pkc="" aria-pressed="${!pickColl}">Toutes</button>${cs.map(c=>`<button data-pkc="${c.id}" aria-pressed="${pickColl===c.id}">${esc(c.name)}</button>`).join("")}</div>
+    <small id="pkcount" class="note"></small><div id="pklist" class="pklist"></div>`;
+  $("#drawer").hidden=$("#scrim").hidden=false;$("#drawer").scrollTop=0;
+  $("#close").onclick=closeSheet;
+  $("#pkq").oninput=e=>{pickQ=e.target.value;pickList()};
+  $("#drawer").querySelector(".pkchips").onclick=e=>{const b=e.target.closest("[data-pkc]");if(!b)return;pickColl=b.dataset.pkc;
+    $("#drawer").querySelectorAll("[data-pkc]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.pkc===pickColl));pickList()};
+  $("#pklist").onclick=async e=>{const b=e.target.closest("[data-pickl]");if(!b||!lcol)return;b.disabled=true;
+    try{await lcol.doc(b.dataset.pickl).update({plannedFor:pickDay});toast("Tenue prévue : "+dayLabel(pickDay).toLowerCase());closeSheet()}catch(err){b.disabled=false;toast("Échec : "+(err.message||err.code))}};
+  pickList();
 }
 const safeUrl=u=>/^https?:\/\//i.test(u||"")?u:"";
 function renderWishes(){
@@ -968,6 +1010,7 @@ $("#grid").onclick=async e=>{
   const mt=e.target.closest("[data-meteo]");if(mt){meteo=mt.dataset.meteo;try{localStorage.setItem("dressing.meteo",meteo)}catch(_){}todaySkip=[];renderToday.cur=null;renderToday();return}
   if(e.target.closest("[data-tnext]")){if(renderToday.cur)todaySkip.push(renderToday.cur);renderToday.cur=null;if(!pickToday()){todaySkip=[]}renderToday();return}
   const tp=e.target.closest("[data-tplan]");if(tp&&lcol){try{await lcol.doc(tp.dataset.tplan).update({plannedFor:dayKey(Date.now()+864e5)});toast("Prévue pour demain")}catch(err){toast("Échec : "+(err.message||err.code))}return}
+  const pd=e.target.closest("[data-pickday]");if(pd){openPlanPicker(pd.dataset.pickday);return}
   const up=e.target.closest("[data-unplan]");if(up&&lcol){try{await lcol.doc(up.dataset.unplan).update({plannedFor:null});toast("Retirée du planning")}catch(err){toast("Échec : "+(err.message||err.code))}return}
   if(e.target.closest("[data-stry]")&&stylist?.items){loadIntoLook(stylist.items);toast("Tenue du styliste chargée dans le look");return}
   const ss=e.target.closest("[data-ssave]");if(ss&&stylist?.items&&lcol){const dup=looks.find(l=>lookKey(l.items)===lookKey(stylist.items));if(dup){toast(`Cette tenue existe déjà : « ${dup.name} »`);return}
