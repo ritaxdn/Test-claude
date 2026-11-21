@@ -1776,7 +1776,7 @@ function formFusion(aId,bId){
   const A=byId(state.comptes,aId), B=byId(state.comptes,bId); if(!A||!B) return;
   const liens=c=>[["contacts",state.contacts],["opportunités",state.opportunites],["activités",state.activites],["devis",state.devis],["paiements",state.paiements]].map(([l,arr])=>[l,arr.filter(x=>x.compte_id===c.id).length]).filter(x=>x[1]);
   const cnt=c=>liens(c).map(([l,n])=>n+" "+l).join(", ")||"aucun historique";
-  const poids=c=>liens(c).reduce((s,x)=>s+x[1],0);
+  const poids=c=>liens(c).reduce((s,x)=>s+((x[0]==="opportunités"||x[0]==="activités")?x[1]*10:x[1]),0);
   const base=poids(B)>poids(A)?B:A, autre=base===A?B:A;
   const vide=v=>v==null||String(v).trim()==="";
   const telK=t=>String(t||"").replace(/\D/g,"").slice(-9);
