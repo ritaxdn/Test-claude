@@ -2529,10 +2529,10 @@ function viewTerrain(v){
   const now=Date.now(), d30=now-30*864e5, p=estPilote();
   const obs=state.activites.filter(a=>a.statut==="fait"&&["visite","demo","rdv"].includes(a.type)&&String(a.resume||"").trim()&&new Date(a.fait_le||a.date_activite).getTime()>=d30&&(p||aMoi(a.commercial_id,a.createur_id)))
     .sort((a,b)=>new Date(b.fait_le||b.date_activite)-new Date(a.fait_le||a.date_activite)).slice(0,60);
-  v.innerHTML=`<div class="section-head"><div><h2>Voix du terrain</h2><p class="hint">${p?"Ce que l’équipe rapporte de ses visites, 30 derniers jours.":"Ce que tu as rapporté de tes visites, 30 derniers jours."}</p></div>
+  v.innerHTML=`<div class="section-head"><div><h2>Voix du terrain</h2><p class="hint">${p?"Les idées, suggestions et retours que l’équipe fait remonter du terrain · 30 derniers jours.":"Tes idées, suggestions et retours remontés du terrain (« j’ai entendu dire que… ») · 30 derniers jours."}</p></div>
     <div class="tools"><button class="btn primary" data-act="quick-visite">+ Observation terrain</button></div></div>
    ${obs.length?`<div class="vt-list">${obs.map(a=>{ const c=byId(state.comptes,a.compte_id), e=byId(state.equipe,responsable(a)); return `<article class="panel vt-it"><div class="vt-h">${p?avatar(e,28):""}<b>${esc(c?c.nom:"Client")}</b><span class="hint" style="margin:0">${esc([TYPES_ACT[a.type],p&&e?prenomDe(e.id):"",fmtDate(a.fait_le||a.date_activite)].filter(Boolean).join(" · "))}</span></div><p>${esc(a.resume)}</p></article>`; }).join("")}</div>`
-   :`<div class="panel empty"><h3>Rien pour l’instant</h3><p>Les comptes rendus de visite, de démo et de RDV arrivent ici. La saisie vocale ou texte arrive avec le parcours terrain.</p></div>`}`;
+   :`<div class="panel empty"><h3>Rien pour l’instant</h3><p>Une idée, une suggestion, un retour client, ou un « j’ai entendu dire que… » (concurrent, prix, nouveau besoin) ? Note-le ici depuis tes visites : la direction et toute l’équipe le verront.</p></div>`}`;
 }
 function formEmail(){
   const h=`<p style="margin-top:0">Tu recevras un lien de confirmation sur la nouvelle adresse. Ton e-mail ne change qu’après avoir cliqué dessus.</p>
@@ -4940,7 +4940,7 @@ function guideAccueil(auto){
     {sel:['[data-tab="pipeline"]'],title:"Pipeline",text:"Toutes tes affaires en cours, rangées par étape (de la qualification à la vente). Fais avancer une affaire quand elle progresse."},
     {sel:['[data-tab="comptes"]'],title:"Clients",text:"Tes clients et prospects : recherche, filtres (ville, spécialité) et tout l’historique de chaque fiche."},
     {sel:['#sn-new','[data-act="nav-creer-m"]','#more-btn'],title:"Créer",text:"Le bouton le plus utile : ajoute en 2 secondes une visite, un appel, un client, une affaire ou un devis."},
-    {sel:['[data-tab="terrain"]'],title:"Voix du terrain",text:"Note ce que tu observes sur le terrain (concurrents, prix, besoins)… c’est précieux pour toute l’équipe."},
+    {sel:['[data-tab="terrain"]'],title:"Voix du terrain",text:"Ton espace pour faire remonter ce qui se dit sur le terrain : une idée, une suggestion, un retour client, ou un « j’ai entendu dire que… » (un concurrent, un prix, un nouveau besoin). La direction et toute l’équipe le voient — rien ne se perd."},
     {sel:['[data-tab="activites"]'],title:"Activités",text:"L’historique de tout ce que tu fais : appels, visites, relances. Rien ne se perd."},
     {sel:['[data-tab="devis"]'],title:"Devis",text:"Crée, envoie et suis tes devis, puis transforme-les en vente."},
     {sel:['#sn-bell','#bell'],title:"Notifications",text:"Nouveaux leads à rappeler, rappels et messages de ton superviseur arrivent ici."},
