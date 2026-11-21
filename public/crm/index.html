@@ -2118,9 +2118,9 @@ function vueOrganigramme(){
 
 function formDepart(m){
   if(!m) return;
-  const mes=state.comptes.filter(c=>c.commercial_id===m.id);
-  const parVille={}; mes.forEach(c=>{ const v=c.ville||""; parVille[v]=(parVille[v]||0)+1; });
-  const villesM=Object.entries(parVille).sort((a,b)=>b[1]-a[1]);
+  const mes=state.comptes.filter(c=>c.commercial_id===m.id).sort((a,b)=>(a.ville||"").localeCompare(b.ville||"","fr")||(a.nom||"").localeCompare(b.nom||"","fr"));
+  const grp={}; mes.forEach(c=>{ const v=c.ville||""; (grp[v]=grp[v]||[]).push(c); });
+  const villesM=Object.entries(grp).sort((a,b)=>b[1].length-a[1].length);
   const compte=ids=>{ const inSet=x=>!ids||ids.has(x.compte_id);
     return { comptes:ids?ids.size:mes.length,
       opportunites:state.opportunites.filter(o=>o.commercial_id===m.id&&o.issue==="en_cours"&&inSet(o)).length,
@@ -2134,30 +2134,38 @@ function formDepart(m){
    <div class="form-grid">
    ${fld("dp-vers","Transférer à",`<select id="dp-vers" name="vers"><option value="">Choisir…</option>${dest.map(e=>`<option value="${e.id}">${esc(e.nom)}${e.showroom?" · "+esc(SHOWROOMS[e.showroom].replace("Showroom ","")):""}</option>`).join("")}<option value="none">Personne pour l’instant (non assigné)</option></select>`,true)}
    </div>
-   ${villesM.length>1?`<fieldset style="border:0;padding:0;margin:4px 0 12px"><legend style="font-weight:600;margin-bottom:6px">Quels clients ?</legend><p class="hint" style="margin:0 0 8px">Décoche des villes pour répartir entre plusieurs personnes : fais un premier transfert, puis rouvre ce bouton pour le reste.</p>
-     <div class="chips" style="flex-wrap:wrap"><button type="button" class="chip" id="dp-tout">Tout cocher / décocher</button></div>
-     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:4px 12px;margin-top:8px">${villesM.map(([v,n],i)=>`<label class="check"><input type="checkbox" name="v_${i}" value="1" checked data-ville="${esc(v)}"> ${esc(v||"Sans ville")} <span class="hint" style="margin:0">${n}</span></label>`).join("")}</div></fieldset>`:""}
+   ${mes.length?`<fieldset style="border:0;padding:0;margin:4px 0 12px"><legend style="font-weight:600;margin-bottom:6px">Quels clients ?</legend><p class="hint" style="margin:0 0 8px">Coche les clients à transférer : individuellement, ou une ville entière d’un coup. Rouvre ce bouton pour répartir le reste entre plusieurs personnes.</p>
+     <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px"><input type="search" id="dp-q" placeholder="Rechercher un client ou une ville…" style="flex:1;min-width:160px"><button type="button" class="chip" id="dp-tout">Tout décocher</button></div>
+     <div id="dp-liste" style="max-height:300px;overflow:auto;border:1px solid var(--line,rgba(0,0,0,.12));border-radius:12px;padding:8px 10px">${villesM.map(([v,cs])=>`<div class="dp-grp"><label class="check" style="font-weight:600"><input type="checkbox" class="dp-ville" checked> ${esc(v||"Sans ville")} <span class="hint" style="margin:0">${cs.length}</span></label><div style="padding-left:22px">${cs.map(c=>`<label class="check dp-row" data-nom="${esc((c.nom||"").toLowerCase())}" data-villel="${esc((v||"").toLowerCase())}"><input type="checkbox" class="dp-c" value="${c.id}" checked> ${esc(c.nom||"Client")}</label>`).join("")}</div></div>`).join("")}</div></fieldset>`:`<p class="hint">Aucun client à transférer.</p>`}
    <p id="dp-resume" class="hint" aria-live="polite" style="font-weight:600"></p>
    ${m.parti_le?`<p class="hint">A quitté Cellulift le ${esc(new Date(m.parti_le+"T12:00").toLocaleDateString("fr-FR"))} : son accès est déjà coupé.</p>`:`<label class="check" style="margin-top:4px"><input type="checkbox" name="depart" value="1" checked> ${esc(m.nom.split(" ")[0])} a quitté Cellulift : couper son accès au CRM</label>`}`;
-  const choix=()=>{ const boxes=[...$("#mform").querySelectorAll("input[data-ville]")]; if(!boxes.length||boxes.every(b=>b.checked)) return null; return boxes.filter(b=>b.checked).map(b=>b.dataset.ville); };
-  const idsDe=v=>v?new Set(mes.filter(c=>v.includes(c.ville||"")).map(c=>c.id)):null;
+  const boxesC=()=>[...$("#mform").querySelectorAll(".dp-c")];
+  const selSet=()=>new Set(boxesC().filter(b=>b.checked).map(b=>b.value));
   const submit=async f=>{
-    const villes=choix(), vers=f.vers==="none"?null:sUuid(f.vers);
+    const sel=selSet(), vers=f.vers==="none"?null:sUuid(f.vers);
+    const pComptes=(!mes.length||sel.size===mes.length)?null:[...sel];
     setStatus("busy","Transfert…");
-    const {data,error}=await sb.rpc("transferer_portefeuille",{p_de:m.id,p_vers:vers,p_villes:villes,p_depart:!!f.depart});
+    const {data,error}=await sb.rpc("transferer_portefeuille",{p_de:m.id,p_vers:vers,p_comptes:pComptes,p_depart:!!f.depart});
     if(error){ setStatus("bad","Échec"); toast(errorCopy(error).join(" — ")); return false; }
     toast((vers?"Transféré à "+nomMembre(vers):"Mis en non assigné")+" : "+resume(data||{})+(f.depart?" · accès coupé":""));
     closeModal(true); await load(); return true;
   };
   submit.validate=f=>{
     if(!f.vers) return ["vers","Choisis à qui transférer, ou « Personne pour l’instant »."];
-    const v=choix(); if(v&&!v.length) return [null,"Coche au moins une ville."];
+    if(mes.length && selSet().size===0) return [null,"Coche au moins un client."];
     return null;
   };
   modal(m.parti_le?"Transférer ses clients":"Départ et transfert des clients",h,submit,"Transférer");
-  const maj=()=>{ const n=compte(idsDe(choix())); $("#dp-resume").textContent="À transférer : "+resume(n)+"."; };
-  const form=$("#mform"); form.addEventListener("change",maj);
-  const t=$("#dp-tout"); if(t) t.onclick=()=>{ const bs=[...form.querySelectorAll("input[data-ville]")], on=!bs.every(b=>b.checked); bs.forEach(b=>b.checked=on); maj(); };
+  const maj=()=>{ const sel=selSet(); $("#dp-resume").textContent="À transférer : "+resume(compte(sel.size===mes.length?null:sel))+"."; };
+  const form=$("#mform");
+  form.addEventListener("change",e=>{
+    const t=e.target;
+    if(t.classList&&t.classList.contains("dp-ville")){ const g=t.closest(".dp-grp"); if(g) g.querySelectorAll(".dp-c").forEach(b=>b.checked=t.checked); }
+    if(t.classList&&t.classList.contains("dp-c")){ const g=t.closest(".dp-grp"); if(g){ const bs=[...g.querySelectorAll(".dp-c")], v=g.querySelector(".dp-ville"); if(v) v.checked=bs.every(b=>b.checked); } }
+    maj();
+  });
+  const tout=$("#dp-tout"); if(tout) tout.onclick=()=>{ const bs=boxesC(), on=!bs.every(b=>b.checked); bs.forEach(b=>b.checked=on); form.querySelectorAll(".dp-ville").forEach(v=>v.checked=on); tout.textContent=on?"Tout décocher":"Tout cocher"; maj(); };
+  const q=$("#dp-q"); if(q){ q.addEventListener("keydown",e=>{ if(e.key==="Enter") e.preventDefault(); }); q.addEventListener("input",()=>{ const s=q.value.trim().toLowerCase(); form.querySelectorAll(".dp-grp").forEach(g=>{ let any=false; g.querySelectorAll(".dp-row").forEach(r=>{ const show=!s||(r.dataset.nom||"").includes(s)||(r.dataset.villel||"").includes(s); r.style.display=show?"":"none"; if(show) any=true; }); g.style.display=any?"":"none"; }); }); }
   maj();
 }
 
