@@ -360,9 +360,14 @@ body[data-tab="closet"] .tile.sel{background:none}
   .tile b{font-size:11px;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .tile small{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
   .tile .info{display:none}
-  .looks{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+  .looks{grid-template-columns:1fr!important;gap:14px!important}
   .lk{padding:8px;gap:6px;border-radius:12px}
-  .lk .stack{gap:3px}
+  .lk .stack{gap:6px;grid-template-columns:repeat(4,1fr)!important}
+  .lk .stack>*{border-radius:8px}
+  .looks .lk .row{grid-template-columns:repeat(3,1fr)!important}
+  .looks .lk .row .wearbtn{grid-column:auto!important}
+  .vday .stack{grid-template-columns:repeat(2,1fr)!important;gap:4px}
+  .valise>.lk .stack{grid-template-columns:repeat(4,1fr)!important}
   .lk b{font-size:12px;line-height:1.25}
   .lk .refnote{font-size:10.5px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
   .lk .worn,.lk .fresh{font-size:10px}
@@ -410,7 +415,7 @@ body[data-tab="closet"] .tile.sel{background:none}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 
 html[data-theme="dark"]{--bg:#161514;--card:#1f1e1c;--on-ink:#161514;--ink:#e8e4de;--muted:#9c978f;--line:#33312e;--soft:#252320;--accent:#8fa877;--accent-ink:#11180b;--sel:#e8e4de;color-scheme:dark}
-html[data-theme="dark"] img{mix-blend-mode:normal!important;filter:brightness(.8) contrast(.95);border-radius:8px}
+html[data-theme="dark"] img{mix-blend-mode:normal!important;filter:none;border-radius:8px;background:#f4f2ee}
 html[data-theme="dark"] .cmos img{background:transparent}
 html[data-theme="dark"] .arrow{background:#3a3835}
 html[data-theme="dark"] .ph{border-color:#4a4743}
