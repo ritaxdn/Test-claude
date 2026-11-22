@@ -1632,6 +1632,7 @@ function viewSuperviseur(v){
 const CANAUX={site:"Site web",meta:"Meta (Facebook / Instagram)",google:"Google Ads",tiktok:"TikTok",whatsapp:"WhatsApp",salon:"Salon / événement",autre:"Autre"};
 // Leads par ville et pratique : répartition 30 jours + liste filtrable.
 const leadFilt={ville:"",prat:""};
+let _leadsCache=[];
 const PRATIQUES={medecin:"Médecins",non_medecin:"Non-médecins",a_classer:"À classer"};
 const pratLead=x=>x.categorie||"a_classer";
 function blocLeads(leads){
@@ -1649,7 +1650,7 @@ function blocLeads(leads){
     <div class="section-head" style="margin:14px 0 6px"><h4 style="margin:0">Leads</h4><div class="tools">
       <select id="ld-ville" aria-label="Ville"><option value="">Toutes les villes</option>${villesL.map(v=>`<option ${leadFilt.ville===v?"selected":""}>${esc(v)}</option>`).join("")}</select>
       <select id="ld-prat" aria-label="Pratique"><option value="">Toutes pratiques</option>${Object.entries(PRATIQUES).map(([k,l])=>`<option value="${k}" ${leadFilt.prat===k?"selected":""}>${l}</option>`).join("")}</select></div></div>
-    ${liste.length?`<div class="closed-list">${liste.slice(0,50).map(x=>`<div class="closed-row"><div style="min-width:0">${x.compte_id?`<button class="linkish" data-act="open-compte" data-id="${x.compte_id}"><b>${esc(x.nom||"—")}</b></button>`:`<b>${esc(x.nom||"—")}</b>`} ${pill(x)}${x.deja_client?` <span class="pill ok">Déjà client</span>`:""}<div class="hint" style="margin:0">${esc([fmtDate(x.recu_le)+" "+new Date(x.recu_le).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}),x.source,x.parcours,x.ville].filter(Boolean).join(" · "))}</div></div><div class="hint" style="margin:0">${x.commercial_id?esc(nomMembre(x.commercial_id)):`<span class="pill warn">À attribuer</span>`}</div></div>`).join("")}</div>${liste.length>50?`<p class="hint">${liste.length-50} autres, affine avec les filtres.</p>`:""}`:`<p class="hint">Aucun lead pour ce filtre.</p>`}`;
+    ${liste.length?`<div class="closed-list">${liste.slice(0,50).map(x=>`<div class="closed-row"><div style="min-width:0">${x.compte_id?`<button class="linkish" data-act="open-compte" data-id="${x.compte_id}"><b>${esc(x.nom||"—")}</b></button>`:`<b>${esc(x.nom||"—")}</b>`} ${pill(x)}${x.deja_client?` <span class="pill ok">Déjà client</span>`:""}<div class="hint" style="margin:0">${esc([fmtDate(x.recu_le)+" "+new Date(x.recu_le).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}),x.source,x.parcours,x.ville].filter(Boolean).join(" · "))}</div></div><div class="tools" style="margin:0;align-items:center;gap:8px;flex-wrap:nowrap">${x.commercial_id?`<span class="hint" style="margin:0">${esc(nomMembre(x.commercial_id))}</span><button class="btn small" data-act="distribuer-lead" data-id="${x.id}">Changer</button>`:`<span class="pill warn">À attribuer</span><button class="btn small primary" data-act="distribuer-lead" data-id="${x.id}">Distribuer</button>`}</div></div>`).join("")}</div>${liste.length>50?`<p class="hint">${liste.length-50} autres, affine avec les filtres.</p>`:""}`:`<p class="hint">Aucun lead pour ce filtre.</p>`}`;
 }
 function blocRegles(regles){
   if(!regles) return "";
@@ -1673,12 +1674,28 @@ function formRegle(){
   submit.validate=f=>!sUuid(f.commercial_id)?["commercial_id","Choisis le commercial."]:null;
   modal("Nouvelle règle d’attribution",h,submit,"Ajouter");
 }
+// Attribution manuelle d'un lead à un commercial (le CRM n'attribue plus automatiquement).
+function formDistribuerLead(l){
+  if(!l) return;
+  const coms=state.equipe.filter(e=>!e.parti_le&&e.role!=="admin").sort((a,b)=>a.nom.localeCompare(b.nom,"fr")).map(e=>[e.id,e.nom+(e.actif?"":" (sans accès)")]);
+  const h=`<p style="margin-top:0">Lead <b>${esc(l.nom||"—")}</b>${[l.ville,l.source].filter(Boolean).length?` · ${esc([l.ville,l.source].filter(Boolean).join(" · "))}`:""}.</p>
+   <div class="form-grid">${fld("dl-com","Attribuer à",`<select id="dl-com" name="com">${opt(coms,l.commercial_id||"","Choisir le commercial…")}</select>`,true)}</div>
+   ${l.compte_id?`<p class="hint">Ce lead est rattaché à une fiche client : la fiche sera elle aussi confiée à ce commercial.</p>`:`<p class="hint">Le commercial choisi verra ce lead dans « à rappeler ».</p>`}`;
+  const submit=async f=>{
+    const to=sUuid(f.com);
+    const {error}=await sb.rpc("distribuer_lead",{p_lead:l.id,p_vers:to});
+    if(error){ const e=$("#merr"); if(e) e.textContent=errorCopy(error).join(" — "); return false; }
+    toast("Lead attribué à "+nomMembre(to)); closeModal(true); await load(); return true;
+  };
+  submit.validate=f=>!UUID_RE.test(f.com||"")?["com","Choisis un commercial."]:null;
+  modal("Distribuer le lead",h,submit,"Attribuer");
+}
 async function chargerLeads(){
   const el=$("#leads-body"); if(!el) return;
   const [s,l,rg]=await Promise.all([sb.from("sources_leads").select("*").order("created_at"),sb.from("leads").select("*").order("recu_le",{ascending:false}).limit(300),sb.from("regles_attribution").select("*").order("created_at")]);
   if(!document.contains(el)) return;
   if(s.error||l.error){ el.innerHTML=`<p class="hint">${esc(errorCopy(s.error||l.error)[1])}</p>`; return; }
-  const src=s.data, leads=l.data, d30=Date.now()-30*864e5;
+  const src=s.data, leads=l.data, d30=Date.now()-30*864e5; _leadsCache=leads;
   const nb=id=>leads.filter(x=>x.source_id===id&&new Date(x.recu_le).getTime()>d30).length;
   const url="https://igfgqfwkhyonptbtrywl.supabase.co/rest/v1/rpc/recevoir_lead";
   el.innerHTML=(src.length?`<div class="closed-list">${src.map(x=>`<div class="closed-row"><div><b>${esc(x.nom)}</b> <span class="pill">${esc(CANAUX[x.canal]||x.canal)}</span>${x.actif?"":` <span class="pill bad">Coupée</span>`}<div class="hint" style="margin:0">Clé ${esc(x.cle_debut)}… · ${x.dernier_lead?"dernier lead "+esc(fmtDate(x.dernier_lead)):"aucun lead reçu pour l’instant"}</div></div><div class="tools"><button class="btn small" data-act="edit-source" data-id="${x.id}">Modifier</button><button class="btn small" data-act="toggle-source" data-id="${x.id}" data-on="${x.actif?"":"1"}">${x.actif?"Couper":"Réactiver"}</button></div></div>`).join("")}</div>`
@@ -2276,6 +2293,7 @@ document.addEventListener("click",async e=>{
   if(act==="demande-transfert"){ t.disabled=true; const {error}=await sb.rpc("demander_transfert",{p_compte:id}); if(error){ t.disabled=false; return toast(errorCopy(error).join(" — ")); } t.textContent="Demande envoyée ✓"; toast("Le superviseur a été prévenu"); return; }
   if(act==="fusion"){ return formFusion(t.dataset.a,t.dataset.b); }
   if(act==="pas-doublon"){ const [x,y]=[t.dataset.a,t.dataset.b].sort(); t.disabled=true; const {error}=await sb.from("doublons_ignores").insert({a:x,b:y,par:me&&me.id||null}); if(error){ t.disabled=false; toast(errorCopy(error).join(" — ")); } else { toast("Retiré des doublons"); chargerDoublons(); } return; }
+  if(act==="distribuer-lead"){ const l=_leadsCache.find(x=>x.id===id); if(l) formDistribuerLead(l); return; }
   if(act==="new-source") return formSource();
   if(act==="new-regle") return formRegle();
   if(act==="del-regle") return confirmInline(t,"Retirer cette règle ?","del-regle-yes",id);
