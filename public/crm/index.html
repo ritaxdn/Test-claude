@@ -2173,7 +2173,8 @@ function formDepart(m){
   const h=`<p style="margin-top:0"><b>${esc(m.nom)}</b>${m.showroom?` · ${esc(SHOWROOMS[m.showroom])}`:""}</p>
    <p class="hint" style="margin-top:0">Ce qui est en cours passe à la personne choisie : clients, opportunités en cours, tâches à faire, devis en brouillon ou envoyés, paiements pas encore encaissés. Les ventes gagnées ou perdues restent à son nom pour les statistiques. Une seule notification récapitulative est envoyée.</p>
    <div class="form-grid">
-   ${fld("dp-vers","Transférer à",`<select id="dp-vers" name="vers"><option value="">Choisir…</option>${dest.map(e=>`<option value="${e.id}">${esc(e.nom)}${e.showroom?" · "+esc(SHOWROOMS[e.showroom].replace("Showroom ","")):""}</option>`).join("")}<option value="none">Personne pour l’instant (non assigné)</option></select>`,true)}
+   ${fld("dp-vers","Transférer à",`<select id="dp-vers" name="vers"><option value="">Choisir…</option><option value="super">⚑ Me les confier, à trier plus tard</option>${dest.map(e=>`<option value="${e.id}">${esc(e.nom)}${e.showroom?" · "+esc(SHOWROOMS[e.showroom].replace("Showroom ","")):""}</option>`).join("")}<option value="none">Personne pour l’instant (non assigné)</option></select>`,true)}
+   <p class="hint" style="grid-column:1/-1;margin:-4px 0 0">« Me les confier » : tu marques le départ sans redistribuer tout de suite — ses clients te reviennent (superviseur) pour les trier et les réattribuer ensuite, un par un.</p>
    </div>
    ${mes.length?`<fieldset style="border:0;padding:0;margin:4px 0 12px"><legend style="font-weight:600;margin-bottom:6px">Quels clients ?</legend><p class="hint" style="margin:0 0 8px">Coche les clients à transférer : individuellement, ou une ville entière d’un coup. Rouvre ce bouton pour répartir le reste entre plusieurs personnes.</p>
      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px"><input type="search" id="dp-q" placeholder="Rechercher un client ou une ville…" style="flex:1;min-width:160px"><button type="button" class="chip" id="dp-tout">Tout décocher</button></div>
@@ -2183,7 +2184,7 @@ function formDepart(m){
   const boxesC=()=>[...$("#mform").querySelectorAll(".dp-c")];
   const selSet=()=>new Set(boxesC().filter(b=>b.checked).map(b=>b.value));
   const submit=async f=>{
-    const sel=selSet(), vers=f.vers==="none"?null:sUuid(f.vers);
+    const sel=selSet(), vers=f.vers==="none"?null:f.vers==="super"?((me&&me.id)||null):sUuid(f.vers);
     const pComptes=(!mes.length||sel.size===mes.length)?null:[...sel];
     setStatus("busy","Transfert…");
     const {data,error}=await sb.rpc("transferer_portefeuille",{p_de:m.id,p_vers:vers,p_comptes:pComptes,p_depart:!!f.depart});
