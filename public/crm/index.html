@@ -1922,7 +1922,7 @@ function formFusion(aId,bId){
 function viewEquipe(v){
   setTimeout(chargerDoublons,0); setTimeout(chargerLeads,0);
   v.innerHTML=`<div class="section-head"><div><h2>Équipe &amp; catalogue</h2><p class="hint">Un membre « sans accès » ne peut pas se connecter. Activez-le dans « Modifier » ; il se connecte ensuite avec l’email indiqué ici.</p></div>
-   <div class="tools"><button class="btn" data-act="objectifs">Objectifs mensuels</button><button class="btn" data-act="new-produit">+ Machine</button><button class="btn primary" data-act="new-membre">+ Membre</button></div></div>
+   <div class="tools"><button class="btn" data-act="objectifs">Objectifs mensuels</button><button class="btn" data-act="import">Importer (Excel)</button><button class="btn" data-act="new-produit">+ Machine</button><button class="btn primary" data-act="new-membre">+ Membre</button></div></div>
   ${(()=>{
     const orph=orgTous().filter(e=>e.role!=="admin"&&!e.hors_crm&&(e.parti_le||!e.actif)).map(e=>({e,n:state.comptes.filter(c=>c.commercial_id===e.id).length})).filter(x=>x.n>0).sort((a,b)=>b.n-a.n);
     if(!orph.length) return "";
