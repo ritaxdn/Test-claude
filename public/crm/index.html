@@ -2294,6 +2294,8 @@ document.addEventListener("click",async e=>{
   if(act==="fusion"){ return formFusion(t.dataset.a,t.dataset.b); }
   if(act==="pas-doublon"){ const [x,y]=[t.dataset.a,t.dataset.b].sort(); t.disabled=true; const {error}=await sb.from("doublons_ignores").insert({a:x,b:y,par:me&&me.id||null}); if(error){ t.disabled=false; toast(errorCopy(error).join(" — ")); } else { toast("Retiré des doublons"); chargerDoublons(); } return; }
   if(act==="distribuer-lead"){ const l=_leadsCache.find(x=>x.id===id); if(l) formDistribuerLead(l); return; }
+  if(act==="vt-suppr"){ t.disabled=true; const {error}=await sb.from("voix_terrain").delete().eq("id",id); if(error){ t.disabled=false; toast(errorCopy(error).join(" — ")); } else { toast("Publication supprimée"); chargerTerrain(); } return; }
+  if(act==="vt-edit"){ const x=_terrainCache.find(z=>z.id===id); if(!x) return; const h=`<div class="field"><label for="vt-e">Ta publication</label><textarea id="vt-e" name="texte" rows="4" style="width:100%;resize:vertical">${esc(x.texte)}</textarea></div>`; const submit=async f=>{ const {error}=await sb.from("voix_terrain").update({texte:(f.texte||"").trim()}).eq("id",id); if(error){ const e=$("#merr"); if(e) e.textContent=errorCopy(error).join(" — "); return false; } toast("Modifié"); closeModal(true); chargerTerrain(); return true; }; submit.validate=f=>!(f.texte||"").trim()?["texte","Le texte ne peut pas être vide."]:null; modal("Modifier la publication",h,submit,"Enregistrer"); return; }
   if(act==="new-source") return formSource();
   if(act==="new-regle") return formRegle();
   if(act==="del-regle") return confirmInline(t,"Retirer cette règle ?","del-regle-yes",id);
@@ -2570,14 +2572,22 @@ async function navEnregistrer(patch){
   if(error) toast("Préférence gardée sur cet appareil seulement");
 }
 /* Voix du terrain : ce que les commerciaux rapportent des visites */
+let _terrainCache=[];
 function viewTerrain(v){
-  const now=Date.now(), d30=now-30*864e5, p=estPilote();
-  const obs=state.activites.filter(a=>a.statut==="fait"&&["visite","demo","rdv"].includes(a.type)&&String(a.resume||"").trim()&&new Date(a.fait_le||a.date_activite).getTime()>=d30&&(p||aMoi(a.commercial_id,a.createur_id)))
-    .sort((a,b)=>new Date(b.fait_le||b.date_activite)-new Date(a.fait_le||a.date_activite)).slice(0,60);
-  v.innerHTML=`<div class="section-head"><div><h2>Voix du terrain</h2><p class="hint">${p?"Les idées, suggestions et retours que l’équipe fait remonter du terrain · 30 derniers jours.":"Tes idées, suggestions et retours remontés du terrain (« j’ai entendu dire que… ») · 30 derniers jours."}</p></div>
-    <div class="tools"><button class="btn primary" data-act="quick-visite">+ Observation terrain</button></div></div>
-   ${obs.length?`<div class="vt-list">${obs.map(a=>{ const c=byId(state.comptes,a.compte_id), e=byId(state.equipe,responsable(a)); return `<article class="panel vt-it"><div class="vt-h">${p?avatar(e,28):""}${c?`<button class="linkish" data-act="open-compte" data-id="${c.id}"><b>${esc(c.nom)}</b></button>`:`<b>Client</b>`}<span class="hint" style="margin:0">${esc([TYPES_ACT[a.type],p&&e?prenomDe(e.id):"",fmtDate(a.fait_le||a.date_activite)].filter(Boolean).join(" · "))}</span></div><p>${esc(a.resume)}</p><div class="tools acts-inline" style="margin-top:8px"><button class="btn small" data-act="edit-act" data-id="${a.id}">Modifier</button></div></article>`; }).join("")}</div>`
-   :`<div class="panel empty"><h3>Rien pour l’instant</h3><p>Une idée, une suggestion, un retour client, ou un « j’ai entendu dire que… » (concurrent, prix, nouveau besoin) ? Note-le ici depuis tes visites : la direction et toute l’équipe le verront.</p></div>`}`;
+  v.innerHTML=`<div class="section-head"><div><h2>Voix du terrain</h2><p class="hint">Un espace d’expression libre : partage une idée, un retour client, une info ou un « j’ai entendu dire que… ». Toute l’équipe et la direction le voient. <b>Pour enregistrer une visite ou un appel, utilise « Créer ».</b></p></div></div>
+   <div class="panel" style="margin-bottom:14px"><textarea id="vt-txt" rows="3" placeholder="Partage quelque chose du terrain…" style="width:100%;resize:vertical"></textarea><div class="tools" style="justify-content:flex-end;margin-top:8px"><button class="btn primary" id="vt-pub">Publier</button></div></div>
+   <div id="vt-feed"><div class="skeleton" style="height:60px"></div></div>`;
+  const pub=$("#vt-pub"); if(pub) pub.onclick=async()=>{ const t=($("#vt-txt").value||"").trim(); if(!t){ toast("Écris quelque chose d’abord."); return; } pub.disabled=true; const {error}=await sb.from("voix_terrain").insert({auteur_id:me?me.id:null,texte:t}); pub.disabled=false; if(error){ toast(errorCopy(error).join(" — ")); return; } $("#vt-txt").value=""; chargerTerrain(); };
+  chargerTerrain();
+}
+async function chargerTerrain(){
+  const el=$("#vt-feed"); if(!el) return;
+  const p=estPilote();
+  const {data,error}=await sb.from("voix_terrain").select("*").order("created_at",{ascending:false}).limit(100);
+  if(!document.contains(el)) return;
+  if(error){ el.innerHTML=`<p class="hint">${esc(errorCopy(error)[1])}</p>`; return; }
+  const posts=_terrainCache=data||[];
+  el.innerHTML=posts.length?`<div class="vt-list">${posts.map(x=>{ const mien=x.auteur_id===(me&&me.id), e=byId(state.equipe,x.auteur_id)||{nom:"?"}; return `<article class="panel vt-it"><div class="vt-h">${avatar(e,28)}<b>${esc(e.nom||"?")}</b><span class="hint" style="margin:0">${esc(ago(x.created_at))}</span></div><p style="white-space:pre-line;margin:6px 0 0">${esc(x.texte)}</p>${(mien||p)?`<div class="tools acts-inline" style="margin-top:8px">${mien?`<button class="btn small" data-act="vt-edit" data-id="${x.id}">Modifier</button>`:""}<button class="btn small" data-act="vt-suppr" data-id="${x.id}">Supprimer</button></div>`:""}</article>`; }).join("")}</div>`:`<div class="panel empty"><h3>Rien pour l’instant</h3><p>Sois le premier à partager une info du terrain : une idée, un retour client, un « j’ai entendu dire que… » (concurrent, prix, nouveau besoin).</p></div>`;
 }
 function formEmail(){
   const h=`<p style="margin-top:0">Tu recevras un lien de confirmation sur la nouvelle adresse. Ton e-mail ne change qu’après avoir cliqué dessus.</p>
