@@ -255,6 +255,11 @@ form textarea{min-height:64px;resize:vertical}
 .vday select{border:1px solid var(--line);border-radius:8px;padding:8px;font:inherit;font-size:12px;background:var(--card);color:var(--ink);min-width:0;width:100%}
 .vday small{font-size:11px;color:var(--muted)}
 .pickbtn{width:100%;margin-top:auto}
+.capadd{justify-content:center;font-size:22px;color:var(--muted);border-style:dashed;min-height:110px}
+.capadd span{font-size:11px}
+.mini[data-capdel] b{color:var(--muted)}
+.pkims.one{grid-template-columns:1fr}
+.pkcard.on{border-color:var(--ink);border-width:2px}
 .pkq{border:1px solid var(--line);border-radius:999px;padding:10px 14px;font-size:16px;background:var(--soft);color:var(--ink);width:100%}
 .pkchips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;flex:0 0 auto;margin-inline:-4px;padding-inline:4px}
 .pkchips::-webkit-scrollbar{display:none}
@@ -463,6 +468,7 @@ html[data-theme="dark"] .selbar select{background:var(--bg);color:var(--ink)}
   <button data-more="Styliste IA">✨<span>Styliste IA<small>une tenue pour n'importe quelle occasion</small></span></button>
   <button data-more="Planning">🗓<span>Planning<small>prévois tes tenues de la semaine</small></span></button>
   <button data-more="Envies">🛍<span>Envies<small>ce que tu veux acheter, stylé avec ton dressing</small></span></button>
+  <button data-more="Mode 3-3-3">🧩<span>Mode 3-3-3<small>3 hauts, 3 bas, 3 chaussures = 27 tenues</small></span></button>
   <button data-more="Mode valise">🧳<span>Mode valise<small>la valise minimum pour un voyage</small></span></button>
   <button data-more="Statistiques">📊<span>Statistiques<small>ce que tu portes, coût par port</small></span></button>
   <button data-more="__look">👗<span>Composer un look<small>essaie tes pièces ensemble</small></span></button>
@@ -486,7 +492,7 @@ const CATS=GROUPS.flatMap(g=>g.cats);
 const TOPCATS=[...GROUPS[0].cats,"Hauts"];          // "Hauts" = ancienne catégorie, toujours acceptée
 const SHOECATS=GROUPS.find(g=>g.name==="Chaussures").cats;
 const STYLES=["Sport","Soirée","Casual"];
-const TOOLS=["Aujourd'hui","Styliste IA","Planning","Envies","Mes tenues","Collections","Statistiques","Mode valise"];
+const TOOLS=["Aujourd'hui","Styliste IA","Planning","Envies","Mes tenues","Collections","Statistiques","Mode valise","Mode 3-3-3"];
 let colls=[],ccol=null,openColl=null;
 let valise=null;
 const SLOTS=[
@@ -590,6 +596,7 @@ function renderGrid(){
   if(view==="Envies"){renderWishes();return}
   if(view==="Statistiques"){renderStats();return}
   if(view==="Mode valise"){renderValise();return}
+  if(view==="Mode 3-3-3"){renderCapsule();return}
   if(view==="Collections"&&!colls.find(c=>c.id===openColl)){if($("#q").value.trim())renderLooks();else renderColls();return}
   if(view==="Collections"){renderLooks(colls.find(c=>c.id===openColl));return}
   const coll=null;
@@ -856,6 +863,69 @@ function renderWishes(){
     :`<p class="note wide">Ajoute les pièces que tu as envie d'acheter : le styliste te montre ce que tu pourrais porter avec avant de passer à la caisse.</p>`);
 }
 
+/* ---------- mode 3-3-3 : 3 hauts × 3 bas × 3 chaussures ---------- */
+const CAPS=[["top","Hauts","T-shirts"],["bottom","Bas","Jeans"],["shoes","Chaussures","Talons"]];
+let cap={top:[],bottom:[],shoes:[]};try{const c=JSON.parse(localStorage.getItem("dressing.cap")||"null");if(c)cap=c}catch(_){}
+let capPick=null,capQ="";
+const saveCap=()=>{try{localStorage.setItem("dressing.cap",JSON.stringify(cap))}catch(_){}};
+const capSeason=()=>{const m=new Date().getMonth();return m>=3&&m<=8?"Printemps / Été":"Automne / Hiver"};
+const capPool=k=>inSlot(k).filter(i=>{const t=i.tags||[];return !(t.includes("Sport")&&!t.some(x=>x!=="Sport"))});
+function bestShoe(t,b){let best=null,sc=-1e9;for(const s of cap.shoes.map(byId).filter(Boolean)){const v=harmonyV([t,b,s],"Casual")-Math.random()*2;if(v>sc){sc=v;best=s}}return best}
+function renderCapsule(){
+  const g=$("#grid");g.className="valise";$("#empty").hidden=true;$("#matching").textContent="Mode 3-3-3";
+  CAPS.forEach(([k])=>cap[k]=(cap[k]||[]).filter(byId));
+  const full=CAPS.every(([k])=>cap[k].length===3);
+  const tops=cap.top.map(byId),bots=cap.bottom.map(byId),combos=full?tops.flatMap(t=>bots.map(b=>({t,b,s:bestShoe(t,b)}))):[];
+  g.innerHTML=`<p class="note wide">Choisis 3 hauts, 3 bas et 3 paires de chaussures qui vont tous ensemble : 3 × 3 = 9 tenues, et 27 en changeant de chaussures. Idéal pour une semaine ou une valise.</p>
+    <div class="row1 wide"><button class="btn" data-capauto>${full?"Me proposer une autre capsule":"Me proposer une capsule"}</button>${CAPS.some(([k])=>cap[k].length)?'<button class="btn ghost" data-capclear>Tout effacer</button>':""}</div>`+
+    CAPS.map(([k,label])=>`<section class="wide caprow"><h4>${label} · ${cap[k].length}/3</h4><div class="minis">${cap[k].map(id=>{const i=byId(id);return `<button class="mini" data-capdel="${k}:${id}" aria-label="Retirer ${esc(i.name)}">${src(i)?`<img src="${esc(src(i))}" alt="">`:""}<span>${esc(i.name)}</span><b>×</b></button>`}).join("")}${cap[k].length<3?`<button class="mini capadd" data-cappick="${k}">+<span>Choisir</span></button>`:""}</div></section>`).join("")+
+    (full?`<section class="wide"><h4>Tes 9 tenues · 27 avec les chaussures</h4></section>`+combos.map(c=>`<div class="vday"><div class="stack">${[c.t,c.b,c.s].filter(Boolean).map(i=>src(i)?`<img src="${esc(src(i))}" alt="${esc(i.name)}">`:`<small class="note">${esc(i.name)}</small>`).join("")}</div><small>${esc(c.t.name)} + ${esc(c.b.name)}</small></div>`).join("")+
+      `<div class="row1 wide"><button class="btn" data-capsave>Enregistrer ces 9 tenues dans une collection</button></div>`:"");
+  renderCapsule.combos=combos;
+}
+function capAuto(){
+  const P={top:capPool("top"),bottom:capPool("bottom"),shoes:capPool("shoes")},season=capSeason();
+  Object.keys(P).forEach(k=>{const s=P[k].filter(i=>!i.season||i.season==="Toute l'année"||i.season===season);if(s.length>=3)P[k]=s});
+  if(Object.values(P).some(a=>a.length<3)){toast("Pas assez de pièces pour faire une capsule");return}
+  const used={};looks.forEach(l=>lookIds(l.items).forEach(id=>used[id]=(used[id]||0)+1));
+  const NO=/sweat|hoodie|legging|maillot/i;P.top=P.top.filter(i=>!NO.test(i.name));P.bottom=P.bottom.filter(i=>!NO.test(i.name));
+  const pick=a=>[...a].sort(()=>Math.random()-.5).slice(0,3);let best=null;
+  for(let n=0;n<350;n++){const t=pick(P.top),b=pick(P.bottom),s=pick(P.shoes);
+    let sc=0;for(const x of t)for(const y of b)sc+=Math.max(...s.map(z=>harmonyV([x,y,z],"Casual")));
+    sc+=new Set(s.map(i=>i.category)).size*10+new Set(b.map(i=>i.category)).size*10;   // variété : plat, botte, talon ; jupe, jean, pantalon
+    sc+=[...t,...b,...s].reduce((a,i)=>a+Math.min(used[i.id]||0,6),0);                  // pièces que tu aimes déjà dans tes tenues
+    if(!best||sc>best.sc)best={sc,t,b,s}}
+  cap={top:best.t.map(i=>i.id),bottom:best.b.map(i=>i.id),shoes:best.s.map(i=>i.id)};saveCap();renderCapsule();toast("Capsule proposée : change ce que tu veux")
+}
+function capList(){
+  const words=normTxt(capQ).split(/\s+/).filter(Boolean),k=capPick;
+  const ls=capPool(k).filter(i=>!words.length||words.every(w=>normTxt([i.name,i.brand,i.color,i.category].join(" ")).includes(w)));
+  $("#pklist").innerHTML=ls.map(i=>{const on=cap[k].includes(i.id);return `<button class="pkcard${on?" on":""}" data-capt="${i.id}" aria-pressed="${on}"><div class="pkims one">${src(i)?`<img src="${esc(src(i))}" alt="" loading="lazy">`:""}</div><b>${esc(i.name)}</b>${on?"<small>✓ choisi</small>":""}</button>`}).join("")||'<p class="note">Aucune pièce.</p>';
+  $("#pkcount").textContent=`${cap[k].length}/3 choisi${cap[k].length>1?"s":""}`;
+}
+function openCapPicker(k){
+  capPick=k;capQ="";openId=null;const label=CAPS.find(c=>c[0]===k)[1];
+  $("#drawer").innerHTML=`<div class="dhead"><small>Mode 3-3-3</small><button class="x" id="close" aria-label="Fermer">×</button></div>
+    <h2 id="dTitle">${label}</h2><input id="pkq" class="pkq" type="search" placeholder="Chercher…" aria-label="Chercher une pièce">
+    <small id="pkcount" class="note"></small><div id="pklist" class="pklist"></div><button class="btn" id="capok">Valider</button>`;
+  $("#drawer").hidden=$("#scrim").hidden=false;$("#drawer").scrollTop=0;
+  const done=()=>{closeSheet();renderCapsule()};$("#close").onclick=done;$("#capok").onclick=done;
+  $("#pkq").oninput=e=>{capQ=e.target.value;capList()};
+  $("#pklist").onclick=e=>{const b=e.target.closest("[data-capt]");if(!b)return;const id=b.dataset.capt,a=cap[k];
+    if(a.includes(id))cap[k]=a.filter(x=>x!==id);else{if(a.length>=3){toast("3 maximum : retire d'abord une pièce");return}a.push(id)}saveCap();capList()};
+  capList();
+}
+async function capSave(btn){
+  const cs=renderCapsule.combos||[];if(cs.length!==9||!lcol||!ccol)return;btn.disabled=true;btn.textContent="Enregistrement…";
+  const short=i=>{const w=i.name.replace(/[«»"]/g,"").split(/\s+/).filter(Boolean).slice(0,3);while(w.length>1&&/^(à|a|de|du|des|en|au|aux|et|la|le)$/i.test(w[w.length-1]))w.pop();return w.join(" ")},ids=[],now=Date.now();
+  try{for(const [n,c] of cs.entries()){const items={top:c.t.id,bottom:c.b.id};if(c.s)items.shoes=c.s.id;
+      const dup=looks.find(l=>lookKey(l.items)===lookKey(items));if(dup){ids.push(dup.id);continue}
+      const r=await lcol.add({items,name:`3-3-3 · ${short(c.t)} et ${short(c.b)}`,createdAt:now+n,worn:0});ids.push(r.id)}
+    const name="capsule // 3-3-3 du "+new Date().toLocaleDateString("fr-FR",{day:"numeric",month:"long"});
+    await ccol.add({name,ids:[],looks:ids,createdAt:now});toast(`9 tenues rangées dans « ${name} »`);btn.textContent="Enregistrées ✓"}
+  catch(err){toast("Échec : "+(err.message||err.code));btn.disabled=false;btn.textContent="Enregistrer ces 9 tenues dans une collection"}
+}
+
 /* ---------- mode valise ---------- */
 function renderValise(){
   const g=$("#grid");g.className="valise";$("#empty").hidden=true;$("#matching").textContent="Mode valise";
@@ -962,7 +1032,7 @@ async function upd(id,patch,msg){try{await col.doc(id).update(patch);toast(msg)}
 function addPiece(cat){if(!db){toast("Connecte-toi pour ajouter des pièces");return}presetCat=cat||null;openSheet(null)}
 
 /* ---------- tabs (phone) ---------- */
-const LOOKVIEWS=["Mes tenues","Collections","Planning"],MOREVIEWS=["Styliste IA","Envies","Mode valise","Statistiques"];
+const LOOKVIEWS=["Mes tenues","Collections","Planning"],MOREVIEWS=["Styliste IA","Envies","Mode valise","Mode 3-3-3","Statistiques"];
 const tabFor=v=>v==="Aujourd'hui"?"today":LOOKVIEWS.includes(v)?"looks":MOREVIEWS.includes(v)?"more":"closet";
 function markTabs(){const t=document.body.dataset.tab==="look"?"":tabFor(view);document.querySelectorAll(".tabbar [data-tab]").forEach(b=>b.setAttribute("aria-current",b.dataset.tab===t));
   const lk=view==="Mes tenues"||view==="Collections";
@@ -1010,6 +1080,11 @@ $("#grid").onclick=async e=>{
   const mt=e.target.closest("[data-meteo]");if(mt){meteo=mt.dataset.meteo;try{localStorage.setItem("dressing.meteo",meteo)}catch(_){}todaySkip=[];renderToday.cur=null;renderToday();return}
   if(e.target.closest("[data-tnext]")){if(renderToday.cur)todaySkip.push(renderToday.cur);renderToday.cur=null;if(!pickToday()){todaySkip=[]}renderToday();return}
   const tp=e.target.closest("[data-tplan]");if(tp&&lcol){try{await lcol.doc(tp.dataset.tplan).update({plannedFor:dayKey(Date.now()+864e5)});toast("Prévue pour demain")}catch(err){toast("Échec : "+(err.message||err.code))}return}
+  if(e.target.closest("[data-capauto]")){capAuto();return}
+  if(e.target.closest("[data-capclear]")){cap={top:[],bottom:[],shoes:[]};saveCap();renderCapsule();return}
+  const cpk=e.target.closest("[data-cappick]");if(cpk){openCapPicker(cpk.dataset.cappick);return}
+  const cdl=e.target.closest("[data-capdel]");if(cdl){const [k,id]=cdl.dataset.capdel.split(":");cap[k]=cap[k].filter(x=>x!==id);saveCap();renderCapsule();return}
+  const csv=e.target.closest("[data-capsave]");if(csv){capSave(csv);return}
   const pd=e.target.closest("[data-pickday]");if(pd){openPlanPicker(pd.dataset.pickday);return}
   const up=e.target.closest("[data-unplan]");if(up&&lcol){try{await lcol.doc(up.dataset.unplan).update({plannedFor:null});toast("Retirée du planning")}catch(err){toast("Échec : "+(err.message||err.code))}return}
   if(e.target.closest("[data-stry]")&&stylist?.items){loadIntoLook(stylist.items);toast("Tenue du styliste chargée dans le look");return}
