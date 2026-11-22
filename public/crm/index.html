@@ -52,6 +52,29 @@
   --shadow:0 1px 0 rgba(255,255,255,.05) inset,0 24px 60px -30px rgba(0,0,0,.6);
   --shadow-sm:0 1px 0 rgba(255,255,255,.05) inset,0 10px 24px -16px rgba(0,0,0,.6); color-scheme:dark}
 
+/* Mode nuit : surfaces codées en clair (#fff / #F6F6F9 / teintes) -> équivalents sombres.
+   Chaque valeur passe par une variable --nf-* définie UNIQUEMENT en sombre ; en mode clair
+   la variable n'existe pas et le fallback = la couleur claire d'origine (donc rien ne change). */
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --nf-card:#171A20; --nf-soft:rgba(255,255,255,.05); --nf-soft2:rgba(255,255,255,.08); --nf-fill:rgba(255,255,255,.1);
+  --nf-press:rgba(255,255,255,.14); --nf-ok:rgba(63,203,142,.12); --nf-warn:rgba(240,166,58,.12); --nf-bad:rgba(255,107,139,.1);
+  --nf-ifg:#F0C98A; --nf-tbg:rgba(255,107,139,.14); --nf-tfg:#FF9E86; }}
+:root[data-theme="dark"]{
+  --nf-card:#171A20; --nf-soft:rgba(255,255,255,.05); --nf-soft2:rgba(255,255,255,.08); --nf-fill:rgba(255,255,255,.1);
+  --nf-press:rgba(255,255,255,.14); --nf-ok:rgba(63,203,142,.12); --nf-warn:rgba(240,166,58,.12); --nf-bad:rgba(255,107,139,.1);
+  --nf-ifg:#F0C98A; --nf-tbg:rgba(255,107,139,.14); --nf-tfg:#FF9E86; }
+:root .ws-card,:root .drawer,:root .org-card,:root .seg,:root .cal-reas div,:root .cal-types button,:root .cal-q{background:var(--nf-card,#fff)}
+:root .ws-member:hover,:root .ws-member.hl,:root .ws-item,:root .ws-h,:root .org-card.hors,:root .dr-kpi>div,:root .dr-row.day{background:var(--nf-soft,#F6F6F9)}
+:root .pq{background:var(--nf-card,#fff)}
+:root .dr-row:hover{background:var(--nf-soft2,#F8F8FA)}
+:root .av,:root .ws-bar{background:var(--nf-fill,#ECECF1)}
+:root .cal-seg button[aria-pressed="true"],:root .cal-team .who[aria-pressed="true"]{background:var(--nf-press,#fff)}
+:root .nx.ok,:root .nx-l:first-child,:root .plan-mt.ok{background:var(--nf-ok,#F2FAF6)}
+:root .nx.warn,:root .plan-mt,:root .nx-l:first-child.todo{background:var(--nf-warn,#FFF9EE)}
+:root .ws-item.sev-critique{background:var(--nf-bad,#FFF7F9)}
+:root .ws-insight{background:var(--nf-warn,#FFF8EC);color:var(--nf-ifg,#6B4A00)}
+:root .tag{background:var(--nf-tbg,#FFF1EE);color:var(--nf-tfg,#A3361C)}
+
 *{box-sizing:border-box}
 html{color-scheme:light;-webkit-tap-highlight-color:transparent}
 button,a,input,select,textarea,tr.click{touch-action:manipulation}
