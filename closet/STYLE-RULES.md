@@ -12,6 +12,9 @@ Mises à jour à partir de ce que la propriétaire garde, modifie ou supprime. �
 - En voyage : chaussures confortables pour TOUTES les tenues, y compris les dîners (bottes plates, babies, sneakers). Pas de talons.
 - Hors voyage, pas de talons pour une journée de marche ; les talons restent pour un dîner ou une soirée en ville.
 
+## Couleurs
+- Suivre le cercle chromatique (rouge-jaune-bleu) : couleurs opposées (rouge/vert, orange/bleu, jaune/violet), triades (rouge/jaune/bleu, orange/vert/violet) ou camaïeu de couleurs voisines. Jamais deux couleurs vives au hasard.
+
 ## Ce qu'elle garde
 - Les camaïeux et le ton sur ton : brun + or (Klimt), camel sur camel avec trois matières.
 - Une seule idée forte par tenue.

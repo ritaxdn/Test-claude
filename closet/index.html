@@ -260,6 +260,18 @@ form textarea{min-height:64px;resize:vertical}
 .mini[data-capdel] b{color:var(--muted)}
 .pkims.one{grid-template-columns:1fr}
 .pkcard.on{border-color:var(--ink);border-width:2px}
+.vrail{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-inline:-4px;padding:2px 4px 4px}
+.vrail::-webkit-scrollbar{display:none}
+.vtile{flex:0 0 96px}
+.vtile img{width:100%;aspect-ratio:1;object-fit:contain;mix-blend-mode:multiply}
+.vtile b{font-size:11px;font-weight:500;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.dsec{display:flex;flex-direction:column;gap:8px}
+.dsec h4{margin:0;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.dstack{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.dstack figure{margin:0;display:flex;flex-direction:column;gap:3px}
+.dstack img{width:100%;aspect-ratio:1;object-fit:contain;mix-blend-mode:multiply;background:var(--soft);border-radius:8px}
+.dstack figcaption{font-size:10px;color:var(--muted);line-height:1.2}
+.lk .stack[data-ldet]{cursor:pointer}
 .pkq{border:1px solid var(--line);border-radius:999px;padding:10px 14px;font-size:16px;background:var(--soft);color:var(--ink);width:100%}
 .pkchips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;flex:0 0 auto;margin-inline:-4px;padding-inline:4px}
 .pkchips::-webkit-scrollbar{display:none}
@@ -651,9 +663,9 @@ function renderLooks(coll){
   $("#grid").innerHTML=(coll?`<div class="collbar"><button class="btn ghost" data-cback>‹ Toutes les collections</button><span class="note">Ajoute des tenues depuis « Mes tenues » (menu « + Collection »).</span><span class="sp"></span><button class="btn ghost" data-cren="${coll.id}">Renommer</button><button class="btn danger" data-cdel="${coll.id}">Supprimer</button><div id="cconf"></div></div>`:"")+`<div class="lookbar">${colls.length&&list.length?`<button data-selm aria-pressed="${selMode}">${selMode?"Terminer la sélection":"Sélectionner des tenues"}</button>`:""}<button data-hidew aria-pressed="${hideWorn}">Masquer les tenues déjà portées</button>${!coll&&nFiled?`<button data-showf aria-pressed="${showFiled}">${showFiled?"Cacher":"Afficher"} les ${nFiled} tenues rangées dans des collections</button>`:""}</div>`+selbar+(lq&&!list.length?`<p class="note lookbar">Aucune tenue ne correspond à « ${esc($("#q").value.trim())} ». Essaie un nom de pièce, une couleur ou une marque.</p>`:"")+(!lq&&!coll&&!showFiled&&nFiled&&!list.length?'<p class="note lookbar">Toutes tes tenues sont rangées dans tes collections.</p>':"")+(hideWorn&&looks.length&&!list.length?'<p class="note lookbar">Tu as porté toutes tes tenues ! Désactive le filtre pour les revoir.</p>':"")+list.map(l=>{
     const ims=lookIds(l.items).map(byId).filter(Boolean);
     const done=!!l.worn;
-    return `<div class="lk${done?" done":""}${picked.has(l.id)?" pick":""}" data-lk="${l.id}">${selMode?`<button class="lkchk" data-pk="${l.id}" aria-pressed="${picked.has(l.id)}" aria-label="Sélectionner ${esc(l.name)}">${picked.has(l.id)?"✓":""}</button>`:""}${done?`<span class="worn">✓ Déjà portée${l.worn>1?` ${l.worn}×`:""} · ${fmt(l.lastWorn)}</span>`:'<span class="fresh">Pas encore portée</span>'}<div class="stack">${ims.map(i=>src(i)?`<img src="${esc(src(i))}" alt="${esc(i.name)}">`:`<small class="note">${esc(i.name)}</small>`).join("")}</div>
+    return `<div class="lk${done?" done":""}${picked.has(l.id)?" pick":""}" data-lk="${l.id}">${selMode?`<button class="lkchk" data-pk="${l.id}" aria-pressed="${picked.has(l.id)}" aria-label="Sélectionner ${esc(l.name)}">${picked.has(l.id)?"✓":""}</button>`:""}${done?`<span class="worn">✓ Déjà portée${l.worn>1?` ${l.worn}×`:""} · ${fmt(l.lastWorn)}</span>`:'<span class="fresh">Pas encore portée</span>'}<div class="stack" data-ldet="${l.id}" title="Voir avec quoi elle va">${ims.map(i=>src(i)?`<img src="${esc(src(i))}" alt="${esc(i.name)}">`:`<small class="note">${esc(i.name)}</small>`).join("")}</div>
       <b>${esc(l.name)}</b>${l.refNote?`<small class="refnote">${esc(l.refNote)}</small>`:""}${/^https:\/\//.test(l.ref||"")?`<a class="ref" href="${esc(l.ref)}" target="_blank" rel="noopener">Voir le défilé ↗</a>`:""}${editing===l.id?'<span class="fresh">En cours de modification</span>':""}
-      <div class="row"><button class="btn wearbtn${done?" undo":""}" data-done="${l.id}">${done?"Annuler « portée »":"Je l'ai portée aujourd'hui"}</button><button class="btn" data-wear="${l.id}">Essayer</button>${coll?`<button class="btn ghost" data-cout="${l.id}">Supprimer la tenue</button>`:`<button class="btn ghost" data-dl="${l.id}">Retirer</button>`}</div>${cpick(l)}</div>`}).join("");
+      <div class="row"><button class="btn wearbtn${done?" undo":""}" data-done="${l.id}">${done?"Annuler « portée »":"Je l'ai portée aujourd'hui"}</button><button class="btn" data-ldet="${l.id}">Avec quoi ?</button><button class="btn" data-wear="${l.id}">Essayer</button>${coll?`<button class="btn ghost" data-cout="${l.id}">Supprimer la tenue</button>`:`<button class="btn ghost" data-dl="${l.id}">Retirer</button>`}</div>${cpick(l)}</div>`}).join("");
   if(coll){e.hidden=!!list.length;if(!list.length)e.innerHTML='<h3>Collection vide</h3><p>Va dans « Mes tenues » et choisis cette collection dans le menu « + Collection » d\'une tenue.</p>';return}
   e.hidden=!!looks.length;
   if(!looks.length)e.innerHTML='<h3>Aucune tenue</h3><p>Compose un look au centre puis clique sur « Enregistrer la tenue ».</p>';
@@ -796,7 +808,7 @@ ${CATALOG()}
 
 ${wish?`Elle hésite à acheter cette pièce : « ${wish.name}${wish.brand?" ("+wish.brand+")":""} », catégorie ${wish.category||"?"}, couleur ${wish.color||"?"}. Construis une tenue AUTOUR de cette pièce avec ses vêtements à elle ; ne mets pas cette pièce dans "items" (elle est ajoutée à part) et laisse vide l'emplacement qu'elle occupe.\n`:""}Demande : ${request||"une tenue pour aujourd'hui"}
 Météo : ${meteo}.
-Règles : uniquement des id de la liste ; soit "dress", soit "top" + "bottom" ; des chaussures ; "layer" seulement pour un pull, cardigan ou chemise ouverte porté sur le haut ; 0 à 3 accessoires, jamais deux colliers ni deux paires de boucles ; pas d'or et d'argent mélangés ; un seul imprimé fort ; respecte la saison et la météo.
+Règles : uniquement des id de la liste ; soit "dress", soit "top" + "bottom" ; des chaussures ; "layer" seulement pour un pull, cardigan ou chemise ouverte porté sur le haut ; 0 à 3 accessoires, jamais deux colliers ni deux paires de boucles ; pas d'or et d'argent mélangés ; un seul imprimé fort ; pour les couleurs vives, suis le cercle chromatique : couleurs opposées (rouge/vert, orange/bleu, jaune/violet), triade (rouge/jaune/bleu, orange/vert/violet) ou camaïeu de couleurs voisines, jamais deux couleurs vives au hasard ; respecte la saison et la météo.
 Ne pose pas de question et n'écris rien d'autre que l'objet JSON. Si la demande est floue, choisis toi-même.
 Format exact (remplace les null par des id de la liste) :
 {"name":"titre court en français","note":"1 ou 2 phrases en français qui expliquent l'idée de la tenue","items":{"jacket":null,"layer":null,"top":null,"dress":null,"bottom":null,"shoes":null,"bag":null,"acc":[]}}`;
@@ -1041,7 +1053,68 @@ function openSheet(id){
     }catch(e){toast("Échec de l'enregistrement : "+(e.message||e.code));b.disabled=false}
   };
 }
-function closeSheet(){$("#drawer").hidden=$("#scrim").hidden=true;openId=null;pendingFile=null;presetCat=null}
+/* ---- « Avec quoi ? » : on entre dans une tenue et on voit ce qui va avec ---- */
+let det=null;
+const OVERUSED=new Set(["talons-bijoux","haut-dos-nu-satin-noir","mocassins-metallises","lunettes-ovales-noires"]);   // pièces trop vues : proposées en dernier
+function openLookDetail(id){
+  const l=looks.find(x=>x.id===id);if(!l)return;
+  const o={};SLOTS.forEach(s=>{const v=ids(l.items?.[s.key]);if(v.length)o[s.key]=s.key==="acc"?[...v]:v[0]});
+  det={id,orig:JSON.stringify(o),o};renderLookDetail();
+  $("#drawer").hidden=$("#scrim").hidden=false;$("#drawer").scrollTop=0;
+}
+function lookStyle(vals){const m={};vals.forEach(i=>(i.tags||[]).forEach(t=>m[t]=(m[t]||0)+1));return Object.entries(m).sort((a,b)=>b[1]-a[1])[0]?.[0]||"Casual"}
+function detSuggest(key){
+  const o=det.o,cur=new Set(lookIds(o));
+  const others=lookIds({...o,[key]:key==="acc"?o.acc:null}).map(byId).filter(Boolean);
+  const style=lookStyle(others);
+  const core=new Set(lookIds(o).filter(x=>{const i=byId(x);return i&&i.category!=="Accessoires"}));
+  return inSlot(key).filter(i=>!cur.has(i.id)&&(key!=="layer"||/pull|cardigan|gilet|chemise|surchemise|maille|kimono/i.test(i.name+" "+i.category))).map(i=>{
+    const vals=key==="acc"?[...others,i]:[...others.filter(x=>x.id!==o[key]),i];
+    const co=looks.filter(x=>x.id!==det.id&&lookIds(x.items).includes(i.id)&&lookIds(x.items).some(y=>core.has(y))).length;   // déjà associée à ces pièces dans tes tenues
+    return{i,s:harmonyV(vals,style)+Math.min(co,3)*2-(OVERUSED.has(i.id)?15:0),co}}).sort((a,b)=>b.s-a.s).slice(0,8);
+}
+function renderLookDetail(){
+  const l=looks.find(x=>x.id===det.id);if(!l){closeSheet();return}
+  const o=det.o,changed=JSON.stringify(o)!==det.orig;
+  const vals=lookIds(o).map(byId).filter(Boolean);
+  const loud=[...new Set(vals.map(i=>i.color||"").filter(c=>!NEUTRAL.has(c)))];
+  const wk=wheelKind(loud);
+  const colorNote=!loud.length?"Palette neutre : tu peux ajouter une couleur vive, ou une deuxième si elle est opposée sur le cercle chromatique.":
+    wk==="une couleur"?`Une seule couleur vive (${loud[0].toLowerCase()}). Pour en ajouter une, prends sa complémentaire : ${Object.keys(WHEEL).filter(c=>wdist(c,loud[0])>=150).join(" ou ").toLowerCase()}.`:
+    wk==="complémentaires"?`${loud.join(" et ")} : couleurs opposées sur le cercle chromatique, le contraste est voulu.`:
+    wk==="triade"?`${loud.join(", ")} : une triade, trois couleurs en triangle sur le cercle.`:
+    wk==="camaïeu"?`${loud.join(" et ")} : couleurs voisines, un camaïeu.`:
+    `${loud.join(", ")} : ces couleurs ne sont ni opposées ni en triangle sur le cercle chromatique, elles risquent de se battre.`;
+  const keys=SLOTS.map(s=>s.key).filter(k=>o.dress?!["top","bottom","layer"].includes(k):k!=="dress");
+  const sib=looks.filter(x=>x.id!==l.id).map(x=>({x,n:lookIds(x.items).filter(y=>lookIds(o).includes(y)&&byId(y)?.category!=="Accessoires").length})).filter(z=>z.n>=2).sort((a,b)=>b.n-a.n).slice(0,4);
+  const tile=(i,on,k)=>`<button class="pkcard vtile${on?" on":""}" data-dsw="${k}" data-did="${i.id}" aria-pressed="${on}">${src(i)?`<img src="${esc(src(i))}" alt="">`:""}<b>${esc(i.name)}</b></button>`;
+  $("#drawer").innerHTML=`<div class="dhead"><small>Avec quoi ?</small><button class="x" id="close" aria-label="Fermer">×</button></div>
+    <h2 id="dTitle">${esc(l.name)}${changed?" · variante":""}</h2>
+    <div class="dstack">${SLOTS.flatMap(s=>ids(o[s.key]).map(id=>{const i=byId(id);return i?`<figure>${src(i)?`<img src="${esc(src(i))}" alt="">`:""}<figcaption>${esc(i.name)}</figcaption></figure>`:""})).join("")}</div>
+    <p class="note">🎨 ${esc(colorNote)}</p>
+    ${keys.map(k=>{const sl=SLOTS.find(s=>s.key===k),cur=ids(o[k]).map(byId).filter(Boolean),sug=detSuggest(k);if(!cur.length&&!sug.length)return"";
+      return `<section class="dsec"><h4>${esc(sl.label)}${cur.length?"":` <span class="note">· à ajouter ?</span>`}</h4><div class="vrail">${cur.map(i=>tile(i,true,k)).join("")}${sug.map(z=>tile(z.i,false,k)).join("")}</div></section>`}).join("")}
+    <p class="note">Touche une pièce pour l'échanger (ou l'ajouter, ou l'enlever pour les accessoires). Les propositions suivent le cercle chromatique, la saison, un seul imprimé fort, et ce que tu as déjà associé dans tes tenues.</p>
+    ${sib.length?`<section class="dsec"><h4>Tes autres tenues avec ces pièces</h4><div class="vrail">${sib.map(({x})=>{const im=lookIds(x.items).map(byId).filter(i=>i&&src(i)).slice(0,1)[0];return `<button class="pkcard vtile" data-dgo="${x.id}">${im?`<img src="${esc(src(im))}" alt="">`:""}<b>${esc(x.name)}</b></button>`}).join("")}</div></section>`:""}
+    <div class="row"><button class="btn" id="dtry">Essayer dans le look</button>${changed?`<button class="btn wearbtn" id="dsave">Enregistrer la variante</button><button class="btn ghost" id="dreset">Revenir à la tenue</button>`:""}</div>`;
+  $("#close").onclick=closeSheet;
+  $("#drawer").onclick=async e=>{
+    const t=e.target.closest("[data-dsw]");
+    if(t){const k=t.dataset.dsw,id=t.dataset.did;
+      if(k==="acc"){const a=ids(o.acc);o.acc=a.includes(id)?a.filter(x=>x!==id):[...a,id].slice(-3);if(!o.acc.length)delete o.acc}
+      else if(o[k]===id){if(!["top","bottom","dress","shoes"].includes(k))delete o[k]}
+      else o[k]=id;
+      renderLookDetail();return}
+    const g=e.target.closest("[data-dgo]");if(g){openLookDetail(g.dataset.dgo);return}
+    if(e.target.id==="dreset"){det.o=JSON.parse(det.orig);renderLookDetail();return}
+    if(e.target.id==="dtry"){closeSheet();loadIntoLook(det.o,null);return}
+    if(e.target.id==="dsave"&&lcol){const dup=looks.find(x=>lookKey(x.items)===lookKey(det.o));if(dup){toast(`Cette tenue existe déjà : « ${dup.name} »`);return}
+      e.target.disabled=true;
+      try{await lcol.add({items:det.o,name:l.name+" · variante",refNote:"",createdAt:Date.now(),worn:0});toast("Variante enregistrée dans « Mes tenues »");closeSheet()}
+      catch(err){e.target.disabled=false;toast("Échec : "+(err.message||err.code))}}
+  };
+}
+function closeSheet(){det=null;$("#drawer").onclick=null;$("#drawer").hidden=$("#scrim").hidden=true;openId=null;pendingFile=null;presetCat=null}
 async function upd(id,patch,msg){try{await col.doc(id).update(patch);toast(msg)}catch(e){toast("Échec : "+(e.message||e.code))}}
 function addPiece(cat){if(!db){toast("Connecte-toi pour ajouter des pièces");return}presetCat=cat||null;openSheet(null)}
 
@@ -1127,6 +1200,7 @@ $("#grid").onclick=async e=>{
       toast(undo?"Tenue remise dans « pas encore portée »":"Noté ! Tenue marquée comme portée");
     }catch(err){toast("Échec : "+(err.message||err.code))}
     return}
+  const ld=e.target.closest("[data-ldet]");if(ld&&!selMode){openLookDetail(ld.dataset.ldet);return}
   const w=e.target.closest("[data-wear]");
   if(w){const l=looks.find(x=>x.id===w.dataset.wear);SLOTS.forEach(s=>{const v=ids(l.items?.[s.key]);shown[s.key]=v.length>0||s.key==="shoes";if(v.length)sel[s.key]=s.key==="acc"?v:v[0];else if(s.key==="acc")sel.acc=[]});editing=l.id;if(!isPhone())setLook(true);saveUi();renderToggles();renderRails();renderGrid();renderEditing();
     if(matchMedia("(max-width:760px)").matches)setTab("look");toast("Tenue chargée : change ce que tu veux puis « Mettre à jour »");return}
@@ -1185,11 +1259,29 @@ $("#rails").onclick=e=>{
   const k=s.closest(".rail").dataset.slot;
   if(s.dataset.id===sel[k])openSheet(s.dataset.id);else{sel[k]=s.dataset.id;centerOn(k,s.dataset.id);markOn();renderLines();renderGrid();saveUi()}};
 $("#toggles").onclick=e=>{const b=e.target.closest("[data-t]");if(!b)return;shown[b.dataset.t]=!shown[b.dataset.t];if(shown[b.dataset.t])exclusive(b.dataset.t);saveUi();renderToggles();renderRails();renderGrid()};
+// cercle chromatique des peintres (rouge-jaune-bleu), en degrés
+const WHEEL={"Rouge":0,"Orange":60,"Jaune":120,"Vert":180,"Bleu":240,"Violet":300,"Rose":330};
+const wdist=(a,b)=>{const d=Math.abs(WHEEL[a]-WHEEL[b])%360;return Math.min(d,360-d)};
+function wheelKind(cols){
+  const c=cols.filter(x=>x in WHEEL);
+  if(c.length<2)return c.length&&cols.length===c.length?"une couleur":"";
+  if(c.length!==cols.length)return "";
+  if(c.length===2){const d=wdist(c[0],c[1]);return d>=150?"complémentaires":d<=60?"camaïeu":""}
+  if(c.length===3){const ds=[wdist(c[0],c[1]),wdist(c[1],c[2]),wdist(c[0],c[2])];return ds.every(d=>d>=100&&d<=140)?"triade":""}
+  return "";
+}
+function wheelScore(cols){
+  if(cols.length<2)return 0;
+  const k=wheelKind(cols);
+  if(k==="complémentaires"||k==="triade")return 3;          // couleurs opposées ou en triangle : ça marche
+  if(k==="camaïeu")return 1;                                // couleurs voisines
+  return -6*(cols.length-1);                                // couleurs vives qui se battent
+}
 const NEUTRAL=new Set(["Noir","Blanc","Beige","Marron","Gris","Doré","Argenté",""]);
 function harmonyV(vals,style,key){
   let sc=0;vals=vals.filter(Boolean);
   const loud=new Set(vals.map(i=>i.color||"").filter(c=>!NEUTRAL.has(c)));
-  if(loud.size>1)sc-=6*(loud.size-1);                       // une seule couleur vive
+  sc+=wheelScore([...loud]);                                // cercle chromatique : complémentaires, triades, camaïeux
   const metals=new Set(vals.filter(i=>["Sacs","Accessoires"].includes(i.category)||SHOECATS.includes(i.category)).map(i=>i.color).filter(c=>c==="Doré"||c==="Argenté"));
   if(metals.size>1)sc-=4;                                   // pas d'or et d'argent mélangés
   const seas=new Set(vals.map(i=>i.season).filter(x=>x&&x!=="Toute l'année"));
