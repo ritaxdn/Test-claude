@@ -783,6 +783,11 @@ function cleanOutfit(o,exclude){
   if(out.layer&&out.layer===out.top)delete out.layer;
   return out;
 }
+function looseJSON(t){
+  t=String(t||"");const a=t.indexOf("{");if(a<0)return null;
+  for(let b=t.lastIndexOf("}");b>a;b=t.lastIndexOf("}",b-1)){try{const v=JSON.parse(t.slice(a,b+1));if(v&&typeof v==="object")return v}catch{}}
+  return null;
+}
 async function askStylist(request,wish){
   const s=await window.claude?.use?.("sample");if(!s)throw{message:"Le styliste IA n'est pas disponible ici. Ouvre le dressing depuis claude.ai."};
   const prompt=`Tu es une styliste de mode exigeante, avec du goût et une vraie vision : une idée forte par tenue, pas de tenue générique.
@@ -792,8 +797,12 @@ ${CATALOG()}
 ${wish?`Elle hésite à acheter cette pièce : « ${wish.name}${wish.brand?" ("+wish.brand+")":""} », catégorie ${wish.category||"?"}, couleur ${wish.color||"?"}. Construis une tenue AUTOUR de cette pièce avec ses vêtements à elle ; ne mets pas cette pièce dans "items" (elle est ajoutée à part) et laisse vide l'emplacement qu'elle occupe.\n`:""}Demande : ${request||"une tenue pour aujourd'hui"}
 Météo : ${meteo}.
 Règles : uniquement des id de la liste ; soit "dress", soit "top" + "bottom" ; des chaussures ; "layer" seulement pour un pull, cardigan ou chemise ouverte porté sur le haut ; 0 à 3 accessoires, jamais deux colliers ni deux paires de boucles ; pas d'or et d'argent mélangés ; un seul imprimé fort ; respecte la saison et la météo.
-Réponds uniquement en JSON : {"name":"titre court en français","note":"1 ou 2 phrases en français qui expliquent l'idée de la tenue","items":{"jacket":null,"layer":null,"top":null,"dress":null,"bottom":null,"shoes":null,"bag":null,"acc":[]}}`;
-  const r=await s.json(prompt,{modelTier:"default",cache:false});
+Ne pose pas de question et n'écris rien d'autre que l'objet JSON. Si la demande est floue, choisis toi-même.
+Format exact (remplace les null par des id de la liste) :
+{"name":"titre court en français","note":"1 ou 2 phrases en français qui expliquent l'idée de la tenue","items":{"jacket":null,"layer":null,"top":null,"dress":null,"bottom":null,"shoes":null,"bag":null,"acc":[]}}`;
+  let r;
+  try{r=await s.json(prompt,{modelTier:"default",cache:false})}
+  catch(e){if(e?.code!=="invalid_json")throw e;r=looseJSON(e.text);if(!r)throw{message:"sa réponse était illisible. Appuie sur « Créer ma tenue » pour réessayer, ou reformule ta demande plus simplement."}}
   return{name:String(r?.name||"Tenue du styliste").slice(0,80),note:String(r?.note||"").slice(0,400),items:cleanOutfit(r?.items,null)};
 }
 function renderStylist(){
