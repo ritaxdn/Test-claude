@@ -1397,10 +1397,10 @@ function renderAll(){
 document.body.dataset.tab="closet";document.body.classList.toggle("nolook",!lookOpen);markTabs();
 renderAll();
 (async()=>{
-  const fail=m=>{$("#empty").hidden=false;$("#empty").innerHTML=`<h3>Dressing indisponible</h3><p>${m}</p>`};
-  const timer=setTimeout(()=>{if(!items.length)fail("Connecte-toi à ton compte Claude pour voir et gérer tes pièces.")},10000);
+  const fail=(m,t)=>{$("#empty").hidden=false;$("#empty").innerHTML=`<h3>${t||"Dressing indisponible"}</h3><p>${m}</p><p><button class="btn" onclick="location.reload()">Recharger</button></p>`};
+  const timer=setTimeout(()=>{if(!items.length)fail("Tes pièces arrivent, ça peut prendre quelques secondes de plus avec une connexion lente. Si rien ne s'affiche, recharge la page.","Chargement…")},12000);
   db=await window.claude?.use?.("db");
-  if(!db){clearTimeout(timer);fail("Connecte-toi à ton compte Claude pour voir et gérer tes pièces.");return}
+  if(!db){clearTimeout(timer);fail("La page n'a pas réussi à joindre ton dressing. Ça arrive si tu n'es pas connectée à claude.ai, ou si la page vient d'être mise à jour pendant que tu l'avais ouverte : recharge-la.");return}
   assets=await window.claude.use("assets");
   col=db.collection("items");lcol=db.collection("looks");ccol=db.collection("collections");
   $("#addBtn").hidden=false;
