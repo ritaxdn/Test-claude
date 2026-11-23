@@ -882,7 +882,7 @@ function renderWishes(){
   const g=$("#grid");g.className="valise";$("#empty").hidden=true;$("#matching").textContent=`Envies : ${wishes.length}`;
   g.innerHTML=`<form class="vform" id="wf"><label style="flex:2 1 200px">Pièce<input name="name" required maxlength="80" placeholder="Ex. Ballerines rouges vernies"></label>
     <label>Marque<input name="brand" maxlength="40"></label><label>Prix (€)<input name="price" type="number" min="0" step="0.01"></label>
-    <label>Catégorie<select name="category">${GROUPS.map(gr=>`<optgroup label="${esc(gr.name)}">${opts(gr.cats,"")}</optgroup>`).join("")}</select></label>
+    <label>Catégorie<select name="category" required><option value="">Choisis…</option>${GROUPS.map(gr=>`<optgroup label="${esc(gr.name)}">${opts(gr.cats,"")}</optgroup>`).join("")}</select></label>
     <label>Couleur<select name="color"><option value=""></option>${opts(Object.keys(COLORS),"")}</select></label>
     <label style="flex:2 1 200px">Lien<input name="link" type="url" placeholder="https://…"></label>
     <label>Photo<input name="photo" type="file" accept="image/*"></label><button class="btn" type="submit">Ajouter à mes envies</button></form>`+
@@ -1188,6 +1188,7 @@ function renderWishDetail(){
   const price=w.price?Number(w.price).toLocaleString("fr-FR",{style:"currency",currency:"EUR"}):"";
   $("#drawer").innerHTML=`<div class="dhead"><small>Envie · avec quoi ?</small><button class="x" id="close" aria-label="Fermer">×</button></div>
     <h2 id="dTitle">${esc(w.name)}</h2>
+    <label class="note">C'est : <select id="wcat">${GROUPS.map(gr=>`<optgroup label="${esc(gr.name)}">${opts(gr.cats,w.category||"")}</optgroup>`).join("")}</select></label>
     <p class="note">${esc([w.brand,price].filter(Boolean).join(" · "))}${price?" · ":""}Elle irait avec <b>${matches}</b> de tes pièces${swaps.length?`, et elle peut remplacer une pièce dans ${swaps.length>=6?"au moins 6":swaps.length} de tes tenues`:""}.</p>
     <section class="dsec"><h4>Mes idées de tenues</h4>
       ${[...(wdet.ai?[wdet.ai]:[]),...(wdet.ideas||[])].map((x,n)=>`<div class="idea"><div class="dstack">${lookIds(x.o).map(get).filter(Boolean).map(i=>`<figure>${src(i)?`<img src="${esc(src(i))}" alt="">`:""}<figcaption>${i.id==="__wish"?"★ ":""}${esc(i.name)}</figcaption></figure>`).join("")}</div>
@@ -1205,6 +1206,7 @@ function renderWishDetail(){
     <div class="row"><button class="btn ghost" id="wreset">Repartir de la pièce seule</button></div></details>`;
   $("#close").onclick=closeSheet;
   $("#wcomp").ontoggle=e=>{wdet.open=e.target.open};
+  $("#wcat").onchange=async e=>{const c=e.target.value;if(!wcol)return;try{await wcol.doc(w.id).update({category:c});w.category=c;const sl=slotOf(c)||"top";wdet.slot=sl;wdet.o={[sl]:"__wish"};wdet.ai=null;wdet.ideas=wishIdeas(w,sl,3);renderWishDetail();toast("Catégorie corrigée")}catch(err){toast("Échec : "+(err.message||err.code))}};
   $("#drawer").onclick=async e=>{
     const pk=e.target.closest("[data-wpick]");if(pk){const all=[...(wdet.ai?[wdet.ai]:[]),...(wdet.ideas||[])];wdet.o=JSON.parse(JSON.stringify(all[+pk.dataset.wpick].o));wdet.open=true;renderWishDetail();$("#wcomp").scrollIntoView({block:"start"});return}
     if(e.target.id==="wmore"){wdet.ideas=wishIdeas(w,slot,3);renderWishDetail();return}
@@ -1326,6 +1328,14 @@ $("#grid").addEventListener("submit",async e=>{
   if(e.target.id!=="vf")return;e.preventDefault();
   const f=Object.fromEntries(new FormData(e.target));valise=buildValise(Math.max(1,Math.min(14,+f.days||5)),f.style,f.season,f.bag);renderValise();
 });
+const CATGUESS=[[/manteau|coat/i,"Manteaux"],[/trench/i,"Trenchs"],[/fourrure|fur\b/i,"Fourrures"],[/veste|jacket|blazer|bomber|overshirt|surchemise|perfecto/i,"Vestes"],
+  [/combi|jumpsuit|overall|outfit|ensemble|set\b/i,"Combinaisons"],[/robe|dress\b/i,"Robes"],[/jupe|skirt/i,"Jupes"],[/pantalon|trouser|pants|cargo|jogging|palazzo/i,"Pantalons"],[/jean|short/i,"Jeans"],
+  [/pull|sweater|cardigan|gilet|knit/i,"Pulls & gilets"],[/chemise|shirt|blouse/i,"Chemises"],[/body/i,"Bodies"],[/débardeur|tank|top/i,"Débardeurs"],[/t-shirt|tee/i,"T-shirts"],
+  [/basket|sneaker/i,"Sneakers"],[/botte|boot/i,"Bottes"],[/escarpin|talon|heel|pump/i,"Talons"],[/sandale|mule/i,"Mules & sandales"],[/ballerine|mocassin|loafer|flat/i,"Plats"],
+  [/sac|bag|pochette|clutch/i,"Sacs"],[/collier|boucle|bague|bracelet|lunette|ceinture|chapeau|necklace|earring/i,"Accessoires"]];
+$("#grid").addEventListener("input",e=>{if(e.target.matches('#wf input[name="name"]')){const sel=$('#wf select[name="category"]');if(sel.dataset.touched)return;
+  const g=CATGUESS.find(([r])=>r.test(e.target.value));if(g&&[...sel.options].some(o=>o.value===g[1]))sel.value=g[1]}});
+$("#grid").addEventListener("change",e=>{if(e.target.matches('#wf select[name="category"]'))e.target.dataset.touched="1"},true);
 $("#grid").addEventListener("change",async e=>{
   const td=e.target.closest("[data-tdate]");if(td){if(!td.value||!lcol)return;
     try{await lcol.doc(td.dataset.tdate).update({plannedFor:td.value});toast("Tenue prévue : "+dayLabel(td.value).toLowerCase())}catch(err){toast("Échec : "+(err.message||err.code))}return}
