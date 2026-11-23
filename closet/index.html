@@ -272,6 +272,8 @@ form textarea{min-height:64px;resize:vertical}
 .dstack img{width:100%;aspect-ratio:1;object-fit:contain;mix-blend-mode:multiply;background:var(--soft);border-radius:8px}
 .dstack figcaption{font-size:10px;color:var(--muted);line-height:1.2}
 .lk .stack[data-ldet]{cursor:pointer}
+.dplan{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:12px;background:var(--card);color:var(--ink)}
+.dplan input{font:inherit;font-size:12px;border:0;background:transparent;color:inherit;padding:0;min-width:0;color-scheme:light dark}
 .pkq{border:1px solid var(--line);border-radius:999px;padding:10px 14px;font-size:16px;background:var(--soft);color:var(--ink);width:100%}
 .pkchips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;flex:0 0 auto;margin-inline:-4px;padding-inline:4px}
 .pkchips::-webkit-scrollbar{display:none}
@@ -782,7 +784,7 @@ function renderToday(){
     <label>Occasion<select data-tocc><option value="">Toutes mes tenues</option>${colls.map(c=>`<option value="${c.id}" ${todayOcc===c.id?"selected":""}>${esc(c.name)}</option>`).join("")}</select></label></div>`+
     (planned.length?`<section class="wide"><h4>Prévue pour aujourd'hui</h4></section>`+planned.map(x=>cardOf(x.items,x.name,x.refNote,btns(x))).join(""):"")+
     `<section class="wide"><h4>Ma suggestion · ${esc(meteo.toLowerCase())}${todayOcc&&colls.find(c=>c.id===todayOcc)?" · "+esc(colls.find(c=>c.id===todayOcc).name):""}</h4></section>`+
-    (l?cardOf(l.items,l.name,l.refNote,btns(l)+`<div class="row"><button class="btn" data-tnext>Une autre</button><button class="btn" data-tplan="${l.id}">Pour demain</button></div>`)
+    (l?cardOf(l.items,l.name,l.refNote,btns(l)+`<div class="row"><button class="btn" data-tnext>Une autre</button><label class="dplan">Prévoir le <input type="date" data-tdate="${l.id}" min="${todayKey()}" value="${dayKey(Date.now()+864e5)}" aria-label="Date pour porter cette tenue"></label></div>`)
       :`<p class="note wide">Aucune tenue ne correspond à cette météo${todayOcc?" dans cette collection":""}. Change la météo ou l'occasion, ou demande au styliste IA.</p>`)+
     `<p class="note wide">Je choisis parmi tes tenues enregistrées : la saison des pièces doit aller avec la météo, et celles que tu n'as pas portées depuis longtemps passent en premier.</p>`;
 }
@@ -880,11 +882,11 @@ function renderWishes(){
     <label>Couleur<select name="color"><option value=""></option>${opts(Object.keys(COLORS),"")}</select></label>
     <label style="flex:2 1 200px">Lien<input name="link" type="url" placeholder="https://…"></label>
     <label>Photo<input name="photo" type="file" accept="image/*"></label><button class="btn" type="submit">Ajouter à mes envies</button></form>`+
-    (wishes.length?wishes.map(w=>{const ws=wishStyle[w.id];return `<div class="lk"><div class="stack one">${w.thumb?`<img src="${esc(w.thumb)}" alt="">`:`<small class="note">${esc(w.name)}</small>`}</div>
+    (wishes.length?wishes.map(w=>{const ws=wishStyle[w.id];return `<div class="lk"><div class="stack one" data-wdet="${w.id}" style="cursor:pointer" title="Voir avec quoi elle va">${w.thumb?`<img src="${esc(w.thumb)}" alt="">`:`<small class="note">${esc(w.name)}</small>`}</div>
       <b>${esc(w.name)}</b><p class="refnote">${esc([w.brand,w.price?Number(w.price).toLocaleString("fr-FR",{style:"currency",currency:"EUR"}):""].filter(Boolean).join(" · "))}</p>
       ${safeUrl(w.link)?`<a class="ref" href="${esc(safeUrl(w.link))}" target="_blank" rel="noopener">Voir la pièce ↗</a>`:""}
       <div class="row"><button class="btn wearbtn" data-wstyle="${w.id}" ${ws==="busy"?"disabled":""}>${ws==="busy"?"Je réfléchis…":ws?"Une autre tenue":"Styler avec mon dressing"}</button><button class="btn" data-wbuy="${w.id}">Je l'ai achetée</button></div>
-      <div class="row"><button class="btn" data-wdel="${w.id}">Retirer</button></div></div>
+      <div class="row"><button class="btn" data-wdet="${w.id}">Avec quoi ?</button><button class="btn" data-wdel="${w.id}">Retirer</button></div></div>
       ${ws&&ws!=="busy"?(ws.err?`<p class="note">${esc(ws.err)}</p>`:cardOf(ws.items,ws.name,ws.note,"",w.thumb?`<img src="${esc(w.thumb)}" alt="${esc(w.name)}">`:"")):""}`}).join("")
     :`<p class="note wide">Ajoute les pièces que tu as envie d'acheter : le styliste te montre ce que tu pourrais porter avec avant de passer à la caisse.</p>`);
 }
@@ -1114,7 +1116,59 @@ function renderLookDetail(){
       catch(err){e.target.disabled=false;toast("Échec : "+(err.message||err.code))}}
   };
 }
-function closeSheet(){det=null;$("#drawer").onclick=null;$("#drawer").hidden=$("#scrim").hidden=true;openId=null;pendingFile=null;presetCat=null}
+/* ---- Envies : « Avec quoi ? » — ce que la pièce rêvée donnerait avec mon dressing ---- */
+let wdet=null;
+function openWishDetail(id){
+  const w=wishes.find(x=>x.id===id);if(!w)return;
+  const slot=slotOf(w.category)||"top";
+  wdet={id,slot,o:{[slot]:"__wish"}};renderWishDetail();
+  $("#drawer").hidden=$("#scrim").hidden=false;$("#drawer").scrollTop=0;
+}
+function renderWishDetail(){
+  const w=wishes.find(x=>x.id===wdet?.id);if(!w){closeSheet();return}
+  const wi={id:"__wish",name:w.name,category:w.category,color:w.color||"",thumb:w.thumb,tags:[]};
+  const get=id=>id==="__wish"?wi:byId(id);
+  const o=wdet.o,slot=wdet.slot,dress=!!o.dress;
+  const chosen=lookIds(o).map(get).filter(Boolean);
+  const style=lookStyle(chosen.filter(i=>i.id!=="__wish"))||"Casual";
+  const keys=SLOTS.map(s=>s.key).filter(k=>k!==slot&&(dress?!["top","bottom","layer"].includes(k):k!=="dress"));
+  const sugg=k=>{const others=lookIds({...o,[k]:k==="acc"?o.acc:null}).map(get).filter(Boolean),cur=new Set(lookIds(o));
+    return inSlot(k).filter(i=>!cur.has(i.id)&&(k!=="layer"||/pull|cardigan|gilet|chemise|surchemise|maille|kimono/i.test(i.name+" "+i.category)))
+      .map(i=>({i,s:harmonyV(k==="acc"?[...others,i]:[...others.filter(x=>x.id!==o[k]),i],style)-(OVERUSED.has(i.id)?15:0)})).sort((a,b)=>b.s-a.s).slice(0,8)};
+  // combien de mes pièces iraient avec elle (une à une)
+  const matches=items.filter(i=>{const k=slotOf(i.category);return k&&k!==slot&&k!=="acc"&&(dress?!["top","bottom"].includes(k):k!=="dress")&&harmonyV([wi,i],style)>=-1}).length;
+  // mes tenues où elle pourrait remplacer une pièce
+  const swaps=slot==="acc"?[]:looks.map(l=>{const it={};SLOTS.forEach(s=>{const v=ids(l.items?.[s.key]);if(v.length)it[s.key]=s.key==="acc"?v:v[0]});
+      if(!it[slot])return null;const rep=byId(it[slot]);const sw={...it,[slot]:"__wish"};
+      return{l,rep,sw,s:harmonyV(lookIds(sw).map(get).filter(Boolean),lookStyle(lookIds(it).map(byId).filter(Boolean)))}})
+    .filter(z=>z&&z.rep&&z.s>-2).sort((a,b)=>b.s-a.s).slice(0,6);
+  const loud=[...new Set(chosen.map(i=>i.color||"").filter(c=>!NEUTRAL.has(c)))],wk=wheelKind(loud);
+  const colorNote=!loud.length?"Palette neutre pour l'instant.":wk==="une couleur"?`Une couleur vive (${loud[0].toLowerCase()}). Sa complémentaire sur le cercle chromatique : ${Object.keys(WHEEL).filter(c=>wdist(c,loud[0])>=150).join(" ou ").toLowerCase()}.`:
+    wk==="complémentaires"?`${loud.join(" et ")} : couleurs opposées, le contraste marche.`:wk==="triade"?`${loud.join(", ")} : une triade sur le cercle chromatique.`:wk==="camaïeu"?`${loud.join(" et ")} : couleurs voisines, un camaïeu.`:`${loud.join(", ")} : ces couleurs risquent de se battre.`;
+  const tile=(i,on,k)=>`<button class="pkcard vtile${on?" on":""}" data-wsw="${k}" data-wid="${i.id}" aria-pressed="${on}">${src(i)?`<img src="${esc(src(i))}" alt="">`:""}<b>${esc(i.name)}</b></button>`;
+  const price=w.price?Number(w.price).toLocaleString("fr-FR",{style:"currency",currency:"EUR"}):"";
+  $("#drawer").innerHTML=`<div class="dhead"><small>Envie · avec quoi ?</small><button class="x" id="close" aria-label="Fermer">×</button></div>
+    <h2 id="dTitle">${esc(w.name)}</h2>
+    <p class="note">${esc([w.brand,price].filter(Boolean).join(" · "))}${price?" · ":""}Elle irait avec <b>${matches}</b> de tes pièces${swaps.length?`, et elle peut remplacer une pièce dans ${swaps.length>=6?"au moins 6":swaps.length} de tes tenues`:""}.</p>
+    <div class="dstack">${SLOTS.flatMap(s=>ids(o[s.key]).map(id=>{const i=get(id);return i?`<figure>${src(i)?`<img src="${esc(src(i))}" alt="">`:""}<figcaption>${id==="__wish"?"★ ":""}${esc(i.name)}</figcaption></figure>`:""})).join("")}</div>
+    <p class="note">🎨 ${esc(colorNote)}</p>
+    ${keys.map(k=>{const sl=SLOTS.find(s=>s.key===k),cur=ids(o[k]).map(byId).filter(Boolean),sg=sugg(k);if(!cur.length&&!sg.length)return"";
+      return `<section class="dsec"><h4>${esc(sl.label)}</h4><div class="vrail">${cur.map(i=>tile(i,true,k)).join("")}${sg.map(z=>tile(z.i,false,k)).join("")}</div></section>`}).join("")}
+    <p class="note">Touche une pièce pour composer une tenue autour de ton envie. Les propositions suivent le cercle chromatique, la saison et la règle d'un seul imprimé fort.</p>
+    ${swaps.length?`<section class="dsec"><h4>Dans tes tenues, à la place de…</h4><div class="vrail">${swaps.map((z,n)=>`<button class="pkcard vtile" data-wswap="${n}">${src(z.rep)?`<img src="${esc(src(z.rep))}" alt="">`:""}<b>${esc(z.l.name)}</b><small>remplace : ${esc(z.rep.name)}</small></button>`).join("")}</div></section>`:""}
+    <div class="row"><button class="btn ghost" id="wreset">Repartir de la pièce seule</button></div>`;
+  $("#close").onclick=closeSheet;
+  $("#drawer").onclick=e=>{
+    const t=e.target.closest("[data-wsw]");
+    if(t){const k=t.dataset.wsw,id=t.dataset.wid;
+      if(k==="acc"){const a=ids(o.acc);o.acc=a.includes(id)?a.filter(x=>x!==id):[...a,id].slice(-3);if(!o.acc.length)delete o.acc}
+      else if(o[k]===id)delete o[k];else o[k]=id;
+      renderWishDetail();return}
+    const sw=e.target.closest("[data-wswap]");if(sw){wdet.o={...swaps[+sw.dataset.wswap].sw};renderWishDetail();$("#drawer").scrollTop=0;return}
+    if(e.target.id==="wreset"){wdet.o={[slot]:"__wish"};renderWishDetail()}
+  };
+}
+function closeSheet(){det=null;wdet=null;$("#drawer").onclick=null;$("#drawer").hidden=$("#scrim").hidden=true;openId=null;pendingFile=null;presetCat=null}
 async function upd(id,patch,msg){try{await col.doc(id).update(patch);toast(msg)}catch(e){toast("Échec : "+(e.message||e.code))}}
 function addPiece(cat){if(!db){toast("Connecte-toi pour ajouter des pièces");return}presetCat=cat||null;openSheet(null)}
 
@@ -1200,6 +1254,7 @@ $("#grid").onclick=async e=>{
       toast(undo?"Tenue remise dans « pas encore portée »":"Noté ! Tenue marquée comme portée");
     }catch(err){toast("Échec : "+(err.message||err.code))}
     return}
+  const wdt=e.target.closest("[data-wdet]");if(wdt){openWishDetail(wdt.dataset.wdet);return}
   const ld=e.target.closest("[data-ldet]");if(ld&&!selMode){openLookDetail(ld.dataset.ldet);return}
   const w=e.target.closest("[data-wear]");
   if(w){const l=looks.find(x=>x.id===w.dataset.wear);SLOTS.forEach(s=>{const v=ids(l.items?.[s.key]);shown[s.key]=v.length>0||s.key==="shoes";if(v.length)sel[s.key]=s.key==="acc"?v:v[0];else if(s.key==="acc")sel.acc=[]});editing=l.id;if(!isPhone())setLook(true);saveUi();renderToggles();renderRails();renderGrid();renderEditing();
@@ -1217,6 +1272,8 @@ $("#grid").addEventListener("submit",async e=>{
   const f=Object.fromEntries(new FormData(e.target));valise=buildValise(Math.max(1,Math.min(14,+f.days||5)),f.style,f.season,f.bag);renderValise();
 });
 $("#grid").addEventListener("change",async e=>{
+  const td=e.target.closest("[data-tdate]");if(td){if(!td.value||!lcol)return;
+    try{await lcol.doc(td.dataset.tdate).update({plannedFor:td.value});toast("Tenue prévue : "+dayLabel(td.value).toLowerCase())}catch(err){toast("Échec : "+(err.message||err.code))}return}
   if(e.target.matches("[data-tocc]")){todayOcc=e.target.value;todaySkip=[];renderToday.cur=null;renderToday();return}
   const pl=e.target.closest("[data-plan]");if(pl){if(!pl.value||!lcol)return;const id=pl.value,k=pl.dataset.plan;pl.disabled=true;
     try{await lcol.doc(id).update({plannedFor:k});toast("Tenue prévue : "+dayLabel(k).toLowerCase())}catch(err){toast("Échec : "+(err.message||err.code));pl.disabled=false}return}
@@ -1289,6 +1346,8 @@ function harmonyV(vals,style,key){
   vals.forEach(i=>{if((i.tags||[]).includes(style))sc+=3;else if((i.tags||[]).length)sc-=5});
   const prints=vals.filter(i=>/léopard|python|camouflage|imprimé|arc-en-ciel|tapisserie|Multicolore/i.test(i.name+" "+i.color)).length;
   if(prints>1)sc-=5*(prints-1);                             // un seul imprimé fort
+  const denim=vals.filter(i=>/jean|denim/i.test(i.name)).length;
+  if(denim>1)sc-=3*(denim-1);                              // plusieurs denims : possible, mais jamais par défaut
   const types=vals.filter(i=>i.category==="Accessoires").map(accType).filter(t=>t!=="poignet");
   if(new Set(types).size<types.length)sc-=6;                // pas deux colliers ni deux paires de boucles
   if(key&&looks.some(l=>lookKey(l.items)===key))sc-=20;     // pas une tenue déjà enregistrée
