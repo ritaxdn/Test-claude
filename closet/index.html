@@ -814,7 +814,7 @@ ${CATALOG()}
 
 ${wish?`Elle hésite à acheter cette pièce : « ${wish.name}${wish.brand?" ("+wish.brand+")":""} », catégorie ${wish.category||"?"}, couleur ${wish.color||"?"}. Construis une tenue AUTOUR de cette pièce avec ses vêtements à elle ; ne mets pas cette pièce dans "items" (elle est ajoutée à part) et laisse vide l'emplacement qu'elle occupe.\n`:""}Demande : ${request||"une tenue pour aujourd'hui"}
 Météo : ${meteo}.
-Règles : uniquement des id de la liste ; soit "dress", soit "top" + "bottom" ; des chaussures ; "layer" seulement pour un pull, cardigan ou chemise ouverte porté sur le haut ; 0 à 3 accessoires, jamais deux colliers ni deux paires de boucles ; pas d'or et d'argent mélangés ; un seul imprimé fort ; pour les couleurs vives, suis le cercle chromatique : couleurs opposées (rouge/vert, orange/bleu, jaune/violet), triade (rouge/jaune/bleu, orange/vert/violet) ou camaïeu de couleurs voisines, jamais deux couleurs vives au hasard ; respecte la saison et la météo.
+Règles : uniquement des id de la liste ; soit "dress", soit "top" + "bottom" ; des chaussures ; "layer" seulement pour un pull, cardigan ou chemise ouverte porté sur le haut ; 0 à 3 accessoires, jamais deux colliers ni deux paires de boucles ; pas d'or et d'argent mélangés ; un seul imprimé fort ; pour les couleurs vives, le cercle chromatique est une bonne piste (couleurs opposées comme rouge/vert, orange/bleu, jaune/violet ; triade rouge/jaune/bleu ou orange/vert/violet ; camaïeu de couleurs voisines), mais ce n'est pas une obligation : un mélange libre marche s'il est assumé ; respecte la saison et la météo.
 Ne pose pas de question et n'écris rien d'autre que l'objet JSON. Si la demande est floue, choisis toi-même.
 Format exact (remplace les null par des id de la liste) :
 {"name":"titre court en français","note":"1 ou 2 phrases en français qui expliquent l'idée de la tenue","items":{"jacket":null,"layer":null,"top":null,"dress":null,"bottom":null,"shoes":null,"bag":null,"acc":[]}}`;
@@ -1090,7 +1090,7 @@ function renderLookDetail(){
     wk==="complémentaires"?`${loud.join(" et ")} : couleurs opposées sur le cercle chromatique, le contraste est voulu.`:
     wk==="triade"?`${loud.join(", ")} : une triade, trois couleurs en triangle sur le cercle.`:
     wk==="camaïeu"?`${loud.join(" et ")} : couleurs voisines, un camaïeu.`:
-    `${loud.join(", ")} : ces couleurs ne sont ni opposées ni en triangle sur le cercle chromatique, elles risquent de se battre.`;
+    `${loud.join(", ")} : un mélange libre, hors des schémas du cercle chromatique. Ça marche si c'est voulu.`;
   const keys=SLOTS.map(s=>s.key).filter(k=>o.dress?!["top","bottom","layer"].includes(k):k!=="dress");
   const sib=looks.filter(x=>x.id!==l.id).map(x=>({x,n:lookIds(x.items).filter(y=>lookIds(o).includes(y)&&byId(y)?.category!=="Accessoires").length})).filter(z=>z.n>=2).sort((a,b)=>b.n-a.n).slice(0,4);
   const tile=(i,on,k)=>`<button class="pkcard vtile${on?" on":""}" data-dsw="${k}" data-did="${i.id}" aria-pressed="${on}">${src(i)?`<img src="${esc(src(i))}" alt="">`:""}<b>${esc(i.name)}</b></button>`;
@@ -1183,7 +1183,7 @@ function renderWishDetail(){
     .filter(z=>z&&z.rep&&z.s>-2).sort((a,b)=>b.s-a.s).slice(0,6);
   const loud=[...new Set(chosen.map(i=>i.color||"").filter(c=>!NEUTRAL.has(c)))],wk=wheelKind(loud);
   const colorNote=!loud.length?"Palette neutre pour l'instant.":wk==="une couleur"?`Une couleur vive (${loud[0].toLowerCase()}). Sa complémentaire sur le cercle chromatique : ${Object.keys(WHEEL).filter(c=>wdist(c,loud[0])>=150).join(" ou ").toLowerCase()}.`:
-    wk==="complémentaires"?`${loud.join(" et ")} : couleurs opposées, le contraste marche.`:wk==="triade"?`${loud.join(", ")} : une triade sur le cercle chromatique.`:wk==="camaïeu"?`${loud.join(" et ")} : couleurs voisines, un camaïeu.`:`${loud.join(", ")} : ces couleurs risquent de se battre.`;
+    wk==="complémentaires"?`${loud.join(" et ")} : couleurs opposées, le contraste marche.`:wk==="triade"?`${loud.join(", ")} : une triade sur le cercle chromatique.`:wk==="camaïeu"?`${loud.join(" et ")} : couleurs voisines, un camaïeu.`:`${loud.join(", ")} : un mélange libre, hors des schémas du cercle chromatique. Ça marche si c'est voulu.`;
   const tile=(i,on,k)=>`<button class="pkcard vtile${on?" on":""}" data-wsw="${k}" data-wid="${i.id}" aria-pressed="${on}">${src(i)?`<img src="${esc(src(i))}" alt="">`:""}<b>${esc(i.name)}</b></button>`;
   const price=w.price?Number(w.price).toLocaleString("fr-FR",{style:"currency",currency:"EUR"}):"";
   $("#drawer").innerHTML=`<div class="dhead"><small>Envie · avec quoi ?</small><button class="x" id="close" aria-label="Fermer">×</button></div>
@@ -1396,8 +1396,8 @@ function wheelScore(cols){
   if(cols.length<2)return 0;
   const k=wheelKind(cols);
   if(k==="complémentaires"||k==="triade")return 3;          // couleurs opposées ou en triangle : ça marche
-  if(k==="camaïeu")return 1;                                // couleurs voisines
-  return -6*(cols.length-1);                                // couleurs vives qui se battent
+  if(k==="camaïeu")return 2;                                // couleurs voisines
+  return cols.length>3?-2*(cols.length-3):0;                // le cercle est une piste, pas une obligation : seul un vrai arc-en-ciel est freiné
 }
 const NEUTRAL=new Set(["Noir","Blanc","Beige","Marron","Gris","Doré","Argenté",""]);
 function harmonyV(vals,style,key){
