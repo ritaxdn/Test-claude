@@ -9,8 +9,8 @@ Mises à jour à partir de ce que la propriétaire garde, modifie ou supprime. �
 - Ses changements de pièces sont des leçons : regarder le diff avant de proposer d'autres tenues.
 
 ## Chaussures
-- Pas de talons pour une journée de marche (voyage, visites, balade) : bottes plates, babies, sneakers, ballerines.
-- Talons seulement pour un dîner ou une soirée.
+- En voyage : chaussures confortables pour TOUTES les tenues, y compris les dîners (bottes plates, babies, sneakers). Pas de talons.
+- Hors voyage, pas de talons pour une journée de marche ; les talons restent pour un dîner ou une soirée en ville.
 
 ## Ce qu'elle garde
 - Les camaïeux et le ton sur ton : brun + or (Klimt), camel sur camel avec trois matières.
