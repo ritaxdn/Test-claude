@@ -266,6 +266,10 @@ form textarea{min-height:64px;resize:vertical}
 .vtile img{width:100%;aspect-ratio:1;object-fit:contain;mix-blend-mode:multiply}
 .vtile b{font-size:11px;font-weight:500;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .dsec{display:flex;flex-direction:column;gap:8px}
+.idea{display:flex;flex-direction:column;gap:6px;padding:10px;border:1px solid var(--line);border-radius:12px}
+.idea b{font-size:14px}
+.idea .note{margin:0}
+details.dsec summary{cursor:pointer;list-style:none}
 .dsec h4{margin:0;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
 .dstack{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
 .dstack figure{margin:0;display:flex;flex-direction:column;gap:3px}
@@ -1121,8 +1125,43 @@ let wdet=null;
 function openWishDetail(id){
   const w=wishes.find(x=>x.id===id);if(!w)return;
   const slot=slotOf(w.category)||"top";
-  wdet={id,slot,o:{[slot]:"__wish"}};renderWishDetail();
+  wdet={id,slot,o:{[slot]:"__wish"},ideas:null,ai:null};wdet.ideas=wishIdeas(w,slot,3);renderWishDetail();
   $("#drawer").hidden=$("#scrim").hidden=false;$("#drawer").scrollTop=0;
+}
+const seasonPen=i=>{const cs=capSeason();if(i.season&&i.season!=="Toute l'année"&&i.season!==cs)return 8;
+  if(cs==="Automne / Hiver"&&/sandale|tong|mule|babouche|short|maillot|paille/i.test(i.name))return 8;return 0};   // de saison d'abord
+const wishPseudo=w=>({id:"__wish",name:w.name,category:w.category,color:w.color||"",thumb:w.thumb,tags:[]});
+function wishIdeas(w,slot,n){
+  const wi=wishPseudo(w),get=id=>id==="__wish"?wi:byId(id);
+  const need={dress:["shoes","bag","jacket"],top:["bottom","shoes","bag","jacket"],layer:["top","bottom","shoes","bag"],bottom:["top","shoes","bag","jacket"],
+    jacket:["top","bottom","shoes","bag"],shoes:["top","bottom","bag","jacket"],bag:["top","bottom","shoes","jacket"],acc:["top","bottom","shoes","bag"]}[slot]||["top","bottom","shoes"];
+  const used={},out=[];
+  for(let t=0;t<n*3&&out.length<n;t++){
+    const o={[slot]:"__wish"};
+    for(const k of need){
+      const vals=lookIds(o).map(get).filter(Boolean),style=lookStyle(vals.filter(i=>i.id!=="__wish"));
+      const c=inSlot(k).filter(i=>k!=="layer"||/pull|cardigan|gilet|chemise|maille/i.test(i.name+" "+i.category))
+        .map(i=>({i,s:harmonyV([...vals,i],style)-(OVERUSED.has(i.id)?15:0)-seasonPen(i)-(used[i.id]||0)*7+Math.random()*3})).sort((a,b)=>b.s-a.s);
+      if(!c.length)continue;
+      if(k==="jacket"&&c[0].s<-2)continue;                 // pas de veste si rien ne va
+      o[k]=c[0].i.id;
+    }
+    // un ou deux accessoires s'ils ajoutent quelque chose
+    for(let a=0;a<2;a++){const vals=lookIds(o).map(get).filter(Boolean);
+      const c=inSlot("acc").filter(i=>!ids(o.acc).includes(i.id)).map(i=>({i,s:harmonyV([...vals,i],lookStyle(vals))-harmonyV(vals,lookStyle(vals))-(OVERUSED.has(i.id)?15:0)-seasonPen(i)-(used[i.id]||0)*4})).sort((a,b)=>b.s-a.s)[0];
+      if(c&&c.s>-1)o.acc=[...ids(o.acc),c.i.id]}
+    const key=lookKey(o);if(out.some(x=>lookKey(x.o)===key))continue;
+    lookIds(o).forEach(id=>{if(id!=="__wish")used[id]=(used[id]||0)+1});
+    const vals=lookIds(o).map(get).filter(Boolean),loud=[...new Set(vals.map(i=>i.color||"").filter(c=>!NEUTRAL.has(c)))],wk=wheelKind(loud);
+    const star=vals.filter(i=>i.id!=="__wish"&&!["Accessoires","Sacs"].includes(i.category)).sort((a,b)=>((b.color&&!NEUTRAL.has(b.color))?1:0)-((a.color&&!NEUTRAL.has(a.color))?1:0))[0];
+    const note=wk==="complémentaires"?`${loud.join(" et ")} : deux couleurs opposées sur le cercle chromatique, le contraste fait la tenue.`:
+      wk==="triade"?`${loud.join(", ")} : une triade, trois couleurs en triangle sur le cercle.`:
+      wk==="camaïeu"?`${loud.join(" et ")} : des couleurs voisines, un camaïeu doux.`:
+      wk==="une couleur"?`Tout est neutre autour, sauf le ${loud[0].toLowerCase()} : une seule couleur, et elle ressort.`:
+      `Une palette neutre : c'est la matière et la coupe de ta pièce qui font la tenue.`;
+    out.push({o,name:star?`Avec ${star.name.charAt(0).toLowerCase()+star.name.slice(1)}`:"Tenue simple",note});
+  }
+  return out;
 }
 function renderWishDetail(){
   const w=wishes.find(x=>x.id===wdet?.id);if(!w){closeSheet();return}
@@ -1134,7 +1173,7 @@ function renderWishDetail(){
   const keys=SLOTS.map(s=>s.key).filter(k=>k!==slot&&(dress?!["top","bottom","layer"].includes(k):k!=="dress"));
   const sugg=k=>{const others=lookIds({...o,[k]:k==="acc"?o.acc:null}).map(get).filter(Boolean),cur=new Set(lookIds(o));
     return inSlot(k).filter(i=>!cur.has(i.id)&&(k!=="layer"||/pull|cardigan|gilet|chemise|surchemise|maille|kimono/i.test(i.name+" "+i.category)))
-      .map(i=>({i,s:harmonyV(k==="acc"?[...others,i]:[...others.filter(x=>x.id!==o[k]),i],style)-(OVERUSED.has(i.id)?15:0)})).sort((a,b)=>b.s-a.s).slice(0,8)};
+      .map(i=>({i,s:harmonyV(k==="acc"?[...others,i]:[...others.filter(x=>x.id!==o[k]),i],style)-(OVERUSED.has(i.id)?15:0)-seasonPen(i)})).sort((a,b)=>b.s-a.s).slice(0,8)};
   // combien de mes pièces iraient avec elle (une à une)
   const matches=items.filter(i=>{const k=slotOf(i.category);return k&&k!==slot&&k!=="acc"&&(dress?!["top","bottom"].includes(k):k!=="dress")&&harmonyV([wi,i],style)>=-1}).length;
   // mes tenues où elle pourrait remplacer une pièce
@@ -1150,15 +1189,31 @@ function renderWishDetail(){
   $("#drawer").innerHTML=`<div class="dhead"><small>Envie · avec quoi ?</small><button class="x" id="close" aria-label="Fermer">×</button></div>
     <h2 id="dTitle">${esc(w.name)}</h2>
     <p class="note">${esc([w.brand,price].filter(Boolean).join(" · "))}${price?" · ":""}Elle irait avec <b>${matches}</b> de tes pièces${swaps.length?`, et elle peut remplacer une pièce dans ${swaps.length>=6?"au moins 6":swaps.length} de tes tenues`:""}.</p>
+    <section class="dsec"><h4>Mes idées de tenues</h4>
+      ${[...(wdet.ai?[wdet.ai]:[]),...(wdet.ideas||[])].map((x,n)=>`<div class="idea"><div class="dstack">${lookIds(x.o).map(get).filter(Boolean).map(i=>`<figure>${src(i)?`<img src="${esc(src(i))}" alt="">`:""}<figcaption>${i.id==="__wish"?"★ ":""}${esc(i.name)}</figcaption></figure>`).join("")}</div>
+        <b>${esc(x.name)}</b><p class="note">${esc(x.note)}</p><button class="btn ghost" data-wpick="${n}">Modifier cette tenue</button></div>`).join("")||'<p class="note">Je n\'ai pas trouvé de tenue avec tes pièces.</p>'}
+      <div class="row"><button class="btn" id="wmore">D'autres idées</button><button class="btn wearbtn" id="wai" ${wdet.aiBusy?"disabled":""}>${wdet.aiBusy?"Je réfléchis…":"Une idée du styliste IA"}</button></div>
+      ${wdet.aiErr?`<p class="note">${esc(wdet.aiErr)}</p>`:""}
+    </section>
+    <details class="dsec" id="wcomp" ${wdet.open?"open":""}><summary><h4 style="display:inline">Composer moi-même</h4></summary>
     <div class="dstack">${SLOTS.flatMap(s=>ids(o[s.key]).map(id=>{const i=get(id);return i?`<figure>${src(i)?`<img src="${esc(src(i))}" alt="">`:""}<figcaption>${id==="__wish"?"★ ":""}${esc(i.name)}</figcaption></figure>`:""})).join("")}</div>
     <p class="note">🎨 ${esc(colorNote)}</p>
     ${keys.map(k=>{const sl=SLOTS.find(s=>s.key===k),cur=ids(o[k]).map(byId).filter(Boolean),sg=sugg(k);if(!cur.length&&!sg.length)return"";
       return `<section class="dsec"><h4>${esc(sl.label)}</h4><div class="vrail">${cur.map(i=>tile(i,true,k)).join("")}${sg.map(z=>tile(z.i,false,k)).join("")}</div></section>`}).join("")}
     <p class="note">Touche une pièce pour composer une tenue autour de ton envie. Les propositions suivent le cercle chromatique, la saison et la règle d'un seul imprimé fort.</p>
     ${swaps.length?`<section class="dsec"><h4>Dans tes tenues, à la place de…</h4><div class="vrail">${swaps.map((z,n)=>`<button class="pkcard vtile" data-wswap="${n}">${src(z.rep)?`<img src="${esc(src(z.rep))}" alt="">`:""}<b>${esc(z.l.name)}</b><small>remplace : ${esc(z.rep.name)}</small></button>`).join("")}</div></section>`:""}
-    <div class="row"><button class="btn ghost" id="wreset">Repartir de la pièce seule</button></div>`;
+    <div class="row"><button class="btn ghost" id="wreset">Repartir de la pièce seule</button></div></details>`;
   $("#close").onclick=closeSheet;
-  $("#drawer").onclick=e=>{
+  $("#wcomp").ontoggle=e=>{wdet.open=e.target.open};
+  $("#drawer").onclick=async e=>{
+    const pk=e.target.closest("[data-wpick]");if(pk){const all=[...(wdet.ai?[wdet.ai]:[]),...(wdet.ideas||[])];wdet.o=JSON.parse(JSON.stringify(all[+pk.dataset.wpick].o));wdet.open=true;renderWishDetail();$("#wcomp").scrollIntoView({block:"start"});return}
+    if(e.target.id==="wmore"){wdet.ideas=wishIdeas(w,slot,3);renderWishDetail();return}
+    if(e.target.id==="wai"&&!wdet.aiBusy){wdet.aiBusy=true;wdet.aiErr=null;renderWishDetail();const myId=wdet.id;
+      try{const r=await askStylist("une tenue qui met en valeur cette nouvelle pièce, avec une idée forte",w);if(wdet?.id!==myId)return;
+        const it={...r.items};delete it[slot];if(slot==="dress"){delete it.top;delete it.bottom;delete it.layer}it[slot]="__wish";
+        wdet.ai={o:it,name:"Styliste · "+r.name,note:r.note}}
+      catch(err){if(wdet?.id===myId)wdet.aiErr=err?.code==="not_granted"?"Tu as refusé l'accès à Claude pour cette page.":"Le styliste n'a pas pu répondre : "+(err?.message||err?.code||"réessaie")}
+      if(wdet?.id===myId){wdet.aiBusy=false;renderWishDetail()}return}
     const t=e.target.closest("[data-wsw]");
     if(t){const k=t.dataset.wsw,id=t.dataset.wid;
       if(k==="acc"){const a=ids(o.acc);o.acc=a.includes(id)?a.filter(x=>x!==id):[...a,id].slice(-3);if(!o.acc.length)delete o.acc}
