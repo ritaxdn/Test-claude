@@ -1,5 +1,4 @@
 import { GuideBanner } from "@/components/guide/GuideBanner";
-import { LGL_URL, withLgl } from "@/components/brand/LglLink";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -193,7 +192,7 @@ export default async function TechnologyDetailPage({
             )}
           </h1>
           {rich ? (
-            <p className="mt-6 max-w-2xl font-sans text-lg leading-relaxed text-deep-soft">{withLgl(rich.hook[lang])}</p>
+            <p className="mt-6 max-w-2xl font-sans text-lg leading-relaxed text-deep-soft">{rich.hook[lang]}</p>
           ) : (
             tech.tagline && <p className="mt-6 max-w-2xl font-sans text-lg text-deep-soft">{tech.tagline[lang]}</p>
           )}
@@ -296,12 +295,12 @@ export default async function TechnologyDetailPage({
                 <ul className="mt-6 space-y-4">
                   {rich.forWho.map((x) => (
                     <li key={x.fr} className="flex items-start gap-3 font-sans text-deep">
-                      <Check size={16} className="mt-1 shrink-0 text-[var(--rainbow-2)]" /> <span>{withLgl(x[lang])}</span>
+                      <Check size={16} className="mt-1 shrink-0 text-[var(--rainbow-2)]" /> {x[lang]}
                     </li>
                   ))}
                 </ul>
                 <h2 className="display mt-10 text-2xl text-deep md:text-3xl">{l.protocol}</h2>
-                <p className="mt-4 font-sans leading-relaxed text-deep-soft">{withLgl(rich.protocol[lang])}</p>
+                <p className="mt-4 font-sans leading-relaxed text-deep-soft">{rich.protocol[lang]}</p>
               </Reveal>
               {rich.instagram && (
                 <Reveal className="glass rounded-[1.75rem] p-4 md:p-5">
@@ -320,7 +319,7 @@ export default async function TechnologyDetailPage({
                   <div key={loc(m.name, "fr")} className="glass rounded-[1.5rem] p-6">
                     <p className="data-label text-deep-soft">{loc(m.spec, lang)}</p>
                     <h3 className="display mt-3 text-xl text-deep">{loc(m.name, lang)}</h3>
-                    <p className="mt-3 font-sans text-sm leading-relaxed text-deep-soft">{withLgl(m.text[lang])}</p>
+                    <p className="mt-3 font-sans text-sm leading-relaxed text-deep-soft">{m.text[lang]}</p>
                   </div>
                 ))}
               </div>
@@ -353,7 +352,7 @@ export default async function TechnologyDetailPage({
                   {rich.specs.map(([k, v]) => (
                     <div key={k.fr} className="grid grid-cols-[1fr_1.2fr] gap-4 border-t border-deep/10 py-3">
                       <dt className="text-deep-soft">{k[lang]}</dt>
-                      <dd className="text-deep">{withLgl(v[lang])}</dd>
+                      <dd className="text-deep">{v[lang]}</dd>
                     </div>
                   ))}
                 </dl>
@@ -364,7 +363,7 @@ export default async function TechnologyDetailPage({
             <div className="mt-3 grid gap-3 lg:grid-cols-[1.3fr_1fr]">
               <Reveal className="glass rounded-[1.75rem] p-8 md:p-10">
                 <h2 className="display text-2xl text-deep md:text-3xl">{l.profitTitle}</h2>
-                <p className="mt-4 font-sans text-lg leading-relaxed text-deep">{withLgl(rich.profit[lang])}</p>
+                <p className="mt-4 font-sans text-lg leading-relaxed text-deep">{rich.profit[lang]}</p>
                 {tech.description && <p className="mt-4 font-sans leading-relaxed text-deep-soft">{tech.description[lang]}</p>}
               </Reveal>
               <Reveal className="glass rounded-[1.75rem] p-8 md:p-10">
@@ -443,7 +442,7 @@ export default async function TechnologyDetailPage({
                 name: tech.name,
                 description: rich.hook[lang],
                 category: categories[tech.category][lang],
-                ...(rich.brand ? { brand: { "@type": "Brand", name: rich.brand, ...(rich.brand === "LGL Expert" ? { url: LGL_URL } : {}) } } : {}),
+                ...(rich.brand ? { brand: { "@type": "Brand", name: rich.brand } } : {}),
                 ...(tech.images?.[0] ? { image: `${SITE_URL}${tech.images[0]}` } : {}),
                 url: `${SITE_URL}/${lang}/technologies/${tech.slug}`,
               }}

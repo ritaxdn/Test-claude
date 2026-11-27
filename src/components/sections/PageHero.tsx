@@ -1,5 +1,4 @@
 import { Pill } from "@/components/system/Cta";
-import { withLgl } from "@/components/brand/LglLink";
 import { Signal } from "@/components/system/Signal";
 
 /** En-tête des pages intérieures, dans la direction « nacre & verre ». */
@@ -31,7 +30,7 @@ export function PageHero({
               {title}
             </h1>
           </div>
-          {subtitle && <p className="max-w-md font-sans leading-relaxed text-deep-soft">{withLgl(subtitle)}</p>}
+          {subtitle && <p className="max-w-md font-sans leading-relaxed text-deep-soft">{subtitle}</p>}
         </div>
       </div>
       <Signal className="mt-8 h-10 w-full opacity-80" />

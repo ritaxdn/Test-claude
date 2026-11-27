@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import { withLgl } from "@/components/brand/LglLink";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { Check } from "lucide-react";
@@ -72,7 +71,7 @@ export default async function MuscleSculptingPage({ params }: { params: Promise<
                 <div className="glass h-full rounded-[1.5rem] p-6">
                   <Check size={18} className="text-[var(--rainbow-2)]" />
                   <h3 className="mt-4 font-sans text-base font-medium text-deep">{title}</h3>
-                  <p className="mt-2 font-sans text-sm leading-relaxed text-deep-soft">{withLgl(text)}</p>
+                  <p className="mt-2 font-sans text-sm leading-relaxed text-deep-soft">{text}</p>
                 </div>
               </RevealItem>
             ))}
@@ -89,7 +88,7 @@ export default async function MuscleSculptingPage({ params }: { params: Promise<
                         <th scope="row" className="data-label w-2/5 py-3 pr-4 text-left font-normal text-deep-soft">
                           {k}
                         </th>
-                        <td className="py-3 text-deep">{withLgl(v)}</td>
+                        <td className="py-3 text-deep">{v}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -111,7 +110,7 @@ export default async function MuscleSculptingPage({ params }: { params: Promise<
               <RevealItem key={title}>
                 <div className="glass h-full rounded-[1.5rem] p-6">
                   <h3 className="font-sans text-base font-medium text-deep">{title}</h3>
-                  <p className="mt-2 font-sans text-sm leading-relaxed text-deep-soft">{withLgl(text)}</p>
+                  <p className="mt-2 font-sans text-sm leading-relaxed text-deep-soft">{text}</p>
                 </div>
               </RevealItem>
             ))}

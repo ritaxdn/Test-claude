@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { withLgl } from "@/components/brand/LglLink";
 import Link from "next/link";
 import { Cta } from "./Cta";
 import type { Locale } from "@/lib/i18n/config";
@@ -41,7 +40,7 @@ export function SystemHero({ locale }: { locale: Locale }) {
             {c.ctaSecondary}
           </Cta>
         </div>
-        <p className="data-label mt-6 max-w-2xl animate-fade-rise text-deep-soft opacity-0 [animation-delay:420ms]">{withLgl(c.reassurance)}</p>
+        <p className="data-label mt-6 max-w-2xl animate-fade-rise text-deep-soft opacity-0 [animation-delay:420ms]">{c.reassurance}</p>
       </div>
 
       {/* Grande photo produit, comme une page Apple */}

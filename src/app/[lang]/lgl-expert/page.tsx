@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { LGL_URL, withLgl } from "@/components/brand/LglLink";
+import { LGL_URL } from "@/components/brand/LglLink";
 import type { Metadata } from "next";
 import { Check } from "lucide-react";
 import { isLocale } from "@/lib/i18n/config";
@@ -76,7 +76,7 @@ export default async function LglExpertPage({ params }: { params: Promise<{ lang
                 <div className="glass h-full rounded-[1.5rem] p-6">
                   <Check size={18} className="text-[var(--rainbow-2)]" />
                   <h3 className="mt-4 font-sans text-base font-medium text-deep">{title}</h3>
-                  <p className="mt-2 font-sans text-sm leading-relaxed text-deep-soft">{withLgl(text)}</p>
+                  <p className="mt-2 font-sans text-sm leading-relaxed text-deep-soft">{text}</p>
                 </div>
               </RevealItem>
             ))}
@@ -84,7 +84,7 @@ export default async function LglExpertPage({ params }: { params: Promise<{ lang
 
           <div className="mt-16">
             <h2 className="display text-2xl text-deep md:text-3xl">{c.rangeTitle}</h2>
-            <p className="mt-2 font-sans text-sm text-deep-soft">{withLgl(c.rangeNote)}</p>
+            <p className="mt-2 font-sans text-sm text-deep-soft">{c.rangeNote}</p>
             {groups.map(({ cat, items }) => {
               const landing = landingForCategory[cat];
               return (

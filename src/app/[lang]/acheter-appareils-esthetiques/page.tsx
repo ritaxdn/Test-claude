@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import { withLgl } from "@/components/brand/LglLink";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { Check, MapPin } from "lucide-react";
@@ -57,7 +56,7 @@ export default async function BuyGuidePage({ params }: { params: Promise<{ lang:
                 <div className="glass h-full rounded-[1.5rem] p-6">
                   <Check size={18} className="text-[var(--rainbow-2)]" />
                   <h3 className="mt-4 font-sans text-base font-medium text-deep">{title}</h3>
-                  <p className="mt-2 font-sans text-sm leading-relaxed text-deep-soft">{withLgl(text)}</p>
+                  <p className="mt-2 font-sans text-sm leading-relaxed text-deep-soft">{text}</p>
                 </div>
               </RevealItem>
             ))}

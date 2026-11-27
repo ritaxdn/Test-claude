@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { withLgl } from "@/components/brand/LglLink";
 import { CookieSettingsLink } from "@/components/layout/CookieConsent";
 import { InstagramIcon } from "@/components/icons/SocialIcons";
 import { Logo } from "@/components/brand/Logo";
@@ -36,7 +35,7 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
         <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-[1.4fr_1fr_1.2fr]">
           <div>
             <Logo locale={locale} size="md" tagline={dict.footer.tagline} />
-            <p className="mt-6 max-w-sm font-sans text-sm leading-relaxed text-deep-soft">{withLgl(dict.footer.description)}</p>
+            <p className="mt-6 max-w-sm font-sans text-sm leading-relaxed text-deep-soft">{dict.footer.description}</p>
             <div className="mt-6 flex flex-wrap gap-2">
               {socials.map((s) => (
                 <a
