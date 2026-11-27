@@ -1,4 +1,5 @@
 import { Plus } from "lucide-react";
+import { withLgl } from "@/components/brand/LglLink";
 import { Reveal } from "@/components/ui/Reveal";
 import { Pill } from "./Cta";
 import type { Locale } from "@/lib/i18n/config";
@@ -42,7 +43,7 @@ export function Faq({
                 {it.q}
                 <Plus size={16} strokeWidth={1.75} aria-hidden="true" className="shrink-0 transition-transform duration-300 group-open:rotate-45" />
               </summary>
-              <p className="pb-5 pr-10 font-sans text-sm leading-relaxed text-deep-soft">{it.a}</p>
+              <p className="pb-5 pr-10 font-sans text-sm leading-relaxed text-deep-soft">{withLgl(it.a)}</p>
             </details>
           ))}
         </div>
