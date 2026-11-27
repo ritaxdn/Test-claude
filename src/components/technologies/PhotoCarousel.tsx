@@ -41,7 +41,7 @@ export function PhotoCarousel({
   const many = images.length > 1;
 
   return (
-    <div className="relative mx-auto mt-8 max-w-xl" aria-roledescription="carousel" aria-label={name}>
+    <div className="relative mx-auto mt-12 max-w-2xl" aria-roledescription="carousel" aria-label={name}>
       <div
         ref={track}
         tabIndex={0}

@@ -56,7 +56,7 @@ export default async function GlobalNotFound() {
         </p>
         <a
           href={`/${lang}`}
-          className="mt-9 inline-flex items-center justify-center glass-strong rounded-full px-6 py-3.5 font-sans text-sm text-deep transition-colors hover:bg-white"
+          className="btn btn-primary mt-9"
         >
           {t.cta}
         </a>

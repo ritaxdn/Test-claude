@@ -14,9 +14,9 @@ export function StatsBand({ locale }: { locale: Locale }) {
         {stats.map((s, i) => (
           <RevealItem
             key={s.label}
-            className="relative border-t border-deep/15 pb-6 pt-4 pr-4 lg:border-l lg:border-t-0 lg:pl-6 lg:first:border-l-0 lg:first:pl-0"
+            className="relative flex flex-col items-center border-t border-deep/15 px-2 pb-6 pt-5 text-center lg:border-l lg:border-t-0 lg:first:border-l-0"
           >
-            <p className="display stat-num flex items-baseline gap-2 text-[clamp(2.6rem,5.4vw,6rem)] leading-[0.85] text-deep">
+            <p className="display stat-num flex items-baseline justify-center gap-2 text-[clamp(2.6rem,5.4vw,6rem)] leading-[0.85] text-deep">
               <span className={i === 1 ? "iridescent-text" : undefined}>{fill(s.value)}</span>
               {"unit" in s && s.unit && (
                 <span className="text-[clamp(1rem,2vw,1.8rem)] tracking-normal">{s.unit}</span>

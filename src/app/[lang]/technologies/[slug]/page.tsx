@@ -179,50 +179,35 @@ export default async function TechnologyDetailPage({
           <ArrowLeft size={16} /> {dict.common.backTo} {dict.nav.technologies}
         </Link>
 
-        <div className="mt-10 grid animate-fade-rise gap-10 opacity-0 lg:grid-cols-[1.3fr_1fr] lg:items-end">
-          <div>
-            <Pill className="bg-white/60">{categories[tech.category][lang]}</Pill>
-            <h1 className="mt-6 text-deep">
-              <span className="display block text-balance text-[clamp(2.4rem,6vw,5.6rem)]">{tech.name}</span>
-              {rich && (
-                <span className="mt-4 block max-w-2xl font-sans text-[clamp(1.15rem,1.8vw,1.5rem)] font-medium leading-snug first-letter:uppercase">
-                  <span className="sr-only"> : </span>
-                  {rich.h1[lang]}
-                </span>
-              )}
-            </h1>
-            {rich ? (
-              <p className="mt-6 max-w-xl font-sans text-lg leading-relaxed text-deep-soft">{rich.hook[lang]}</p>
-            ) : (
-              tech.tagline && <p className="mt-6 max-w-xl font-sans text-lg text-deep-soft">{tech.tagline[lang]}</p>
+        {/* En-tête façon page produit Apple : tout est centré, nom en grand, puis les deux boutons */}
+        <div className="mx-auto mt-10 flex max-w-4xl animate-fade-rise flex-col items-center text-center opacity-0">
+          <Pill className="bg-white/60">{categories[tech.category][lang]}</Pill>
+          <h1 className="mt-6 text-deep">
+            <span className="display block text-balance text-[clamp(2.6rem,7vw,6.4rem)]">{tech.name}</span>
+            {rich && (
+              <span className="mx-auto mt-4 block max-w-2xl font-sans text-[clamp(1.2rem,2vw,1.6rem)] font-medium leading-snug first-letter:uppercase">
+                <span className="sr-only"> : </span>
+                {rich.h1[lang]}
+              </span>
             )}
-            {tech.certifications && (
-              <div className="mt-6 flex flex-wrap gap-2">
-                {tech.certifications.map((c) => (
-                  <Pill key={c}>{c}</Pill>
-                ))}
-              </div>
-            )}
-          </div>
-          <div className="flex flex-wrap gap-3 lg:justify-end">
+          </h1>
+          {rich ? (
+            <p className="mt-6 max-w-2xl font-sans text-lg leading-relaxed text-deep-soft">{rich.hook[lang]}</p>
+          ) : (
+            tech.tagline && <p className="mt-6 max-w-2xl font-sans text-lg text-deep-soft">{tech.tagline[lang]}</p>
+          )}
+          {tech.certifications && (
+            <div className="mt-6 flex flex-wrap justify-center gap-2">
+              {tech.certifications.map((c) => (
+                <Pill key={c}>{c}</Pill>
+              ))}
+            </div>
+          )}
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Cta href={`/${lang}/contact?sujet=demo&machine=${tech.slug}`}>{dict.common.requestDemo}</Cta>
             <Cta href={`/${lang}/contact?sujet=expert&machine=${tech.slug}`} variant="line">{dict.common.speakToExpert}</Cta>
           </div>
         </div>
-
-        {/* Réponses immédiates : pour qui, ce qui est inclus, la garantie, l'après-vente */}
-        <Reveal className="mt-10 grid grid-cols-2 border-t border-deep/15 lg:grid-cols-4">
-          {l.facts.map(([k, v], i) => (
-            <div
-              key={k}
-              className="relative border-b border-deep/15 py-4 pr-4 odd:border-r lg:border-b-0 lg:border-r lg:px-5 lg:first:pl-0 lg:last:border-r-0 [&:nth-child(even)]:pl-4 lg:[&:nth-child(even)]:pl-5"
-            >
-              <SignalLine delay={i * 0.1} className="absolute inset-x-0 top-[-1px]" />
-              <p className="data-label text-deep-soft">{k}</p>
-              <p className="mt-2 font-sans text-sm font-medium text-deep">{v}</p>
-            </div>
-          ))}
-        </Reveal>
 
         {tech.images?.length ? (
           <PhotoCarousel
@@ -236,6 +221,20 @@ export default async function TechnologyDetailPage({
             }
           />
         ) : null}
+
+        {/* Réponses immédiates : pour qui, ce qui est inclus, la garantie, l'après-vente */}
+        <Reveal className="mt-12 grid grid-cols-2 border-t border-deep/15 lg:grid-cols-4">
+          {l.facts.map(([k, v], i) => (
+            <div
+              key={k}
+              className="relative border-b border-deep/15 py-4 pr-4 odd:border-r lg:border-b-0 lg:border-r lg:px-5 lg:first:pl-0 lg:last:border-r-0 [&:nth-child(even)]:pl-4 lg:[&:nth-child(even)]:pl-5"
+            >
+              <SignalLine delay={i * 0.1} className="absolute inset-x-0 top-[-1px]" />
+              <p className="data-label text-deep-soft">{k}</p>
+              <p className="mt-2 font-sans text-sm font-medium text-deep">{v}</p>
+            </div>
+          ))}
+        </Reveal>
 
         {!rich && <GuideBanner locale={lang} className="mt-10" />}
 
@@ -424,6 +423,7 @@ export default async function TechnologyDetailPage({
                     const x = technologies.find((m) => m.slug === r);
                     return x ? [[x.name, `/${lang}/technologies/${x.slug}`]] : [];
                   }),
+                  ...(rich.seeAlso ?? []).map(([label, path]) => [label[lang], `/${lang}${path}`]),
                   ...(rich.brand === "LGL Expert" ? [[lang === "fr" ? "LGL Expert au Maroc" : "LGL Expert in Morocco", `/${lang}/lgl-expert`]] : []),
                   [l.academyLink, `/${lang}/academy`],
                   [l.guideLink, `/${lang}/guide`],

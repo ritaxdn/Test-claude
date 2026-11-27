@@ -85,7 +85,7 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
 
         <div className="hidden items-center gap-5 lg:flex">
           <LanguageSwitcher locale={locale} />
-          <Cta href={`/${locale}/contact?sujet=demo`} className="py-1.5 pl-4 pr-1.5 text-xs">
+          <Cta href={`/${locale}/contact?sujet=demo`} size="sm">
             {dict.nav.requestDemo}
           </Cta>
         </div>
@@ -120,7 +120,7 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
           </nav>
           <div className="mt-6 flex items-center justify-between">
             <LanguageSwitcher locale={locale} />
-            <Cta href={`/${locale}/contact?sujet=demo`} className="py-1.5 pl-4 pr-1.5 text-xs">
+            <Cta href={`/${locale}/contact?sujet=demo`} size="sm">
               {dict.nav.requestDemo}
             </Cta>
           </div>

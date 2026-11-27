@@ -332,6 +332,55 @@ html[data-consent] .cookie-banner {
   .cta-ring { animation: none; }
 }
 
+/* Boutons style Apple : pilule pleine (principal), pilule à contour (secondaire), lien avec chevron.
+   Couleurs CELLULIFT (encre profonde), sans anneau ni pastille d'icône. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  min-height: 44px;
+  padding: 0.7rem 1.35rem;
+  border-radius: 980px;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.15s ease, opacity 0.2s ease;
+}
+.btn:active { transform: scale(0.98); }
+.btn:focus-visible { outline: 2px solid var(--rainbow-2); outline-offset: 3px; }
+.btn:disabled { opacity: 0.5; cursor: default; transform: none; }
+.btn-primary { background: var(--deep); color: #fff; border: 1px solid var(--deep); }
+.btn-primary:hover { background: #34313f; border-color: #34313f; }
+.btn-secondary { background: transparent; color: var(--deep); border: 1px solid var(--deep); }
+.btn-secondary:hover { background: var(--deep); color: #fff; }
+.btn-sm { min-height: 0; padding: 0.4rem 0.95rem; font-size: 0.78rem; }
+.btn-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15em;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  color: var(--deep);
+  white-space: nowrap;
+}
+.btn-link:hover { text-decoration: underline; text-underline-offset: 4px; }
+.btn-link .chev { transition: transform 0.2s ease; }
+.btn-link:hover .chev { transform: translateX(2px); }
+
+/* Tuiles de gamme (accueil) : la photo occupe le bas de la tuile et se fond dans le fond par les bords. */
+.tile-photo {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 22%), linear-gradient(to right, transparent 0%, #000 22%, #000 78%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 22%), linear-gradient(to right, transparent 0%, #000 22%, #000 78%, transparent 100%);
+  mask-composite: intersect;
+}
+
 /* Téléphone : échelle plus fine et plus sobre (titres moins massifs, boutons compacts). */
 @media (max-width: 639px) {
   html { font-size: 15px; }
@@ -340,6 +389,7 @@ html[data-consent] .cookie-banner {
   h2.display.statement { font-size: 2.35rem !important; line-height: 0.98 !important; }
   h2.display { font-size: 1.7rem !important; line-height: 1.02 !important; }
   h3.display { font-size: 1.12rem !important; }
+  h3.display.tile-title { font-size: 1.65rem !important; line-height: 1 !important; }
   .stat-num { font-size: 2.4rem !important; }
   /* Titres de cartes : sobres et lisibles, comme une appli (sans capitales étirées). */
   .card-title { font-family: var(--font-sans); font-stretch: normal; text-transform: none; font-weight: 600; letter-spacing: -0.01em; font-size: 0.95rem !important; line-height: 1.2 !important; }

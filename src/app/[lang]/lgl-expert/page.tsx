@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { LGL_URL } from "@/components/brand/LglLink";
 import type { Metadata } from "next";
 import { Check } from "lucide-react";
 import { isLocale } from "@/lib/i18n/config";
@@ -39,6 +40,7 @@ export default async function LglExpertPage({ params }: { params: Promise<{ lang
   return (
     <>
       <Breadcrumbs lang={lang} items={[["LGL Expert", "/lgl-expert"]]} />
+      <JsonLd data={{ "@context": "https://schema.org", "@type": "Brand", name: "LGL Expert", url: LGL_URL }} />
       <JsonLd
         data={{
           "@context": "https://schema.org",
@@ -57,6 +59,14 @@ export default async function LglExpertPage({ params }: { params: Promise<{ lang
 
       <section className="px-3 pb-12 md:px-5 md:pb-16">
         <Container>
+          {/* Site officiel de la marque : CELLULIFT en est le distributeur */}
+          <p className="mb-12 font-sans text-deep">
+            {lang === "fr" ? "Site officiel de la marque : " : "Official brand website: "}
+            <a href={LGL_URL} target="_blank" rel="noopener" className="btn-link inline-flex">
+              LGL Expert · lglexpert.fr
+              <span aria-hidden className="chev">›</span>
+            </a>
+          </p>
           <Reveal>
             <h2 className="display text-2xl text-deep md:text-3xl">{c.whyTitle}</h2>
           </Reveal>

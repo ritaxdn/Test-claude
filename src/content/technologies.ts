@@ -87,6 +87,7 @@ const photos: Record<string, string[]> = {
   "led-bio-light": ["00", "01", "02", "03"].map((n) => `/images/technologies/led-bio-light/${n}.jpg`),
   longiflash: ["00", "01", "02", "03", "04", "05"].map((n) => `/images/technologies/longiflash/${n}.jpg`),
   "synergy-plus": ["00", "01", "02"].map((n) => `/images/technologies/synergy-plus/${n}.jpg`),
+  "skin-analyser-g7": ["00", "01", "02"].map((n) => `/images/technologies/skin-analyser-g7/${n}.jpg`),
 };
 
 

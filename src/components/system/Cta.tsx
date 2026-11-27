@@ -1,35 +1,35 @@
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-/** Boutons en pilule : plein (encre), verre, ou ligne fine. */
+/**
+ * Boutons style Apple : « solid » = pilule pleine (encre), « line » / « glass » = pilule à contour,
+ * « link » = lien texte avec chevron. Liens externes (http, wa.me) ouverts tels quels.
+ */
 export function Cta({
   href,
   children,
   variant = "solid",
+  size,
   className,
 }: {
   href: string;
   children: React.ReactNode;
-  variant?: "solid" | "glass" | "line";
+  variant?: "solid" | "glass" | "line" | "link";
+  size?: "sm";
   className?: string;
 }) {
-  // Tout en verre : « solid » = verre en relief, « glass » / « line » = verre léger.
+  if (variant === "link") {
+    return (
+      <Link href={href} className={cn("btn-link", className)}>
+        {children}
+        <ChevronRight size={16} strokeWidth={2} className="chev" aria-hidden />
+      </Link>
+    );
+  }
   return (
-    <Link
-      href={href}
-      className={cn(
-        "group relative inline-flex items-center justify-between gap-4 whitespace-nowrap rounded-full py-2 pl-6 pr-2 font-sans text-sm text-deep transition-all duration-300 hover:-translate-y-0.5",
-        variant === "solid" ? "glass-strong hover:bg-white" : "glass-soft hover:bg-white/60",
-        className
-      )}
-    >
-      <span aria-hidden="true" className="cta-ring" />
+    <Link href={href} className={cn("btn", variant === "solid" ? "btn-primary" : "btn-secondary", size === "sm" && "btn-sm", className)}>
       {children}
-      <span className="relative flex h-9 w-9 items-center justify-center rounded-full bg-white/80 shadow-[inset_0_0_0_1px_rgba(255,255,255,1),0_6px_16px_-8px_rgba(29,27,38,0.35)] transition-transform duration-300 group-hover:rotate-45">
-        <span className="absolute inset-0 rounded-full opacity-60 [background:conic-gradient(from_200deg,#7fe3f0,#a797ff,#f29bd0,#ffc58f,#7fe3f0)] [mask:radial-gradient(circle,transparent_62%,black_64%)]" />
-        <ArrowUpRight size={15} strokeWidth={1.75} className="relative" />
-      </span>
     </Link>
   );
 }
