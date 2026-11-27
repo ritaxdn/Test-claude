@@ -373,6 +373,14 @@ html[data-consent] .cookie-banner {
 .btn-link .chev { transition: transform 0.2s ease; }
 .btn-link:hover .chev { transform: translateX(2px); }
 
+/* Tuiles de gamme (accueil) : la photo occupe le bas de la tuile et se fond dans le fond par les bords. */
+.tile-photo {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 22%), linear-gradient(to right, transparent 0%, #000 22%, #000 78%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 22%), linear-gradient(to right, transparent 0%, #000 22%, #000 78%, transparent 100%);
+  mask-composite: intersect;
+}
+
 /* Téléphone : échelle plus fine et plus sobre (titres moins massifs, boutons compacts). */
 @media (max-width: 639px) {
   html { font-size: 15px; }
@@ -381,6 +389,7 @@ html[data-consent] .cookie-banner {
   h2.display.statement { font-size: 2.35rem !important; line-height: 0.98 !important; }
   h2.display { font-size: 1.7rem !important; line-height: 1.02 !important; }
   h3.display { font-size: 1.12rem !important; }
+  h3.display.tile-title { font-size: 1.65rem !important; line-height: 1 !important; }
   .stat-num { font-size: 2.4rem !important; }
   /* Titres de cartes : sobres et lisibles, comme une appli (sans capitales étirées). */
   .card-title { font-family: var(--font-sans); font-stretch: normal; text-transform: none; font-weight: 600; letter-spacing: -0.01em; font-size: 0.95rem !important; line-height: 1.2 !important; }
