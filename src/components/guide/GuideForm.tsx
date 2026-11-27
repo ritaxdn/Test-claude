@@ -116,7 +116,7 @@ export function GuideForm({
           rel="noopener"
           download
           onClick={() => track("guide_download")}
-          className="inline-flex items-center gap-2 rounded-full bg-deep px-6 py-3.5 font-sans text-sm text-white transition-opacity hover:opacity-90"
+          className="btn btn-primary"
         >
           <Download size={16} /> {text.download}
         </a>
@@ -199,7 +199,7 @@ export function GuideForm({
       <button
         type="submit"
         disabled={status === "submitting"}
-        className="inline-flex items-center justify-center gap-2 rounded-full bg-deep px-6 py-3.5 font-sans text-sm text-white transition-opacity hover:opacity-90 disabled:opacity-60"
+        className="btn btn-primary"
       >
         {status === "submitting" ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
         {status === "submitting" ? text.submitting : text.submit}

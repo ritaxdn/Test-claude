@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Check, ChevronDown, X } from "lucide-react";
+import { Check, ChevronDown, X } from "lucide-react";
 import type { Locale } from "@/lib/i18n/config";
 import { cn } from "@/lib/utils";
 import { track } from "@/lib/analytics";
@@ -294,8 +294,8 @@ export function AcademyNewsletter({ locale }: { locale: Locale }) {
                 {c.doneTitle}
               </h2>
               <p className="mx-auto mt-3 max-w-xs font-sans text-sm text-deep-soft">{c.doneText}</p>
-              <button type="button" onClick={close} className="glass-strong mt-8 inline-flex min-h-[44px] items-center gap-2 rounded-full px-6 py-3 font-sans text-sm text-deep transition-colors hover:bg-white">
-                {c.doneClose} <ArrowRight size={15} />
+              <button type="button" onClick={close} className="btn btn-secondary mt-8">
+                {c.doneClose}
               </button>
             </div>
           ) : (
@@ -345,12 +345,9 @@ export function AcademyNewsletter({ locale }: { locale: Locale }) {
                 <button
                   type="submit"
                   disabled={status === "sending"}
-                  className={cn(
-                    "group mt-1 inline-flex min-h-[52px] items-center justify-center gap-3 rounded-full bg-deep px-6 font-sans text-[0.95rem] text-white transition-all hover:-translate-y-0.5 disabled:opacity-60"
-                  )}
+                  className="btn btn-primary mt-1"
                 >
                   {status === "sending" ? c.sending : c.submit}
-                  <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
                 </button>
                 <p className="mt-2 text-center font-sans text-[0.7rem] leading-relaxed text-deep-soft">
                   {c.legal}{" "}

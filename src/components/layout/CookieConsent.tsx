@@ -103,14 +103,14 @@ export function CookieConsent({ locale }: { locale: Locale }) {
             <button
               type="button"
               onClick={() => decide("accepted")}
-              className="glass-strong relative rounded-full px-5 py-2 font-sans text-sm font-medium text-deep transition-colors hover:bg-white"
+              className="btn btn-primary btn-sm"
             >
               {c.accept}
             </button>
             <button
               type="button"
               onClick={() => decide("refused")}
-              className="rounded-full border border-deep/20 px-5 py-2 font-sans text-sm text-deep transition-colors hover:bg-white/70"
+              className="btn btn-secondary btn-sm"
             >
               {c.refuse}
             </button>

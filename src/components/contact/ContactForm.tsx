@@ -381,7 +381,7 @@ export function ContactForm({
         <button
           type="submit"
           disabled={status === "submitting"}
-          className="glass-strong inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full px-7 py-3.5 font-sans text-sm text-deep transition-colors hover:bg-white disabled:opacity-50"
+          className="btn btn-primary"
         >
           {status === "submitting" && <Loader2 size={16} className="animate-spin" />}
           {status === "submitting" ? text.submitting : text.submit}

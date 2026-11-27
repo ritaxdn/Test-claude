@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUpRight, CalendarDays, Clock, MapPin, Users } from "lucide-react";
+import { CalendarDays, Clock, MapPin, Users } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
 import { Heading } from "@/components/system/Heading";
 import { Cta } from "@/components/system/Cta";
@@ -77,22 +77,16 @@ export function AcademySessions({ locale, eyebrow, title }: { locale: Locale; ey
                       href={s.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="glass-strong group inline-flex items-center justify-between gap-4 self-start whitespace-nowrap rounded-full py-2 pl-5 pr-2 font-sans text-sm text-deep transition-colors hover:bg-white md:self-center"
+                      className="btn btn-primary self-start md:self-center"
                     >
                       {l.register}
-                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/80 transition-transform group-hover:rotate-45">
-                        <ArrowUpRight size={14} />
-                      </span>
                     </Link>
                   ) : (
                     <Link
                       href={contact}
-                      className="glass-strong group inline-flex items-center justify-between gap-4 self-start whitespace-nowrap rounded-full py-2 pl-5 pr-2 font-sans text-sm text-deep transition-colors hover:bg-white md:self-center"
+                      className="btn btn-primary self-start md:self-center"
                     >
                       {l.register}
-                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/80 transition-transform group-hover:rotate-45">
-                        <ArrowUpRight size={14} />
-                      </span>
                     </Link>
                   )}
                 </article>

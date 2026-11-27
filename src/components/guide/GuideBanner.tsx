@@ -32,8 +32,8 @@ export function GuideBanner({ locale, className = "" }: { locale: Locale; classN
         <span className="data-label block text-deep-soft">{t.eyebrow}</span>{" "}
         <span className="mt-1.5 block font-sans text-base font-medium text-deep md:text-lg">{t.title}</span>
       </span>{" "}
-      <span className="hidden shrink-0 items-center gap-2 rounded-full bg-deep px-5 py-3 font-sans text-sm text-white sm:inline-flex">
-        {t.cta} <ArrowUpRight size={15} className="transition-transform group-hover:rotate-45" />
+      <span className="btn btn-primary hidden shrink-0 sm:inline-flex">
+        {t.cta}
       </span>
       <ArrowUpRight size={20} className="shrink-0 text-deep sm:hidden" />
     </Link>
